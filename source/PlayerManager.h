@@ -24,6 +24,7 @@ public:
 	//	XVE•`‰æ
 	void	Update( void );
 	void	Render( void );
+	void	Render( iexShader* shader, LPSTR technique );
 
 	//	“®ìŠÖ”
 	void	HitCheck( void );
