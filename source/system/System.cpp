@@ -9,6 +9,7 @@
 
 iexShader*	shader;
 iexShader*	shader2D;
+iexShader*	shader3D;
 
 //*****************************************************************************************************************************
 //
@@ -31,6 +32,7 @@ void	SYSTEM_Initialize()
 	//	シェーダー読み込み
 	shader = new iexShader("DATA\\SHADER\\3DEx.fx");
 	shader2D = new iexShader("DATA\\SHADER\\2D.fx");
+	shader3D = new iexShader( "DATA/SHADER/shader3D" );
 	//	パーティクルシステム初期化
 	iexParticle::Initialize("DATA\\PARTICLE.PNG", 10000 );
 }

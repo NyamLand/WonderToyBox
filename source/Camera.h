@@ -22,6 +22,7 @@ public:
 	//	î•ñæ“¾
 	Vector3	GetPos( void ){ return Pos; }
 	Vector3	GetTarget( void ){ return Target; }
+	Matrix	GetMatrix( void ){ return matView; }
 };
 
 extern	Camera*		m_Camera;

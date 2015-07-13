@@ -70,3 +70,12 @@ CoinManager*	m_CoinManager;
 			c_Coin[i]->Render();
 		}
 	}
+
+	//	シェーダー付き描画
+	void	CoinManager::Render( iexShader* shader, LPSTR technique )
+	{
+		for ( int i = 0; i < COIN_MAX; i++ )
+		{
+			c_Coin[i]->Render( shader, technique );
+		}
+	}
