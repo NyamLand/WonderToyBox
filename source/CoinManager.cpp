@@ -79,3 +79,4 @@ CoinManager*	m_CoinManager;
 			c_Coin[i]->Render( shader, technique );
 		}
 	}
+
