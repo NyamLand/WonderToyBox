@@ -1,0 +1,152 @@
+
+#ifndef	 __GLOBALFUNCTION_H__
+#define	 __GLOBALFUNCTION_H__
+
+//******************************************************************************
+//
+//	グローバル関数
+//
+//******************************************************************************
+
+//----------------------------------------------------------------------
+//	変数
+//----------------------------------------------------------------------
+	
+	//	extern宣言
+	extern	LPDSSTREAM		stream;
+
+//----------------------------------------------------------------------
+//	定数
+//----------------------------------------------------------------------
+
+	//	サウンド関連
+	namespace SoundInfo
+	{
+		enum SOUNDEFFECT
+		{
+			SELECT_SE,
+			CANCEL_SE,
+		};
+
+		enum BGM
+		{
+			TITLE_BGM,
+			MAIN_BGM,
+			RESULT_BGM,
+		};
+
+		//	ＢＧＭのファイル名はここに
+		//	上の定数と並び順を揃えること
+		const		LPSTR	bgm[]	=
+		{
+			"",
+			"",
+			"",
+		};
+	}
+
+//----------------------------------------------------------------------
+//	構造体
+//----------------------------------------------------------------------
+
+	//	画像構造体
+	struct Image
+	{
+		iex2DObj*	obj;
+		int		x, y, w, h, sx, sy, sw, sh;
+		float	alpha;
+		float	angle;
+		Vector3	color;
+	};
+
+	//	図形描画用構造体
+	struct _VB
+	{
+		LPDIRECT3DVERTEXBUFFER9	p;
+		_VB(LPDIRECT3DDEVICE9 d3dd, UINT length) : p(0){ d3dd->CreateVertexBuffer(length, 0, D3DFVF_XYZ, D3DPOOL_SYSTEMMEM, &p, NULL); }
+		virtual	~_VB(void) { if (p)	p->Release(); }
+		operator LPDIRECT3DVERTEXBUFFER9(void){ return p; }
+		LPDIRECT3DVERTEXBUFFER9		operator -> (){ return p; }
+	};
+
+//----------------------------------------------------------------------
+//	システム
+//----------------------------------------------------------------------
+
+	//	解放
+	void	SafeDelete( void* obj );
+
+	//	変換
+	POINT	GetPoint( int x, int y );
+	DWORD	GetColor( float r, float g, float b, float a );
+	DWORD	GetColor( Vector3 color );
+	DWORD	GetColor( Vector3 color, float alpha );
+
+	//	ワールド座標からクライエント座標への変換
+	bool	WorldToClient( const Vector3& pos, Vector3& out, const Matrix& mat );
+
+	//	デバッグ文字描画
+	void	DrawString( LPSTR string, int x, int y, DWORD color = 0xFFFFFFFF );
+	void	DrawString( LPSTR string, int x, int y, float r, float g, float b );
+	void	DrawString( LPSTR string, int x, int y, Vector3 color );
+
+	//	画像構造体初期化
+	void	InitImage( Image& img, iex2DObj* obj, int x, int y, int w, int h, int sx = 0, int sy = 0, int sw = 512, int sh = 512, float angle = 0.0f, float alpha = 1.0f, Vector3 color = Vector3( 1.0f, 1.0f, 1.0f ) );
+	void	InitImage( Image& img, iex2DObj* obj, int x, int y, int w, int h, int srcScale );
+
+	//	画像描画
+	void	RenderImage( Image img );
+
+	//	サウンド関連
+	void	SetSound( int type, bool loop = false );
+	void	PlayBGM( int type );
+	void	StopBGM( void );
+	
+//----------------------------------------------------------------------
+//	図形描画
+//----------------------------------------------------------------------
+	void	DrawSphere( LPDIRECT3DDEVICE9 d3dd, CONST D3DXVECTOR3 &p0, FLOAT r, D3DCOLOR c = 0xFFFFFFFF );
+	void	DrawSphere( const Vector3& pos, float r, DWORD color = 0xFFFFFFFF );
+	void	DrawCapsule( LPDIRECT3DDEVICE9 d3dd, CONST D3DXVECTOR3 &p1, CONST D3DXVECTOR3 &p2, FLOAT r, D3DCOLOR c = 0xFFFFFFFF );
+	void	DrawCapsule( const Vector3& p1, const Vector3& p2, float r, DWORD color = 0xFFFFFFFF );
+
+//----------------------------------------------------------------------
+//	３次関数補間( 出力、開始値、最終値, 割合 )
+//----------------------------------------------------------------------
+
+	//	Vector3	
+	bool	Lerp( Vector3& out, Vector3 p1, Vector3 p2, float t );
+
+	//	float
+	bool	Lerp( float& out, float p1, float p2, float t );
+
+//----------------------------------------------------------------------
+//	ベジェ曲線
+//----------------------------------------------------------------------
+
+	//	２次ベジェ曲線
+	bool	BezierCurve( Vector3& out, Vector3 start, Vector3 p1, Vector3 end, float t );
+
+	//	３次ベジェ曲線
+	bool	BezierCurve( Vector3& out, Vector3 start, Vector3 p1, Vector3 p2, Vector3 end, float t );
+
+	//	始点終点の動作種類
+	enum ePrm_t {           // Prm1                   / Prm2
+		eSlow_Lv5,      // 強　ゆっくり動き始める / ゆっくり動き終える
+		eSlow_Lv4,      // ↑　ゆっくり動き始める / ゆっくり動き終える
+		eSlow_Lv3,      // 　　ゆっくり動き始める / ゆっくり動き終える
+		eSlow_Lv2,      // ↓　ゆっくり動き始める / ゆっくり動き終える
+		eSlow_Lv1,      // 弱　ゆっくり動き始める / ゆっくり動き終える
+		eNoAccel,       // 　　直線的な動きをする
+		eRapid_Lv1,     // 弱　急に動き始める      / 急に動き終える
+		eRapid_Lv2,     // ↑　急に動き始める      / 急に動き終える
+		eRapid_Lv3,     // 　　急に動き始める      / 急に動き終える
+		eRapid_Lv4,     // ↓　急に動き始める      / 急に動き終える
+		eRapid_Lv5,     // 強　急に動き始める      / 急に動き終える
+	};
+
+	//	高次元ベジェ曲線パラメータ取得( 0.0f ~ 1.0f )
+	float GetBezier( ePrm_t ePrm1, ePrm_t ePrm2, float fRate );
+
+//******************************************************************************
+#endif // !__GROBALFUNCTION_H__
