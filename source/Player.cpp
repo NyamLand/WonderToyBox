@@ -58,6 +58,10 @@
 		case ATTACK:
 			Attack();
 			break;
+
+		case JUMP:
+			Jump();
+			break;
 		}
 
 		//	更新
@@ -71,6 +75,7 @@
 	//	移動
 	void	Player::Move( void )
 	{
+
 		//	左スティックの入力チェック
 		float	axisX = ( float )input->Get( KEY_AXISX );
 		float	axisY = ( float )input->Get( KEY_AXISY );
@@ -90,6 +95,9 @@
 
 		//	攻撃
 		if ( input->Get( KEY_A ) == 3 )		mode = ATTACK;
+		//　ジャンプ
+		if (input->Get(KEY_SPACE) == 3)		mode = JUMP;
+
 	}
 
 	//	移動
@@ -122,6 +130,13 @@
 	void	Player::Damage( void )
 	{
 		
+	}
+
+	//　ジャンプ
+	void	Player::Jump(void)
+	{
+		
+		mode = MOVE;
 	}
 
 //-----------------------------------------------------------------------------------------
