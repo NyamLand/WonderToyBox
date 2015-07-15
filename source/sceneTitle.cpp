@@ -119,65 +119,27 @@ sceneTitle::sceneTitle(void) : orientation(0, 0, 0, 1)
 			else testpos = 0;
 			t = 0;
 		}
-		if ( KEY( KEY_D ) == 3	&& t > 0.7f)
+		if ( KEY( KEY_D ) == 3	&& t > 0.7f )
 		{
 			if ( testpos > 0 )	testpos--;
 			else testpos = 3;
 			t = 0;
 
-		}
-
-		//	クォータニオン＆ラープの計算
-		Matrix m;
-		orientation.toMatrix(m);
-		Vector3 forward = Vector3(m._31, m._32, m._33);
-
-		Vector3 d;
-		Vector3 axis;
-		FLOAT	angle;
+		}		
 		
-		d = c_Move::TARGET[testpos] - c_pos;
-		d.Normalize();
-
-		forward.Normalize();
-		Vector3Cross(axis, forward, d);
-		angle = Vector3Dot(d, forward);
-		
-		
-		if (t <= 0.7f){
-			Lerp(c_pos, s_pos, c_Move::TARGET[testpos], t - 0.1f);
-			angle = acos(angle);
-			if (fabs(angle) > 1e-8f)
-			{
-
-				Quaternion q;
-				//変換用
-				D3DXQUATERNION q2;
-				D3DXVECTOR3 axis2;
-				//	IEX→D3DX
-				QuaternionItoD(&q2, &q);
-				Vector3ItoD(&axis2, &axis);
-
-				D3DXQuaternionRotationAxis(&q2, &axis2, angle);
-
-				//	D3DX→IEX
-				QuaternionDtoI(&q, &q2);
-
-				Quaternion n;
-				n = orientation * q;
-
-				orientation = QuaternionSlerp(orientation, n, 0.03);
-			}
-		
-			t += 0.01f;
+		if ( t <= 0.7f ){
+			Lerp( c_pos, s_pos, c_Move::TARGET[testpos], t - 0.1f );
+	
 		}
 		else{
 			s_pos = m_Camera->GetPos();
 		}
-		m_Camera->Set(c_pos,t_pos);
 
-		
+		//	カメラ更新
+		m_Camera->Update( VIEW_MODE::SLERP, c_Move::TARGET[testpos] );
+		m_Camera->SetPos( c_pos );
 
+		t += 0.01f;
 	}
 
 	//	描画

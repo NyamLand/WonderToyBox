@@ -137,6 +137,9 @@
 		//	ブロック更新
 		m_Block->Update();
 
+		//	カメラ更新
+		m_Camera->Update( VIEW_MODE::FIX, Vector3( 0.0f, 2.0f, 0.0f ) );
+
 		shader3D->SetValue( "ViewPos", m_Camera->GetPos() );
 		shader3D->SetValue( "matView", m_Camera->GetMatrix() );
 	}
