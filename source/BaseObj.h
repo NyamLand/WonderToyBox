@@ -30,11 +30,12 @@ protected:
 	Vector3		pos;
 	Vector3		attackPos;
 	Vector3		move;
-	float			angle;
-	float			scale;
-	float			speed;
-	int				mode;
-	int				attackParam;
+	float		angle;
+	float		scale;
+	float		speed;
+	int			mode;
+	int			attackParam;
+	bool		isGround;		//@Ú’n‚µ‚Ä‚é‚©
 
 protected:
 	//	ŠÖ”

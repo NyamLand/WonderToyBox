@@ -10,7 +10,6 @@
 class Player : public	BaseObj
 {
 private:
-	const float GRAVITY = -0.01f;
 	
 	//	’è”
 	static const int MIN_INPUT_STATE = 300;	//	ƒXƒeƒBƒbƒN”»’èÅ¬’l
@@ -23,7 +22,8 @@ private:
 		ATTACK1,				//	UŒ‚‚P’iŠK–Ú
 		ATTACK2,				//	UŒ‚‚Q’iŠK–Ú
 		ATTACK3,				//	UŒ‚‚R’iŠK–Ú
-		JUMP
+		JUMP,
+		GUARD
 	};
 
 	//	•Ï”
@@ -42,6 +42,7 @@ public:
 	void	Attack( void );
 	void	Damage( void );
 	void	Jump( void );
+	void	Guard( void );
 
 	//	Šp“x•â³ŠÖ”
 	void	AngleAdjust( float speed );
