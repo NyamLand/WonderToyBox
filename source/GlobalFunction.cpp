@@ -413,3 +413,32 @@
 		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
 	}
 
+	void	QuaternionDtoI(Quaternion *pOut, D3DXQUATERNION *pQ)
+	{
+		pOut->x = pQ->x;
+		pOut->y = pQ->y;
+		pOut->z = pQ->z;
+		pOut->w = pQ->w;
+	}
+
+	void	QuaternionItoD(D3DXQUATERNION  *pOut, Quaternion *pQ)
+	{
+		pOut->x = pQ->x;
+		pOut->y = pQ->y;
+		pOut->z = pQ->z;
+		pOut->w = pQ->w;
+	}
+
+	void	Vector3DtoI(Vector3 *pOut, D3DXVECTOR3 *pV)
+	{
+		pOut->x = pV->x;
+		pOut->y = pV->y;
+		pOut->z = pV->z;
+	}
+
+	void	Vector3ItoD(D3DXVECTOR3 *pOut, Vector3 *pV)
+	{
+		pOut->x = pV->x;
+		pOut->y = pV->y;
+		pOut->z = pV->z;
+	}
