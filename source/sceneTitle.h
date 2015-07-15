@@ -11,7 +11,19 @@
 class sceneTitle : public	Scene
 {
 private:
-	iexView*	view;
+	//iexView*	view;
+
+	//	オブジェクト
+	iexMesh*	m_CollisionStage;
+	iexMesh*	m_Stage;	
+	int			testpos;	//	仮のカメラ移動先のポジションを指し示す値
+	float		t;			//	ラープのｔ
+	Vector3		c_pos;		//	カメラポジション
+	Vector3		s_pos;		//	ラープスタートポジション
+	Vector3		t_pos;		//	カメラのターゲットポジション
+	
+	Quaternion orientation;	//	クォータニオン
+
 
 public:
 	//	初期化・解放

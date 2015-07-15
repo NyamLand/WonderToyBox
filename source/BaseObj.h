@@ -35,6 +35,7 @@ protected:
 	float			speed;
 	int				mode;
 	int				attackParam;
+	bool			isGround;
 
 protected:
 	//	ŠÖ”

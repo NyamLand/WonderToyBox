@@ -21,6 +21,8 @@ private:
 		ATTACK1,				//	UŒ‚‚P’iŠK–Ú
 		ATTACK2,				//	UŒ‚‚Q’iŠK–Ú
 		ATTACK3,				//	UŒ‚‚R’iŠK–Ú
+		JUMP,
+		GUARD,
 	};
 
 	//	•Ï”
@@ -38,6 +40,8 @@ public:
 	void	Move( float speed );
 	void	Attack( void );
 	void	Damage( void );
+	void	Jump( void );
+	void	Guard( void );
 
 	//	Šp“x•â³ŠÖ”
 	void	AngleAdjust( float speed );
