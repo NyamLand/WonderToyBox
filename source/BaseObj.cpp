@@ -19,7 +19,7 @@
 	BaseObj::BaseObj( void ) : obj( NULL ),
 		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ),
 		angle( 0.0f ), scale( 0.0f ), speed( 0.0f ), mode( 0 ),
-		attackParam(0), attackPos(0.0f, 0.0f, 0.0f), isGround(true)
+		attackParam( 0 ), attackPos( 0.0f, 0.0f, 0.0f ), isGround( true)
 	{
 		
 	}

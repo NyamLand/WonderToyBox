@@ -1,3 +1,5 @@
-*.sdf
+.gitignore.rej
 Debug/
 /Debug
+IEX2010.sdf
+.gitignore.rej

@@ -101,7 +101,7 @@
 
 		//	攻撃
 		if ( input->Get( KEY_A ) == 3 )		mode = ATTACK;
-		
+
 		//　接地中にできるアクション
 		if (isGround)
 		{
@@ -110,6 +110,7 @@
 			//　ガード
 			if (input->Get(KEY_C) == 1)			mode = GUARD;
 		}
+
 	}
 
 	//	移動
@@ -144,42 +145,46 @@
 		
 	}
 
-	//　ジャンプ
-	void	Player::Jump(void)
+
+	//	ジャンプ
+	void	Player::Jump( void )
 	{
-		static float toY = pos.y + 20;
-		if (pos.y <= toY)
+		mode = MOVE;
+		static	float	toY = pos.y + 20;
+		
+		if ( pos.y <= toY )
 		{
 			move.y += 0.3f;
 			pos += move;
 		}
 
 		//	左スティックの入力チェック
-		float	axisX = (float)input->Get(KEY_AXISX);
-		float	axisY = (float)input->Get(KEY_AXISY);
-		float	length = sqrtf(axisX * axisX + axisY * axisY);
-		if (length > MIN_INPUT_STATE)
+		float		axisX = ( float )input->Get( KEY_AXISX );
+		float		axisY = ( float )input->Get( KEY_AXISY );
+		float		length = sqrtf( axisX * axisX + axisY * axisY );
+
+		if ( length > MIN_INPUT_STATE )
 		{
-			SetMotion(Y2009Motion::RUN);
-			static float adjustSpeed = 0.2f;
-			AngleAdjust(adjustSpeed);
-			Move(speed);
+			SetMotion( Y2009Motion::RUN );
+			static	float	adjustSpeed = 0.2f;
+			AngleAdjust( adjustSpeed );
+			Move( speed );
 		}
 		else
 		{
-			SetMotion(Y2009Motion::STAND);
-			move = Vector3(0.0f, move.y, 0.0f);
+			SetMotion( Y2009Motion::STAND );
+			move = Vector3( 0.0f, move.y, 0.0f );
 		}
 
-		//　接地してたら
-		if (isGround)	mode = MOVE;
+		//	接地してたら
+		if ( isGround )	mode = MOVE;
 	}
 
-	//　ガード
-	void	Player::Guard(void)
+	//	ガード
+	void	Player::Guard( void )
 	{
-		SetMotion(Y2009Motion::GUARD);
-		if (input->Get(KEY_C) == 2)	mode = MOVE;
+		SetMotion( Y2009Motion::GUARD );
+		if ( input->Get( KEY_C ) == 2 )	mode = MOVE;
 	}
 
 //-----------------------------------------------------------------------------------------

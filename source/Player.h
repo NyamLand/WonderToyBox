@@ -17,13 +17,13 @@ private:
 	enum Y2009Motion
 	{
 		STAND = 1,		//	—§‚¿
-		POSTURE,				//	\‚¦
+		POSTURE,		//	\‚¦
 		RUN = 4,		//	‘–‚è
-		ATTACK1,				//	UŒ‚‚P’iŠK–Ú
-		ATTACK2,				//	UŒ‚‚Q’iŠK–Ú
-		ATTACK3,				//	UŒ‚‚R’iŠK–Ú
+		ATTACK1,		//	UŒ‚‚P’iŠK–Ú
+		ATTACK2,		//	UŒ‚‚Q’iŠK–Ú
+		ATTACK3,		//	UŒ‚‚R’iŠK–Ú
 		JUMP,
-		GUARD
+		GUARD,
 	};
 
 	//	•Ï”

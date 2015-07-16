@@ -30,6 +30,7 @@ protected:
 	Vector3		pos;
 	Vector3		attackPos;
 	Vector3		move;
+
 	float		angle;
 	float		scale;
 	float		speed;

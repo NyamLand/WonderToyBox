@@ -148,5 +148,15 @@
 	//	高次元ベジェ曲線パラメータ取得( 0.0f ~ 1.0f )
 	float GetBezier( ePrm_t ePrm1, ePrm_t ePrm2, float fRate );
 
+//----------------------------------------------------------------------
+//	D3DXとIEXの入れ替え
+//----------------------------------------------------------------------
+	void QuaternionItoD(D3DXQUATERNION  *pOut, Quaternion *pQ);
+	void QuaternionDtoI(Quaternion *pOut, D3DXQUATERNION *pQ);
+	void Vector3DtoI(Vector3 *pOut, D3DXVECTOR3 *pV);
+	void Vector3ItoD(D3DXVECTOR3 *pOut, Vector3 *pV);
+
+
+
 //******************************************************************************
 #endif // !__GROBALFUNCTION_H__
