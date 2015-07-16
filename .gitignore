@@ -3,3 +3,5 @@ Debug/
 /Debug
 IEX2010.sdf
 .gitignore.rej
+/Debug/IEX2010.tlog
+/Debug/vc120.idb
