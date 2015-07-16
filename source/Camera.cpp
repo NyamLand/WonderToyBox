@@ -111,3 +111,31 @@
 
 		Set( pos, this->target );
 	}
+
+	//	U“®
+	void	Camera::Shake( void )
+	{
+		shakeTimer--;
+		if ( shakeTimer > 0 )
+		{
+			adjust.x = wide * shakeTimer * ( rand() % 3 - 1 );
+			adjust.y = wide * shakeTimer * ( rand() % 3 - 1 );
+			adjust.z = wide * shakeTimer * ( rand() % 3 - 1 );
+		}
+		else
+		{
+			adjust = Vector3( 0.0f, 0.0f, 0.0f );
+			shakeTimer = 0;
+			shakeflag = false;
+		}
+	}
+
+	//	U“®Ý’è
+	void	Camera::ShakeSet( float wide, int timer )
+	{
+		if ( shakeflag ) 	return;
+		srand( 0 );
+		shakeflag = true;
+		this->wide = wide / ( float )shakeTimer;
+		this->shakeTimer = timer;
+	}

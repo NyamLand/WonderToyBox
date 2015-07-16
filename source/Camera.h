@@ -20,6 +20,13 @@ public:
 private:
 	Vector3 target;
 	Vector3 pos;
+	
+	//	振動用パラメータ
+	Vector3 adjust;
+	bool		shakeflag;
+	int			shakeTimer;
+	float		wide;
+
 	D3DXQUATERNION	orientation;
 
 public:
@@ -34,6 +41,8 @@ public:
 	void	ModeFix( Vector3 target );
 	void	ModeSlerp( Vector3 target );
 	void	Slerp( Vector3 target, float speed ) ;
+	void	Shake( void );
+	void	ShakeSet( float wide, int timer );
 
 	//	情報取得
 	Vector3	GetPos( void ){ return pos; }
