@@ -3,8 +3,11 @@
 #include	"GlobalFunction.h"
 #include	"Collision.h"
 #include	"Particle.h"
+#include	"Coin.h"
+#include	"CoinManager.h"
 #include	"BaseObj.h"
 #include	"Player.h"
+
 #include	"PlayerManager.h"
 
 //****************************************************************************************
@@ -77,7 +80,9 @@
 		for ( int i = 0; i < PLAYER_NUM; i++ )
 		{
 			c_Player[i]->Render( shader, technique );
-			DrawSphere( c_Player[i]->GetPos(), 2.0f, 0xFF000000 );
+			Vector3	p_pos = c_Player[i]->GetPos();
+			p_pos.y += 2.0f;
+			DrawSphere( p_pos, 1.0f, 0xFF000000 );
 		}
 	}
 
@@ -98,13 +103,21 @@
 					if ( i == n )	continue;
 
 					//	当たり判定(今はとりあえず球で取る)
-					static float	dist = 2.0f;
-					if ( Collision::DistCheck( c_Player[i]->GetPos(), c_Player[n]->GetPos(), dist ) )
+					static float	dist = 1.0f;
+					Vector3	p_pos1 = c_Player[i]->GetPos();
+					Vector3	p_pos2 = c_Player[n]->GetPos();
+					p_pos1.y += 2.0f;
+					p_pos2.y += 2.0f;
+					if ( Collision::DistCheck( p_pos1, p_pos2, dist ) )
 					{
-						//	とりあえずエフェクト出す
+						//	とりあえずエフェクトとコイン出す
 						Vector3	p_pos = c_Player[n]->GetPos();
 						float	effectScale = 2.0f;
 						Effect1( p_pos.x, p_pos.y, p_pos.z, effectScale );
+						Vector3	vec = p_pos2 - p_pos1;
+						vec.y = 0.5f;
+						vec.Normalize();
+						m_CoinManager->Set( p_pos1, vec, 0.5f );
 					}
 				}
 			}

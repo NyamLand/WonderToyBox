@@ -13,13 +13,14 @@ private:
 
 private:
 	//	定数
-	static const int COIN_MAX = 2000;
+	static const int COIN_MAX = 2000;		//	コイン最大数
 
 	//	オブジェクト
-	Coin*	c_Coin[COIN_MAX];
-	
+	iexMesh*	org;			//	オリジナルモデル
+	Coin*		c_Coin;
+
 	//	変数
-	std::mt19937 ran{ std::random_device()() };
+	int				coin_num;	//	コイン枚数
 
 public:
 	//	初期化・解放
@@ -31,6 +32,9 @@ public:
 	void	Update( void );
 	void	Render( void );
 	void	Render( iexShader* shader, LPSTR technique );
+
+	//	動作関数
+	void	Set( const Vector3& pos, const Vector3& vec, float speed );
 };
 
 extern	CoinManager*	m_CoinManager;

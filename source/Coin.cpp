@@ -31,12 +31,14 @@
 	//	‰Šú‰»
 	bool	Coin::Initialize( void )
 	{
-		obj = new iexMesh( "DATA/coin.imo" );
+		obj = NULL;
 		angle = 0.0f;
 		pos = Vector3( 0.0f, 0.0f, 0.0f );
 		move = Vector3( 0.0f, 0.0f, 0.0f );
 		scale = 0.5f;
-		activate = true;
+		judgeTimer = 0;
+		activate = false;
+		state = false;
 
 		return	true;
 	}
@@ -50,6 +52,9 @@
 	{
 		//	“®ì
 		Move();
+
+		if ( judgeTimer > 0 )	judgeTimer--;
+		else							activate = true;
 
 		pos += move;
 		StageCollisionCheck();
