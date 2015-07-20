@@ -164,7 +164,7 @@
 		m_Stage->Render( shader3D, "full_s" );
 		m_Player->Render( shader3D, "full" );
 		m_CoinManager->Render();
-		//m_Block->Render();
+
 		//	パーティクル描画
 		particle->Render();
 	}

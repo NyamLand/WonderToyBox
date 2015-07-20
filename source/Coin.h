@@ -18,7 +18,9 @@ private:
 	Vector3		move;
 	float			scale;
 	float			angle;
+	bool			state;
 	bool			activate;
+	int				judgeTimer;	//	”»’è—LŒøŠÔ
 
 public:
 	//	‰Šú‰»E‰ğ•ú
@@ -41,6 +43,9 @@ public:
 	void	SetScale( float angle );
 	Vector3	GetPos( void );
 	float		GetAngle( void );
+
+private:
+	friend	class CoinManager;
 };
 
 //*****************************************************************************
