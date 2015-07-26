@@ -13,7 +13,7 @@ private:
 
 private:
 	//	定数
-	static const int COIN_MAX = 2000;		//	コイン最大数
+	static const int COIN_MAX = 201;		//	コイン最大数
 
 	//	オブジェクト
 	iexMesh*	org;			//	オリジナルモデル
@@ -35,6 +35,7 @@ public:
 
 	//	動作関数
 	void	Set( const Vector3& pos, const Vector3& vec, float speed );
+	void	DistCheck( int n );
 };
 
 extern	CoinManager*	m_CoinManager;

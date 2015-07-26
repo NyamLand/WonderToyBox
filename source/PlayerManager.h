@@ -28,12 +28,15 @@ public:
 
 	//	“®ìŠÖ”
 	void	HitCheck( void );
+	void	AddCoin( int player );
+	void	SubCoin( int player );
 
 	//	î•ñæ“¾
 	Vector3	GetPos( int player );
 	float		GetAngle( int player );
 	Matrix	GetMatrix( int player );
 	int			GetAttackParam( int player );
+	int			GetCoinNum( int player );
 
 	//	î•ñİ’è
 	void		SetPos( int player, Vector3 pos );

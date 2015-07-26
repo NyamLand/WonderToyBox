@@ -73,6 +73,9 @@
     <Filter Include="ソース ファイル\Player\ECCMAN">
       <UniqueIdentifier>{415e329f-2d7a-4352-aaf8-9697b7e51b72}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Scene\sceneResult">
+      <UniqueIdentifier>{4e1cd947-8df4-4b09-8285-72f3aa39d98a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -177,6 +180,9 @@
     <ClCompile Include="source\ECCMAN.cpp">
       <Filter>ソース ファイル\Player\ECCMAN</Filter>
     </ClCompile>
+    <ClCompile Include="source\sceneResult.cpp">
+      <Filter>ソース ファイル\Scene\sceneResult</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -235,6 +241,9 @@
     </ClInclude>
     <ClInclude Include="source\ECCMAN.h">
       <Filter>ソース ファイル\Player\ECCMAN</Filter>
+    </ClInclude>
+    <ClInclude Include="source\sceneResult.h">
+      <Filter>ソース ファイル\Scene\sceneResult</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

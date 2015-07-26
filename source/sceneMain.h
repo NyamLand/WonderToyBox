@@ -9,6 +9,12 @@ class	sceneMain : public Scene
 private:
 	//	’è”
 	static	const		int		SHADOW_SIZE = 2048;
+	static	const		int		SECOND = 60;			//	‚P•b
+	static	const		int		MINUTE = 60 * 60;	//	‚P•ª
+	static	const		int		TIMELIMIT = 10 * SECOND;		//	•b”~•b
+
+	//	•Ï”
+	int		timer;
 
 private:
 	//	ƒIƒuƒWƒFƒNƒg

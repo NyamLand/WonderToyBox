@@ -19,7 +19,7 @@
 	BaseObj::BaseObj( void ) : obj( NULL ),
 		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ),
 		angle( 0.0f ), scale( 0.0f ), speed( 0.0f ), mode( 0 ),
-		attackParam( 0 ), attackPos( 0.0f, 0.0f, 0.0f ), isGround( true)
+		attackParam( 0 ), attackPos( 0.0f, 0.0f, 0.0f ), isGround( true), coinNum( 0 )
 	{
 		
 	}
@@ -123,6 +123,18 @@
 		//	壁判定
 		Collision::CheckWall( pos, move );
 	}
+	
+	//	コイン枚数加算
+	void	BaseObj::AddCoin( void )
+	{
+		coinNum++;
+	}
+
+	//	コイン枚数減算
+	void	BaseObj::SubCoin( void )
+	{
+		if ( coinNum > 0 )	coinNum--;
+	}
 
 //-------------------------------------------------------------------------------------
 //	情報設定・取得
@@ -184,3 +196,4 @@
 	Matrix		BaseObj::GetMatrix( void ){ return obj->TransMatrix; }
 	float			BaseObj::GetAngle( void ){ return angle; }
 	int				BaseObj::GetAttackParam( void ){ return attackParam; }
+	int				BaseObj::GetCoinNum( void ){ return	coinNum; }
