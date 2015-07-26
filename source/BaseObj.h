@@ -52,6 +52,7 @@ protected:
 	int				mode;
 	int				attackParam;
 	bool			isGround;
+	int				coinNum;
 
 protected:
 	//	ŠÖ”
@@ -73,6 +74,8 @@ public:
 
 	//	“®ìŠÖ”
 	void	StageCollisionCheck( void );
+	void	AddCoin( void );
+	void	SubCoin( void );
 
 	//	î•ñİ’è
 	void	SetPos( Vector3 pos );
@@ -86,6 +89,7 @@ public:
 	Matrix	GetMatrix( void );
 	float		GetAngle( void );
 	int			GetAttackParam( void );
+	int			GetCoinNum( void );
 };
 
 namespace PlayerData

@@ -146,13 +146,11 @@ sceneTitle::sceneTitle(void) : orientation(0, 0, 0, 1)
 	void	sceneTitle::Render( void )
 	{
 		//	画面クリア
-		//view->Activate();
-		//view->Clear();
 		m_Camera->Activate();
 		m_Camera->Clear();
 
 		//	オブジェクト描画
-		m_Stage->Render( shader3D, "full_s" );
+		m_Stage->Render( shader3D, "full" );
 		m_Player->Render( shader3D, "full" );
 
 		//	デバッグ用

@@ -2,6 +2,7 @@
 #include	"iextreme.h"
 #include	<random>
 #include	"system/system.h"
+#include	"system/Framework.h"
 #include	"GlobalFunction.h"
 #include	"Collision.h"
 #include	"Camera.h"
@@ -12,6 +13,7 @@
 #include	"Coin.h"
 #include	"CoinManager.h"
 #include	"Block.h"
+#include	"sceneResult.h"
 
 #include	"sceneMain.h"
 
@@ -20,7 +22,7 @@
 //	グローバル変数
 //
 //*****************************************************************************************************************************
-//	TAKATORI
+
 
 //*****************************************************************************************************************************
 //
@@ -75,6 +77,9 @@
 		particle = new iexParticle();
 		particle->Initialize( "DATA/Particle.png", 10000 );
 
+		//	変数初期化
+		timer = 0;
+
 		//	全体更新
 		Update();
 		return true;
@@ -85,7 +90,6 @@
 	{
 		SafeDelete( m_Stage );
 		SafeDelete( m_CollisionStage );
-		SafeDelete( m_Player );
 		SafeDelete( m_Camera );
 		SafeDelete( particle );
 		SafeDelete( m_CoinManager );
@@ -127,9 +131,17 @@
 
 		//	カメラ更新
 		m_Camera->Update( VIEW_MODE::FIX, Vector3( 0.0f, 2.0f, 0.0f ) );
-
 		shader3D->SetValue( "ViewPos", m_Camera->GetPos() );
 		shader3D->SetValue( "matView", m_Camera->GetMatrix() );
+
+		//	タイマー更新
+		timer++;
+
+		if ( timer >= TIMELIMIT )
+		{
+			MainFrame->ChangeScene( new sceneResult() );
+			return;
+		}
 	}
 
 //*****************************************************************************************************************************
@@ -155,6 +167,14 @@
 
 		//	パーティクル描画
 		particle->Render();
+
+		int		second = ( TIMELIMIT - timer ) / SECOND;
+		int		minute = ( TIMELIMIT - timer ) / MINUTE;
+
+		//	デバッグ用
+		char	str[256];
+		sprintf_s( str, "timelimit = %d分%d秒", minute, second );
+		DrawString( str, 550, 100 );
 	}
 
 	//	シャドウバッファ描画
@@ -193,7 +213,7 @@
 
 		//	描画
 		m_Player->Render( shader3D, "ShadowBuf" );
-		//m_CoinManager->Render( shader3D, "ShadowBuf" );
+		m_CoinManager->Render( shader3D, "ShadowBuf" );
 
 		//	作ったシャドウテクスチャをシェーダーにセット
 		shader3D->SetValue( "ShadowMap", ShadowTex );
