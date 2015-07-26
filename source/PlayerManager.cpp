@@ -7,6 +7,8 @@
 #include	"CoinManager.h"
 #include	"BaseObj.h"
 #include	"Player.h"
+#include	"Y2009.h"
+#include	"ECCMAN.h"
 
 #include	"PlayerManager.h"
 
@@ -44,7 +46,21 @@
 	//	‰Šú‰»
 	void	PlayerManager::Initialize( int input, int type, Vector3 pos )
 	{
-		c_Player[input] = new Player();
+		switch ( type )
+		{
+		case	PlayerData::Y2009:
+			c_Player[input] = new Y2009();
+			break;
+
+		case PlayerData::ECCMAN:
+			c_Player[input] = new ECCMAN();
+			break;
+
+		default:
+			c_Player[input] = new Y2009();
+			break;
+		}
+
 		c_Player[input]->Initialize( input, type, pos );
 	}
 

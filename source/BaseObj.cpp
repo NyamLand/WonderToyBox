@@ -34,9 +34,32 @@
 	bool	BaseObj::Initialize( int input, int type, Vector3 pos )
 	{
 		this->input = ::input[input];
-		obj = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+
+		Load( type );
 
 		this->pos = pos;
+
+		if ( obj == NULL )	return	false;
+		return	true;
+	}
+
+	//	ƒ‚ƒfƒ‹“Ç‚Ýž‚Ý
+	bool	BaseObj::Load( int type )
+	{
+		switch ( type )
+		{
+		case 	PlayerData::PLAYER_TYPE::Y2009:
+			obj = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+			break;
+
+		case PlayerData::PLAYER_TYPE::ECCMAN:
+			obj = new iex3DObj( "DATA/CHR/ECCMAN/ECCMAN.IEM" );
+			break;
+
+		default:
+			obj = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+			break;
+		}
 
 		if ( obj == NULL )	return	false;
 		return	true;
@@ -117,6 +140,39 @@
 	{
 		if ( this->mode != mode )		this->mode = mode;
 	}
+	void	BaseObj::SetMotionData( MotionData& md, MotionType::Motion kind, int num )
+	{
+		switch ( kind )
+		{
+		case 	MotionType::STAND:					//	—§‚¿
+			md.STAND = num;
+			break;
+		case 	MotionType::POSTURE:				//	\‚¦
+			md.POSTURE = num;
+			break;
+		case 	MotionType::RUN:						//	‘–‚è
+			md.RUN = num;
+			break;
+		case 	MotionType::JUMP:					//	ƒWƒƒƒ“ƒv
+			md.JUMP = num;
+			break;
+		case 	MotionType::LANDING:				//	’…’n
+			md.LANDING = num;
+			break;
+		case 	MotionType::ATTACK1:				//	UŒ‚‚P’iŠK–Ú
+			md.ATTACK1 = num;
+			break;
+		case 	MotionType::ATTACK2:				//	UŒ‚‚Q’iŠK–Ú
+			md.ATTACK2 = num;
+			break;
+		case 	MotionType::ATTACK3:				//	UŒ‚‚R’iŠK–Ú
+			md.ATTACK3 = num;
+			break;
+		case 	MotionType::GUARD:					//	ƒK[ƒh
+			md.GUARD = num;
+		}
+	}
+
 	void	BaseObj::SetPos( Vector3 pos ){ this->pos = pos; }
 	void	BaseObj::SetPos( float x, float y, float z ){ this->pos = Vector3( x, y, z ); }
 	void	BaseObj::SetAngle( float angle ){ this->angle = angle; }

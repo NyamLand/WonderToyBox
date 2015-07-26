@@ -17,12 +17,6 @@
 //	グローバル
 //-----------------------------------------------------------------------------------------
 
-	//	プレイヤーのステータス
-	namespace PlayerStatus
-	{
-
-	}
-
 //-----------------------------------------------------------------------------------------
 //	初期化・解放
 //-----------------------------------------------------------------------------------------
@@ -35,6 +29,8 @@
 		scale = 0.02f;
 
 		isGround = true;
+
+		//SetMotionNum();
 	}
 
 	//	デストラクタ
@@ -87,14 +83,14 @@
 		float	length = sqrtf( axisX * axisX + axisY * axisY );
 		if ( length > MIN_INPUT_STATE )
 		{
-			SetMotion( Y2009Motion::RUN );
+			SetMotion( motionData.RUN );
 			static float adjustSpeed = 0.2f;
 			AngleAdjust( adjustSpeed );
 			Move( speed );
 		}
 		else
 		{
-			SetMotion( Y2009Motion::STAND );
+			SetMotion( motionData.POSTURE );
 			move = Vector3( 0.0f, move.y, 0.0f );
 		}
 
@@ -102,10 +98,10 @@
 		if ( input->Get( KEY_A ) == 3 )		mode = ATTACK;
 
 		//	ジャンプ
-		if ( input->Get( KEY_SPACE ) == 3 )	mode = JUMP;
+		if ( input->Get( KEY_B ) == 3 )		mode = JUMP;
 
 		//	ガード
-		if ( input->Get( KEY_C ) == 1 )			mode = GUARD;
+		if ( input->Get( KEY_C ) == 1 )		mode = GUARD;
 	}
 
 	//	移動
@@ -118,7 +114,7 @@
 	//	攻撃
 	void	Player::Attack( void )
 	{
-		SetMotion( Y2009Motion::ATTACK1 );
+		SetMotion( motionData.ATTACK1 );
 		int		frame = obj->GetFrame();
 
 		//	少し前進
@@ -159,14 +155,14 @@
 
 		if ( length > MIN_INPUT_STATE )
 		{
-			SetMotion( Y2009Motion::RUN );
+			SetMotion( motionData.RUN );
 			static	float	adjustSpeed = 0.2f;
 			AngleAdjust( adjustSpeed );
 			Move( speed );
 		}
 		else
 		{
-			SetMotion( Y2009Motion::STAND );
+			SetMotion( motionData.POSTURE );
 			move = Vector3( 0.0f, move.y, 0.0f );
 		}
 
@@ -177,7 +173,7 @@
 	//	ガード
 	void	Player::Guard( void )
 	{
-		SetMotion( Y2009Motion::GUARD );
+		SetMotion( motionData.GUARD );
 		if ( input->Get( KEY_C ) == 2 )	mode = MOVE;
 	}
 
@@ -236,3 +232,9 @@
 		if ( GetAngle() >= 1.0f * PI )	angle -= 2.0f * PI;
 		if ( GetAngle() <= -1.0f * PI )	angle += 2.0f * PI;
 	}
+
+//-----------------------------------------------------------------------------------------
+//	情報取得
+//-----------------------------------------------------------------------------------------
+
+	//	モーション番号取得

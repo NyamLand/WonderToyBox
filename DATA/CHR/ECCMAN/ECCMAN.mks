@@ -1,0 +1,11 @@
+Mikoto Scene Ver 1
+Character {
+	name = "ECCMAN.mqo"
+	coordinate = "ECCMAN.mqo"
+	fileName = "ECCMAN.mks"
+	readOnly = 0
+	Import "E:\MyDocument\ECC_MAN\ECCMAN.mqo" ro(1)
+	Import "E:\MyDocument\ECC_MAN\ECCMAN.mkm" ro(0)
+}
+Current( "")
+Eof
