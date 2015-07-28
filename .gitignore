@@ -1,7 +1,9 @@
 .gitignore.rej
 Debug/
-/Debug
+<<<<<<< HEAD
 IEX2010.sdf
+=======
 .gitignore.rej
-/Debug/IEX2010.tlog
-/Debug/vc120.idb
+>>>>>>> 424381859c686b2150832f3f39b2063bbcddade9
+IEX2010.opensdf
+*.sdf

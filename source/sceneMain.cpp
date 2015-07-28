@@ -2,6 +2,7 @@
 #include	"iextreme.h"
 #include	<random>
 #include	"system/system.h"
+#include	"system/Framework.h"
 #include	"GlobalFunction.h"
 #include	"Collision.h"
 #include	"Camera.h"
@@ -12,6 +13,7 @@
 #include	"Coin.h"
 #include	"CoinManager.h"
 #include	"Block.h"
+#include	"sceneResult.h"
 
 #include	"sceneMain.h"
 
@@ -20,7 +22,7 @@
 //	グローバル変数
 //
 //*****************************************************************************************************************************
-//	TAKATORI
+
 
 //*****************************************************************************************************************************
 //
@@ -46,12 +48,7 @@
 
 		//	シャドウマップ
 		ShadowTex = new iex2DObj( SHADOW_SIZE, SHADOW_SIZE, IEX2D_RENDERTARGET );
-		iexSystem::GetDevice()->CreateDepthStencilSurface(
-			SHADOW_SIZE, SHADOW_SIZE,
-			D3DFMT_D16, D3DMULTISAMPLE_NONE,
-			0, FALSE, &ShadowZ, NULL
-			);
-
+		iexSystem::GetDevice()->CreateDepthStencilSurface( SHADOW_SIZE, SHADOW_SIZE, D3DFMT_D16, D3DMULTISAMPLE_NONE,	0, FALSE, &ShadowZ, NULL );
 
 		//	ライト設定
 		Vector3 dir( 1.0f, -1.0f, -0.5f );
@@ -80,9 +77,8 @@
 		particle = new iexParticle();
 		particle->Initialize( "DATA/Particle.png", 10000 );
 
-		//	ブロック描画
-		m_Block = new Block();
-		m_Block->Initialize( 0, 0, Vector3( 0.0f, 0.0f, 0.0f ), 0.02f );
+		//	変数初期化
+		timer = 0;
 
 		//	全体更新
 		Update();
@@ -94,11 +90,9 @@
 	{
 		SafeDelete( m_Stage );
 		SafeDelete( m_CollisionStage );
-		SafeDelete( m_Player );
 		SafeDelete( m_Camera );
 		SafeDelete( particle );
 		SafeDelete( m_CoinManager );
-		SafeDelete( m_Block );
 		SafeDelete( ShadowTex );
 		backBuffer->Release();
 	}
@@ -106,10 +100,10 @@
 	//	プレイヤー初期化
 	void	sceneMain::PlayerInitialize( void )
 	{
-		m_Player->Initialize( 0, 0, Vector3( 0.0f, 0.0f, 0.0f ) );
-		m_Player->Initialize( 1, 0, Vector3( 10.0f, 0.0f, 0.0f ) );
-		m_Player->Initialize( 2, 0, Vector3( 5.0f, 0.0f, 0.0f ) );
-		m_Player->Initialize( 3, 0, Vector3( -5.0f, 0.0f, 0.0f ) );
+		m_Player->Initialize( 0, PlayerData::Y2009, Vector3( 0.0f, 0.0f, 0.0f ) );
+		m_Player->Initialize( 1, PlayerData::ECCMAN, Vector3( 10.0f, 0.0f, 0.0f ) );
+		m_Player->Initialize( 2, PlayerData::Y2009, Vector3( 5.0f, 0.0f, 0.0f ) );
+		m_Player->Initialize( 3, PlayerData::Y2009, Vector3( -5.0f, 0.0f, 0.0f ) );
 	}
 
 //*****************************************************************************************************************************
@@ -123,6 +117,7 @@
 	{
 		//	プレイヤー更新
 		m_Player->Update();
+		
 		//	点光源設定
 		shader3D->SetValue( "plight_pos", Vector3( 0.0f, 0.0f, 0.0f ) );
 		shader3D->SetValue("plight_range", 6.0f );
@@ -134,14 +129,19 @@
 		//	コイン更新
 		m_CoinManager->Update();
 
-		//	ブロック更新
-		m_Block->Update();
-
 		//	カメラ更新
 		m_Camera->Update( VIEW_MODE::FIX, Vector3( 0.0f, 2.0f, 0.0f ) );
-
 		shader3D->SetValue( "ViewPos", m_Camera->GetPos() );
 		shader3D->SetValue( "matView", m_Camera->GetMatrix() );
+
+		//	タイマー更新
+		timer++;
+
+		if ( timer >= TIMELIMIT )
+		{
+			MainFrame->ChangeScene( new sceneResult() );
+			return;
+		}
 	}
 
 //*****************************************************************************************************************************
@@ -167,6 +167,14 @@
 
 		//	パーティクル描画
 		particle->Render();
+
+		int		second = ( TIMELIMIT - timer ) / SECOND;
+		int		minute = ( TIMELIMIT - timer ) / MINUTE;
+
+		//	デバッグ用
+		char	str[256];
+		sprintf_s( str, "timelimit = %d分%d秒", minute, second );
+		DrawString( str, 550, 100 );
 	}
 
 	//	シャドウバッファ描画
@@ -205,7 +213,7 @@
 
 		//	描画
 		m_Player->Render( shader3D, "ShadowBuf" );
-		//m_CoinManager->Render( shader3D, "ShadowBuf" );
+		m_CoinManager->Render( shader3D, "ShadowBuf" );
 
 		//	作ったシャドウテクスチャをシェーダーにセット
 		shader3D->SetValue( "ShadowMap", ShadowTex );

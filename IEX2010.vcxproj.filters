@@ -64,6 +64,18 @@
     <Filter Include="ソース ファイル\GlobalFunction">
       <UniqueIdentifier>{8e799579-24e9-427f-b7b7-ff56950440aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Player\Player">
+      <UniqueIdentifier>{8c405ba8-5fef-44a1-8cb7-21eeafd65dcf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Player\Y2009">
+      <UniqueIdentifier>{54e04f54-a273-4a1d-ab5d-f3d226e6c3d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Player\ECCMAN">
+      <UniqueIdentifier>{415e329f-2d7a-4352-aaf8-9697b7e51b72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scene\sceneResult">
+      <UniqueIdentifier>{4e1cd947-8df4-4b09-8285-72f3aa39d98a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -126,9 +138,6 @@
     <ClCompile Include="source\sceneMain.cpp">
       <Filter>ソース ファイル\Scene\sceneMain</Filter>
     </ClCompile>
-    <ClCompile Include="source\Player.cpp">
-      <Filter>ソース ファイル\Player</Filter>
-    </ClCompile>
     <ClCompile Include="source\BaseObj.cpp">
       <Filter>ソース ファイル\BaseObj</Filter>
     </ClCompile>
@@ -162,6 +171,18 @@
     <ClCompile Include="source\GlobalFunction.cpp">
       <Filter>ソース ファイル\GlobalFunction</Filter>
     </ClCompile>
+    <ClCompile Include="source\Player.cpp">
+      <Filter>ソース ファイル\Player\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Y2009.cpp">
+      <Filter>ソース ファイル\Player\Y2009</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ECCMAN.cpp">
+      <Filter>ソース ファイル\Player\ECCMAN</Filter>
+    </ClCompile>
+    <ClCompile Include="source\sceneResult.cpp">
+      <Filter>ソース ファイル\Scene\sceneResult</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -175,9 +196,6 @@
     </ClInclude>
     <ClInclude Include="IEX\iextreme.h">
       <Filter>IEX</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Player.h">
-      <Filter>ソース ファイル\Player</Filter>
     </ClInclude>
     <ClInclude Include="source\BaseObj.h">
       <Filter>ソース ファイル\BaseObj</Filter>
@@ -214,6 +232,18 @@
     </ClInclude>
     <ClInclude Include="source\GlobalFunction.h">
       <Filter>ソース ファイル\GlobalFunction</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Player.h">
+      <Filter>ソース ファイル\Player\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Y2009.h">
+      <Filter>ソース ファイル\Player\Y2009</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ECCMAN.h">
+      <Filter>ソース ファイル\Player\ECCMAN</Filter>
+    </ClInclude>
+    <ClInclude Include="source\sceneResult.h">
+      <Filter>ソース ファイル\Scene\sceneResult</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
