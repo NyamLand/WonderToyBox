@@ -3,7 +3,6 @@
 #include	"GlobalFunction.h"
 #include	"system/Framework.h"
 #include	"system/System.h"
-#include	"system/Scene.h"
 #include	"BaseObj.h"
 #include	"Player.h"
 #include	"PlayerManager.h"
