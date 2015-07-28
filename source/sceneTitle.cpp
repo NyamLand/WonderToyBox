@@ -70,17 +70,17 @@ sceneTitle::sceneTitle(void) : orientation(0, 0, 0, 1)
 
 		//	ステージ
 		m_CollisionStage = new iexMesh("DATA/BG/CollisionGround.IMO");
-		m_Stage = new iexMesh("DATA/BG/2_1/FIELD2_1.IMO");
+		m_Stage = new iexMesh( "DATA/BG/2_1/FIELD2_1.IMO" );
 
 		//	当たり判定
-		Collision::Initiallize(m_CollisionStage);
+		Collision::Initiallize( m_CollisionStage );
 
 		//	プレイヤー
 		m_Player = new PlayerManager();
-		m_Player->Initialize( 0, 0, c_Move::TARGET[0] );
-		m_Player->Initialize( 1, 0, c_Move::TARGET[1] );
-		m_Player->Initialize( 2, 0, c_Move::TARGET[2] );
-		m_Player->Initialize( 3, 0, c_Move::TARGET[3] );
+		m_Player->Initialize( 0, PlayerData::Y2009, c_Move::TARGET[0] );
+		m_Player->Initialize( 1, PlayerData::Y2009, c_Move::TARGET[1] );
+		m_Player->Initialize( 2, PlayerData::Y2009, c_Move::TARGET[2] );
+		m_Player->Initialize( 3, PlayerData::Y2009, c_Move::TARGET[3] );
 		testpos = 0;
 		t = 0;
 		s_pos = m_Camera->GetPos();
@@ -146,13 +146,11 @@ sceneTitle::sceneTitle(void) : orientation(0, 0, 0, 1)
 	void	sceneTitle::Render( void )
 	{
 		//	画面クリア
-		//view->Activate();
-		//view->Clear();
 		m_Camera->Activate();
 		m_Camera->Clear();
 
 		//	オブジェクト描画
-		m_Stage->Render( shader3D, "full_s" );
+		m_Stage->Render( shader3D, "full" );
 		m_Player->Render( shader3D, "full" );
 
 		//	デバッグ用

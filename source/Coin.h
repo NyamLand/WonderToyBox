@@ -35,6 +35,7 @@ public:
 
 	//	“®ìŠÖ”
 	void	StageCollisionCheck( void );
+	void	PlayerCollisionCheck( void );
 	void	Move( void );
 
 	//	î•ñæ“¾Eİ’è

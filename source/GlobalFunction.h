@@ -45,6 +45,23 @@
 		};
 	}
 
+	//	モーション番号
+	namespace MotionType
+	{
+		enum Motion
+		{
+			STAND,					//	立ち
+			POSTURE,				//	構え
+			RUN,						//	走り
+			JUMP,					//	ジャンプ
+			LANDING,				//	着地
+			ATTACK1,				//	攻撃１段階目
+			ATTACK2,				//	攻撃２段階目
+			ATTACK3,				//	攻撃３段階目
+			GUARD,					//	ガード
+		};
+	}
+
 //----------------------------------------------------------------------
 //	構造体
 //----------------------------------------------------------------------
@@ -67,6 +84,20 @@
 		virtual	~_VB(void) { if (p)	p->Release(); }
 		operator LPDIRECT3DVERTEXBUFFER9(void){ return p; }
 		LPDIRECT3DVERTEXBUFFER9		operator -> (){ return p; }
+	};
+
+	//	モーション番号保存用構造体
+	struct MotionData
+	{
+		int		STAND;					//	立ち
+		int		POSTURE;				//	構え
+		int		RUN;						//	走り
+		int		ATTACK1;				//	攻撃１段階目
+		int		JUMP;					//	ジャンプ
+		int		LANDING;				//	着地
+		int		ATTACK2;				//	攻撃２段階目
+		int		ATTACK3;				//	攻撃３段階目
+		int		GUARD;					//	ガード
 	};
 
 //----------------------------------------------------------------------

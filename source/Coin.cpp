@@ -3,6 +3,10 @@
 #include	"system/System.h"
 #include	"Collision.h"
 #include	"GlobalFunction.h"
+#include	"Particle.h"
+#include	"BaseObj.h"
+#include	"Player.h"
+#include	"PlayerManager.h"
 
 #include	"Coin.h"
 
@@ -58,6 +62,7 @@
 
 		pos += move;
 		StageCollisionCheck();
+		PlayerCollisionCheck();
 
 		obj->SetAngle( angle );
 		obj->SetPos( pos );
@@ -69,6 +74,7 @@
 	void	Coin::Render( void )
 	{
 		obj->Render();
+		DrawSphere( Vector3( pos.x, pos.y + 0.5f, pos.z ), 0.5f, 0xFFFF0000 );
 	}
 
 	//	シェーダー付き描画
@@ -90,6 +96,26 @@
 		{
 			pos.y = work;
 			move.y = 0;
+		}
+	}
+
+	//	プレイヤーとのあたりチェック
+	void	Coin::PlayerCollisionCheck( void )
+	{
+		Vector3	p_pos[4];
+		for ( int i = 0; i < 4; i++ )
+		{
+			if ( !activate )	continue;
+			p_pos[i] = m_Player->GetPos( i );
+			bool isHit = Collision::CapsuleVSSphere( p_pos[i],Vector3( p_pos[i].x, p_pos[i].y + 3.0f, p_pos[i].z ), 1.0f, Vector3( pos.x, pos.y + 0.5f, pos.z ), 0.5f );
+
+			if ( isHit )
+			{
+				state = false;
+				float	effectScale = 2.0f;
+				Effect1( pos.x, pos.y, pos.z, effectScale );
+				m_Player->AddCoin( i );
+			}
 		}
 	}
 

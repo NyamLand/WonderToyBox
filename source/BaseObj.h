@@ -9,6 +9,20 @@
 //****************************************************************************************
 class BaseObj
 {
+private:
+	enum MotionNum
+	{
+		STAND,					//	立ち
+		POSTURE,				//	構え
+		RUN,						//	走り
+		JUMP,					//	ジャンプ
+		LANDING,				//	着地
+		ATTACK1,				//	攻撃１段階目
+		ATTACK2,				//	攻撃２段階目
+		ATTACK3,				//	攻撃３段階目
+		GUARD,					//	ガード
+	};
+
 protected:
 	//	定数
 	const float GRAVITY = -0.01f;
@@ -19,6 +33,7 @@ protected:
 		DAMAGE,
 	};
 
+
 protected:
 	//	モデル
 	iex3DObj*	obj;
@@ -27,6 +42,7 @@ protected:
 	iexInput*		input;
 
 	//	パラメータ
+	MotionData	motionData;
 	Vector3		pos;
 	Vector3		attackPos;
 	Vector3		move;
@@ -36,17 +52,20 @@ protected:
 	int				mode;
 	int				attackParam;
 	bool			isGround;
+	int				coinNum;
 
 protected:
 	//	関数
 	void	SetMotion( int motion );
 	void	SetMode( int mode );
+	void	SetMotionData( MotionData& md, MotionType::Motion kind, int num );
 
 public:
 	//	初期化・解放
 	BaseObj( void );
 	~BaseObj( void );
 	bool	Initialize( int input, int type, Vector3 pos );
+	bool	Load( int type );
 
 	//	更新・描画
 	void	Update( void );
@@ -55,6 +74,8 @@ public:
 
 	//	動作関数
 	void	StageCollisionCheck( void );
+	void	AddCoin( void );
+	void	SubCoin( void );
 
 	//	情報設定
 	void	SetPos( Vector3 pos );
@@ -68,8 +89,25 @@ public:
 	Matrix	GetMatrix( void );
 	float		GetAngle( void );
 	int			GetAttackParam( void );
-	
+	int			GetCoinNum( void );
 };
+
+namespace PlayerData
+{
+	enum PLAYER_TYPE
+	{
+		KNIGHT,		//	騎士
+		PRINCESS,	//	姫
+		KING,			//	大王
+		BEAR,			//	クマ
+		SQUIRREL,	//	リス
+		TIGER,			//	トラ
+		ANIMA,			//	アニマさん
+		CROWS,		//	クロウズさん（綴り合ってる？）
+		Y2009,			//	Y姉さん
+		ECCMAN,		//	ECCマン
+	};
+}
 
 //****************************************************************************************
 #endif // !__BASEOBJ_H__
