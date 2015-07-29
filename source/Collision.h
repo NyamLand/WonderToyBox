@@ -20,6 +20,7 @@ public:
 
 	//	ステージ判定
 	static	float	GetHeight( const Vector3 pos );
+	static	float	GetHeight(const Vector3 pos, float dist);
 	static	void	CheckWall( const Vector3 pos, Vector3& p_move );
 
 	//	反射

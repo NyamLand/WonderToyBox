@@ -107,8 +107,8 @@
 	//	ステージ当たり判定チェック
 	void	BaseObj::StageCollisionCheck( void )
 	{
+		//　床判定
 		float work = Collision::GetHeight( pos );
-
 		if ( pos.y <= work )
 		{
 			pos.y = work;

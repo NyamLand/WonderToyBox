@@ -14,6 +14,7 @@
 #include	"CoinManager.h"
 #include	"Block.h"
 #include	"sceneResult.h"
+#include	"UI.h"
 
 #include	"sceneMain.h"
 
@@ -77,6 +78,10 @@
 		particle = new iexParticle();
 		particle->Initialize( "DATA/Particle.png", 10000 );
 
+		//UI
+		m_UI = new HeadUpDisplay();
+		m_UI->Initialize();
+
 		//	変数初期化
 		timer = 0;
 
@@ -93,7 +98,8 @@
 		SafeDelete( m_Camera );
 		SafeDelete( particle );
 		SafeDelete( m_CoinManager );
-		SafeDelete( ShadowTex );
+		SafeDelete(ShadowTex);
+		SafeDelete(m_UI);
 		backBuffer->Release();
 	}
 
@@ -129,6 +135,9 @@
 		//	コイン更新
 		m_CoinManager->Update();
 
+		//	UI更新
+		m_UI->Update();
+
 		//	カメラ更新
 		m_Camera->Update( VIEW_MODE::FIX, Vector3( 0.0f, 2.0f, 0.0f ) );
 		shader3D->SetValue( "ViewPos", m_Camera->GetPos() );
@@ -137,11 +146,11 @@
 		//	タイマー更新
 		timer++;
 
-		if ( timer >= TIMELIMIT )
-		{
-			MainFrame->ChangeScene( new sceneResult() );
-			return;
-		}
+		//if ( timer >= TIMELIMIT )
+		//{
+		//	MainFrame->ChangeScene( new sceneResult() );
+		//	return;
+		//}
 	}
 
 //*****************************************************************************************************************************
@@ -164,6 +173,9 @@
 		m_Stage->Render( shader3D, "full_s" );
 		m_Player->Render( shader3D, "full" );
 		m_CoinManager->Render();
+
+		//UI
+		m_UI->Render();
 
 		//	パーティクル描画
 		particle->Render();
