@@ -140,6 +140,7 @@
     <ClCompile Include="IEX\IEX_System.cpp" />
     <ClCompile Include="IEX\IEX_Texture.cpp" />
     <ClCompile Include="IEX\IEX_View.cpp" />
+    <ClCompile Include="source\UI.cpp" />
     <ClCompile Include="source\Y2009.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -162,6 +163,7 @@
     <ClInclude Include="source\sceneMain.h" />
     <ClInclude Include="source\system\System.h" />
     <ClInclude Include="IEX\iextreme.h" />
+    <ClInclude Include="source\UI.h" />
     <ClInclude Include="source\Y2009.h" />
   </ItemGroup>
   <ItemGroup>

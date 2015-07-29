@@ -76,6 +76,9 @@
     <Filter Include="ソース ファイル\Scene\sceneResult">
       <UniqueIdentifier>{4e1cd947-8df4-4b09-8285-72f3aa39d98a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\UI">
+      <UniqueIdentifier>{8bfcff3e-bf09-4fbe-aec7-8ba91636777e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -183,6 +186,9 @@
     <ClCompile Include="source\sceneResult.cpp">
       <Filter>ソース ファイル\Scene\sceneResult</Filter>
     </ClCompile>
+    <ClCompile Include="source\UI.cpp">
+      <Filter>ソース ファイル\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -244,6 +250,9 @@
     </ClInclude>
     <ClInclude Include="source\sceneResult.h">
       <Filter>ソース ファイル\Scene\sceneResult</Filter>
+    </ClInclude>
+    <ClInclude Include="source\UI.h">
+      <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
