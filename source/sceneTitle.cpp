@@ -2,7 +2,6 @@
 #include	"iextreme.h"
 #include	"system/Framework.h"
 #include	"system/System.h"
-#include	"system/Scene.h"
 #include	"GlobalFunction.h"
 #include	"Collision.h"
 #include	"Camera.h"
@@ -31,12 +30,13 @@ namespace c_Move{
 	};
 
 }
+
 //-----------------------------------------------------------------------------------
 //	初期化・解放
 //-----------------------------------------------------------------------------------
 
 	//	コンストラクタ
-sceneTitle::sceneTitle(void) : orientation(0, 0, 0, 1)
+	sceneTitle::sceneTitle( void ) : orientation( 0, 0, 0, 1 )
 	{
 
 	}
@@ -44,7 +44,6 @@ sceneTitle::sceneTitle(void) : orientation(0, 0, 0, 1)
 	//	デストラクタ
 	sceneTitle::~sceneTitle( void )
 	{
-		//SafeDelete( view );
 		SafeDelete( m_Stage );
 		SafeDelete( m_Camera );
 		SafeDelete( m_Player );

@@ -75,8 +75,7 @@
 		m_CoinManager->Initialize();
 
 		//	パーティクル
-		particle = new iexParticle();
-		particle->Initialize( "DATA/Particle.png", 10000 );
+		Particle::Initialize();
 
 		//UI
 		m_UI = new HeadUpDisplay();
@@ -96,11 +95,11 @@
 		SafeDelete( m_Stage );
 		SafeDelete( m_CollisionStage );
 		SafeDelete( m_Camera );
-		SafeDelete( particle );
 		SafeDelete( m_CoinManager );
-		SafeDelete(ShadowTex);
-		SafeDelete(m_UI);
+		SafeDelete( ShadowTex );
+		SafeDelete( m_UI );
 		backBuffer->Release();
+		Particle::Release();
 	}
 
 	//	プレイヤー初期化
@@ -130,7 +129,7 @@
 		shader3D->SetValue("plight_color", Vector3( 2.0f, 0.0f, 2.0f ) );
 		
 		//	パーティクル更新
-		particle->Update();
+		Particle::Update();
 
 		//	コイン更新
 		m_CoinManager->Update();
@@ -146,11 +145,11 @@
 		//	タイマー更新
 		timer++;
 
-		//if ( timer >= TIMELIMIT )
-		//{
-		//	MainFrame->ChangeScene( new sceneResult() );
-		//	return;
-		//}
+		if ( timer >= TIMELIMIT )
+		{
+			MainFrame->ChangeScene( new sceneResult() );
+			return;
+		}
 	}
 
 //*****************************************************************************************************************************
@@ -178,7 +177,7 @@
 		m_UI->Render();
 
 		//	パーティクル描画
-		particle->Render();
+		Particle::Render();
 
 		int		second = ( TIMELIMIT - timer ) / SECOND;
 		int		minute = ( TIMELIMIT - timer ) / MINUTE;
@@ -237,4 +236,4 @@
 
 	}
 
-
+	

@@ -45,7 +45,7 @@
 		};
 	}
 
-	//	モーション番号
+	//	共通モーション番号
 	namespace MotionType
 	{
 		enum Motion
@@ -182,12 +182,10 @@
 //----------------------------------------------------------------------
 //	D3DXとIEXの入れ替え
 //----------------------------------------------------------------------
-	void QuaternionItoD(D3DXQUATERNION  *pOut, Quaternion *pQ);
-	void QuaternionDtoI(Quaternion *pOut, D3DXQUATERNION *pQ);
-	void Vector3DtoI(Vector3 *pOut, D3DXVECTOR3 *pV);
-	void Vector3ItoD(D3DXVECTOR3 *pOut, Vector3 *pV);
-
-
+	void QuaternionItoD( D3DXQUATERNION  *pOut, Quaternion *pQ );
+	void QuaternionDtoI( Quaternion *pOut, D3DXQUATERNION *pQ );
+	void Vector3DtoI( Vector3 *pOut, D3DXVECTOR3 *pV );
+	void Vector3ItoD( D3DXVECTOR3 *pOut, Vector3 *pV );
 
 //******************************************************************************
 #endif // !__GROBALFUNCTION_H__
