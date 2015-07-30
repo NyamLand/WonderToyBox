@@ -20,7 +20,7 @@
 //--------------------------------------------------------------------------------
 
 	//	コンストラクタ
-	sceneSelect::sceneSelect(void) : mode(0)
+	sceneSelect::sceneSelect( void ) : mode(0)
 	{
 	
 	}
@@ -44,7 +44,7 @@
 //--------------------------------------------------------
 	void	sceneSelect::Update( void )
 	{
-		switch (mode)
+		switch ( mode )
 		{
 		case SELECT_PLAYERNUM:
 			SelectPlayerNumUpdate();
@@ -66,12 +66,6 @@
 			mode = 0;
 			break;
 		}
-
-		//if ( KEY( KEY_SPACE ) == 3 )
-		//{
-		//	MainFrame->ChangeScene( new sceneMain() );
-		//	return;
-		//}
 	}
 
 //--------------------------------------------------------
@@ -82,7 +76,7 @@
 		view->Activate();
 		view->Clear();
 		
-		switch (mode)
+		switch ( mode )
 		{
 		case SELECT_PLAYERNUM:
 			SelectPlayerNumRender();
@@ -147,13 +141,13 @@
 	//--------------------------------------------------------
 	void	sceneSelect::SelectStageUpdate( void )
 	{
-		if (KEY(KEY_SPACE) == 3) mode = SELECT_CHECK;
+		if ( KEY( KEY_SPACE ) == 3 ) mode = SELECT_CHECK;
 	}
 
 	void	sceneSelect::SelectStageRender( void )
 	{
-		DrawString("ステージ選択だよ", 50, 50);
-		DrawString("[SPACE]：最終確認へ", 300, 400, 0xFFFFFF00);
+		DrawString( "ステージ選択だよ", 50, 50 );
+		DrawString( "[SPACE]：最終確認へ", 300, 400, 0xFFFFFF00 );
 	}
 
 	//--------------------------------------------------------
@@ -161,15 +155,15 @@
 	//--------------------------------------------------------
 	void	sceneSelect::SelectCheckUpdate( void )
 	{
-		if (KEY(KEY_SPACE) == 3)
+		if ( KEY( KEY_SPACE ) == 3 )
 		{
-			MainFrame->ChangeScene(new sceneMain());
+			MainFrame->ChangeScene( new sceneMain() );
 			return;
 		}
 	}
 
 	void	sceneSelect::SelectCheckRender( void )
 	{
-		DrawString("最終確認だよ", 50, 50);
-		DrawString("[SPACE]：sceneMainへ", 300, 400, 0xFFFFFF00);
+		DrawString( "最終確認だよ", 50, 50 );
+		DrawString( "[SPACE]：sceneMainへ", 300, 400, 0xFFFFFF00 );
 	}
