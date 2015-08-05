@@ -1688,6 +1688,21 @@
 			}
 		}
 
+		//	シャドウマップ採用(ライティングなし)
+		technique nolight_s
+		{
+			pass P0
+			{
+				AlphaBlendEnable = true;
+				BlendOp = Add;
+				SrcBlend = SrcAlpha;
+				DestBlend = InvSrcAlpha;
+				ZWriteEnable = true;
+
+				VertexShader = compile		vs_3_0 VS_Full_S();
+				PixelShader = compile		ps_3_0 PS_NoLight_S();
+			}
+		}
 	//-----------------------------------------------------------------------------------
 	//	被写界深度
 	//-----------------------------------------------------------------------------------
