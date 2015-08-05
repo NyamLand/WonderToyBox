@@ -21,12 +21,13 @@
 //*****************************************************************************
 
 namespace c_Move{
-	Vector3 TARGET[4]=
+	Vector3 TARGET[MAX_TARGET]=
 	{
 		Vector3( 0.0f, 0.0f, 0.0f ),
 		Vector3( 20.0f, 0.0f, 10.0f ),
 		Vector3( 5.0f, 0.0f, -10.0f ),
 		Vector3( -20.0f, 0.0f, 10.0f ),
+		Vector3( 0.0f, 50.0f, 200.0f ),
 	};
 
 }
@@ -48,6 +49,7 @@ namespace c_Move{
 		SafeDelete( m_Camera );
 		SafeDelete( m_Player );
 		SafeDelete( m_CollisionStage );
+		SafeDelete( screen );
 	}
 	
 	//	初期化
@@ -86,6 +88,12 @@ namespace c_Move{
 		c_pos = m_Camera->GetPos();
 		t_pos = Vector3( 0, 0, 0 );
 
+		//	シーン切り替え用ステート
+		state_step = 0;
+		scene_change = MAX_TARGET - 1;
+		//	背景・スクリーン画像初期化
+		screen = new iex2DObj("DATA/Screen.png");
+
 		return	true;
 	}
 
@@ -105,11 +113,6 @@ namespace c_Move{
 		//	プレイヤー更新
 		m_Player->Update();
 
-		if ( KEY( KEY_SPACE ) == 3 )
-		{
-			MainFrame->ChangeScene( new sceneSelect() );
-			return;
-		}
 
 		//	移動先を変える
 		if ( KEY( KEY_C ) == 3  && t > 0.7f)
@@ -138,7 +141,43 @@ namespace c_Move{
 		m_Camera->Update( VIEW_MODE::SLERP, c_Move::TARGET[testpos] );
 		m_Camera->SetPos( c_pos );
 
-		t += 0.01f;
+		//	スペースを押してシーンを切り替える処理
+		SceneState();
+
+		//	
+		if (t < 1.0f){
+			t += 0.01f;
+		}
+	}
+
+	//	シーンステート
+	void	sceneTitle::SceneState( void )
+	{
+		switch (state_step)
+		{
+		case 0:
+			if (KEY(KEY_SPACE) == 3)
+			{
+				state_step++;
+				//MainFrame->ChangeScene(new sceneSelect());
+				//return;
+			}
+			break;
+		case 1:
+			testpos = scene_change;
+			t = 0;
+			state_step++;
+			break;
+
+		case 2:
+			if (t >= 1.0f)
+			{
+				MainFrame->ChangeScene(new sceneSelect());
+				return;
+			}
+			break;
+
+		}
 	}
 
 	//	描画
@@ -156,6 +195,11 @@ namespace c_Move{
 		DrawString( "[sceneTitle]", 50, 50 );
 		DrawString( "すぺーす押してね", 300, 400, 0xFFFFFF00 );
 		DrawString( "はーいぷしゅっ！", 1100, 700, 0xFFFFFF00 );
+
+		if (state_step >= 2){
+			shader2D->SetValue("alpha", t);
+			screen->Render(0, 0, 1280, 720, 0, 0, 512, 512, shader2D, "copy");
+		}
 	}
 
 //-----------------------------------------------------------------------------------
