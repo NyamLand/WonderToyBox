@@ -224,6 +224,32 @@
 			return	OUT;
 		}
 
+		//-----------------------------------------------------------------------------------
+		//	ピクセルシェーダー
+		//-----------------------------------------------------------------------------------
+		float4	PS_NoLight_S( V_FULL_S In ) : COLOR
+		{
+			float4	OUT;
+			float2	Tex = In.Tex;
+
+			//	パララックスディスプレースメント
+			float	h = tex2D(HeightSamp, Tex).r - 0.5f;
+			float3	E = normalize(In.vE);
+			Tex.x += 0.04f * h * E.x;
+			Tex.y -= 0.04f * h * E.y;
+
+			//	法線取得
+			float3	N = tex2D(NormalSamp, Tex).xyz * 2.0f - 1.0f;
+
+			//	ピクセル色決定
+			OUT = In.Color * tex2D(DecaleSamp, Tex);
+
+			//	シャドウマップ適用
+			OUT.rgb *= GetShadow(In.vShadow);
+
+			return	OUT;
+		}
+
 //************************************************************************
 //
 //	テクニック

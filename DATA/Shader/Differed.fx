@@ -1,5 +1,4 @@
 
-
 //-----------------------------------------------------------------------------------
 //	環境関連
 //-----------------------------------------------------------------------------------
@@ -8,6 +7,7 @@
 	float4x4		TransMatrix;	//	ワールド変換行列
 	float4x4		matView;
 	float3		ViewPos = { 0.0f, 0.0f, 0.0f };	//	視線変数
+	float4x4		InvProj;	//	逆変換行列
 
 //-----------------------------------------------------------------------------------
 //	テクスチャサンプラー
@@ -53,6 +53,32 @@
 		AddressV = Wrap;
 	};
 
+	//	スクリーンスペース深度
+	texture	DepthBuf;	//	カメラ空間深度
+	sampler DepthBufSamp = sampler_state
+	{
+		Texture = <DepthBuf>;
+		MinFilter = POINT;
+		MagFilter = POINT;
+		MipFilter = NONE;
+
+		AddressU = CLAMP;
+		AddressV = CLAMP;
+	};
+
+	//	スペキュラバッファ
+	texture	SpecularBuf;	//	スペキュラ
+	sampler SpecularBufSamp = sampler_state
+	{
+		Texture = <SpecularBuf>;
+		MinFilter = POINT;
+		MagFilter = POINT;
+		MipFilter = NONE;
+
+		AddressU = CLAMP;
+		AddressV = CLAMP;
+	};
+
 //-----------------------------------------------------------------------------------
 //	頂点フォーマット
 //-----------------------------------------------------------------------------------
@@ -69,7 +95,7 @@
 		float3	vE			:	TEXCOORD2;		//	視線ベクトル(頂点空間)
 
 		float3	pLight	:	TEXCOORD3;	//	点光源パラメータ
-		float4 wPos	: TEXCOORD4;
+		float4	wPos	: TEXCOORD4;
 
 		float3	N	:	TEXCOORD5;
 		float3	T	:	TEXCOORD6;
@@ -93,6 +119,12 @@
 		float4	normal	:	COLOR3;
 	};
 
+	struct POUT_LIGHT
+	{
+		float4	color	:	COLOR0;
+		float4	spec	:	COLOR1;
+	};
+
 //-----------------------------------------------------------------------------------
 //	平行光
 //-----------------------------------------------------------------------------------
@@ -100,6 +132,26 @@
 	//	パラメータ
 	float3	LightVec = { 0.7f, -0.7f, 0.0f };
 	float3	LightColor = { 1.0f, 1.0f, 1.0f };
+
+//-----------------------------------------------------------------------------------
+//	スポットライト
+//-----------------------------------------------------------------------------------
+
+	//	パラメータ
+	float3	sLightPos = { 0.0f, 3.0f, 0.0f };
+	float3	sLightDir = { 0.0f, -1.0f, 0.0f };
+	float3	sLightColor = { 1.0f, 1.0f, 1.0f };
+	float		inner = 0.7f;
+	float		outer = 0.6f;
+
+//-----------------------------------------------------------------------------------
+//	点光源
+//-----------------------------------------------------------------------------------
+
+	//	パラメータ
+	float3	pLightPos = { 0.0f, 3.0f, 0.0f };
+	float3	pLightColor = { 1.0f, 1.0f, 1.0f };
+	float		pLightRange = 5.0f;
 
 //************************************************************************
 //
@@ -199,6 +251,166 @@
 
 //************************************************************************
 //
+//	スペキュラ
+//
+//************************************************************************
+
+	//-----------------------------------------------------------------------------------
+	//	ピクセルシェーダー
+	//-----------------------------------------------------------------------------------
+		POUT_LIGHT	PS_DirLight2( float2 Tex : TEXCOORD0 )
+		{
+			POUT_LIGHT	OUT;
+			
+			float4	n = tex2D( DecaleSamp, Tex );
+			float3	normal = n.rgb * 2.0f - 1.0f;
+			normal = normalize( normal );
+
+			//	ライト率
+			float r = max( 0, dot( normal, -LightVec ) );
+
+			//	ピクセル色決定
+			OUT.color.rgb = r * LightColor;
+			OUT.color.a = 1;
+
+			//	カメラ空間変換
+			float	depth = tex2D( DepthBufSamp, Tex ).r;
+			float4 screen;
+			screen.xy = Tex * 2.0f - 1.0f;
+			screen.y = -screen.y;
+			screen.z = depth;
+			screen.w = 1;
+			float4	pos = mul( screen, InvProj );
+			pos.xyz /= pos.w;
+
+			//	スペキュラ
+			float3	E = pos.xyz;
+
+			E = normalize( E );
+			float3	R = normalize( -LightVec - E );
+
+			float	sp = pow( max( 0, dot( R, normal ) ), 10 );
+			float4	sp_tex = tex2D( SpecularBufSamp, Tex );
+			OUT.spec.rgb = sp_tex.rgb * sp * LightColor;
+			OUT.spec.a = 1;
+
+			return	OUT;
+		}
+
+//************************************************************************
+//
+//	点光源
+//
+//************************************************************************
+
+	//-----------------------------------------------------------------------------------
+	//	ピクセルシェーダー
+	//-----------------------------------------------------------------------------------
+		POUT_LIGHT	PS_PointLight( float2 Tex : TEXCOORD0 )
+		{
+			POUT_LIGHT	OUT;
+
+			//	カメラ空間変換
+			float		depth = tex2D( DepthBufSamp, Tex  ).r;
+			float4	screen;
+			screen.xy = Tex * 2 - 1;
+			screen.y = -screen.y;
+			screen.z = depth;
+			screen.w = 1;
+			float4	pos = mul( screen, InvProj );
+			pos.xyz /= pos.w;
+
+			//	ライトベクトル
+			float3	LightVec = pos - pLightPos;
+			float	dist = length( LightVec );
+			LightVec = normalize( LightVec );
+
+			//	法線取得
+			float4	n = tex2D(DecaleSamp, Tex);
+			float3	normal = n.rgb * 2 - 1;
+			normal = normalize( normal );
+
+			//	減衰量
+			float	intensity = max( 0, 1.0f - ( dist / pLightRange ) );
+
+			//	ライト計算
+			float	r = max( 0, dot( normal, - LightVec ) );
+
+			//	ピクセル色決定
+			OUT.color.rgb = r * pLightColor * intensity;
+			OUT.color.a = 1;
+
+			//	スペキュラ
+			float3	E = pos.xyz;
+			float3	R = normalize( -LightVec - E );
+
+			float	sp = pow( max( 0, dot( R, normal ) ), 10 );
+			float4	sp_tex = tex2D( SpecularSamp, Tex );
+			OUT.spec.rgb = sp_tex.rgb * sp * pLightColor * intensity;
+			OUT.spec.a = 1;
+			
+			return	OUT;
+		}
+
+//************************************************************************
+//
+//	スポットライト
+//
+//************************************************************************
+
+	//-----------------------------------------------------------------------------------
+	//	ピクセルシェーダー
+	//-----------------------------------------------------------------------------------
+		POUT_LIGHT	PS_SpotLight( float2	Tex : TEXCOORD0 )
+		{
+			POUT_LIGHT		OUT;
+
+			float4	n = tex2D( DecaleSamp, Tex );
+			float3	normal = n.rgb * 2.0f - 1.0f;
+			normal = normalize( normal );
+
+			//	カメラ空間変換（これまでと同様）
+			float		depth = tex2D( DepthBufSamp, Tex ).r;
+			float4	screen;
+			screen.xy = Tex * 2 - 1;
+			screen.y = -screen.y;
+			screen.z = depth;
+			screen.w = 1;
+			float4	pos = mul( screen, InvProj );
+			pos.xyz /= pos.w;
+
+			//	ライトベクトル
+			float3	LightVec = ( float3 )pos - sLightPos;
+			float3	dist = length( LightVec );
+			LightVec = normalize( LightVec );
+
+			//	減衰量
+			float	intensity = dot( LightVec, sLightDir );
+			intensity = ( inner - intensity ) / ( inner - outer );
+			intensity = saturate( 1 - intensity );
+
+			//	ライト計算
+			float	r = max( 0, dot( normal, -LightVec ) );
+
+			//	ピクセル色決定
+			OUT.color.rgb = r * sLightColor * intensity;
+			OUT.color.a = 1;
+
+			//	スペキュラ
+			float3	E = pos.xyz;
+			float3	R = normalize(-LightVec - E);
+
+			float	sp = pow( max( 0, dot( R, normal ) ), 10 );
+			
+			float4	sp_tex = tex2D( SpecularBufSamp, Tex );
+			OUT.spec.rgb = sp_tex.rgb * sp * LightColor * intensity;
+			OUT.spec.a = 1;
+
+			return	OUT;
+		}
+
+//************************************************************************
+//
 //	テクニック
 //
 //************************************************************************
@@ -239,5 +451,62 @@
 				CullMode = None;
 				ZEnable = false;
 				PixelShader = compile ps_2_0 PS_DirLight();
+			}
+		}
+
+	//-----------------------------------------------------------------------------------
+	//	ディファード④
+	//-----------------------------------------------------------------------------------
+
+		//	平行光
+		technique	dirlight2
+		{
+			pass	P0
+			{
+				AlphaBlendEnable = true;
+				BlendOp = Add;
+				SrcBlend = SrcAlpha;
+				DestBlend = One;
+				CullMode = None;
+				ZEnable = false;
+				PixelShader = compile ps_2_0 PS_DirLight2();
+			}
+		}
+
+	//-----------------------------------------------------------------------------------
+	//	ディファード⑤
+	//-----------------------------------------------------------------------------------
+
+		//	点光源
+		technique	pointlight
+		{
+			pass	P0
+			{
+				AlphaBlendEnable = true;
+				BlendOp = Add;
+				SrcBlend = SrcAlpha;
+				DestBlend = One;
+				CullMode = None;
+				ZEnable = false;
+				PixelShader = compile ps_2_0 PS_PointLight();
+			}
+		}
+
+	//-----------------------------------------------------------------------------------
+	//	ディファード⑤
+	//-----------------------------------------------------------------------------------
+
+		//	スポットライト
+		technique	spotlight
+		{
+			pass	P0
+			{
+				AlphaBlendEnable	=		true;
+				BlendOp				=		Add;
+				SrcBlend				=		SrcAlpha;
+				DestBlend				=		One;
+				CullMode				=		None;
+				ZEnable					=		false;
+				PixelShader			=		compile		ps_2_0		PS_SpotLight();
 			}
 		}

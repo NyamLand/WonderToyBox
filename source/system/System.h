@@ -14,6 +14,7 @@
 extern	iexShader* shader;
 extern	iexShader* shader2D;
 extern	iexShader* shader3D;
+extern	iexShader* shaderD;
 extern	std::mt19937 ran;
 
 //*****************************************************************************
