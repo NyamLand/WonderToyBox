@@ -46,4 +46,3 @@ public:
 	void	RenderShadowBuffer( void );
 };
 
-
