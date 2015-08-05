@@ -23,7 +23,7 @@
 //	グローバル変数
 //
 //*****************************************************************************************************************************
-
+sceneMain* m_sceneMain;
 
 //*****************************************************************************************************************************
 //
@@ -146,11 +146,11 @@
 		//	タイマー更新
 		timer++;
 
-		//if ( timer >= TIMELIMIT )
-		//{
-		//	MainFrame->ChangeScene( new sceneResult() );
-		//	return;
-		//}
+		if ( timer >= TIMELIMIT )
+		{
+			MainFrame->ChangeScene( new sceneResult() );
+			return;
+		}
 	}
 
 //*****************************************************************************************************************************
@@ -184,9 +184,9 @@
 		int		minute = ( TIMELIMIT - timer ) / MINUTE;
 
 		//	デバッグ用
-		char	str[256];
-		sprintf_s( str, "timelimit = %d分%d秒", minute, second );
-		DrawString( str, 550, 100 );
+		//char	str[256];
+		//sprintf_s( str, "timelimit = %d分%d秒", minute, second );
+		//DrawString( str, 550, 100 );
 	}
 
 	//	シャドウバッファ描画
