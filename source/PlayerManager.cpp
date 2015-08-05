@@ -132,8 +132,8 @@
 					{
 						//	とりあえずエフェクトとコイン出す
 						Vector3	p_pos = c_Player[n]->GetPos();
-						float	effectScale = 2.0f;
-						Effect1( p_pos.x, p_pos.y, p_pos.z, effectScale );
+						float	effectScale = 1.0f;
+						Particle::Spark( p_pos, effectScale );
 						Vector3	vec = p_pos2 - p_pos1;
 						vec.y = 0.5f;
 						vec.Normalize();

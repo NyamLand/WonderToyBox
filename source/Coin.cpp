@@ -112,8 +112,8 @@
 			if ( isHit )
 			{
 				state = false;
-				float	effectScale = 2.0f;
-				Effect1( pos.x, pos.y, pos.z, effectScale );
+				float	effectScale = 0.2f;
+				Particle::Spark( p_pos[i], effectScale );
 				m_Player->AddCoin( i );
 			}
 		}
