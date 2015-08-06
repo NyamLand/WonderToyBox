@@ -196,6 +196,7 @@
 	void	BaseObj::CommonJump( void )
 	{
 		mode = MOVE;
+		if ( !isGround )	return;
 		static	float	toY = pos.y + 20;
 
 		if ( pos.y <= toY )
