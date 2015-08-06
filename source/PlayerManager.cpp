@@ -9,6 +9,7 @@
 #include	"Player.h"
 #include	"Y2009.h"
 #include	"ECCMAN.h"
+#include	"Princess.h"
 
 #include	"PlayerManager.h"
 
@@ -32,14 +33,19 @@
 	//	コンストラクタ
 	PlayerManager::PlayerManager( void )
 	{
-	
+
 	}
 	
 	//	デストラクタ
 	PlayerManager::~PlayerManager( void )
 	{
-		for (int i = 0; i < PLAYER_NUM; i++){
+		for ( int i = 0; i < PLAYER_NUM; i++ ){
 			SafeDelete( c_Player[i] );
+		}
+
+		for ( int i = 0; i < OBJ_MAX; i++ )
+		{
+			SafeDelete( org[i] );
 		}
 	}
 
@@ -56,12 +62,36 @@
 			c_Player[input] = new ECCMAN();
 			break;
 
+		case PlayerData::PRINCESS:
+			c_Player[input] = new Princess();
+			break;
+
 		default:
 			c_Player[input] = new Y2009();
 			break;
 		}
 
-		c_Player[input]->Initialize( input, type, pos );
+		//	モデル読み込み
+		Load();
+
+		//	初期設定
+		c_Player[input]->Initialize( input, org[type]->Clone(), pos );
+	}
+
+	//	モデル読み込み
+	void	PlayerManager::Load( void )
+	{
+		org[PlayerData::Y2009] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PlayerData::ECCMAN] = new iex3DObj( "DATA/CHR/ECCMAN/ECCMAN.IEM" );
+		org[PlayerData::PRINCESS] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PlayerData::KNIGHT] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
+		org[PlayerData::KING] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
+		org[PlayerData::SQUIRREL] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
+		org[PlayerData::TIGER] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
+		org[PlayerData::ANIMA] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
+		org[PlayerData::CROWS] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
+		org[PlayerData::BEAR] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
+
 	}
 
 //------------------------------------------------------------------------------
@@ -71,7 +101,8 @@
 	//	更新
 	void	PlayerManager::Update( void )
 	{
-		for ( int i = 0; i < PLAYER_NUM; i++ ){
+		for ( int i = 0; i < PLAYER_NUM; i++ )
+		{
 			//	各プレイヤー更新
 			c_Player[i]->Update();
 		}

@@ -132,6 +132,9 @@
 	void	SetSound( int type, bool loop = false );
 	void	PlayBGM( int type );
 	void	StopBGM( void );
+
+	//	モーション番号登録
+	void	SetMotionNum( int& motionData, int motionNum );
 	
 //----------------------------------------------------------------------
 //	図形描画
@@ -142,14 +145,24 @@
 	void	DrawCapsule( const Vector3& p1, const Vector3& p2, float r, DWORD color = 0xFFFFFFFF );
 
 //----------------------------------------------------------------------
-//	３次関数補間( 出力、開始値、最終値, 割合 )
+//	線形補間( 出力、開始値、最終値, 割合 )
 //----------------------------------------------------------------------
 
-	//	Vector3	
+	//	Vector3
 	bool	Lerp( Vector3& out, Vector3 p1, Vector3 p2, float t );
 
 	//	float
 	bool	Lerp( float& out, float p1, float p2, float t );
+
+//----------------------------------------------------------------------
+//	３次関数補間( 出力、開始値、最終値, 割合 )
+//----------------------------------------------------------------------
+
+	//	Vector3	
+	bool	CubicFunctionInterpolation( Vector3& out, Vector3 p1, Vector3 p2, float t );
+
+	//	float
+	bool	CubicFunctionInterpolation( float& out, float p1, float p2, float t );
 
 //----------------------------------------------------------------------
 //	ベジェ曲線

@@ -76,6 +76,9 @@
     <Filter Include="ソース ファイル\UI">
       <UniqueIdentifier>{8bfcff3e-bf09-4fbe-aec7-8ba91636777e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Player\Princess">
+      <UniqueIdentifier>{7d3f933e-27f2-451e-b24c-c7fcbdb2403e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -183,6 +186,9 @@
     <ClCompile Include="source\UI.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
+    <ClCompile Include="source\Princess.cpp">
+      <Filter>ソース ファイル\Player\Princess</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -244,6 +250,9 @@
     </ClInclude>
     <ClInclude Include="source\UI.h">
       <Filter>ソース ファイル\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Princess.h">
+      <Filter>ソース ファイル\Player\Princess</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

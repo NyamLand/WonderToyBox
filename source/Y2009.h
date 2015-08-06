@@ -12,7 +12,7 @@ class Y2009	:	public	Player
 {
 private:
 	//	定数
-	enum Y2009Motion
+	enum MotionNum
 	{
 		STAND = 1,			//	立ち
 		POSTURE,				//	構え
@@ -28,12 +28,17 @@ public:
 	//	初期化・解放
 	Y2009( void );
 	~Y2009( void );
-	void	SetMotionNum( void );
-
+	void	SetMotionData( void );
+	
 	//	更新・描画
+	void	Update( void );
+	void	Render( iexShader* shader, LPSTR technique );
 
 	//	動作関数
-
+	void	ModeManagement( void );
+	void	Move( void );
+	void	Jump( void );
+	void	Attack( void );
 };
 
 //*******************************************************************************

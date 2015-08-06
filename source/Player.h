@@ -10,10 +10,7 @@
 class Player : public	BaseObj
 {
 private:
-	//	定数
-	static const int MIN_INPUT_STATE = 300;	//	スティック判定最小値
-
-	enum Motion
+	enum MotionNum
 	{
 		STAND = 1,			//	立ち
 		POSTURE,				//	構え
@@ -25,29 +22,21 @@ private:
 		GUARD,
 	};
 
-
 	//	変数
 
 public:
 	//	初期化・解放
 	Player( void );
 	~Player( void );
-	virtual	void	SetMotionNum( void ) = 0;
+	virtual	void	SetMotionData( void ) = 0;
 
 	//	更新・描画
-	void	Update( void );
-
+	virtual	void	Update( void ) = 0;
+	virtual	void	Render( iexShader* shader, LPSTR technique ) = 0;
+	void				Render( void );
 	//	動作関数
-	void	Move( void );
-	void	Move( float speed );
-	void	Attack( void );
-	void	Damage( void );
-	void	Jump( void );
-	void	Guard( void );
+	virtual	void	ModeManagement( void ) = 0;
 
-	//	角度補正関数
-	void	AngleAdjust( float speed );
-	void	AngleAdjust( const Vector3& direction, float speed );
 };
 
 //****************************************************************************************
