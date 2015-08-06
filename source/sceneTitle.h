@@ -10,6 +10,7 @@
 
 class sceneTitle : public	Scene
 {
+
 private:
 	//iexView*	view;
 
@@ -19,11 +20,27 @@ private:
 	int			testpos;	//	仮のカメラ移動先のポジションを指し示す値
 	float		t;			//	ラープのｔ
 	Vector3		c_pos;		//	カメラポジション
-	Vector3		s_pos;		//	ラープスタートポジション
 	Vector3		t_pos;		//	カメラのターゲットポジション
+	Vector3		s_pos;		//	ラープスタートポジション
 	
 	Quaternion orientation;	//	クォータニオン
 
+
+	//---------------------------
+	//　タイトルでのモード遷移
+	//---------------------------
+	enum
+	{
+		TITLE,
+		MENU,
+		SELECT_PLAYERNUM,
+		SELECT_CHARACTER,
+		SELECT_STAGE,
+		SELECT_CHECK,
+		OPTION,
+		CREDIT
+	};
+	int mode;
 
 public:
 	//	初期化・解放
@@ -33,8 +50,39 @@ public:
 	void	InitSound( void );
 
 	//	更新・描画
-	void	Update( void );
-	void	Render( void );
+	void	Update(void);
+	void	Render(void);
+
+	//-------------------------------------
+	//　各画面ごとのメソッド
+	//-------------------------------------
+	//　タイトル
+	void	TitleUpdate(void);
+	void	TitleRender(void);
+	//　メニュー画面
+	void	MenuUpdate(void);
+	void	MenuRender(void);
+
+	//　人数選択
+	void	SelectPlayerNumUpdate(void);
+	void	SelectPlayerNumRender(void);
+	//　キャラ選択
+	void	SelectCharacterUpdate(void);
+	void	SelectCharacterRender(void);
+	//　ステージ選択
+	void	SelectStageUpdate(void);
+	void	SelectStageRender(void);
+	//　最終確認
+	void	SelectCheckUpdate(void);
+	void	SelectCheckRender(void);
+
+	//　オプション
+	void	OptionUpdate(void);
+	void	OptionRender(void);
+
+	//　クレジット
+	void	CreditUpdate(void);
+	void	CreditRender(void);
 };
 
 //*****************************************************************************
