@@ -130,7 +130,7 @@ namespace c_Move{
 		}		
 		
 		if ( t <= 0.7f ){
-			Lerp( c_pos, s_pos, c_Move::TARGET[testpos], t - 0.1f );
+			CubicFunctionInterpolation( c_pos, s_pos, c_Move::TARGET[testpos], t - 0.1f );
 	
 		}
 		else{

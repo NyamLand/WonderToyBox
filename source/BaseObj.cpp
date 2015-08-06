@@ -2,6 +2,7 @@
 #include	"iextreme.h"
 #include	"GlobalFunction.h"
 #include	"Collision.h"
+#include	"Camera.h"
 
 #include	"BaseObj.h"
 
@@ -31,35 +32,11 @@
 	}
 
 	//	初期化
-	bool	BaseObj::Initialize( int input, int type, Vector3 pos )
+	bool	BaseObj::Initialize( int input, iex3DObj* org, Vector3 pos )
 	{
+		this->obj = org;
 		this->input = ::input[input];
-
-		Load( type );
-
 		this->pos = pos;
-
-		if ( obj == NULL )	return	false;
-		return	true;
-	}
-
-	//	モデル読み込み
-	bool	BaseObj::Load( int type )
-	{
-		switch ( type )
-		{
-		case 	PlayerData::PLAYER_TYPE::Y2009:
-			obj = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
-			break;
-
-		case PlayerData::PLAYER_TYPE::ECCMAN:
-			obj = new iex3DObj( "DATA/CHR/ECCMAN/ECCMAN.IEM" );
-			break;
-
-		default:
-			obj = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
-			break;
-		}
 
 		if ( obj == NULL )	return	false;
 		return	true;
@@ -81,9 +58,9 @@
 		//	移動値加算
 		pos += move;
 
-		obj->SetPos( pos );
-		obj->SetAngle( angle );
-		obj->SetScale( scale );
+		obj->SetPos(pos);
+		obj->SetAngle(angle);
+		obj->SetScale(scale);
 		obj->Animation();
 		obj->Update();
 	}
@@ -136,6 +113,111 @@
 		if ( coinNum > 0 )	coinNum--;
 	}
 
+	//	角度調整
+	void	BaseObj::AngleAdjust( float speed )
+	{
+		if ( !( input->Get( KEY_AXISX ) || input->Get( KEY_AXISY ) ) )	return;
+
+		//	左スティックの入力
+		float axisX = input->Get( KEY_AXISX ) * 0.001f;
+		float	axisY = -input->Get( KEY_AXISY ) * 0.001f;
+
+		//	カメラの前方方向を求める
+		Vector3	vEye( m_Camera->GetTarget() - m_Camera->GetPos() );
+		float	cameraAngle = atan2f( vEye.x, vEye.z );
+
+		//	入力方向を求める
+		float inputAngle = atan2f( axisX, axisY );
+
+		//	目標の角度を求める
+		float	targetAngle = cameraAngle + inputAngle;
+
+		//	親に投げる
+		AngleAdjust( Vector3( sinf( targetAngle ), 0.0f, cosf( targetAngle ) ), speed );
+	}
+
+	//	角度調整
+	void	BaseObj::AngleAdjust( const Vector3& direction, float speed )
+	{
+		//	現在の向きと目標の向きの差を求める
+		float	targetAngle( atan2f( direction.x, direction.z ) );
+		float	dAngle( targetAngle - GetAngle() );
+
+		//	差の正規化
+		if ( dAngle > 1.0f * PI )	dAngle -= 2.0f * PI;
+		if ( dAngle < -1.0f * PI )	dAngle += 2.0f * PI;
+
+		//	差をspeed分縮める
+		if ( dAngle > 0.0f ){
+			dAngle -= speed;
+			if ( dAngle < 0.0f )  dAngle = 0.0f;
+		}
+		else{
+			dAngle += speed;
+			if ( dAngle > 0.0f )	dAngle = 0.0f;
+		}
+
+		//	向きに反映
+		SetAngle( targetAngle - dAngle );
+
+		//	プレイヤーの向きがπ以上にならないように調整する
+		if ( GetAngle() >= 1.0f * PI )		angle -= 2.0f * PI;
+		if ( GetAngle() <= -1.0f * PI )	angle += 2.0f * PI;
+	}
+
+	//	共通動作
+	void	BaseObj::CommonMove( void )
+	{
+		//	左スティックの入力チェック
+		float	axisX = ( float )input->Get( KEY_AXISX );
+		float	axisY = ( float )input->Get( KEY_AXISY );
+		float	length = sqrtf( axisX * axisX + axisY * axisY );
+		if ( length > MIN_INPUT_STATE )
+		{
+			SetMotion( motionData.RUN );
+			static float adjustSpeed = 0.2f;
+			AngleAdjust( adjustSpeed );
+			CommonMove( speed );
+		}
+		else
+		{
+			SetMotion( motionData.POSTURE );
+			move = Vector3( 0.0f, move.y, 0.0f );
+		}
+	}
+
+	void	BaseObj::CommonMove( float speed )
+	{
+		move.x = sinf( angle ) * speed;
+		move.z = cosf( angle ) * speed;
+	}
+
+	//	ジャンプ
+	void	BaseObj::CommonJump( void )
+	{
+		mode = MOVE;
+		static	float	toY = pos.y + 20;
+
+		if ( pos.y <= toY )
+		{
+			move.y += 0.3f;
+			pos += move;
+		}
+
+		//	移動
+		CommonMove();
+
+		//	接地してたら
+		if ( isGround )	mode = MOVE;
+	}
+
+	//	ガード
+	void	BaseObj::CommonGuard( void )
+	{
+		SetMotion( motionData.GUARD );
+		if ( input->Get( KEY_C ) == 2 )	mode = MOVE;
+	}
+
 //-------------------------------------------------------------------------------------
 //	情報設定・取得
 //-------------------------------------------------------------------------------------
@@ -151,38 +233,6 @@
 	void	BaseObj::SetMode( int mode )
 	{
 		if ( this->mode != mode )		this->mode = mode;
-	}
-	void	BaseObj::SetMotionData( MotionData& md, MotionType::Motion kind, int num )
-	{
-		switch ( kind )
-		{
-		case 	MotionType::STAND:					//	立ち
-			md.STAND = num;
-			break;
-		case 	MotionType::POSTURE:				//	構え
-			md.POSTURE = num;
-			break;
-		case 	MotionType::RUN:						//	走り
-			md.RUN = num;
-			break;
-		case 	MotionType::JUMP:					//	ジャンプ
-			md.JUMP = num;
-			break;
-		case 	MotionType::LANDING:				//	着地
-			md.LANDING = num;
-			break;
-		case 	MotionType::ATTACK1:				//	攻撃１段階目
-			md.ATTACK1 = num;
-			break;
-		case 	MotionType::ATTACK2:				//	攻撃２段階目
-			md.ATTACK2 = num;
-			break;
-		case 	MotionType::ATTACK3:				//	攻撃３段階目
-			md.ATTACK3 = num;
-			break;
-		case 	MotionType::GUARD:					//	ガード
-			md.GUARD = num;
-		}
 	}
 
 	void	BaseObj::SetPos( Vector3 pos ){ this->pos = pos; }

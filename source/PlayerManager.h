@@ -11,15 +11,18 @@ class PlayerManager
 {
 private:
 	static const int PLAYER_NUM = 4;
+	static const int OBJ_MAX = 10;
 
 private:
 	Player*	c_Player[PLAYER_NUM];
+	iex3DObj*	org[OBJ_MAX];
 
 public:
 	//	初期化・解放
 	PlayerManager( void );
 	~PlayerManager( void );
 	void	Initialize( int input, int type, Vector3 pos );
+	void	Load( void );
 
 	//	更新・描画
 	void	Update( void );
