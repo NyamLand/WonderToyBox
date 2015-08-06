@@ -98,7 +98,13 @@
 		if ( input->Get( KEY_A ) == 3 )		mode = ATTACK;
 
 		//	ジャンプ
-		if ( input->Get( KEY_B ) == 3 )		mode = JUMP;
+		if (isGround)
+		{
+			if (input->Get(KEY_B) == 3)
+			{
+				mode = JUMP;
+			}
+		}
 
 		//	ガード
 		if ( input->Get( KEY_C ) == 1 )		mode = GUARD;
