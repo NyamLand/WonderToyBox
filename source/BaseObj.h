@@ -26,13 +26,16 @@ private:
 protected:
 	//	定数
 	const float GRAVITY = -0.01f;
+	static const int MIN_INPUT_STATE = 300;	//	スティック判定最小値
 	enum STATE
 	{
 		MOVE,
 		ATTACK,
+		POWERARTS,
+		QUICKARTS,
+		HYPERARTS,
 		DAMAGE,
 	};
-
 
 protected:
 	//	モデル
@@ -58,14 +61,12 @@ protected:
 	//	関数
 	void	SetMotion( int motion );
 	void	SetMode( int mode );
-	void	SetMotionData( MotionData& md, MotionType::Motion kind, int num );
 
 public:
 	//	初期化・解放
 	BaseObj( void );
 	~BaseObj( void );
-	bool	Initialize( int input, int type, Vector3 pos );
-	bool	Load( int type );
+	bool	Initialize( int input, iex3DObj* org, Vector3 pos );
 
 	//	更新・描画
 	void	Update( void );
@@ -73,9 +74,15 @@ public:
 	void	Render( iexShader* shader, LPSTR technique );
 
 	//	動作関数
+	void	AngleAdjust( float speed );
+	void	AngleAdjust( const Vector3& direction, float speed );
 	void	StageCollisionCheck( void );
 	void	AddCoin( void );
 	void	SubCoin( void );
+	void	CommonMove( void );		//	共通動作
+	void	CommonMove( float speed );
+	void	CommonJump( void );
+	void	CommonGuard( void );
 
 	//	情報設定
 	void	SetPos( Vector3 pos );

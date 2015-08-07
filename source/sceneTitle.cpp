@@ -10,7 +10,6 @@
 #include	"Player.h"
 #include	"PlayerManager.h"
 #include	"sceneMain.h"
-#include	"sceneSelect.h"
 
 #include	"sceneTitle.h"
 
@@ -21,13 +20,12 @@
 //*****************************************************************************
 
 namespace c_Move{
-	Vector3 TARGET[MAX_TARGET]=
+	Vector3 TARGET[4]=
 	{
 		Vector3( 0.0f, 0.0f, 0.0f ),
 		Vector3( 20.0f, 0.0f, 10.0f ),
 		Vector3( 5.0f, 0.0f, -10.0f ),
 		Vector3( -20.0f, 0.0f, 10.0f ),
-		Vector3( 0.0f, 50.0f, 200.0f ),
 	};
 
 }
@@ -37,7 +35,7 @@ namespace c_Move{
 //-----------------------------------------------------------------------------------
 
 	//	コンストラクタ
-	sceneTitle::sceneTitle( void ) : orientation( 0, 0, 0, 1 )
+	sceneTitle::sceneTitle(void) : orientation(0, 0, 0, 1), mode(TITLE)
 	{
 
 	}
@@ -49,7 +47,6 @@ namespace c_Move{
 		SafeDelete( m_Camera );
 		SafeDelete( m_Player );
 		SafeDelete( m_CollisionStage );
-		SafeDelete( screen );
 	}
 	
 	//	初期化
@@ -88,12 +85,6 @@ namespace c_Move{
 		c_pos = m_Camera->GetPos();
 		t_pos = Vector3( 0, 0, 0 );
 
-		//	シーン切り替え用ステート
-		state_step = 0;
-		scene_change = MAX_TARGET - 1;
-		//	背景・スクリーン画像初期化
-		screen = new iex2DObj("DATA/Screen.png");
-
 		return	true;
 	}
 
@@ -113,71 +104,46 @@ namespace c_Move{
 		//	プレイヤー更新
 		m_Player->Update();
 
-
-		//	移動先を変える
-		if ( KEY( KEY_C ) == 3  && t > 0.7f)
+		switch (mode)
 		{
-			if ( testpos < 3 )	testpos++;
-			else testpos = 0;
-			t = 0;
-		}
-		if ( KEY( KEY_D ) == 3	&& t > 0.7f )
-		{
-			if ( testpos > 0 )	testpos--;
-			else testpos = 3;
-			t = 0;
-
-		}		
+		case TITLE:
+			TitleUpdate();
+			break;
 		
-		if ( t <= 0.7f ){
-			Lerp( c_pos, s_pos, c_Move::TARGET[testpos], t - 0.1f );
-	
-		}
-		else{
-			s_pos = m_Camera->GetPos();
-		}
-
-		//	カメラ更新
-		m_Camera->Update( VIEW_MODE::SLERP, c_Move::TARGET[testpos] );
-		m_Camera->SetPos( c_pos );
-
-		//	スペースを押してシーンを切り替える処理
-		SceneState();
-
-		//	
-		if (t < 1.0f){
-			t += 0.01f;
-		}
-	}
-
-	//	シーンステート
-	void	sceneTitle::SceneState( void )
-	{
-		switch (state_step)
-		{
-		case 0:
-			if (KEY(KEY_SPACE) == 3)
-			{
-				state_step++;
-				//MainFrame->ChangeScene(new sceneSelect());
-				//return;
-			}
-			break;
-		case 1:
-			testpos = scene_change;
-			t = 0;
-			state_step++;
+		case MENU:
+			MenuUpdate();
 			break;
 
-		case 2:
-			if (t >= 1.0f)
-			{
-				MainFrame->ChangeScene(new sceneSelect());
-				return;
-			}
+		case SELECT_PLAYERNUM:
+			SelectPlayerNumUpdate();
 			break;
 
+		case SELECT_CHARACTER:
+			SelectCharacterUpdate();
+			break;
+
+		case SELECT_STAGE:
+			SelectStageUpdate();
+			break;
+
+		case SELECT_CHECK:
+			SelectCheckUpdate();
+			break;
+
+		case OPTION:
+			OptionUpdate();
+			break;
+
+		case CREDIT:
+			CreditUpdate();
+			break;
+
+		default:
+			mode = 0;
+			break;
 		}
+
+		
 	}
 
 	//	描画
@@ -188,22 +154,231 @@ namespace c_Move{
 		m_Camera->Clear();
 
 		//	オブジェクト描画
-		m_Stage->Render( shader3D, "full" );
-		m_Player->Render( shader3D, "full" );
+		m_Stage->Render(shader3D, "full");
+		m_Player->Render(shader3D, "full");
 
-		//	デバッグ用
-		DrawString( "[sceneTitle]", 50, 50 );
-		DrawString( "すぺーす押してね", 300, 400, 0xFFFFFF00 );
-		DrawString( "はーいぷしゅっ！", 1100, 700, 0xFFFFFF00 );
+		switch (mode)
+		{
+		case TITLE:
+			TitleRender();
+			break;
 
-		if (state_step >= 2){
-			shader2D->SetValue("alpha", t);
-			screen->Render(0, 0, 1280, 720, 0, 0, 512, 512, shader2D, "copy");
+		case MENU:
+			MenuRender();
+			break;
+
+		case SELECT_PLAYERNUM:
+			SelectPlayerNumRender();
+			break;
+
+		case SELECT_CHARACTER:
+			SelectCharacterRender();
+			break;
+
+		case SELECT_STAGE:
+			SelectStageRender();
+			break;
+
+		case SELECT_CHECK:
+			SelectCheckRender();
+			break;
+
+		case OPTION:
+			OptionRender();
+			break;
+
+		case CREDIT:
+			CreditRender();
+			break;
+
+		default:
+			mode = 0;
+			break;
+		}
+
+		////	デバッグ用
+		//DrawString( "[sceneTitle]", 50, 50 );
+		//DrawString( "すぺーす押してね", 300, 400, 0xFFFFFF00 );
+		//DrawString( "はーいぷしゅっ！", 1100, 700, 0xFFFFFF00 );
+	}
+
+//******************************************************************
+//　各画面のメソッド
+//******************************************************************
+
+	//--------------------------------------------------------
+	//	タイトル
+	//--------------------------------------------------------
+	void	sceneTitle::TitleUpdate()
+	{
+		//　SPACEでスタート
+		if (KEY(KEY_SPACE) == 3)
+		{
+			mode = MENU;
 		}
 	}
 
-//-----------------------------------------------------------------------------------
-//	動作関数
-//-----------------------------------------------------------------------------------
+	void	sceneTitle::TitleRender()
+	{
+		DrawString("タイトルだよ", 50, 50);
+		DrawString("[SPACE]：メニューへ", 300, 400, 0xFFFFFF00);
+	}
 
-	//	
+	//--------------------------------------------------------
+	//	メニュー
+	//--------------------------------------------------------
+	void	sceneTitle::MenuUpdate()
+	{
+		//	移動先を変える
+		if (KEY(KEY_C) == 3 && t > 0.7f)
+		{
+			if (testpos < 3)	testpos++;
+			else testpos = 0;
+			t = 0;
+		}
+		if (KEY(KEY_D) == 3 && t > 0.7f)
+		{
+			if (testpos > 0)	testpos--;
+			else testpos = 3;
+			t = 0;
+
+		}
+
+		if (t <= 0.7f){
+			CubicFunctionInterpolation( c_pos, s_pos, c_Move::TARGET[testpos], t - 0.1f );
+
+		}
+		else{
+			s_pos = m_Camera->GetPos();
+		}
+
+		switch (testpos)
+		{
+		case 0:
+			if (KEY(KEY_SPACE) == 3) mode = SELECT_PLAYERNUM;
+			break;
+		case 1:
+			if (KEY(KEY_SPACE) == 3) mode = OPTION;
+			break;
+		case 2:
+			if (KEY(KEY_SPACE) == 3) mode = CREDIT;
+			break;
+		}
+
+		//	カメラ更新
+		m_Camera->Update(VIEW_MODE::SLERP, c_Move::TARGET[testpos]);
+		m_Camera->SetPos(c_pos);
+
+		t += 0.01f;
+	}
+	
+	void	sceneTitle::MenuRender()
+	{
+		DrawString("メニュー画面だよ", 50, 50);
+		DrawString("C・Vでどれか選んでね", 300, 400, 0xFFFFFF00);
+
+		switch (testpos)
+		{
+		case 0:
+			DrawString("みんなであそぶモード！", 50, 100);
+			DrawString("[SPACE]：キャラ選択へ", 300, 200, 0xFFFFFF00);
+			break;
+		case 1:
+			DrawString("オプション", 50, 100);
+			DrawString("[SPACE]：オプションへ", 300, 200, 0xFFFFFF00);
+			break;
+		case 2:
+			DrawString("つくった戦士たち！", 50, 100);
+			DrawString("[SPACE]：クレジットへ", 300, 200, 0xFFFFFF00);
+			break;
+		}
+
+	}
+
+	//--------------------------------------------------------
+	//	人数選択
+	//--------------------------------------------------------
+	void	sceneTitle::SelectPlayerNumUpdate(void)
+	{
+		if (KEY(KEY_SPACE) == 3) mode = SELECT_CHARACTER;
+	}
+
+	void	sceneTitle::SelectPlayerNumRender(void)
+	{
+		DrawString("人数選択だよ", 50, 50);
+		DrawString("[SPACE]：キャラ選択へ", 300, 400, 0xFFFFFF00);
+	}
+
+	//--------------------------------------------------------
+	//	キャラ選択
+	//--------------------------------------------------------
+	void	sceneTitle::SelectCharacterUpdate(void)
+	{
+		if (KEY(KEY_SPACE) == 3) mode = SELECT_STAGE;
+	}
+
+	void	sceneTitle::SelectCharacterRender(void)
+	{
+		DrawString("キャラ選択だよ", 50, 50);
+		DrawString("[SPACE]：ステージ選択へ", 300, 400, 0xFFFFFF00);
+	}
+
+	//--------------------------------------------------------
+	//	ステージ選択
+	//--------------------------------------------------------
+	void	sceneTitle::SelectStageUpdate(void)
+	{
+		if (KEY(KEY_SPACE) == 3) mode = SELECT_CHECK;
+	}
+
+	void	sceneTitle::SelectStageRender(void)
+	{
+		DrawString("ステージ選択だよ", 50, 50);
+		DrawString("[SPACE]：最終確認へ", 300, 400, 0xFFFFFF00);
+	}
+
+	//--------------------------------------------------------
+	//	最終確認
+	//--------------------------------------------------------
+	void	sceneTitle::SelectCheckUpdate(void)
+	{
+		if (KEY(KEY_SPACE) == 3)
+		{
+			MainFrame->ChangeScene(new sceneMain());
+			return;
+		}
+	}
+
+	void	sceneTitle::SelectCheckRender(void)
+	{
+		DrawString("最終確認だよ", 50, 50);
+		DrawString("[SPACE]：sceneMainへ", 300, 400, 0xFFFFFF00);
+	}
+
+	//--------------------------------------------------------
+	//	オプション
+	//--------------------------------------------------------
+	void	sceneTitle::OptionUpdate()
+	{
+		if (KEY(KEY_SPACE) == 3) mode = MENU;
+	}
+	
+	void	sceneTitle::OptionRender()
+	{
+		DrawString("オプションだよ。設定いじってね", 50, 50);
+		DrawString("[SPACE]：メニューへ", 300, 400, 0xFFFFFF00);
+	}
+
+	//--------------------------------------------------------
+	//	クレジット
+	//--------------------------------------------------------
+	void	sceneTitle::CreditUpdate()
+	{
+		if (KEY(KEY_SPACE) == 3) mode = MENU;
+	}
+
+	void	sceneTitle::CreditRender()
+	{
+		DrawString("つくった戦士たちの紹介だよ", 50, 50);
+		DrawString("[SPACE]：メニューへ", 300, 400, 0xFFFFFF00);
+	}

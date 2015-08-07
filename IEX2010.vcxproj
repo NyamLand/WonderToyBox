@@ -117,9 +117,9 @@
     <ClCompile Include="source\Particle.cpp" />
     <ClCompile Include="source\Player.cpp" />
     <ClCompile Include="source\PlayerManager.cpp" />
+    <ClCompile Include="source\Princess.cpp" />
     <ClCompile Include="source\sceneMain.cpp" />
     <ClCompile Include="source\sceneResult.cpp" />
-    <ClCompile Include="source\sceneSelect.cpp" />
     <ClCompile Include="source\sceneTitle.cpp" />
     <ClCompile Include="source\system\Framework.cpp" />
     <ClCompile Include="source\system\System.cpp" />
@@ -155,8 +155,8 @@
     <ClInclude Include="source\Particle.h" />
     <ClInclude Include="source\Player.h" />
     <ClInclude Include="source\PlayerManager.h" />
+    <ClInclude Include="source\Princess.h" />
     <ClInclude Include="source\sceneResult.h" />
-    <ClInclude Include="source\sceneSelect.h" />
     <ClInclude Include="source\sceneTitle.h" />
     <ClInclude Include="source\system\Framework.h" />
     <ClInclude Include="source\system\Scene.h" />
