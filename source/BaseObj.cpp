@@ -18,9 +18,10 @@
 	
 	//	コンストラクタ
 	BaseObj::BaseObj( void ) : obj( NULL ),
-		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ),
+		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ), power( 0 ), diffence( 0 ),
 		angle( 0.0f ), scale( 0.0f ), speed( 0.0f ), mode( 0 ),
-		attackParam( 0 ), attackPos( 0.0f, 0.0f, 0.0f ), isGround( true), coinNum( 0 )
+		attackParam( 0 ), attackPos( 0.0f, 0.0f, 0.0f ), attackPos_top( 0.0f, 0.0f, 0.0f ), attackPos_bottom( 0.0f, 0.0f, 0.0f ), attack_r( 0.0f ), attack_t( 0.0f ), knockBackType( 0 ),
+		isGround( true), coinNum( 0 )
 	{
 		
 	}
@@ -243,8 +244,15 @@
 
 	//	取得
 	Vector3		BaseObj::GetPos( void ){ return	pos; }
-	Vector3		BaseObj::GetAttackPos( void ){ return attackPos; }
 	Matrix		BaseObj::GetMatrix( void ){ return obj->TransMatrix; }
 	float			BaseObj::GetAngle( void ){ return angle; }
-	int				BaseObj::GetAttackParam( void ){ return attackParam; }
 	int				BaseObj::GetCoinNum( void ){ return	coinNum; }
+
+	//	当たり判定用パラメータ取得
+	int				BaseObj::GetAttackParam( void ){ return attackParam; }
+	int				BaseObj::GetKnockBackType( void ){ return knockBackType; }
+	Vector3		BaseObj::GetAttackPos( void ){ return attackPos; }
+	Vector3		BaseObj::GetAttackPos_Top( void ){ return attackPos_top; }
+	Vector3		BaseObj::GetAttackPos_Bottom( void ){ return attackPos_bottom; }
+	float			BaseObj::GetAttack_T( void ){ return attack_t; }
+	float			BaseObj::GetAttack_R( void ){ return attack_r; }

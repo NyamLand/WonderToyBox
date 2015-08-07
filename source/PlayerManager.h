@@ -10,8 +10,11 @@
 class PlayerManager
 {
 private:
+	//	’è”
 	static const int PLAYER_NUM = 4;
 	static const int OBJ_MAX = 10;
+
+	//	•Ï”
 
 private:
 	Player*	c_Player[PLAYER_NUM];
@@ -30,9 +33,12 @@ public:
 	void	Render( iexShader* shader, LPSTR technique );
 
 	//	“®ìŠÖ”
-	void	HitCheck( void );
 	void	AddCoin( int player );
 	void	SubCoin( int player );
+
+	//	“–‚½‚è”»’è
+	void	HitCheck( void );
+	void	HitCheckSphereVSCapsule( Player* p1, Player* p2 );
 
 	//	î•ñæ“¾
 	Vector3	GetPos( int player );

@@ -46,16 +46,25 @@ protected:
 
 	//	パラメータ
 	MotionData	motionData;
-	Vector3		pos;
-	Vector3		attackPos;
-	Vector3		move;
-	float			angle;
-	float			scale;
-	float			speed;
-	int				mode;
-	int				attackParam;
-	bool			isGround;
-	int				coinNum;
+	Vector3			pos;
+	Vector3			move;
+	float				angle;
+	float				scale;
+	float				speed;
+	bool				isGround;
+	int					mode;
+	int					coinNum;
+	int					power;
+	int					diffence;
+
+	//	当たり判定用
+	int				attackParam;				//	攻撃種類
+	int				knockBackType;			//	吹っ飛ばし種類
+	Vector3		attackPos_top;			//	当たり判定座標上
+	Vector3		attackPos_bottom;		//	当たり判定座標下
+	Vector3		attackPos;					//	当たり判定座標中心
+	float			attack_r;					//	当たり判定半径
+	float			attack_t;					//	当たり判定用割合パラメータ
 
 protected:
 	//	関数
@@ -92,11 +101,18 @@ public:
 
 	//	情報取得
 	Vector3	GetPos( void );
-	Vector3	GetAttackPos( void );
 	Matrix	GetMatrix( void );
 	float		GetAngle( void );
-	int			GetAttackParam( void );
 	int			GetCoinNum( void );
+
+	//	当たり判定用パラメータ取得
+	int			GetAttackParam( void );
+	int			GetKnockBackType(void);
+	Vector3	GetAttackPos( void );
+	Vector3	GetAttackPos_Top( void );
+	Vector3	GetAttackPos_Bottom( void );
+	float		GetAttack_R( void );
+	float		GetAttack_T( void );
 };
 
 namespace PlayerData
@@ -114,6 +130,24 @@ namespace PlayerData
 		Y2009,			//	Y姉さん
 		ECCMAN,		//	ECCマン
 	};
+
+	enum KNOCKBACK_TYPE
+	{
+		KNOCKBACK_STRENGTH = 1,		//	強
+		KNOCKBACK_MIDDLE,				//	中
+		KNOCKBACK_WEAK,					//	弱
+	};
+
+	enum COLLISION_TYPE
+	{
+		SPHEREVSCAPSULE = 1,	//	球VSカプセル
+		SPHEREVSSPHERE,			//	球VS球
+		CAPSULEVSCAPSULE,			//	カプセルVSカプセル
+		SPHEREVSCYRINDER,			//	球VS円柱（円柱の回転なし）
+		SPHEREVSPOINT,				//	球VS点
+	};
+
+
 }
 
 //****************************************************************************************

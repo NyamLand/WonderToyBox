@@ -22,8 +22,9 @@
 		//	ÉpÉâÉÅÅ[É^èâä˙âª
 		attack_r = 0.0f;
 		attack_t = 0.0f;
-		speed = 0.2f;
+		speed = 0.25f;
 		scale = 0.02f;
+		diffence = -1;
 		SetMotionData();
 		isGround = true;
 	}
@@ -190,17 +191,26 @@
 		{
 		case QUICKARTS:
 			isEnd = QuickArts();
-			if ( !isEnd )	attackParam = 1;
+			if ( !isEnd ){
+				attackParam = PlayerData::SPHEREVSCAPSULE;
+				knockBackType = PlayerData::KNOCKBACK_WEAK;
+			}
 			break;
 
 		case POWERARTS:
 			isEnd = PowerArts();
-			if ( !isEnd )	attackParam = 2;
+			if ( !isEnd ){
+				attackParam = PlayerData::SPHEREVSCAPSULE;
+				knockBackType = PlayerData::KNOCKBACK_MIDDLE;
+			}
 			break;
 
 		case HYPERARTS:
 			isEnd = HyperArts();
-			if ( !isEnd )	attackParam = 3;
+			if ( !isEnd ){
+				attackParam = PlayerData::SPHEREVSCYRINDER;
+				knockBackType = PlayerData::KNOCKBACK_STRENGTH;
+			}
 			break;
 		}
 
@@ -210,6 +220,8 @@
 			mode = MOVE;
 			attack_t = 0.0f;
 			attack_r = 0.0f;
+			attackParam = 0;
+			knockBackType = 0;
 		}
 	}
 

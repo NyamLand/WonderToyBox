@@ -300,6 +300,7 @@ sceneMain* m_sceneMain;
 			D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0xFFFFFFFF, 1.0f, 0 );
 
 		//	•`‰æ
+		//m_Stage->Render( shader3D, "shadowBuf" );
 		m_Player->Render( shader3D, "ShadowBuf" );
 		m_CoinManager->Render( shader3D, "ShadowBuf" );
 

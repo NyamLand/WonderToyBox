@@ -1,5 +1,7 @@
 
 #include	"iextreme.h"
+#include	"system/System.h"
+#include	<random>
 #include	"GlobalFunction.h"
 #include	"Collision.h"
 #include	"Particle.h"
@@ -76,6 +78,8 @@
 
 		//	初期設定
 		c_Player[input]->Initialize( input, org[type]->Clone(), pos );
+
+
 	}
 
 	//	モデル読み込み
@@ -84,14 +88,13 @@
 		org[PlayerData::Y2009] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
 		org[PlayerData::ECCMAN] = new iex3DObj( "DATA/CHR/ECCMAN/ECCMAN.IEM" );
 		org[PlayerData::PRINCESS] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
-		org[PlayerData::KNIGHT] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
-		org[PlayerData::KING] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
-		org[PlayerData::SQUIRREL] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
-		org[PlayerData::TIGER] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
-		org[PlayerData::ANIMA] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
-		org[PlayerData::CROWS] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
-		org[PlayerData::BEAR] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
-
+		org[PlayerData::KNIGHT] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PlayerData::KING] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PlayerData::SQUIRREL] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PlayerData::TIGER] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PlayerData::ANIMA] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PlayerData::CROWS] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PlayerData::BEAR] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
 	}
 
 //------------------------------------------------------------------------------
@@ -148,33 +151,23 @@
 		{
 			for ( int n = 0; n < PLAYER_NUM; n++ )
 			{
-				if ( c_Player[i]->GetAttackParam() != 0 )
+				//	自分だったら次へ
+				if ( i == n )	continue;
+				
+				switch ( c_Player[i]->GetAttackParam() )
 				{
-					//	自分だったら次へ
-					if ( i == n )	continue;
+				case	PlayerData::SPHEREVSCAPSULE:
+					HitCheckSphereVSCapsule( c_Player[i], c_Player[n] );
+					break;
 
-					//	当たり判定(今はとりあえず球で取る)
-					static float	dist = 1.0f;
-					Vector3	p_pos1 = c_Player[i]->GetPos();
-					Vector3	p_pos2 = c_Player[n]->GetPos();
-					p_pos1.y += 3.0f;
-					p_pos2.y += 3.0f;
-					if ( Collision::CapsuleVSCapsule( c_Player[i]->GetPos(), p_pos1, 1.0f, c_Player[n]->GetPos(), p_pos2, 1.0f ) )
-					{
-						//	とりあえずエフェクトとコイン出す
-						Vector3	p_pos = c_Player[n]->GetPos();
-						float	effectScale = 1.0f;
-						Particle::Spark( p_pos, effectScale );
-						Vector3	vec = p_pos2 - p_pos1;
-						vec.y = 0.5f;
-						vec.Normalize();
-						
-						if ( c_Player[n]->GetCoinNum() > 0 )
-						{
-							m_CoinManager->Set( p_pos2, vec, 0.5f );
-							c_Player[n]->SubCoin();
-						}
-					}
+				case	PlayerData::SPHEREVSSPHERE:
+					break;
+
+				case	PlayerData::CAPSULEVSCAPSULE:
+					break;
+
+				case	PlayerData::SPHEREVSCYRINDER:
+					break;
 				}
 			}
 		}
@@ -190,6 +183,39 @@
 	void	PlayerManager::SubCoin( int player )
 	{
 		c_Player[player]->SubCoin();
+	}
+
+//------------------------------------------------------------------------------
+//	当たり判定関数
+//------------------------------------------------------------------------------
+
+	//	球VSカプセル
+	void	PlayerManager::HitCheckSphereVSCapsule( Player* sphere, Player* cupsule )
+	{
+		//	当たり判定()
+		static float	dist = 1.0f;
+		float	p1_attack_r = sphere->GetAttack_R();
+		Vector3	p1_attackPos = sphere->GetAttackPos();
+		Vector3	p2_pos_bottom = cupsule->GetPos();
+		Vector3	p2_pos_top = Vector3( p2_pos_bottom.x, p2_pos_bottom.y + 3.0f, p2_pos_bottom.z );
+
+		if ( Collision::CapsuleVSSphere( p2_pos_bottom, p2_pos_top, dist, p1_attackPos, p1_attack_r ) )
+		{
+			//	とりあえずエフェクトとコイン出す
+			//	変数初期化
+			std::uniform_real_distribution<float>	vecrand( -1.0f, 1.0f );
+			std::uniform_real_distribution<float>	powrand( 0.1f, 0.3f );
+			float	effectScale = 1.0f;
+			Particle::Spark( p2_pos_bottom, effectScale );
+			Vector3	vec = Vector3( vecrand( ran ), 1.0f, vecrand( ran ) );
+			vec.Normalize();
+
+			if ( cupsule->GetCoinNum() > 0 )
+			{
+				m_CoinManager->Set( p2_pos_top, vec, powrand( ran ) );
+				cupsule->SubCoin();
+			}
+		}
 	}
 
 //------------------------------------------------------------------------------

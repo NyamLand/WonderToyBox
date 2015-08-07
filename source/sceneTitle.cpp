@@ -252,13 +252,13 @@ namespace c_Move{
 			s_pos = m_Camera->GetPos();
 		}
 
-		switch (testpos)
+		switch ( testpos )
 		{
 		case 0:
-			if (KEY(KEY_SPACE) == 3) mode = SELECT_PLAYERNUM;
+			if ( KEY( KEY_SPACE ) == 3 ) mode = SELECT_PLAYERNUM;
 			break;
 		case 1:
-			if (KEY(KEY_SPACE) == 3) mode = OPTION;
+			if ( KEY( KEY_SPACE ) == 3 ) mode = OPTION;
 			break;
 		case 2:
 			if (KEY(KEY_SPACE) == 3) mode = CREDIT;

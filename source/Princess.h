@@ -23,9 +23,12 @@ private:
 		GUARD,
 	};
 
-private:
-	float	attack_r;
-	float	attack_t;
+	enum OFFENSIVE_POWER
+	{
+		QUICK = 1,
+		POWER = 5,
+		HYPER = 15,
+	};
 
 public:
 	//	‰Šú‰»E‰ğ•ú
