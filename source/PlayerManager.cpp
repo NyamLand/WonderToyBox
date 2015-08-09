@@ -153,6 +153,7 @@
 			{
 				//	©•ª‚¾‚Á‚½‚çŸ‚Ö
 				if ( i == n )	continue;
+				if ( c_Player[n]->GetUnrivaled() )	continue;
 				
 				switch ( c_Player[i]->GetAttackParam() )
 				{
@@ -210,6 +211,12 @@
 			Vector3	vec = Vector3( vecrand( ran ), 1.0f, vecrand( ran ) );
 			vec.Normalize();
 
+			Vector3	knockBackVec = p2_pos_bottom - p1_attackPos;
+			knockBackVec.y = p2_pos_bottom.y;
+			knockBackVec.Normalize();
+			cupsule->SetKnockBackVec( knockBackVec );
+			cupsule->SetMode( PlayerData::DAMAGE_STRENGTH );
+
 			if ( cupsule->GetCoinNum() > 0 )
 			{
 				m_CoinManager->Set( p2_pos_top, vec, powrand( ran ) );
@@ -226,6 +233,7 @@
 	Vector3	PlayerManager::GetPos( int player ){	return	c_Player[player]->GetPos();	}
 	Matrix	PlayerManager::GetMatrix( int player ){ return	c_Player[player]->GetMatrix(); }
 	float		PlayerManager::GetAngle( int player ){ return		c_Player[player]->GetAngle(); }
+	bool		PlayerManager::GetUnrivaled( int player ){ return	c_Player[player]->GetUnrivaled(); }
 	int			PlayerManager::GetCoinNum( int player ){ return	c_Player[player]->GetCoinNum(); }
 
 	//	î•ñİ’è

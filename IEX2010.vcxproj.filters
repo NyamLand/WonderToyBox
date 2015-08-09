@@ -79,6 +79,9 @@
     <Filter Include="ソース ファイル\Player\Princess">
       <UniqueIdentifier>{7d3f933e-27f2-451e-b24c-c7fcbdb2403e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\GameManager">
+      <UniqueIdentifier>{ef95c7b5-3a14-4bc5-81a4-bfa87c427341}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -189,6 +192,9 @@
     <ClCompile Include="source\Princess.cpp">
       <Filter>ソース ファイル\Player\Princess</Filter>
     </ClCompile>
+    <ClCompile Include="source\GameManager.cpp">
+      <Filter>ソース ファイル\GameManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -253,6 +259,9 @@
     </ClInclude>
     <ClInclude Include="source\Princess.h">
       <Filter>ソース ファイル\Player\Princess</Filter>
+    </ClInclude>
+    <ClInclude Include="source\GameManager.h">
+      <Filter>ソース ファイル\GameManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

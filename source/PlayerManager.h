@@ -44,6 +44,7 @@ public:
 	Vector3	GetPos( int player );
 	float		GetAngle( int player );
 	Matrix	GetMatrix( int player );
+	bool		GetUnrivaled( int player );
 	int			GetAttackParam( int player );
 	int			GetCoinNum( int player );
 

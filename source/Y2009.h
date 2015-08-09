@@ -11,18 +11,7 @@
 class Y2009	:	public	Player
 {
 private:
-	//	’è”
-	enum MotionNum
-	{
-		STAND = 1,			//	—§‚¿
-		POSTURE,				//	\‚¦
-		RUN = 4,				//	‘–‚è
-		ATTACK1,				//	UŒ‚‚P’iŠK–Ú
-		ATTACK2,				//	UŒ‚‚Q’iŠK–Ú
-		ATTACK3,				//	UŒ‚‚R’iŠK–Ú
-		JUMP,
-		GUARD,
-	};
+
 
 public:
 	//	‰Šú‰»E‰ğ•ú

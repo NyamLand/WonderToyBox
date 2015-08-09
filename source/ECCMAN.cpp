@@ -12,6 +12,25 @@
 //*******************************************************************************
 
 //--------------------------------------------------------------------------
+//	グローバル
+//--------------------------------------------------------------------------
+
+namespace ECCMANData
+{
+	enum MotionNum
+	{
+		POSTURE,				//	構え
+		RUN,						//	走り
+		ATTACK1,				//	攻撃１段階目
+		JUMP,
+		LANDING,				//	着地
+		ATTACK2,				//	攻撃２段階目
+		ATTACK3,				//	攻撃３段階目
+		GUARD,					//	ガード
+	};
+}
+
+//--------------------------------------------------------------------------
 //	初期化・解放
 //--------------------------------------------------------------------------
 
@@ -34,15 +53,15 @@
 	//	モーションデータ登録
 	void	ECCMAN::SetMotionData( void )
 	{
-		motionData.POSTURE = MotionNum::POSTURE;
-		motionData.RUN = MotionNum::RUN;
-		motionData.ATTACK1 = MotionNum::ATTACK1;
-		motionData.JUMP = MotionNum::JUMP;
-		motionData.LANDING = MotionNum::LANDING;
-		motionData.ATTACK2 = MotionNum::ATTACK2;
-		motionData.ATTACK3 = MotionNum::ATTACK3;
-		motionData.GUARD = MotionNum::GUARD;
-		motionData.POSTURE = MotionNum::POSTURE;
+		motionData.POSTURE = ECCMANData::POSTURE;
+		motionData.RUN = ECCMANData::RUN;
+		motionData.ATTACK1 = ECCMANData::ATTACK1;
+		motionData.JUMP = ECCMANData::JUMP;
+		motionData.LANDING = ECCMANData::LANDING;
+		motionData.ATTACK2 = ECCMANData::ATTACK2;
+		motionData.ATTACK3 = ECCMANData::ATTACK3;
+		motionData.GUARD = ECCMANData::GUARD;
+		motionData.POSTURE = ECCMANData::POSTURE;
 	}
 
 //--------------------------------------------------------------------------
@@ -71,19 +90,19 @@
 	{
 		switch ( mode )
 		{
-		case MOVE:
+		case PlayerData::MOVE:
 			Move();
 			break;
 
-		case ATTACK:
+		case PlayerData::ATTACK:
 			Attack();
 			break;
 
-		case JUMP:
+		case PlayerData::JUMP:
 			Jump();
 			break;
 
-		case GUARD:
+		case PlayerData::GUARD:
 			break;
 		}
 	}
@@ -93,8 +112,8 @@
 	{
 		CommonMove();
 
-		if ( input->Get( KEY_A ) == 3 )	mode = ATTACK;
-		if ( input->Get( KEY_B ) == 3 )	mode = JUMP;
+		if ( input->Get( KEY_A ) == 3 )	mode = PlayerData::ATTACK;
+		if ( input->Get( KEY_B ) == 3 )	mode = PlayerData::JUMP;
 	}
 	
 	//	モードAttack
@@ -108,7 +127,7 @@
 		else attackParam = 0;
 
 		//	モーション終了時に
-		if ( frame >= 410 )		mode = MOVE;
+		if ( frame >= 410 )		mode = PlayerData::MOVE;
 	}
 
 	//	モードJump

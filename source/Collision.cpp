@@ -43,14 +43,14 @@ iexMesh*	Collision::obj = NULL;
 //--------------------------------------------------------------------------------------------
 
 	//	ステージ高さ取得
-	float	Collision::GetHeight(const Vector3	pos)
+	float	Collision::GetHeight( const Vector3	pos )
 	{
-		Vector3	p_pos = Vector3(pos.x, pos.y + 3.0f, pos.z);
+		Vector3	p_pos = Vector3( pos.x, pos.y + 3.0f, pos.z );
 		Vector3	vec = Vector3(0.0f, -1.0f, 0.0f);
 		Vector3	out;
 		float	dist = 50.0f;
 
-		if (obj->RayPick(&out, &p_pos, &vec, &dist) == -1)
+		if ( obj->RayPick( &out, &p_pos, &vec, &dist ) == -1 )
 			return	pos.y;
 		else
 			return	out.y;
@@ -58,16 +58,38 @@ iexMesh*	Collision::obj = NULL;
 	}
 
 	//　ステージ高さ取得（判定距離指定）
-	float	Collision::GetHeight(const Vector3	pos, float dist)
+	float	Collision::GetHeight( const Vector3	pos, float dist )
 	{
-		Vector3	p_pos = Vector3(pos.x, pos.y + 3.0f, pos.z);
-		Vector3	vec = Vector3(0.0f, -1.0f, 0.0f);
+		Vector3	p_pos = Vector3( pos.x, pos.y + 3.0f, pos.z );
+		Vector3	vec = Vector3( 0.0f, -1.0f, 0.0f );
 		Vector3	out;
 
-		if (obj->RayPick(&out, &p_pos, &vec, &dist) == -1)
+		//	オブジェクトの逆行列を算出
+		obj->Update();
+		Matrix	mat = obj->TransMatrix;
+		Matrix	invMat;		//	逆行列
+		D3DXMatrixInverse( &invMat, null, &mat );
+
+		//	逆行列で例をローカル化
+		Vector3	invVec;
+		invVec.x = invMat._11 * vec.x + invMat._21 * vec.y + invMat._31 * vec.z;
+		invVec.y = invMat._12 * vec.x + invMat._22 * vec.y + invMat._32 * vec.z;
+		invVec.z = invMat._13 * vec.x + invMat._23 * vec.y + invMat._33 * vec.z;
+
+		Vector3	invPos;
+		invPos.x = invMat._11 * p_pos.x + invMat._21 * p_pos.y + invMat._31 * p_pos.z + invMat._41;
+		invPos.y = invMat._12 * p_pos.x + invMat._22 * p_pos.y + invMat._32 * p_pos.z + invMat._42;
+		invPos.z = invMat._13 * p_pos.x + invMat._23 * p_pos.y + invMat._33 * p_pos.z + invMat._43;
+		if ( obj->RayPick( &out, &p_pos, &vec, &dist ) == -1 )
 			return	pos.y;
 		else
-			return	out.y;
+		{
+			Vector3	resultPos;
+			resultPos.x = mat._11 * out.x + mat._21 * out.y + mat._31 * out.z + mat._41;
+			resultPos.x = mat._12 * out.x + mat._22 * out.y + mat._32 * out.z + mat._42;
+			resultPos.x = mat._13 * out.x + mat._23 * out.y + mat._33 * out.z + mat._43;
+			return	resultPos.y;
+		}
 	}
 
 	//	壁との当たり判定

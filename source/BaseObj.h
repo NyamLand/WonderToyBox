@@ -7,26 +7,39 @@
 //	BaseObjクラス
 //
 //****************************************************************************************
-class BaseObj
+
+namespace PlayerData
 {
-private:
-	enum MotionNum
+	enum PLAYER_TYPE
 	{
-		STAND,					//	立ち
-		POSTURE,				//	構え
-		RUN,						//	走り
-		JUMP,					//	ジャンプ
-		LANDING,				//	着地
-		ATTACK1,				//	攻撃１段階目
-		ATTACK2,				//	攻撃２段階目
-		ATTACK3,				//	攻撃３段階目
-		GUARD,					//	ガード
+		KNIGHT,		//	騎士
+		PRINCESS,	//	姫
+		KING,			//	大王
+		BEAR,			//	クマ
+		SQUIRREL,	//	リス
+		TIGER,			//	トラ
+		ANIMA,			//	アニマさん
+		CROWS,		//	クロウズさん（綴り合ってる？）
+		Y2009,			//	Y姉さん
+		ECCMAN,		//	ECCマン
 	};
 
-protected:
-	//	定数
-	const float GRAVITY = -0.01f;
-	static const int MIN_INPUT_STATE = 300;	//	スティック判定最小値
+	enum KNOCKBACK_TYPE
+	{
+		KNOCKBACK_STRENGTH = 1,		//	強
+		KNOCKBACK_MIDDLE,				//	中
+		KNOCKBACK_WEAK,					//	弱
+	};
+
+	enum COLLISION_TYPE
+	{
+		SPHEREVSCAPSULE = 1,	//	球VSカプセル
+		SPHEREVSSPHERE,			//	球VS球
+		CAPSULEVSCAPSULE,			//	カプセルVSカプセル
+		SPHEREVSCYRINDER,			//	球VS円柱（円柱の回転なし）
+		SPHEREVSPOINT,				//	球VS点
+	};
+
 	enum STATE
 	{
 		MOVE,
@@ -34,8 +47,24 @@ protected:
 		POWERARTS,
 		QUICKARTS,
 		HYPERARTS,
+		JUMP,
+		GUARD,
 		DAMAGE,
+		DAMAGE_STRENGTH,
+		DAMAGE_MIDDLE,
+		DAMAGE_WEAK,
 	};
+}
+
+class BaseObj
+{
+private:
+
+protected:
+	//	定数
+	const float GRAVITY = -0.01f;
+	static const int MIN_INPUT_STATE = 300;	//	スティック判定最小値
+
 
 protected:
 	//	モデル
@@ -48,9 +77,12 @@ protected:
 	MotionData	motionData;
 	Vector3			pos;
 	Vector3			move;
+	Vector3			knockBackVec;
 	float				angle;
 	float				scale;
 	float				speed;
+	float				force;
+	bool				unrivaled;	//	無敵
 	bool				isGround;
 	int					mode;
 	int					coinNum;
@@ -88,22 +120,31 @@ public:
 	void	StageCollisionCheck( void );
 	void	AddCoin( void );
 	void	SubCoin( void );
-	void	CommonMove( void );		//	共通動作
+	void	CommonMove( void );
 	void	CommonMove( float speed );
 	void	CommonJump( void );
 	void	CommonGuard( void );
+	void	CommonKnockBackStrength( void );
+	void	CommonKnockBackMiddle( void );
+	void	CommonKnockBackWeak( void );
+	void	CommonKnockBack( void );
+	void	AddForce( float force );
 
 	//	情報設定
+	void	SetMode( PlayerData::STATE state );
 	void	SetPos( Vector3 pos );
 	void	SetPos( float x, float y, float z );
 	void	SetAngle( float angle );
 	void	SetScale( float scale );
+	void	SetKnockBackVec( Vector3 knockBackVec );
 
 	//	情報取得
 	Vector3	GetPos( void );
 	Matrix	GetMatrix( void );
 	float		GetAngle( void );
 	int			GetCoinNum( void );
+	bool		GetUnrivaled( void );
+	int			GetMode( void );
 
 	//	当たり判定用パラメータ取得
 	int			GetAttackParam( void );
@@ -115,40 +156,7 @@ public:
 	float		GetAttack_T( void );
 };
 
-namespace PlayerData
-{
-	enum PLAYER_TYPE
-	{
-		KNIGHT,		//	騎士
-		PRINCESS,	//	姫
-		KING,			//	大王
-		BEAR,			//	クマ
-		SQUIRREL,	//	リス
-		TIGER,			//	トラ
-		ANIMA,			//	アニマさん
-		CROWS,		//	クロウズさん（綴り合ってる？）
-		Y2009,			//	Y姉さん
-		ECCMAN,		//	ECCマン
-	};
 
-	enum KNOCKBACK_TYPE
-	{
-		KNOCKBACK_STRENGTH = 1,		//	強
-		KNOCKBACK_MIDDLE,				//	中
-		KNOCKBACK_WEAK,					//	弱
-	};
-
-	enum COLLISION_TYPE
-	{
-		SPHEREVSCAPSULE = 1,	//	球VSカプセル
-		SPHEREVSSPHERE,			//	球VS球
-		CAPSULEVSCAPSULE,			//	カプセルVSカプセル
-		SPHEREVSCYRINDER,			//	球VS円柱（円柱の回転なし）
-		SPHEREVSPOINT,				//	球VS点
-	};
-
-
-}
 
 //****************************************************************************************
 #endif // !__BASEOBJ_H__

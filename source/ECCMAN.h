@@ -10,17 +10,7 @@
 class ECCMAN : public	Player
 {
 private:
-	enum MotionNum
-	{
-		POSTURE,				//	構え
-		RUN,						//	走り
-		ATTACK1,				//	攻撃１段階目
-		JUMP,
-		LANDING,				//	着地
-		ATTACK2,				//	攻撃２段階目
-		ATTACK3,				//	攻撃３段階目
-		GUARD,					//	ガード
-	};
+
 
 public:
 	//	初期化・解放

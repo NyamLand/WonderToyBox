@@ -10,25 +10,7 @@
 class Princess : public		Player
 {
 private:
-	//	’è”
-	enum MotionNum
-	{
-		STAND = 1,			//	—§‚¿
-		POSTURE,				//	\‚¦
-		RUN = 4,				//	‘–‚è
-		ATTACK1,				//	UŒ‚‚P’iŠK–Ú
-		ATTACK2,				//	UŒ‚‚Q’iŠK–Ú
-		ATTACK3,				//	UŒ‚‚R’iŠK–Ú
-		JUMP,
-		GUARD,
-	};
 
-	enum OFFENSIVE_POWER
-	{
-		QUICK = 1,
-		POWER = 5,
-		HYPER = 15,
-	};
 
 public:
 	//	‰Šú‰»E‰ğ•ú
@@ -45,10 +27,11 @@ public:
 	void	Move( void );
 	void	Jump( void );
 	void	Attack( int attackKind );
+	void	Damage( int type );
 	bool	QuickArts( void );
 	bool	PowerArts( void );
 	bool	HyperArts( void );
-
+	void	Guard( void );
 };
 
 //*********************************************************************************

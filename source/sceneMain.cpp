@@ -116,9 +116,9 @@ sceneMain* m_sceneMain;
 	void	sceneMain::PlayerInitialize( void )
 	{
 		m_Player->Initialize( 0, PlayerData::PRINCESS, Vector3( 0.0f, 0.0f, 0.0f ) );
-		m_Player->Initialize( 1, PlayerData::Y2009, Vector3( 10.0f, 0.0f, 0.0f ) );
-		m_Player->Initialize( 2, PlayerData::Y2009, Vector3( 5.0f, 0.0f, 0.0f ) );
-		m_Player->Initialize( 3, PlayerData::Y2009, Vector3( -5.0f, 0.0f, 0.0f ) );
+		m_Player->Initialize( 1, PlayerData::PRINCESS, Vector3( 10.0f, 0.0f, 0.0f ) );
+		m_Player->Initialize( 2, PlayerData::PRINCESS, Vector3( 5.0f, 0.0f, 0.0f ) );
+		m_Player->Initialize( 3, PlayerData::PRINCESS, Vector3( -5.0f, 0.0f, 0.0f ) );
 	}
 
 	//	ディファード初期化

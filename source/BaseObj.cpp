@@ -18,10 +18,10 @@
 	
 	//	コンストラクタ
 	BaseObj::BaseObj( void ) : obj( NULL ),
-		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ), power( 0 ), diffence( 0 ),
-		angle( 0.0f ), scale( 0.0f ), speed( 0.0f ), mode( 0 ),
+		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ), power( 0 ), diffence( 0 ), knockBackVec( 0.0f, 0.0f, 0.0f ),
+		angle( 0.0f ), scale( 0.0f ), speed( 0.0f ), mode( 0 ), unrivaled( false ),
 		attackParam( 0 ), attackPos( 0.0f, 0.0f, 0.0f ), attackPos_top( 0.0f, 0.0f, 0.0f ), attackPos_bottom( 0.0f, 0.0f, 0.0f ), attack_r( 0.0f ), attack_t( 0.0f ), knockBackType( 0 ),
-		isGround( true), coinNum( 0 )
+		isGround( true), coinNum( 0 ), force( 0.0f )
 	{
 		
 	}
@@ -59,9 +59,9 @@
 		//	移動値加算
 		pos += move;
 
-		obj->SetPos(pos);
-		obj->SetAngle(angle);
-		obj->SetScale(scale);
+		obj->SetPos( pos );
+		obj->SetAngle( angle );
+		obj->SetScale( scale );
 		obj->Animation();
 		obj->Update();
 	}
@@ -86,7 +86,7 @@
 	void	BaseObj::StageCollisionCheck( void )
 	{
 		//　床判定
-		float work = Collision::GetHeight( pos );
+		float work = Collision::GetHeight( pos, 50.0f );
 		if ( pos.y <= work )
 		{
 			pos.y = work;
@@ -183,7 +183,10 @@
 		else
 		{
 			SetMotion( motionData.POSTURE );
-			move = Vector3( 0.0f, move.y, 0.0f );
+			
+			//	徐々に移動量と力減らす
+			move.x *= 0.8f;
+			move.z *= 0.8f;
 		}
 	}
 
@@ -196,7 +199,7 @@
 	//	ジャンプ
 	void	BaseObj::CommonJump( void )
 	{
-		mode = MOVE;
+		mode = PlayerData::MOVE;
 		if ( !isGround )	return;
 		static	float	toY = pos.y + 20;
 
@@ -210,14 +213,58 @@
 		CommonMove();
 
 		//	接地してたら
-		if ( isGround )	mode = MOVE;
+		if ( isGround )	mode = PlayerData::MOVE;
 	}
 
 	//	ガード
 	void	BaseObj::CommonGuard( void )
 	{
+		unrivaled = true;
 		SetMotion( motionData.GUARD );
-		if ( input->Get( KEY_C ) == 2 )	mode = MOVE;
+		if ( input->Get( KEY_B7 ) == 2 )
+		{
+			mode = PlayerData::MOVE;
+			unrivaled = false;
+		}
+	}
+
+	//	ノックバック　強
+	void	BaseObj::CommonKnockBackStrength( void )
+	{
+		AddForce( 0.3f );
+
+		move = knockBackVec * force;
+		
+		//static	float	toY = pos.y + 5.0f;
+
+		//if ( pos.y <= toY )
+		//{
+		//	move.y += 0.3f;
+		//	pos += move;
+		//}
+
+		mode = PlayerData::DAMAGE;
+	}
+
+	//	ノックバック	共通
+	void	BaseObj::CommonKnockBack( void )
+	{
+		unrivaled = true;
+		move.x *= 0.9f;
+		move.z *= 0.9f;
+
+		SetMotion( motionData.POSTURE );
+		if ( move.Length() <= 0.01f )
+		{
+			mode = PlayerData::MOVE;
+			unrivaled = false;
+		}
+	}
+
+	//	力加算
+	void	BaseObj::AddForce( float force )
+	{
+		this->force = force;
 	}
 
 //-------------------------------------------------------------------------------------
@@ -241,12 +288,22 @@
 	void	BaseObj::SetPos( float x, float y, float z ){ this->pos = Vector3( x, y, z ); }
 	void	BaseObj::SetAngle( float angle ){ this->angle = angle; }
 	void	BaseObj::SetScale( float scale ){ this->scale = scale; }
+	void	BaseObj::SetKnockBackVec( Vector3 knockBackVec ){ this->knockBackVec = knockBackVec; }
+	void	BaseObj::SetMode( PlayerData::STATE state )
+	{
+		if ( GetMode() != state )
+		{
+			mode = state;
+		}
+	}
 
 	//	取得
 	Vector3		BaseObj::GetPos( void ){ return	pos; }
 	Matrix		BaseObj::GetMatrix( void ){ return obj->TransMatrix; }
 	float			BaseObj::GetAngle( void ){ return angle; }
+	bool			BaseObj::GetUnrivaled( void ){ return unrivaled; }
 	int				BaseObj::GetCoinNum( void ){ return	coinNum; }
+	int				BaseObj::GetMode( void ){ return mode; }
 
 	//	当たり判定用パラメータ取得
 	int				BaseObj::GetAttackParam( void ){ return attackParam; }

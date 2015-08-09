@@ -12,6 +12,26 @@
 //*******************************************************************************
 
 //--------------------------------------------------------------------------
+//	ÉOÉçÅ[ÉoÉã
+//--------------------------------------------------------------------------
+
+namespace Y2009Data
+{
+	//	íËêî
+	enum MotionNum
+	{
+		STAND = 1,			//	óßÇø
+		POSTURE,				//	ç\Ç¶
+		RUN = 4,				//	ëñÇË
+		ATTACK1,				//	çUåÇÇPíiäKñ⁄
+		ATTACK2,				//	çUåÇÇQíiäKñ⁄
+		ATTACK3,				//	çUåÇÇRíiäKñ⁄
+		JUMP,
+		GUARD,
+	};
+}
+
+//--------------------------------------------------------------------------
 //	èâä˙âªÅEâï˙
 //--------------------------------------------------------------------------
 
@@ -34,15 +54,15 @@
 	//	ÉÇÅ[ÉVÉáÉìÉfÅ[É^ìoò^
 	void	Y2009::SetMotionData( void )
 	{
-		motionData.STAND		=	MotionNum::STAND;
-		motionData.POSTURE	=	MotionNum::POSTURE;
-		motionData.RUN			=	MotionNum::RUN;
-		motionData.ATTACK1		=	MotionNum::ATTACK1;
-		motionData.JUMP			=	MotionNum::JUMP;
-		motionData.ATTACK2		=	MotionNum::ATTACK2;
-		motionData.ATTACK3		=	MotionNum::ATTACK3;
-		motionData.GUARD		=	MotionNum::GUARD;
-		motionData.POSTURE	=	MotionNum::POSTURE;
+		motionData.STAND		=	Y2009Data::STAND;
+		motionData.POSTURE	=	Y2009Data::POSTURE;
+		motionData.RUN			=	Y2009Data::RUN;
+		motionData.ATTACK1		=	Y2009Data::ATTACK1;
+		motionData.JUMP			=	Y2009Data::JUMP;
+		motionData.ATTACK2		=	Y2009Data::ATTACK2;
+		motionData.ATTACK3		=	Y2009Data::ATTACK3;
+		motionData.GUARD		=	Y2009Data::GUARD;
+		motionData.POSTURE	=	Y2009Data::POSTURE;
 	}
 
 //--------------------------------------------------------------------------
@@ -71,19 +91,22 @@
 	{
 		switch ( mode )
 		{
-		case MOVE:
+		case PlayerData::MOVE:
 			Move();
 			break;
 
-		case ATTACK:
+		case PlayerData::ATTACK:
+		case PlayerData::QUICKARTS:
+		case PlayerData::POWERARTS:
+		case PlayerData::HYPERARTS:
 			Attack();
 			break;
 
-		case JUMP:
+		case PlayerData::JUMP:
 			Jump();
 			break;
 
-		case GUARD:
+		case PlayerData::GUARD:
 			break;
 		}
 	}
@@ -93,8 +116,10 @@
 	{
 		CommonMove();
 
-		if ( input->Get( KEY_A ) == 3 )	mode = ATTACK;
-		if ( input->Get( KEY_B ) == 3 )	mode = JUMP;
+		if ( input->Get( KEY_A ) == 3 )	mode = PlayerData::QUICKARTS;
+		if ( input->Get( KEY_B ) == 3 )	mode = PlayerData::POWERARTS;
+		if ( input->Get( KEY_C ) == 3 )	mode = PlayerData::HYPERARTS;
+		if ( input->Get( KEY_D ) == 3 )	mode = PlayerData::JUMP;
 	}
 
 	//	ÉÇÅ[ÉhAttack
@@ -108,7 +133,7 @@
 		else attackParam = 0;
 
 		//	ÉÇÅ[ÉVÉáÉìèIóπéûÇ…
-		if ( frame >= 410 )		mode = MOVE;
+		if ( frame >= 410 )		mode = PlayerData::MOVE;
 	}
 
 	//	ÉÇÅ[ÉhJump
