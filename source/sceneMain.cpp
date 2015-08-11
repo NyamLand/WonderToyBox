@@ -115,10 +115,10 @@ sceneMain* m_sceneMain;
 	//	プレイヤー初期化
 	void	sceneMain::PlayerInitialize( void )
 	{
-		m_Player->Initialize( 0, PlayerData::Y2009, Vector3( 0.0f, 0.0f, 0.0f ) );
-		m_Player->Initialize( 1, PlayerData::ECCMAN, Vector3( 10.0f, 0.0f, 0.0f ) );
-		m_Player->Initialize( 2, PlayerData::Y2009, Vector3( 5.0f, 0.0f, 0.0f ) );
-		m_Player->Initialize( 3, PlayerData::Y2009, Vector3( -5.0f, 0.0f, 0.0f ) );
+		m_Player->Initialize( 0, PlayerData::PRINCESS, Vector3( 0.0f, 0.0f, 0.0f ) );
+		m_Player->Initialize( 1, PlayerData::PRINCESS, Vector3( 10.0f, 0.0f, 0.0f ) );
+		m_Player->Initialize( 2, PlayerData::PRINCESS, Vector3( 5.0f, 0.0f, 0.0f ) );
+		m_Player->Initialize( 3, PlayerData::PRINCESS, Vector3( -5.0f, 0.0f, 0.0f ) );
 	}
 
 	//	ディファード初期化
@@ -259,7 +259,6 @@ sceneMain* m_sceneMain;
 		int		second = ( TIMELIMIT - timer ) / SECOND;
 		int		minute = ( TIMELIMIT - timer ) / MINUTE;
 
-
 		//	デバッグ用
 		//char	str[256];
 		//sprintf_s( str, "timelimit = %d分%d秒", minute, second );
@@ -301,6 +300,7 @@ sceneMain* m_sceneMain;
 			D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0xFFFFFFFF, 1.0f, 0 );
 
 		//	描画
+		//m_Stage->Render( shader3D, "shadowBuf" );
 		m_Player->Render( shader3D, "ShadowBuf" );
 		m_CoinManager->Render( shader3D, "ShadowBuf" );
 

@@ -17,6 +17,8 @@
 //	グローバル
 //-----------------------------------------------------------------------------------------
 
+	
+
 //-----------------------------------------------------------------------------------------
 //	初期化・解放
 //-----------------------------------------------------------------------------------------
@@ -29,8 +31,6 @@
 		scale = 0.02f;
 
 		isGround = true;
-
-		//SetMotionNum();
 	}
 
 	//	デストラクタ
@@ -39,202 +39,8 @@
 
 	}
 
-//-----------------------------------------------------------------------------------------
-//	更新・描画
-//-----------------------------------------------------------------------------------------
-
-	//	更新
-	void	Player::Update( void )
+	//	描画
+	void	Player::Render( void )
 	{
-		//	動作分け
-		switch ( mode )
-		{
-		case MOVE:
-			Move();
-			break;
-			
-		case ATTACK:
-			Attack();
-			break;
-
-		case JUMP:
-			Jump();
-			break;
-
-		case GUARD:
-			Guard();
-			break;
-		}
-
-		//	更新
-		BaseObj::Update();
+		BaseObj::Render();
 	}
-
-//-----------------------------------------------------------------------------------------
-//	動作関数
-//-----------------------------------------------------------------------------------------
-
-	//	移動
-	void	Player::Move( void )
-	{
-		//	左スティックの入力チェック
-		float	axisX = ( float )input->Get( KEY_AXISX );
-		float	axisY = ( float )input->Get( KEY_AXISY );
-		float	length = sqrtf( axisX * axisX + axisY * axisY );
-		if ( length > MIN_INPUT_STATE )
-		{
-			SetMotion( motionData.RUN );
-			static float adjustSpeed = 0.2f;
-			AngleAdjust( adjustSpeed );
-			Move( speed );
-		}
-		else
-		{
-			SetMotion( motionData.POSTURE );
-			move = Vector3( 0.0f, move.y, 0.0f );
-		}
-
-		//	攻撃
-		if ( input->Get( KEY_A ) == 3 )		mode = ATTACK;
-
-		//	ジャンプ
-		if ( input->Get( KEY_B ) == 3 )		mode = JUMP;
-
-		//	ガード
-		if ( input->Get( KEY_C ) == 1 )		mode = GUARD;
-	}
-
-	//	移動
-	void	Player::Move( float speed )
-	{
-		move.x	 = sinf( angle ) * speed;
-		move.z	 = cosf( angle ) * speed;
-	}
-
-	//	攻撃
-	void	Player::Attack( void )
-	{
-		SetMotion( motionData.ATTACK1 );
-		int		frame = obj->GetFrame();
-
-		//	少し前進
-		float	moveSpeed = 0.05f;
-		move.x = moveSpeed * sinf(angle);
-		move.z = moveSpeed * cosf(angle);
-
-		//	攻撃判定
-		if ( frame >= 377 && frame <= 385 )		attackParam = 1;
-		else attackParam = 0;
-
-		//	モーション終了時に
-		if ( frame >= 410 )		mode = MOVE;
-	}
-
-	//	ダメージ
-	void	Player::Damage( void )
-	{
-		
-	}
-
-	//	ジャンプ
-	void	Player::Jump( void )
-	{
-		mode = MOVE;
-		static	float	toY = pos.y + 20;
-		
-		if ( pos.y <= toY )
-		{
-			move.y += 0.3f;
-			pos += move;
-		}
-
-		//	左スティックの入力チェック
-		float		axisX = ( float )input->Get( KEY_AXISX );
-		float		axisY = ( float )input->Get( KEY_AXISY );
-		float		length = sqrtf( axisX * axisX + axisY * axisY );
-
-		if ( length > MIN_INPUT_STATE )
-		{
-			SetMotion( motionData.RUN );
-			static	float	adjustSpeed = 0.2f;
-			AngleAdjust( adjustSpeed );
-			Move( speed );
-		}
-		else
-		{
-			SetMotion( motionData.POSTURE );
-			move = Vector3( 0.0f, move.y, 0.0f );
-		}
-
-		//	接地してたら
-		if ( isGround )	mode = MOVE;
-	}
-
-	//	ガード
-	void	Player::Guard( void )
-	{
-		SetMotion( motionData.GUARD );
-		if ( input->Get( KEY_C ) == 2 )	mode = MOVE;
-	}
-
-//-----------------------------------------------------------------------------------------
-//	角度補正関数
-//-----------------------------------------------------------------------------------------
-
-	//	角度調整
-	void	Player::AngleAdjust( float speed )
-	{
-		if ( !( input->Get( KEY_AXISX ) || input->Get( KEY_AXISY ) ) )	return;
-
-		//	左スティックの入力
-		float axisX = input->Get( KEY_AXISX ) * 0.001f;
-		float	axisY = -input->Get( KEY_AXISY ) * 0.001f;
-
-		//	カメラの前方方向を求める
-		Vector3	vEye( m_Camera->GetTarget() - m_Camera->GetPos() );
-		float	cameraAngle = atan2f( vEye.x, vEye.z );
-
-		//	入力方向を求める
-		float inputAngle = atan2f( axisX, axisY );
-
-		//	目標の角度を求める
-		float	targetAngle = cameraAngle + inputAngle;
-
-		//	親に投げる
-		AngleAdjust( Vector3( sinf( targetAngle ), 0.0f, cosf( targetAngle ) ), speed );
-	}
-
-	//	角度調整
-	void	Player::AngleAdjust( const Vector3& direction, float speed )
-	{
-		//	現在の向きと目標の向きの差を求める
-		float	targetAngle( atan2f( direction.x, direction.z ) );
-		float	dAngle( targetAngle - GetAngle() );
-
-		//	差の正規化
-		if ( dAngle > 1.0f * PI )	dAngle -= 2.0f * PI;
-		if ( dAngle < -1.0f * PI )	dAngle += 2.0f * PI;
-
-		//	差をspeed分縮める
-		if ( dAngle > 0.0f ){
-			dAngle -= speed;
-			if ( dAngle < 0.0f )  dAngle = 0.0f;
-		}
-		else{
-			dAngle += speed;
-			if ( dAngle > 0.0f )	dAngle = 0.0f;
-		}
-
-		//	向きに反映
-		SetAngle( targetAngle - dAngle );
-
-		//	プレイヤーの向きがπ以上にならないように調整する
-		if ( GetAngle() >= 1.0f * PI )	angle -= 2.0f * PI;
-		if ( GetAngle() <= -1.0f * PI )	angle += 2.0f * PI;
-	}
-
-//-----------------------------------------------------------------------------------------
-//	情報取得
-//-----------------------------------------------------------------------------------------
-
-	//	モーション番号取得

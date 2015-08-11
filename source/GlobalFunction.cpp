@@ -91,6 +91,12 @@
 		return true;
 	}
 
+	//	モーション番号登録
+	void	SetMotionNum( int& motionData, int motionNum )
+	{
+		motionData = motionNum;
+	}
+
 	//	デバッグ文字
 	void	DrawString( LPSTR string, int x, int y, DWORD color )
 	{
@@ -176,12 +182,34 @@
 		IEX_StopStreamSound( stream );
 	}
 
+//----------------------------------------------------------------------
+//	線形補間( 出力、開始値、最終値, 割合 )
+//----------------------------------------------------------------------
+
+	bool	Lerp( Vector3& out, Vector3 p1, Vector3 p2, float t )
+	{
+		if ( t >= 1.0f )	return	true;
+
+		out = p1 * ( 1 - t ) + p2 * t ;
+
+		return	false;
+	}
+
+	bool	Lerp( float& out, float p1, float p2, float t )
+	{
+		if ( t >= 1.0f )	return	true;
+
+		out = p1 * ( 1 - t ) + p2 * t;
+
+		return	false;
+	}
+
 //----------------------------------------------------------------------------
 //	３次関数補間( 出力、始点、終点、現在の割合( 0.0f ~ 1.0f ) )
 //----------------------------------------------------------------------------
 
 	//	Vector3
-	bool	Lerp( Vector3& out, Vector3 p1, Vector3 p2, float t )
+	bool	CubicFunctionInterpolation( Vector3& out, Vector3 p1, Vector3 p2, float t )
 	{
 		if ( t >= 1.0f )	return	true;
 		float rate = t * t * ( 3.0f - 2.0f * t );   // 3次関数補間値に変換
@@ -191,7 +219,7 @@
 	}
 
 	//	float
-	bool	Lerp( float& out, float p1, float p2, float t )
+	bool	CubicFunctionInterpolation( float& out, float p1, float p2, float t )
 	{
 		if ( t >= 1.0f )	return	true;
 		float rate = t * t * ( 3.0f - 2.0f * t );   // 3次関数補間値に変換

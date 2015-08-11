@@ -132,7 +132,7 @@ CoinManager*	m_CoinManager;
 	//	位置調整
 	void	CoinManager::DistCheck( int n )
 	{
-		//	敵同士の位置チェック		
+		//	コイン同士の位置チェック		
 		for ( int i = 0; i < COIN_MAX; i++ )
 		{
 			//	自分vs自分は除外		

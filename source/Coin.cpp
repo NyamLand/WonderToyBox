@@ -106,6 +106,7 @@
 		for ( int i = 0; i < 4; i++ )
 		{
 			if ( !activate )	continue;
+			if ( m_Player->GetUnrivaled( i ) )	continue;
 			p_pos[i] = m_Player->GetPos( i );
 			bool isHit = Collision::CapsuleVSSphere( p_pos[i],Vector3( p_pos[i].x, p_pos[i].y + 3.0f, p_pos[i].z ), 1.0f, Vector3( pos.x, pos.y + 0.5f, pos.z ), 0.5f );
 

@@ -10,16 +10,22 @@
 class PlayerManager
 {
 private:
+	//	定数
 	static const int PLAYER_NUM = 4;
+	static const int OBJ_MAX = 10;
+
+	//	変数
 
 private:
 	Player*	c_Player[PLAYER_NUM];
+	iex3DObj*	org[OBJ_MAX];
 
 public:
 	//	初期化・解放
 	PlayerManager( void );
 	~PlayerManager( void );
 	void	Initialize( int input, int type, Vector3 pos );
+	void	Load( void );
 
 	//	更新・描画
 	void	Update( void );
@@ -27,14 +33,18 @@ public:
 	void	Render( iexShader* shader, LPSTR technique );
 
 	//	動作関数
-	void	HitCheck( void );
 	void	AddCoin( int player );
 	void	SubCoin( int player );
+
+	//	当たり判定
+	void	HitCheck( void );
+	void	HitCheckSphereVSCapsule( Player* p1, Player* p2 );
 
 	//	情報取得
 	Vector3	GetPos( int player );
 	float		GetAngle( int player );
 	Matrix	GetMatrix( int player );
+	bool		GetUnrivaled( int player );
 	int			GetAttackParam( int player );
 	int			GetCoinNum( int player );
 

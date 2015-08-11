@@ -55,9 +55,6 @@
     <Filter Include="ソース ファイル\CoinManager">
       <UniqueIdentifier>{145f3211-faa1-43c9-a180-0cf476617846}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Scene\sceneSelect">
-      <UniqueIdentifier>{efb3ce2b-3ad9-44a8-b933-51c66eb1b979}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Block">
       <UniqueIdentifier>{7f4140a5-bad4-463c-936e-85701f3767eb}</UniqueIdentifier>
     </Filter>
@@ -79,8 +76,11 @@
     <Filter Include="ソース ファイル\UI">
       <UniqueIdentifier>{8bfcff3e-bf09-4fbe-aec7-8ba91636777e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Player\Squirrel%28リス%29">
-      <UniqueIdentifier>{f047c0dc-ab27-4440-9665-c4e3874dced3}</UniqueIdentifier>
+    <Filter Include="ソース ファイル\Player\Princess">
+      <UniqueIdentifier>{7d3f933e-27f2-451e-b24c-c7fcbdb2403e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\GameManager">
+      <UniqueIdentifier>{ef95c7b5-3a14-4bc5-81a4-bfa87c427341}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -168,9 +168,6 @@
     <ClCompile Include="source\CoinManager.cpp">
       <Filter>ソース ファイル\CoinManager</Filter>
     </ClCompile>
-    <ClCompile Include="source\sceneSelect.cpp">
-      <Filter>ソース ファイル\Scene\sceneSelect</Filter>
-    </ClCompile>
     <ClCompile Include="source\Block.cpp">
       <Filter>ソース ファイル\Block</Filter>
     </ClCompile>
@@ -192,8 +189,11 @@
     <ClCompile Include="source\UI.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
-    <ClCompile Include="source\Squirrel.cpp">
-      <Filter>ソース ファイル\Player\Squirrel%28リス%29</Filter>
+    <ClCompile Include="source\Princess.cpp">
+      <Filter>ソース ファイル\Player\Princess</Filter>
+    </ClCompile>
+    <ClCompile Include="source\GameManager.cpp">
+      <Filter>ソース ファイル\GameManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -236,9 +236,6 @@
     <ClInclude Include="source\sceneMain.h">
       <Filter>ソース ファイル\Scene\sceneMain</Filter>
     </ClInclude>
-    <ClInclude Include="source\sceneSelect.h">
-      <Filter>ソース ファイル\Scene\sceneSelect</Filter>
-    </ClInclude>
     <ClInclude Include="source\Block.h">
       <Filter>ソース ファイル\Block</Filter>
     </ClInclude>
@@ -260,8 +257,11 @@
     <ClInclude Include="source\UI.h">
       <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
-    <ClInclude Include="source\Squirrel.h">
-      <Filter>ソース ファイル\Player\Squirrel%28リス%29</Filter>
+    <ClInclude Include="source\Princess.h">
+      <Filter>ソース ファイル\Player\Princess</Filter>
+    </ClInclude>
+    <ClInclude Include="source\GameManager.h">
+      <Filter>ソース ファイル\GameManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

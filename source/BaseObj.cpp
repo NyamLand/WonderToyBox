@@ -2,6 +2,7 @@
 #include	"iextreme.h"
 #include	"GlobalFunction.h"
 #include	"Collision.h"
+#include	"Camera.h"
 
 #include	"BaseObj.h"
 
@@ -17,9 +18,10 @@
 	
 	//	コンストラクタ
 	BaseObj::BaseObj( void ) : obj( NULL ),
-		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ),
-		angle( 0.0f ), scale( 0.0f ), speed( 0.0f ), mode( 0 ),
-		attackParam( 0 ), attackPos( 0.0f, 0.0f, 0.0f ), isGround( true), coinNum( 0 )
+		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ), power( 0 ), diffence( 0 ), knockBackVec( 0.0f, 0.0f, 0.0f ),
+		angle( 0.0f ), scale( 0.0f ), speed( 0.0f ), mode( 0 ), unrivaled( false ),
+		attackParam( 0 ), attackPos( 0.0f, 0.0f, 0.0f ), attackPos_top( 0.0f, 0.0f, 0.0f ), attackPos_bottom( 0.0f, 0.0f, 0.0f ), attack_r( 0.0f ), attack_t( 0.0f ), knockBackType( 0 ),
+		isGround( true), coinNum( 0 ), force( 0.0f )
 	{
 		
 	}
@@ -31,35 +33,11 @@
 	}
 
 	//	初期化
-	bool	BaseObj::Initialize( int input, int type, Vector3 pos )
+	bool	BaseObj::Initialize( int input, iex3DObj* org, Vector3 pos )
 	{
+		this->obj = org;
 		this->input = ::input[input];
-
-		Load( type );
-
 		this->pos = pos;
-
-		if ( obj == NULL )	return	false;
-		return	true;
-	}
-
-	//	モデル読み込み
-	bool	BaseObj::Load( int type )
-	{
-		switch ( type )
-		{
-		case 	PlayerData::PLAYER_TYPE::Y2009:
-			obj = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
-			break;
-
-		case PlayerData::PLAYER_TYPE::ECCMAN:
-			obj = new iex3DObj( "DATA/CHR/ECCMAN/ECCMAN.IEM" );
-			break;
-
-		default:
-			obj = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
-			break;
-		}
 
 		if ( obj == NULL )	return	false;
 		return	true;
@@ -108,7 +86,7 @@
 	void	BaseObj::StageCollisionCheck( void )
 	{
 		//　床判定
-		float work = Collision::GetHeight( pos );
+		float work = Collision::GetHeight( pos, 50.0f );
 		if ( pos.y <= work )
 		{
 			pos.y = work;
@@ -136,6 +114,159 @@
 		if ( coinNum > 0 )	coinNum--;
 	}
 
+	//	角度調整
+	void	BaseObj::AngleAdjust( float speed )
+	{
+		if ( !( input->Get( KEY_AXISX ) || input->Get( KEY_AXISY ) ) )	return;
+
+		//	左スティックの入力
+		float axisX = input->Get( KEY_AXISX ) * 0.001f;
+		float	axisY = -input->Get( KEY_AXISY ) * 0.001f;
+
+		//	カメラの前方方向を求める
+		Vector3	vEye( m_Camera->GetTarget() - m_Camera->GetPos() );
+		float	cameraAngle = atan2f( vEye.x, vEye.z );
+
+		//	入力方向を求める
+		float inputAngle = atan2f( axisX, axisY );
+
+		//	目標の角度を求める
+		float	targetAngle = cameraAngle + inputAngle;
+
+		//	親に投げる
+		AngleAdjust( Vector3( sinf( targetAngle ), 0.0f, cosf( targetAngle ) ), speed );
+	}
+
+	//	角度調整
+	void	BaseObj::AngleAdjust( const Vector3& direction, float speed )
+	{
+		//	現在の向きと目標の向きの差を求める
+		float	targetAngle( atan2f( direction.x, direction.z ) );
+		float	dAngle( targetAngle - GetAngle() );
+
+		//	差の正規化
+		if ( dAngle > 1.0f * PI )	dAngle -= 2.0f * PI;
+		if ( dAngle < -1.0f * PI )	dAngle += 2.0f * PI;
+
+		//	差をspeed分縮める
+		if ( dAngle > 0.0f ){
+			dAngle -= speed;
+			if ( dAngle < 0.0f )  dAngle = 0.0f;
+		}
+		else{
+			dAngle += speed;
+			if ( dAngle > 0.0f )	dAngle = 0.0f;
+		}
+
+		//	向きに反映
+		SetAngle( targetAngle - dAngle );
+
+		//	プレイヤーの向きがπ以上にならないように調整する
+		if ( GetAngle() >= 1.0f * PI )		angle -= 2.0f * PI;
+		if ( GetAngle() <= -1.0f * PI )	angle += 2.0f * PI;
+	}
+
+	//	共通動作
+	void	BaseObj::CommonMove( void )
+	{
+		//	左スティックの入力チェック
+		float	axisX = ( float )input->Get( KEY_AXISX );
+		float	axisY = ( float )input->Get( KEY_AXISY );
+		float	length = sqrtf( axisX * axisX + axisY * axisY );
+		if ( length > MIN_INPUT_STATE )
+		{
+			SetMotion( motionData.RUN );
+			static float adjustSpeed = 0.2f;
+			AngleAdjust( adjustSpeed );
+			CommonMove( speed );
+		}
+		else
+		{
+			SetMotion( motionData.POSTURE );
+			
+			//	徐々に移動量と力減らす
+			move.x *= 0.8f;
+			move.z *= 0.8f;
+		}
+	}
+
+	void	BaseObj::CommonMove( float speed )
+	{
+		move.x = sinf( angle ) * speed;
+		move.z = cosf( angle ) * speed;
+	}
+
+	//	ジャンプ
+	void	BaseObj::CommonJump( void )
+	{
+		mode = PlayerData::MOVE;
+		if ( !isGround )	return;
+		static	float	toY = pos.y + 20;
+
+		if ( pos.y <= toY )
+		{
+			move.y += 0.3f;
+			pos += move;
+		}
+
+		//	移動
+		CommonMove();
+
+		//	接地してたら
+		if ( isGround )	mode = PlayerData::MOVE;
+	}
+
+	//	ガード
+	void	BaseObj::CommonGuard( void )
+	{
+		unrivaled = true;
+		SetMotion( motionData.GUARD );
+		if ( input->Get( KEY_B7 ) == 2 )
+		{
+			mode = PlayerData::MOVE;
+			unrivaled = false;
+		}
+	}
+
+	//	ノックバック　強
+	void	BaseObj::CommonKnockBackStrength( void )
+	{
+		AddForce( 0.3f );
+
+		move = knockBackVec * force;
+		
+		//static	float	toY = pos.y + 5.0f;
+
+		//if ( pos.y <= toY )
+		//{
+		//	move.y += 0.3f;
+		//	pos += move;
+		//}
+
+		mode = PlayerData::DAMAGE;
+	}
+
+	//	ノックバック	共通
+	void	BaseObj::CommonKnockBack( void )
+	{
+		unrivaled = true;
+		move.x *= 0.9f;
+		move.z *= 0.9f;
+
+		SetMotion( motionData.POSTURE );
+		if ( move.Length() <= 0.01f )
+		{
+			mode = PlayerData::MOVE;
+			unrivaled = false;
+		}
+	}
+
+	//	力加算
+	void	BaseObj::AddForce( float force )
+	{
+		this->force = force;
+	}
+
 //-------------------------------------------------------------------------------------
 //	情報設定・取得
 //-------------------------------------------------------------------------------------
@@ -152,48 +283,33 @@
 	{
 		if ( this->mode != mode )		this->mode = mode;
 	}
-	void	BaseObj::SetMotionData( MotionData& md, MotionType::Motion kind, int num )
-	{
-		switch ( kind )
-		{
-		case 	MotionType::STAND:					//	立ち
-			md.STAND = num;
-			break;
-		case 	MotionType::POSTURE:				//	構え
-			md.POSTURE = num;
-			break;
-		case 	MotionType::RUN:						//	走り
-			md.RUN = num;
-			break;
-		case 	MotionType::JUMP:					//	ジャンプ
-			md.JUMP = num;
-			break;
-		case 	MotionType::LANDING:				//	着地
-			md.LANDING = num;
-			break;
-		case 	MotionType::ATTACK1:				//	攻撃１段階目
-			md.ATTACK1 = num;
-			break;
-		case 	MotionType::ATTACK2:				//	攻撃２段階目
-			md.ATTACK2 = num;
-			break;
-		case 	MotionType::ATTACK3:				//	攻撃３段階目
-			md.ATTACK3 = num;
-			break;
-		case 	MotionType::GUARD:					//	ガード
-			md.GUARD = num;
-		}
-	}
 
 	void	BaseObj::SetPos( Vector3 pos ){ this->pos = pos; }
 	void	BaseObj::SetPos( float x, float y, float z ){ this->pos = Vector3( x, y, z ); }
 	void	BaseObj::SetAngle( float angle ){ this->angle = angle; }
 	void	BaseObj::SetScale( float scale ){ this->scale = scale; }
+	void	BaseObj::SetKnockBackVec( Vector3 knockBackVec ){ this->knockBackVec = knockBackVec; }
+	void	BaseObj::SetMode( PlayerData::STATE state )
+	{
+		if ( GetMode() != state )
+		{
+			mode = state;
+		}
+	}
 
 	//	取得
 	Vector3		BaseObj::GetPos( void ){ return	pos; }
-	Vector3		BaseObj::GetAttackPos( void ){ return attackPos; }
 	Matrix		BaseObj::GetMatrix( void ){ return obj->TransMatrix; }
 	float			BaseObj::GetAngle( void ){ return angle; }
-	int				BaseObj::GetAttackParam( void ){ return attackParam; }
+	bool			BaseObj::GetUnrivaled( void ){ return unrivaled; }
 	int				BaseObj::GetCoinNum( void ){ return	coinNum; }
+	int				BaseObj::GetMode( void ){ return mode; }
+
+	//	当たり判定用パラメータ取得
+	int				BaseObj::GetAttackParam( void ){ return attackParam; }
+	int				BaseObj::GetKnockBackType( void ){ return knockBackType; }
+	Vector3		BaseObj::GetAttackPos( void ){ return attackPos; }
+	Vector3		BaseObj::GetAttackPos_Top( void ){ return attackPos_top; }
+	Vector3		BaseObj::GetAttackPos_Bottom( void ){ return attackPos_bottom; }
+	float			BaseObj::GetAttack_T( void ){ return attack_t; }
+	float			BaseObj::GetAttack_R( void ){ return attack_r; }
