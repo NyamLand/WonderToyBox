@@ -121,6 +121,7 @@
     <ClCompile Include="source\sceneResult.cpp" />
     <ClCompile Include="source\sceneSelect.cpp" />
     <ClCompile Include="source\sceneTitle.cpp" />
+    <ClCompile Include="source\Squirrel.cpp" />
     <ClCompile Include="source\system\Framework.cpp" />
     <ClCompile Include="source\system\System.cpp" />
     <ClCompile Include="source\system\WinMain.cpp" />
@@ -158,6 +159,7 @@
     <ClInclude Include="source\sceneResult.h" />
     <ClInclude Include="source\sceneSelect.h" />
     <ClInclude Include="source\sceneTitle.h" />
+    <ClInclude Include="source\Squirrel.h" />
     <ClInclude Include="source\system\Framework.h" />
     <ClInclude Include="source\system\Scene.h" />
     <ClInclude Include="source\sceneMain.h" />
