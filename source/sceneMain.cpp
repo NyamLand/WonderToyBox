@@ -12,6 +12,8 @@
 #include	"PlayerManager.h"
 #include	"Coin.h"
 #include	"CoinManager.h"
+#include	"Bullet.h"
+#include	"BulletManager.h"
 #include	"Block.h"
 #include	"sceneResult.h"
 #include	"UI.h"
@@ -74,6 +76,9 @@ sceneMain* m_sceneMain;
 		m_CoinManager = new CoinManager();
 		m_CoinManager->Initialize();
 
+		m_BulletManager = new BulletManager();
+		m_BulletManager->Initialize();
+
 		//	パーティクル
 		Particle::Initialize();
 
@@ -99,6 +104,7 @@ sceneMain* m_sceneMain;
 		SafeDelete( m_CollisionStage );
 		SafeDelete( m_Camera );
 		SafeDelete( m_CoinManager );
+		SafeDelete( m_BulletManager );
 		SafeDelete( ShadowTex );
 		SafeDelete( m_UI );
 		SafeDelete( diffuse );
@@ -115,8 +121,8 @@ sceneMain* m_sceneMain;
 	//	プレイヤー初期化
 	void	sceneMain::PlayerInitialize( void )
 	{
-		m_Player->Initialize( 0, PlayerData::PRINCESS, Vector3( 0.0f, 0.0f, 0.0f ) );
-		m_Player->Initialize( 1, PlayerData::PRINCESS, Vector3( 10.0f, 0.0f, 0.0f ) );
+		m_Player->Initialize(0, PlayerData::SQUIRREL, Vector3(0.0f, 0.0f, 0.0f));
+		m_Player->Initialize(1, PlayerData::PRINCESS, Vector3(10.0f, 0.0f, 0.0f));
 		m_Player->Initialize( 2, PlayerData::PRINCESS, Vector3( 5.0f, 0.0f, 0.0f ) );
 		m_Player->Initialize( 3, PlayerData::PRINCESS, Vector3( -5.0f, 0.0f, 0.0f ) );
 	}
@@ -159,6 +165,8 @@ sceneMain* m_sceneMain;
 
 		//	コイン更新
 		m_CoinManager->Update();
+
+		m_BulletManager->Update();
 
 		//	UI更新
 		m_UI->Update();
@@ -252,6 +260,7 @@ sceneMain* m_sceneMain;
 		m_Stage->Render( shader3D, "nolight_s" );
 		m_Player->Render( shader3D, "toon" );
 		m_CoinManager->Render();
+		m_BulletManager->Render();
 		
 		//UI
 		m_UI->Render();
