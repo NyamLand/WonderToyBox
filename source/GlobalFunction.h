@@ -14,6 +14,7 @@
 	
 	//	externéŒ¾
 	extern	LPDSSTREAM		stream;
+	extern	bool					debug;
 
 //----------------------------------------------------------------------
 //	’è”

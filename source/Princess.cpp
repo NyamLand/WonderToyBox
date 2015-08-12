@@ -93,6 +93,7 @@ namespace PrincessData
 		BaseObj::Render( shader, technique );
 
 		//	デバッグ用
+		if ( !debug )	return;
 		DrawSphere( attackPos, attack_r, 0xFFFFFFFF );
 	}
 

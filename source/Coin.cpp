@@ -74,6 +74,9 @@
 	void	Coin::Render( void )
 	{
 		obj->Render();
+
+		//	デバッグ用
+		if ( !debug )	return;
 		DrawSphere( Vector3( pos.x, pos.y + 0.5f, pos.z ), 0.5f, 0xFFFF0000 );
 	}
 

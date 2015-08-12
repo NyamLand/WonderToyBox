@@ -131,9 +131,10 @@
 		{
 			c_Player[i]->Render( shader, technique );
 			Vector3	p_pos = c_Player[i]->GetPos();
-			DrawCapsule( p_pos, Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z ), 1.0f, 0xFFFFFFFF );
 
 			//	デバッグ用
+			if ( !debug )	continue;
+			DrawCapsule( p_pos, Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z ), 1.0f, 0xFFFFFFFF );
 			char	str[256];
 			sprintf_s( str, "p%d_coin = %d", i + 1, c_Player[i]->GetCoinNum() );
 			DrawString( str, 20, 150 + i * 30 );
