@@ -207,9 +207,11 @@
 	Matrix	PlayerManager::GetMatrix( int player ){ return	c_Player[player]->GetMatrix(); }
 	float		PlayerManager::GetAngle( int player ){ return		c_Player[player]->GetAngle(); }
 	int			PlayerManager::GetCoinNum( int player ){ return	c_Player[player]->GetCoinNum(); }
+	int			PlayerManager::GetType(int player){ return c_Player[player]->GetType(); }
 
 	//	î•ñÝ’è
 	void		PlayerManager::SetPos( int player, Vector3 pos ){ c_Player[player]->SetPos( pos ); }
 	void		PlayerManager::SetPos( int player, float x, float y, float z ){ c_Player[player]->SetPos( x, y, z ); }
 	void		PlayerManager::SetAngle( int player, float angle ){ c_Player[player]->SetAngle( angle ); }
 	void		PlayerManager::SetScale( int player, float scale ){ c_Player[player]->SetScale( scale ); }
+	void		PlayerManager::SetType( int player, int type ){ c_Player[player]->SetType(type); }

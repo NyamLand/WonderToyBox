@@ -47,12 +47,14 @@ public:
 	bool		GetUnrivaled( int player );
 	int			GetAttackParam( int player );
 	int			GetCoinNum( int player );
+	int			GetType( int player );
 
 	//	î•ñİ’è
 	void		SetPos( int player, Vector3 pos );
 	void		SetPos( int player, float x, float y, float z );
 	void		SetAngle( int player, float angle );
 	void		SetScale( int player, float scale );
+	void		SetType( int player, int type );
 };
 
 extern	PlayerManager*		m_Player;

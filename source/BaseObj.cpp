@@ -21,7 +21,7 @@
 		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ), power( 0 ), diffence( 0 ), knockBackVec( 0.0f, 0.0f, 0.0f ),
 		angle( 0.0f ), scale( 0.0f ), speed( 0.0f ), mode( 0 ), unrivaled( false ),
 		attackParam( 0 ), attackPos( 0.0f, 0.0f, 0.0f ), attackPos_top( 0.0f, 0.0f, 0.0f ), attackPos_bottom( 0.0f, 0.0f, 0.0f ), attack_r( 0.0f ), attack_t( 0.0f ), knockBackType( 0 ),
-		isGround( true), coinNum( 0 ), force( 0.0f )
+		isGround(true), coinNum(0), force(0.0f), type(0)
 	{
 		
 	}
@@ -296,6 +296,7 @@
 			mode = state;
 		}
 	}
+	void	BaseObj::SetType( int type ){ this->type = type; }
 
 	//	取得
 	Vector3		BaseObj::GetPos( void ){ return	pos; }
@@ -304,6 +305,7 @@
 	bool			BaseObj::GetUnrivaled( void ){ return unrivaled; }
 	int				BaseObj::GetCoinNum( void ){ return	coinNum; }
 	int				BaseObj::GetMode( void ){ return mode; }
+	int				BaseObj::GetType( void ){ return type; }
 
 	//	当たり判定用パラメータ取得
 	int				BaseObj::GetAttackParam( void ){ return attackParam; }
