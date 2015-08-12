@@ -44,6 +44,7 @@ bool	Bullet::Initialize(void)
 	limitTimer = 0;
 	activate = false;
 	state = false;
+	number = 0;
 
 	return	true;
 }

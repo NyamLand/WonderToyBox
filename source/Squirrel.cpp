@@ -100,9 +100,11 @@ void	Squirrel::Render(iexShader* shader, LPSTR technique)
 {
 	BaseObj::Render(shader, technique);
 
+
 	//	デバッグ用
-	DrawSphere(attackPos, attack_r, 0xFFFFFFFF);
+	if ( !debug ) 	return;
 	char	str[256];
+	DrawSphere(attackPos, attack_r, 0xFFFFFFFF);
 	sprintf_s(str, "pos.x = %f", pos.x);
 	DrawString(str, 20, 540);
 	sprintf_s(str, "pos.y = %f", pos.y);
@@ -111,6 +113,12 @@ void	Squirrel::Render(iexShader* shader, LPSTR technique)
 	DrawString(str, 20, 580);
 	sprintf_s(str, "angle = %f", angle);
 	DrawString(str, 20, 600);
+	
+	Vector3	stringPos;
+	WorldToClient( pos, stringPos, matView* matProjection );
+	stringPos.y -= 100.0f;
+	sprintf_s( str, "り\nす\n↓" );
+	DrawString( str, ( int )stringPos.x, ( int )stringPos.y );
 }
 
 //-----------------------------------------------------------------------------------
@@ -131,7 +139,7 @@ void	Squirrel::ModeManagement(void)
 	case PlayerData::HYPERARTS:
 	case PlayerData::QUICKARTS:
 		move = Vector3(0.0f, 0.0f, 0.0f);
-		Attack(mode);
+		Attack( mode );
 		break;
 
 	case PlayerData::JUMP:
@@ -156,15 +164,12 @@ void	Squirrel::Move(void)
 {
 	CommonMove();
 
-	if (input->Get(KEY_A) == 3)		mode = PlayerData::QUICKARTS;
-	if (input->Get(KEY_B) == 3)		mode = PlayerData::POWERARTS;
-	if (input->Get(KEY_C) == 3)		mode = PlayerData::HYPERARTS;
-	if (input->Get(KEY_D) == 3)		mode = PlayerData::JUMP;
-	if (input->Get(KEY_B7) == 3)	mode = PlayerData::GUARD;
-	if (input->Get(KEY_B10) == 3)
-	{
-		mode = PlayerData::DAMAGE_STRENGTH;
-	}
+	if ( input->Get( KEY_A ) == 3 )		mode = PlayerData::QUICKARTS;
+	if ( input->Get( KEY_B ) == 3 )		mode = PlayerData::POWERARTS;
+	if ( input->Get( KEY_C ) == 3 )		mode = PlayerData::HYPERARTS;
+	if ( input->Get( KEY_D ) == 3 )		mode = PlayerData::JUMP;
+	if ( input->Get( KEY_B7 ) == 3 )	mode = PlayerData::GUARD;
+	if ( input->Get( KEY_B10 ) == 3 )	mode = PlayerData::DAMAGE_STRENGTH;
 }
 
 //	クイックアーツ
@@ -173,13 +178,13 @@ bool	Squirrel::QuickArts(void)
 	static int time = 0;
 	//	行列から前方取得
 	Matrix	mat = obj->TransMatrix;
-	Vector3	front = Vector3(mat._31, mat._32, mat._33);
+	Vector3	front = Vector3( mat._31, mat._32, mat._33 );
 	front.Normalize();
 
-	if (time == 0)m_BulletManager->Set(pos, front * 5.0f, 0.5f);
+	if ( time == 0 )m_BulletManager->Set( pos, front * 5.0f, 0.5f );
 	time++;
 
-	if (time >= 60)
+	if ( time >= 60 )
 	{
 		time = 0;
 		return true;
@@ -188,25 +193,26 @@ bool	Squirrel::QuickArts(void)
 }
 
 //	パワーアーツ
-bool	Squirrel::PowerArts(void)
+bool	Squirrel::PowerArts( void )
 {
 	static int time = 0;
 
 	//	行列から前方取得
 	Matrix	mat = obj->TransMatrix;
-	Vector3	right = Vector3(mat._11, mat._12, mat._13);
-	Vector3	front = Vector3(mat._31, mat._32, mat._33);
+	Vector3	right = Vector3( mat._11, mat._12, mat._13 );
+	Vector3	front = Vector3( mat._31, mat._32, mat._33 );
 	front.Normalize();
+	right.Normalize();
 
-	if (time == 0)
+	if ( time == 0 )
 	{
-		m_BulletManager->Set(pos, front * 5.0f + right * 50.0f, 0.5f);
-		m_BulletManager->Set(pos, front * 5.0f, 0.5f);
-		m_BulletManager->Set(pos, front * 5.0f + right * -50.0f, 0.5f);
+		m_BulletManager->Set( pos, front * 5.0f + right * 5.0f, 0.5f );
+		m_BulletManager->Set( pos, front * 5.0f, 0.5f );
+		m_BulletManager->Set( pos, front * 5.0f + right * -5.0f, 0.5f );
 	}
 	time++;
 
-	if (time >= 60)
+	if ( time >= 60 )
 	{
 		time = 0;
 		return true;
@@ -215,7 +221,7 @@ bool	Squirrel::PowerArts(void)
 }
 
 //	ハイパーアーツ
-bool	Squirrel::HyperArts(void)
+bool	Squirrel::HyperArts( void )
 {
 	static	int		step = 0;	//	回数
 	static int time = 0;
@@ -292,12 +298,12 @@ void	Squirrel::Attack(int attackKind)
 	//	モーション終了時に
 	if (isEnd)
 	{
-		mode = PlayerData::MOVE;
 		attack_t = 0.0f;
 		attack_r = 0.0f;
 		attackParam = 0;
 		knockBackType = 0;
 		unrivaled = false;
+		mode = PlayerData::MOVE;
 	}
 }
 

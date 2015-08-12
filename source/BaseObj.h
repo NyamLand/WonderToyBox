@@ -95,6 +95,9 @@ protected:
 	Vector3		attackPos_top;			//	当たり判定座標上
 	Vector3		attackPos_bottom;		//	当たり判定座標下
 	Vector3		attackPos;					//	当たり判定座標中心
+	Vector3		attackPos2;
+	Vector3		attackPos3;
+	Vector3		attackPos4;
 	float			attack_r;					//	当たり判定半径
 	float			attack_t;					//	当たり判定用割合パラメータ
 

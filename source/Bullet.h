@@ -21,6 +21,7 @@ private:
 	bool			state;
 	bool			activate;
 	int				judgeTimer;	//	”»’è—LŒøŠÔ
+	int				number;		//	”Ô†Š„‚è“–‚Ä—p
 
 public:
 	//	‰Šú‰»E‰ğ•ú

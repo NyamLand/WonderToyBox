@@ -121,8 +121,8 @@ sceneMain* m_sceneMain;
 	//	プレイヤー初期化
 	void	sceneMain::PlayerInitialize( void )
 	{
-		m_Player->Initialize(0, PlayerData::SQUIRREL, Vector3(0.0f, 0.0f, 0.0f));
-		m_Player->Initialize(1, PlayerData::PRINCESS, Vector3(10.0f, 0.0f, 0.0f));
+		m_Player->Initialize( 0, PlayerData::SQUIRREL, Vector3( 0.0f, 0.0f, 0.0f ) );
+		m_Player->Initialize( 1, PlayerData::PRINCESS, Vector3( 10.0f, 0.0f, 0.0f ) );
 		m_Player->Initialize( 2, PlayerData::PRINCESS, Vector3( 5.0f, 0.0f, 0.0f ) );
 		m_Player->Initialize( 3, PlayerData::PRINCESS, Vector3( -5.0f, 0.0f, 0.0f ) );
 	}
@@ -166,6 +166,7 @@ sceneMain* m_sceneMain;
 		//	コイン更新
 		m_CoinManager->Update();
 
+		//	リス　バレット更新
 		m_BulletManager->Update();
 
 		//	UI更新
