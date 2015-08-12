@@ -82,6 +82,15 @@
     <Filter Include="ソース ファイル\GameManager">
       <UniqueIdentifier>{ef95c7b5-3a14-4bc5-81a4-bfa87c427341}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Player\Squirrel">
+      <UniqueIdentifier>{3d62d4f6-76a8-41b3-9af3-c44914c1aceb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Bullet">
+      <UniqueIdentifier>{ab27c35f-3def-44fa-b507-427aed3b3f42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\BulletManager">
+      <UniqueIdentifier>{06e234ff-76bf-4d07-a702-8f484e153871}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -195,6 +204,15 @@
     <ClCompile Include="source\GameManager.cpp">
       <Filter>ソース ファイル\GameManager</Filter>
     </ClCompile>
+    <ClCompile Include="source\Squirrel.cpp">
+      <Filter>ソース ファイル\Player\Squirrel</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Bullet.cpp">
+      <Filter>ソース ファイル\Bullet</Filter>
+    </ClCompile>
+    <ClCompile Include="source\BulletManager.cpp">
+      <Filter>ソース ファイル\BulletManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -262,6 +280,15 @@
     </ClInclude>
     <ClInclude Include="source\GameManager.h">
       <Filter>ソース ファイル\GameManager</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Squirrel.h">
+      <Filter>ソース ファイル\Player\Squirrel</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Bullet.h">
+      <Filter>ソース ファイル\Bullet</Filter>
+    </ClInclude>
+    <ClInclude Include="source\BulletManager.h">
+      <Filter>ソース ファイル\BulletManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

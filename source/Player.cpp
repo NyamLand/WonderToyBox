@@ -29,7 +29,6 @@
 		//	ƒpƒ‰ƒ[ƒ^‰Šú‰»
 		speed = 0.2f;
 		scale = 0.02f;
-
 		isGround = true;
 	}
 

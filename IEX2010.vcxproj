@@ -108,6 +108,8 @@
   <ItemGroup>
     <ClCompile Include="source\BaseObj.cpp" />
     <ClCompile Include="source\Block.cpp" />
+    <ClCompile Include="source\Bullet.cpp" />
+    <ClCompile Include="source\BulletManager.cpp" />
     <ClCompile Include="source\Camera.cpp" />
     <ClCompile Include="source\Coin.cpp" />
     <ClCompile Include="source\CoinManager.cpp" />
@@ -148,6 +150,8 @@
   <ItemGroup>
     <ClInclude Include="source\BaseObj.h" />
     <ClInclude Include="source\Block.h" />
+    <ClInclude Include="source\Bullet.h" />
+    <ClInclude Include="source\BulletManager.h" />
     <ClInclude Include="source\Camera.h" />
     <ClInclude Include="source\Coin.h" />
     <ClInclude Include="source\CoinManager.h" />

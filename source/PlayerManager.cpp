@@ -12,6 +12,7 @@
 #include	"Y2009.h"
 #include	"ECCMAN.h"
 #include	"Princess.h"
+#include	"Squirrel.h"
 
 #include	"PlayerManager.h"
 
@@ -68,6 +69,10 @@
 			c_Player[input] = new Princess();
 			break;
 
+		case PlayerData::SQUIRREL:
+			c_Player[input] = new Squirrel();
+			break;
+
 		default:
 			c_Player[input] = new Y2009();
 			break;
@@ -90,7 +95,7 @@
 		org[PlayerData::PRINCESS] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
 		org[PlayerData::KNIGHT] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
 		org[PlayerData::KING] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
-		org[PlayerData::SQUIRREL] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PlayerData::SQUIRREL] = new iex3DObj( "DATA/CHR/SQUIRREL/SQUIRREL.IEM" );
 		org[PlayerData::TIGER] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
 		org[PlayerData::ANIMA] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
 		org[PlayerData::CROWS] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
