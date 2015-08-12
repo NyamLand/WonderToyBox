@@ -10,6 +10,7 @@
 #include	"Y2009.h"
 #include	"ECCMAN.h"
 #include	"Princess.h"
+#include	"Squirrel.h"
 #include	"Knight.h"
 
 #include	"PlayerManager.h"
@@ -71,7 +72,9 @@
 			c_Player[input] = new Knight();
 			break;
 
-
+		case PlayerData::SQUIRREL:
+			c_Player[input] = new Squirrel();
+			break;
 		default:
 			c_Player[input] = new Y2009();
 			break;
@@ -90,14 +93,13 @@
 		org[PlayerData::Y2009] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
 		org[PlayerData::ECCMAN] = new iex3DObj( "DATA/CHR/ECCMAN/ECCMAN.IEM" );
 		org[PlayerData::PRINCESS] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
-		org[PlayerData::KNIGHT] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
-		org[PlayerData::KING] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
-		org[PlayerData::SQUIRREL] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
-		org[PlayerData::TIGER] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
-		org[PlayerData::ANIMA] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
-		org[PlayerData::CROWS] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
-		org[PlayerData::BEAR] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
-
+		org[PlayerData::KNIGHT] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PlayerData::KING] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PlayerData::SQUIRREL] = new iex3DObj( "DATA/CHR/SQUIRREL/SQUIRREL.IEM" );
+		org[PlayerData::TIGER] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PlayerData::ANIMA] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PlayerData::CROWS] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PlayerData::BEAR] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
 	}
 
 //------------------------------------------------------------------------------
@@ -207,7 +209,8 @@
 	Matrix	PlayerManager::GetMatrix( int player ){ return	c_Player[player]->GetMatrix(); }
 	float		PlayerManager::GetAngle( int player ){ return		c_Player[player]->GetAngle(); }
 	int			PlayerManager::GetCoinNum( int player ){ return	c_Player[player]->GetCoinNum(); }
-	int			PlayerManager::GetType(int player){ return c_Player[player]->GetType(); }
+	int			PlayerManager::GetType( int player ){ return c_Player[player]->GetType(); }
+	bool		PlayerManager::GetUnrivaled( int player ){ return c_Player[player]->GetUnrivaled(); }
 
 	//	î•ñÝ’è
 	void		PlayerManager::SetPos( int player, Vector3 pos ){ c_Player[player]->SetPos( pos ); }

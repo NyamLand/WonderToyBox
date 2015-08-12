@@ -16,28 +16,28 @@
 //	グローバル
 //-----------------------------------------------------------------------------------
 
-namespace PrincessData
-{
-	//	定数
-	enum MotionNum
+	namespace PrincessData
 	{
-		STAND = 1,			//	立ち
-		POSTURE,				//	構え
-		RUN = 4,				//	走り
-		ATTACK1,				//	攻撃１段階目
-		ATTACK2,				//	攻撃２段階目
-		ATTACK3,				//	攻撃３段階目
-		JUMP,
-		GUARD,
-	};
+		//	定数
+		enum MotionNum
+		{
+			STAND = 1,			//	立ち
+			POSTURE,				//	構え
+			RUN = 4,				//	走り
+			ATTACK1,				//	攻撃１段階目
+			ATTACK2,				//	攻撃２段階目
+			ATTACK3,				//	攻撃３段階目
+			JUMP,
+			GUARD,
+		};
 
-	enum OFFENSIVE_POWER
-	{
-		QUICK = 1,
-		POWER = 5,
-		HYPER = 15,
-	};
-}
+		enum OFFENSIVE_POWER
+		{
+			QUICK = 1,
+			POWER = 5,
+			HYPER = 15,
+		};
+	}
 
 //-----------------------------------------------------------------------------------
 //	初期化・解放

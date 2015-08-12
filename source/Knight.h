@@ -47,6 +47,8 @@ public:
 	bool	QuickArts(void);
 	bool	PowerArts(void);
 	bool	HyperArts(void);
+	void	Guard( void );
+	void	Damage( int type );
 
 };
 

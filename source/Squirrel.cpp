@@ -100,7 +100,6 @@ void	Squirrel::Render(iexShader* shader, LPSTR technique)
 {
 	BaseObj::Render(shader, technique);
 
-
 	//	デバッグ用
 	if ( !debug ) 	return;
 	char	str[256];

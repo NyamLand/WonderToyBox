@@ -117,6 +117,7 @@
     <ClCompile Include="source\ECCMAN.cpp" />
     <ClCompile Include="source\GameManager.cpp" />
     <ClCompile Include="source\GlobalFunction.cpp" />
+    <ClCompile Include="source\Knight.cpp" />
     <ClCompile Include="source\Particle.cpp" />
     <ClCompile Include="source\Player.cpp" />
     <ClCompile Include="source\PlayerManager.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="source\ECCMAN.h" />
     <ClInclude Include="source\GameManager.h" />
     <ClInclude Include="source\GlobalFunction.h" />
+    <ClInclude Include="source\Knight.h" />
     <ClInclude Include="source\Particle.h" />
     <ClInclude Include="source\Player.h" />
     <ClInclude Include="source\PlayerManager.h" />

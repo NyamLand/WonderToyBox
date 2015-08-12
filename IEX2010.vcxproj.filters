@@ -91,6 +91,9 @@
     <Filter Include="ソース ファイル\BulletManager">
       <UniqueIdentifier>{06e234ff-76bf-4d07-a702-8f484e153871}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Player\Knight">
+      <UniqueIdentifier>{2ac1b34f-a140-4426-ad12-bad920e92a94}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -213,6 +216,9 @@
     <ClCompile Include="source\BulletManager.cpp">
       <Filter>ソース ファイル\BulletManager</Filter>
     </ClCompile>
+    <ClCompile Include="source\Knight.cpp">
+      <Filter>ソース ファイル\Player\Knight</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -289,6 +295,9 @@
     </ClInclude>
     <ClInclude Include="source\BulletManager.h">
       <Filter>ソース ファイル\BulletManager</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Knight.h">
+      <Filter>ソース ファイル\Player\Knight</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

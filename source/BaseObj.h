@@ -14,13 +14,13 @@ namespace PlayerData
 	{
 		KNIGHT,		//	騎士
 		PRINCESS,	//	姫
+		SQUIRREL,	//	リス
+		Y2009,			//	Y姉さん
 		KING,			//	大王
 		BEAR,			//	クマ
-		SQUIRREL,	//	リス
 		TIGER,			//	トラ
 		ANIMA,			//	アニマさん
 		CROWS,		//	クロウズさん（綴り合ってる？）
-		Y2009,			//	Y姉さん
 		ECCMAN,		//	ECCマン
 	};
 
