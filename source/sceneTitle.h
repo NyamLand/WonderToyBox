@@ -42,6 +42,9 @@ private:
 	};
 	int mode;
 
+	int	playerNum;	//　何人で遊ぶ？
+	int stageType;	//　どのステージ？
+
 public:
 	//	初期化・解放
 	sceneTitle( void );

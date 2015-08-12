@@ -14,6 +14,8 @@
 #include	"sceneTitle.h"
 #include	"GameManager.h"
 
+
+#define		PLAYER_NUM	4
 //*****************************************************************************
 //
 //	sceneTitleクラス
@@ -53,7 +55,8 @@
 //-----------------------------------------------------------------------------------
 
 	//	コンストラクタ
-	sceneTitle::sceneTitle(void) : orientation(0, 0, 0, 1), mode(TITLE)
+	sceneTitle::sceneTitle(void) : orientation(0, 0, 0, 1), 
+		mode(TITLE), playerNum(0), stageType(0)
 	{
 
 	}
@@ -102,6 +105,8 @@
 		s_pos = m_Camera->GetPos();
 		c_pos = m_Camera->GetPos();
 		t_pos = Vector3( 0, 0, 0 );
+
+		playerNum = 1;
 
 		return	true;
 	}
@@ -318,13 +323,31 @@
 	//--------------------------------------------------------
 	void	sceneTitle::SelectPlayerNumUpdate(void)
 	{
+		//　「A」「D」で選択
+		//　「SPACE」で決定
+		//　「S」で戻る
+
+		if (KEY(KEY_RIGHT) == 3)
+		{
+			if (playerNum < PLAYER_NUM)	playerNum++;
+		}
+		if (KEY(KEY_LEFT) == 3)
+		{
+			if (playerNum > 1)	playerNum--;
+		}
 		if (KEY(KEY_SPACE) == 3) mode = SELECT_CHARACTER;
+
+		if (KEY(KEY_DOWN) == 3)	mode = MENU;
 	}
 
 	void	sceneTitle::SelectPlayerNumRender(void)
 	{
 		DrawString("人数選択だよ", 50, 50);
 		DrawString("[SPACE]：キャラ選択へ", 300, 400, 0xFFFFFF00);
+
+		char	str[64];
+		wsprintf(str, "プレイヤー人数：%d\n", playerNum);
+		IEX_DrawText(str, 300, 300, 200, 20, 0xFFFF00FF);
 	}
 
 	//--------------------------------------------------------
@@ -332,26 +355,69 @@
 	//--------------------------------------------------------
 	void	sceneTitle::SelectCharacterUpdate(void)
 	{
-		if (KEY(KEY_SPACE) == 3) mode = SELECT_STAGE;
+		//　プレイヤーキャラ選択　→　CPUキャラ選択
+		//　「A」「D」で選択
+		//　「SPACE」で決定
+		//　「S」で戻る
 
-		int type[4];
-		for (int p = 0; p < 4; p++)
+		int type[PLAYER_NUM];
+		static int step = 0;
+		switch (step)
 		{
-			type[p] = m_Player->GetType(p);
-			if (KEY(KEY_RIGHT) == 3)
+		case 0:		//　プレイヤーキャラ選択
+			for (int p = 0; p < playerNum; p++)
 			{
-				if (type[p] < 10)	//　←マジックナンバーはキャラの種類の最大数
+				type[p] = m_Player->GetType(p);
+				if (KEY(KEY_RIGHT) == 3)
 				{
-					m_Player->SetType(p,type[p] + 1);
+					if (type[p] < 10)	//　←マジックナンバーはキャラの種類の最大数
+					{
+						m_Player->SetType(p, type[p] + 1);
+					}
+				}
+				if (KEY(KEY_LEFT) == 3)
+				{
+					if (type[p] > 0)
+					{
+						m_Player->SetType(p, type[p] - 1);
+					}
 				}
 			}
-			if (KEY(KEY_LEFT) == 3)
+			if (KEY(KEY_SPACE) == 3) step++;
+			if (KEY(KEY_DOWN) == 3)	mode = SELECT_PLAYERNUM;
+			break;
+
+		case 1:		//　CPUキャラ選択
+			if (playerNum == PLAYER_NUM)	step++;
+			else
 			{
-				if (type[p] > 0)
+				for (int p = playerNum; p < PLAYER_NUM; p++)
 				{
-					m_Player->SetType(p,type[p] - 1);
+					type[p] = m_Player->GetType(p);
+					if (KEY(KEY_RIGHT) == 3)
+					{
+						if (type[p] < 10)	//　←マジックナンバーはキャラの種類の最大数
+						{
+							m_Player->SetType(p, type[p] + 1);
+						}
+					}
+					if (KEY(KEY_LEFT) == 3)
+					{
+						if (type[p] > 0)
+						{
+							m_Player->SetType(p, type[p] - 1);
+						}
+					}
 				}
+				if (KEY(KEY_SPACE) == 3) step++;
+				if (KEY(KEY_DOWN) == 3) step--;
 			}
+			break;
+
+		case 2:
+			mode = SELECT_STAGE;
+			step = 0;
+			break;
 		}
 	}
 
@@ -361,10 +427,10 @@
 		DrawString("[SPACE]：ステージ選択へ", 300, 400, 0xFFFFFF00);
 
 		char	str[64];
-		for (int p = 0; p < 4; p++)
+		for (int p = 0; p < PLAYER_NUM; p++)
 		{
 			wsprintf(str, "%dＰのキャラタイプ： %d\n", p + 1, m_Player->GetType(p));
-			IEX_DrawText(str, 300, 300 + p * 20, 200, 20, 0xFF7070FF);
+			IEX_DrawText(str, 300, 300 + p * 20, 200, 20, 0xFFFF00FF);
 		}
 	}
 
@@ -373,13 +439,32 @@
 	//--------------------------------------------------------
 	void	sceneTitle::SelectStageUpdate(void)
 	{
+		//　「A」「D」で選択
+		//　「SPACE」で決定
+		//　「S」で戻る
+
 		if (KEY(KEY_SPACE) == 3) mode = SELECT_CHECK;
+
+		if (KEY(KEY_RIGHT) == 3)
+		{
+			if (stageType < 8)	stageType++;
+		}
+		if (KEY(KEY_LEFT) == 3)
+		{
+			if (stageType > 0)	stageType--;
+		}
+
+		if (KEY(KEY_DOWN) == 3)	mode = SELECT_CHARACTER;
 	}
 
 	void	sceneTitle::SelectStageRender(void)
 	{
 		DrawString("ステージ選択だよ", 50, 50);
 		DrawString("[SPACE]：最終確認へ", 300, 400, 0xFFFFFF00);
+
+		char	str[64];
+		wsprintf(str, "ステージ：%d番\n", stageType);
+		IEX_DrawText(str, 300, 300, 200, 20, 0xFFFF00FF);
 	}
 
 	//--------------------------------------------------------
@@ -387,21 +472,58 @@
 	//--------------------------------------------------------
 	void	sceneTitle::SelectCheckUpdate(void)
 	{
-		if (KEY(KEY_SPACE) == 3)
+		//	「A」「D」で、はい・いいえ的なやつを選ぶ
+		//　「SPACE」で決定
+		//　「S」で戻る
+
+		static bool ready = true;
+		if (KEY(KEY_RIGHT) == 3) ready = !ready;
+		if (KEY(KEY_LEFT) == 3) ready = !ready;
+
+		if (ready)
 		{
-			for (int p = 0; p < 4; p++)
+			if (KEY(KEY_SPACE) == 3)
 			{
-				GameManager::charatype[p] = m_Player->GetType(p);
+				for (int p = 0; p < playerNum; p++)
+				{
+					GameManager::charatype[p] = m_Player->GetType(p);
+				}
+				GameManager::playerNum = playerNum;
+				GameManager::stageType = stageType;
+				MainFrame->ChangeScene(new sceneMain());
+				return;
 			}
-			MainFrame->ChangeScene(new sceneMain());
-			return;
 		}
+		else
+		{
+			if (KEY(KEY_SPACE) == 3)	mode = SELECT_STAGE;
+		}
+
+		if (KEY(KEY_DOWN) == 3)	mode = SELECT_STAGE;
 	}
 
 	void	sceneTitle::SelectCheckRender(void)
 	{
+		//　選択情報
+		char	str[64];
+		for (int p = 0; p < PLAYER_NUM; p++)
+		{
+			wsprintf(str, "%dＰのキャラタイプ： %d\n", p + 1, m_Player->GetType(p));
+			IEX_DrawText(str, 300, 300 + p * 20, 200, 20, 0xFFFF00FF);
+		}
+		wsprintf(str, "プレイヤー人数：%d\n", playerNum);
+		IEX_DrawText(str, 300, 380, 200, 20, 0xFFFF00FF);
+		wsprintf(str, "ステージ：%d番\n", stageType);
+		IEX_DrawText(str, 300, 400, 200, 20, 0xFFFF00FF);
+
 		DrawString("最終確認だよ", 50, 50);
-		DrawString("[SPACE]：sceneMainへ", 300, 400, 0xFFFFFF00);
+		DrawString("[SPACE]：sceneMainへ", 300, 420, 0xFFFFFF00);
+
+		static bool ready = true;
+		if (KEY(KEY_RIGHT) == 3) ready = !ready;
+		if (KEY(KEY_LEFT) == 3) ready = !ready;
+		wsprintf(str, "はい＝1、いいえ＝0：%d番\n", ready);
+		IEX_DrawText(str, 300, 440, 200, 20, 0xFFFF00FF);
 	}
 
 	//--------------------------------------------------------

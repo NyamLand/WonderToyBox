@@ -15,6 +15,8 @@ private:
 
 	//	変数
 	int		timer;
+	int		playerNum;
+	int		stageType;
 
 private:
 	//	オブジェクト

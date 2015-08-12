@@ -16,6 +16,8 @@ private:
 public:
 
 	static int charatype[4];
+	static int playerNum;
+	static int stageType;
 
 	//	‰Šú‰»E‰ğ•ú
 	GameManager( void );

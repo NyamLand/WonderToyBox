@@ -35,7 +35,7 @@ sceneMain* m_sceneMain;
 //*****************************************************************************************************************************
 
 	//	コンストラクタ
-	sceneMain::sceneMain( void ) : m_Stage( NULL )
+	sceneMain::sceneMain(void) : m_Stage(NULL), playerNum(0), stageType(0)
 	{
 		
 	}
@@ -92,6 +92,8 @@ sceneMain* m_sceneMain;
 
 		//	変数初期化
 		timer = 0;
+		playerNum = GameManager::playerNum;
+		stageType = GameManager::stageType;
 
 		//	全体更新
 		Update();
@@ -122,11 +124,11 @@ sceneMain* m_sceneMain;
 	//	プレイヤー初期化
 	void	sceneMain::PlayerInitialize( void )
 	{
-		int type[4];
+		/*int type[4];
 		for (int p = 0; p < 4; p++)
 		{
 			type[p] = GameManager::charatype[p];
-		}
+		}*/
 		m_Player->Initialize( 0, PlayerData::SQUIRREL, Vector3( 0.0f, 0.0f, 0.0f ) );
 		m_Player->Initialize( 1, PlayerData::PRINCESS, Vector3( 10.0f, 0.0f, 0.0f ) );
 		m_Player->Initialize( 2, PlayerData::KNIGHT, Vector3( 5.0f, 0.0f, 0.0f ) );
@@ -193,7 +195,7 @@ sceneMain* m_sceneMain;
 
 		if ( timer >= TIMELIMIT )
 		{
-			//MainFrame->ChangeScene( new sceneResult() );
+			MainFrame->ChangeScene( new sceneResult() );
 			return;
 		}
 
