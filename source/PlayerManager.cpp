@@ -10,6 +10,7 @@
 #include	"Y2009.h"
 #include	"ECCMAN.h"
 #include	"Princess.h"
+#include	"Knight.h"
 
 #include	"PlayerManager.h"
 
@@ -65,6 +66,11 @@
 		case PlayerData::PRINCESS:
 			c_Player[input] = new Princess();
 			break;
+
+		case PlayerData::KNIGHT:
+			c_Player[input] = new Knight();
+			break;
+
 
 		default:
 			c_Player[input] = new Y2009();
