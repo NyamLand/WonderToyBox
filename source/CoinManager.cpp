@@ -90,6 +90,9 @@ CoinManager*	m_CoinManager;
 			c_Coin[i].Render();
 		}
 
+		//	デバッグ用
+		if ( !debug )	return;	
+
 		char	str[256];
 		sprintf_s( str, "coin_num = %d", coin_num );
 		DrawString( str, 20, 100 );

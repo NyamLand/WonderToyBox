@@ -176,6 +176,9 @@ sceneMain* m_sceneMain;
 			//MainFrame->ChangeScene( new sceneResult() );
 			return;
 		}
+
+		//	デバッグモード切り替え
+		if ( KEY( KEY_ENTER ) == 3 )		debug = !debug;
 	}
 
 //*****************************************************************************************************************************
