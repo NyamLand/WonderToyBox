@@ -88,6 +88,7 @@ protected:
 	int					coinNum;
 	int					power;
 	int					diffence;
+	int					type;
 
 	//	当たり判定用
 	int				attackParam;				//	攻撃種類
@@ -140,6 +141,7 @@ public:
 	void	SetAngle( float angle );
 	void	SetScale( float scale );
 	void	SetKnockBackVec( Vector3 knockBackVec );
+	void	SetType( int type );
 
 	//	情報取得
 	Vector3	GetPos( void );
@@ -148,6 +150,7 @@ public:
 	int			GetCoinNum( void );
 	bool		GetUnrivaled( void );
 	int			GetMode( void );
+	int			GetType( void );
 
 	//	当たり判定用パラメータ取得
 	int			GetAttackParam( void );

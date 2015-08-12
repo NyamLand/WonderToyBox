@@ -19,6 +19,7 @@
 #include	"UI.h"
 
 #include	"sceneMain.h"
+#include	"GameManager.h"
 
 //*****************************************************************************************************************************
 //
@@ -121,10 +122,20 @@ sceneMain* m_sceneMain;
 	//	プレイヤー初期化
 	void	sceneMain::PlayerInitialize( void )
 	{
-		m_Player->Initialize( 0, PlayerData::SQUIRREL, Vector3( 0.0f, 0.0f, 0.0f ) );
-		m_Player->Initialize( 1, PlayerData::PRINCESS, Vector3( 10.0f, 0.0f, 0.0f ) );
-		m_Player->Initialize( 2, PlayerData::PRINCESS, Vector3( 5.0f, 0.0f, 0.0f ) );
-		m_Player->Initialize( 3, PlayerData::PRINCESS, Vector3( -5.0f, 0.0f, 0.0f ) );
+		int type[4];
+		for (int p = 0; p < 4; p++)
+		{
+			type[p] = GameManager::charatype[p];
+		}
+		//m_Player->Initialize( 0, PlayerData::SQUIRREL, Vector3( 0.0f, 0.0f, 0.0f ) );
+		//m_Player->Initialize( 1, PlayerData::PRINCESS, Vector3( 10.0f, 0.0f, 0.0f ) );
+		//m_Player->Initialize( 2, PlayerData::PRINCESS, Vector3( 5.0f, 0.0f, 0.0f ) );
+		//m_Player->Initialize( 3, PlayerData::PRINCESS, Vector3( -5.0f, 0.0f, 0.0f ) );
+
+		m_Player->Initialize(0, type[0], Vector3(0.0f, 0.0f, 0.0f));
+		m_Player->Initialize(1, type[1], Vector3(10.0f, 0.0f, 0.0f));
+		m_Player->Initialize(2, type[2], Vector3(5.0f, 0.0f, 0.0f));
+		m_Player->Initialize(3, type[3], Vector3(-5.0f, 0.0f, 0.0f));
 	}
 
 	//	ディファード初期化

@@ -12,6 +12,7 @@
 #include	"sceneMain.h"
 
 #include	"sceneTitle.h"
+#include	"GameManager.h"
 
 //*****************************************************************************
 //
@@ -315,12 +316,39 @@ namespace c_Move{
 	void	sceneTitle::SelectCharacterUpdate(void)
 	{
 		if (KEY(KEY_SPACE) == 3) mode = SELECT_STAGE;
+
+		int type[4];
+		for (int p = 0; p < 4; p++)
+		{
+			type[p] = m_Player->GetType(p);
+			if (KEY(KEY_RIGHT) == 3)
+			{
+				if (type[p] < 10)	//　←マジックナンバーはキャラの種類の最大数
+				{
+					m_Player->SetType(p,type[p] + 1);
+				}
+			}
+			if (KEY(KEY_LEFT) == 3)
+			{
+				if (type[p] > 0)
+				{
+					m_Player->SetType(p,type[p] - 1);
+				}
+			}
+		}
 	}
 
 	void	sceneTitle::SelectCharacterRender(void)
 	{
 		DrawString("キャラ選択だよ", 50, 50);
 		DrawString("[SPACE]：ステージ選択へ", 300, 400, 0xFFFFFF00);
+
+		char	str[64];
+		for (int p = 0; p < 4; p++)
+		{
+			wsprintf(str, "%dＰのキャラタイプ： %d\n", p + 1, m_Player->GetType(p));
+			IEX_DrawText(str, 300, 300 + p * 20, 200, 20, 0xFF7070FF);
+		}
 	}
 
 	//--------------------------------------------------------
@@ -344,6 +372,10 @@ namespace c_Move{
 	{
 		if (KEY(KEY_SPACE) == 3)
 		{
+			for (int p = 0; p < 4; p++)
+			{
+				GameManager::charatype[p] = m_Player->GetType(p);
+			}
 			MainFrame->ChangeScene(new sceneMain());
 			return;
 		}

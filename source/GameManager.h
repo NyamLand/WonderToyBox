@@ -14,6 +14,9 @@ private:
 
 
 public:
+
+	static int charatype[4];
+
 	//	‰Šú‰»E‰ğ•ú
 	GameManager( void );
 	~GameManager( void );
