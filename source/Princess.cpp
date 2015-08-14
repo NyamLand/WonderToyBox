@@ -121,6 +121,7 @@
 		case	PlayerData::POWERARTS:
 		case PlayerData::HYPERARTS:
 		case PlayerData::QUICKARTS:
+			unrivaled = true;
 			move = Vector3( 0.0f, 0.0f, 0.0f );
 			Attack( mode );
 			break;
@@ -132,6 +133,7 @@
 		case PlayerData::GUARD:
 			Guard();
 			break;
+
 		case PlayerData::DAMAGE_STRENGTH:
 			CommonKnockBackStrength();
 			break;
@@ -264,7 +266,6 @@
 		case PlayerData::HYPERARTS:
 			isEnd = HyperArts();
 			if ( !isEnd ){
-				unrivaled = true;
 				attackParam = PlayerData::SPHEREVSCYRINDER;
 				knockBackType = PlayerData::KNOCKBACK_STRENGTH;
 			}
