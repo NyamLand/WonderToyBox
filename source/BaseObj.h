@@ -10,6 +10,22 @@
 
 namespace PlayerData
 {
+	const int CHARACTER_MAX = 3;
+	//	文字列
+	const		LPSTR	characterName[CHARACTER_MAX] =
+	{
+		"ナイト",
+		"プリンセス",
+		"リス",
+		//"とら",
+		//"Yねえさん",
+		//"大王",
+		//"クマ",
+		//"アニマさん",
+		//"クロウズさん",
+		//"ECCマン",
+	};
+
 	enum PLAYER_TYPE
 	{
 		KNIGHT,		//	騎士
@@ -64,7 +80,6 @@ protected:
 	//	定数
 	const float GRAVITY = -0.01f;
 	static const int MIN_INPUT_STATE = 300;	//	スティック判定最小値
-
 
 protected:
 	//	モデル

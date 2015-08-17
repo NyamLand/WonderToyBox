@@ -7,6 +7,7 @@
 #include	"BaseObj.h"
 #include	"Player.h"
 #include	"PlayerManager.h"
+#include	"GameManager.h"
 
 #include	"Coin.h"
 
@@ -118,7 +119,8 @@
 				state = false;
 				float	effectScale = 0.2f;
 				Particle::Spark( p_pos[i], effectScale );
-				m_Player->AddCoin( i );
+				//m_Player->AddCoin( i );
+				GameManager::AddCoin( i );
 			}
 		}
 	}

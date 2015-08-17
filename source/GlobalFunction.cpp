@@ -114,6 +114,11 @@
 		IEX_DrawText( string, x, y, 300, 300, ARGB( 0xFF, ( DWORD )( 0xFF * color.x ), ( DWORD )( 0xFF * color.y ), ( DWORD )( 0xFF * color.z ) ) );
 	}
 
+
+//----------------------------------------------------------------------------
+//	画像関連
+//----------------------------------------------------------------------------
+	
 	//	画像構造体初期化
 	void	InitImage( Image& img, iex2DObj* obj, int x, int y, int w, int h, int sx, int sy, int sw, int sh, float angle, float alpha, Vector3 color )
 	{
@@ -122,9 +127,11 @@
 		img.w = w;	img.h = h;
 		img.sx = sx;	img.sy = sy;
 		img.sw = sw; img.sh = sh;
+		img.plusH = img.plusW = 0;
 		img.angle = angle;
 		img.alpha = alpha;
 		img.color = color;
+		img.timer = 0.0f;
 	}
 							 
 	void	InitImage( Image& img, iex2DObj* obj, int x, int y, int w, int h, int srcScale )
@@ -134,13 +141,15 @@
 		img.w = w;	img.h = h;
 		img.sx = img.sy = 0;
 		img.sw = img.sh = srcScale;
+		img.plusH = img.plusW = 0;
 		img.angle = 0.0f;
 		img.alpha = 1.0f;
 		img.color = Vector3( 1.0f, 1.0f, 1.0f );
+		img.timer = 0.0f;
 	}
 
 	//	画像描画
-	void	RenderImage( Image img )
+	void	RenderImageNormal( Image img )
 	{
 		int x, y, w, h, sx, sy, sw, sh;
 		float angle, alpha;
@@ -152,6 +161,25 @@
 		angle = img.angle;
 		alpha = img.alpha;
 		color= img.color;
+		sx = img.sx; sy = img.sy;
+		sw = img.sw; sh = img.sh;
+
+		img.obj->Render( x, y, w, h, sx, sy, sw, sh );
+	}
+
+	//	ステータス採用
+	void	RenderImageAdoptStatus( Image img )
+	{
+		int x, y, w, h, sx, sy, sw, sh;
+		float angle, alpha;
+		Vector3 color;
+
+		w = img.w + img.plusW;	h = img.h + img.plusH;
+		x = img.x - w / 2;
+		y = img.y - h / 2;
+		angle = img.angle;
+		alpha = img.alpha;
+		color = img.color;
 		sx = img.sx; sy = img.sy;
 		sw = img.sw; sh = img.sh;
 

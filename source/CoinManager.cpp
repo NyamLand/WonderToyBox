@@ -121,13 +121,13 @@ CoinManager*	m_CoinManager;
 
 			c_Coin[i].judgeTimer		=		30;
 			c_Coin[i].activate			=		false;
-			c_Coin[i].state				=		true;
 			c_Coin[i].obj					=		org->Clone();
 			c_Coin[i].pos					=		pos;
 			Vector3	v						=		vec;
 			v.Normalize();
 			c_Coin[i].move				=		v * speed;
 			c_Coin[i].scale				=		0.5f;
+			c_Coin[i].state				=		true;
 			break;
 		}
 	}

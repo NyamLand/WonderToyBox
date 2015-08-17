@@ -3,6 +3,7 @@
 #include	<random>
 #include	"system/system.h"
 #include	"system/Framework.h"
+#include	"GameManager.h"
 #include	"GlobalFunction.h"
 #include	"Collision.h"
 #include	"Camera.h"
@@ -19,14 +20,13 @@
 #include	"UI.h"
 
 #include	"sceneMain.h"
-#include	"GameManager.h"
 
 //*****************************************************************************************************************************
 //
 //	グローバル変数
 //
 //*****************************************************************************************************************************
-sceneMain* m_sceneMain;
+
 
 //*****************************************************************************************************************************
 //
@@ -35,7 +35,7 @@ sceneMain* m_sceneMain;
 //*****************************************************************************************************************************
 
 	//	コンストラクタ
-	sceneMain::sceneMain(void) : m_Stage(NULL), playerNum(0), stageType(0)
+	sceneMain::sceneMain( void ) : m_Stage( NULL ), playerNum( 0 ), stageType( 0 )
 	{
 		
 	}
@@ -92,8 +92,8 @@ sceneMain* m_sceneMain;
 
 		//	変数初期化
 		timer = 0;
-		playerNum = GameManager::playerNum;
-		stageType = GameManager::stageType;
+		playerNum = GameManager::GetPlayerNum();
+		stageType = GameManager::GetStageType();
 
 		//	全体更新
 		Update();
@@ -117,6 +117,7 @@ sceneMain* m_sceneMain;
 		SafeDelete( light );
 		SafeDelete( light_s );
 		SafeDelete( screen );
+		SafeDelete( m_Player );
 		backBuffer->Release();
 		Particle::Release();
 	}
@@ -182,25 +183,23 @@ sceneMain* m_sceneMain;
 		//	リス　バレット更新
 		m_BulletManager->Update();
 
-		//	UI更新
-		m_UI->Update();
-
 		//	カメラ更新
 		m_Camera->Update( VIEW_MODE::FIX, Vector3( 0.0f, 2.0f, 0.0f ) );
 		shader3D->SetValue( "ViewPos", m_Camera->GetPos() );
 		shader3D->SetValue( "matView", m_Camera->GetMatrix() );
 
-		//	タイマー更新
-		timer++;
-
-		if ( timer >= TIMELIMIT )
+		//	デバッグモード切り替え
+		if ( KEY( KEY_ENTER ) == 3 )		debug = !debug;
+		
+		//	シーン切り替え
+		if ( GameManager::GetChangeSceneFlag() )
 		{
 			MainFrame->ChangeScene( new sceneResult() );
 			return;
 		}
 
-		//	デバッグモード切り替え
-		if ( KEY( KEY_ENTER ) == 3 )		debug = !debug;
+		//	ゲームマネージャー
+		GameManager::Update();
 	}
 
 //*****************************************************************************************************************************
@@ -277,18 +276,10 @@ sceneMain* m_sceneMain;
 		m_BulletManager->Render();
 		
 		//UI
-		m_UI->Render();
+		GameManager::Render();
 
 		//	パーティクル描画
 		Particle::Render();
-
-		int		second = ( TIMELIMIT - timer ) / SECOND;
-		int		minute = ( TIMELIMIT - timer ) / MINUTE;
-
-		//	デバッグ用
-		//char	str[256];
-		//sprintf_s( str, "timelimit = %d分%d秒", minute, second );
-		//DrawString( str, 550, 100 );
 	}
 
 	//	シャドウバッファ描画

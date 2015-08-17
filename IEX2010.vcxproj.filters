@@ -43,9 +43,6 @@
     <Filter Include="ソース ファイル\Scene">
       <UniqueIdentifier>{1d0177fd-aed1-4f98-98b0-c23288247fb8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Scene\sceneMain">
-      <UniqueIdentifier>{cc606a43-d8db-4916-9d6a-efc4d1b60c3c}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Scene\sceneTitle">
       <UniqueIdentifier>{d873ab43-879e-43f8-ae9f-ea2fa81fda5f}</UniqueIdentifier>
     </Filter>
@@ -93,6 +90,12 @@
     </Filter>
     <Filter Include="ソース ファイル\Player\Knight">
       <UniqueIdentifier>{2ac1b34f-a140-4426-ad12-bad920e92a94}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scene\sceneMain">
+      <UniqueIdentifier>{cc606a43-d8db-4916-9d6a-efc4d1b60c3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scene\sceneLoad">
+      <UniqueIdentifier>{6896f326-e1c2-4544-b66e-034745faaa30}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -219,6 +222,12 @@
     <ClCompile Include="source\Knight.cpp">
       <Filter>ソース ファイル\Player\Knight</Filter>
     </ClCompile>
+    <ClCompile Include="source\sceneLoad.cpp">
+      <Filter>ソース ファイル\Scene\sceneLoad</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Effect.cpp">
+      <Filter>ソース ファイル\Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -298,6 +307,12 @@
     </ClInclude>
     <ClInclude Include="source\Knight.h">
       <Filter>ソース ファイル\Player\Knight</Filter>
+    </ClInclude>
+    <ClInclude Include="source\sceneLoad.h">
+      <Filter>ソース ファイル\Scene\sceneLoad</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Effect.h">
+      <Filter>ソース ファイル\Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

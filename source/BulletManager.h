@@ -14,7 +14,7 @@ private:
 private:
 	//	定数
 	static const int BULLET_MAX = 201;		//	弾最大数
-	const int LIMIT = 60 * 1.5f;
+	const int LIMIT = ( const int )( 60 * 1.5f );
 
 	//	オブジェクト
 	iexMesh*	org;			//	オリジナルモデル

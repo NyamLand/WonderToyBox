@@ -8,6 +8,7 @@
 #include	"PlayerManager.h"
 #include	"sceneTitle.h"
 #include	"sceneMain.h"
+#include	"GameManager.h"
 
 #include	"sceneResult.h"
 
@@ -31,7 +32,6 @@
 	sceneResult::~sceneResult( void )
 	{
 		SafeDelete( view );
-		SafeDelete( m_Player );
 	}
 
 	//	‰Šú‰»
@@ -42,7 +42,7 @@
 
 		for ( int i = 0; i < 4; i++ )
 		{
-			resultInfo[i].p_Coin = m_Player->GetCoinNum( i );
+			resultInfo[i].p_Coin = GameManager::GetCoinNum( i );
 			resultInfo[i].p_num = i;
 		}
 

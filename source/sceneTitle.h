@@ -10,6 +10,8 @@
 
 class sceneTitle : public	Scene
 {
+private:
+
 
 private:
 	//iexView*	view;
@@ -25,11 +27,10 @@ private:
 	
 	Quaternion orientation;	//	クォータニオン
 
-
 	//---------------------------
 	//　タイトルでのモード遷移
 	//---------------------------
-	enum
+	enum Mode
 	{
 		TITLE,
 		MENU,
@@ -42,8 +43,8 @@ private:
 	};
 	int mode;
 
-	int	playerNum;	//　何人で遊ぶ？
-	int stageType;	//　どのステージ？
+	int 	playerNum;	//　何人で遊ぶ？
+	int		stageType;	//　どのステージ？
 
 public:
 	//	初期化・解放

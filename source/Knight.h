@@ -31,25 +31,24 @@ private:
 
 public:
 	//	初期化・解放
-	Knight(void);
-	~Knight(void);
-	void	SetMotionData(void);
+	Knight( void );
+	~Knight( void );
+	void	SetMotionData( void );
 
 	//	更新・描画
-	void	Update(void);
-	void	Render(iexShader* shader, LPSTR technique);
+	void	Update( void );
+	void	Render( iexShader* shader, LPSTR technique );
 
 	//	動作関数
-	void	ModeManagement(void);
-	void	Move(void);
-	void	Jump(void);
-	void	Attack(int attackKind);
-	bool	QuickArts(void);
-	bool	PowerArts(void);
-	bool	HyperArts(void);
+	void	ModeManagement( void );
+	void	Move( void );
+	void	Jump( void );
+	void	Attack( int attackKind );
+	bool	QuickArts( void );
+	bool	PowerArts( void );
+	bool	HyperArts( void );
 	void	Guard( void );
 	void	Damage( int type );
-
 };
 
 //*********************************************************************************

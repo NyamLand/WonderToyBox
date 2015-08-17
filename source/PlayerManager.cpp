@@ -12,6 +12,7 @@
 #include	"Princess.h"
 #include	"Squirrel.h"
 #include	"Knight.h"
+#include	"GameManager.h"
 
 #include	"PlayerManager.h"
 
@@ -139,9 +140,9 @@
 			DrawCapsule( p_pos, Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z ), 1.0f, 0xFFFFFFFF );
 
 			//	デバッグ用
-			char	str[256];
-			sprintf_s( str, "p%d_coin = %d", i + 1, c_Player[i]->GetCoinNum() );
-			DrawString( str, 20, 150 + i * 30 );
+			//char	str[256];
+			//sprintf_s( str, "p%d_coin = %d", i + 1, c_Player[i]->GetCoinNum() );
+			//DrawString( str, 20, 150 + i * 30 );
 		}
 	}
 
@@ -177,10 +178,12 @@
 						vec.y = 0.5f;
 						vec.Normalize();
 						
-						if ( c_Player[n]->GetCoinNum() > 0 )
+						//if ( c_Player[n]->GetCoinNum() > 0 )
+						if ( GameManager::GetCoinNum( n ) > 0 ) 
 						{
 							m_CoinManager->Set( p_pos2, vec, 0.5f );
-							c_Player[n]->SubCoin();
+							//c_Player[n]->SubCoin();
+							GameManager::SubCoin( n );
 						}
 					}
 				}

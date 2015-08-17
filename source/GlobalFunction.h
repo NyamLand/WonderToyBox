@@ -72,8 +72,10 @@
 	{
 		iex2DObj*	obj;
 		int		x, y, w, h, sx, sy, sw, sh;
+		int		plusW, plusH;
 		float	alpha;
 		float	angle;
+		float	timer;
 		Vector3	color;
 	};
 
@@ -122,13 +124,6 @@
 	void	DrawString( LPSTR string, int x, int y, float r, float g, float b );
 	void	DrawString( LPSTR string, int x, int y, Vector3 color );
 
-	//	画像構造体初期化
-	void	InitImage( Image& img, iex2DObj* obj, int x, int y, int w, int h, int sx = 0, int sy = 0, int sw = 512, int sh = 512, float angle = 0.0f, float alpha = 1.0f, Vector3 color = Vector3( 1.0f, 1.0f, 1.0f ) );
-	void	InitImage( Image& img, iex2DObj* obj, int x, int y, int w, int h, int srcScale );
-
-	//	画像描画
-	void	RenderImage( Image img );
-
 	//	サウンド関連
 	void	SetSound( int type, bool loop = false );
 	void	PlayBGM( int type );
@@ -136,7 +131,21 @@
 
 	//	モーション番号登録
 	void	SetMotionNum( int& motionData, int motionNum );
+
+//----------------------------------------------------------------------
+//	画像関連
+//----------------------------------------------------------------------
 	
+	//	画像構造体初期化
+	void	InitImage( Image& img, iex2DObj* obj, int x, int y, int w, int h, int sx = 0, int sy = 0, int sw = 512, int sh = 512, float angle = 0.0f, float alpha = 1.0f, Vector3 color = Vector3( 1.0f, 1.0f, 1.0f ) );
+	void	InitImage( Image& img, iex2DObj* obj, int x, int y, int w, int h, int srcScale );
+
+	//	画像描画
+	void	RenderImageNormal( Image img );
+	
+	//	ステータス適用
+	void	RenderImageAdoptStatus( Image img );
+
 //----------------------------------------------------------------------
 //	図形描画
 //----------------------------------------------------------------------
