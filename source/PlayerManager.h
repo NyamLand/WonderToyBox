@@ -39,6 +39,7 @@ public:
 	//	“–‚½‚è”»’è
 	void	HitCheck( void );
 	void	HitCheckSphereVSCapsule( Player* p1, Player* p2 );
+	void	HitCheckCapsuleVSCapsule( Player* p1, Player* p2 );
 
 	//	î•ñæ“¾
 	Vector3	GetPos( int player );

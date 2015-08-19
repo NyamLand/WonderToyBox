@@ -139,7 +139,7 @@
 			break;
 
 		case PlayerData::DAMAGE:
-			Damage( mode );
+			Damage();
 			break;
 		}
 	}
@@ -302,7 +302,7 @@
 	}
 
 	//	ÉÇÅ[ÉhDamage
-	void	Princess::Damage( int type )
+	void	Princess::Damage( void )
 	{
 		CommonKnockBack();
 	}

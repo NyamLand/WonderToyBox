@@ -99,6 +99,7 @@ protected:
 	float				force;
 	bool				unrivaled;	//	–³“G
 	bool				isGround;
+	int					p_num;		//	©•ª‚Ì”Ô†
 	int					mode;
 	int					coinNum;
 	int					power;
@@ -175,6 +176,7 @@ public:
 	Vector3	GetAttackPos_Bottom( void );
 	float		GetAttack_R( void );
 	float		GetAttack_T( void );
+	int			GetP_Num( void );
 };
 
 

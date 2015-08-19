@@ -27,7 +27,7 @@ public:
 	void	Move( void );
 	void	Jump( void );
 	void	Attack( int attackKind );
-	void	Damage( int type );
+	void	Damage( void );
 	bool	QuickArts( void );
 	bool	PowerArts( void );
 	bool	HyperArts( void );

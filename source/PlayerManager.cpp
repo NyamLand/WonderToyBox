@@ -1,6 +1,7 @@
 
 #include	"iextreme.h"
 #include	"GlobalFunction.h"
+#include	"system/System.h"
 #include	"Collision.h"
 #include	"Particle.h"
 #include	"Coin.h"
@@ -138,64 +139,12 @@
 			c_Player[i]->Render( shader, technique );
 			Vector3	p_pos = c_Player[i]->GetPos();
 			DrawCapsule( p_pos, Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z ), 1.0f, 0xFFFFFFFF );
-
-			//	デバッグ用
-			//char	str[256];
-			//sprintf_s( str, "p%d_coin = %d", i + 1, c_Player[i]->GetCoinNum() );
-			//DrawString( str, 20, 150 + i * 30 );
 		}
 	}
 
 //------------------------------------------------------------------------------
 //	動作関数
 //------------------------------------------------------------------------------
-
-	//	当たり判定
-	void	PlayerManager::HitCheck( void )
-	{
-		for ( int i = 0; i < PLAYER_NUM; i++ )
-		{
-			for ( int n = 0; n < PLAYER_NUM; n++ )
-			{
-				if ( c_Player[i]->GetAttackParam() != 0 )
-				{
-					//	自分だったら次へ
-					if ( i == n )	continue;
-
-					//	当たり判定(今はとりあえず球で取る)
-					static float	dist = 1.0f;
-					Vector3	p_pos1 = c_Player[i]->GetPos();
-					Vector3	p_pos2 = c_Player[n]->GetPos();
-					p_pos1.y += 3.0f;
-					p_pos2.y += 3.0f;
-					if ( Collision::CapsuleVSCapsule( c_Player[i]->GetPos(), p_pos1, 1.0f, c_Player[n]->GetPos(), p_pos2, 1.0f ) )
-					{
-						//	とりあえずエフェクトとコイン出す
-						Vector3	p_pos = c_Player[n]->GetPos();
-						float	effectScale = 1.0f;
-						Particle::Spark( p_pos, effectScale );
-						Vector3	vec = p_pos2 - p_pos1;
-						vec.y = 0.5f;
-						vec.Normalize();
-						
-						//if ( c_Player[n]->GetCoinNum() > 0 )
-						if ( GameManager::GetCoinNum( n ) > 0 ) 
-						{
-							m_CoinManager->Set( p_pos2, vec, 0.5f );
-							//c_Player[n]->SubCoin();
-							GameManager::SubCoin( n );
-						}
-					}
-				}
-			}
-		}
-	}
-
-	//	カプセル同士の当たり判定
-	void	PlayerManager::HitCheckSphereVSCapsule( Player* p1, Player* p2 )
-	{
-
-	}
 
 	//	コイン加算
 	void	PlayerManager::AddCoin( int player )
@@ -207,6 +156,140 @@
 	void	PlayerManager::SubCoin( int player )
 	{
 		c_Player[player]->SubCoin();
+	}
+
+//------------------------------------------------------------------------------
+//	当たり判定関数
+//------------------------------------------------------------------------------
+
+	//	当たり判定
+	void	PlayerManager::HitCheck( void )
+	{
+		for ( int i = 0; i < PLAYER_NUM; i++ )
+		{
+			for ( int n = 0; n < PLAYER_NUM; n++ )
+			{
+				if ( i == n )	continue;
+				int		attackParam = c_Player[i]->GetAttackParam();
+
+				switch ( attackParam )
+				{
+				case PlayerData::SPHEREVSCAPSULE:
+					HitCheckSphereVSCapsule( c_Player[i], c_Player[n] );
+					break;
+
+				case PlayerData::CAPSULEVSCAPSULE:
+					HitCheckCapsuleVSCapsule( c_Player[i], c_Player[n] );
+					break;
+
+				case PlayerData::SPHEREVSCYRINDER:
+					break;
+
+				case PlayerData::SPHEREVSPOINT:
+					break;
+
+				case PlayerData::SPHEREVSSPHERE:
+					break;
+				}
+			}
+		}
+	}
+
+	//	球とカプセルの当たり判定
+	void	PlayerManager::HitCheckSphereVSCapsule( Player* p1, Player* p2 )
+	{		
+		//	攻撃する方
+		Vector3	p1_attackPos		=		p1->GetAttackPos();
+		float		p1_attack_r		=		p1->GetAttack_R();
+
+		//	攻撃される方
+		Vector3	p2_bottom = p2->GetPos();
+		Vector3	p2_top = Vector3( p2_bottom.x, p2_bottom.y + 3.0f, p2_bottom.z );
+		float		p2_r = 1.0f;
+
+		//	攻撃判定
+		bool	isHit = Collision::CapsuleVSSphere( p2_bottom, p2_top, p2_r, p1_attackPos, p1_attack_r );
+	
+		//	当たっていたら
+		if ( isHit )
+		{		
+			//	エフェクトだす
+			float	effectScale = 1.0f;
+			Particle::Spark( p2_top, effectScale );
+
+			//	ノックバック
+			Vector3	knockBackVec = p1_attackPos - p2_bottom;
+			knockBackVec.y = p2_bottom.y;
+			knockBackVec.Normalize();
+			p2->SetKnockBackVec( -knockBackVec );
+			p2->SetMode( PlayerData::DAMAGE_STRENGTH );
+
+			//	コインばらまき方向設定
+			std::uniform_real_distribution<float>	vecrand( -1.0f, 1.0f );
+			Vector3	vec = Vector3( vecrand( ran ), 1.0f, vecrand( ran ) );
+			vec.Normalize();
+
+			//	プレイヤー番号取得とばらまきパワー設定
+			float	power = 0.2f;
+			int		p2_Num = p2->GetP_Num();
+			int		p2_coinNum = GameManager::GetCoinNum( p2_Num );
+
+			//	コインがあればばらまき
+			if ( p2_coinNum > 0 )
+			{
+				m_CoinManager->Set( p2_top, vec, power );
+				GameManager::SubCoin( p2_Num );
+			}
+		}
+	}
+
+	//	カプセルとカプセルの当たり判定
+	void	PlayerManager::HitCheckCapsuleVSCapsule( Player* p1, Player* p2 )
+	{
+		//	攻撃する方
+		Vector3	p1_attack_bottom = p1->GetAttackPos_Top();
+		Vector3	p1_attack_top = p1->GetAttackPos_Bottom();
+		float		p1_attack_r = p1->GetAttack_R();
+
+		//	攻撃される方
+		Vector3	p2_bottom = p2->GetPos();
+		Vector3	p2_top = Vector3( p2_bottom.x, p2_bottom.y + 3.0f, p2_bottom.z );
+		float		p2_r = 1.0f;
+
+		//	攻撃判定
+		bool	isHit = Collision::CapsuleVSCapsule( p1_attack_bottom, p1_attack_top, p1_attack_r, p2_bottom, p2_top, p2_r );
+
+		//	当たっていたら
+		if ( isHit )
+		{
+			//	エフェクトだす
+			float	effectScale = 1.0f;
+			Particle::Spark( p2_top, effectScale );
+
+			//	ノックバック
+			Vector3	knockBackVec = p1_attack_top - p2_bottom;
+			knockBackVec.y = p2_bottom.y;
+			knockBackVec.Normalize();
+			p2->SetKnockBackVec( -knockBackVec );
+			p2->SetMode( PlayerData::DAMAGE_STRENGTH );
+			
+			//	コインばらまき方向設定
+			std::uniform_real_distribution<float>	vecrand( -1.0f, 1.0f );
+			Vector3	vec = Vector3( vecrand( ran ), 1.0f, vecrand( ran ) );
+			vec.Normalize();
+
+			//	プレイヤー番号取得とばらまきパワー設定
+			float	power = 0.15f;
+			int		p2_Num = p2->GetP_Num();
+			int		p2_coinNum = GameManager::GetCoinNum( p2_Num );
+
+			//	コインがあればばらまき
+			if ( p2_coinNum > 0 )
+			{
+				m_CoinManager->Set( p2_top, vec, power );
+				GameManager::SubCoin( p2_Num );
+			}
+		}
 	}
 
 //------------------------------------------------------------------------------

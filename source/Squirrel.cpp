@@ -201,12 +201,20 @@
 		front.Normalize();
 		right.Normalize();
 		Vector3	p_pos = GetPos();
+		Vector3	vec[3] =
+		{
+			front * 5.0f + right * 5.0f,
+			front * 5.0f,
+			front * 5.0f + right * -5.0f
+		};
+
 
 		if ( time == 0 )
 		{
-			m_BulletManager->Set( p_pos, front * 5.0f + right * 5.0f, 0.5f );
-			m_BulletManager->Set( p_pos, front * 5.0f, 0.5f );
-			m_BulletManager->Set( p_pos, front * 5.0f + right * -5.0f, 0.5f );
+			for ( int i = 0; i < 3; i++ )
+			{
+				m_BulletManager->Set( p_pos, vec[i], 0.5f );
+			}
 		}
 		time++;
 
