@@ -1,4 +1,4 @@
-
+          
 #include	"iextreme.h"
 #include	"GlobalFunction.h"
 #include	"Collision.h"
@@ -168,7 +168,8 @@
 		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
 		front.Normalize();
 
-		Vector3	startPos = Vector3( pos.x, pos.y + 1.5f, pos.z );
+		Vector3	p_pos = GetPos();
+		Vector3	startPos = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
 		Vector3	finPos = startPos + front * 5.0f;
 
 		//	当たり判定位置移動&範囲拡大
@@ -190,7 +191,8 @@
 	//	パワーアーツ
 	bool	Princess::PowerArts( void )
 	{
-		attackPos = Vector3( pos.x, pos.y + 1.5f, pos.z );
+		Vector3	p_pos = GetPos();
+		attackPos = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
 
 		//	範囲拡大
 		Lerp( attack_r, 0.0f, 3.0f, attack_t );
@@ -210,7 +212,8 @@
 	bool	Princess::HyperArts( void )
 	{
 		static	int		num = 0;	//	回数
-		attackPos = Vector3( pos.x, pos.y + 1.5f, pos.z );
+		Vector3	p_pos = GetPos();
+		attackPos = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
 
 		//	範囲拡大
 		float t = GetBezier( ePrm_t::eSlow_Lv4, ePrm_t::eRapid_Lv1, attack_t );

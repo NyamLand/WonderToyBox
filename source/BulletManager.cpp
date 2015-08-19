@@ -112,7 +112,7 @@ void	BulletManager::Render(iexShader* shader, LPSTR technique)
 //---------------------------------------------------------------------------------
 
 //	ê∂ê¨
-void	BulletManager::Set(const Vector3& pos, const Vector3& vec, float speed)
+void	BulletManager::Set( Vector3 pos, Vector3 vec, float speed)
 {
 	for (int i = 0; i < BULLET_MAX; i++)
 	{
@@ -132,7 +132,7 @@ void	BulletManager::Set(const Vector3& pos, const Vector3& vec, float speed)
 	}
 }
 
-void	BulletManager::Set(const Vector3& pos, const Vector3& vec, const float& scale, float speed)
+void	BulletManager::Set( Vector3 pos, Vector3 vec, const float& scale, float speed)
 {
 	for (int i = 0; i < BULLET_MAX; i++)
 	{

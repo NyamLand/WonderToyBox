@@ -102,6 +102,8 @@
 		stringPos.y -= 170.0f;
 		sprintf_s( str, "‚È\n‚¢\n‚Æ\n«" );
 		DrawString( str, ( int )stringPos.x, ( int )stringPos.y );
+		sprintf_s( str, "x = %f\ny = %f\nz = %f\n", pos.x, pos.y, pos.z );
+		DrawString( str, 20, 300 );
 	}
 
 //-----------------------------------------------------------------------------------
@@ -121,6 +123,7 @@
 		case	PlayerData::POWERARTS:
 		case PlayerData::HYPERARTS:
 		case PlayerData::QUICKARTS:
+			unrivaled = true;
 			move = Vector3( 0.0f, 0.0f, 0.0f );
 			Attack( mode );
 			break;
@@ -162,7 +165,8 @@
 		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
 		front.Normalize();
 
-		Vector3	startPos = Vector3( pos.x, pos.y + 1.5f, pos.z );
+		Vector3	 p_pos = GetPos();
+		Vector3	startPos = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
 		Vector3	finPos = startPos + front * 5.0f;
 
 		//	“–‚½‚è”»’èˆÊ’uˆÚ“®&”ÍˆÍŠg‘å
@@ -205,9 +209,10 @@
 			step++;
 			break;
 		case 1:
+			Vector3	p_pos = GetPos();
 			Vector3 f = front * ( 2.0f * sinf( PI * t ) );
 			Vector3 r = -right * ( 2.0f * cosf( PI * t ) );
-			attackPos = pos + f + r;
+			attackPos = p_pos + f + r;
 			attack_topPos = attackPos + f + r;
 			//	ƒpƒ‰ƒ[ƒ^‰ÁŽZ
 			attack_t += 0.02f;
@@ -235,7 +240,9 @@
 		Vector3 f, r;
 
 		//	“–‚½‚è”»’èˆÊ’uˆÚ“®&”ÍˆÍŠg‘å
-		float t = GetBezier(ePrm_t::eRapid_Lv5, ePrm_t::eSlow_Lv1, attack_t);
+		float t = GetBezier( ePrm_t::eRapid_Lv5, ePrm_t::eSlow_Lv1, attack_t );
+
+		Vector3	p_pos = GetPos();
 
 		switch ( step )
 		{
@@ -244,11 +251,12 @@
 			attack_r = 0.5f;
 			step++;
 			break;
-			//	‰E‚©‚ç¶‚Ö“ã‚¬•¥‚¢
+
 		case 1:
+			//	‰E‚©‚ç¶‚Ö“ã‚¬•¥‚¢
 			f = front * (2.0f * sinf(PI * t));
 			r = right * (2.0f * cosf(PI * t));
-			attackPos = pos + f + r;
+			attackPos = p_pos + f + r;
 			attack_topPos = attackPos + f + r;
 			//	ƒpƒ‰ƒ[ƒ^‰ÁŽZ
 			attack_t += 0.02f;
@@ -259,11 +267,11 @@
 			}
 			break;
 
-			//	¶‚©‚ç‰E‚Ö“ã‚¬•¥‚¢
 		case 2:
+			//	¶‚©‚ç‰E‚Ö“ã‚¬•¥‚¢
 			f = front * (2.0f * sinf(PI * t));
 			r = -right * (2.0f * cosf(PI * t));
-			attackPos = pos + f + r;
+			attackPos = p_pos + f + r;
 			attack_topPos = attackPos + f + r;
 			//	ƒpƒ‰ƒ[ƒ^‰ÁŽZ
 			attack_t += 0.02f;
@@ -274,13 +282,13 @@
 			}
 			break;
 
-			//	‰ñ“]Ø‚è
 		case 3:
-			attackPos.x = pos.x + 2.0f * cosf( PI / 180 * lance_r );
-			attackPos.z = pos.z + 2.0f * sinf( PI / 180 * lance_r );
+			//	‰ñ“]Ø‚è
+			attackPos.x = p_pos.x + 2.0f * cosf( PI / 180 * lance_r );
+			attackPos.z = p_pos.z + 2.0f * sinf( PI / 180 * lance_r );
 
-			attack_topPos.x = pos.x + 4.0f * cosf( PI / 180 * lance_r );
-			attack_topPos.z = pos.z + 4.0f * sinf( PI / 180 * lance_r );
+			attack_topPos.x = p_pos.x + 4.0f * cosf( PI / 180 * lance_r );
+			attack_topPos.z = p_pos.z + 4.0f * sinf( PI / 180 * lance_r );
 			lance_r += 10.0f;
 			if ( lance_r >= 360 * 5 )
 			{

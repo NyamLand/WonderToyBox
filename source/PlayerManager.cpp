@@ -191,6 +191,12 @@
 		}
 	}
 
+	//	カプセル同士の当たり判定
+	void	PlayerManager::HitCheckSphereVSCapsule( Player* p1, Player* p2 )
+	{
+
+	}
+
 	//	コイン加算
 	void	PlayerManager::AddCoin( int player )
 	{

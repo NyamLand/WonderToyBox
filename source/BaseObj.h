@@ -78,7 +78,7 @@ private:
 
 protected:
 	//	定数
-	const float GRAVITY = -0.01f;
+	const float GRAVITY = 0.0f;
 	static const int MIN_INPUT_STATE = 300;	//	スティック判定最小値
 
 protected:

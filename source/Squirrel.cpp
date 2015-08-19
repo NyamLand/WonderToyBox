@@ -105,10 +105,13 @@
 		DrawSphere( attackPos, attack_r, 0xFFFFFFFF );
 	
 		Vector3	stringPos;
-		WorldToClient( pos, stringPos, matView* matProjection );
+		Vector3	p_pos = GetPos();
+		WorldToClient( p_pos, stringPos, matView* matProjection );
 		stringPos.y -= 100.0f;
 		sprintf_s( str, "り\nす\n↓" );
 		DrawString( str, ( int )stringPos.x, ( int )stringPos.y );
+		sprintf_s(str, "x = %f\ny = %f\nz = %f\n", p_pos.x, p_pos.y, p_pos.z);
+		DrawString( str, 20, 400 );
 	}
 
 //-----------------------------------------------------------------------------------
@@ -155,7 +158,7 @@
 	void	Squirrel::Move( void )
 	{
 		CommonMove();
-
+		
 		if ( input->Get( KEY_A ) == 3 )		mode = PlayerData::QUICKARTS;
 		if ( input->Get( KEY_B ) == 3 )		mode = PlayerData::POWERARTS;
 		if ( input->Get( KEY_C ) == 3 )		mode = PlayerData::HYPERARTS;
@@ -170,11 +173,12 @@
 		static int time = 0;
 		
 		//	行列から前方取得
-		Matrix	mat = obj->TransMatrix;
+		Matrix	mat = GetMatrix();
 		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
 		front.Normalize();
+		Vector3	p_pos = GetPos();
 
-		if ( time == 0 )m_BulletManager->Set( pos, front * 5.0f, 0.5f );
+		if ( time == 0 )m_BulletManager->Set( p_pos, front * 5.0f, 0.5f );
 		time++;
 
 		if ( time >= 60 )
@@ -191,17 +195,18 @@
 		static int time = 0;
 
 		//	行列から前方取得
-		Matrix	mat = obj->TransMatrix;
+		Matrix	mat = GetMatrix();
 		Vector3	right = Vector3( mat._11, mat._12, mat._13 );
 		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
 		front.Normalize();
 		right.Normalize();
+		Vector3	p_pos = GetPos();
 
 		if ( time == 0 )
 		{
-			m_BulletManager->Set( pos, front * 5.0f + right * 5.0f, 0.5f );
-			m_BulletManager->Set( pos, front * 5.0f, 0.5f );
-			m_BulletManager->Set( pos, front * 5.0f + right * -5.0f, 0.5f );
+			m_BulletManager->Set( p_pos, front * 5.0f + right * 5.0f, 0.5f );
+			m_BulletManager->Set( p_pos, front * 5.0f, 0.5f );
+			m_BulletManager->Set( p_pos, front * 5.0f + right * -5.0f, 0.5f );
 		}
 		time++;
 
@@ -223,6 +228,7 @@
 		Vector3	up = Vector3( mat._21, mat._22, mat._23 );
 		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
 		front.Normalize();
+		Vector3	p_pos = GetPos();
 
 		switch ( step )
 		{
@@ -238,7 +244,7 @@
 
 		case 1:
 			angle += 0.1f;
-			if ( time % 16 == 0 ) m_BulletManager->Set( pos, front * 5.0f + up * -150.0f, 1.0f, 0.5f );
+			if ( time % 16 == 0 ) m_BulletManager->Set( p_pos, front * 5.0f + up * -150.0f, 1.0f, 0.5f );
 			time++;
 			if ( time > 16 * 4 - 1 ) step++;
 			break;
@@ -259,6 +265,7 @@
 	{
 		SetMotion( motionData.ATTACK1 );
 		int		frame = obj->GetFrame();
+		
 
 		bool	isEnd = false;
 
