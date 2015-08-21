@@ -376,7 +376,7 @@
 			//　「SPACE」で決定
 			//　「S」で戻る
 
-			static int type[] = { 0, 0, 0, 0 };
+			static int type[] = { 0, 1, 2, 0 };
 			static int step = 0;
 			switch ( step )
 			{
@@ -488,7 +488,7 @@
 			//　「S」で戻る
 
 			static bool ready = true;
-			if ( KEY( KEY_RIGHT ) == 3 )	ready = !ready;
+			if ( KEY( KEY_RIGHT ) == 3 )		ready = !ready;
 			if ( KEY( KEY_LEFT ) == 3 )		ready = !ready;
 
 			if ( ready )
@@ -496,7 +496,7 @@
 				if ( KEY( KEY_SPACE ) == 3 )
 				{
 					//	情報をマネージャーに登録
-					for ( int p = 0; p < playerNum; p++ )
+					for ( int p = 0; p < PLAYER_NUM; p++ )
 					{
 						GameManager::SetCharacterType( p, m_Player->GetType( p ) );
 					}

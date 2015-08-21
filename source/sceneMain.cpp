@@ -125,20 +125,12 @@
 	//	プレイヤー初期化
 	void	sceneMain::PlayerInitialize( void )
 	{
-		/*int type[4];
-		for (int p = 0; p < 4; p++)
+		for ( int i = 0; i < 4; i++ )
 		{
-			type[p] = GameManager::charatype[p];
-		}*/
-		m_Player->Initialize(0, PlayerData::PRINCESS, Vector3(0.0f, 0.0f, 0.0f));
-		m_Player->Initialize(1, PlayerData::PRINCESS, Vector3(10.0f, 0.0f, 0.0f));
-		m_Player->Initialize(2, PlayerData::SQUIRREL, Vector3(-10.0f, 0.0f, 0.0f));
-		m_Player->Initialize(3, PlayerData::KNIGHT, Vector3(-20.0f, 0.0f, 0.0f));
-
-		//m_Player->Initialize(0, type[0], Vector3(0.0f, 0.0f, 0.0f));
-		//m_Player->Initialize(1, type[1], Vector3(10.0f, 0.0f, 0.0f));
-		//m_Player->Initialize(2, type[2], Vector3(5.0f, 0.0f, 0.0f));
-		//m_Player->Initialize(3, type[3], Vector3(-5.0f, 0.0f, 0.0f));
+			int		characterType = GameManager::GetCharacterType( i );
+			Vector3	pos = Vector3( -20.0f + ( 10.0f * i ), 0.0f, 0.0f );
+			m_Player->Initialize( i, characterType, pos );
+		}
 	}
 
 	//	ディファード初期化

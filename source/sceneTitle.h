@@ -14,13 +14,11 @@ private:
 
 
 private:
-	//iexView*	view;
-
 	//	オブジェクト
 	iexMesh*	m_CollisionStage;
 	iexMesh*	m_Stage;	
-	int			testpos;	//	仮のカメラ移動先のポジションを指し示す値
-	float		t;			//	ラープのｔ
+	int			testpos;			//	仮のカメラ移動先のポジションを指し示す値
+	float		t;					//	補間パラメータ
 	Vector3		c_pos;		//	カメラポジション
 	Vector3		t_pos;		//	カメラのターゲットポジション
 	Vector3		s_pos;		//	ラープスタートポジション
