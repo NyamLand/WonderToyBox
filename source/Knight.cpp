@@ -32,9 +32,11 @@
 
 		enum OFFENSIVE_POWER
 		{
-			QUICK = 1,
-			POWER = 5,
-			HYPER = 15,
+			QUICK0 = 1,
+			QUICK1 = 2,
+			QUICK2 = 4,
+			POWER = 8,
+			HYPER = 5,
 		};
 	}
 
@@ -94,7 +96,7 @@
 
 		//	デバッグ用
 		if ( !debug )	return;
-		DrawCapsule( attackPos, attack_topPos, attack_r, 0xFFFFFFFF );
+		DrawCapsule( attackPos_bottom, attack_topPos, attack_r, 0xFFFFFFFF );
 
 		char	str[256];
 		Vector3	stringPos;
@@ -172,14 +174,14 @@
 		//	当たり判定位置移動&範囲拡大
 		float t = GetBezier( ePrm_t::eRapid_Lv1, ePrm_t::eSlow_Lv3, attack_t );
 		if ( t < 0.5f ){
-			Lerp( attackPos, startPos, finPos, t );
+			Lerp( attackPos_bottom, startPos, finPos, t );
 		}
 		else{
-			Lerp( attackPos, finPos, startPos, t );
+			Lerp( attackPos_bottom, finPos, startPos, t );
 		}
 		//	あたり判定のパラメータを与える
 		attack_r = 0.5f;
-		attack_topPos = attackPos + front * 2.0f;
+		attack_topPos = attackPos_bottom + front * 2.0f;
 	
 		//	パラメータ加算
 		attack_t += 0.015f;
@@ -212,8 +214,8 @@
 			Vector3	p_pos = GetPos();
 			Vector3 f = front * ( 2.0f * sinf( PI * t ) );
 			Vector3 r = -right * ( 2.0f * cosf( PI * t ) );
-			attackPos = p_pos + f + r;
-			attack_topPos = attackPos + f + r;
+			attackPos_bottom = p_pos + f + r;
+			attack_topPos = attackPos_bottom + f + r;
 			//	パラメータ加算
 			attack_t += 0.02f;
 			break;
@@ -256,8 +258,8 @@
 			//	右から左へ薙ぎ払い
 			f = front * (2.0f * sinf(PI * t));
 			r = right * (2.0f * cosf(PI * t));
-			attackPos = p_pos + f + r;
-			attack_topPos = attackPos + f + r;
+			attackPos_bottom = p_pos + f + r;
+			attack_topPos = attackPos_bottom + f + r;
 			//	パラメータ加算
 			attack_t += 0.02f;
 			//	薙ぎ払い終えたら次へ
@@ -271,8 +273,8 @@
 			//	左から右へ薙ぎ払い
 			f = front * (2.0f * sinf(PI * t));
 			r = -right * (2.0f * cosf(PI * t));
-			attackPos = p_pos + f + r;
-			attack_topPos = attackPos + f + r;
+			attackPos_bottom = p_pos + f + r;
+			attack_topPos = attackPos_bottom + f + r;
 			//	パラメータ加算
 			attack_t += 0.02f;
 			//	薙ぎ払い終えたら次へ
@@ -284,8 +286,8 @@
 
 		case 3:
 			//	回転切り
-			attackPos.x = p_pos.x + 2.0f * cosf( PI / 180 * lance_r );
-			attackPos.z = p_pos.z + 2.0f * sinf( PI / 180 * lance_r );
+			attackPos_bottom.x = p_pos.x + 2.0f * cosf( PI / 180 * lance_r );
+			attackPos_bottom.z = p_pos.z + 2.0f * sinf( PI / 180 * lance_r );
 
 			attack_topPos.x = p_pos.x + 4.0f * cosf( PI / 180 * lance_r );
 			attack_topPos.z = p_pos.z + 4.0f * sinf( PI / 180 * lance_r );
@@ -303,31 +305,31 @@
 	//	モードAttack
 	void	Knight::Attack( int attackKind )
 	{
-		SetMotion(motionData.ATTACK1);
+		SetMotion( motionData.ATTACK1 );
 		int		frame = obj->GetFrame();
 
 		bool	isEnd = false;
 
-		switch (attackKind)
+		switch ( attackKind )
 		{
 		case PlayerData::QUICKARTS:
 			isEnd = QuickArts();
-			if (!isEnd)	attackParam = 1;
+			if ( !isEnd )	attackParam = PlayerData::COLLISION_TYPE::CAPSULEVSCAPSULE;
 			break;
 
 		case PlayerData::POWERARTS:
 			isEnd = PowerArts();
-			if (!isEnd)	attackParam = 2;
+			if ( !isEnd )	attackParam = PlayerData::COLLISION_TYPE::CAPSULEVSCAPSULE;
 			break;
 
 		case PlayerData::HYPERARTS:
 			isEnd = HyperArts();
-			if (!isEnd)	attackParam = 3;
+			if ( !isEnd )	attackParam = PlayerData::COLLISION_TYPE::CAPSULEVSCAPSULE;
 			break;
 		}
 
 		//	モーション終了時に
-		if (isEnd)
+		if ( isEnd )
 		{
 			mode = PlayerData::MOVE;
 			attack_t = 0.0f;

@@ -40,9 +40,9 @@
 
 		enum OFFENSIVE_POWER
 		{
-			QUICK = 1,
-			POWER = 5,
-			HYPER = 15,
+			QUICK = 2,
+			POWER = 4,
+			HYPER = 25,
 		};
 	}
 
@@ -56,9 +56,9 @@
 		//	パラメータ初期化
 		attack_r	= 0.0f;
 		attack_t	= 0.0f;
-		speed		= 0.25f;
+		speed		= 0.3f;
 		scale			= 0.02f;
-		diffence		= -1;
+		diffence		= -5;
 		isGround	= true;
 		SetMotionData();
 	}
@@ -172,13 +172,17 @@
 	{
 		static int time = 0;
 		
-		//	行列から前方取得
+		//	情報取得
 		Matrix	mat = GetMatrix();
 		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
-		front.Normalize();
 		Vector3	p_pos = GetPos();
+		front.Normalize();
 
-		if ( time == 0 )m_BulletManager->Set( p_pos, front * 5.0f, 0.5f );
+		//	情報設定
+		Vector3	vec = front * 5.0f;
+		static float bulletSpeed = 0.5f;
+
+		if ( time == 0 )m_BulletManager->Set( p_pos, vec, bulletSpeed );
 		time++;
 
 		if ( time >= 60 )
@@ -194,26 +198,29 @@
 	{
 		static int time = 0;
 
-		//	行列から前方取得
+		//	行列から情報取得
 		Matrix	mat = GetMatrix();
 		Vector3	right = Vector3( mat._11, mat._12, mat._13 );
 		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
 		front.Normalize();
 		right.Normalize();
 		Vector3	p_pos = GetPos();
+
+		//	情報設定
 		Vector3	vec[3] =
 		{
 			front * 5.0f + right * 5.0f,
 			front * 5.0f,
 			front * 5.0f + right * -5.0f
 		};
+		static float	 bulletSpeed = 0.5f;
 
 
 		if ( time == 0 )
 		{
 			for ( int i = 0; i < 3; i++ )
 			{
-				m_BulletManager->Set( p_pos, vec[i], 0.5f );
+				m_BulletManager->Set( p_pos, vec[i], bulletSpeed );
 			}
 		}
 		time++;
@@ -232,11 +239,17 @@
 		static int step = 0;		//	回数
 		static int time = 0;
 	
+		//	情報取得
 		Matrix	mat = obj->TransMatrix;
 		Vector3	up = Vector3( mat._21, mat._22, mat._23 );
 		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
-		front.Normalize();
 		Vector3	p_pos = GetPos();
+		front.Normalize();
+
+		//	情報設定
+		Vector3	vec = front * 5.0f + up * -150.0f;
+		static	float	bulletScale = 1.0f;
+		static	float	bulletSpeed = 0.5f;
 
 		switch ( step )
 		{
@@ -252,7 +265,7 @@
 
 		case 1:
 			angle += 0.1f;
-			if ( time % 16 == 0 ) m_BulletManager->Set( p_pos, front * 5.0f + up * -150.0f, 1.0f, 0.5f );
+			if ( time % 16 == 0 ) m_BulletManager->Set( p_pos, vec, bulletScale, bulletSpeed );
 			time++;
 			if ( time > 16 * 4 - 1 ) step++;
 			break;
@@ -261,7 +274,6 @@
 			step = 0;
 			time = 0;
 			return true;
-			//step++;
 			break;
 		}
 
@@ -274,7 +286,6 @@
 		SetMotion( motionData.ATTACK1 );
 		int		frame = obj->GetFrame();
 		
-
 		bool	isEnd = false;
 
 		switch ( attackKind )

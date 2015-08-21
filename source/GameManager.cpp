@@ -23,7 +23,8 @@
 	int		GameManager::playerNum = 0;
 	int		GameManager::stageType = 0;
 	int		GameManager::waitTimer = 0;
-	bool	GameManager::changeSceneflag = false;
+	bool	GameManager::changeSceneflag = false; 
+	bool	GameManager::donketsuBoostState = false;
 	int		GameManager::timer = 0;
 	int		GameManager::mode = 0;
 
@@ -57,6 +58,7 @@
 		timer = TIMELIMIT;
 		waitTimer = 2 * SECOND;
 		mode = 0;
+		donketsuBoostState = false;
 		return	true;
 	}
 
@@ -114,6 +116,11 @@
 			sprintf_s( str, "p%d_coin = %d", i + 1, coinNum[i] );
 			DrawString( str, 20, 150 + i * 30 );
 		}
+
+		if ( donketsuBoostState )
+		{
+			DrawString( "どんけつブーストなう", 600, 250 );
+		}
 	}
 
 	//	タイムアップ描画
@@ -148,6 +155,11 @@
 		}
 		m_UI->SetTimer( timer );
 		m_UI->Update();
+
+		if ( m_UI->GetTimer() <= 30 * SECOND )		donketsuBoostState = true;
+		else	donketsuBoostState = false;
+
+		m_UI->SetDonketsuBoostState( donketsuBoostState );
 	}
 
 	//	タイムアップ更新

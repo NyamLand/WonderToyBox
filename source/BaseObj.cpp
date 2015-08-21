@@ -202,11 +202,11 @@
 	{
 		mode = PlayerData::MOVE;
 		if ( !isGround )	return;
-		static	float	toY = pos.y + 20;
+		static	float	toY = pos.y + 20.0f;
 
 		if ( pos.y <= toY )
 		{
-			move.y += 0.3f;
+			move.y += 0.2f;
 			pos += move;
 		}
 

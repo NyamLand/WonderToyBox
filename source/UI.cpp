@@ -41,6 +41,7 @@
 	{
 		c_Coinbar = new CoinBar();
 		c_Timer = new Timer();
+		donketsuBoostState = false;
 		return true;
 	}
 
@@ -58,8 +59,11 @@
 	//	描画
 	void HeadUpDisplay::Render( void )
 	{
-		c_Coinbar->Render();
+		//	タイマー描画
 		c_Timer->Render();
+
+		//	コインバー描画
+		if ( !donketsuBoostState )	c_Coinbar->Render();
 	}
 
 //------------------------------------------------------------------------------
@@ -70,6 +74,24 @@
 	void	HeadUpDisplay::SetTimer( int time )
 	{
 		this->c_Timer->SetTimer( time );
+	}
+
+	//	どんけつブースト状態設定
+	void	HeadUpDisplay::SetDonketsuBoostState( bool state )
+	{
+		this->donketsuBoostState = state;
+	}
+
+//------------------------------------------------------------------------------
+//	情報取得
+//------------------------------------------------------------------------------
+
+	//	時間取得
+	int		HeadUpDisplay::GetTimer( void )
+	{
+		int out = c_Timer->GetTimer();
+
+		return	out;
 	}
 
 //****************************************************************************************
@@ -152,24 +174,16 @@
 		//	↓後で変える
 		const int MAX_COIN = 201;
 
-		int num_coin[4];
-		for ( int i = 0; i < 4; i++ )
-		{
-			num_coin[i] = GameManager::GetCoinNum( i );
-		}
-		//num_coin[0] = m_Player->GetCoinNum( 0 );
-		//num_coin[1] = m_Player->GetCoinNum( 1 );
-		//num_coin[2] = m_Player->GetCoinNum( 2 );
-		//num_coin[3] = m_Player->GetCoinNum( 3 );
-
 		bar_x[1] = bar_x[0] + bar_sx[0];
 		bar_x[2] = bar_x[1] + bar_sx[1];
 		bar_x[3] = bar_x[2] + bar_sx[2];
 
-		bar_sx[0] = 480 * num_coin[0] / MAX_COIN;
-		bar_sx[1] = 480 * num_coin[1] / MAX_COIN;
-		bar_sx[2] = 480 * num_coin[2] / MAX_COIN;
-		bar_sx[3] = 480 * num_coin[3] / MAX_COIN;
+		int num_coin[4];
+		for ( int i = 0; i < 4; i++ )
+		{
+			num_coin[i] = GameManager::GetCoinNum( i );
+			bar_sx[i] = 480 * num_coin[i] / MAX_COIN;
+		}
 
 		//	↑後で変える
 		//--------------------------------------------------

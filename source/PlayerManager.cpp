@@ -138,7 +138,7 @@
 		{
 			c_Player[i]->Render( shader, technique );
 			Vector3	p_pos = c_Player[i]->GetPos();
-			DrawCapsule( p_pos, Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z ), 1.0f, 0xFFFFFFFF );
+			DrawCapsule( p_pos, Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z ), 1.0f );
 		}
 	}
 
@@ -169,26 +169,31 @@
 		{
 			for ( int n = 0; n < PLAYER_NUM; n++ )
 			{
+				//	Ž©•ª‚©‘ŠŽè‚ª–³“Gó‘Ô‚¾‚Æ‚Â‚¬‚Ö
 				if ( i == n )	continue;
+				if ( c_Player[n]->GetUnrivaled() )	continue;
+
+				//	UŒ‚ƒ^ƒCƒv‚ðŽæ“¾
 				int		attackParam = c_Player[i]->GetAttackParam();
 
+				//	ƒ^ƒCƒv•Ê“–‚½‚è”»’è
 				switch ( attackParam )
 				{
-				case PlayerData::SPHEREVSCAPSULE:
+				case PlayerData::COLLISION_TYPE::SPHEREVSCAPSULE:
 					HitCheckSphereVSCapsule( c_Player[i], c_Player[n] );
 					break;
 
-				case PlayerData::CAPSULEVSCAPSULE:
+				case PlayerData::COLLISION_TYPE::CAPSULEVSCAPSULE:
 					HitCheckCapsuleVSCapsule( c_Player[i], c_Player[n] );
 					break;
 
-				case PlayerData::SPHEREVSCYRINDER:
+				case PlayerData::COLLISION_TYPE::SPHEREVSCYRINDER:
 					break;
 
-				case PlayerData::SPHEREVSPOINT:
+				case PlayerData::COLLISION_TYPE::SPHEREVSPOINT:
 					break;
 
-				case PlayerData::SPHEREVSSPHERE:
+				case PlayerData::COLLISION_TYPE::SPHEREVSSPHERE:
 					break;
 				}
 			}
@@ -247,8 +252,8 @@
 	void	PlayerManager::HitCheckCapsuleVSCapsule( Player* p1, Player* p2 )
 	{
 		//	UŒ‚‚·‚é•û
-		Vector3	p1_attack_bottom = p1->GetAttackPos_Top();
-		Vector3	p1_attack_top = p1->GetAttackPos_Bottom();
+		Vector3	p1_attack_bottom = p1->GetAttackPos_Bottom();
+		Vector3	p1_attack_top = p1->GetAttackPos_Top();
 		float		p1_attack_r = p1->GetAttack_R();
 
 		//	UŒ‚‚³‚ê‚é•û
@@ -303,6 +308,7 @@
 	int			PlayerManager::GetCoinNum( int player ){ return	c_Player[player]->GetCoinNum(); }
 	int			PlayerManager::GetType( int player ){ return c_Player[player]->GetType(); }
 	bool		PlayerManager::GetUnrivaled( int player ){ return c_Player[player]->GetUnrivaled(); }
+	int			PlayerManager::GetP_Num( int player ){ return c_Player[player]->GetP_Num(); }
 
 	//	î•ñÝ’è
 	void		PlayerManager::SetPos( int player, Vector3 pos ){ c_Player[player]->SetPos( pos ); }
@@ -310,3 +316,5 @@
 	void		PlayerManager::SetAngle( int player, float angle ){ c_Player[player]->SetAngle( angle ); }
 	void		PlayerManager::SetScale( int player, float scale ){ c_Player[player]->SetScale( scale ); }
 	void		PlayerManager::SetType( int player, int type ){ c_Player[player]->SetType(type); }
+	void		PlayerManager::SetKnockBackVec( int player, Vector3 knockBackVec ){ c_Player[player]->SetKnockBackVec( knockBackVec ); }
+	void		PlayerManager::SetMode( int player, PlayerData::STATE state ){ c_Player[player]->SetMode( state ); }
