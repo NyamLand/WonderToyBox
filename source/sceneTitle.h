@@ -11,24 +11,8 @@
 class sceneTitle : public	Scene
 {
 private:
-
-
-private:
-	//	オブジェクト
-	iexMesh*	m_CollisionStage;
-	iexMesh*	m_Stage;	
-	int			testpos;			//	仮のカメラ移動先のポジションを指し示す値
-	float		t;					//	補間パラメータ
-	Vector3		c_pos;		//	カメラポジション
-	Vector3		t_pos;		//	カメラのターゲットポジション
-	Vector3		s_pos;		//	ラープスタートポジション
-	
-	Quaternion orientation;	//	クォータニオン
-
-	//---------------------------
-	//　タイトルでのモード遷移
-	//---------------------------
-	enum Mode
+	//	定数
+	enum Title_Mode
 	{
 		TITLE,
 		MENU,
@@ -39,8 +23,30 @@ private:
 		OPTION,
 		CREDIT
 	};
-	int mode;
 
+	//	構造体
+	struct CharacterInfo
+	{
+		LPSTR name;
+		bool	select;
+	};
+
+private:
+	//	オブジェクト
+	iexMesh*	m_CollisionStage;
+	iexMesh*	m_Stage;	
+
+	//	カメラ用パラメータ
+	int			testpos;			//	仮のカメラ移動先のポジションを指し示す値
+	float		t;					//	補間パラメータ
+	Vector3		c_pos;		//	カメラポジション
+	Vector3		t_pos;		//	カメラのターゲットポジション
+	Vector3		s_pos;		//	ラープスタートポジション
+	Quaternion orientation;	//	クォータニオン
+	
+	//	ゲーム設定用パラメータ
+	int		mode;
+	CharacterInfo	characterInfo[PlayerData::CHARACTER_MAX];
 	int 	playerNum;	//　何人で遊ぶ？
 	int		stageType;	//　どのステージ？
 

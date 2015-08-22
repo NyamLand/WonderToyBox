@@ -335,6 +335,9 @@
 			attack_t = 0.0f;
 			attack_r = 0.0f;
 			lance_r = 0.0f;
+			attackParam = 0;
+			knockBackType = 0;
+			unrivaled = false;
 		}
 	}
 

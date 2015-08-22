@@ -6,9 +6,9 @@
 #include	"BaseObj.h"
 #include	"Player.h"
 #include	"PlayerManager.h"
+#include	"GameManager.h"
 #include	"sceneTitle.h"
 #include	"sceneMain.h"
-#include	"GameManager.h"
 
 #include	"sceneResult.h"
 

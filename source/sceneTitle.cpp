@@ -97,10 +97,19 @@
 
 		//	プレイヤー
 		m_Player = new PlayerManager();
-		m_Player->Initialize( 0, PlayerData::Y2009, c_Move::TARGET[0] );
-		m_Player->Initialize( 1, PlayerData::Y2009, c_Move::TARGET[1] );
-		m_Player->Initialize( 2, PlayerData::Y2009, c_Move::TARGET[2] );
-		m_Player->Initialize( 3, PlayerData::Y2009, c_Move::TARGET[3] );
+		for ( int i = 0; i < PLAYER_NUM; i++ )
+		{
+			m_Player->Initialize( i, PlayerData::Y2009, c_Move::TARGET[i] );
+		}
+
+		//	構造体初期化
+		for ( int i = 0; i < PlayerData::CHARACTER_MAX; i++ )
+		{
+			characterInfo[i].name = PlayerData::characterName[i];
+			characterInfo[i].select = false;
+		}
+
+		//	変数初期化
 		testpos = 0;
 		t = 0;
 		s_pos = m_Camera->GetPos();
@@ -377,14 +386,57 @@
 			//　「S」で戻る
 
 			static int type[] = { 0, 1, 2, 0 };
+			static bool	select[4] = { false, false, false, false };
 			static int step = 0;
+			int selectCheck = 0;
+
 			switch ( step )
 			{
 			case 0:		//　プレイヤーキャラ選択
 				for ( int p = 0; p < playerNum; p++ )
 				{
+					if ( input[p]->Get( KEY_DOWN ) == 3 )
+					{
+						//	全員分の入力チェック
+						selectCheck = 0;
+						for ( int i = 0; i < PLAYER_NUM; i++ )
+						{
+							if ( select[i] )		selectCheck++;
+						}
+						
+						//	全員未選択なら戻る
+						if ( selectCheck == 0 )
+						{
+							mode = SELECT_PLAYERNUM;
+							return;
+						}
+
+						//	選択時キャンセル
+						characterInfo[type[p]].select = false;
+						select[p] = false;
+					};
+
+					if ( select[p] )	continue;
 					if ( input[p]->Get( KEY_RIGHT ) == 3 )	type[p]++;
 					if ( input[p]->Get( KEY_LEFT ) == 3 )	type[p]--;
+					if ( input[p]->Get( KEY_SPACE ) == 3 )
+					{
+						//	未選択なら選択
+						if ( !characterInfo[type[p]].select )
+						{
+							characterInfo[type[p]].select = true;
+							select[p] = true;
+						}
+
+						//	全員選択しているかチェック
+						for ( int i = 0; i < playerNum; i++ )
+						{
+							if ( select[i] )		selectCheck++;
+						}
+
+						//	全員選択済みだったら
+						if ( selectCheck >= playerNum )	step++;
+					}
 
 					//	数値制限
 					if ( type[p] >= PlayerData::CHARACTER_MAX )	type[p] = 0;
@@ -392,9 +444,7 @@
 
 					m_Player->SetType( p, type[p] );
 				}
-
-				if ( KEY( KEY_SPACE ) == 3 ) step++;
-				if ( KEY( KEY_DOWN ) == 3 )	mode = SELECT_PLAYERNUM;
+				//if ( KEY( KEY_DOWN ) == 3 )	mode = SELECT_PLAYERNUM;
 				break;
 
 			case 1:		//　CPUキャラ選択
@@ -433,7 +483,8 @@
 			char	str[64];
 			for ( int p = 0; p < PLAYER_NUM; p++ )
 			{
-				LPSTR string = PlayerData::characterName[m_Player->GetType(p)];
+				int		playerType = m_Player->GetType( p );
+				LPSTR string = characterInfo[playerType].name;
 				sprintf_s( str, "\n%dＰのキャラタイプ：", p + 1 );
 				strcat( str, string );
 				DrawString( str, 300, 300 + p * 20 );
