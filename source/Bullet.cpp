@@ -5,7 +5,6 @@
 #include	"GlobalFunction.h"
 #include	"GameManager.h"
 #include	"Particle.h"
-#include	"BaseObj.h"
 #include	"Player.h"
 #include	"PlayerManager.h"
 #include	"Coin.h"

@@ -33,8 +33,6 @@ public:
 	void	Render( iexShader* shader, LPSTR technique );
 
 	//	“®ìŠÖ”
-	void	AddCoin( int player );
-	void	SubCoin( int player );
 
 	//	“–‚½‚è”»’è
 	void	HitCheck( void );

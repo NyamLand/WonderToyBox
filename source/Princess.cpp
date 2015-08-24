@@ -2,7 +2,6 @@
 #include	"iextreme.h"
 #include	"GlobalFunction.h"
 #include	"Collision.h"
-#include	"BaseObj.h"
 #include	"Player.h"
 #include	"Princess.h"
 
@@ -80,17 +79,10 @@
 //	更新・描画
 //-----------------------------------------------------------------------------------
 
-	//	更新
-	void	Princess::Update( void )
-	{
-		ModeManagement();
-		BaseObj::Update();
-	}
-
 	//	描画
 	void	Princess::Render( iexShader* shader, LPSTR technique )
 	{
-		BaseObj::Render( shader, technique );
+		CommonRender( shader, technique );
 
 		//	デバッグ用
 		if ( !debug )	return;
@@ -108,63 +100,11 @@
 //	動作関数
 //-----------------------------------------------------------------------------------
 
-	//	モード管理
-	void	Princess::ModeManagement( void )
-	{
-		switch ( mode )
-		{
-		case PlayerData::MOVE:
-			Move();
-			break;
-
-		case PlayerData::ATTACK:
-		case	PlayerData::POWERARTS:
-		case PlayerData::HYPERARTS:
-		case PlayerData::QUICKARTS:
-			unrivaled = true;
-			move = Vector3( 0.0f, 0.0f, 0.0f );
-			Attack( mode );
-			break;
-
-		case PlayerData::JUMP:
-			Jump();
-			break;
-
-		case PlayerData::GUARD:
-			Guard();
-			break;
-
-		case PlayerData::DAMAGE_STRENGTH:
-			CommonKnockBackStrength();
-			break;
-
-		case PlayerData::DAMAGE:
-			Damage();
-			break;
-		}
-	}
-
-	//	モードMove
-	void	Princess::Move( void )
-	{
-		CommonMove();
-
-		if ( input->Get( KEY_A ) == 3 )		mode = PlayerData::QUICKARTS;
-		if ( input->Get( KEY_B ) == 3 )		mode = PlayerData::POWERARTS;
-		if ( input->Get( KEY_C ) == 3 )		mode = PlayerData::HYPERARTS;
-		if ( input->Get( KEY_D ) == 3 )		mode = PlayerData::JUMP;
-		if ( input->Get( KEY_B7 ) == 3 )	mode = PlayerData::GUARD;
-		if ( input->Get( KEY_B10 ) == 3 )
-		{
-			mode = PlayerData::DAMAGE_STRENGTH;
-		}
-	}
-
 	//	クイックアーツ
 	bool	Princess::QuickArts( void )
 	{
 		//	行列から前方取得
-		Matrix	mat = obj->TransMatrix;
+		Matrix	mat = GetMatrix();
 		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
 		front.Normalize();
 
@@ -240,69 +180,28 @@
 		return	false;
 	}
 
-	//	モードAttack
-	void	Princess::Attack( int attackKind )
+//-----------------------------------------------------------------------------------
+//	情報設定
+//-----------------------------------------------------------------------------------
+
+	//	攻撃用パラメータ設定
+	void	Princess::SetAttackParam( int attackKind )
 	{
-		SetMotion( motionData.ATTACK1 );
-		int		frame = obj->GetFrame();
-
-		bool	isEnd = false;
-
 		switch ( attackKind )
 		{
 		case PlayerData::QUICKARTS:
-			isEnd = QuickArts();
-			if ( !isEnd ){
-				attackParam = PlayerData::SPHEREVSCAPSULE;
-				knockBackType = PlayerData::KNOCKBACK_WEAK;
-			}
+			attackParam = PlayerData::SPHEREVSCAPSULE;
+			knockBackType = PlayerData::KNOCKBACK_WEAK;
 			break;
 
 		case PlayerData::POWERARTS:
-			isEnd = PowerArts();
-			if ( !isEnd ){
-				attackParam = PlayerData::SPHEREVSCAPSULE;
-				knockBackType = PlayerData::KNOCKBACK_MIDDLE;
-			}
+			attackParam = PlayerData::SPHEREVSCAPSULE;
+			knockBackType = PlayerData::KNOCKBACK_MIDDLE;
 			break;
 
 		case PlayerData::HYPERARTS:
-			isEnd = HyperArts();
-			if ( !isEnd ){
-				attackParam = PlayerData::SPHEREVSCYRINDER;
-				knockBackType = PlayerData::KNOCKBACK_STRENGTH;
-			}
+			attackParam = PlayerData::SPHEREVSCYRINDER;
+			knockBackType = PlayerData::KNOCKBACK_STRENGTH;
 			break;
 		}
-
-		//	モーション終了時に
-		if ( isEnd )
-		{
-			mode = PlayerData::MOVE;
-			attack_t = 0.0f;
-			attack_r = 0.0f;
-			attackParam = 0;
-			knockBackType = 0;
-			unrivaled = false;
-		}
-	}
-
-	//	モードJump
-	void	Princess::Jump( void )
-	{
-		CommonJump();
-	}
-
-	//	モードGuard
-	void	Princess::Guard( void )
-	{
-		move.x = move.z = 0.0f;
-		SetMotion( PrincessData::STAND );
-		CommonGuard();
-	}
-
-	//	モードDamage
-	void	Princess::Damage( void )
-	{
-		CommonKnockBack();
 	}

@@ -2,7 +2,6 @@
 #include	"system/system.h"
 #include	"system/Framework.h"
 #include	"GlobalFunction.h"
-#include	"BaseObj.h"
 #include	"Player.h"
 #include	"PlayerManager.h"
 #include	"GameManager.h"

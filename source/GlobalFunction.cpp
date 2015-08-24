@@ -323,17 +323,17 @@
 		int n = 3;                //nŸŒ³w’è
 		float y1, y2;
 		switch (ePrm1){
-		case eSlow_Lv5: y1 = 0;                       n = 11; break;//11ŸŒ³
-		case eSlow_Lv4: y1 = 0;                       n = 9; break;//9ŸŒ³
-		case eSlow_Lv3: y1 = 0;                       n = 7; break;//7ŸŒ³
-		case eSlow_Lv2: y1 = 0;                       n = 5; break;//5ŸŒ³
-		case eSlow_Lv1: y1 = 0;                       n = 3; break;//3ŸŒ³
-		case eNoAccel: y1 = 0.333333f;               n = 3; break;//’¼ü‚Ìê‡‚Í3ŸŒ³’†1/3‚Ì“_
-		case eRapid_Lv1: y1 = 1;                       n = 3; break;//3ŸŒ³
-		case eRapid_Lv2: y1 = 1;                       n = 5; break;//5ŸŒ³
-		case eRapid_Lv3: y1 = 1;                       n = 7; break;//7ŸŒ³
-		case eRapid_Lv4: y1 = 1;                       n = 9; break;//9ŸŒ³
-		case eRapid_Lv5: y1 = 1;                       n = 11; break;//11ŸŒ³
+		case eSlow_Lv5: y1 = 0;						n = 11; break;//11ŸŒ³
+		case eSlow_Lv4: y1 = 0;                        n = 9; break;//9ŸŒ³
+		case eSlow_Lv3: y1 = 0;                        n = 7; break;//7ŸŒ³
+		case eSlow_Lv2: y1 = 0;                        n = 5; break;//5ŸŒ³
+		case eSlow_Lv1: y1 = 0;                        n = 3; break;//3ŸŒ³
+		case eNoAccel: y1 = 0.333333f;				n = 3; break;//’¼ü‚Ìê‡‚Í3ŸŒ³’†1/3‚Ì“_
+		case eRapid_Lv1: y1 = 1;						n = 3; break;//3ŸŒ³
+		case eRapid_Lv2: y1 = 1;						n = 5; break;//5ŸŒ³
+		case eRapid_Lv3: y1 = 1;						n = 7; break;//7ŸŒ³
+		case eRapid_Lv4: y1 = 1;						n = 9; break;//9ŸŒ³
+		case eRapid_Lv5: y1 = 1;						n = 11; break;//11ŸŒ³
 		}
 		switch (ePrm2){
 		case eSlow_Lv5: y2 = 1;                       n = 11; break;//11ŸŒ³

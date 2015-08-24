@@ -10,8 +10,8 @@
 
 class sceneTitle : public	Scene
 {
-private:
-	//	定数
+private:	//	定数
+
 	enum Title_Mode
 	{
 		TITLE,
@@ -24,11 +24,34 @@ private:
 		CREDIT
 	};
 
-	//	構造体
+	static const int STAGE_MAX = 8;
+
+private:	//	構造体
+
+	//	各キャラクター情報
 	struct CharacterInfo
 	{
-		LPSTR name;
-		bool	select;
+		LPSTR name;		//	キャラクター名
+		bool	select;		//	選択されているか
+	};
+
+	//	選択情報
+	struct SelectInfo
+	{
+		int		characterType[4];
+		int 	playerNum;	//　何人で遊ぶ？
+		int		stageType;	//　どのステージ？
+		bool	ready;			//	準備OKか？
+	};
+
+	//	カメラ用パラメータ構造体
+	struct CameraInfo
+	{
+		int			posNum;				//	仮のカメラ移動先のポジションを指し示す値
+		float		t;							//	補間パラメータ
+		Vector3		pos;					//	カメラポジション
+		Vector3		target;				//	カメラのターゲットポジション
+		Vector3		lerpStartPos;		//	ラープスタートポジション
 	};
 
 private:
@@ -37,18 +60,12 @@ private:
 	iexMesh*	m_Stage;	
 
 	//	カメラ用パラメータ
-	int			testpos;			//	仮のカメラ移動先のポジションを指し示す値
-	float		t;					//	補間パラメータ
-	Vector3		c_pos;		//	カメラポジション
-	Vector3		t_pos;		//	カメラのターゲットポジション
-	Vector3		s_pos;		//	ラープスタートポジション
-	Quaternion orientation;	//	クォータニオン
-	
+	CameraInfo	cameraInfo;
+
 	//	ゲーム設定用パラメータ
-	int		mode;
 	CharacterInfo	characterInfo[PlayerData::CHARACTER_MAX];
-	int 	playerNum;	//　何人で遊ぶ？
-	int		stageType;	//　どのステージ？
+	SelectInfo			selectInfo;
+	int		mode;
 
 public:
 	//	初期化・解放

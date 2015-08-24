@@ -4,7 +4,6 @@
 #include	"iextreme.h"
 #include	"GlobalFunction.h"
 #include	"Collision.h"
-#include	"BaseObj.h"
 #include	"Player.h"
 #include	"Bullet.h"
 #include	"BulletManager.h"
@@ -87,17 +86,10 @@
 //	更新・描画
 //-----------------------------------------------------------------------------------
 
-	//	更新
-	void	Squirrel::Update( void )
-	{
-		ModeManagement();
-		BaseObj::Update();
-	}
-
 	//	描画
 	void	Squirrel::Render( iexShader* shader, LPSTR technique )
 	{
-		BaseObj::Render( shader, technique );
+		CommonRender( shader, technique );
 
 		//	デバッグ用
 		if ( !debug ) 	return;
@@ -117,55 +109,6 @@
 //-----------------------------------------------------------------------------------
 //	動作関数
 //-----------------------------------------------------------------------------------
-
-	//	モード管理
-	void	Squirrel::ModeManagement( void )
-	{
-		switch( mode )
-		{
-		case PlayerData::MOVE:
-			Move();
-			break;
-
-		case PlayerData::ATTACK:
-		case	PlayerData::POWERARTS:
-		case PlayerData::HYPERARTS:
-		case PlayerData::QUICKARTS:
-			unrivaled = true;
-			move = Vector3( 0.0f, 0.0f, 0.0f );
-			Attack( mode );
-			break;
-
-		case PlayerData::JUMP:
-			Jump();
-			break;
-
-		case PlayerData::GUARD:
-			Guard();
-			break;
-
-		case PlayerData::DAMAGE_STRENGTH:
-			CommonKnockBackStrength();
-			break;
-
-		case PlayerData::DAMAGE:
-			Damage( mode );
-			break;
-		}
-	}
-
-	//	モードMove
-	void	Squirrel::Move( void )
-	{
-		CommonMove();
-		
-		if ( input->Get( KEY_A ) == 3 )		mode = PlayerData::QUICKARTS;
-		if ( input->Get( KEY_B ) == 3 )		mode = PlayerData::POWERARTS;
-		if ( input->Get( KEY_C ) == 3 )		mode = PlayerData::HYPERARTS;
-		if ( input->Get( KEY_D ) == 3 )		mode = PlayerData::JUMP;
-		if ( input->Get( KEY_B7 ) == 3 )	mode = PlayerData::GUARD;
-		if ( input->Get( KEY_B10 ) == 3 )	mode = PlayerData::DAMAGE_STRENGTH;
-	}
 
 	//	クイックアーツ
 	bool	Squirrel::QuickArts( void )
@@ -240,7 +183,7 @@
 		static int time = 0;
 	
 		//	情報取得
-		Matrix	mat = obj->TransMatrix;
+		Matrix	mat = GetMatrix();
 		Vector3	up = Vector3( mat._21, mat._22, mat._23 );
 		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
 		Vector3	p_pos = GetPos();
@@ -280,69 +223,28 @@
 		return	false;
 	}
 
-	//	モードAttack
-	void	Squirrel::Attack( int attackKind )
-	{
-		SetMotion( motionData.ATTACK1 );
-		int		frame = obj->GetFrame();
-		
-		bool	isEnd = false;
+//-----------------------------------------------------------------------------------
+//	情報設定
+//-----------------------------------------------------------------------------------
 
+	//	攻撃用パラメータ設定
+	void	Squirrel::SetAttackParam( int attackKind )
+	{
 		switch ( attackKind )
 		{
 		case PlayerData::QUICKARTS:
-			isEnd = QuickArts();
-			if ( !isEnd ){
-				attackParam = PlayerData::SPHEREVSCAPSULE;
-				knockBackType = PlayerData::KNOCKBACK_WEAK;
-			}
+			attackParam = PlayerData::SPHEREVSCAPSULE;
+			knockBackType = PlayerData::KNOCKBACK_WEAK;
 			break;
 
 		case PlayerData::POWERARTS:
-			isEnd = PowerArts();
-			if ( !isEnd ){
-				attackParam = PlayerData::SPHEREVSCAPSULE;
-				knockBackType = PlayerData::KNOCKBACK_MIDDLE;
-			}
+			attackParam = PlayerData::SPHEREVSCAPSULE;
+			knockBackType = PlayerData::KNOCKBACK_MIDDLE;
 			break;
 
 		case PlayerData::HYPERARTS:
-			isEnd = HyperArts();
-			if ( !isEnd ){
-				attackParam = PlayerData::SPHEREVSCYRINDER;
-				knockBackType = PlayerData::KNOCKBACK_STRENGTH;
-			}
+			attackParam = PlayerData::SPHEREVSCYRINDER;
+			knockBackType = PlayerData::KNOCKBACK_STRENGTH;
 			break;
 		}
-
-		//	モーション終了時に
-		if ( isEnd )
-		{
-			attack_t = 0.0f;
-			attack_r = 0.0f;
-			attackParam = 0;
-			knockBackType = 0;
-			unrivaled = false;
-			mode = PlayerData::MOVE;
-		}
-	}
-
-	//	モードJump
-	void	Squirrel::Jump( void )
-	{
-		CommonJump();
-	}
-
-	//	モードGuard
-	void	Squirrel::Guard( void )
-	{
-		move.x = move.z = 0.0f;
-		SetMotion( SquirrelData::STAND );
-		CommonGuard();
-	}
-
-	//	モードDamage
-	void	Squirrel::Damage( int type )
-	{
-		CommonKnockBack();
 	}

@@ -6,10 +6,7 @@
 #include	"Particle.h"
 #include	"Coin.h"
 #include	"CoinManager.h"
-#include	"BaseObj.h"
 #include	"Player.h"
-#include	"Y2009.h"
-#include	"ECCMAN.h"
 #include	"Princess.h"
 #include	"Squirrel.h"
 #include	"Knight.h"
@@ -58,14 +55,6 @@
 	{
 		switch ( type )
 		{
-		case	PlayerData::Y2009:
-			c_Player[input] = new Y2009();
-			break;
-
-		case PlayerData::ECCMAN:
-			c_Player[input] = new ECCMAN();
-			break;
-
 		case PlayerData::PRINCESS:
 			c_Player[input] = new Princess();
 			break;
@@ -76,9 +65,6 @@
 
 		case PlayerData::SQUIRREL:
 			c_Player[input] = new Squirrel();
-			break;
-		default:
-			c_Player[input] = new Y2009();
 			break;
 		}
 
@@ -145,18 +131,6 @@
 //------------------------------------------------------------------------------
 //	“®ìŠÖ”
 //------------------------------------------------------------------------------
-
-	//	ƒRƒCƒ“‰ÁZ
-	void	PlayerManager::AddCoin( int player )
-	{
-		c_Player[player]->AddCoin();
-	}
-
-	//	ƒRƒCƒ“Œ¸Z
-	void	PlayerManager::SubCoin( int player )
-	{
-		c_Player[player]->SubCoin();
-	}
 
 //------------------------------------------------------------------------------
 //	“–‚½‚è”»’èŠÖ”
@@ -305,7 +279,6 @@
 	Vector3	PlayerManager::GetPos( int player ){	return	c_Player[player]->GetPos();	}
 	Matrix	PlayerManager::GetMatrix( int player ){ return	c_Player[player]->GetMatrix(); }
 	float		PlayerManager::GetAngle( int player ){ return		c_Player[player]->GetAngle(); }
-	int			PlayerManager::GetCoinNum( int player ){ return	c_Player[player]->GetCoinNum(); }
 	int			PlayerManager::GetType( int player ){ return c_Player[player]->GetType(); }
 	bool		PlayerManager::GetUnrivaled( int player ){ return c_Player[player]->GetUnrivaled(); }
 	int			PlayerManager::GetP_Num( int player ){ return c_Player[player]->GetP_Num(); }
