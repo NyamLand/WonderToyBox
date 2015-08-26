@@ -1,24 +1,24 @@
 
-#ifndef __PRINCESS_H__
-#define	__PRINCESS_H__
+#ifndef __SQUIRREL_H__
+#define	__SQUIRREL_H__
 
 //*********************************************************************************
 //
-//	Princessクラス
+//	Squirrelクラス
 //
 //*********************************************************************************
-class Princess : public		Player
+class Squirrel : public		Player
 {
 private:
 
-
 public:
 	//	初期化・解放
-	Princess( void );
-	~Princess( void );
+	Squirrel( void );
+	~Squirrel( void );
 	void	SetMotionData( void );
-	
+
 	//	更新・描画
+	void	Update( void );
 	void	Render( iexShader* shader, LPSTR technique );
 
 	//	動作関数
@@ -31,4 +31,4 @@ public:
 };
 
 //*********************************************************************************
-#endif // !__PRINCESS_H__
+#endif // !__SQUIRREL_H__

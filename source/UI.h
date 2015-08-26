@@ -12,8 +12,11 @@ class Timer;
 class HeadUpDisplay
 {
 private:
-	CoinBar*	coinbar;
-	Timer*		timer;
+	CoinBar*	c_Coinbar;
+	Timer*		c_Timer;
+	bool	donketsuBoostState;
+private:
+
 public:
 	bool Initialize();
 	HeadUpDisplay();
@@ -21,6 +24,12 @@ public:
 	void Update();
 	void Render();
 
+	//	î•ñÝ’è
+	void	SetTimer( int time );
+	void	SetDonketsuBoostState( bool state );
+	
+	//	î•ñŽæ“¾
+	int		GetTimer( void );
 };
 
 extern HeadUpDisplay* m_UI;
@@ -38,6 +47,7 @@ private:
 		Good = 1,
 		Bad = 2
 	};
+
 private:
 	iex2DObj *img_bar;
 	iex2DObj *img_state;
@@ -56,7 +66,6 @@ public:
 	void Update();
 	void Render();
 };
-
 
 class Timer
 {
@@ -81,7 +90,9 @@ public:
 
 public:
 	int GetTimer(){ return timer; };
+	int	 SetTimer( int timer ){ return		this->timer = timer; }
 };
+
 
 
 #endif // !__UI_H__

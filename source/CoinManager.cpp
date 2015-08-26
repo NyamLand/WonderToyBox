@@ -90,6 +90,9 @@ CoinManager*	m_CoinManager;
 			c_Coin[i].Render();
 		}
 
+		//	デバッグ用
+		if ( !debug )	return;	
+
 		char	str[256];
 		sprintf_s( str, "coin_num = %d", coin_num );
 		DrawString( str, 20, 100 );
@@ -118,13 +121,13 @@ CoinManager*	m_CoinManager;
 
 			c_Coin[i].judgeTimer		=		30;
 			c_Coin[i].activate			=		false;
-			c_Coin[i].state				=		true;
 			c_Coin[i].obj					=		org->Clone();
 			c_Coin[i].pos					=		pos;
 			Vector3	v						=		vec;
 			v.Normalize();
 			c_Coin[i].move				=		v * speed;
 			c_Coin[i].scale				=		0.5f;
+			c_Coin[i].state				=		true;
 			break;
 		}
 	}
@@ -132,7 +135,7 @@ CoinManager*	m_CoinManager;
 	//	位置調整
 	void	CoinManager::DistCheck( int n )
 	{
-		//	敵同士の位置チェック		
+		//	コイン同士の位置チェック		
 		for ( int i = 0; i < COIN_MAX; i++ )
 		{
 			//	自分vs自分は除外		

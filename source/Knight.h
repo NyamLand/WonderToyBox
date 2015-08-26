@@ -1,23 +1,25 @@
 
-#ifndef __PRINCESS_H__
-#define	__PRINCESS_H__
+#ifndef __KNIGHT_H__
+#define	__KNIGHT_H__
 
 //*********************************************************************************
 //
-//	Princessクラス
+//	Knightクラス
 //
 //*********************************************************************************
-class Princess : public		Player
+class Knight : public	Player
 {
 private:
 
+private:
+	float	lance_r;
 
 public:
 	//	初期化・解放
-	Princess( void );
-	~Princess( void );
+	Knight( void );
+	~Knight( void );
 	void	SetMotionData( void );
-	
+
 	//	更新・描画
 	void	Render( iexShader* shader, LPSTR technique );
 
@@ -31,4 +33,4 @@ public:
 };
 
 //*********************************************************************************
-#endif // !__PRINCESS_H__
+#endif // !__KNIGHT_H__

@@ -1,15 +1,16 @@
 
 #include	"iextreme.h"
 #include	"GlobalFunction.h"
+#include	"system/System.h"
 #include	"Collision.h"
 #include	"Particle.h"
 #include	"Coin.h"
 #include	"CoinManager.h"
-#include	"BaseObj.h"
 #include	"Player.h"
-#include	"Y2009.h"
-#include	"ECCMAN.h"
 #include	"Princess.h"
+#include	"Squirrel.h"
+#include	"Knight.h"
+#include	"GameManager.h"
 
 #include	"PlayerManager.h"
 
@@ -54,20 +55,16 @@
 	{
 		switch ( type )
 		{
-		case	PlayerData::Y2009:
-			c_Player[input] = new Y2009();
-			break;
-
-		case PlayerData::ECCMAN:
-			c_Player[input] = new ECCMAN();
-			break;
-
 		case PlayerData::PRINCESS:
 			c_Player[input] = new Princess();
 			break;
 
-		default:
-			c_Player[input] = new Y2009();
+		case PlayerData::KNIGHT:
+			c_Player[input] = new Knight();
+			break;
+
+		case PlayerData::SQUIRREL:
+			c_Player[input] = new Squirrel();
 			break;
 		}
 
@@ -84,14 +81,13 @@
 		org[PlayerData::Y2009] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
 		org[PlayerData::ECCMAN] = new iex3DObj( "DATA/CHR/ECCMAN/ECCMAN.IEM" );
 		org[PlayerData::PRINCESS] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
-		org[PlayerData::KNIGHT] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
-		org[PlayerData::KING] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
-		org[PlayerData::SQUIRREL] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
-		org[PlayerData::TIGER] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
-		org[PlayerData::ANIMA] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
-		org[PlayerData::CROWS] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
-		org[PlayerData::BEAR] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
-
+		org[PlayerData::KNIGHT] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PlayerData::KING] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PlayerData::SQUIRREL] = new iex3DObj( "DATA/CHR/SQUIRREL/SQUIRREL.IEM" );
+		org[PlayerData::TIGER] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PlayerData::ANIMA] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PlayerData::CROWS] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PlayerData::BEAR] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
 	}
 
 //------------------------------------------------------------------------------
@@ -128,17 +124,16 @@
 		{
 			c_Player[i]->Render( shader, technique );
 			Vector3	p_pos = c_Player[i]->GetPos();
-			DrawCapsule( p_pos, Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z ), 1.0f, 0xFFFFFFFF );
-
-			//	デバッグ用
-			char	str[256];
-			sprintf_s( str, "p%d_coin = %d", i + 1, c_Player[i]->GetCoinNum() );
-			DrawString( str, 20, 150 + i * 30 );
+			DrawCapsule( p_pos, Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z ), 1.0f );
 		}
 	}
 
 //------------------------------------------------------------------------------
 //	動作関数
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+//	当たり判定関数
 //------------------------------------------------------------------------------
 
 	//	当たり判定
@@ -148,48 +143,132 @@
 		{
 			for ( int n = 0; n < PLAYER_NUM; n++ )
 			{
-				if ( c_Player[i]->GetAttackParam() != 0 )
-				{
-					//	自分だったら次へ
-					if ( i == n )	continue;
+				//	自分か相手が無敵状態だとつぎへ
+				if ( i == n )	continue;
+				if ( c_Player[n]->GetUnrivaled() )	continue;
 
-					//	当たり判定(今はとりあえず球で取る)
-					static float	dist = 1.0f;
-					Vector3	p_pos1 = c_Player[i]->GetPos();
-					Vector3	p_pos2 = c_Player[n]->GetPos();
-					p_pos1.y += 3.0f;
-					p_pos2.y += 3.0f;
-					if ( Collision::CapsuleVSCapsule( c_Player[i]->GetPos(), p_pos1, 1.0f, c_Player[n]->GetPos(), p_pos2, 1.0f ) )
-					{
-						//	とりあえずエフェクトとコイン出す
-						Vector3	p_pos = c_Player[n]->GetPos();
-						float	effectScale = 1.0f;
-						Particle::Spark( p_pos, effectScale );
-						Vector3	vec = p_pos2 - p_pos1;
-						vec.y = 0.5f;
-						vec.Normalize();
-						
-						if ( c_Player[n]->GetCoinNum() > 0 )
-						{
-							m_CoinManager->Set( p_pos2, vec, 0.5f );
-							c_Player[n]->SubCoin();
-						}
-					}
+				//	攻撃タイプを取得
+				int		attackParam = c_Player[i]->GetAttackParam();
+
+				//	タイプ別当たり判定
+				switch ( attackParam )
+				{
+				case PlayerData::COLLISION_TYPE::SPHEREVSCAPSULE:
+					HitCheckSphereVSCapsule( c_Player[i], c_Player[n] );
+					break;
+
+				case PlayerData::COLLISION_TYPE::CAPSULEVSCAPSULE:
+					HitCheckCapsuleVSCapsule( c_Player[i], c_Player[n] );
+					break;
+
+				case PlayerData::COLLISION_TYPE::SPHEREVSCYRINDER:
+					break;
+
+				case PlayerData::COLLISION_TYPE::SPHEREVSPOINT:
+					break;
+
+				case PlayerData::COLLISION_TYPE::SPHEREVSSPHERE:
+					break;
 				}
 			}
 		}
 	}
 
-	//	コイン加算
-	void	PlayerManager::AddCoin( int player )
-	{
-		c_Player[player]->AddCoin();
+	//	球とカプセルの当たり判定
+	void	PlayerManager::HitCheckSphereVSCapsule( Player* p1, Player* p2 )
+	{		
+		//	攻撃する方
+		Vector3	p1_attackPos		=		p1->GetAttackPos();
+		float		p1_attack_r		=		p1->GetAttack_R();
+
+		//	攻撃される方
+		Vector3	p2_bottom = p2->GetPos();
+		Vector3	p2_top = Vector3( p2_bottom.x, p2_bottom.y + 3.0f, p2_bottom.z );
+		float		p2_r = 1.0f;
+
+		//	攻撃判定
+		bool	isHit = Collision::CapsuleVSSphere( p2_bottom, p2_top, p2_r, p1_attackPos, p1_attack_r );
+	
+		//	当たっていたら
+		if ( isHit )
+		{		
+			//	エフェクトだす
+			float	effectScale = 1.0f;
+			Particle::Spark( p2_top, effectScale );
+
+			//	ノックバック
+			Vector3	knockBackVec = p1_attackPos - p2_bottom;
+			knockBackVec.y = p2_bottom.y;
+			knockBackVec.Normalize();
+			p2->SetKnockBackVec( -knockBackVec );
+			p2->SetMode( PlayerData::DAMAGE_STRENGTH );
+
+			//	コインばらまき方向設定
+			std::uniform_real_distribution<float>	vecrand( -1.0f, 1.0f );
+			Vector3	vec = Vector3( vecrand( ran ), 1.0f, vecrand( ran ) );
+			vec.Normalize();
+
+			//	プレイヤー番号取得とばらまきパワー設定
+			float	power = 0.2f;
+			int		p2_Num = p2->GetP_Num();
+			int		p2_coinNum = GameManager::GetCoinNum( p2_Num );
+
+			//	コインがあればばらまき
+			if ( p2_coinNum > 0 )
+			{
+				m_CoinManager->Set( p2_top, vec, power );
+				GameManager::SubCoin( p2_Num );
+			}
+		}
 	}
 
-	//	コイン減算
-	void	PlayerManager::SubCoin( int player )
+	//	カプセルとカプセルの当たり判定
+	void	PlayerManager::HitCheckCapsuleVSCapsule( Player* p1, Player* p2 )
 	{
-		c_Player[player]->SubCoin();
+		//	攻撃する方
+		Vector3	p1_attack_bottom = p1->GetAttackPos_Bottom();
+		Vector3	p1_attack_top = p1->GetAttackPos_Top();
+		float		p1_attack_r = p1->GetAttack_R();
+
+		//	攻撃される方
+		Vector3	p2_bottom = p2->GetPos();
+		Vector3	p2_top = Vector3( p2_bottom.x, p2_bottom.y + 3.0f, p2_bottom.z );
+		float		p2_r = 1.0f;
+
+		//	攻撃判定
+		bool	isHit = Collision::CapsuleVSCapsule( p1_attack_bottom, p1_attack_top, p1_attack_r, p2_bottom, p2_top, p2_r );
+
+		//	当たっていたら
+		if ( isHit )
+		{
+			//	エフェクトだす
+			float	effectScale = 1.0f;
+			Particle::Spark( p2_top, effectScale );
+
+			//	ノックバック
+			Vector3	knockBackVec = p1_attack_top - p2_bottom;
+			knockBackVec.y = p2_bottom.y;
+			knockBackVec.Normalize();
+			p2->SetKnockBackVec( -knockBackVec );
+			p2->SetMode( PlayerData::DAMAGE_STRENGTH );
+			
+			//	コインばらまき方向設定
+			std::uniform_real_distribution<float>	vecrand( -1.0f, 1.0f );
+			Vector3	vec = Vector3( vecrand( ran ), 1.0f, vecrand( ran ) );
+			vec.Normalize();
+
+			//	プレイヤー番号取得とばらまきパワー設定
+			float	power = 0.15f;
+			int		p2_Num = p2->GetP_Num();
+			int		p2_coinNum = GameManager::GetCoinNum( p2_Num );
+
+			//	コインがあればばらまき
+			if ( p2_coinNum > 0 )
+			{
+				m_CoinManager->Set( p2_top, vec, power );
+				GameManager::SubCoin( p2_Num );
+			}
+		}
 	}
 
 //------------------------------------------------------------------------------
@@ -200,10 +279,15 @@
 	Vector3	PlayerManager::GetPos( int player ){	return	c_Player[player]->GetPos();	}
 	Matrix	PlayerManager::GetMatrix( int player ){ return	c_Player[player]->GetMatrix(); }
 	float		PlayerManager::GetAngle( int player ){ return		c_Player[player]->GetAngle(); }
-	int			PlayerManager::GetCoinNum( int player ){ return	c_Player[player]->GetCoinNum(); }
+	int			PlayerManager::GetType( int player ){ return c_Player[player]->GetType(); }
+	bool		PlayerManager::GetUnrivaled( int player ){ return c_Player[player]->GetUnrivaled(); }
+	int			PlayerManager::GetP_Num( int player ){ return c_Player[player]->GetP_Num(); }
 
 	//	情報設定
 	void		PlayerManager::SetPos( int player, Vector3 pos ){ c_Player[player]->SetPos( pos ); }
 	void		PlayerManager::SetPos( int player, float x, float y, float z ){ c_Player[player]->SetPos( x, y, z ); }
 	void		PlayerManager::SetAngle( int player, float angle ){ c_Player[player]->SetAngle( angle ); }
 	void		PlayerManager::SetScale( int player, float scale ){ c_Player[player]->SetScale( scale ); }
+	void		PlayerManager::SetType( int player, int type ){ c_Player[player]->SetType(type); }
+	void		PlayerManager::SetKnockBackVec( int player, Vector3 knockBackVec ){ c_Player[player]->SetKnockBackVec( knockBackVec ); }
+	void		PlayerManager::SetMode( int player, PlayerData::STATE state ){ c_Player[player]->SetMode( state ); }

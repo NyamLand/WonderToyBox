@@ -3,16 +3,17 @@
 #include	<random>
 #include	"system/system.h"
 #include	"system/Framework.h"
+#include	"GameManager.h"
 #include	"GlobalFunction.h"
 #include	"Collision.h"
 #include	"Camera.h"
 #include	"Particle.h"
-#include	"BaseObj.h"
 #include	"Player.h"
 #include	"PlayerManager.h"
 #include	"Coin.h"
 #include	"CoinManager.h"
-#include	"Block.h"
+#include	"Bullet.h"
+#include	"BulletManager.h"
 #include	"sceneResult.h"
 #include	"UI.h"
 
@@ -23,7 +24,7 @@
 //	グローバル変数
 //
 //*****************************************************************************************************************************
-sceneMain* m_sceneMain;
+
 
 //*****************************************************************************************************************************
 //
@@ -32,7 +33,7 @@ sceneMain* m_sceneMain;
 //*****************************************************************************************************************************
 
 	//	コンストラクタ
-	sceneMain::sceneMain( void ) : m_Stage( NULL )
+	sceneMain::sceneMain( void ) : m_Stage( NULL ), playerNum( 0 ), stageType( 0 )
 	{
 		
 	}
@@ -74,6 +75,9 @@ sceneMain* m_sceneMain;
 		m_CoinManager = new CoinManager();
 		m_CoinManager->Initialize();
 
+		m_BulletManager = new BulletManager();
+		m_BulletManager->Initialize();
+
 		//	パーティクル
 		Particle::Initialize();
 
@@ -86,6 +90,8 @@ sceneMain* m_sceneMain;
 
 		//	変数初期化
 		timer = 0;
+		playerNum = GameManager::GetPlayerNum();
+		stageType = GameManager::GetStageType();
 
 		//	全体更新
 		Update();
@@ -99,6 +105,7 @@ sceneMain* m_sceneMain;
 		SafeDelete( m_CollisionStage );
 		SafeDelete( m_Camera );
 		SafeDelete( m_CoinManager );
+		SafeDelete( m_BulletManager );
 		SafeDelete( ShadowTex );
 		SafeDelete( m_UI );
 		SafeDelete( diffuse );
@@ -108,6 +115,7 @@ sceneMain* m_sceneMain;
 		SafeDelete( light );
 		SafeDelete( light_s );
 		SafeDelete( screen );
+		SafeDelete( m_Player );
 		backBuffer->Release();
 		Particle::Release();
 	}
@@ -115,10 +123,12 @@ sceneMain* m_sceneMain;
 	//	プレイヤー初期化
 	void	sceneMain::PlayerInitialize( void )
 	{
-		m_Player->Initialize( 0, PlayerData::PRINCESS, Vector3( 0.0f, 0.0f, 0.0f ) );
-		m_Player->Initialize( 1, PlayerData::Y2009, Vector3( 10.0f, 0.0f, 0.0f ) );
-		m_Player->Initialize( 2, PlayerData::Y2009, Vector3( 5.0f, 0.0f, 0.0f ) );
-		m_Player->Initialize( 3, PlayerData::Y2009, Vector3( -5.0f, 0.0f, 0.0f ) );
+		for ( int i = 0; i < 4; i++ )
+		{
+			int		characterType = GameManager::GetCharacterType( i );
+			Vector3	pos = Vector3( -20.0f + ( 10.0f * i ), 0.0f, 0.0f );
+			m_Player->Initialize( i, characterType, pos );
+		}
 	}
 
 	//	ディファード初期化
@@ -160,22 +170,26 @@ sceneMain* m_sceneMain;
 		//	コイン更新
 		m_CoinManager->Update();
 
-		//	UI更新
-		m_UI->Update();
+		//	リス　バレット更新
+		m_BulletManager->Update();
 
 		//	カメラ更新
 		m_Camera->Update( VIEW_MODE::FIX, Vector3( 0.0f, 2.0f, 0.0f ) );
 		shader3D->SetValue( "ViewPos", m_Camera->GetPos() );
 		shader3D->SetValue( "matView", m_Camera->GetMatrix() );
 
-		//	タイマー更新
-		timer++;
-
-		if ( timer >= TIMELIMIT )
+		//	デバッグモード切り替え
+		if ( KEY( KEY_ENTER ) == 3 )		debug = !debug;
+		
+		//	シーン切り替え
+		if ( GameManager::GetChangeSceneFlag() )
 		{
-			//MainFrame->ChangeScene( new sceneResult() );
+			MainFrame->ChangeScene( new sceneResult() );
 			return;
 		}
+
+		//	ゲームマネージャー
+		GameManager::Update();
 	}
 
 //*****************************************************************************************************************************
@@ -249,20 +263,13 @@ sceneMain* m_sceneMain;
 		m_Stage->Render( shader3D, "nolight_s" );
 		m_Player->Render( shader3D, "toon" );
 		m_CoinManager->Render();
+		m_BulletManager->Render();
 		
 		//UI
-		m_UI->Render();
+		GameManager::Render();
 
 		//	パーティクル描画
 		Particle::Render();
-
-		int		second = ( TIMELIMIT - timer ) / SECOND;
-		int		minute = ( TIMELIMIT - timer ) / MINUTE;
-
-		//	デバッグ用
-		//char	str[256];
-		//sprintf_s( str, "timelimit = %d分%d秒", minute, second );
-		//DrawString( str, 550, 100 );
 	}
 
 	//	シャドウバッファ描画
@@ -300,6 +307,7 @@ sceneMain* m_sceneMain;
 			D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, 0xFFFFFFFF, 1.0f, 0 );
 
 		//	描画
+		//m_Stage->Render( shader3D, "shadowBuf" );
 		m_Player->Render( shader3D, "ShadowBuf" );
 		m_CoinManager->Render( shader3D, "ShadowBuf" );
 

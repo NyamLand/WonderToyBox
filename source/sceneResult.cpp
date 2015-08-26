@@ -3,9 +3,8 @@
 #include	"GlobalFunction.h"
 #include	"system/Framework.h"
 #include	"system/System.h"
-#include	"BaseObj.h"
+#include	"GameManager.h"
 #include	"Player.h"
-#include	"PlayerManager.h"
 #include	"sceneTitle.h"
 #include	"sceneMain.h"
 
@@ -31,7 +30,6 @@
 	sceneResult::~sceneResult( void )
 	{
 		SafeDelete( view );
-		SafeDelete( m_Player );
 	}
 
 	//	èâä˙âª
@@ -42,7 +40,7 @@
 
 		for ( int i = 0; i < 4; i++ )
 		{
-			resultInfo[i].p_Coin = m_Player->GetCoinNum( i );
+			resultInfo[i].p_Coin = GameManager::GetCoinNum( i );
 			resultInfo[i].p_num = i;
 		}
 

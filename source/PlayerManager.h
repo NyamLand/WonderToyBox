@@ -10,8 +10,11 @@
 class PlayerManager
 {
 private:
+	//	’è”
 	static const int PLAYER_NUM = 4;
 	static const int OBJ_MAX = 10;
+
+	//	•Ï”
 
 private:
 	Player*	c_Player[PLAYER_NUM];
@@ -30,22 +33,30 @@ public:
 	void	Render( iexShader* shader, LPSTR technique );
 
 	//	“®ìŠÖ”
+
+	//	“–‚½‚è”»’è
 	void	HitCheck( void );
-	void	AddCoin( int player );
-	void	SubCoin( int player );
+	void	HitCheckSphereVSCapsule( Player* p1, Player* p2 );
+	void	HitCheckCapsuleVSCapsule( Player* p1, Player* p2 );
 
 	//	î•ñæ“¾
 	Vector3	GetPos( int player );
 	float		GetAngle( int player );
 	Matrix	GetMatrix( int player );
+	bool		GetUnrivaled( int player );
 	int			GetAttackParam( int player );
 	int			GetCoinNum( int player );
+	int			GetType( int player );
+	int			GetP_Num( int player );
 
 	//	î•ñİ’è
 	void		SetPos( int player, Vector3 pos );
 	void		SetPos( int player, float x, float y, float z );
 	void		SetAngle( int player, float angle );
 	void		SetScale( int player, float scale );
+	void		SetType( int player, int type );
+	void		SetKnockBackVec( int player, Vector3	knockBackVec );
+	void		SetMode( int player, PlayerData::STATE state );
 };
 
 extern	PlayerManager*		m_Player;
