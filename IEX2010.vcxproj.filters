@@ -210,9 +210,6 @@
     <ClCompile Include="source\Effect.cpp">
       <Filter>ソース ファイル\Effect</Filter>
     </ClCompile>
-    <ClCompile Include="source\Tiger.cpp">
-      <Filter>ソース ファイル\Player\Tiger</Filter>
-    </ClCompile>
     <ClCompile Include="source\Image.cpp">
       <Filter>ソース ファイル\Image</Filter>
     </ClCompile>
@@ -289,9 +286,6 @@
     </ClInclude>
     <ClInclude Include="source\Effect.h">
       <Filter>ソース ファイル\Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Tiger.h">
-      <Filter>ソース ファイル\Player\Tiger</Filter>
     </ClInclude>
     <ClInclude Include="source\Image.h">
       <Filter>ソース ファイル\Image</Filter>

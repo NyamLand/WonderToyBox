@@ -10,7 +10,7 @@
 #include	"Princess.h"
 #include	"Squirrel.h"
 #include	"Knight.h"
-#include	"Tiger.h"
+//#include	"Tiger.h"
 #include	"GameManager.h"
 
 #include	"PlayerManager.h"
@@ -68,9 +68,9 @@
 			c_Player[input] = new Squirrel();
 			break;
 
-		case PlayerData::TIGER:
-			c_Player[input] = new Tiger();
-			break;
+		//case PlayerData::TIGER:
+		//	c_Player[input] = new Tiger();
+		//	break;
 		}
 
 		//	ƒ‚ƒfƒ‹“Ç‚İ‚İ

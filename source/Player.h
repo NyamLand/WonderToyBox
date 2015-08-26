@@ -10,7 +10,7 @@
 
 namespace PlayerData
 {
-	const int CHARACTER_MAX = 4;
+	const int CHARACTER_MAX = 3;
 
 	//	被ダメージ用各色
 	const Vector3	DAMAGE_COLOR[] =
@@ -27,7 +27,7 @@ namespace PlayerData
 		"ナイト",
 		"プリンセス",
 		"リス",
-		"とら",
+		//"とら",
 	};
 
 	enum PLAYER_TYPE

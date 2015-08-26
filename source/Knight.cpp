@@ -107,6 +107,7 @@
 	bool	Knight::QuickArts( void )
 	{
 		//	行列から前方取得
+		move = Vector3(0.0f, 0.0f, 0.0f);
 		Matrix	mat = GetMatrix();
 		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
 		front.Normalize();
@@ -138,6 +139,7 @@
 	bool	Knight::PowerArts( void )
 	{
 			//行列から前方取得
+		move = Vector3(0.0f, 0.0f, 0.0f);
 		Matrix	mat = GetMatrix();
 		Vector3	right = Vector3( mat._11, mat._12, mat._13 );
 		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
@@ -175,6 +177,7 @@
 	//	ハイパーアーツ
 	bool	Knight::HyperArts( void )
 	{
+		move = Vector3( 0.0f, 0.0f, 0.0f );
 		static	int		num = 0;	//	回数
 		//行列から前方取得
 		Matrix	mat = GetMatrix();
