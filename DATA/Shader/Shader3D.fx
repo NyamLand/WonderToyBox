@@ -368,6 +368,9 @@
 	float	adjustU = 0;
 	float	adjustV = 0;
 
+	//	その他
+	float3		colorParam = { 0.0f, 0.0f, 0.0f };
+
 //************************************************************************
 //
 //	通常描画
@@ -390,7 +393,7 @@
 
 			//	法線変換
 			float3x3		mat = ( float3x3 )TransMatrix;
-			float3	N = mul( In.Normal, mat );
+			float3		N = mul( In.Normal, mat );
 
 			//	平行光適用
 			Out.Color.rgb += DirLight( N );
@@ -617,6 +620,10 @@
 			//	ピクセル色決定
 			OUT = In.Color;
 
+			OUT.r += colorParam.r;
+			OUT.g += colorParam.g;
+			OUT.b += colorParam.b;
+
 			return	OUT;
 		}
 
@@ -630,6 +637,10 @@
 
 			//	レベル未満を影にする
 			if ( In.Level < ToonLevel )	OUT.rgb *= ToonShadow;
+			
+			OUT.r += colorParam.r;
+			OUT.g += colorParam.g;
+			OUT.b += colorParam.b;
 
 			return	OUT;
 		}

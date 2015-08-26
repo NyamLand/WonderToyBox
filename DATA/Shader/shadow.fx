@@ -60,6 +60,7 @@
 	float		adjustValue = -0.004f;
 	float		Shadow = 0.4f;
 
+
 	//	影テクスチャ情報取得
 	inline		float3	GetShadowTex( float3 Pos )
 	{
@@ -169,7 +170,6 @@
 
 			//	シャドウマップ
 			Out.vShadow = GetShadowTex( P );
-
 			return	Out;
 		}
 

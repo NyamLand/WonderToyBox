@@ -85,6 +85,12 @@
     <Filter Include="ソース ファイル\Player\Princess">
       <UniqueIdentifier>{7d3f933e-27f2-451e-b24c-c7fcbdb2403e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Player\Tiger">
+      <UniqueIdentifier>{4523eb51-1621-4eed-ab81-350487aedf33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Image">
+      <UniqueIdentifier>{31dd35c2-2fa3-45d4-bd41-b6b09747246e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -204,6 +210,12 @@
     <ClCompile Include="source\Effect.cpp">
       <Filter>ソース ファイル\Effect</Filter>
     </ClCompile>
+    <ClCompile Include="source\Tiger.cpp">
+      <Filter>ソース ファイル\Player\Tiger</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Image.cpp">
+      <Filter>ソース ファイル\Image</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -277,6 +289,12 @@
     </ClInclude>
     <ClInclude Include="source\Effect.h">
       <Filter>ソース ファイル\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Tiger.h">
+      <Filter>ソース ファイル\Player\Tiger</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Image.h">
+      <Filter>ソース ファイル\Image</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

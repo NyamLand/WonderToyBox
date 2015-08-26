@@ -110,6 +110,7 @@
 		Matrix	mat = GetMatrix();
 		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
 		front.Normalize();
+		move = Vector3(0.0f, 0.0f, 0.0f);
 
 		Vector3	 p_pos = GetPos();
 		Vector3	startPos = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
@@ -144,6 +145,7 @@
 		right.Normalize();
 		front.Normalize();
 		static int step = 0;
+		move = Vector3(0.0f, 0.0f, 0.0f);
 		//	当たり判定位置移動&範囲拡大
 		float t = GetBezier( ePrm_t::eRapid_Lv5, ePrm_t::eSlow_Lv1, attack_t );
 
@@ -182,12 +184,15 @@
 		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
 		right.Normalize();
 		front.Normalize();
+
 		static int step = 0;
 		Vector3 f, r;
-
+		move = Vector3( 0.0f, 0.0f, 0.0f );
 		//	当たり判定位置移動&範囲拡大
 		float t = GetBezier( ePrm_t::eRapid_Lv5, ePrm_t::eSlow_Lv1, attack_t );
-
+		Vector3	front_length = front * ( 2.0f * sinf( PI * t ) );
+		Vector3	right_length = right * ( 2.0f * cosf( PI * t ) );
+		Vector3	right_length_reverse = -right * ( 2.0f * cosf( PI * t ) );
 		Vector3	p_pos = GetPos();
 
 		switch ( step )
@@ -202,8 +207,8 @@
 			//	右から左へ薙ぎ払い
 			f = front * ( 2.0f * sinf( PI * t ) );
 			r = right * ( 2.0f * cosf( PI * t ) );
-			attackPos_bottom = p_pos + f + r;
-			attackPos_top = attackPos_bottom + f + r;
+			attackPos_bottom = p_pos + front_length + right_length;
+			attackPos_top = attackPos_bottom + front_length + right_length;
 			//	パラメータ加算
 			attack_t += 0.02f;
 			//	薙ぎ払い終えたら次へ
@@ -215,10 +220,8 @@
 
 		case 2:
 			//	左から右へ薙ぎ払い
-			f = front * ( 2.0f * sinf( PI * t ) );
-			r = -right * ( 2.0f * cosf( PI * t ) );
-			attackPos_bottom = p_pos + f + r;
-			attackPos_top = attackPos_bottom + f + r;
+			attackPos_bottom = p_pos + front_length + right_length;
+			attackPos_top = attackPos_bottom + front_length + right_length_reverse;
 			//	パラメータ加算
 			attack_t += 0.02f;
 			//	薙ぎ払い終えたら次へ
