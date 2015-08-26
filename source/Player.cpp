@@ -1,9 +1,9 @@
 
 #include	"iextreme.h"
+#include	"system/System.h"
 #include	"GlobalFunction.h"
 #include	"Collision.h"
 #include	"Camera.h"
-
 #include	"Player.h"
 
 //****************************************************************************************
@@ -39,6 +39,7 @@
 		this->input = ::input[input];
 		this->p_num = input;
 		this->pos = pos;
+		this->passDamageColor = PlayerData::DAMAGE_COLOR[input];
 
 		if ( obj == NULL )	return	false;
 		return	true;
@@ -73,6 +74,7 @@
 		//	移動値加算
 		pos += move;
 
+		//	情報更新
 		obj->SetPos( pos );
 		obj->SetAngle( angle );
 		obj->SetScale( scale );
@@ -89,6 +91,20 @@
 	//	共通シェーダー付き描画
 	void	Player::CommonRender( iexShader* shader, LPSTR technique )
 	{
+
+		//	ダメージ時白化計算
+		colorParam -= Vector3( 0.035f, 0.035f, 0.035f );
+		if ( colorParam.x <= 0.0f ){
+			colorParam.x = 0.0f;
+		}
+		if ( colorParam.y <= 0.0f ){
+			colorParam.y = 0.0f;
+		}
+		if ( colorParam.z <= 0.0f ){
+			colorParam.z = 0.0f;
+		}
+
+		shader3D->SetValue( "colorParam", colorParam );
 		obj->Render( shader, technique );
 	}
 
@@ -110,7 +126,6 @@
 		case PlayerData::HYPERARTS:
 		case PlayerData::QUICKARTS:
 			unrivaled = true;
-			move = Vector3( 0.0f, 0.0f, 0.0f );
 			Attack( mode );
 			break;
 
@@ -124,9 +139,11 @@
 
 		case PlayerData::DAMAGE_STRENGTH:
 			CommonKnockBackStrength();
+			SetDamageColor( receiveDamageColor );
 			break;
 
 		case PlayerData::DAMAGE:
+			Damage();
 			break;
 		}
 	}
@@ -341,6 +358,7 @@
 			attack_t = 0.0f;
 			attack_r = 0.0f;
 			attackParam = 0;
+			attackPos = GetPos();
 			knockBackType = 0;
 			unrivaled = false;
 		}
@@ -358,6 +376,12 @@
 		move.x = move.z = 0.0f;
 		SetMotion( motionData.GUARD );
 		CommonGuard();
+	}
+
+	//	モードDamage
+	void	Player::Damage( void )
+	{
+		CommonKnockBack();
 	}
 
 //-------------------------------------------------------------------------------------
@@ -390,6 +414,8 @@
 		}
 	}
 	void	Player::SetType( int type ){ this->type = type; }
+	void	Player::SetDamageColor( Vector3 color ){ this->colorParam = color; }
+	void	Player::SetReceiveColor( Vector3 color ){ this->receiveDamageColor = color; }
 
 	//	取得
 	Vector3		Player::GetPos( void ){ return	pos; }
@@ -399,6 +425,7 @@
 	int				Player::GetMode( void ){ return mode; }
 	int				Player::GetType( void ){ return type; }
 	int				Player::GetP_Num( void ){ return p_num; }
+	Vector3		Player::GetDamageColor( void ){ return	passDamageColor; }
 
 	//	当たり判定用パラメータ取得
 	int				Player::GetAttackParam( void ){ return attackParam; }

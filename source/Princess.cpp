@@ -107,6 +107,7 @@
 		Matrix	mat = GetMatrix();
 		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
 		front.Normalize();
+		move = Vector3( 0.0f, 0.0f, 0.0f );
 
 		Vector3	p_pos = GetPos();
 		Vector3	startPos = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
@@ -133,6 +134,7 @@
 	{
 		Vector3	p_pos = GetPos();
 		attackPos = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
+		move = Vector3( 0.0f, 0.0f, 0.0f );
 
 		//	îÕàÕägëÂ
 		Lerp( attack_r, 0.0f, 3.0f, attack_t );
@@ -152,6 +154,7 @@
 	bool	Princess::HyperArts( void )
 	{
 		static	int		num = 0;	//	âÒêî
+		move = Vector3( 0.0f, 0.0f, 0.0f );
 		Vector3	p_pos = GetPos();
 		attackPos = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
 

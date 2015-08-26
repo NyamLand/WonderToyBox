@@ -10,20 +10,24 @@
 
 namespace PlayerData
 {
-	const int CHARACTER_MAX = 3;
-	//	文字列
+	const int CHARACTER_MAX = 4;
+
+	//	被ダメージ用各色
+	const Vector3	DAMAGE_COLOR[] =
+	{
+		{ 1.0f, 1.0f, 1.0f },
+		{ 1.0f, 0.0f, 0.0f },
+		{ 0.0f, 1.0f, 0.0f },
+		{ 0.0f, 0.0f, 1.0f },
+	};
+	
+	//	キャラクター名文字列
 	const		LPSTR	characterName[CHARACTER_MAX] =
 	{
 		"ナイト",
 		"プリンセス",
 		"リス",
-		//"とら",
-		//"Yねえさん",
-		//"大王",
-		//"クマ",
-		//"アニマさん",
-		//"クロウズさん",
-		//"ECCマン",
+		"とら",
 	};
 
 	enum PLAYER_TYPE
@@ -31,10 +35,10 @@ namespace PlayerData
 		KNIGHT,		//	騎士
 		PRINCESS,	//	姫
 		SQUIRREL,	//	リス
+		TIGER,			//	トラ
 		Y2009,			//	Y姉さん
 		KING,			//	大王
 		BEAR,			//	クマ
-		TIGER,			//	トラ
 		ANIMA,			//	アニマさん
 		CROWS,		//	クロウズさん（綴り合ってる？）
 		ECCMAN,		//	ECCマン
@@ -101,6 +105,10 @@ protected:
 	int					p_num;		//	自分の番号
 	int					diffence;
 	int					type;			//	プレイヤータイプ
+	Vector3			colorParam;	//	色変更用
+	Vector3			passDamageColor;		//	あたえる色
+	Vector3			receiveDamageColor;	//	受け取る色
+	bool				damageState;	//	ダメージ状態
 
 	//	当たり判定用
 	int				attackParam;				//	攻撃種類
@@ -150,6 +158,7 @@ public:
 	void	Jump( void );
 	void	Guard( void );
 	void	Attack( int attackKind );
+	void	Damage( void );
 
 	//	各キャラクターごとに設定
 	virtual	bool	QuickArts( void ) = 0;
@@ -165,6 +174,8 @@ public:
 	void	SetScale( float scale );
 	void	SetKnockBackVec( Vector3 knockBackVec );
 	void	SetType( int type );
+	void	SetDamageColor( Vector3 color );
+	void	SetReceiveColor( Vector3 color );
 
 	//	情報取得
 	Vector3	GetPos( void );
@@ -173,6 +184,7 @@ public:
 	bool		GetUnrivaled( void );
 	int			GetMode( void );
 	int			GetType( void );
+	Vector3	GetDamageColor( void );
 
 	//	当たり判定用パラメータ取得
 	int			GetAttackParam( void );

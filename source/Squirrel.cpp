@@ -183,14 +183,16 @@
 		static int time = 0;
 	
 		//	î•ñæ“¾
+		move = Vector3( 0.0f, 0.0f, 0.0f );
 		Matrix	mat = GetMatrix();
 		Vector3	up = Vector3( mat._21, mat._22, mat._23 );
 		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
 		Vector3	p_pos = GetPos();
 		front.Normalize();
+		up.Normalize();
 
 		//	î•ñİ’è
-		Vector3	vec = front * 5.0f + up * -150.0f;
+		Vector3	vec = front * 5.0f + up * -15.0f;
 		static	float	bulletScale = 1.0f;
 		static	float	bulletSpeed = 0.5f;
 

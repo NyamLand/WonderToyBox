@@ -10,6 +10,7 @@
 #include	"Princess.h"
 #include	"Squirrel.h"
 #include	"Knight.h"
+#include	"Tiger.h"
 #include	"GameManager.h"
 
 #include	"PlayerManager.h"
@@ -65,6 +66,10 @@
 
 		case PlayerData::SQUIRREL:
 			c_Player[input] = new Squirrel();
+			break;
+
+		case PlayerData::TIGER:
+			c_Player[input] = new Tiger();
 			break;
 		}
 
@@ -124,7 +129,8 @@
 		{
 			c_Player[i]->Render( shader, technique );
 			Vector3	p_pos = c_Player[i]->GetPos();
-			DrawCapsule( p_pos, Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z ), 1.0f );
+			if ( !debug )continue;
+				DrawCapsule( p_pos, Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z ), 1.0f );
 		}
 	}
 
@@ -200,8 +206,12 @@
 			Vector3	knockBackVec = p1_attackPos - p2_bottom;
 			knockBackVec.y = p2_bottom.y;
 			knockBackVec.Normalize();
+			Vector3	color = p1->GetDamageColor();
+			p2->SetReceiveColor( color );
 			p2->SetKnockBackVec( -knockBackVec );
 			p2->SetMode( PlayerData::DAMAGE_STRENGTH );
+
+			//	Fİ’è
 
 			//	ƒRƒCƒ“‚Î‚ç‚Ü‚«•ûŒüİ’è
 			std::uniform_real_distribution<float>	vecrand( -1.0f, 1.0f );
@@ -249,6 +259,8 @@
 			Vector3	knockBackVec = p1_attack_top - p2_bottom;
 			knockBackVec.y = p2_bottom.y;
 			knockBackVec.Normalize();
+			Vector3	color = p1->GetDamageColor();
+			p2->SetReceiveColor(color);
 			p2->SetKnockBackVec( -knockBackVec );
 			p2->SetMode( PlayerData::DAMAGE_STRENGTH );
 			

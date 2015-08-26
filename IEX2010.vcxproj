@@ -115,6 +115,7 @@
     <ClCompile Include="source\Effect.cpp" />
     <ClCompile Include="source\GameManager.cpp" />
     <ClCompile Include="source\GlobalFunction.cpp" />
+    <ClCompile Include="source\Image.cpp" />
     <ClCompile Include="source\Knight.cpp" />
     <ClCompile Include="source\Particle.cpp" />
     <ClCompile Include="source\Player.cpp" />
@@ -144,6 +145,7 @@
     <ClCompile Include="IEX\IEX_System.cpp" />
     <ClCompile Include="IEX\IEX_Texture.cpp" />
     <ClCompile Include="IEX\IEX_View.cpp" />
+    <ClCompile Include="source\Tiger.cpp" />
     <ClCompile Include="source\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -156,6 +158,7 @@
     <ClInclude Include="source\Effect.h" />
     <ClInclude Include="source\GameManager.h" />
     <ClInclude Include="source\GlobalFunction.h" />
+    <ClInclude Include="source\Image.h" />
     <ClInclude Include="source\Knight.h" />
     <ClInclude Include="source\Particle.h" />
     <ClInclude Include="source\Player.h" />
@@ -170,6 +173,7 @@
     <ClInclude Include="source\sceneMain.h" />
     <ClInclude Include="source\system\System.h" />
     <ClInclude Include="IEX\iextreme.h" />
+    <ClInclude Include="source\Tiger.h" />
     <ClInclude Include="source\UI.h" />
   </ItemGroup>
   <ItemGroup>
