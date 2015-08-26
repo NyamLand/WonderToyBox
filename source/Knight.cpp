@@ -202,6 +202,7 @@
 			//	右から左へ薙ぎ払い
 			f = front * ( 2.0f * sinf( PI * t ) );
 			r = right * ( 2.0f * cosf( PI * t ) );
+			SetPos(p_pos + front * 0.1f + -right * 0.1f);
 			attackPos_bottom = p_pos + f + r;
 			attackPos_top = attackPos_bottom + f + r;
 			//	パラメータ加算
@@ -217,6 +218,8 @@
 			//	左から右へ薙ぎ払い
 			f = front * ( 2.0f * sinf( PI * t ) );
 			r = -right * ( 2.0f * cosf( PI * t ) );
+			SetPos(p_pos + front * 0.1f + right * 0.1f);
+
 			attackPos_bottom = p_pos + f + r;
 			attackPos_top = attackPos_bottom + f + r;
 			//	パラメータ加算
@@ -239,6 +242,7 @@
 			if ( lance_r >= 360 * 5 )
 			{
 				step = 0;
+				lance_r = 0.0f;
 				return true;
 			}
 		}
