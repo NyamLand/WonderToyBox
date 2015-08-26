@@ -4,7 +4,6 @@
 #include	"Collision.h"
 #include	"GlobalFunction.h"
 #include	"Particle.h"
-#include	"BaseObj.h"
 #include	"Player.h"
 #include	"PlayerManager.h"
 #include	"GameManager.h"

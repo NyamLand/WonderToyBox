@@ -36,8 +36,8 @@ public:
 	void	Render(iexShader* shader, LPSTR technique);
 
 	//	ìÆçÏä÷êî
-	void	Set(const Vector3& pos, const Vector3& vec, float speed);
-	void	Set(const Vector3& pos, const Vector3& vec, const float& scale, float speed);
+	void	Set( Vector3 pos, const Vector3 vec, float speed);
+	void	Set( Vector3 pos, const Vector3 vec, const float& scale, float speed);
 	void	DistCheck(int n);
 };
 
