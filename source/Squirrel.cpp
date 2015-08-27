@@ -109,6 +109,10 @@
 		stringPos.y -= 100.0f;
 		sprintf_s( str, "‚è\n‚·\n«" );
 		DrawString( str, ( int )stringPos.x, ( int )stringPos.y );
+
+
+		sprintf_s(str, "Squirrel_pos.y = %f", pos.y);
+		DrawString(str, 20, 320);
 	}
 
 //-----------------------------------------------------------------------------------
@@ -194,14 +198,19 @@
 		Matrix	mat = obj->TransMatrix;
 		Vector3	right = Vector3( mat._11, mat._12, mat._13 );
 		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
-		front.Normalize();
 		right.Normalize();
+		front.Normalize();
+
+		Vector3 v[3];
+		v[0] = front * 5.0f + right * 5.0f;
+		v[1] = front * 5.0f;
+		v[2] = front * 5.0f + right * -5.0f;
 
 		if ( time == 0 )
 		{
-			m_BulletManager->Set( pos, front * 5.0f + right * 5.0f, 0.5f );
-			m_BulletManager->Set( pos, front * 5.0f, 0.5f );
-			m_BulletManager->Set( pos, front * 5.0f + right * -5.0f, 0.5f );
+			m_BulletManager->Set( pos, v[0], 0.5f );
+			m_BulletManager->Set( pos, v[1], 0.5f );
+			m_BulletManager->Set( pos, v[2], 0.5f );
 		}
 		time++;
 
