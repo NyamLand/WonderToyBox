@@ -30,6 +30,7 @@ private:
 	static	int		playerNum;
 	static	int		stageType;
 	static	int		coinNum[4];
+	static	bool	donketsuBoostState;
 
 public:
 

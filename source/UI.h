@@ -14,6 +14,7 @@ class HeadUpDisplay
 private:
 	CoinBar*	c_Coinbar;
 	Timer*		c_Timer;
+	bool	donketsuBoostState;
 private:
 
 public:
@@ -25,6 +26,10 @@ public:
 
 	//	î•ñİ’è
 	void	SetTimer( int time );
+	void	SetDonketsuBoostState( bool state );
+	
+	//	î•ñæ“¾
+	int		GetTimer( void );
 };
 
 extern HeadUpDisplay* m_UI;

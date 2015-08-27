@@ -106,18 +106,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="source\BaseObj.cpp" />
-    <ClCompile Include="source\Block.cpp" />
     <ClCompile Include="source\Bullet.cpp" />
     <ClCompile Include="source\BulletManager.cpp" />
     <ClCompile Include="source\Camera.cpp" />
     <ClCompile Include="source\Coin.cpp" />
     <ClCompile Include="source\CoinManager.cpp" />
     <ClCompile Include="source\Collision.cpp" />
-    <ClCompile Include="source\ECCMAN.cpp" />
     <ClCompile Include="source\Effect.cpp" />
     <ClCompile Include="source\GameManager.cpp" />
     <ClCompile Include="source\GlobalFunction.cpp" />
+    <ClCompile Include="source\Image.cpp" />
     <ClCompile Include="source\Knight.cpp" />
     <ClCompile Include="source\Particle.cpp" />
     <ClCompile Include="source\Player.cpp" />
@@ -148,21 +146,18 @@
     <ClCompile Include="IEX\IEX_Texture.cpp" />
     <ClCompile Include="IEX\IEX_View.cpp" />
     <ClCompile Include="source\UI.cpp" />
-    <ClCompile Include="source\Y2009.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="source\BaseObj.h" />
-    <ClInclude Include="source\Block.h" />
     <ClInclude Include="source\Bullet.h" />
     <ClInclude Include="source\BulletManager.h" />
     <ClInclude Include="source\Camera.h" />
     <ClInclude Include="source\Coin.h" />
     <ClInclude Include="source\CoinManager.h" />
     <ClInclude Include="source\Collision.h" />
-    <ClInclude Include="source\ECCMAN.h" />
     <ClInclude Include="source\Effect.h" />
     <ClInclude Include="source\GameManager.h" />
     <ClInclude Include="source\GlobalFunction.h" />
+    <ClInclude Include="source\Image.h" />
     <ClInclude Include="source\Knight.h" />
     <ClInclude Include="source\Particle.h" />
     <ClInclude Include="source\Player.h" />
@@ -178,7 +173,6 @@
     <ClInclude Include="source\system\System.h" />
     <ClInclude Include="IEX\iextreme.h" />
     <ClInclude Include="source\UI.h" />
-    <ClInclude Include="source\Y2009.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DATA\Shader\2D.fx" />

@@ -33,12 +33,11 @@ public:
 	void	Render( iexShader* shader, LPSTR technique );
 
 	//	“®ìŠÖ”
-	void	AddCoin( int player );
-	void	SubCoin( int player );
 
 	//	“–‚½‚è”»’è
 	void	HitCheck( void );
 	void	HitCheckSphereVSCapsule( Player* p1, Player* p2 );
+	void	HitCheckCapsuleVSCapsule( Player* p1, Player* p2 );
 
 	//	î•ñæ“¾
 	Vector3	GetPos( int player );
@@ -48,6 +47,7 @@ public:
 	int			GetAttackParam( int player );
 	int			GetCoinNum( int player );
 	int			GetType( int player );
+	int			GetP_Num( int player );
 
 	//	î•ñİ’è
 	void		SetPos( int player, Vector3 pos );
@@ -55,6 +55,8 @@ public:
 	void		SetAngle( int player, float angle );
 	void		SetScale( int player, float scale );
 	void		SetType( int player, int type );
+	void		SetKnockBackVec( int player, Vector3	knockBackVec );
+	void		SetMode( int player, PlayerData::STATE state );
 };
 
 extern	PlayerManager*		m_Player;
