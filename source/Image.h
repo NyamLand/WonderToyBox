@@ -14,6 +14,7 @@ private:
 	int	 x, y, w, h, sx, sy, sw, sh;
 	float	angle;
 	float alpha;
+	int		plusScale_x, plusScale_y;
 	POINT	p;
 	bool	renderflag;
 	int		timer;
@@ -22,7 +23,7 @@ public:
 	//	初期化・解放
 	Image( LPSTR filename );
 	~Image( void );
-	bool	Initialize( int x, int y, int w, int h, int sx, int sy, int sw, int sh, float angle = 0.0f, float alpha = 1.0f, int timer = 30.0f );
+	bool	Initialize( int x, int y, int w, int h, int sx, int sy, int sw, int sh, float angle = 0.0f, float alpha = 1.0f, int timer = 0 );
 
 	//	更新
 	void	Update( void );
@@ -30,6 +31,7 @@ public:
 
 	//	描画
 	void	Render( void );	//	個々のパラメータで描画
+	void	NormalRender( void );	//	個々のパラメータで通常描画
 	void	Render( int x, int y, int w, int h, int sx, int sy, int sw, int sh, u32 dwFlags = RS_COPY, DWORD color = 0xFFFFFFFF );
 	void	Render( int x, int y, int w, int h, int sx, int sy, int sw, int sh, POINT p, float angle, iexShader* shader, LPSTR technique );
 	void	Render( int x, int y, int w, int h, int sx, int sy, int sw, int sh, POINT p, float ange, u32 dwFlags = RS_COPY, DWORD color = 0xFFFFFFFF );
