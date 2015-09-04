@@ -10,7 +10,7 @@
 #include	"Princess.h"
 #include	"Squirrel.h"
 #include	"Knight.h"
-//#include	"Tiger.h"
+#include	"Tiger.h"
 #include	"GameManager.h"
 
 #include	"PlayerManager.h"
@@ -68,9 +68,9 @@
 			c_Player[input] = new Squirrel();
 			break;
 
-		//case PlayerData::TIGER:
-		//	c_Player[input] = new Tiger();
-		//	break;
+		case PlayerData::TIGER:
+			c_Player[input] = new Tiger();
+			break;
 		}
 
 		//	ÉÇÉfÉãì«Ç›çûÇ›
@@ -83,16 +83,11 @@
 	//	ÉÇÉfÉãì«Ç›çûÇ›
 	void	PlayerManager::Load( void )
 	{
-		org[PlayerData::Y2009] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
-		org[PlayerData::ECCMAN] = new iex3DObj( "DATA/CHR/ECCMAN/ECCMAN.IEM" );
+
 		org[PlayerData::PRINCESS] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
 		org[PlayerData::KNIGHT] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
-		org[PlayerData::KING] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
 		org[PlayerData::SQUIRREL] = new iex3DObj( "DATA/CHR/SQUIRREL/SQUIRREL.IEM" );
 		org[PlayerData::TIGER] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
-		org[PlayerData::ANIMA] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
-		org[PlayerData::CROWS] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
-		org[PlayerData::BEAR] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
 	}
 
 //------------------------------------------------------------------------------
