@@ -213,6 +213,9 @@
     <ClCompile Include="source\Image.cpp">
       <Filter>ソース ファイル\Image</Filter>
     </ClCompile>
+    <ClCompile Include="source\Tiger.cpp">
+      <Filter>ソース ファイル\Player\Tiger</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -289,6 +292,9 @@
     </ClInclude>
     <ClInclude Include="source\Image.h">
       <Filter>ソース ファイル\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Tiger.h">
+      <Filter>ソース ファイル\Player\Tiger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
