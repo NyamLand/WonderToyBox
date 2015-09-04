@@ -355,7 +355,7 @@
 			if ( KEY( KEY_RIGHT ) == 3 )		selectInfo.playerNum++;
 			if ( KEY( KEY_LEFT ) == 3 )		selectInfo.playerNum--;
 
-			if ( selectInfo.playerNum >= PLAYER_NUM )	selectInfo.playerNum = 1;
+			if ( selectInfo.playerNum > PLAYER_NUM )	selectInfo.playerNum = 1;
 			if ( selectInfo.playerNum < 1 )						selectInfo.playerNum = PLAYER_NUM; 
 
 			if ( KEY( KEY_SPACE ) == 3 )		mode = SELECT_CHARACTER;
