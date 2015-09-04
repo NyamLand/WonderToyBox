@@ -4,6 +4,7 @@
 #include	"GlobalFunction.h"
 #include	"Collision.h"
 #include	"Camera.h"
+#include	"PlayerManager.h"
 #include	"Player.h"
 
 //****************************************************************************************
@@ -21,7 +22,7 @@
 		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ), power( 0 ), diffence( 0 ), knockBackVec( 0.0f, 0.0f, 0.0f ),
 		angle( 0.0f ), scale( 0.0f ), speed( 0.0f ), mode( 0 ), unrivaled( false ),
 		attackParam( 0 ), attackPos( 0.0f, 0.0f, 0.0f ), attackPos_top( 0.0f, 0.0f, 0.0f ), attackPos_bottom( 0.0f, 0.0f, 0.0f ), attack_r( 0.0f ), attack_t( 0.0f ), knockBackType( 0 ),
-		isGround( true ), force( 0.0f ), type( 0 ), p_num( 0 )
+		isGround(true), force(0.0f), type(0), p_num(0), CanHyper( true )
 	{
 
 	}
@@ -122,7 +123,7 @@
 			break;
 
 		case PlayerData::ATTACK:
-		case	PlayerData::POWERARTS:
+		case PlayerData::POWERARTS:
 		case PlayerData::HYPERARTS:
 		case PlayerData::QUICKARTS:
 			unrivaled = true;
@@ -319,7 +320,11 @@
 
 		if ( input->Get( KEY_A ) == 3 )		mode = PlayerData::QUICKARTS;
 		if ( input->Get( KEY_B ) == 3 )		mode = PlayerData::POWERARTS;
-		if ( input->Get( KEY_C ) == 3 )		mode = PlayerData::HYPERARTS;
+		CanHyper = m_Player->CanHyper;
+		if (CanHyper)
+		{
+			if (input->Get(KEY_C) == 3)		mode = PlayerData::HYPERARTS;
+		}
 		if ( input->Get( KEY_D ) == 3 )		mode = PlayerData::JUMP;
 		if ( input->Get( KEY_B7 ) == 3 )	mode = PlayerData::GUARD;
 		if ( input->Get( KEY_B10 ) == 3 )	mode = PlayerData::DAMAGE_STRENGTH;
@@ -347,6 +352,7 @@
 
 		case PlayerData::HYPERARTS:
 			isEnd = HyperArts();
+			CanHyper = HyperArts();
 			if ( !isEnd )	SetAttackParam( attackKind );
 			break;
 		}
@@ -400,7 +406,6 @@
 	{
 		if ( this->mode != mode )		this->mode = mode;
 	}
-
 	void	Player::SetPos( Vector3 pos ){ this->pos = pos; }
 	void	Player::SetPos( float x, float y, float z ){ this->pos = Vector3( x, y, z ); }
 	void	Player::SetAngle( float angle ){ this->angle = angle; }
@@ -420,19 +425,20 @@
 	//	取得
 	Vector3		Player::GetPos( void ){ return	pos; }
 	Matrix		Player::GetMatrix( void ){ return obj->TransMatrix; }
-	float			Player::GetAngle( void ){ return angle; }
-	bool			Player::GetUnrivaled( void ){ return unrivaled; }
-	int				Player::GetMode( void ){ return mode; }
-	int				Player::GetType( void ){ return type; }
-	int				Player::GetP_Num( void ){ return p_num; }
+	float		Player::GetAngle( void ){ return angle; }
+	bool		Player::GetUnrivaled( void ){ return unrivaled; }
+	int			Player::GetMode( void ){ return mode; }
+	int			Player::GetType( void ){ return type; }
+	int			Player::GetP_Num( void ){ return p_num; }
 	Vector3		Player::GetDamageColor( void ){ return	passDamageColor; }
+	bool		Player::GetCanHyper( void ){ return CanHyper; }
 
 	//	当たり判定用パラメータ取得
-	int				Player::GetAttackParam( void ){ return attackParam; }
-	int				Player::GetKnockBackType( void ){ return knockBackType; }
+	int			Player::GetAttackParam( void ){ return attackParam; }
+	int			Player::GetKnockBackType( void ){ return knockBackType; }
 	Vector3		Player::GetAttackPos( void ){ return attackPos; }
 	Vector3		Player::GetAttackPos_Top( void ){ return attackPos_top; }
 	Vector3		Player::GetAttackPos_Bottom( void ){ return attackPos_bottom; }
-	float			Player::GetAttack_T( void ){ return attack_t; }
-	float			Player::GetAttack_R( void ){ return attack_r; }
+	float		Player::GetAttack_T( void ){ return attack_t; }
+	float		Player::GetAttack_R( void ){ return attack_r; }
 

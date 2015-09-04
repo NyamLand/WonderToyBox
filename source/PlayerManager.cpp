@@ -33,7 +33,7 @@
 //------------------------------------------------------------------------------
 
 	//	コンストラクタ
-	PlayerManager::PlayerManager( void )
+	PlayerManager::PlayerManager(void) : CanHyper(true)
 	{
 
 	}
@@ -101,6 +101,7 @@
 		{
 			//	各プレイヤー更新
 			c_Player[i]->Update();
+			CanHyper = GetCanHyper(i);
 		}
 
 		//	当たり判定
@@ -283,12 +284,13 @@
 //------------------------------------------------------------------------------
 
 	//	情報取得
-	Vector3	PlayerManager::GetPos( int player ){	return	c_Player[player]->GetPos();	}
-	Matrix	PlayerManager::GetMatrix( int player ){ return	c_Player[player]->GetMatrix(); }
-	float		PlayerManager::GetAngle( int player ){ return		c_Player[player]->GetAngle(); }
+	Vector3		PlayerManager::GetPos( int player ){ return	c_Player[player]->GetPos();	}
+	Matrix		PlayerManager::GetMatrix( int player ){ return	c_Player[player]->GetMatrix(); }
+	float		PlayerManager::GetAngle( int player ){ return	c_Player[player]->GetAngle(); }
 	int			PlayerManager::GetType( int player ){ return c_Player[player]->GetType(); }
 	bool		PlayerManager::GetUnrivaled( int player ){ return c_Player[player]->GetUnrivaled(); }
 	int			PlayerManager::GetP_Num( int player ){ return c_Player[player]->GetP_Num(); }
+	bool		PlayerManager::GetCanHyper(int player){ return c_Player[player]->GetCanHyper(); }
 
 	//	情報設定
 	void		PlayerManager::SetPos( int player, Vector3 pos ){ c_Player[player]->SetPos( pos ); }
