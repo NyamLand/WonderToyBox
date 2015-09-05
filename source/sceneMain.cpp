@@ -93,6 +93,8 @@
 		playerNum = GameManager::GetPlayerNum();
 		stageType = GameManager::GetStageType();
 
+		PlayBGM( SoundInfo::BGM::MAIN_BGM );
+
 		//	‘S‘ÌXV
 		Update();
 		return true;

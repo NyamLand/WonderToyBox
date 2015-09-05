@@ -120,6 +120,7 @@
 				Particle::Spark( p_pos[i], effectScale );
 				//m_Player->AddCoin( i );
 				GameManager::AddCoin( i );
+				IEX_PlaySound( SoundInfo::COIN_SE, false );
 			}
 		}
 	}
