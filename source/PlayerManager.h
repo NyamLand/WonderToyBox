@@ -2,6 +2,8 @@
 #ifndef		__PLAYERMANAGER_H__
 #define		__PLAYERMANAGER_H__
 
+#include	"Player.h"
+
 //****************************************************************************************
 //
 //	PlayerManagerクラス
@@ -14,10 +16,12 @@ private:
 	static const int PLAYER_NUM = 4;
 	static const int OBJ_MAX = 10;
 
+public:
 	//	変数
+	bool	CanHyper;	//　ハイパーアーツ同時発動制限用
 
 private:
-	Player*	c_Player[PLAYER_NUM];
+	Player*		c_Player[PLAYER_NUM];
 	iex3DObj*	org[OBJ_MAX];
 
 public:
@@ -40,14 +44,15 @@ public:
 	void	HitCheckCapsuleVSCapsule( Player* p1, Player* p2 );
 
 	//	情報取得
-	Vector3	GetPos( int player );
+	Vector3		GetPos( int player );
 	float		GetAngle( int player );
-	Matrix	GetMatrix( int player );
+	Matrix		GetMatrix( int player );
 	bool		GetUnrivaled( int player );
 	int			GetAttackParam( int player );
 	int			GetCoinNum( int player );
 	int			GetType( int player );
 	int			GetP_Num( int player );
+	bool		GetCanHyper( int player );
 
 	//	情報設定
 	void		SetPos( int player, Vector3 pos );
