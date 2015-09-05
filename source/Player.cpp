@@ -153,7 +153,7 @@
 	void	Player::StageCollisionCheck( void )
 	{
 		//Å@è∞îªíË
-		float work = Collision::GetHeight( pos, 50.0f );
+		float work = Collision::GetHeight( pos );
 		if ( pos.y <= work )
 		{
 			pos.y = work;
