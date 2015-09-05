@@ -121,7 +121,6 @@
 			Move();
 			break;
 
-		case PlayerData::ATTACK:
 		case	PlayerData::POWERARTS:
 		case PlayerData::HYPERARTS:
 		case PlayerData::QUICKARTS:
@@ -317,9 +316,21 @@
 	{
 		CommonMove();
 
-		if ( input->Get( KEY_A ) == 3 )		mode = PlayerData::QUICKARTS;
-		if ( input->Get( KEY_B ) == 3 )		mode = PlayerData::POWERARTS;
-		if ( input->Get( KEY_C ) == 3 )		mode = PlayerData::HYPERARTS;
+		if ( input->Get( KEY_A ) == 3 )
+		{
+			mode = PlayerData::QUICKARTS;
+			SetSound( SoundInfo::QUICK_SE );
+		}
+		if ( input->Get( KEY_B ) == 3 )
+		{
+			mode = PlayerData::POWERARTS;
+			SetSound( SoundInfo::POWER_SE );
+		}
+		if ( input->Get( KEY_C ) == 3 )
+		{
+			mode = PlayerData::HYPERARTS;
+			SetSound( SoundInfo::HYPER_SE );
+		}
 		if ( input->Get( KEY_D ) == 3 )		mode = PlayerData::JUMP;
 		if ( input->Get( KEY_B7 ) == 3 )	mode = PlayerData::GUARD;
 		if ( input->Get( KEY_B10 ) == 3 )	mode = PlayerData::DAMAGE_STRENGTH;

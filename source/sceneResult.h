@@ -26,6 +26,13 @@ private:
 	//	ソート用
 	char	str[256];
 
+	//	パラメータ
+	int		coinNum[4];
+	int		lastBonus;
+	int		step;
+	int		playerNum;
+	int		wait;
+
 public:
 	//	初期化・解放
 	sceneResult( void );
@@ -38,6 +45,7 @@ public:
 
 	//	動作関数
 	void	BubbleSort( void );
+	void	SetLastBonus( void );
 };
 
 //*******************************************************************************

@@ -17,7 +17,7 @@
 //	グローバル
 //-------------------------------------------------------------------------
 	
-	//	static
+	//	static変数
 	int		GameManager::charatype[4] = { 0, 0, 0, 0 };
 	int		GameManager::coinNum[4] = { 0, 0, 0, 0 };
 	int		GameManager::playerNum = 0;
@@ -27,6 +27,10 @@
 	bool	GameManager::donketsuBoostState = false;
 	int		GameManager::timer = 0;
 	int		GameManager::mode = 0;
+	int		GameManager::lastBonus = 0;
+	bool	GameManager::newsflag = false;
+	NewsBar	GameManager::newsbar;
+
 
 //-------------------------------------------------------------------------
 //	初期化・解放
@@ -59,6 +63,23 @@
 		waitTimer = 2 * SECOND;
 		mode = 0;
 		donketsuBoostState = false;
+
+		//	ラストボーナス設定
+		lastBonus = rand() % 4;
+
+		//	ニュースバー初期化
+		{
+			newsflag = false;
+			newsbar.left = 1280;
+			newsbar.top = 0;
+			newsbar.right = 1280;
+			newsbar.bottom = 50;
+			newsbar.text = GameInfo::NewsText[lastBonus];
+			newsbar.alpha = 0.5f;
+			newsbar.color = Vector3( 0.3f, 0.3f, 0.3f );
+			newsbar.step = 0;
+			newsbar.textleft = 1500;
+		}
 		return	true;
 	}
 
@@ -106,11 +127,11 @@
 	void	GameManager::MainGameInfoRender( void )
 	{
 		m_UI->Render();
+		NewsRender();
 
 		if ( !debug )	return;
 		//	デバッグ用
 		char	str[256];
-		int		maxCoin = 0;
 		for ( int i = 0; i < 4; i++ )
 		{
 			sprintf_s( str, "p%d_coin = %d", i + 1, coinNum[i] );
@@ -118,9 +139,7 @@
 		}
 
 		if ( donketsuBoostState )
-		{
 			DrawString( "どんけつブーストなう", 600, 250 );
-		}
 	}
 
 	//	タイムアップ描画
@@ -141,6 +160,16 @@
 		DrawString( "TimeUp!!", 600, 350, Vector3( 1.0f, 1.0f, 0.0f ) );
 	}
 
+	//	ニュース描画
+	void	GameManager::NewsRender( void )
+	{
+		if ( newsflag )
+		{
+			iexPolygon::Rect( newsbar.left, newsbar.top, newsbar.right - newsbar.left, newsbar.bottom - newsbar.top, RS_COPY, GetColor( newsbar.color, newsbar.alpha ) );
+			IEX_DrawText( newsbar.text, newsbar.textleft, newsbar.top + 10, 500, 200, 0xFFFFFFFF );
+		}
+	}
+
 //-------------------------------------------------------------------------
 //	動作関数
 //-------------------------------------------------------------------------
@@ -148,18 +177,22 @@
 	//	メインゲーム更新
 	void	GameManager::MainGameUpdate( void )
 	{
+		//	タイマー更新
 		timer--;
-		if ( timer <= 0 )
-		{
-			mode = TIMEUP;
-		}
+		if ( timer <= 0 )	mode = TIMEUP;
 		m_UI->SetTimer( timer );
 		m_UI->Update();
 
+		//	どんけつブースト設定
 		if ( m_UI->GetTimer() <= 30 * SECOND )		donketsuBoostState = true;
 		else	donketsuBoostState = false;
-
 		m_UI->SetDonketsuBoostState( donketsuBoostState );
+
+		//	ニュース設定
+		{
+			if ( timer == 1 * MINUTE )	newsflag = true;
+			if ( newsflag )	SetLastBonusNews();
+		}
 	}
 
 	//	タイムアップ更新
@@ -184,6 +217,52 @@
 	void	GameManager::SubCoin( int playerNum )
 	{
 		coinNum[playerNum]--;
+	}
+
+	//	ラストボーナスニュース
+	void	GameManager::SetLastBonusNews( void )
+	{
+		switch ( newsbar.step )
+		{
+		case 0:
+			//	バー出現
+			newsbar.left -= 30;
+			if ( newsbar.left <= 0 )
+			{
+				newsbar.left = 0;
+				newsbar.step++;
+			}
+			break;
+
+		case 1:
+			//	テキスト出現
+			newsbar.textleft--;
+			if ( newsbar.textleft <= -320 )
+			{
+				newsbar.textleft = 1500;
+				newsbar.step++;
+			}
+			break;
+
+		case 2:
+			//	バー退避
+			newsbar.right -= 30;
+			if ( newsbar.right <= 0 )
+			{
+				newsbar.right = 0;
+				newsbar.step++;
+			}
+			break;
+
+		case 3:
+			//	初期化
+			newsflag = false;
+			newsbar.left = 1280;
+			newsbar.right = 1280;
+			newsbar.textleft = 1500;
+			newsbar.step = 0;
+			break;
+		}
 	}
 
 //-------------------------------------------------------------------------
@@ -218,6 +297,12 @@
 	int		GameManager::GetCoinNum( int num )
 	{
 		return	coinNum[num];
+	}
+
+	//	ラストボーナス取得
+	int		GameManager::GetLastBonus( void )
+	{
+		return	lastBonus;
 	}
 
 //-------------------------------------------------------------------------

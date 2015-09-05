@@ -139,7 +139,7 @@
 	{
 		plusScale_x = plusScale_y = 0;
 		alpha = 1.0f;
-		timer = 0.0f;
+		timer = 0;
 		renderflag = true;
 	}
 

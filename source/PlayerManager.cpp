@@ -83,11 +83,10 @@
 	//	モデル読み込み
 	void	PlayerManager::Load( void )
 	{
-
 		org[PlayerData::PRINCESS] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
-		org[PlayerData::KNIGHT] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PlayerData::KNIGHT] = new iex3DObj( "DATA/CHR/ミノタウルス/minotaurus.IEM" );
 		org[PlayerData::SQUIRREL] = new iex3DObj( "DATA/CHR/SQUIRREL/SQUIRREL.IEM" );
-		org[PlayerData::TIGER] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PlayerData::TIGER] = new iex3DObj( "DATA/CHR/ECCMAN/ECCMAN.IEM" );
 	}
 
 //------------------------------------------------------------------------------

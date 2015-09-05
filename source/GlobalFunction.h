@@ -25,6 +25,12 @@
 	{
 		enum SOUNDEFFECT
 		{
+			NEWS_SE,
+			HYPER_SE,
+			POWER_SE,
+			QUICK_SE,
+			COIN_SE,
+			DECIDE_SE,
 			SELECT_SE,
 			CANCEL_SE,
 		};
@@ -41,7 +47,7 @@
 		const		LPSTR	bgm[]	=
 		{
 			"",
-			"",
+			"DATA/SOUND/FightBGM.ogg",
 			"",
 		};
 	}
@@ -90,6 +96,8 @@
 		int		ATTACK3;				//	攻撃３段階目
 		int		GUARD;					//	ガード
 	};
+
+
 
 //----------------------------------------------------------------------
 //	システム

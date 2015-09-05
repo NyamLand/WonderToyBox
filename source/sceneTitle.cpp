@@ -83,6 +83,9 @@
 		//	マネージャー初期化
 		GameManager::Initialize();
 
+		//	音登録
+		InitSound();
+
 		//	カメラ設定
 		m_Camera = new Camera();
 
@@ -127,7 +130,12 @@
 	//	サウンド初期化
 	void	sceneTitle::InitSound( void )
 	{
-
+		IEX_SetWAV( SoundInfo::HYPER_SE, "DATA/Sound/attack-h.wav" );
+		IEX_SetWAV( SoundInfo::POWER_SE, "DATA/Sound/attack-p.wav" );
+		IEX_SetWAV( SoundInfo::QUICK_SE, "DATA/Sound/attack-q.wav" );
+		IEX_SetWAV( SoundInfo::COIN_SE, "DATA/Sound/coin.wav" );
+		IEX_SetWAV( SoundInfo::DECIDE_SE, "DATA/Sound/decide.wav" );
+		IEX_SetWAV( SoundInfo::NEWS_SE, "DATA/Sound/decision3.wav" );
 	}
 
 //-----------------------------------------------------------------------------------
@@ -253,6 +261,7 @@
 			if ( KEY( KEY_SPACE ) == 3 )
 			{
 				mode = MENU;
+				SetSound( SoundInfo::DECIDE_SE );
 			}
 		}
 
@@ -296,13 +305,25 @@
 			switch ( cameraInfo.posNum )
 			{
 			case 0:
-				if ( KEY( KEY_SPACE ) == 3 ) mode = SELECT_PLAYERNUM;
+				if ( KEY( KEY_SPACE ) == 3 )
+				{
+					mode = SELECT_PLAYERNUM;
+					SetSound( SoundInfo::DECIDE_SE );
+				}
 				break;
 			case 1:
-				if ( KEY( KEY_SPACE ) == 3 ) mode = OPTION;
+				if ( KEY( KEY_SPACE ) == 3 )
+				{
+					mode = OPTION;
+					SetSound( SoundInfo::DECIDE_SE );
+				}
 				break;
 			case 2:
-				if ( KEY( KEY_SPACE ) == 3 ) mode = CREDIT;
+				if ( KEY( KEY_SPACE ) == 3 )
+				{
+					mode = CREDIT;
+					SetSound( SoundInfo::DECIDE_SE );
+				}
 				break;
 			}
 
@@ -358,7 +379,11 @@
 			if ( selectInfo.playerNum > PLAYER_NUM )	selectInfo.playerNum = 1;
 			if ( selectInfo.playerNum < 1 )						selectInfo.playerNum = PLAYER_NUM; 
 
-			if ( KEY( KEY_SPACE ) == 3 )		mode = SELECT_CHARACTER;
+			if ( KEY( KEY_SPACE ) == 3 )
+			{
+				mode = SELECT_CHARACTER;
+				SetSound( SoundInfo::DECIDE_SE );
+			}
 			if ( KEY( KEY_DOWN ) == 3 )		mode = MENU;
 		}
 		
@@ -421,11 +446,12 @@
 					if ( input[p]->Get( KEY_SPACE ) == 3 )
 					{
 						//	未選択なら選択
-						//if ( !characterInfo[selectInfo.characterType[p]].select )
-						//{
+						if ( !characterInfo[selectInfo.characterType[p]].select )
+						{
 							characterInfo[selectInfo.characterType[p]].select = true;
 							select[p] = true;
-						//}
+							SetSound( SoundInfo::DECIDE_SE );
+						}
 
 						//	全員分の入力チェック
 						selectCheck = 0;
@@ -438,6 +464,7 @@
 						if ( selectCheck >= selectInfo.playerNum )
 						{
 							step++;
+							SetSound( SoundInfo::DECIDE_SE );
 						}
 					}
 
@@ -460,7 +487,11 @@
 						if ( selectInfo.characterType[p] >= PlayerData::CHARACTER_MAX )	selectInfo.characterType[p] = 0;
 						if ( selectInfo.characterType[p] < 0 )	selectInfo.characterType[p] = PlayerData::CHARACTER_MAX - 1;
 					}
-					if ( KEY( KEY_SPACE ) == 3 ) step++;
+					if ( KEY( KEY_SPACE ) == 3 )
+					{
+						step++;
+						SetSound( SoundInfo::DECIDE_SE );
+					}
 					if ( KEY( KEY_DOWN ) == 3 ) step--;
 				}
 				break;
@@ -508,7 +539,11 @@
 			if ( selectInfo.stageType < 0 )					selectInfo.stageType = STAGE_MAX - 1;
 
 			//	決定・キャンセル
-			if ( KEY( KEY_SPACE ) == 3 )		mode = SELECT_CHECK;
+			if ( KEY( KEY_SPACE ) == 3 )	
+			{
+				mode = SELECT_CHECK;
+				SetSound( SoundInfo::DECIDE_SE );
+			}
 			if ( KEY( KEY_DOWN ) == 3 )		mode = SELECT_CHARACTER;
 		}
 
@@ -544,6 +579,7 @@
 					for ( int p = 0; p < PLAYER_NUM; p++ )		GameManager::SetCharacterType( p, selectInfo.characterType[p] );
 					GameManager::SetPlayerNum( selectInfo.playerNum );
 					GameManager::SetStageType( selectInfo.stageType );
+					SetSound( SoundInfo::DECIDE_SE );
 					MainFrame->ChangeScene( new sceneMain() );
 					return;
 				}
@@ -587,7 +623,11 @@
 		//	更新
 		void	sceneTitle::OptionUpdate( void )
 		{
-			if ( KEY( KEY_SPACE ) == 3 ) mode = MENU;
+			if ( KEY( KEY_SPACE ) == 3 )
+			{
+				mode = MENU;
+				SetSound( SoundInfo::DECIDE_SE );
+			}
 		}
 
 		//	描画
@@ -604,7 +644,11 @@
 		//	更新
 		void	sceneTitle::CreditUpdate( void )
 		{
-			if ( KEY( KEY_SPACE ) == 3 ) mode = MENU;
+			if ( KEY( KEY_SPACE ) == 3 )
+			{
+				mode = MENU;
+				SetSound( SoundInfo::DECIDE_SE );
+			}
 		}
 
 		//	描画
