@@ -13,12 +13,13 @@ private:
 	//	’è”
 	static	const		int		SECOND = 60;			//	‚P•b
 	static	const		int		MINUTE = 60 * 60;	//	‚P•ª
-	static	const		int		TIMELIMIT = 1 * MINUTE + 30 * SECOND;
-
+	//static	const		int		TIMELIMIT = 1 * MINUTE + 30 * SECOND;
+	static	const		int		TIMELIMIT = 35 * SECOND;
 	enum Mode
 	{
 		MAINGAME, 
-		TIMEUP,
+		DONKETSU_DIRECTION,
+		TIMEUP
 	};
 
 private:
@@ -31,6 +32,7 @@ private:
 	static	int		stageType;
 	static	int		coinNum[4];
 	static	bool	donketsuBoostState;
+	static	int		worst;
 
 public:
 
@@ -43,14 +45,17 @@ public:
 	//	XVE•`‰æ
 	static	void	Update( void );
 	static	void	Render( void );
+	static	void	MainGameUpdate( void );
 	static	void	MainGameInfoRender( void );
+	static	void	DonketsuDirectionUpdate( void );
+	static	void	DonketsuDirectionRender( void );
+	static	void	TimeUpUpdate( void );
 	static	void	TimeUpRender( void );
 
 	//	“®ìŠÖ”
-	static	void	MainGameUpdate( void );
-	static	void	TimeUpUpdate( void );
 	static	void	AddCoin( int playerNum );
 	static	void	SubCoin( int playerNum );
+	static	void	DecideWorst( void );
 
 	//	î•ñæ“¾
 	static	bool	GetChangeSceneFlag( void );
@@ -58,6 +63,8 @@ public:
 	static	int		GetPlayerNum( void );
 	static	int		GetStageType( void );
 	static	int		GetCoinNum( int num );
+	static	bool	GetDonketsuBoostState( void );
+	static	int		GetWorst( void );
 
 	//	î•ñİ’è
 	static	void	SetCharacterType( int num, int type );

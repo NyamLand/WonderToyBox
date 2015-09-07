@@ -27,6 +27,7 @@
 	bool	GameManager::donketsuBoostState = false;
 	int		GameManager::timer = 0;
 	int		GameManager::mode = 0;
+	int		GameManager::worst = 0;
 
 //-------------------------------------------------------------------------
 //	初期化・解放
@@ -59,6 +60,7 @@
 		waitTimer = 2 * SECOND;
 		mode = 0;
 		donketsuBoostState = false;
+
 		return	true;
 	}
 
@@ -81,6 +83,12 @@
 			MainGameUpdate();
 			break;
 
+		//　どんけつ用演出
+		case DONKETSU_DIRECTION:
+			//　ここでビリを決定（以後変更なし）
+			DonketsuDirectionUpdate(); 
+			break;
+		
 		case TIMEUP:
 			TimeUpUpdate();
 			break;
@@ -96,10 +104,41 @@
 			MainGameInfoRender();
 			break;
 
+		//　どんけつ用演出
+		case DONKETSU_DIRECTION:
+			DonketsuDirectionRender();
+			break;
+		
 		case TIMEUP:
 			TimeUpRender();
 			break;
+
 		}
+	}
+	//------------------------------------------------------------------
+	//	ゲーム動作中
+	//------------------------------------------------------------------
+	//	更新
+	void	GameManager::MainGameUpdate(void)
+	{
+		timer--;
+		if (timer == 30 * SECOND)
+		{
+			DecideWorst();
+			mode = DONKETSU_DIRECTION;
+		}
+		if (timer <= 0)
+		{
+			mode = TIMEUP;
+		}
+
+		m_UI->SetTimer(timer);
+		m_UI->Update();
+
+		if (m_UI->GetTimer() <= 30 * SECOND)		donketsuBoostState = true;
+		else	donketsuBoostState = false;
+
+		m_UI->SetDonketsuBoostState(donketsuBoostState);
 	}
 
 	//	メインゲーム情報描画
@@ -123,7 +162,47 @@
 		}
 	}
 
-	//	タイムアップ描画
+	//------------------------------------------------------------------
+	//	どんけつ演出
+	//------------------------------------------------------------------
+	//　更新
+	void	GameManager::DonketsuDirectionUpdate(void)
+	{
+		static int wait(5 * SECOND);
+		wait--;
+
+		if (wait <= 0)
+		{
+			wait = 30;
+			mode = MAINGAME;
+		}
+	}
+
+	//　描画
+	void	GameManager::DonketsuDirectionRender(void)
+	{
+		char	str[256];
+		DrawString("どんけつ演出", 200, 50);
+		wsprintf(str, "ビリは p%d", worst+1);
+		DrawString(str, 200, 70);
+	}
+	
+	//------------------------------------------------------------------
+	//	タイムアップ演出
+	//------------------------------------------------------------------
+	//　更新
+	void	GameManager::TimeUpUpdate(void)
+	{
+		waitTimer--;
+
+		if (waitTimer <= 0)
+		{
+			MainFrame->ChangeScene(new sceneResult());
+			return;
+		}
+	}
+
+	//	描画
 	void	GameManager::TimeUpRender( void )
 	{
 		m_UI->Render();
@@ -145,35 +224,6 @@
 //	動作関数
 //-------------------------------------------------------------------------
 
-	//	メインゲーム更新
-	void	GameManager::MainGameUpdate( void )
-	{
-		timer--;
-		if ( timer <= 0 )
-		{
-			mode = TIMEUP;
-		}
-		m_UI->SetTimer( timer );
-		m_UI->Update();
-
-		if ( m_UI->GetTimer() <= 30 * SECOND )		donketsuBoostState = true;
-		else	donketsuBoostState = false;
-
-		m_UI->SetDonketsuBoostState( donketsuBoostState );
-	}
-
-	//	タイムアップ更新
-	void	GameManager::TimeUpUpdate( void )
-	{
-		waitTimer--;
-
-		if ( waitTimer <= 0 )
-		{
-			MainFrame->ChangeScene( new sceneResult() );
-			return;
-		}
-	}
-
 	//	コイン加算
 	void	GameManager::AddCoin( int playerNum )
 	{
@@ -184,6 +234,26 @@
 	void	GameManager::SubCoin( int playerNum )
 	{
 		coinNum[playerNum]--;
+	}
+
+	//　ビリが誰かを決定
+	void		GameManager::DecideWorst(void)
+	{
+		//　プレイヤー同士のコイン数を比較して
+		//　コイン数が最小のプレイヤーの番号を返す（はず）
+
+		int work(coinNum[0]);
+		int Min(0);
+		for (int i = 1; i < 4; i++)
+		{
+			if (coinNum[i] < work)
+			{
+				work = coinNum[i];
+				Min = i;
+			}
+		}
+
+		worst = Min;
 	}
 
 //-------------------------------------------------------------------------
@@ -218,6 +288,18 @@
 	int		GameManager::GetCoinNum( int num )
 	{
 		return	coinNum[num];
+	}
+
+	//　どんけつ中かどうかを取得
+	bool	GameManager::GetDonketsuBoostState( void )
+	{
+		return	donketsuBoostState;
+	}
+
+	//　ビリを取得
+	int		GameManager::GetWorst( void )
+	{
+		return	worst;
 	}
 
 //-------------------------------------------------------------------------

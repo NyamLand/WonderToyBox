@@ -37,6 +37,7 @@ public:
 	void	Render( iexShader* shader, LPSTR technique );
 
 	//	“®ìŠÖ”
+	void	DonketsuBoost();
 
 	//	“–‚½‚è”»’è
 	void	HitCheck( void );

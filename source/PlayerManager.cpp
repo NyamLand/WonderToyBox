@@ -106,6 +106,9 @@
 
 		//	当たり判定
 		HitCheck();
+
+		//　どんけつブースト
+		DonketsuBoost();
 	}
 
 	//	描画
@@ -133,6 +136,20 @@
 //------------------------------------------------------------------------------
 //	動作関数
 //------------------------------------------------------------------------------
+	//　どんけつブースト
+	void	PlayerManager::DonketsuBoost()
+	{
+		if (GameManager::GetDonketsuBoostState())
+		{
+			//　（決定された）ビリが誰かを取得
+			int worst = GameManager::GetWorst();
+
+			//　ビリのステータス上昇
+
+			//　オーラ
+			//　顔「怒り」
+		}
+	}
 
 //------------------------------------------------------------------------------
 //	当たり判定関数
@@ -285,12 +302,13 @@
 
 	//	情報取得
 	Vector3		PlayerManager::GetPos( int player ){ return	c_Player[player]->GetPos();	}
-	Matrix		PlayerManager::GetMatrix( int player ){ return	c_Player[player]->GetMatrix(); }
 	float		PlayerManager::GetAngle( int player ){ return	c_Player[player]->GetAngle(); }
-	int			PlayerManager::GetType( int player ){ return c_Player[player]->GetType(); }
+	Matrix		PlayerManager::GetMatrix( int player ){ return	c_Player[player]->GetMatrix(); }
 	bool		PlayerManager::GetUnrivaled( int player ){ return c_Player[player]->GetUnrivaled(); }
+	int			PlayerManager::GetType( int player ){ return c_Player[player]->GetType(); }
 	int			PlayerManager::GetP_Num( int player ){ return c_Player[player]->GetP_Num(); }
 	bool		PlayerManager::GetCanHyper(int player){ return c_Player[player]->GetCanHyper(); }
+
 
 	//	情報設定
 	void		PlayerManager::SetPos( int player, Vector3 pos ){ c_Player[player]->SetPos( pos ); }
