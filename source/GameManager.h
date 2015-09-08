@@ -7,14 +7,29 @@
 //	GameManagerクラス
 //
 //*******************************************************************************
+
+//	ニュース構造体
+struct NewsBar
+{
+	int		left;
+	int		top;
+	int		right;
+	int		bottom;
+	float	alpha;
+	Vector3	color;
+	LPSTR	text;
+	int		textleft;
+	int		step;
+};
+
 class GameManager
 {
 private:
 	//	定数
 	static	const		int		SECOND = 60;			//	１秒
 	static	const		int		MINUTE = 60 * 60;	//	１分
-	//static	const		int		TIMELIMIT = 1 * MINUTE + 30 * SECOND;
-	static	const		int		TIMELIMIT = 35 * SECOND;
+	static	const		int		TIMELIMIT = 1 * MINUTE + 30 * SECOND;
+	//static	const		int		TIMELIMIT = 35 * SECOND;
 	enum Mode
 	{
 		MAINGAME, 
@@ -35,6 +50,7 @@ private:
 	static	int		worst;
 	static	int		lastBonus;
 	static	bool	newsflag;
+	static	NewsBar	newsbar;
 public:
 
 	//	初期化・解放
@@ -52,6 +68,7 @@ public:
 	static	void	DonketsuDirectionRender( void );
 	static	void	TimeUpUpdate( void );
 	static	void	TimeUpRender( void );
+	static	void	NewsRender( void );
 
 	//	動作関数
 	static	void	AddCoin( int playerNum );
@@ -73,6 +90,7 @@ public:
 	static	void	SetPlayerNum( int num );
 	static	void	SetStageType( int type );
 	static	void	SetCoinNum( int num, int param );
+	static	void	SetLastBonusNews( void );
 };
 
 namespace GameInfo
@@ -85,7 +103,7 @@ namespace GameInfo
 		"ラストボーナス４",
 	};
 
-	const	 LPSTR	newsText[] =
+	const	 LPSTR	NewsText[] =
 	{
 		"ラストボーナス１になりそうです",
 		"ラストボーナス２になりそうです",
