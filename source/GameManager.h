@@ -33,7 +33,8 @@ private:
 	static	int		coinNum[4];
 	static	bool	donketsuBoostState;
 	static	int		worst;
-
+	static	int		lastBonus;
+	static	bool	newsflag;
 public:
 
 	//	初期化・解放
@@ -65,6 +66,7 @@ public:
 	static	int		GetCoinNum( int num );
 	static	bool	GetDonketsuBoostState( void );
 	static	int		GetWorst( void );
+	static	int		GetLastBonus( void );
 
 	//	情報設定
 	static	void	SetCharacterType( int num, int type );
@@ -72,6 +74,25 @@ public:
 	static	void	SetStageType( int type );
 	static	void	SetCoinNum( int num, int param );
 };
+
+namespace GameInfo
+{
+	const LPSTR	LastBonus[] =
+	{
+		"ラストボーナス１",
+		"ラストボーナス２",
+		"ラストボーナス３",
+		"ラストボーナス４",
+	};
+
+	const	 LPSTR	newsText[] =
+	{
+		"ラストボーナス１になりそうです",
+		"ラストボーナス２になりそうです",
+		"ラストボーナス３になりそうです",
+		"ラストボーナス４になりそうです",
+	};
+}
 
 //*******************************************************************************
 #endif // !__GAMEMANAGER_H__

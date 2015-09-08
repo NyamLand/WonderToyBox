@@ -28,6 +28,8 @@
 	int		GameManager::timer = 0;
 	int		GameManager::mode = 0;
 	int		GameManager::worst = 0;
+	int		GameManager::lastBonus = 0;
+	bool	GameManager::newsflag = false;
 
 //-------------------------------------------------------------------------
 //	初期化・解放
@@ -60,6 +62,8 @@
 		waitTimer = 2 * SECOND;
 		mode = 0;
 		donketsuBoostState = false;
+		lastBonus = rand() % 4;
+		newsflag = false;
 
 		return	true;
 	}
@@ -122,23 +126,22 @@
 	void	GameManager::MainGameUpdate(void)
 	{
 		timer--;
-		if (timer == 30 * SECOND)
+		if ( timer == 30 * SECOND )
 		{
 			DecideWorst();
 			mode = DONKETSU_DIRECTION;
 		}
-		if (timer <= 0)
-		{
-			mode = TIMEUP;
-		}
+		if ( timer <= 0 )	mode = TIMEUP;
 
-		m_UI->SetTimer(timer);
+		//	タイマー更新
+		m_UI->SetTimer( timer );
 		m_UI->Update();
 
-		if (m_UI->GetTimer() <= 30 * SECOND)		donketsuBoostState = true;
+		//	どんけつブースト設定
+		if ( m_UI->GetTimer() <= 30 * SECOND )		donketsuBoostState = true;
 		else	donketsuBoostState = false;
-
 		m_UI->SetDonketsuBoostState(donketsuBoostState);
+
 	}
 
 	//	メインゲーム情報描画
