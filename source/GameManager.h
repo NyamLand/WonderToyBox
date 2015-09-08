@@ -7,6 +7,7 @@
 //	GameManagerクラス
 //
 //*******************************************************************************
+
 //	ニュース構造体
 struct NewsBar
 {
@@ -28,19 +29,15 @@ private:
 	static	const		int		SECOND = 60;			//	１秒
 	static	const		int		MINUTE = 60 * 60;	//	１分
 	static	const		int		TIMELIMIT = 1 * MINUTE + 30 * SECOND;
-
+	//static	const		int		TIMELIMIT = 35 * SECOND;
 	enum Mode
 	{
 		MAINGAME, 
-		TIMEUP,
+		DONKETSU_DIRECTION,
+		TIMEUP
 	};
 
 private:
-
-
-
-private:
-	//	変数
 	static	int		timer;
 	static	int		waitTimer;
 	static	int		mode;
@@ -50,10 +47,10 @@ private:
 	static	int		stageType;
 	static	int		coinNum[4];
 	static	bool	donketsuBoostState;
+	static	int		worst;
 	static	int		lastBonus;
 	static	bool	newsflag;
 	static	NewsBar	newsbar;
-
 public:
 
 	//	初期化・解放
@@ -65,15 +62,18 @@ public:
 	//	更新・描画
 	static	void	Update( void );
 	static	void	Render( void );
+	static	void	MainGameUpdate( void );
 	static	void	MainGameInfoRender( void );
+	static	void	DonketsuDirectionUpdate( void );
+	static	void	DonketsuDirectionRender( void );
+	static	void	TimeUpUpdate( void );
 	static	void	TimeUpRender( void );
 	static	void	NewsRender( void );
 
 	//	動作関数
-	static	void	MainGameUpdate( void );
-	static	void	TimeUpUpdate( void );
 	static	void	AddCoin( int playerNum );
 	static	void	SubCoin( int playerNum );
+	static	void	DecideWorst( void );
 
 	//	情報取得
 	static	bool	GetChangeSceneFlag( void );
@@ -81,6 +81,8 @@ public:
 	static	int		GetPlayerNum( void );
 	static	int		GetStageType( void );
 	static	int		GetCoinNum( int num );
+	static	bool	GetDonketsuBoostState( void );
+	static	int		GetWorst( void );
 	static	int		GetLastBonus( void );
 
 	//	情報設定
@@ -93,20 +95,20 @@ public:
 
 namespace GameInfo
 {
-	const		LPSTR	LastBonus[] =
+	const LPSTR	LastBonus[] =
 	{
-		"攻撃回数最多ボーナス",
-		"獲得コイン総数ボーナス",
-		"被ダメ回数最小ボーナス",
-		"落としたコイン最多ボーナス",
+		"ラストボーナス１",
+		"ラストボーナス２",
+		"ラストボーナス３",
+		"ラストボーナス４",
 	};
 
-	const		LPSTR	NewsText[] = 
+	const	 LPSTR	NewsText[] =
 	{
-		"ラストボーナスは攻撃回数で決まりそうです",
-		"ラストボーナスは獲得コイン枚数で決まりそうです",
-		"ラストボーナスは被ダメ回数で決まりそうです",
-		"ラストボーナスは落としたコインの枚数で決まりそうです",
+		"ラストボーナス１になりそうです",
+		"ラストボーナス２になりそうです",
+		"ラストボーナス３になりそうです",
+		"ラストボーナス４になりそうです",
 	};
 }
 

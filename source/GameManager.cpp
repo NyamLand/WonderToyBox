@@ -17,7 +17,7 @@
 //	グローバル
 //-------------------------------------------------------------------------
 	
-	//	static変数
+	//	static
 	int		GameManager::charatype[4] = { 0, 0, 0, 0 };
 	int		GameManager::coinNum[4] = { 0, 0, 0, 0 };
 	int		GameManager::playerNum = 0;
@@ -27,10 +27,10 @@
 	bool	GameManager::donketsuBoostState = false;
 	int		GameManager::timer = 0;
 	int		GameManager::mode = 0;
+	int		GameManager::worst = 0;
 	int		GameManager::lastBonus = 0;
 	bool	GameManager::newsflag = false;
 	NewsBar	GameManager::newsbar;
-
 
 //-------------------------------------------------------------------------
 //	初期化・解放
@@ -63,8 +63,6 @@
 		waitTimer = 2 * SECOND;
 		mode = 0;
 		donketsuBoostState = false;
-
-		//	ラストボーナス設定
 		lastBonus = rand() % 4;
 
 		//	ニュースバー初期化
@@ -102,6 +100,12 @@
 			MainGameUpdate();
 			break;
 
+		//　どんけつ用演出
+		case DONKETSU_DIRECTION:
+			//　ここでビリを決定（以後変更なし）
+			DonketsuDirectionUpdate(); 
+			break;
+		
 		case TIMEUP:
 			TimeUpUpdate();
 			break;
@@ -117,9 +121,44 @@
 			MainGameInfoRender();
 			break;
 
+		//　どんけつ用演出
+		case DONKETSU_DIRECTION:
+			DonketsuDirectionRender();
+			break;
+		
 		case TIMEUP:
 			TimeUpRender();
 			break;
+
+		}
+	}
+	//------------------------------------------------------------------
+	//	ゲーム動作中
+	//------------------------------------------------------------------
+	//	更新
+	void	GameManager::MainGameUpdate( void )
+	{
+		timer--;
+		if ( timer == 30 * SECOND )
+		{
+			DecideWorst();
+			mode = DONKETSU_DIRECTION;
+		}
+		if ( timer <= 0 )	mode = TIMEUP;
+
+		//	タイマー更新
+		m_UI->SetTimer( timer );
+		m_UI->Update();
+
+		//	どんけつブースト設定
+		if ( m_UI->GetTimer() <= 30 * SECOND )		donketsuBoostState = true;
+		else	donketsuBoostState = false;
+		m_UI->SetDonketsuBoostState( donketsuBoostState );
+
+		//	ニュース設定
+		{
+			if ( timer == 1 * MINUTE )	newsflag = true;
+			if ( newsflag )	SetLastBonusNews();
 		}
 	}
 
@@ -132,6 +171,7 @@
 		if ( !debug )	return;
 		//	デバッグ用
 		char	str[256];
+		int		maxCoin = 0;
 		for ( int i = 0; i < 4; i++ )
 		{
 			sprintf_s( str, "p%d_coin = %d", i + 1, coinNum[i] );
@@ -139,10 +179,62 @@
 		}
 
 		if ( donketsuBoostState )
+		{
 			DrawString( "どんけつブーストなう", 600, 250 );
+		}
 	}
 
-	//	タイムアップ描画
+	//	ニュース描画
+	void	GameManager::NewsRender( void )
+	{
+		if ( newsflag )
+		{
+			iexPolygon::Rect( newsbar.left, newsbar.top, newsbar.right - newsbar.left, newsbar.bottom - newsbar.top, RS_COPY, GetColor( newsbar.color, newsbar.alpha ) );
+			IEX_DrawText( newsbar.text, newsbar.textleft, newsbar.top + 10, 500, 200, 0xFFFFFFFF );
+		}
+	}
+
+	//------------------------------------------------------------------
+	//	どんけつ演出
+	//------------------------------------------------------------------
+	//　更新
+	void	GameManager::DonketsuDirectionUpdate( void )
+	{
+		static int wait( 5 * SECOND );
+		wait--;
+
+		if ( wait <= 0 )
+		{
+			wait = 30;
+			mode = MAINGAME;
+		}
+	}
+
+	//　描画
+	void	GameManager::DonketsuDirectionRender( void )
+	{
+		char	str[256];
+		DrawString( "どんけつ演出", 200, 50 );
+		wsprintf( str, "ビリは p%d", worst + 1 );
+		DrawString( str, 200, 70 );
+	}
+	
+	//------------------------------------------------------------------
+	//	タイムアップ演出
+	//------------------------------------------------------------------
+	//　更新
+	void	GameManager::TimeUpUpdate( void )
+	{
+		waitTimer--;
+
+		if ( waitTimer <= 0 )
+		{
+			MainFrame->ChangeScene( new sceneResult() );
+			return;
+		}
+	}
+
+	//	描画
 	void	GameManager::TimeUpRender( void )
 	{
 		m_UI->Render();
@@ -160,52 +252,9 @@
 		DrawString( "TimeUp!!", 600, 350, Vector3( 1.0f, 1.0f, 0.0f ) );
 	}
 
-	//	ニュース描画
-	void	GameManager::NewsRender( void )
-	{
-		if ( newsflag )
-		{
-			iexPolygon::Rect( newsbar.left, newsbar.top, newsbar.right - newsbar.left, newsbar.bottom - newsbar.top, RS_COPY, GetColor( newsbar.color, newsbar.alpha ) );
-			IEX_DrawText( newsbar.text, newsbar.textleft, newsbar.top + 10, 500, 200, 0xFFFFFFFF );
-		}
-	}
-
 //-------------------------------------------------------------------------
 //	動作関数
 //-------------------------------------------------------------------------
-
-	//	メインゲーム更新
-	void	GameManager::MainGameUpdate( void )
-	{
-		//	タイマー更新
-		timer--;
-		if ( timer <= 0 )	mode = TIMEUP;
-		m_UI->SetTimer( timer );
-		m_UI->Update();
-
-		//	どんけつブースト設定
-		if ( m_UI->GetTimer() <= 30 * SECOND )		donketsuBoostState = true;
-		else	donketsuBoostState = false;
-		m_UI->SetDonketsuBoostState( donketsuBoostState );
-
-		//	ニュース設定
-		{
-			if ( timer == 1 * MINUTE )	newsflag = true;
-			if ( newsflag )	SetLastBonusNews();
-		}
-	}
-
-	//	タイムアップ更新
-	void	GameManager::TimeUpUpdate( void )
-	{
-		waitTimer--;
-
-		if ( waitTimer <= 0 )
-		{
-			MainFrame->ChangeScene( new sceneResult() );
-			return;
-		}
-	}
 
 	//	コイン加算
 	void	GameManager::AddCoin( int playerNum )
@@ -217,6 +266,26 @@
 	void	GameManager::SubCoin( int playerNum )
 	{
 		coinNum[playerNum]--;
+	}
+
+	//　ビリが誰かを決定
+	void	GameManager::DecideWorst( void )
+	{
+		//　プレイヤー同士のコイン数を比較して
+		//　コイン数が最小のプレイヤーの番号を返す（はず）
+
+		int work(coinNum[0]);
+		int Min(0);
+		for (int i = 1; i < 4; i++)
+		{
+			if (coinNum[i] < work)
+			{
+				work = coinNum[i];
+				Min = i;
+			}
+		}
+
+		worst = Min;
 	}
 
 	//	ラストボーナスニュース
@@ -299,6 +368,18 @@
 		return	coinNum[num];
 	}
 
+	//　どんけつ中かどうかを取得
+	bool	GameManager::GetDonketsuBoostState( void )
+	{
+		return	donketsuBoostState;
+	}
+
+	//　ビリを取得
+	int		GameManager::GetWorst( void )
+	{
+		return	worst;
+	}
+
 	//	ラストボーナス取得
 	int		GameManager::GetLastBonus( void )
 	{
@@ -332,3 +413,4 @@
 	{
 		coinNum[num] = param;
 	}
+
