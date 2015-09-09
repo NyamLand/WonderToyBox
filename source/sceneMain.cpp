@@ -364,7 +364,6 @@
 		iexSystem::Device->SetRenderTarget( 3, NULL );
 		m_Camera->Clear();
 
-
 	}
 
 	
