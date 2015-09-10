@@ -28,8 +28,9 @@ private:
 	//	íËêî
 	static	const		int		SECOND = 60;			//	ÇPïb
 	static	const		int		MINUTE = 60 * 60;	//	ÇPï™
-	static	const		int		TIMELIMIT = 1 * MINUTE + 30 * SECOND;
-	//static	const		int		TIMELIMIT = 35 * SECOND;
+	//static	const		int		TIMELIMIT = 1 * MINUTE + 30 * SECOND;
+	static	const		int		TIMELIMIT = 35 * SECOND;
+	
 	enum Mode
 	{
 		MAINGAME, 

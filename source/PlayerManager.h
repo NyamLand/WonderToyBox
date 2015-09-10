@@ -38,6 +38,7 @@ public:
 
 	//	“®ìŠÖ”
 	void	DonketsuBoost();
+	void	RaiseStatus( int worst, int type );
 
 	//	“–‚½‚è”»’è
 	void	HitCheck( void );
@@ -54,6 +55,8 @@ public:
 	int			GetType( int player );
 	int			GetP_Num( int player );
 	bool		GetCanHyper( int player );
+	int			GetPower( int player );
+	float		GetSpeed( int player );
 
 	//	î•ñİ’è
 	void		SetPos( int player, Vector3 pos );
@@ -63,6 +66,9 @@ public:
 	void		SetType( int player, int type );
 	void		SetKnockBackVec( int player, Vector3	knockBackVec );
 	void		SetMode( int player, PlayerData::STATE state );
+	void		SetPower( int player, int power );
+	void		SetSpeed( int player, float speed );
+	void		SetBoosting(int player, bool boosting);
 };
 
 extern	PlayerManager*		m_Player;

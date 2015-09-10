@@ -19,10 +19,10 @@
 
 	//	コンストラクタ
 	Player::Player( void ) : obj( NULL ),
-		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ), power( 0 ), diffence( 0 ), knockBackVec( 0.0f, 0.0f, 0.0f ),
-		angle( 0.0f ), scale( 0.0f ), speed( 0.0f ), mode( 0 ), unrivaled( false ),
+		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ), power( 0 ), bPower(power), diffence( 0 ), knockBackVec( 0.0f, 0.0f, 0.0f ),
+		angle( 0.0f ), scale( 0.0f ), speed( 0.0f ),bSpeed(speed), mode( 0 ), unrivaled( false ),
 		attackParam( 0 ), attackPos( 0.0f, 0.0f, 0.0f ), attackPos_top( 0.0f, 0.0f, 0.0f ), attackPos_bottom( 0.0f, 0.0f, 0.0f ), attack_r( 0.0f ), attack_t( 0.0f ), knockBackType( 0 ),
-		isGround(true), force(0.0f), type(0), p_num(0), CanHyper( true )
+		isGround(true), force(0.0f), type(0), p_num(0), CanHyper(true), boosting(false)
 	{
 
 	}
@@ -41,6 +41,9 @@
 		this->p_num = input;
 		this->pos = pos;
 		this->passDamageColor = PlayerData::DAMAGE_COLOR[input];
+		
+		bPower = power * 2;
+		bSpeed = speed * 2;
 
 		if ( obj == NULL )	return	false;
 		return	true;
@@ -74,6 +77,10 @@
 
 		//	移動値加算
 		pos += move;
+
+		//　どんけつかどうかでパラメータ更新
+		power = (boosting) ? bPower : power;
+		speed = (boosting) ? bSpeed : speed;
 
 		//	情報更新
 		obj->SetPos( pos );
@@ -421,6 +428,9 @@
 	void	Player::SetType( int type ){ this->type = type; }
 	void	Player::SetDamageColor( Vector3 color ){ this->colorParam = color; }
 	void	Player::SetReceiveColor( Vector3 color ){ this->receiveDamageColor = color; }
+	void	Player::SetPower( int power ){ this->power = power; }
+	void	Player::SetSpeed( float speed ){ this->speed = speed; }
+	void	Player::SetBoosting(bool boosting){ this->boosting = boosting; }
 
 	//	取得
 	Vector3		Player::GetPos( void ){ return	pos; }
@@ -432,6 +442,8 @@
 	int			Player::GetP_Num( void ){ return p_num; }
 	Vector3		Player::GetDamageColor( void ){ return	passDamageColor; }
 	bool		Player::GetCanHyper( void ){ return CanHyper; }
+	int			Player::GetPower( void ){ return power; }
+	float		Player::GetSpeed( void ){ return speed; }
 
 	//	当たり判定用パラメータ取得
 	int			Player::GetAttackParam( void ){ return attackParam; }

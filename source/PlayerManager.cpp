@@ -41,7 +41,8 @@
 	//	デストラクタ
 	PlayerManager::~PlayerManager( void )
 	{
-		for ( int i = 0; i < PLAYER_NUM; i++ ){
+		for ( int i = 0; i < PLAYER_NUM; i++ )
+		{
 			SafeDelete( c_Player[i] );
 		}
 
@@ -127,8 +128,14 @@
 		{
 			c_Player[i]->Render( shader, technique );
 			Vector3	p_pos = c_Player[i]->GetPos();
-			if ( !debug )continue;
-				DrawCapsule( p_pos, Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z ), 1.0f );
+			if (!debug)continue;
+			{
+				DrawCapsule(p_pos, Vector3(p_pos.x, p_pos.y + 3.0f, p_pos.z), 1.0f);
+			}
+
+			char str[256];
+			wsprintf(str, "p%dの攻撃力：%d", i + 1, GetPower(i));
+			DrawString(str, 200, 200 + i * 20);
 		}
 	}
 
@@ -140,14 +147,23 @@
 	{
 		if (GameManager::GetDonketsuBoostState())
 		{
-			//　（決定された）ビリが誰かを取得
+			//　（決定された）ビリが誰かを取得・どんけつモードセット
 			int worst = GameManager::GetWorst();
+			SetBoosting(worst, true);
 
-			//　ビリのステータス上昇
-
+			
+			//　ビリが何のキャラかを識別してそれぞれに合ったステータス上昇
+			RaiseStatus(worst, GetType(worst));
+			
 			//　オーラ
 			//　顔「怒り」
 		}
+	}
+
+	//　ステータス上昇（どんけつ）
+	void		PlayerManager::RaiseStatus( int worst, int type )
+	{
+		
 	}
 
 //------------------------------------------------------------------------------
@@ -307,7 +323,8 @@
 	int			PlayerManager::GetType( int player ){ return c_Player[player]->GetType(); }
 	int			PlayerManager::GetP_Num( int player ){ return c_Player[player]->GetP_Num(); }
 	bool		PlayerManager::GetCanHyper(int player){ return c_Player[player]->GetCanHyper(); }
-
+	int			PlayerManager::GetPower(int player){ return c_Player[player]->GetPower(); }
+	float		PlayerManager::GetSpeed(int player){ return c_Player[player]->GetSpeed(); }
 
 	//	情報設定
 	void		PlayerManager::SetPos( int player, Vector3 pos ){ c_Player[player]->SetPos( pos ); }
@@ -317,3 +334,6 @@
 	void		PlayerManager::SetType( int player, int type ){ c_Player[player]->SetType(type); }
 	void		PlayerManager::SetKnockBackVec( int player, Vector3 knockBackVec ){ c_Player[player]->SetKnockBackVec( knockBackVec ); }
 	void		PlayerManager::SetMode( int player, PlayerData::STATE state ){ c_Player[player]->SetMode( state ); }
+	void		PlayerManager::SetPower(int player, int power){ c_Player[player]->SetPower(power); }
+	void		PlayerManager::SetSpeed(int player, float speed){ c_Player[player]->SetSpeed(speed); }
+	void		PlayerManager::SetBoosting(int player, bool boosting){ c_Player[player]->SetBoosting(boosting); }

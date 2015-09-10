@@ -91,19 +91,22 @@ protected:
 	float		angle;
 	float		scale;
 	float		speed;
+	float		bSpeed;		//　ブースト中スピード
 	int			power;
+	int			bPower;		//　ブースト中パワー
 	int			mode;
 	float		force;		//	与力値
 	bool		unrivaled;	//	無敵
 	bool		isGround;	//	接地判定
 	int			p_num;		//	自分の番号
 	int			diffence;
-	int			type;			//	プレイヤータイプ
+	int			type;		//	プレイヤータイプ
 	Vector3		colorParam;	//	色変更用
-	Vector3		passDamageColor;		//	あたえる色
+	Vector3		passDamageColor;	//	あたえる色
 	Vector3		receiveDamageColor;	//	受け取る色
-	bool		damageState;	//	ダメージ状態
+	bool		damageState;		//	ダメージ状態
 	bool		CanHyper;		
+	bool		boosting;	//　どんけつ中であるか
 
 	//	当たり判定用
 	int			attackParam;				//	攻撃種類
@@ -171,6 +174,9 @@ public:
 	void	SetType( int type );
 	void	SetDamageColor( Vector3 color );
 	void	SetReceiveColor( Vector3 color );
+	void	SetPower(int power);
+	void	SetSpeed(float speed);
+	void	SetBoosting(bool  boosting);
 
 	//	情報取得
 	Vector3	GetPos( void );
@@ -181,6 +187,9 @@ public:
 	int		GetType( void );
 	Vector3	GetDamageColor( void );
 	bool	GetCanHyper( void );
+	int		GetPower( void );
+	float	GetSpeed( void );
+
 
 	//	当たり判定用パラメータ取得
 	int		GetAttackParam( void );
