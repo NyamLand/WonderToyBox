@@ -102,30 +102,15 @@ protected:
 	int			p_num;		//	自分の番号
 	int			diffence;
 	int			type;		//	プレイヤータイプ
-=======
-	float			angle;
-	float			scale;
-	float			speed;
-	int				power;
-	int				mode;
-	float			force;		//	与力値
-	bool			unrivaled;	//	無敵
-	bool			isGround;	//	接地判定
-	int				p_num;		//	自分の番号
-	int				diffence;
-	int				type;			//	プレイヤータイプ
->>>>>>> takatori
+
 	Vector3		colorParam;	//	色変更用
 	Vector3		passDamageColor;	//	あたえる色
 	Vector3		receiveDamageColor;	//	受け取る色
-<<<<<<< HEAD
+
 	bool		damageState;		//	ダメージ状態
 	bool		CanHyper;		
 	bool		boosting;	//　どんけつ中であるか
-=======
-	bool			damageState;	//	ダメージ状態
-	bool			CanHyper;		
->>>>>>> takatori
+
 
 	//	当たり判定用
 	int			attackParam;				//	攻撃種類
