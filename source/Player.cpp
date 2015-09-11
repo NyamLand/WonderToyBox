@@ -40,6 +40,7 @@
 		this->input = ::input[input];
 		this->p_num = input;
 		this->pos = pos;
+		this->mode = PlayerData::WAIT;
 		this->passDamageColor = PlayerData::DAMAGE_COLOR[input];
 		
 		bPower = power * 2;
@@ -125,6 +126,10 @@
 	{
 		switch ( mode )
 		{
+		case PlayerData::WAIT:
+			Wait();
+			break;
+
 		case PlayerData::MOVE:
 			Move();
 			break;
@@ -318,6 +323,12 @@
 	void	Player::AddForce( float force )
 	{
 		this->force = force;
+	}
+
+	//	モードWait
+	void	Player::Wait( void )
+	{
+		SetMotion( motionData.POSTURE );
 	}
 
 	//	モードMove

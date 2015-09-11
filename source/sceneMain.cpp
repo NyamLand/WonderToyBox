@@ -3,6 +3,7 @@
 #include	<random>
 #include	"system/system.h"
 #include	"system/Framework.h"
+#include	"Image.h"
 #include	"GameManager.h"
 #include	"GlobalFunction.h"
 #include	"Collision.h"
@@ -363,7 +364,6 @@
 		iexSystem::Device->SetRenderTarget( 2, NULL );
 		iexSystem::Device->SetRenderTarget( 3, NULL );
 		m_Camera->Clear();
-
 
 	}
 

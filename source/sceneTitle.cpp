@@ -3,6 +3,7 @@
 #include	"system/Framework.h"
 #include	"system/System.h"
 #include	"GlobalFunction.h"
+#include	"Image.h"
 #include	"Collision.h"
 #include	"Camera.h"
 #include	"Particle.h"
