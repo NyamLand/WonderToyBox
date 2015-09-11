@@ -22,6 +22,9 @@ struct NewsBar
 	int		step;
 };
 
+//	クラス前方宣言
+class Image;
+
 class GameManager
 {
 private:
@@ -32,6 +35,7 @@ private:
 	//static	const		int		TIMELIMIT = 35 * SECOND;
 	enum Mode
 	{
+		GAMESTART,
 		MAINGAME, 
 		DONKETSU_DIRECTION,
 		TIMEUP
@@ -51,6 +55,10 @@ private:
 	static	int		lastBonus;
 	static	bool	newsflag;
 	static	NewsBar	newsbar;
+	static	Image*		countDown;
+	static	int		count;
+	
+
 public:
 
 	//	初期化・解放
@@ -58,17 +66,22 @@ public:
 	~GameManager( void );
 	static	bool	Initialize( void );
 	static	void	Release( void );
+	static	void	InitImage( void );
 
-	//	更新・描画
+	//	更新
 	static	void	Update( void );
-	static	void	Render( void );
 	static	void	MainGameUpdate( void );
-	static	void	MainGameInfoRender( void );
 	static	void	DonketsuDirectionUpdate( void );
-	static	void	DonketsuDirectionRender( void );
 	static	void	TimeUpUpdate( void );
+	static	void	GameStartUpdate( void );
+	
+	//	描画
+	static	void	Render( void );
+	static	void	MainGameInfoRender( void );
+	static	void	DonketsuDirectionRender( void );
 	static	void	TimeUpRender( void );
 	static	void	NewsRender( void );
+	static	void	GameStartRender( void );
 
 	//	動作関数
 	static	void	AddCoin( int playerNum );
@@ -101,6 +114,8 @@ namespace GameInfo
 		"ラストボーナス２",
 		"ラストボーナス３",
 		"ラストボーナス４",
+		"ラストボーナス５",
+		"ラストボーナス６",
 	};
 
 	const	 LPSTR	NewsText[] =

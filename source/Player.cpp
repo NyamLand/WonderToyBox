@@ -22,7 +22,7 @@
 		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ), power( 0 ), diffence( 0 ), knockBackVec( 0.0f, 0.0f, 0.0f ),
 		angle( 0.0f ), scale( 0.0f ), speed( 0.0f ), mode( 0 ), unrivaled( false ),
 		attackParam( 0 ), attackPos( 0.0f, 0.0f, 0.0f ), attackPos_top( 0.0f, 0.0f, 0.0f ), attackPos_bottom( 0.0f, 0.0f, 0.0f ), attack_r( 0.0f ), attack_t( 0.0f ), knockBackType( 0 ),
-		isGround(true), force(0.0f), type(0), p_num(0), CanHyper( true )
+		isGround( true ), force( 0.0f ), type( 0 ), p_num( 0 ), CanHyper( true )
 	{
 
 	}
@@ -40,6 +40,7 @@
 		this->input = ::input[input];
 		this->p_num = input;
 		this->pos = pos;
+		this->mode = PlayerData::WAIT;
 		this->passDamageColor = PlayerData::DAMAGE_COLOR[input];
 
 		if ( obj == NULL )	return	false;
@@ -118,6 +119,10 @@
 	{
 		switch ( mode )
 		{
+		case PlayerData::WAIT:
+			Wait();
+			break;
+
 		case PlayerData::MOVE:
 			Move();
 			break;
@@ -311,6 +316,12 @@
 	void	Player::AddForce( float force )
 	{
 		this->force = force;
+	}
+
+	//	モードWait
+	void	Player::Wait( void )
+	{
+		SetMotion( motionData.POSTURE );
 	}
 
 	//	モードMove

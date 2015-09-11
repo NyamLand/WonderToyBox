@@ -116,6 +116,8 @@
     <ClCompile Include="source\GameManager.cpp" />
     <ClCompile Include="source\GlobalFunction.cpp" />
     <ClCompile Include="source\Image.cpp" />
+    <ClCompile Include="source\Item.cpp" />
+    <ClCompile Include="source\ItemManager.cpp" />
     <ClCompile Include="source\Knight.cpp" />
     <ClCompile Include="source\Particle.cpp" />
     <ClCompile Include="source\Player.cpp" />
@@ -159,6 +161,8 @@
     <ClInclude Include="source\GameManager.h" />
     <ClInclude Include="source\GlobalFunction.h" />
     <ClInclude Include="source\Image.h" />
+    <ClInclude Include="source\Item.h" />
+    <ClInclude Include="source\ItemManager.h" />
     <ClInclude Include="source\Knight.h" />
     <ClInclude Include="source\Particle.h" />
     <ClInclude Include="source\Player.h" />

@@ -5,6 +5,9 @@
 #include	"Collision.h"
 #include	"UI.h"
 #include	"sceneResult.h"
+#include	"Image.h"
+#include	"Player.h"
+#include	"PlayerManager.h"
 #include	"GameManager.h"
 
 //*******************************************************************************
@@ -31,6 +34,8 @@
 	int		GameManager::lastBonus = 0;
 	bool	GameManager::newsflag = false;
 	NewsBar	GameManager::newsbar;
+	Image*		GameManager::countDown;
+	int				GameManager::count = 0;
 
 //-------------------------------------------------------------------------
 //	初期化・解放
@@ -60,7 +65,7 @@
 		stageType = 0;
 		changeSceneflag = false;
 		timer = TIMELIMIT;
-		waitTimer = 2 * SECOND;
+		waitTimer = 0;
 		mode = 0;
 		donketsuBoostState = false;
 		lastBonus = rand() % 4;
@@ -77,6 +82,13 @@
 			newsbar.color = Vector3( 0.3f, 0.3f, 0.3f );
 			newsbar.step = 0;
 			newsbar.textleft = 1500;
+		}
+
+		//	カウントダウン初期化
+		{
+			countDown = new Image( "DATA/bfUI.png" );
+			countDown->Initialize( 640, 360, 350, 350, 0, 0, 256, 256 );
+			count = 0;
 		}
 		return	true;
 	}
@@ -96,6 +108,10 @@
 	{
 		switch ( mode )
 		{
+		case GAMESTART:
+			GameStartUpdate();
+			break;
+
 		case MAINGAME:
 			MainGameUpdate();
 			break;
@@ -117,6 +133,10 @@
 	{
 		switch ( mode )
 		{
+		case GAMESTART:
+			GameStartRender();
+			break;
+
 		case MAINGAME:
 			MainGameInfoRender();
 			break;
@@ -129,9 +149,9 @@
 		case TIMEUP:
 			TimeUpRender();
 			break;
-
 		}
 	}
+
 	//------------------------------------------------------------------
 	//	ゲーム動作中
 	//------------------------------------------------------------------
@@ -139,12 +159,24 @@
 	void	GameManager::MainGameUpdate( void )
 	{
 		timer--;
+
+		//	残り時間３０秒でどんけつ演出へ
 		if ( timer == 30 * SECOND )
 		{
 			DecideWorst();
 			mode = DONKETSU_DIRECTION;
 		}
-		if ( timer <= 0 )	mode = TIMEUP;
+
+		//	時間切れ
+		if ( timer <= 0 )
+		{
+			mode = TIMEUP;
+			
+			//	画像読み込み位置・サイズ設定
+			countDown->SetSize( 600, 370 );
+			countDown->SetSearchPos( 0, 512 );
+			countDown->SetSearchSize( 1024, 512 );
+		}
 
 		//	タイマー更新
 		m_UI->SetTimer( timer );
@@ -195,6 +227,61 @@
 	}
 
 	//------------------------------------------------------------------
+	//	ゲームスタート演出
+	//------------------------------------------------------------------
+	//	更新
+	void	GameManager::GameStartUpdate( void )
+	{
+		//	タイマー更新
+		waitTimer++;
+
+		//	一秒ごとに画像進める
+		if ( waitTimer % SECOND == 0 )
+		{
+			//	カウントダウン
+			count++;
+
+			//	読み込み位置・サイズ設定
+			switch ( count )
+			{
+			case 1:
+				countDown->SetSearchPos( 256, 0 );
+				break;
+
+			case 2:
+				countDown->SetSearchPos( 0, 256 );
+				break;
+
+			case 3:
+				countDown->SetSearchPos( 512, 0 );
+				countDown->SetSearchSize( 512, 512 );
+				countDown->SetSize( 500, 500 );
+				countDown->SetWave();
+				break;
+
+			case 4:
+				for ( int i = 0; i < 4; i++ )
+				{
+					m_Player->SetMode( i, PlayerData::MOVE );
+					waitTimer = 2 * SECOND;
+				}
+				mode = MAINGAME;
+				break;
+			}
+
+		}
+
+		countDown->Update();
+	}
+
+	//	描画
+	void	GameManager::GameStartRender( void )
+	{
+		countDown->NormalRender();
+		countDown->Render();
+	}
+
+	//------------------------------------------------------------------
 	//	どんけつ演出
 	//------------------------------------------------------------------
 	//　更新
@@ -238,6 +325,7 @@
 	void	GameManager::TimeUpRender( void )
 	{
 		m_UI->Render();
+		countDown->NormalRender();
 
 		if ( !debug )	return;
 		//	デバッグ用

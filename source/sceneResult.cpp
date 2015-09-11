@@ -3,6 +3,7 @@
 #include	"GlobalFunction.h"
 #include	"system/Framework.h"
 #include	"system/System.h"
+#include	"Image.h"
 #include	"GameManager.h"
 #include	"Player.h"
 #include	"sceneTitle.h"

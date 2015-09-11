@@ -56,6 +56,7 @@ namespace PlayerData
 
 	enum STATE
 	{
+		WAIT,
 		MOVE,
 		ATTACK,
 		POWERARTS,
@@ -88,22 +89,22 @@ protected:
 	MotionData	motionData;
 	Vector3		pos;
 	Vector3		move;
-	float		angle;
-	float		scale;
-	float		speed;
-	int			power;
-	int			mode;
-	float		force;		//	与力値
-	bool		unrivaled;	//	無敵
-	bool		isGround;	//	接地判定
-	int			p_num;		//	自分の番号
-	int			diffence;
-	int			type;			//	プレイヤータイプ
+	float			angle;
+	float			scale;
+	float			speed;
+	int				power;
+	int				mode;
+	float			force;		//	与力値
+	bool			unrivaled;	//	無敵
+	bool			isGround;	//	接地判定
+	int				p_num;		//	自分の番号
+	int				diffence;
+	int				type;			//	プレイヤータイプ
 	Vector3		colorParam;	//	色変更用
 	Vector3		passDamageColor;		//	あたえる色
 	Vector3		receiveDamageColor;	//	受け取る色
-	bool		damageState;	//	ダメージ状態
-	bool		CanHyper;		
+	bool			damageState;	//	ダメージ状態
+	bool			CanHyper;		
 
 	//	当たり判定用
 	int			attackParam;				//	攻撃種類
@@ -149,6 +150,7 @@ public:
 	void	CommonKnockBackWeak( void );
 	void	CommonKnockBack( void );
 	void	AddForce( float force );
+	void	Wait( void );
 	void	Move( void );
 	void	Jump( void );
 	void	Guard( void );
