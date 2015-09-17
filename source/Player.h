@@ -185,15 +185,18 @@ public:
 
 	//	情報取得
 	Vector3	GetPos( void );
+	Vector3	GetDamageColor( void );
+	Vector3	GetFront( void );
+	Vector3	GetRight( void );
+	Vector3	GetUp( void );
 	Matrix	GetMatrix( void );
 	float	GetAngle( void );
+	float	GetSpeed( void );
+	bool	GetCanHyper( void );
 	bool	GetUnrivaled( void );
 	int		GetMode( void );
 	int		GetType( void );
-	Vector3	GetDamageColor( void );
-	bool	GetCanHyper( void );
 	int		GetPower( void );
-	float	GetSpeed( void );
 
 
 	//	当たり判定用パラメータ取得

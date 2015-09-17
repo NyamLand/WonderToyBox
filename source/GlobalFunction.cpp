@@ -282,7 +282,9 @@
 		case eRapid_Lv4: y2 = 0;                       n = 9; break;//9ŸŒ³
 		case eRapid_Lv5: y2 = 0;                       n = 11; break;//11ŸŒ³
 		}
-		return Get(y1, y2, fRate, n);
+
+		float	out = Get( y1, y2, fRate, n );
+		return out;
 	}
 
 //-------------------------------------------------------------------------

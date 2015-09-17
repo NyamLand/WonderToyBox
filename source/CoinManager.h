@@ -34,14 +34,8 @@ public:
 	void	Render( iexShader* shader, LPSTR technique );
 
 	//	“®ìŠÖ”
-	void	Set( const Vector3& pos, const Vector3& vec, float speed );
+	void	Set( const Vector3& pos, const Vector3& vec, const float& speed );
 	void	DistCheck( int n );
-
-	//static	CoinManager*	GetInstans( void )
-	//{
-	//	CoinManager	coinManager;
-	//	return	&coinManager;
-	//}
 };
 
 extern	CoinManager*	m_CoinManager;

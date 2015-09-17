@@ -108,12 +108,9 @@
 	bool	Knight::QuickArts( void )
 	{
 		//	行列から前方取得
-		move = Vector3(0.0f, 0.0f, 0.0f);
-		Matrix	mat = GetMatrix();
-		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
-		front.Normalize();
-
-		Vector3	 p_pos = GetPos();
+		move = Vector3( 0.0f, 0.0f, 0.0f );
+		Vector3	front = GetFront();
+		Vector3	p_pos = GetPos();
 		Vector3	startPos = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
 		Vector3	finPos = startPos + front * 5.0f;
 
@@ -139,13 +136,10 @@
 	//	パワーアーツ
 	bool	Knight::PowerArts( void )
 	{
-			//行列から前方取得
-		move = Vector3(0.0f, 0.0f, 0.0f);
-		Matrix	mat = GetMatrix();
-		Vector3	right = Vector3( mat._11, mat._12, mat._13 );
-		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
-		right.Normalize();
-		front.Normalize();
+		//行列から前方取得
+		move = Vector3( 0.0f, 0.0f, 0.0f );
+		Vector3	front = GetFront();
+		Vector3	right = GetRight();
 		static int step = 0;
 		//	当たり判定位置移動&範囲拡大
 		float t = GetBezier( ePrm_t::eRapid_Lv5, ePrm_t::eSlow_Lv1, attack_t );
@@ -159,8 +153,8 @@
 			break;
 		case 1:
 			Vector3	p_pos = GetPos();
-			Vector3 f = front * ( 2.0f * sinf( PI * t ) );
-			Vector3 r = -right * ( 2.0f * cosf( PI * t ) );
+			Vector3 f = front * ( 2.0f * sinf( D3DX_PI * t ) );
+			Vector3 r = -right * ( 2.0f * cosf( D3DX_PI * t ) );
 			attackPos_bottom = p_pos + f + r;
 			attackPos_top = attackPos_bottom + f + r;
 			//	パラメータ加算
@@ -181,11 +175,8 @@
 		move = Vector3( 0.0f, 0.0f, 0.0f );
 		static	int		num = 0;	//	回数
 		//行列から前方取得
-		Matrix	mat = GetMatrix();
-		Vector3	right = Vector3( mat._11, mat._12, mat._13 );
-		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
-		right.Normalize();
-		front.Normalize();
+		Vector3	front = GetFront();
+		Vector3	right = GetRight();
 		static int step = 0;
 		Vector3 f, r;
 

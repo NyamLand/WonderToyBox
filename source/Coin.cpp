@@ -35,7 +35,7 @@
 	//	初期化
 	bool	Coin::Initialize( void )
 	{
-		obj = NULL;
+		obj = nullptr;
 		angle = 0.0f;
 		pos = Vector3( 0.0f, 0.0f, 0.0f );
 		move = Vector3( 0.0f, 0.0f, 0.0f );
@@ -118,7 +118,6 @@
 				state = false;
 				float	effectScale = 0.2f;
 				Particle::Spark( p_pos[i], effectScale );
-				//m_Player->AddCoin( i );
 				GameManager::AddCoin( i );
 				IEX_PlaySound( SoundInfo::COIN_SE, false );
 			}
@@ -137,18 +136,53 @@
 		// 反射( ステージ )	
 		static float rate = 0.4f;
 		Collision::GetReflect( pos, move, rate );
+
+		//	落下したら再配置
+		if ( GetPos().y <= -3.0f )
+		{
+			std::uniform_real_distribution<float> posrand( -10.0f, 10.0f );
+			std::uniform_real_distribution<float> heightrand( 0.0f, 50.0f );
+			SetPos( Vector3( posrand( ran ), heightrand( ran ), posrand( ran ) ) );
+		}
 	}
 
 //-------------------------------------------------------------------------------
-//	情報設定・取得
+//	情報設定
 //-------------------------------------------------------------------------------
 
-	//	設定
-	void	Coin::SetPos( Vector3 pos ){ this->pos = pos; }
-	void	Coin::SetAngle( float angle ){ this->angle = angle; }
-	void	Coin::SetScale( float scale ){ this ->scale = scale; }
+	//	座標設定
+	void	Coin::SetPos( const Vector3& pos )
+	{
+		this->pos = pos; 
+	}
 
-	//	取得
-	Vector3	Coin::GetPos( void ){ return	this->pos; }
-	float		Coin::GetAngle( void ){ return	this->angle; }
+	//	向き設定
+	void	Coin::SetAngle( const float& angle )
+	{
+		this->angle = angle; 
+	}
+
+	//	スケール設定
+	void	Coin::SetScale( const float& scale )
+	{
+		this ->scale = scale; 
+	}
+
+//-------------------------------------------------------------------------------
+//	情報取得
+//-------------------------------------------------------------------------------
+
+	//	座標取得
+	Vector3	Coin::GetPos( void )
+	{
+		Vector3	out = this->pos;
+		return	out; 
+	}
+
+	//	向き取得
+	float		Coin::GetAngle( void )
+	{
+		float	out = this->angle;
+		return	out; 
+	}
 	

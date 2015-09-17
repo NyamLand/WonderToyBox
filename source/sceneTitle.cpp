@@ -26,6 +26,8 @@
 //	グローバル
 //-----------------------------------------------------------------------------------
 
+namespace
+{
 	//	カメラ移動用位置情報
 	namespace c_Move{
 		Vector3 TARGET[4]=
@@ -49,6 +51,7 @@
 			"Yねえさん"
 		};
 	}
+}
 
 //-----------------------------------------------------------------------------------
 //	初期化・解放
@@ -67,6 +70,7 @@
 		SafeDelete( m_Camera );
 		SafeDelete( m_Player );
 		SafeDelete( m_CollisionStage );
+		//GameManager::Release();
 	}
 	
 	//	初期化
@@ -116,7 +120,7 @@
 			//	選択情報初期化
 			selectInfo.playerNum = 1;
 			selectInfo.stageType = 0;
-			for ( int i = 0; i < PLAYER_NUM; i++ )	selectInfo.characterType[i] = 0;
+			for ( int i = 0; i < PLAYER_NUM; i++ )	selectInfo.characterType[i] = i;
 
 			//	カメラ情報構造体初期化
 			cameraInfo.lerpStartPos = cameraInfo.pos = m_Camera->GetPos();

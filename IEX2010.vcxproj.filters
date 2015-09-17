@@ -97,6 +97,9 @@
     <Filter Include="ソース ファイル\ItemManager">
       <UniqueIdentifier>{110c6fa5-d8c4-433a-b7e6-8c154514a95a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Sound">
+      <UniqueIdentifier>{f3a21433-5c02-47a5-bea7-dd91966fb579}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -228,6 +231,9 @@
     <ClCompile Include="source\ItemManager.cpp">
       <Filter>ソース ファイル\ItemManager</Filter>
     </ClCompile>
+    <ClCompile Include="source\Sound.cpp">
+      <Filter>ソース ファイル\Sound</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -313,6 +319,9 @@
     </ClInclude>
     <ClInclude Include="source\ItemManager.h">
       <Filter>ソース ファイル\ItemManager</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Sound.h">
+      <Filter>ソース ファイル\Sound</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -109,6 +109,7 @@
 	{
 		for ( int i = 0; i < PLAYER_NUM; i++ )
 		{
+			c_Player[i]->Update();
 			c_Player[i]->Render();
 			DrawSphere( c_Player[i]->GetPos(), 2.0f, 0xFF000000 );
 		}

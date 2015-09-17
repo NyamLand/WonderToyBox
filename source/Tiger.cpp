@@ -110,11 +110,8 @@
 	bool	Tiger::QuickArts( void )
 	{
 		//	î•ñæ“¾
-		Matrix	mat = GetMatrix();
-		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
-		Vector3	up = Vector3( mat._21, mat._22, mat._23 );
-		front.Normalize();
-		up.Normalize();
+		Vector3	front = GetFront();
+		Vector3	up = GetUp();
 
 		//	î•ñİ’è
 		move = Vector3( 0.0f, 0.0f, 0.0f );
@@ -182,9 +179,7 @@
 		unrivaled = true;
 
 		//	î•ñæ“¾
-		Matrix	mat = GetMatrix();
-		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
-		front.Normalize();
+		Vector3	front = GetFront();
 		move = Vector3( 0.0f, 0.0f, 0.0f );
 		
 		//	“®ìİ’è
@@ -214,13 +209,9 @@
 	{
 		//	î•ñæ“¾
 		static	int		timer = 0;
-		Matrix	mat = GetMatrix();
-		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
-		Vector3	up = Vector3( mat._21, mat._22, mat._23 );
-		Vector3	right = Vector3( mat._11, mat._12, mat._13 );
-		front.Normalize();
-		up.Normalize();
-		right.Normalize();
+		Vector3	front = GetFront();
+		Vector3	up = GetUp();
+		Vector3	right = GetRight();
 
 		//	î•ñİ’è
 		move = Vector3( 0.0f, 0.0f, 0.0f );

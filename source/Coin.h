@@ -39,9 +39,9 @@ public:
 	void	Move( void );
 
 	//	î•ñæ“¾Eİ’è
-	void	SetPos( Vector3 pos );
-	void	SetAngle( float angle );
-	void	SetScale( float angle );
+	void	SetPos( const Vector3& pos );
+	void	SetAngle( const float& angle );
+	void	SetScale( const float& angle );
 	Vector3	GetPos( void );
 	float		GetAngle( void );
 

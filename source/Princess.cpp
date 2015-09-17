@@ -104,9 +104,7 @@
 	bool	Princess::QuickArts( void )
 	{
 		//	s—ñ‚©‚ç‘O•ûæ“¾
-		Matrix	mat = GetMatrix();
-		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
-		front.Normalize();
+		Vector3	front = GetFront();
 		move = Vector3( 0.0f, 0.0f, 0.0f );
 
 		Vector3	p_pos = GetPos();

@@ -36,6 +36,7 @@
 	//	初期化
 	bool	Player::Initialize( int input, iex3DObj* org, Vector3 pos )
 	{
+		this->obj = nullptr;
 		this->obj = org;
 		this->input = ::input[input];
 		this->p_num = input;
@@ -46,7 +47,12 @@
 		bPower = power * 2;
 		bSpeed = speed * 2;
 
-		if ( obj == NULL )	return	false;
+		obj->SetPos( pos );
+		obj->SetAngle( angle );
+		obj->SetScale( scale );
+		obj->Update();
+
+		if ( obj == nullptr )	return	false;
 		return	true;
 	}
 
@@ -84,11 +90,7 @@
 		speed = (boosting) ? bSpeed : speed;
 
 		//	情報更新
-		obj->SetPos( pos );
-		obj->SetAngle( angle );
-		obj->SetScale( scale );
 		obj->Animation();
-		obj->Update();
 	}
 
 	//	共通描画
@@ -100,7 +102,6 @@
 	//	共通シェーダー付き描画
 	void	Player::CommonRender( iexShader* shader, LPSTR technique )
 	{
-
 		//	ダメージ時白化計算
 		colorParam -= Vector3( 0.035f, 0.035f, 0.035f );
 		if ( colorParam.x <= 0.0f ){
@@ -114,6 +115,10 @@
 		}
 
 		shader3D->SetValue( "colorParam", colorParam );
+		obj->SetPos(pos);
+		obj->SetAngle(angle);
+		obj->SetScale(scale);
+		obj->Update();
 		obj->Render( shader, technique );
 	}
 
@@ -370,7 +375,7 @@
 
 		case PlayerData::HYPERARTS:
 			isEnd = HyperArts();
-			CanHyper = HyperArts();
+			CanHyper = isEnd;
 			if ( !isEnd )	SetAttackParam( attackKind );
 			break;
 		}
@@ -522,6 +527,33 @@
 	{ 
 		float	out = angle;
 		return out;
+	}
+
+	//	前方取得
+	Vector3	Player::GetFront( void )
+	{
+		Matrix	mat = GetMatrix();
+		Vector3	out = Vector3( mat._31, mat._32, mat._33 );
+		out.Normalize();
+		return	out;
+	}
+
+	//	右方取得
+	Vector3	Player::GetRight( void )
+	{
+		Matrix	mat = GetMatrix();
+		Vector3	out = Vector3( mat._11, mat._12, mat._13 );
+		out.Normalize();
+		return	out;
+	}
+
+	//	上方取得
+	Vector3	Player::GetUp( void )
+	{
+		Matrix	mat = GetMatrix();
+		Vector3	out = Vector3( mat._21, mat._22, mat._23 );
+		out.Normalize();
+		return	out;
 	}
 
 	//	無敵状態取得

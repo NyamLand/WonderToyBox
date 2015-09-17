@@ -126,6 +126,7 @@
 		SafeDelete( m_Player );
 		backBuffer->Release();
 		Particle::Release();
+		StopBGM();
 		//itemManager->Release();
 	}
 
