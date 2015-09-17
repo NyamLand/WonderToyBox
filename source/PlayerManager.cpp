@@ -33,7 +33,7 @@
 //------------------------------------------------------------------------------
 
 	//	コンストラクタ
-	PlayerManager::PlayerManager(void) : CanHyper(true)
+	PlayerManager::PlayerManager( void ) : CanHyper( true )
 	{
 
 	}
@@ -41,15 +41,8 @@
 	//	デストラクタ
 	PlayerManager::~PlayerManager( void )
 	{
-		for ( int i = 0; i < PLAYER_NUM; i++ )
-		{
-			SafeDelete( c_Player[i] );
-		}
-
-		for ( int i = 0; i < OBJ_MAX; i++ )
-		{
-			SafeDelete( org[i] );
-		}
+		for ( int i = 0; i < PLAYER_NUM; i++ )	SafeDelete( c_Player[i] );
+		for ( int i = 0; i < OBJ_MAX; i++ )			SafeDelete( org[i] );
 	}
 
 	//	初期化
@@ -101,7 +94,7 @@
 		{
 			//	各プレイヤー更新
 			c_Player[i]->Update();
-			CanHyper = GetCanHyper(i);
+			CanHyper = GetCanHyper( i );
 		}
 
 		//	当たり判定
@@ -128,10 +121,9 @@
 		{
 			c_Player[i]->Render( shader, technique );
 			Vector3	p_pos = c_Player[i]->GetPos();
-			if (!debug)continue;
-			{
-				DrawCapsule(p_pos, Vector3(p_pos.x, p_pos.y + 3.0f, p_pos.z), 1.0f);
-			}
+			
+			if ( !debug )continue;
+			DrawCapsule(p_pos, Vector3(p_pos.x, p_pos.y + 3.0f, p_pos.z), 1.0f);
 
 			char str[256];
 			wsprintf(str, "p%dの攻撃力：%d", i + 1, GetPower(i));

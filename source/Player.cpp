@@ -409,10 +409,10 @@
 	}
 
 //-------------------------------------------------------------------------------------
-//	情報設定・取得
+//	情報設定
 //-------------------------------------------------------------------------------------
 
-	//	設定
+	//	モーション設定
 	void	Player::SetMotion( int motion )
 	{
 		if ( obj->GetMotion() != motion )
@@ -420,48 +420,212 @@
 			obj->SetMotion( motion );
 		}
 	}
+
+	//	モード設定
 	void	Player::SetMode( int mode )
 	{
 		if ( this->mode != mode )		this->mode = mode;
 	}
-	void	Player::SetPos( Vector3 pos ){ this->pos = pos; }
-	void	Player::SetPos( float x, float y, float z ){ this->pos = Vector3( x, y, z ); }
-	void	Player::SetAngle( float angle ){ this->angle = angle; }
-	void	Player::SetScale( float scale ){ this->scale = scale; }
-	void	Player::SetKnockBackVec( Vector3 knockBackVec ){ this->knockBackVec = knockBackVec; }
-	void	Player::SetMode( PlayerData::STATE state )
-	{
-		if (GetMode() != state)
-		{
-			mode = state;
-		}
+
+	//	座標設定
+	void	Player::SetPos( const Vector3& pos )
+	{ 
+		this->pos = pos;
 	}
-	void	Player::SetType( int type ){ this->type = type; }
-	void	Player::SetDamageColor( Vector3 color ){ this->colorParam = color; }
-	void	Player::SetReceiveColor( Vector3 color ){ this->receiveDamageColor = color; }
-	void	Player::SetPower( int power ){ this->power = power; }
-	void	Player::SetSpeed( float speed ){ this->speed = speed; }
-	void	Player::SetBoosting(bool boosting){ this->boosting = boosting; }
 
-	//	取得
-	Vector3		Player::GetPos( void ){ return	pos; }
-	Matrix		Player::GetMatrix( void ){ return obj->TransMatrix; }
-	float		Player::GetAngle( void ){ return angle; }
-	bool		Player::GetUnrivaled( void ){ return unrivaled; }
-	int			Player::GetMode( void ){ return mode; }
-	int			Player::GetType( void ){ return type; }
-	int			Player::GetP_Num( void ){ return p_num; }
-	Vector3		Player::GetDamageColor( void ){ return	passDamageColor; }
-	bool		Player::GetCanHyper( void ){ return CanHyper; }
-	int			Player::GetPower( void ){ return power; }
-	float		Player::GetSpeed( void ){ return speed; }
+	//	座標設定
+	void	Player::SetPos( const float& x, const float& y, const float& z )
+	{
+		this->pos = Vector3( x, y, z );
+	}
 
-	//	当たり判定用パラメータ取得
-	int			Player::GetAttackParam( void ){ return attackParam; }
-	int			Player::GetKnockBackType( void ){ return knockBackType; }
-	Vector3		Player::GetAttackPos( void ){ return attackPos; }
-	Vector3		Player::GetAttackPos_Top( void ){ return attackPos_top; }
-	Vector3		Player::GetAttackPos_Bottom( void ){ return attackPos_bottom; }
-	float		Player::GetAttack_T( void ){ return attack_t; }
-	float		Player::GetAttack_R( void ){ return attack_r; }
+	//	向き設定
+	void	Player::SetAngle( const float& angle )
+	{ 
+		this->angle = angle;
+	}
+
+	//	スケール設定
+	void	Player::SetScale( const float& scale )
+	{ 
+		this->scale = scale; 
+	}
+
+	//	ノックバック方向設定
+	void	Player::SetKnockBackVec( const Vector3& knockBackVec )
+	{ 
+		this->knockBackVec = knockBackVec;
+	}
+
+	//	モード設定
+	void	Player::SetMode( const PlayerData::STATE& state )
+	{
+		if ( GetMode() != state )		mode = state;
+	}
+
+	//	タイプ設定
+	void	Player::SetType( const int& type )
+	{
+		this->type = type;
+	}
+
+	//	ダメージ時色設定
+	void	Player::SetDamageColor( const Vector3& color )
+	{ 
+		this->colorParam = color;
+	}
+
+	//	渡す色設定
+	void	Player::SetReceiveColor( const Vector3& color )
+	{
+		this->receiveDamageColor = color;
+	}
+
+	//	パワー設定
+	void	Player::SetPower( const int& power )
+	{
+		this->power = power;
+	}
+
+	//	スピード設定
+	void	Player::SetSpeed( const float& speed )
+	{
+		this->speed = speed;
+	}
+
+	//	ブースト設定
+	void	Player::SetBoosting( const bool& boosting )
+	{ 
+		this->boosting = boosting; 
+	}
+
+//-------------------------------------------------------------------------------------
+//	情報取得
+//-------------------------------------------------------------------------------------
+	
+	//	座標取得
+	Vector3		Player::GetPos( void )
+	{
+		Vector3	out = pos;
+		return	out;
+	}
+
+	//	行列取得
+	Matrix		Player::GetMatrix( void )
+	{ 
+		Matrix	out = obj->TransMatrix;
+		return	out;
+	}
+
+	//	向き取得
+	float		Player::GetAngle( void )
+	{ 
+		float	out = angle;
+		return out;
+	}
+
+	//	無敵状態取得
+	bool		Player::GetUnrivaled( void )
+	{ 
+		bool	out = unrivaled;
+		return out;
+	}
+
+	//	モード取得
+	int			Player::GetMode( void )
+	{
+		int		out = this->mode;
+		return out;
+	}
+
+	//	タイプ取得
+	int			Player::GetType( void )
+	{
+		int		out = this->type;
+		return out; 
+	}
+
+	//	プレイヤー番号取得
+	int			Player::GetP_Num( void )
+	{
+		int		out = this->p_num;
+		return out; 
+	}
+
+	//	ダメージ時色取得
+	Vector3		Player::GetDamageColor( void )
+	{
+		Vector3	out = this->passDamageColor;
+		return	out; 
+	}
+
+	//	ハイパー使用状態取得
+	bool		Player::GetCanHyper( void )
+	{
+		bool	out = CanHyper;
+		return out; 
+	}
+
+	//	パワー取得
+	int			Player::GetPower( void )
+	{
+		int		out = power;
+		return out; 
+	}
+
+	//	スピード取得
+	float		Player::GetSpeed( void )
+	{
+		float	out = speed;
+		return out; 
+	}
+
+	//	攻撃パラメータ取得
+	int			Player::GetAttackParam( void )
+	{
+		int		out = attackParam;
+		return out; 
+	}
+
+	//	ノックバックタイプ取得
+	int			Player::GetKnockBackType( void )
+	{
+		int		out = knockBackType;
+		return out; 
+	}
+
+	//	当たり判定位置取得
+	Vector3		Player::GetAttackPos( void )
+	{
+		Vector3	out = attackPos;
+		return out;
+	}
+
+	//	当たり判定位置上端取得
+	Vector3		Player::GetAttackPos_Top( void )
+	{
+		Vector3	out = attackPos_top;
+		return out; 
+	}
+
+	//	当たり判定位置下端取得
+	Vector3		Player::GetAttackPos_Bottom( void )
+	{
+		Vector3	out = attackPos_bottom;
+		return out; 
+	}
+
+	//	攻撃中割合取得
+	float		Player::GetAttack_T( void )
+	{
+		float	out = attack_t;
+		return out; 
+	}
+
+	//	攻撃当たり判定半径取得
+	float		Player::GetAttack_R( void )
+	{
+		float	out = attack_r;
+		return out; 
+	}
 

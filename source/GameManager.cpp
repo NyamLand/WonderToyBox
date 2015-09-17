@@ -255,7 +255,7 @@
 			case 3:
 				countDown->SetSearchPos( 512, 0 );
 				countDown->SetSearchSize( 512, 512 );
-				countDown->SetSize( 500, 500 );
+				countDown->SetSize( 750, 750 );
 				countDown->SetWave();
 				break;
 

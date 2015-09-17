@@ -23,10 +23,10 @@
 	//	‰ð•ú
 	void	SafeDelete( void* obj )
 	{
-		if ( obj != NULL )
+		if ( obj != nullptr )
 		{
 			delete	obj;
-			obj = NULL;
+			obj = nullptr;
 		}
 	}
 

@@ -170,18 +170,18 @@ public:
 	virtual	void	SetAttackParam( int attackKind ) = 0;
 
 	//	èÓïÒê›íË
-	void	SetMode( PlayerData::STATE state );
-	void	SetPos( Vector3 pos );
-	void	SetPos( float x, float y, float z );
-	void	SetAngle( float angle );
-	void	SetScale( float scale );
-	void	SetKnockBackVec( Vector3 knockBackVec );
-	void	SetType( int type );
-	void	SetDamageColor( Vector3 color );
-	void	SetReceiveColor( Vector3 color );
-	void	SetPower(int power);
-	void	SetSpeed(float speed);
-	void	SetBoosting(bool  boosting);
+	void	SetMode( const PlayerData::STATE& state );
+	void	SetPos( const Vector3& pos );
+	void	SetPos( const float& x, const float& y, const float& z );
+	void	SetAngle( const float& angle );
+	void	SetScale( const float& scale );
+	void	SetKnockBackVec( const Vector3& knockBackVec );
+	void	SetType( const int& type );
+	void	SetDamageColor( const Vector3& color );
+	void	SetReceiveColor( const Vector3& color );
+	void	SetPower( const int& power );
+	void	SetSpeed( const float& speed );
+	void	SetBoosting( const bool& boosting );
 
 	//	èÓïÒéÊìæ
 	Vector3	GetPos( void );

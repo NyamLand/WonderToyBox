@@ -36,6 +36,12 @@ public:
 	//	“®ìŠÖ”
 	void	Set( const Vector3& pos, const Vector3& vec, float speed );
 	void	DistCheck( int n );
+
+	//static	CoinManager*	GetInstans( void )
+	//{
+	//	CoinManager	coinManager;
+	//	return	&coinManager;
+	//}
 };
 
 extern	CoinManager*	m_CoinManager;

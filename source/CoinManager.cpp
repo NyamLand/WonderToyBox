@@ -60,6 +60,8 @@ CoinManager*	m_CoinManager;
 		return	true;
 	}
 
+
+
 //---------------------------------------------------------------------------------
 //	更新・描画
 //---------------------------------------------------------------------------------
@@ -146,7 +148,6 @@ CoinManager*	m_CoinManager;
 			Vector3	coin_pos2 = c_Coin[i].GetPos();
 			Vector3	vec = coin_pos2 - coin_pos1;
 			
-
 			//	距離計測			
 			float length;
 			length = vec.Length();

@@ -11,6 +11,8 @@
 #include	"Particle.h"
 #include	"Player.h"
 #include	"PlayerManager.h"
+#include	"Item.h"
+#include	"ItemManager.h"
 #include	"Coin.h"
 #include	"CoinManager.h"
 #include	"Bullet.h"
@@ -75,9 +77,13 @@
 		m_CoinManager = new CoinManager();
 		m_CoinManager->Initialize();
 
+		//	バレット
 		m_BulletManager = new BulletManager();
 		m_BulletManager->Initialize();
 
+		//	アイテム
+		//itemManager->Initialize();
+			
 		//	パーティクル
 		Particle::Initialize();
 
@@ -120,6 +126,7 @@
 		SafeDelete( m_Player );
 		backBuffer->Release();
 		Particle::Release();
+		//itemManager->Release();
 	}
 
 	//	プレイヤー初期化
@@ -174,6 +181,9 @@
 
 		//	リス　バレット更新
 		m_BulletManager->Update();
+
+		//	アイテム更新
+		//itemManager->Update();
 
 		//	カメラ更新
 		m_Camera->Update( VIEW_MODE::FIX, Vector3( 0.0f, 2.0f, 0.0f ) );
@@ -266,6 +276,7 @@
 		m_Player->Render( shader3D, "toon" );
 		m_CoinManager->Render();
 		m_BulletManager->Render();
+		//itemManager->Render();
 		
 		//UI
 		GameManager::Render();

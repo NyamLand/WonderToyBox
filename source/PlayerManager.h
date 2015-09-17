@@ -57,6 +57,11 @@ public:
 	bool		GetCanHyper( int player );
 	int			GetPower( int player );
 	float		GetSpeed( int player );
+	static	PlayerManager*	GetInstans()
+	{
+		PlayerManager	playerManager;
+		return	&playerManager;
+	}
 
 	//	î•ñİ’è
 	void		SetPos( int player, Vector3 pos );
@@ -70,7 +75,7 @@ public:
 	void		SetSpeed( int player, float speed );
 	void		SetBoosting(int player, bool boosting);
 };
-
+#define	playerManager	( PlayerManager::GetInstans() )
 extern	PlayerManager*		m_Player;
 //****************************************************************************************
 #endif // !__PLAYERMANAGER_H__
