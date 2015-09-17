@@ -3,9 +3,9 @@
 #include	<random>
 #include	"system/system.h"
 #include	"system/Framework.h"
+#include	"GlobalFunction.h"
 #include	"Image.h"
 #include	"GameManager.h"
-#include	"GlobalFunction.h"
 #include	"Collision.h"
 #include	"Camera.h"
 #include	"Particle.h"

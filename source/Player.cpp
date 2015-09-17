@@ -2,9 +2,11 @@
 #include	"iextreme.h"
 #include	"system/System.h"
 #include	"GlobalFunction.h"
+#include	"GameManager.h"
 #include	"Collision.h"
 #include	"Camera.h"
 #include	"PlayerManager.h"
+
 #include	"Player.h"
 
 //****************************************************************************************
@@ -43,6 +45,9 @@
 		this->pos = pos;
 		this->mode = PlayerData::WAIT;
 		this->passDamageColor = PlayerData::DAMAGE_COLOR[input];
+
+		//	パラメータ状態初期化
+		ParameterStateInitialize();
 		
 		bPower = power * 2;
 		bSpeed = speed * 2;
@@ -54,6 +59,25 @@
 
 		if ( obj == nullptr )	return	false;
 		return	true;
+	}
+
+	//	パラメータ状態初期化
+	void	Player::ParameterStateInitialize( void )
+	{
+		ParameterStateInitialize( slip );
+		ParameterStateInitialize( boost );
+		ParameterStateInitialize( outrage );
+		ParameterStateInitialize( attackUp );
+		ParameterStateInitialize( speedUp );
+		ParameterStateInitialize( bomb );
+		ParameterStateInitialize( jump );
+	}
+
+	//	パラメータ状態初期化
+	void	Player::ParameterStateInitialize( ParameterState& ps )
+	{
+		ps.state = false;
+		ps.timer = 0;
 	}
 
 //-------------------------------------------------------------------------------------
@@ -262,6 +286,7 @@
 		}
 	}
 
+	//	共通移動
 	void	Player::CommonMove( float speed )
 	{
 		move.x = sinf( angle ) * speed;
@@ -414,6 +439,47 @@
 	}
 
 //-------------------------------------------------------------------------------------
+//	パラメータ状態動作関数
+//-------------------------------------------------------------------------------------
+
+	//	ステート管理
+	void	Player::ParameterStateUpdate( void )
+	{	
+		//--------各イベント・アイテム効果処理を書く--------//
+
+		//	攻撃力アップアイテム効果動作
+		AttackUp();
+	}
+
+	//	攻撃力Upアイテム効果動作
+	void	Player::AttackUp( void )
+	{
+		if ( !attackUp.state )	return;
+		
+		//	タイマー減算
+		attackUp.timer--;
+		
+		//	時間が来たら効果取り消し
+		if ( attackUp.timer <= 0 )
+		{
+			attackUp.timer = 0;
+			attackUp.state = false;
+		}
+	}
+
+	//	スリップ
+
+	//	どんけつブースト
+
+	//	暴走状態
+
+	//	スピードUpアイテム効果動作
+
+	//	ジャンプアイテム効果動作
+
+	//	爆発アイテム効果動作
+
+//-------------------------------------------------------------------------------------
 //	情報設定
 //-------------------------------------------------------------------------------------
 
@@ -502,6 +568,48 @@
 	void	Player::SetBoosting( const bool& boosting )
 	{ 
 		this->boosting = boosting; 
+	}
+
+	//	パラメータ状態設定
+	void	Player::SetParameterState( const PARAMETER_STATE::PARAMETERSTATE& parameterState )
+	{
+		switch ( parameterState )
+		{
+		case PARAMETER_STATE::SLIP:
+			SetParameterState( slip, 10 * SECOND );
+			break;
+
+		case PARAMETER_STATE::BOOST:
+			SetParameterState( boost, 30 * SECOND );
+			break;
+
+		case PARAMETER_STATE::OUTRAGE:
+			SetParameterState( outrage, 10 * SECOND );
+			break;
+
+		case PARAMETER_STATE::ATTACKUP:
+			SetParameterState( attackUp, 10 * SECOND );
+			break;
+
+		case PARAMETER_STATE::SPEEDUP:
+			SetParameterState( speedUp, 10 * SECOND );
+			break;
+
+		case PARAMETER_STATE::BOMB:
+			SetParameterState( speedUp, 5 * SECOND );
+			break;
+
+		case PARAMETER_STATE::JUMP:
+			SetParameterState( jump, 10 * SECOND );
+			break;
+		}
+	}
+
+	//	パラメータ状態設定
+	void	Player::SetParameterState( ParameterState& parameterState, const int& time )
+	{
+		parameterState.state = true;
+		parameterState.timer = time;
 	}
 
 //-------------------------------------------------------------------------------------

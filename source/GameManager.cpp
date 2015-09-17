@@ -108,21 +108,21 @@
 	{
 		switch ( mode )
 		{
-		case GAMESTART:
+		case GAME_MODE::GAMESTART:
 			GameStartUpdate();
 			break;
 
-		case MAINGAME:
+		case GAME_MODE::MAINGAME:
 			MainGameUpdate();
 			break;
 
 		//　どんけつ用演出
-		case DONKETSU_DIRECTION:
+		case GAME_MODE::DONKETSU_DIRECTION:
 			//　ここでビリを決定（以後変更なし）
 			DonketsuDirectionUpdate(); 
 			break;
 		
-		case TIMEUP:
+		case GAME_MODE::TIMEUP:
 			TimeUpUpdate();
 			break;
 		}
@@ -133,20 +133,20 @@
 	{
 		switch ( mode )
 		{
-		case GAMESTART:
+		case GAME_MODE::GAMESTART:
 			GameStartRender();
 			break;
 
-		case MAINGAME:
+		case GAME_MODE::MAINGAME:
 			MainGameInfoRender();
 			break;
 
 		//　どんけつ用演出
-		case DONKETSU_DIRECTION:
+		case GAME_MODE::DONKETSU_DIRECTION:
 			DonketsuDirectionRender();
 			break;
 		
-		case TIMEUP:
+		case GAME_MODE::TIMEUP:
 			TimeUpRender();
 			break;
 		}
@@ -164,13 +164,13 @@
 		if ( timer == 30 * SECOND )
 		{
 			DecideWorst();
-			mode = DONKETSU_DIRECTION;
+			mode = GAME_MODE::DONKETSU_DIRECTION;
 		}
 
 		//	時間切れ
 		if ( timer <= 0 )
 		{
-			mode = TIMEUP;
+			mode = GAME_MODE::TIMEUP;
 			
 			//	画像読み込み位置・サイズ設定
 			countDown->SetSize( 600, 370 );
@@ -265,7 +265,7 @@
 					m_Player->SetMode( i, PlayerData::MOVE );
 					waitTimer = 2 * SECOND;
 				}
-				mode = MAINGAME;
+				mode = GAME_MODE::MAINGAME;
 				break;
 			}
 
@@ -293,7 +293,7 @@
 		if ( wait <= 0 )
 		{
 			wait = 30;
-			mode = MAINGAME;
+			mode = GAME_MODE::MAINGAME;
 		}
 	}
 
