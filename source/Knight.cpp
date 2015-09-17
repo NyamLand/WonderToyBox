@@ -50,6 +50,7 @@
 		attack_r = 0.0f;
 		attack_t = 0.0f;
 		lance_r = 0.0f;
+		power = 2600;
 		speed = 0.2f;
 		scale = 0.02f;
 		SetMotionData();

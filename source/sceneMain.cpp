@@ -3,6 +3,7 @@
 #include	<random>
 #include	"system/system.h"
 #include	"system/Framework.h"
+#include	"Image.h"
 #include	"GameManager.h"
 #include	"GlobalFunction.h"
 #include	"Collision.h"
@@ -61,9 +62,8 @@
 		m_Camera = new Camera();
 
 		//	ステージ
-		m_CollisionStage = new iexMesh( "DATA/BG/CollisionGround.IMO" );
-		m_Stage = new iexMesh( "DATA/BG/2_1/FIELD2_1.imo" );
-		
+		m_CollisionStage = new iexMesh( "DATA/BG/desk_Collision.IMO" );
+		m_Stage = new iexMesh( "DATA/back/stage.IMO" );
 		//	当たり判定
 		Collision::Initiallize( m_CollisionStage );
 
@@ -92,6 +92,8 @@
 		timer = 0;
 		playerNum = GameManager::GetPlayerNum();
 		stageType = GameManager::GetStageType();
+
+		PlayBGM( SoundInfo::BGM::MAIN_BGM );
 
 		//	全体更新
 		Update();
@@ -126,7 +128,7 @@
 		for ( int i = 0; i < 4; i++ )
 		{
 			int		characterType = GameManager::GetCharacterType( i );
-			Vector3	pos = Vector3( -20.0f + ( 10.0f * i ), 0.0f, 0.0f );
+			Vector3	pos = Vector3( -20.0f + ( 10.0f * i ), 10.0f, 0.0f );
 			m_Player->Initialize( i, characterType, pos );
 		}
 	}
@@ -362,7 +364,6 @@
 		iexSystem::Device->SetRenderTarget( 2, NULL );
 		iexSystem::Device->SetRenderTarget( 3, NULL );
 		m_Camera->Clear();
-
 
 	}
 

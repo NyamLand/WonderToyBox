@@ -51,7 +51,7 @@ public:
 	void	DifferedInitialize( void );
 
 	//	更新
-	void Update( void );	//	更新
+	void	Update( void );	//	更新
 
 	//	描画
 	void	Render( void );

@@ -23,7 +23,7 @@
 	//	コンストラクタ
 	Camera::Camera( void )
 	{
-		pos = Vector3( 0.0f, 20.0f, -25.0f );
+		pos = Vector3( 0.0f, 40.0f, 50.0f );
 		target = Vector3( 0.0f, 2.0f, 0.0f );
 		orientation = D3DXQUATERNION( 0, 0, 0, 1 );
 		Set( pos, target );
