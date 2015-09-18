@@ -9,10 +9,10 @@
 //*****************************************************************************
 class Coin
 {
-private:
+protected:
 	const float GRAVITY = -0.01f;
 
-private:
+protected:
 	iexMesh*	obj;
 	Vector3		pos;
 	Vector3		move;
@@ -37,7 +37,7 @@ public:
 	void	StageCollisionCheck( void );
 	void	PlayerCollisionCheck( void );
 	void	Move( void );
-
+	void	Hitduringtheoperation( const Vector3& pos, const int& Num );	//ƒqƒbƒg“®ì
 	//	î•ñæ“¾Eİ’è
 	void	SetPos( const Vector3& pos );
 	void	SetAngle( const float& angle );

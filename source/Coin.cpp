@@ -115,11 +115,7 @@
 
 			if ( isHit )
 			{
-				state = false;
-				float	effectScale = 0.2f;
-				Particle::Spark( p_pos[i], effectScale );
-				GameManager::AddCoin( i );
-				IEX_PlaySound( SoundInfo::COIN_SE, false );
+				Hitduringtheoperation(p_pos[i],i);
 			}
 		}
 	}
@@ -146,6 +142,15 @@
 		}
 	}
 
+
+	void	Coin::Hitduringtheoperation(const Vector3& pos, const int& Num)
+	{
+		state = false;
+		float	effectScale = 0.2f;
+		Particle::Spark(pos, effectScale);
+		GameManager::AddCoin(Num);
+		IEX_PlaySound(SoundInfo::COIN_SE, false);
+	}
 //-------------------------------------------------------------------------------
 //	èÓïÒê›íË
 //-------------------------------------------------------------------------------

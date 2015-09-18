@@ -11,11 +11,14 @@
 //	include
 #include	<list>
 #include	"Item.h"
+#include	"CoinManager.h"
 using namespace std;
 
-class ItemManager
+class ItemManager	:public CoinManager
 {
 private:
+	//	’è”
+	static const int ITEM_MAX = 10;		//	ƒAƒCƒeƒ€Å‘å”
 	list<Item*>	itemList;
 
 public:
@@ -32,5 +35,6 @@ public:
 	void	Append( const Vector3& pos );
 };
 
+extern ItemManager* m_ItemManager;
 //*********************************************************************************
 #endif // !__ITEMMANAGER_H__

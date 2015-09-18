@@ -11,7 +11,7 @@ class CoinManager
 {
 private:
 
-private:
+protected:
 	//	’è”
 	static const int COIN_MAX = 201;		//	ƒRƒCƒ“Å‘å”
 
