@@ -127,7 +127,6 @@
 		backBuffer->Release();
 		Particle::Release();
 		StopBGM();
-		//itemManager->Release();
 	}
 
 	//	ƒvƒŒƒCƒ„[‰Šú‰»

@@ -281,8 +281,10 @@
 			SetMotion( motionData.POSTURE );
 
 			//	™X‚ÉˆÚ“®—Ê‚Æ—ÍŒ¸‚ç‚·
-			move.x *= 0.8f;
-			move.z *= 0.8f;
+			SetResistance( 0.8f );
+			float	param = GetResistance();
+			move.x *=	 param;
+			move.z *=	 param;
 		}
 	}
 
@@ -612,6 +614,18 @@
 		parameterState.timer = time;
 	}
 
+	//	’ïR—Í
+	void	Player::SetResistance( const float& resistance )
+	{
+		this->resistance = resistance;
+	}
+
+	//	ˆÚ“®’lİ’è
+	void	Player::SetMove( const Vector3& move )
+	{
+		this->move = move;
+	}
+
 //-------------------------------------------------------------------------------------
 //	î•ñæ“¾
 //-------------------------------------------------------------------------------------
@@ -661,6 +675,13 @@
 		Matrix	mat = GetMatrix();
 		Vector3	out = Vector3( mat._21, mat._22, mat._23 );
 		out.Normalize();
+		return	out;
+	}
+
+	//	ˆÚ“®’læ“¾
+	Vector3	Player::GetMove( void )
+	{
+		Vector3	out = this->move;
 		return	out;
 	}
 
@@ -767,5 +788,12 @@
 	{
 		float	out = attack_r;
 		return out; 
+	}
+
+	//	’ïR—ÍE–€C—Íæ“¾
+	float		Player::GetResistance( void )
+	{
+		float	out = this->resistance;
+		return	out;
 	}
 

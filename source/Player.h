@@ -111,19 +111,20 @@ protected:
 
 	//	基本情報
 	MotionData	motionData;
-	Vector3		pos;
-	Vector3		move;
-	float		angle;
-	float		scale;
-	float		speed;
-	int			power;
-	int			mode;
-	int			diffence;
-	float		force;		//	与力値
-	bool		unrivaled;	//	無敵
-	bool		isGround;	//	接地判定
-	int			p_num;		//	自分の番号
-	int			type;		//	プレイヤータイプ
+	Vector3			pos;
+	Vector3			move;
+	float				resistance;	//	抵抗力・摩擦力
+	float				angle;
+	float				scale;
+	float				speed;
+	int					power;
+	int					mode;
+	int					diffence;
+	float				force;		//	与力値
+	bool				unrivaled;	//	無敵
+	bool				isGround;	//	接地判定
+	int					p_num;		//	自分の番号
+	int					type;			//	プレイヤータイプ
 
 	//	ブースト情報
 	float		bSpeed;		//　ブースト中スピード
@@ -135,8 +136,6 @@ protected:
 	Vector3		receiveDamageColor;	//	受け取る色
 	bool		damageState;		//	ダメージ状態
 	bool		CanHyper;		
-
-	//	
 
 	//	当たり判定用
 	int			attackParam;				//	攻撃種類
@@ -231,6 +230,9 @@ public:
 	void	SetBoosting( const bool& boosting );
 	void	SetParameterState( const PARAMETER_STATE::PARAMETERSTATE& parameterState );
 	void	SetParameterState( ParameterState& parameterState, const int& time );
+	void	SetResistance( const float& resistance );
+	void	SetMove( const Vector3& move );
+
 
 	//	情報取得
 	Vector3	GetPos( void );
@@ -238,15 +240,17 @@ public:
 	Vector3	GetFront( void );
 	Vector3	GetRight( void );
 	Vector3	GetUp( void );
+	Vector3	GetMove( void );
 	Matrix	GetMatrix( void );
 	float	GetAngle( void );
 	float	GetSpeed( void );
+	float	GetResistance( void );
 	bool	GetCanHyper( void );
 	bool	GetUnrivaled( void );
 	int		GetMode( void );
 	int		GetType( void );
 	int		GetPower( void );
-
+	
 
 	//	当たり判定用パラメータ取得
 	int		GetAttackParam( void );
