@@ -97,7 +97,19 @@
 		int		GUARD;					//	ガード
 	};
 
-
+	//	ニュース構造体
+	struct NewsBar
+	{
+		int		left;
+		int		top;
+		int		right;
+		int		bottom;
+		float	alpha;
+		Vector3	color;
+		LPSTR	text;
+		int		textleft;
+		int		step;
+	};
 
 //----------------------------------------------------------------------
 //	システム

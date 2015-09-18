@@ -71,6 +71,23 @@ namespace PlayerData
 	};
 }
 
+namespace
+{
+	namespace PARAMETER_STATE
+	{
+		enum PARAMETERSTATE
+		{
+			SLIP,
+			BOOST,
+			OUTRAGE,
+			ATTACKUP,
+			SPEEDUP,
+			BOMB,
+			JUMP,
+		};
+	}
+}
+
 class Player
 {
 protected:
@@ -79,38 +96,47 @@ protected:
 	static const int MIN_INPUT_STATE = 300;	//	スティック判定最小値
 
 protected:
+	struct ParameterState
+	{
+		bool	state;
+		int		timer;
+	};
+
+protected:
 	//	モデル
 	iex3DObj*	obj;
 
 	//	コントローラ
 	iexInput*		input;
 
-	//	パラメータ
+	//	基本情報
 	MotionData	motionData;
 	Vector3		pos;
 	Vector3		move;
 	float		angle;
 	float		scale;
 	float		speed;
-	float		bSpeed;		//　ブースト中スピード
 	int			power;
-	int			bPower;		//　ブースト中パワー
 	int			mode;
+	int			diffence;
 	float		force;		//	与力値
 	bool		unrivaled;	//	無敵
 	bool		isGround;	//	接地判定
 	int			p_num;		//	自分の番号
-	int			diffence;
 	int			type;		//	プレイヤータイプ
 
+	//	ブースト情報
+	float		bSpeed;		//　ブースト中スピード
+	int			bPower;		//　ブースト中パワー
+
+	//	シェーダーカラー情報
 	Vector3		colorParam;	//	色変更用
 	Vector3		passDamageColor;	//	あたえる色
 	Vector3		receiveDamageColor;	//	受け取る色
-
 	bool		damageState;		//	ダメージ状態
 	bool		CanHyper;		
-	bool		boosting;	//　どんけつ中であるか
 
+	//	
 
 	//	当たり判定用
 	int			attackParam;				//	攻撃種類
@@ -121,6 +147,21 @@ protected:
 	Vector3		attackPos;					//	当たり判定座標中心
 	float		attack_r;					//	当たり判定半径
 	float		attack_t;					//	当たり判定用割合パラメータ
+
+	//	状態
+	ParameterState		slip;
+	ParameterState		boost;
+	ParameterState		outrage;
+	ParameterState		attackUp;
+	ParameterState		speedUp;
+	ParameterState		bomb;
+	ParameterState		jump;
+
+	bool		boosting;	//　どんけつ中であるか
+
+	//	上昇値
+	//int		plusPower;
+	//int		plusSpeed;
 
 protected:
 	//	関数
@@ -133,6 +174,8 @@ public:
 	~Player( void );
 	bool	Initialize( int input, iex3DObj* org, Vector3 pos );
 	virtual	void	SetMotionData( void ) = 0;
+	void	ParameterStateInitialize( void );
+	void	ParameterStateInitialize( ParameterState& ps );
 
 	//	更新・描画
 	void	Update( void );
@@ -162,6 +205,10 @@ public:
 	void	Guard( void );
 	void	Attack( int attackKind );
 	void	Damage( void );
+	
+	//	パラメータ状態動作
+	void	ParameterStateUpdate( void );
+	void	AttackUp( void );
 
 	//	各キャラクターごとに設定
 	virtual	bool	QuickArts( void ) = 0;
@@ -170,30 +217,35 @@ public:
 	virtual	void	SetAttackParam( int attackKind ) = 0;
 
 	//	情報設定
-	void	SetMode( PlayerData::STATE state );
-	void	SetPos( Vector3 pos );
-	void	SetPos( float x, float y, float z );
-	void	SetAngle( float angle );
-	void	SetScale( float scale );
-	void	SetKnockBackVec( Vector3 knockBackVec );
-	void	SetType( int type );
-	void	SetDamageColor( Vector3 color );
-	void	SetReceiveColor( Vector3 color );
-	void	SetPower(int power);
-	void	SetSpeed(float speed);
-	void	SetBoosting(bool  boosting);
+	void	SetMode( const PlayerData::STATE& state );
+	void	SetPos( const Vector3& pos );
+	void	SetPos( const float& x, const float& y, const float& z );
+	void	SetAngle( const float& angle );
+	void	SetScale( const float& scale );
+	void	SetKnockBackVec( const Vector3& knockBackVec );
+	void	SetType( const int& type );
+	void	SetDamageColor( const Vector3& color );
+	void	SetReceiveColor( const Vector3& color );
+	void	SetPower( const int& power );
+	void	SetSpeed( const float& speed );
+	void	SetBoosting( const bool& boosting );
+	void	SetParameterState( const PARAMETER_STATE::PARAMETERSTATE& parameterState );
+	void	SetParameterState( ParameterState& parameterState, const int& time );
 
 	//	情報取得
 	Vector3	GetPos( void );
+	Vector3	GetDamageColor( void );
+	Vector3	GetFront( void );
+	Vector3	GetRight( void );
+	Vector3	GetUp( void );
 	Matrix	GetMatrix( void );
 	float	GetAngle( void );
+	float	GetSpeed( void );
+	bool	GetCanHyper( void );
 	bool	GetUnrivaled( void );
 	int		GetMode( void );
 	int		GetType( void );
-	Vector3	GetDamageColor( void );
-	bool	GetCanHyper( void );
 	int		GetPower( void );
-	float	GetSpeed( void );
 
 
 	//	当たり判定用パラメータ取得

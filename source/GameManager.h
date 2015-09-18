@@ -8,40 +8,32 @@
 //
 //*******************************************************************************
 
-//	ニュース構造体
-struct NewsBar
+namespace
 {
-	int		left;
-	int		top;
-	int		right;
-	int		bottom;
-	float	alpha;
-	Vector3	color;
-	LPSTR	text;
-	int		textleft;
-	int		step;
-};
+	//	定数
+	const		int		SECOND = 60;			//	１秒
+	const		int		MINUTE = 60 * 60;	//	１分
+	const		int		TIMELIMIT = 1 * MINUTE + 30 * SECOND;
+	//static	const		int		TIMELIMIT = 35 * SECOND;
+
+	namespace GAME_MODE
+	{
+		enum
+		{
+			GAMESTART,
+			MAINGAME,
+			DONKETSU_DIRECTION,
+			TIMEUP
+		};
+	}
+}
 
 //	クラス前方宣言
 class Image;
 
+//	クラス
 class GameManager
 {
-private:
-	//	定数
-	static	const		int		SECOND = 60;			//	１秒
-	static	const		int		MINUTE = 60 * 60;	//	１分
-	//static	const		int		TIMELIMIT = 1 * MINUTE + 30 * SECOND;
-	static	const		int		TIMELIMIT = 35 * SECOND;
-	
-	enum Mode
-	{
-		GAMESTART,
-		MAINGAME, 
-		DONKETSU_DIRECTION,
-		TIMEUP
-	};
-
 private:
 	static	int		timer;
 	static	int		waitTimer;

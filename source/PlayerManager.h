@@ -70,7 +70,6 @@ public:
 	void		SetSpeed( int player, float speed );
 	void		SetBoosting(int player, bool boosting);
 };
-
 extern	PlayerManager*		m_Player;
 //****************************************************************************************
 #endif // !__PLAYERMANAGER_H__

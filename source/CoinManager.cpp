@@ -16,7 +16,9 @@
 //---------------------------------------------------------------------------------
 //	グローバル変数
 //---------------------------------------------------------------------------------
-CoinManager*	m_CoinManager;
+
+	//	実体
+	CoinManager*	m_CoinManager;
 
 //---------------------------------------------------------------------------------
 //	初期化・解放
@@ -37,6 +39,7 @@ CoinManager*	m_CoinManager;
 	//	初期化
 	bool	CoinManager::Initialize( void )
 	{
+		org = nullptr;
 		org = new iexMesh( "DATA/coin.imo" );
 		c_Coin = new Coin[ COIN_MAX ];
 		coin_num = 0;
@@ -56,7 +59,7 @@ CoinManager*	m_CoinManager;
 			Set( Vector3( posrand( ran ), heightrand( ran ), posrand( ran ) ), Vector3( 0.0f, 0.0f, 0.0f ), 1.0f );
 		}
 
-		if ( org != NULL ) 	return	false;
+		if ( org != nullptr ) 	return	false;
 		return	true;
 	}
 
@@ -113,7 +116,7 @@ CoinManager*	m_CoinManager;
 //---------------------------------------------------------------------------------
 
 	//	生成
-	void	CoinManager::Set( const Vector3& pos, const Vector3& vec, float speed )
+	void	CoinManager::Set( const Vector3& pos, const Vector3& vec, const float& speed )
 	{
 		for ( int i = 0; i < COIN_MAX; i++ )
 		{
@@ -146,7 +149,6 @@ CoinManager*	m_CoinManager;
 			Vector3	coin_pos2 = c_Coin[i].GetPos();
 			Vector3	vec = coin_pos2 - coin_pos1;
 			
-
 			//	距離計測			
 			float length;
 			length = vec.Length();

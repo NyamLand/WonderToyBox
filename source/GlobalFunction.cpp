@@ -23,10 +23,10 @@
 	//	‰ð•ú
 	void	SafeDelete( void* obj )
 	{
-		if ( obj != NULL )
+		if ( obj != nullptr )
 		{
 			delete	obj;
-			obj = NULL;
+			obj = nullptr;
 		}
 	}
 
@@ -282,7 +282,9 @@
 		case eRapid_Lv4: y2 = 0;                       n = 9; break;//9ŽŸŒ³
 		case eRapid_Lv5: y2 = 0;                       n = 11; break;//11ŽŸŒ³
 		}
-		return Get(y1, y2, fRate, n);
+
+		float	out = Get( y1, y2, fRate, n );
+		return out;
 	}
 
 //-------------------------------------------------------------------------
