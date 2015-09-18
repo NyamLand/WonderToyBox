@@ -159,6 +159,10 @@ protected:
 
 	bool		boosting;	//@‚Ç‚ñ‚¯‚Â’†‚Å‚ ‚é‚©
 
+	//	ã¸’l
+	//int		plusPower;
+	//int		plusSpeed;
+
 protected:
 	//	ŠÖ”
 	void	SetMotion( int motion );
