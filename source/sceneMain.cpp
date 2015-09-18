@@ -3,13 +3,16 @@
 #include	<random>
 #include	"system/system.h"
 #include	"system/Framework.h"
-#include	"GameManager.h"
 #include	"GlobalFunction.h"
+#include	"Image.h"
+#include	"GameManager.h"
 #include	"Collision.h"
 #include	"Camera.h"
 #include	"Particle.h"
 #include	"Player.h"
 #include	"PlayerManager.h"
+#include	"Item.h"
+#include	"ItemManager.h"
 #include	"Coin.h"
 #include	"CoinManager.h"
 #include	"Bullet.h"
@@ -61,9 +64,8 @@
 		m_Camera = new Camera();
 
 		//	ステージ
-		m_CollisionStage = new iexMesh( "DATA/BG/CollisionGround.IMO" );
-		m_Stage = new iexMesh( "DATA/BG/2_1/FIELD2_1.imo" );
-		
+		m_CollisionStage = new iexMesh( "DATA/BG/desk_Collision.IMO" );
+		m_Stage = new iexMesh( "DATA/back/stage.IMO" );
 		//	当たり判定
 		Collision::Initiallize( m_CollisionStage );
 
@@ -75,9 +77,13 @@
 		m_CoinManager = new CoinManager();
 		m_CoinManager->Initialize();
 
+		//	バレット
 		m_BulletManager = new BulletManager();
 		m_BulletManager->Initialize();
 
+		//	アイテム
+		//itemManager->Initialize();
+			
 		//	パーティクル
 		Particle::Initialize();
 
@@ -92,6 +98,8 @@
 		timer = 0;
 		playerNum = GameManager::GetPlayerNum();
 		stageType = GameManager::GetStageType();
+
+		PlayBGM( SoundInfo::BGM::MAIN_BGM );
 
 		//	全体更新
 		Update();
@@ -118,6 +126,8 @@
 		SafeDelete( m_Player );
 		backBuffer->Release();
 		Particle::Release();
+		StopBGM();
+		//itemManager->Release();
 	}
 
 	//	プレイヤー初期化
@@ -126,7 +136,7 @@
 		for ( int i = 0; i < 4; i++ )
 		{
 			int		characterType = GameManager::GetCharacterType( i );
-			Vector3	pos = Vector3( -20.0f + ( 10.0f * i ), 0.0f, 0.0f );
+			Vector3	pos = Vector3( -20.0f + ( 10.0f * i ), 10.0f, 0.0f );
 			m_Player->Initialize( i, characterType, pos );
 		}
 	}
@@ -172,6 +182,9 @@
 
 		//	リス　バレット更新
 		m_BulletManager->Update();
+
+		//	アイテム更新
+		//itemManager->Update();
 
 		//	カメラ更新
 		m_Camera->Update( VIEW_MODE::FIX, Vector3( 0.0f, 2.0f, 0.0f ) );
@@ -264,6 +277,7 @@
 		m_Player->Render( shader3D, "toon" );
 		m_CoinManager->Render();
 		m_BulletManager->Render();
+		//itemManager->Render();
 		
 		//UI
 		GameManager::Render();
@@ -362,7 +376,6 @@
 		iexSystem::Device->SetRenderTarget( 2, NULL );
 		iexSystem::Device->SetRenderTarget( 3, NULL );
 		m_Camera->Clear();
-
 
 	}
 

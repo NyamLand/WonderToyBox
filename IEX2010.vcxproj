@@ -115,6 +115,9 @@
     <ClCompile Include="source\Effect.cpp" />
     <ClCompile Include="source\GameManager.cpp" />
     <ClCompile Include="source\GlobalFunction.cpp" />
+    <ClCompile Include="source\Image.cpp" />
+    <ClCompile Include="source\Item.cpp" />
+    <ClCompile Include="source\ItemManager.cpp" />
     <ClCompile Include="source\Knight.cpp" />
     <ClCompile Include="source\Particle.cpp" />
     <ClCompile Include="source\Player.cpp" />
@@ -124,6 +127,7 @@
     <ClCompile Include="source\sceneMain.cpp" />
     <ClCompile Include="source\sceneResult.cpp" />
     <ClCompile Include="source\sceneTitle.cpp" />
+    <ClCompile Include="source\Sound.cpp" />
     <ClCompile Include="source\Squirrel.cpp" />
     <ClCompile Include="source\system\Framework.cpp" />
     <ClCompile Include="source\system\System.cpp" />
@@ -144,6 +148,7 @@
     <ClCompile Include="IEX\IEX_System.cpp" />
     <ClCompile Include="IEX\IEX_Texture.cpp" />
     <ClCompile Include="IEX\IEX_View.cpp" />
+    <ClCompile Include="source\Tiger.cpp" />
     <ClCompile Include="source\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -156,6 +161,9 @@
     <ClInclude Include="source\Effect.h" />
     <ClInclude Include="source\GameManager.h" />
     <ClInclude Include="source\GlobalFunction.h" />
+    <ClInclude Include="source\Image.h" />
+    <ClInclude Include="source\Item.h" />
+    <ClInclude Include="source\ItemManager.h" />
     <ClInclude Include="source\Knight.h" />
     <ClInclude Include="source\Particle.h" />
     <ClInclude Include="source\Player.h" />
@@ -164,12 +172,14 @@
     <ClInclude Include="source\sceneLoad.h" />
     <ClInclude Include="source\sceneResult.h" />
     <ClInclude Include="source\sceneTitle.h" />
+    <ClInclude Include="source\Sound.h" />
     <ClInclude Include="source\Squirrel.h" />
     <ClInclude Include="source\system\Framework.h" />
     <ClInclude Include="source\system\Scene.h" />
     <ClInclude Include="source\sceneMain.h" />
     <ClInclude Include="source\system\System.h" />
     <ClInclude Include="IEX\iextreme.h" />
+    <ClInclude Include="source\Tiger.h" />
     <ClInclude Include="source\UI.h" />
   </ItemGroup>
   <ItemGroup>

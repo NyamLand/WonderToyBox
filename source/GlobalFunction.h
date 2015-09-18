@@ -25,6 +25,12 @@
 	{
 		enum SOUNDEFFECT
 		{
+			NEWS_SE,
+			HYPER_SE,
+			POWER_SE,
+			QUICK_SE,
+			COIN_SE,
+			DECIDE_SE,
 			SELECT_SE,
 			CANCEL_SE,
 		};
@@ -41,7 +47,7 @@
 		const		LPSTR	bgm[]	=
 		{
 			"",
-			"",
+			"DATA/SOUND/FightBGM.ogg",
 			"",
 		};
 	}
@@ -67,18 +73,6 @@
 //	構造体
 //----------------------------------------------------------------------
 
-	//	画像構造体
-	struct Image
-	{
-		iex2DObj*	obj;
-		int		x, y, w, h, sx, sy, sw, sh;
-		int		plusW, plusH;
-		float	alpha;
-		float	angle;
-		float	timer;
-		Vector3	color;
-	};
-
 	//	図形描画用構造体
 	struct _VB
 	{
@@ -101,6 +95,20 @@
 		int		ATTACK2;				//	攻撃２段階目
 		int		ATTACK3;				//	攻撃３段階目
 		int		GUARD;					//	ガード
+	};
+
+	//	ニュース構造体
+	struct NewsBar
+	{
+		int		left;
+		int		top;
+		int		right;
+		int		bottom;
+		float	alpha;
+		Vector3	color;
+		LPSTR	text;
+		int		textleft;
+		int		step;
 	};
 
 //----------------------------------------------------------------------
@@ -135,16 +143,6 @@
 //----------------------------------------------------------------------
 //	画像関連
 //----------------------------------------------------------------------
-	
-	//	画像構造体初期化
-	void	InitImage( Image& img, iex2DObj* obj, int x, int y, int w, int h, int sx = 0, int sy = 0, int sw = 512, int sh = 512, float angle = 0.0f, float alpha = 1.0f, Vector3 color = Vector3( 1.0f, 1.0f, 1.0f ) );
-	void	InitImage( Image& img, iex2DObj* obj, int x, int y, int w, int h, int srcScale );
-
-	//	画像描画
-	void	RenderImageNormal( Image img );
-	
-	//	ステータス適用
-	void	RenderImageAdoptStatus( Image img );
 
 //----------------------------------------------------------------------
 //	図形描画

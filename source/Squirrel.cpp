@@ -116,10 +116,8 @@
 		static int time = 0;
 		
 		//	î•ñæ“¾
-		Matrix	mat = GetMatrix();
-		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
+		Vector3	front = GetFront();
 		Vector3	p_pos = GetPos();
-		front.Normalize();
 
 		//	î•ñİ’è
 		Vector3	vec = front * 5.0f;
@@ -142,11 +140,8 @@
 		static int time = 0;
 
 		//	s—ñ‚©‚çî•ñæ“¾
-		Matrix	mat = GetMatrix();
-		Vector3	right = Vector3( mat._11, mat._12, mat._13 );
-		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
-		front.Normalize();
-		right.Normalize();
+		Vector3	front = GetFront();
+		Vector3	right = GetRight();
 		Vector3	p_pos = GetPos();
 
 		//	î•ñİ’è
@@ -183,14 +178,14 @@
 		static int time = 0;
 	
 		//	î•ñæ“¾
+		move = Vector3( 0.0f, 0.0f, 0.0f );
 		Matrix	mat = GetMatrix();
-		Vector3	up = Vector3( mat._21, mat._22, mat._23 );
-		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
+		Vector3	front = GetFront();
+		Vector3	up = GetUp();
 		Vector3	p_pos = GetPos();
-		front.Normalize();
 
 		//	î•ñİ’è
-		Vector3	vec = front * 5.0f + up * -150.0f;
+		Vector3	vec = front * 5.0f + up * -15.0f;
 		static	float	bulletScale = 1.0f;
 		static	float	bulletSpeed = 0.5f;
 

@@ -10,6 +10,7 @@
 #include	"Princess.h"
 #include	"Squirrel.h"
 #include	"Knight.h"
+#include	"Tiger.h"
 #include	"GameManager.h"
 
 #include	"PlayerManager.h"
@@ -32,7 +33,7 @@
 //------------------------------------------------------------------------------
 
 	//	コンストラクタ
-	PlayerManager::PlayerManager( void )
+	PlayerManager::PlayerManager( void ) : CanHyper( true )
 	{
 
 	}
@@ -40,14 +41,8 @@
 	//	デストラクタ
 	PlayerManager::~PlayerManager( void )
 	{
-		for ( int i = 0; i < PLAYER_NUM; i++ ){
-			SafeDelete( c_Player[i] );
-		}
-
-		for ( int i = 0; i < OBJ_MAX; i++ )
-		{
-			SafeDelete( org[i] );
-		}
+		for ( int i = 0; i < PLAYER_NUM; i++ )	SafeDelete( c_Player[i] );
+		for ( int i = 0; i < OBJ_MAX; i++ )			SafeDelete( org[i] );
 	}
 
 	//	初期化
@@ -66,6 +61,10 @@
 		case PlayerData::SQUIRREL:
 			c_Player[input] = new Squirrel();
 			break;
+
+		case PlayerData::TIGER:
+			c_Player[input] = new Tiger();
+			break;
 		}
 
 		//	モデル読み込み
@@ -78,16 +77,10 @@
 	//	モデル読み込み
 	void	PlayerManager::Load( void )
 	{
-		org[PlayerData::Y2009] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
-		org[PlayerData::ECCMAN] = new iex3DObj( "DATA/CHR/ECCMAN/ECCMAN.IEM" );
 		org[PlayerData::PRINCESS] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
-		org[PlayerData::KNIGHT] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
-		org[PlayerData::KING] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PlayerData::KNIGHT] = new iex3DObj( "DATA/CHR/ミノタウルス/minotaurus.IEM" );
 		org[PlayerData::SQUIRREL] = new iex3DObj( "DATA/CHR/SQUIRREL/SQUIRREL.IEM" );
-		org[PlayerData::TIGER] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
-		org[PlayerData::ANIMA] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
-		org[PlayerData::CROWS] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
-		org[PlayerData::BEAR] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PlayerData::TIGER] = new iex3DObj( "DATA/CHR/ECCMAN/ECCMAN.IEM" );
 	}
 
 //------------------------------------------------------------------------------
@@ -101,10 +94,14 @@
 		{
 			//	各プレイヤー更新
 			c_Player[i]->Update();
+			CanHyper = GetCanHyper( i );
 		}
 
 		//	当たり判定
 		HitCheck();
+
+		//　どんけつブースト
+		DonketsuBoost();
 	}
 
 	//	描画
@@ -112,6 +109,7 @@
 	{
 		for ( int i = 0; i < PLAYER_NUM; i++ )
 		{
+			c_Player[i]->Update();
 			c_Player[i]->Render();
 			DrawSphere( c_Player[i]->GetPos(), 2.0f, 0xFF000000 );
 		}
@@ -124,13 +122,42 @@
 		{
 			c_Player[i]->Render( shader, technique );
 			Vector3	p_pos = c_Player[i]->GetPos();
-			DrawCapsule( p_pos, Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z ), 1.0f );
+			
+			if ( !debug )continue;
+			DrawCapsule(p_pos, Vector3(p_pos.x, p_pos.y + 3.0f, p_pos.z), 1.0f);
+
+			char str[256];
+			wsprintf(str, "p%dの攻撃力：%d", i + 1, GetPower(i));
+			DrawString(str, 200, 200 + i * 20);
 		}
 	}
 
 //------------------------------------------------------------------------------
 //	動作関数
 //------------------------------------------------------------------------------
+	//　どんけつブースト
+	void	PlayerManager::DonketsuBoost()
+	{
+		if (GameManager::GetDonketsuBoostState())
+		{
+			//　（決定された）ビリが誰かを取得・どんけつモードセット
+			int worst = GameManager::GetWorst();
+			SetBoosting(worst, true);
+
+			
+			//　ビリが何のキャラかを識別してそれぞれに合ったステータス上昇
+			RaiseStatus(worst, GetType(worst));
+			
+			//　オーラ
+			//　顔「怒り」
+		}
+	}
+
+	//　ステータス上昇（どんけつ）
+	void		PlayerManager::RaiseStatus( int worst, int type )
+	{
+		
+	}
 
 //------------------------------------------------------------------------------
 //	当たり判定関数
@@ -200,8 +227,12 @@
 			Vector3	knockBackVec = p1_attackPos - p2_bottom;
 			knockBackVec.y = p2_bottom.y;
 			knockBackVec.Normalize();
+			Vector3	color = p1->GetDamageColor();
+			p2->SetReceiveColor( color );
 			p2->SetKnockBackVec( -knockBackVec );
 			p2->SetMode( PlayerData::DAMAGE_STRENGTH );
+
+			//	色設定
 
 			//	コインばらまき方向設定
 			std::uniform_real_distribution<float>	vecrand( -1.0f, 1.0f );
@@ -249,6 +280,8 @@
 			Vector3	knockBackVec = p1_attack_top - p2_bottom;
 			knockBackVec.y = p2_bottom.y;
 			knockBackVec.Normalize();
+			Vector3	color = p1->GetDamageColor();
+			p2->SetReceiveColor(color);
 			p2->SetKnockBackVec( -knockBackVec );
 			p2->SetMode( PlayerData::DAMAGE_STRENGTH );
 			
@@ -276,12 +309,15 @@
 //------------------------------------------------------------------------------
 
 	//	情報取得
-	Vector3	PlayerManager::GetPos( int player ){	return	c_Player[player]->GetPos();	}
-	Matrix	PlayerManager::GetMatrix( int player ){ return	c_Player[player]->GetMatrix(); }
-	float		PlayerManager::GetAngle( int player ){ return		c_Player[player]->GetAngle(); }
-	int			PlayerManager::GetType( int player ){ return c_Player[player]->GetType(); }
+	Vector3		PlayerManager::GetPos( int player ){ return	c_Player[player]->GetPos();	}
+	float		PlayerManager::GetAngle( int player ){ return	c_Player[player]->GetAngle(); }
+	Matrix		PlayerManager::GetMatrix( int player ){ return	c_Player[player]->GetMatrix(); }
 	bool		PlayerManager::GetUnrivaled( int player ){ return c_Player[player]->GetUnrivaled(); }
+	int			PlayerManager::GetType( int player ){ return c_Player[player]->GetType(); }
 	int			PlayerManager::GetP_Num( int player ){ return c_Player[player]->GetP_Num(); }
+	bool		PlayerManager::GetCanHyper(int player){ return c_Player[player]->GetCanHyper(); }
+	int			PlayerManager::GetPower(int player){ return c_Player[player]->GetPower(); }
+	float		PlayerManager::GetSpeed(int player){ return c_Player[player]->GetSpeed(); }
 
 	//	情報設定
 	void		PlayerManager::SetPos( int player, Vector3 pos ){ c_Player[player]->SetPos( pos ); }
@@ -291,3 +327,6 @@
 	void		PlayerManager::SetType( int player, int type ){ c_Player[player]->SetType(type); }
 	void		PlayerManager::SetKnockBackVec( int player, Vector3 knockBackVec ){ c_Player[player]->SetKnockBackVec( knockBackVec ); }
 	void		PlayerManager::SetMode( int player, PlayerData::STATE state ){ c_Player[player]->SetMode( state ); }
+	void		PlayerManager::SetPower(int player, int power){ c_Player[player]->SetPower(power); }
+	void		PlayerManager::SetSpeed(int player, float speed){ c_Player[player]->SetSpeed(speed); }
+	void		PlayerManager::SetBoosting(int player, bool boosting){ c_Player[player]->SetBoosting(boosting); }
