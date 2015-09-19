@@ -73,7 +73,9 @@ using namespace std;
 	{
 		//	画面クリア
 		m_Camera->Activate();
-		m_Camera->Clear( 0xFF55FFFF );
+		m_Camera->Clear();
+
+		DrawString( "ロード中", 200, 300 );
 	}
 
 //----------------------------------------------------------------------------------

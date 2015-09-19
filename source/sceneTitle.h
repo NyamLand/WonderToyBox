@@ -21,7 +21,8 @@ private:	//	íËêî
 		SELECT_STAGE,
 		SELECT_CHECK,
 		OPTION,
-		CREDIT
+		CREDIT,
+		MOVE_MAIN,
 	};
 
 	static const int STAGE_MAX = 8;

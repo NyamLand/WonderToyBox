@@ -209,20 +209,8 @@
 	//	スタート更新
 	void	sceneMain::StartUpdate( void )
 	{
-		//	player
-		m_Player->Update();
-		
-		//	パーティクル更新
-		Particle::Update();
-
-		//	コイン更新
-		m_CoinManager->Update();
-
-		//	リス　バレット更新
-		m_BulletManager->Update();
-
-		//	アイテム更新
-		//itemManager->Update();
+		//	全体更新
+		AllUpdate();
 
 		if ( ui->GetChangeFlag() ) 
 		{
@@ -238,20 +226,8 @@
 		//	ゲームマネージャー
 		GameManager::Update();
 
-		//	player
-		m_Player->Update();
-
-		//	パーティクル更新
-		Particle::Update();
-
-		//	コイン更新
-		m_CoinManager->Update();
-
-		//	リス　バレット更新
-		m_BulletManager->Update();
-
-		//	アイテム更新
-		//itemManager->Update();
+		//	全体更新
+		AllUpdate();
 	}
 
 	//	どんけつ更新
@@ -270,20 +246,8 @@
 		//	ゲームマネージャー
 		GameManager::Update();
 
-		//	player
-		m_Player->Update();
-
-		//	パーティクル更新
-		Particle::Update();
-
-		//	コイン更新
-		m_CoinManager->Update();
-
-		//	リス　バレット更新
-		m_BulletManager->Update();
-
-		//	アイテム更新
-		//itemManager->Update();
+		//	全体更新
+		AllUpdate();
 	}
 
 	//	タイムアップ更新
@@ -292,6 +256,13 @@
 		//	ゲームマネージャー
 		GameManager::Update();
 
+		//	全体更新
+		AllUpdate();
+	}
+
+	//	全体更新
+	void	sceneMain::AllUpdate( void )
+	{
 		//	player
 		m_Player->Update();
 

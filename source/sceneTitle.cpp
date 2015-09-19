@@ -11,6 +11,7 @@
 #include	"PlayerManager.h"
 #include	"sceneMain.h"
 #include	"GameManager.h"
+#include	"sceneLoad.h"
 
 #include	"sceneTitle.h"
 
@@ -70,7 +71,6 @@ namespace
 		SafeDelete( m_Camera );
 		SafeDelete( m_Player );
 		SafeDelete( m_CollisionStage );
-		//GameManager::Release();
 	}
 	
 	//	‰Šú‰»
@@ -187,8 +187,9 @@ namespace
 			CreditUpdate();
 			break;
 
-		default:
-			mode = 0;
+		case MOVE_MAIN:
+			MainFrame->ChangeScene( new sceneLoad( new sceneMain() ) );
+			return;
 			break;
 		}
 
@@ -240,8 +241,7 @@ namespace
 			CreditRender();
 			break;
 
-		default:
-			mode = 0;
+		case MOVE_MAIN:
 			break;
 		}
 
@@ -585,8 +585,7 @@ namespace
 					GameManager::SetPlayerNum( selectInfo.playerNum );
 					GameManager::SetStageType( selectInfo.stageType );
 					SetSound( SoundInfo::DECIDE_SE );
-					MainFrame->ChangeScene( new sceneMain() );
-					return;
+					mode = MOVE_MAIN;
 				}
 				else	mode = SELECT_STAGE;
 			}

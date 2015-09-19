@@ -57,6 +57,7 @@ public:
 	void	DonketsuUpdate( void );
 	void	ClimaxUpdate( void );
 	void	FinishUpdate( void );
+	void	AllUpdate( void );
 
 	//	•`‰æ
 	void	Render( void );
