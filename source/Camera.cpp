@@ -1,5 +1,6 @@
 
 #include	"iextreme.h"
+#include	"system/System.h"
 
 #include	"Camera.h"
 
@@ -56,6 +57,9 @@
 			ModeChase();
 			break;
 		}
+
+		shader3D->SetValue("ViewPos", m_Camera->GetPos());
+		shader3D->SetValue("matView", m_Camera->GetMatrix());
 	}
 
 //------------------------------------------------------------------------------------------

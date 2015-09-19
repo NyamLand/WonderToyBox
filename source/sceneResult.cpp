@@ -46,16 +46,17 @@
 			resultInfo[i].p_num = i;
 		}
 
+		//	変数初期化
+		lastBonus = 0;
+		step = 0;
+		playerNum = 0;
+		wait = 0;
+
 		//	ソート
 		BubbleSort();
 
 		//	ラストボーナス設定
 		SetLastBonus();
-
-		//	変数初期化
-		step = 0;
-		playerNum = 0;
-		wait = 0;
 
 		return	true;
 	}
@@ -67,7 +68,11 @@
 	//	更新
 	void	sceneResult::Update( void ) 
 	{
-
+		if ( KEY( KEY_SPACE ) == 3 )
+		{
+			MainFrame->ChangeScene( new sceneTitle() );
+			return;
+		}
 	}
 
 	//	描画

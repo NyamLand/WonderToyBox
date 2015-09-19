@@ -108,7 +108,7 @@
 	bool	Knight::QuickArts( void )
 	{
 		//	行列から前方取得
-		move = Vector3( 0.0f, 0.0f, 0.0f );
+		SetMove( Vector3( 0.0f, 0.0f, 0.0f ) );
 		Vector3	front = GetFront();
 		Vector3	p_pos = GetPos();
 		Vector3	startPos = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
@@ -137,12 +137,17 @@
 	bool	Knight::PowerArts( void )
 	{
 		//行列から前方取得
-		move = Vector3( 0.0f, 0.0f, 0.0f );
+		SetMove( Vector3( 0.0f, 0.0f, 0.0f ) );
 		Vector3	front = GetFront();
 		Vector3	right = GetRight();
+		Vector3	p_pos = GetPos();
 		static int step = 0;
 		//	当たり判定位置移動&範囲拡大
 		float t = GetBezier( ePrm_t::eRapid_Lv5, ePrm_t::eSlow_Lv1, attack_t );
+		Vector3 f = front * ( 2.0f * sinf( D3DX_PI * t ) );
+		Vector3 r = -right * ( 2.0f * cosf( D3DX_PI * t ) );
+		attackPos_bottom = p_pos + f + r;
+		attackPos_top = attackPos_bottom + f + r;
 
 		switch ( step )
 		{
@@ -152,11 +157,6 @@
 			step++;
 			break;
 		case 1:
-			Vector3	p_pos = GetPos();
-			Vector3 f = front * ( 2.0f * sinf( D3DX_PI * t ) );
-			Vector3 r = -right * ( 2.0f * cosf( D3DX_PI * t ) );
-			attackPos_bottom = p_pos + f + r;
-			attackPos_top = attackPos_bottom + f + r;
 			//	パラメータ加算
 			attack_t += 0.02f;
 			break;
@@ -172,18 +172,18 @@
 	//	ハイパーアーツ
 	bool	Knight::HyperArts( void )
 	{
-		move = Vector3( 0.0f, 0.0f, 0.0f );
+		SetMove( Vector3( 0.0f, 0.0f, 0.0f ) );
 		static	int		num = 0;	//	回数
 		//行列から前方取得
 		Vector3	front = GetFront();
 		Vector3	right = GetRight();
+		Vector3	p_pos = GetPos();
 		static int step = 0;
 		Vector3 f, r;
 
 		//	当たり判定位置移動&範囲拡大
 		float t = GetBezier( ePrm_t::eRapid_Lv5, ePrm_t::eSlow_Lv1, attack_t );
 
-		Vector3	p_pos = GetPos();
 
 		switch ( step )
 		{
@@ -194,14 +194,16 @@
 			break;
 
 		case 1:
+			//	パラメータ加算
+			attack_t += 0.02f;
+			
 			//	右から左へ薙ぎ払い
 			f = front * ( 2.0f * sinf( PI * t ) );
 			r = right * ( 2.0f * cosf( PI * t ) );
-			SetPos(p_pos + front * 0.1f + -right * 0.1f);
+			p_pos += front * 0.1f + -right * 0.1f;
 			attackPos_bottom = p_pos + f + r;
 			attackPos_top = attackPos_bottom + f + r;
-			//	パラメータ加算
-			attack_t += 0.02f;
+			
 			//	薙ぎ払い終えたら次へ
 			if ( attack_t >= 1.0f ){
 				attack_t = 0.0f;
@@ -213,8 +215,7 @@
 			//	左から右へ薙ぎ払い
 			f = front * ( 2.0f * sinf( PI * t ) );
 			r = -right * ( 2.0f * cosf( PI * t ) );
-			SetPos(p_pos + front * 0.1f + right * 0.1f);
-
+			p_pos += front * 0.1f + right * 0.1f;
 			attackPos_bottom = p_pos + f + r;
 			attackPos_top = attackPos_bottom + f + r;
 			//	パラメータ加算
@@ -230,7 +231,6 @@
 			//	回転切り
 			attackPos_bottom.x = p_pos.x + 2.0f * cosf( PI / 180 * lance_r );
 			attackPos_bottom.z = p_pos.z + 2.0f * sinf( PI / 180 * lance_r );
-
 			attackPos_top.x = p_pos.x + 4.0f * cosf( PI / 180 * lance_r );
 			attackPos_top.z = p_pos.z + 4.0f * sinf( PI / 180 * lance_r );
 			lance_r += 10.0f;
@@ -240,7 +240,10 @@
 				lance_r = 0.0f;
 				return true;
 			}
+			break;
 		}
+
+		SetPos( p_pos );
 
 		return false;
 	}

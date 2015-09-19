@@ -52,6 +52,11 @@ public:
 
 	//	更新
 	void	Update( void );	//	更新
+	void	StartUpdate( void );
+	void	MainGameUpdate( void );
+	void	DonketsuUpdate( void );
+	void	ClimaxUpdate( void );
+	void	FinishUpdate( void );
 
 	//	描画
 	void	Render( void );

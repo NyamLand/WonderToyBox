@@ -114,7 +114,7 @@
 		Vector3	up = GetUp();
 
 		//	î•ñİ’è
-		move = Vector3( 0.0f, 0.0f, 0.0f );
+		SetMove( Vector3( 0.0f, 0.0f, 0.0f ) );
 		Vector3	p_pos = GetPos();
 		Vector3	startPos = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
 		Vector3	finLinePos = startPos + front * 5.0f;
@@ -179,27 +179,34 @@
 		unrivaled = true;
 
 		//	î•ñæ“¾
+		Vector3	p_pos = GetPos();
 		Vector3	front = GetFront();
-		move = Vector3( 0.0f, 0.0f, 0.0f );
+		Vector3	moveParam = GetMove();
 		
 		//	“®ìİ’è
 		switch ( attackCount )
 		{
 		case 0:			
-			move = -front * 0.3f;
+			moveParam = -front * 0.3f;
 			attackCount++;
 			break;
 
 		case 1:
-			pos += move;
-			move *= 0.9f;
-			if ( move.Length() <= 0.01f )
+			p_pos += moveParam;
+			SetResistance( 0.9f );
+			moveParam *= GetResistance();
+
+			if ( moveParam.Length() <= 0.01f )
 			{
 				attackCount = 0;
 				return	true;
 			}
 			break;
 		}
+
+		//	î•ñXV
+		SetMove( moveParam );
+		SetPos( p_pos );
 
 		return	false;
 	}
@@ -214,7 +221,7 @@
 		Vector3	right = GetRight();
 
 		//	î•ñİ’è
-		move = Vector3( 0.0f, 0.0f, 0.0f );
+		SetMove( Vector3( 0.0f, 0.0f, 0.0f ) );
 		Vector3	p_pos = GetPos();
 		Vector3	startPos_right = p_pos + up * 1.5f + right * 0.5f;
 		Vector3	startPos_left = p_pos + up * 1.5f + right * -0.5f;
