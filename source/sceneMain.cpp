@@ -166,7 +166,7 @@
 	void	sceneMain::Update( void )
 	{
 		//	ƒJƒƒ‰XV
-		m_Camera->Update( VIEW_MODE::FIX, Vector3( 0.0f, 2.0f, 0.0f ) );
+		m_Camera->Update( VIEW_MODE::CHASE, Vector3( 0.0f, 2.0f, 0.0f ) );
 
 		//	UI
 		ui->Update( GameManager::GetMode() );
