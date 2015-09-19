@@ -4,8 +4,8 @@
 #include	"system/system.h"
 #include	"system/Framework.h"
 #include	"GlobalFunction.h"
-#include	"Image.h"
 #include	"GameManager.h"
+#include	"Image.h"
 #include	"Collision.h"
 #include	"Camera.h"
 #include	"Particle.h"
@@ -88,8 +88,8 @@
 		Particle::Initialize();
 
 		//UI
-		m_UI = new HeadUpDisplay();
-		m_UI->Initialize();
+		ui = new UI();
+		ui->Initialize();
 
 		//	ディファード関係初期化
 		DifferedInitialize();
@@ -115,7 +115,6 @@
 		SafeDelete( m_CoinManager );
 		SafeDelete( m_BulletManager );
 		SafeDelete( ShadowTex );
-		SafeDelete( m_UI );
 		SafeDelete( diffuse );
 		SafeDelete( specular );
 		SafeDelete( depth );
@@ -124,6 +123,7 @@
 		SafeDelete( light_s );
 		SafeDelete( screen );
 		SafeDelete( m_Player );
+		SafeDelete( ui );
 		backBuffer->Release();
 		Particle::Release();
 		StopBGM();
@@ -165,13 +165,51 @@
 	//	更新
 	void	sceneMain::Update( void )
 	{
-		//	プレイヤー更新
+		//	カメラ更新
+		m_Camera->Update( VIEW_MODE::FIX, Vector3( 0.0f, 2.0f, 0.0f ) );
+
+		//	UI
+		ui->Update( GameManager::GetMode() );
+
+		//	デバッグモード切り替え
+		if ( KEY( KEY_ENTER ) == 3 )		debug = !debug;
+
+		switch ( GameManager::GetMode() )
+		{
+		case GAME_MODE::GAMESTART:		
+			StartUpdate();
+			break;
+
+		case GAME_MODE::MAINGAME:
+			MainGameUpdate();
+			break;
+
+		case GAME_MODE::DONKETSU_DIRECTION:
+			DonketsuUpdate();
+			break;
+
+		case GAME_MODE::CLIMAX:
+			ClimaxUpdate();
+			break;
+
+		case GAME_MODE::TIMEUP:
+			FinishUpdate();
+
+			if ( ui->GetChangeFlag() )
+			{
+				MainFrame->ChangeScene( new sceneResult() );
+				return;
+			}
+			break;
+		}
+
+	}
+
+	//	スタート更新
+	void	sceneMain::StartUpdate( void )
+	{
+		//	player
 		m_Player->Update();
-		
-		//	点光源設定
-		shader3D->SetValue( "plight_pos", Vector3( 0.0f, 0.0f, 0.0f ) );
-		shader3D->SetValue( "plight_range", 6.0f );
-		shader3D->SetValue( "plight_color", Vector3( 2.0f, 0.0f, 2.0f ) );
 		
 		//	パーティクル更新
 		Particle::Update();
@@ -185,23 +223,88 @@
 		//	アイテム更新
 		//itemManager->Update();
 
-		//	カメラ更新
-		m_Camera->Update( VIEW_MODE::FIX, Vector3( 0.0f, 2.0f, 0.0f ) );
-		shader3D->SetValue( "ViewPos", m_Camera->GetPos() );
-		shader3D->SetValue( "matView", m_Camera->GetMatrix() );
-
-		//	デバッグモード切り替え
-		if ( KEY( KEY_ENTER ) == 3 )		debug = !debug;
-		
-		//	シーン切り替え
-		if ( GameManager::GetChangeSceneFlag() )
+		if ( ui->GetChangeFlag() ) 
 		{
-			MainFrame->ChangeScene( new sceneResult() );
-			return;
+			GameManager::SetMode( GAME_MODE::MAINGAME );
+			for ( int i = 0; i < 4; i++ )		m_Player->SetMode( i, PlayerData::MOVE );
+			ui->SetChangeFlag( false );
 		}
+	}
 
+	//	メイン更新
+	void	sceneMain::MainGameUpdate( void )
+	{			
 		//	ゲームマネージャー
 		GameManager::Update();
+
+		//	player
+		m_Player->Update();
+
+		//	パーティクル更新
+		Particle::Update();
+
+		//	コイン更新
+		m_CoinManager->Update();
+
+		//	リス　バレット更新
+		m_BulletManager->Update();
+
+		//	アイテム更新
+		//itemManager->Update();
+	}
+
+	//	どんけつ更新
+	void	sceneMain::DonketsuUpdate( void )
+	{
+		if ( ui->GetChangeFlag() )
+		{
+			GameManager::SetMode( GAME_MODE::CLIMAX );
+			ui->SetChangeFlag( false );
+		}
+	}
+
+	//	クライマックス更新
+	void	sceneMain::ClimaxUpdate( void )
+	{
+		//	ゲームマネージャー
+		GameManager::Update();
+
+		//	player
+		m_Player->Update();
+
+		//	パーティクル更新
+		Particle::Update();
+
+		//	コイン更新
+		m_CoinManager->Update();
+
+		//	リス　バレット更新
+		m_BulletManager->Update();
+
+		//	アイテム更新
+		//itemManager->Update();
+	}
+
+	//	タイムアップ更新
+	void	sceneMain::FinishUpdate( void )
+	{
+		//	ゲームマネージャー
+		GameManager::Update();
+
+		//	player
+		m_Player->Update();
+
+		//	パーティクル更新
+		Particle::Update();
+
+		//	コイン更新
+		m_CoinManager->Update();
+
+		//	リス　バレット更新
+		m_BulletManager->Update();
+
+		//	アイテム更新
+		//itemManager->Update();
 	}
 
 //*****************************************************************************************************************************
@@ -279,7 +382,7 @@
 		//itemManager->Render();
 		
 		//UI
-		GameManager::Render();
+		ui->Render( GameManager::GetMode() );
 
 		//	パーティクル描画
 		Particle::Render();
