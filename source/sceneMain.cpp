@@ -187,7 +187,9 @@
 		//itemManager->Update();
 
 		//	ƒJƒƒ‰XV
-		m_Camera->Update( VIEW_MODE::FIX, Vector3( 0.0f, 2.0f, 0.0f ) );
+		m_Camera->SetTarget(m_Player->GetPos(0), m_Player->GetPos(1), m_Player->GetPos(2), m_Player->GetPos(3));
+		m_Camera->SetPos(m_Player->GetPos(0), m_Player->GetPos(1), m_Player->GetPos(2), m_Player->GetPos(3));
+		m_Camera->Update( VIEW_MODE::CHASE, Vector3( 0.0f, 0.0f, 0.0f ) );
 		shader3D->SetValue( "ViewPos", m_Camera->GetPos() );
 		shader3D->SetValue( "matView", m_Camera->GetMatrix() );
 
