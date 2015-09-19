@@ -271,6 +271,11 @@
 
 			case 4:
 				waitTimer = 2 * SECOND;
+				
+				//	画像読み込み位置・サイズ設定
+				countDown->SetSize( 600, 370 );
+				countDown->SetSearchPos( 0, 512 );
+				countDown->SetSearchSize( 1024, 512 );
 
 				//	メインゲームへ
 				changeflag = true;
@@ -286,11 +291,6 @@
 	void	UI::FinishUpdate( void )
 	{
 		waitTimer--;
-
-		//	画像読み込み位置・サイズ設定
-		countDown->SetSize( 600, 370 );
-		countDown->SetSearchPos( 0, 512 );
-		countDown->SetSearchSize( 1024, 512 );
 
 		if ( waitTimer <= 0 )	changeflag = true;
 	}
@@ -340,7 +340,7 @@
 			break;
 
 		case GAME_MODE::TIMEUP:
-			FinishUpdate();
+			FinishRender();
 			break;
 		}
 	}
