@@ -24,11 +24,13 @@
 		//	顔情報
 		namespace FACE_INFO
 		{
+			//　「喜・怒・哀・楽」
 			enum
 			{
-				Normal,
 				Good,
+				Angry,
 				Bad,
+				Normal,
 			};
 		}	
 	}
@@ -57,8 +59,16 @@
 	{
 		timer = new iex2DObj( "DATA/BG/number.png" );
 		coinbar = new iex2DObj( "DATA/BG/coin_gage.png" );
-		face = new iex2DObj( "DATA/BG/face.png" );
+		face = new iex2DObj( "DATA/chara_emotion.png" );
 		countDown = new Image( "DATA/bfUI.png" );
+
+		//　キャラ種類
+		for (int i = 0; i < 4; i++)
+		{
+			charatype[i] = GameManager::GetCharacterType(i);
+		}
+		roulette = 0;
+		f = 0;
 
 		//	共通変数初期化
 		changeflag = false;
@@ -295,17 +305,37 @@
 		if ( waitTimer <= 0 )	changeflag = true;
 	}
 
-	//	どんけつ演出
+	//	どんけつ決定演出
 	void	UI::DonketsuDirectionUpdate( void )
 	{
+		//　演出用時間更新
 		static int wait( 5 * SECOND );
-		wait--;
-
 		if ( wait <= 0 )
 		{
-			wait = 30;
+			//wait = 30;
 			changeflag = true;
 		}
+
+		//　顔ルーレット
+		int	step;
+		if (wait <= 5 * SECOND)			step = 0;	//　イントロ
+		if (wait <= 4 * SECOND)			step = 1;	//　ルーレット
+		if (wait <= 2 * SECOND + 30)	step = 2;	//　決定
+
+		switch (step)
+		{
+		case 0:
+			break;
+		case 1:
+			f = roulette % 4;
+			roulette++;
+			break;
+		case 2:
+			f = GameManager::GetWorst();
+			break;
+		}
+
+		wait--;
 	}
 
 //------------------------------------------------------------------------------
@@ -401,6 +431,13 @@
 	//	どんけつ演出
 	void	UI::DonketsuDirectionRender( void )
 	{
+		//　グレーバック
+		DWORD	color = 0xD0000000;
+		iexPolygon::Rect(0, 0, 1280, 720, RS_COPY, color);
+
+		//　顔ルーレット
+		face->Render(480, 200, 320, 320, FACE_INFO::Normal * 256, charatype[f] * 256, 256, 256);
+
 		char	str[256];
 		int		worst = GameManager::GetWorst();
 		DrawString( "どんけつ演出", 200, 50 );

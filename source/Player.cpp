@@ -46,11 +46,12 @@
 		this->mode = PlayerData::WAIT;
 		this->passDamageColor = PlayerData::DAMAGE_COLOR[input];
 
-		//	パラメータ状態初期化
-		ParameterStateInitialize();
-		
+		//　仮（→各キャラのcppでそれぞれ設定すればいい）
 		bPower = power * 2;
 		bSpeed = speed * 2;
+
+		//	パラメータ状態初期化
+		ParameterStateInitialize();
 
 		obj->SetPos( pos );
 		obj->SetAngle( angle );
