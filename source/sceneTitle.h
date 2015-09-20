@@ -73,7 +73,6 @@ public:
 	sceneTitle( void );
 	~sceneTitle( void );
 	bool	Initialize( void );
-	void	InitSound( void );
 
 	//	XVE•`‰æ
 	void	Update(void);

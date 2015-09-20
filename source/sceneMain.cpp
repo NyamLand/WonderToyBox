@@ -4,6 +4,7 @@
 #include	"system/system.h"
 #include	"system/Framework.h"
 #include	"GlobalFunction.h"
+#include	"Sound.h"
 #include	"GameManager.h"
 #include	"Image.h"
 #include	"Collision.h"
@@ -99,7 +100,7 @@
 		playerNum = GameManager::GetPlayerNum();
 		stageType = GameManager::GetStageType();
 
-		PlayBGM( SoundInfo::BGM::MAIN_BGM );
+		sound->PlayBGM( BGM::MAIN_BGM );
 
 		//	全体更新
 		Update();
@@ -126,7 +127,7 @@
 		SafeDelete( ui );
 		backBuffer->Release();
 		Particle::Release();
-		StopBGM();
+		sound->AllStop();
 	}
 
 	//	プレイヤー初期化
