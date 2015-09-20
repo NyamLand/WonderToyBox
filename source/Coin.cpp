@@ -3,6 +3,7 @@
 #include	"system/System.h"
 #include	"Collision.h"
 #include	"GlobalFunction.h"
+#include	"Sound.h"
 #include	"Particle.h"
 #include	"Player.h"
 #include	"PlayerManager.h"
@@ -151,7 +152,7 @@
 		float	effectScale = 0.2f;
 		Particle::Spark(pos, effectScale);
 		GameManager::AddCoin(Num);
-		IEX_PlaySound(SoundInfo::COIN_SE, false);
+		sound->PlaySE( SE::COIN_SE );
 	}
 //-------------------------------------------------------------------------------
 //	ПоХсРЁТи

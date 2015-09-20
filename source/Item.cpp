@@ -3,6 +3,7 @@
 #include	"system/System.h"
 #include	"Collision.h"
 #include	"GlobalFunction.h"
+#include	"Sound.h"
 #include	"Particle.h"
 #include	"Player.h"
 #include	"PlayerManager.h"
@@ -58,5 +59,5 @@ void	Item::Hitduringtheoperation(const Vector3& pos, const int& Num)
 	float	effectScale = 0.2f;
 	Particle::Spark(pos, effectScale);
 	
-	IEX_PlaySound(SoundInfo::COIN_SE, false);
+	sound->PlaySE( SE::COIN_SE );
 }
