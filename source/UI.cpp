@@ -29,7 +29,7 @@
 			{
 				Good,
 				Angry,
-				Bad,
+				Sad,
 				Normal,
 			};
 		}	
@@ -171,6 +171,10 @@
 		case GAME_MODE::CLIMAX:
 			TimerUpdate();
 			NewsBarUpdate();
+			CoinBarUpdate();
+
+			//　どんけつの顔は「怒」に。（時間管理してるとこで↓の処理書きたいけどこれから変更ありそうやからとりあえずここに書いてる許してニャンっ♪）
+			state_type[GameManager::GetWorst()] = FACE_INFO::Angry;
 			break;
 
 		case GAME_MODE::TIMEUP:
@@ -367,6 +371,8 @@
 		case GAME_MODE::CLIMAX:
 			TimerRender();
 			NewsBarRender();
+			CoinBarRender();
+
 			break;
 
 		case GAME_MODE::TIMEUP:
@@ -391,10 +397,10 @@
 		coinbar->Render(bar_x[3], bar_y[3], bar_sx[3], 32, 0, 32 * 3, bar_sx[3], bar_sy[3]);
 
 		//顔
-		face->Render(state_x[0], 550, 32, 32, state_type[0] * 32, 0, 32, 32);
-		face->Render(state_x[1], 550, 32, 32, state_type[1] * 32, 0, 32, 32);
-		face->Render(state_x[2], 550, 32, 32, state_type[2] * 32, 0, 32, 32);
-		face->Render(state_x[3], 550, 32, 32, state_type[3] * 32, 0, 32, 32);
+		face->Render(state_x[0], 550, 32, 32, state_type[0] * 256, 0, 256, 256);
+		face->Render(state_x[1], 550, 32, 32, state_type[1] * 256, 0, 256, 256);
+		face->Render(state_x[2], 550, 32, 32, state_type[2] * 256, 0, 256, 256);
+		face->Render(state_x[3], 550, 32, 32, state_type[3] * 256, 0, 256, 256);
 	}
 
 	//	ニュース描画
@@ -504,7 +510,7 @@
 					switch ( j )
 					{
 					case 0:
-						state_type[i] = FACE_INFO::Bad;
+						state_type[i] = FACE_INFO::Sad;
 						break;
 
 					case 1:
