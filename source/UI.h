@@ -44,7 +44,10 @@ private:
 	//	ニュース
 	NewsBar	newsbar;
 	
-	//	どんけつ
+	//　プレイヤー（顔）
+	int		charatype[4];
+	int		f;
+	int		roulette;
 	
 public:
 	//	初期化・解放
