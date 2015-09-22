@@ -92,14 +92,12 @@
 		ui = new UI();
 		ui->Initialize();
 
-		//	ディファード関係初期化
-		DifferedInitialize();
-
 		//	変数初期化
 		timer = 0;
 		playerNum = GameManager::GetPlayerNum();
 		stageType = GameManager::GetStageType();
 
+		//	BGM再生
 		sound->PlayBGM( BGM::MAIN_BGM );
 
 		//	全体更新
@@ -116,12 +114,6 @@
 		SafeDelete( m_CoinManager );
 		SafeDelete( m_BulletManager );
 		SafeDelete( ShadowTex );
-		SafeDelete( diffuse );
-		SafeDelete( specular );
-		SafeDelete( depth );
-		SafeDelete( normal );
-		SafeDelete( light );
-		SafeDelete( light_s );
 		SafeDelete( screen );
 		SafeDelete( m_Player );
 		SafeDelete( ui );
@@ -139,22 +131,6 @@
 			Vector3	pos = Vector3( -20.0f + ( 10.0f * i ), 10.0f, 0.0f );
 			m_Player->Initialize( i, characterType, pos );
 		}
-	}
-
-	//	ディファード初期化
-	void	sceneMain::DifferedInitialize( void )
-	{
-		//	一時レンダリング用サーフェイス
-		screen = new iex2DObj( 1280,  720, IEX2D_RENDERTARGET );
-
-		diffuse = new iex2DObj( 1280, 720, IEX2D_RENDERTARGET );
-		specular = new iex2DObj( 1280, 720, IEX2D_RENDERTARGET );
-		depth = new iex2DObj( 1280, 720, IEX2D_FLOAT );
-		normal = new iex2DObj( 1280, 720, IEX2D_RENDERTARGET );
-		light = new iex2DObj( 1280, 720, IEX2D_RENDERTARGET );
-		light_s = new iex2DObj( 1280, 720, IEX2D_RENDERTARGET );
-		shaderD->SetValue( "DepthBuf", depth );
-		shaderD->SetValue( "SpecularBuf", specular );
 	}
 
 //*****************************************************************************************************************************
@@ -282,57 +258,6 @@
 
 //*****************************************************************************************************************************
 //
-//		動作関数
-//
-//*****************************************************************************************************************************
-
-	//	点光源
-	void	sceneMain::PointLight( const Vector3& pos, const Vector3& color, float range )
-	{
-		//	変換行列設定
-		Matrix	InvProj;
-		D3DXMatrixInverse( &InvProj, NULL, &matProjection );
-		shaderD->SetValue( "InvProj", InvProj );
-
-		Matrix	mat = matView;
-
-		//	カメラ空間変換
-		Vector3	LightPos;
-		LightPos.x = pos.x * mat._11 + pos.y * mat._21 + pos.z * mat._31 + mat._41;
-		LightPos.y = pos.x * mat._12 + pos.y * mat._22 + pos.z * mat._32 + mat._42;
-		LightPos.z = pos.x * mat._13 + pos.y * mat._23 + pos.z * mat._33 + mat._43;
-
-		//	シェーダー設定
-		shaderD->SetValue( "pLightPos", LightPos );
-		shaderD->SetValue( "pLightColor", ( Vector3 )color );
-		shaderD->SetValue( "pLightRange", range );
-
-		//	レンダリング
-		normal->Render( shaderD, "pointlight" );
-	}
-
-	//	平行光
-	void	sceneMain::DirLight( const Vector3& dir, const Vector3& color )
-	{
-		Matrix	mat = matView;
-		Vector3	LightDir;
-
-		//	カメラ空間変換
-		LightDir.x = dir.x * mat._11 + dir.y * mat._21 + dir.z * mat._31;
-		LightDir.y = dir.x * mat._12 + dir.y * mat._22 + dir.z * mat._32;
-		LightDir.z = dir.x * mat._13 + dir.y * mat._23 + dir.z * mat._33;
-		LightDir.Normalize();
-
-		//	シェーダー設定
-		shaderD->SetValue( "LightVec", LightDir );
-		shaderD->SetValue( "LightColor", ( Vector3 )color );
-
-		//	レンダリング
-		normal->Render( shaderD, "dirlight2" );
-	}
-
-//*****************************************************************************************************************************
-//
 //		描画関連
 //
 //*****************************************************************************************************************************
@@ -407,51 +332,3 @@
 		iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );
 		iexSystem::GetDevice()->SetDepthStencilSurface( orgZ );
 	}
-
-	//	ディファード描画
-	void	sceneMain::RenderDiffered( void )
-	{
-		//	ディファード設定
-		diffuse->RenderTarget();
-		specular->RenderTarget( 1 );
-		depth->RenderTarget( 2 );
-		normal->RenderTarget( 3 );
-
-		//	ビュー設定
-		m_Camera->Activate();
-		m_Camera->Clear();
-		shaderD->SetValue( "matView", matView );
-
-		//	変換行列設定
-		Matrix	InvProj;
-		D3DXMatrixInverse( &InvProj, NULL, &matProjection );
-		shaderD->SetValue( "InvProj", InvProj );
-
-		//	物体描画
-		m_Stage->Render( shaderD, "differed" );
-		m_Player->Render( shaderD, "differed" );
-		m_CoinManager->Render( shaderD, "differed" );
-
-		//	ライトバッファ作成
-		light->RenderTarget();
-		light_s->RenderTarget( 1 );
-		iexSystem::Device->SetRenderTarget( 2, NULL );
-		iexSystem::Device->SetRenderTarget( 3, NULL );
-		m_Camera->Clear( 0x000000 );
-
-		//	平行光
-		//DirLight( Vector3( 1.0f, -1.0f, -0.5f ), Vector3( 0.1f, 0.1f, 0.1f ));
-
-		//	点光源
-		PointLight( Vector3( 0.0f, 3.0f, 0.0f ), Vector3( 0.0f, 1.0f, 0.0f ), 5.0f );
-
-		//	一時バッファへ切り替え
-		screen->RenderTarget();
-		iexSystem::Device->SetRenderTarget( 1, NULL );
-		iexSystem::Device->SetRenderTarget( 2, NULL );
-		iexSystem::Device->SetRenderTarget( 3, NULL );
-		m_Camera->Clear();
-
-	}
-
-	
