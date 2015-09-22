@@ -40,7 +40,6 @@ public:
 	~sceneMain( void );
 	bool Initialize( void );
 	void	PlayerInitialize( void );
-	void	DifferedInitialize( void );
 
 	//	更新
 	void	Update( void );	//	更新
