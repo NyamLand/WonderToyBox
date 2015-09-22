@@ -95,7 +95,6 @@
 	void	Coin::StageCollisionCheck( void )
 	{
 		if ( pos.y >= 15.0f )		return;
-		if ( move.y <= 0.01f )	return;
 		float work = Collision::GetHeight( pos );
 
 		if ( pos.y <= work )
