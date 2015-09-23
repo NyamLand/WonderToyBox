@@ -308,9 +308,9 @@
 //------------------------------------------------------------------------------
 
 	//	î•ñæ“¾
-	Vector3		PlayerManager::GetPos( int player ){ return	c_Player[player]->GetPos();	}
+	Vector3	PlayerManager::GetPos( int player ){ return	c_Player[player]->GetPos();	}
 	float		PlayerManager::GetAngle( int player ){ return	c_Player[player]->GetAngle(); }
-	Matrix		PlayerManager::GetMatrix( int player ){ return	c_Player[player]->GetMatrix(); }
+	Matrix	PlayerManager::GetMatrix( int player ){ return	c_Player[player]->GetMatrix(); }
 	bool		PlayerManager::GetUnrivaled( int player ){ return c_Player[player]->GetUnrivaled(); }
 	int			PlayerManager::GetType( int player ){ return c_Player[player]->GetType(); }
 	int			PlayerManager::GetP_Num( int player ){ return c_Player[player]->GetP_Num(); }
