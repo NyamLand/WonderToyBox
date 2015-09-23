@@ -35,7 +35,7 @@ private:
 	int		second, minute[2];
 
 	//	コインバー
-	const		int		NUM_BAR = 4;
+	static	const		int		NUM_BAR = 4;
 	int		frame_x, frame_y, frame_sx, frame_sy;
 	int		bar_x[4], bar_y[4], bar_sx[4], bar_sy[4];
 	int		state_x[4];
@@ -58,6 +58,7 @@ public:
 	void	TimerInitialize( void );
 	void	NewsBarInitialize( void );
 	void	StartAndTimeUpInitialize( void );
+	void	DonketsuDirectionInitialize( void );
 	void	Release( void );
 
 	//	更新

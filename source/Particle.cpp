@@ -1,5 +1,6 @@
 
 #include	"iextreme.h"
+#include	"GlobalFunction.h"
 #include	"Particle.h"
 
 //*******************************************************************************
@@ -42,7 +43,7 @@ iexParticle*	Particle::particle = NULL;
 	//	‰ð•ú
 	void	Particle::Release( void )
 	{
-		particle->Release();
+		SafeDelete( particle );
 	}
 
 //------------------------------------------------------------------------

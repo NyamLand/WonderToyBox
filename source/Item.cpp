@@ -18,20 +18,24 @@
 //******************************************************************************
 
 //-------------------------------------------------------------------------------
+//	グローバル
+//-------------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------------
 //	初期化・解放
 //-------------------------------------------------------------------------------
 
-//	コンストラクタ
-Item::Item(void)
-{
+	//	コンストラクタ
+	Item::Item(void)
+	{
 
-}
+	}
 
-//	デストラクタ
-Item::~Item(void)
-{
+	//	デストラクタ
+	Item::~Item(void)
+	{
 
-}
+	}
 
 //-------------------------------------------------------------------------------
 //	更新・描画
@@ -42,22 +46,23 @@ Item::~Item(void)
 //	動作関数
 //-------------------------------------------------------------------------------
 
-//	動作
-void	Item::Move(void)
-{
-	//	重力加算
-	move.y += GRAVITY;
+	//	動作
+	void	Item::Move(void)
+	{
+		//	重力加算
+		move.y += GRAVITY;
 
-	//	回転
-	angle += 0.05f;
+		//	回転
+		angle += 0.05f;
 
-}
+	}
 
-void	Item::Hitduringtheoperation(const Vector3& pos, const int& Num)
-{
-	state = false;
-	float	effectScale = 0.2f;
-	Particle::Spark(pos, effectScale);
+	//	ヒット時動作
+	void	Item::Hitduringtheoperation( const Vector3& pos, const int& Num )
+	{
+		state = false;
+		float	effectScale = 0.2f;
+		Particle::Spark(pos, effectScale);
 	
-	sound->PlaySE( SE::COIN_SE );
-}
+		sound->PlaySE( SE::COIN_SE );
+	}

@@ -14,7 +14,7 @@
 #include	"CoinManager.h"
 using namespace std;
 
-class ItemManager	:public CoinManager
+class ItemManager		:	public CoinManager
 {
 private:
 	//	’è”
@@ -26,6 +26,7 @@ public:
 	ItemManager( void );
 	~ItemManager( void );
 	bool	Initialize( void );
+	void	Release( void );
 
 	//	XVE•`‰æ
 	void	Update( void );
@@ -35,6 +36,5 @@ public:
 	void	Append( const Vector3& pos );
 };
 
-extern ItemManager* m_ItemManager;
 //*********************************************************************************
 #endif // !__ITEMMANAGER_H__

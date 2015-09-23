@@ -1,5 +1,6 @@
 
 #include	"iextreme.h"
+#include	"Random.h"
 #include	"system/System.h"
 #include	"Collision.h"
 #include	"GlobalFunction.h"
@@ -16,6 +17,10 @@
 //	Coinクラス
 //
 //******************************************************************************
+
+//-------------------------------------------------------------------------------
+//	グローバル
+//-------------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------------
 //	初期化・解放
@@ -140,11 +145,11 @@
 		{
 			std::uniform_real_distribution<float> posrand( -10.0f, 10.0f );
 			std::uniform_real_distribution<float> heightrand( 0.0f, 50.0f );
-			SetPos( Vector3( posrand( ran ), heightrand( ran ), posrand( ran ) ) );
+			SetPos( Vector3( Random::GetFloat( -10.0f, 10.0f ), Random::GetFloat( 0.0f, 50.0f ), Random::GetFloat( -10.0f, 10.0f ) ) );
 		}
 	}
 
-
+	//	ヒット時動作
 	void	Coin::Hitduringtheoperation(const Vector3& pos, const int& Num)
 	{
 		state = false;
@@ -153,6 +158,7 @@
 		GameManager::AddCoin(Num);
 		sound->PlaySE( SE::COIN_SE );
 	}
+
 //-------------------------------------------------------------------------------
 //	情報設定
 //-------------------------------------------------------------------------------

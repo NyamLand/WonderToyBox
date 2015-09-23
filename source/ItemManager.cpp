@@ -26,8 +26,21 @@
 	}
 
 	//	‰Šú‰»
+	bool	ItemManager::Initialize( void )
+	{
+		itemList.clear();
+
+		return	true;
+	}
 
 	//	‰ğ•ú
+	void	ItemManager::Release( void )
+	{
+		for ( auto it = itemList.begin(); it != itemList.end(); )
+		{
+			it = itemList.erase( it );
+		}
+	}
 
 //------------------------------------------------------------------------------------
 //	XVE•`‰æ
