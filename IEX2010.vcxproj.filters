@@ -100,6 +100,9 @@
     <Filter Include="ソース ファイル\Sound">
       <UniqueIdentifier>{f3a21433-5c02-47a5-bea7-dd91966fb579}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Random">
+      <UniqueIdentifier>{edb363f6-17c9-459b-8385-297173254a45}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -234,6 +237,9 @@
     <ClCompile Include="source\Sound.cpp">
       <Filter>ソース ファイル\Sound</Filter>
     </ClCompile>
+    <ClCompile Include="source\Random.cpp">
+      <Filter>ソース ファイル\Random</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -322,6 +328,9 @@
     </ClInclude>
     <ClInclude Include="source\Sound.h">
       <Filter>ソース ファイル\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Random.h">
+      <Filter>ソース ファイル\Random</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

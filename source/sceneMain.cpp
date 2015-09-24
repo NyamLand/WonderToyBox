@@ -1,6 +1,6 @@
 
 #include	"iextreme.h"
-#include	<random>
+#include	"Random.h"
 #include	"system/system.h"
 #include	"system/Framework.h"
 #include	"GlobalFunction.h"
@@ -49,6 +49,9 @@
 		iexLight::SetAmbient( 0x404040 );
 		iexLight::SetFog( 800, 1000, 0 );
 
+		//	乱数初期化
+		Random::Initialize();
+
 		//	バックバッファポインタ退避
 		iexSystem::GetDevice()->GetRenderTarget( 0, &backBuffer );
 
@@ -67,6 +70,7 @@
 		//	ステージ
 		m_CollisionStage = new iexMesh( "DATA/BG/desk_Collision.IMO" );
 		m_Stage = new iexMesh( "DATA/back/stage.IMO" );
+		
 		//	当たり判定
 		Collision::Initiallize( m_CollisionStage );
 
@@ -108,17 +112,16 @@
 	//	デストラクタ
 	sceneMain::~sceneMain( void )
 	{
-		SafeDelete( m_Stage );
-		SafeDelete( m_CollisionStage );
-		SafeDelete( m_Camera );
-		SafeDelete( m_CoinManager );
-		SafeDelete( m_BulletManager );
-		SafeDelete( ShadowTex );
-		SafeDelete( screen );
-		SafeDelete( m_Player );
-		SafeDelete( ui );
 		backBuffer->Release();
+		SafeDelete(ShadowTex);
+		SafeDelete(m_Camera);
+		SafeDelete(m_CollisionStage);
+		SafeDelete(m_Player);
+		SafeDelete(m_CoinManager);
+		SafeDelete(m_BulletManager);
+		SafeDelete(ui);
 		Particle::Release();
+		Random::Release();
 		sound->AllStop();
 	}
 

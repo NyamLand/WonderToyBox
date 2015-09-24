@@ -115,3 +115,10 @@
 		bool	out = isPlay;
 		return	out;
 	}
+
+	//	ŽÀ‘ÌŽæ“¾
+	Sound*	Sound::GetInstance( void )
+	{
+		static	Sound	out;
+		return	&out;
+	}

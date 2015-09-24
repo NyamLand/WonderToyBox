@@ -1,7 +1,7 @@
 
 #include	"iextreme.h"
 #include	"system/System.h"
-#include	<random>
+#include	"Random.h"
 #include	"GlobalFunction.h"
 #include	"Coin.h"
 
@@ -51,12 +51,9 @@
 		}
 
 		//	ƒRƒCƒ“‚ğƒ‰ƒ“ƒ_ƒ€¶¬
-		std::uniform_real_distribution<float> posrand( -10.0f, 10.0f );
-		std::uniform_real_distribution<float> heightrand( 0.0f, 50.0f );
-		std::uniform_real_distribution<float>	moverand( -0.1f, 0.1f );
 		for ( int i = 0; i < COIN_MAX; i++ )
 		{
-			Set( Vector3( posrand( ran ), heightrand( ran ), posrand( ran ) ), Vector3( 0.0f, 0.0f, 0.0f ), 1.0f );
+			Set( Vector3( Random::GetFloat( -10.0f, 10.0f ), Random::GetFloat( 0.0f, 50.0f ), Random::GetFloat( -10.0f, 10.0f ) ), Vector3( 0.0f, 0.0f, 0.0f ), 1.0f );
 		}
 
 		if ( org != nullptr ) 	return	false;

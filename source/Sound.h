@@ -65,12 +65,7 @@ public:
 	//	î•ñæ“¾
 	bool	GetSEState( int type );
 	bool	GetBGMState( void );
-
-	static	Sound*	GetInstance( void )
-	{
-		static	Sound	out;
-		return	&out;
-	}
+	static	Sound*	GetInstance( void );
 };
 
 #define	sound ( Sound::GetInstance() )
