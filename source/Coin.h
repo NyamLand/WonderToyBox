@@ -10,7 +10,7 @@
 class Coin
 {
 protected:
-	const float GRAVITY = -0.01f;
+
 
 protected:
 	iexMesh*	obj;

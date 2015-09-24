@@ -26,8 +26,21 @@
 	}
 
 	//	‰Šú‰»
+	bool	ItemManager::Initialize( void )
+	{
+		itemList.clear();
+
+		return	true;
+	}
 
 	//	‰ğ•ú
+	void	ItemManager::Release( void )
+	{
+		for ( auto it = itemList.begin(); it != itemList.end(); )
+		{
+			it = itemList.erase( it );
+		}
+	}
 
 //------------------------------------------------------------------------------------
 //	XVE•`‰æ
@@ -36,13 +49,19 @@
 	//	XV
 	void	ItemManager::Update( void )
 	{
-
+		for ( auto it = itemList.begin(); it != itemList.end(); it++ )
+		{
+			( *it )->Update();
+		}
 	}
 
 	//	•`‰æ
 	void	ItemManager::Render( void )
 	{
-
+		for ( auto it = itemList.begin(); it != itemList.end(); it++ )
+		{
+			( *it )->Render();
+		}
 	}
 
 //------------------------------------------------------------------------------------

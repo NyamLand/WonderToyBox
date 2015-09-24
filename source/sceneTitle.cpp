@@ -16,8 +16,6 @@
 
 #include	"sceneTitle.h"
 
-#define		PLAYER_NUM	4
-
 //*****************************************************************************
 //
 //	sceneTitleクラス
@@ -238,11 +236,6 @@ namespace
 		case MOVE_MAIN:
 			break;
 		}
-
-		////	デバッグ用
-		//DrawString( "[sceneTitle]", 50, 50 );
-		//DrawString( "すぺーす押してね", 300, 400, 0xFFFFFF00 );
-		//DrawString( "はーいぷしゅっ！", 1100, 700, 0xFFFFFF00 );
 	}
 
 //******************************************************************

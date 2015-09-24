@@ -1,5 +1,6 @@
 
 #include	"iextreme.h"
+#include	"Random.h"
 #include	"GlobalFunction.h"
 #include	"system/System.h"
 #include	"Collision.h"
@@ -235,8 +236,7 @@
 			//	色設定
 
 			//	コインばらまき方向設定
-			std::uniform_real_distribution<float>	vecrand( -1.0f, 1.0f );
-			Vector3	vec = Vector3( vecrand( ran ), 1.0f, vecrand( ran ) );
+			Vector3	vec = Vector3( Random::GetFloat( -1.0f, 1.0f ), 1.0f, Random::GetFloat( -1.0f, 1.0f ) );
 			vec.Normalize();
 
 			//	プレイヤー番号取得とばらまきパワー設定
@@ -286,8 +286,7 @@
 			p2->SetMode( PlayerData::DAMAGE_STRENGTH );
 			
 			//	コインばらまき方向設定
-			std::uniform_real_distribution<float>	vecrand( -1.0f, 1.0f );
-			Vector3	vec = Vector3( vecrand( ran ), 1.0f, vecrand( ran ) );
+			Vector3	vec = Vector3( Random::GetFloat( -1.0f, 1.0f ), 1.0f, Random::GetFloat( -1.0f, 1.0f ) );
 			vec.Normalize();
 
 			//	プレイヤー番号取得とばらまきパワー設定
@@ -309,9 +308,9 @@
 //------------------------------------------------------------------------------
 
 	//	情報取得
-	Vector3		PlayerManager::GetPos( int player ){ return	c_Player[player]->GetPos();	}
+	Vector3	PlayerManager::GetPos( int player ){ return	c_Player[player]->GetPos();	}
 	float		PlayerManager::GetAngle( int player ){ return	c_Player[player]->GetAngle(); }
-	Matrix		PlayerManager::GetMatrix( int player ){ return	c_Player[player]->GetMatrix(); }
+	Matrix	PlayerManager::GetMatrix( int player ){ return	c_Player[player]->GetMatrix(); }
 	bool		PlayerManager::GetUnrivaled( int player ){ return c_Player[player]->GetUnrivaled(); }
 	int			PlayerManager::GetType( int player ){ return c_Player[player]->GetType(); }
 	int			PlayerManager::GetP_Num( int player ){ return c_Player[player]->GetP_Num(); }

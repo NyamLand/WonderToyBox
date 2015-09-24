@@ -30,14 +30,6 @@ private:
 	iex2DObj*	ShadowTex;
 	iex2DObj*	screen;
 
-	//	ディファード用
-	iex2DObj*	diffuse;
-	iex2DObj*	specular;
-	iex2DObj*	depth;
-	iex2DObj*	normal;
-	iex2DObj*	light;
-	iex2DObj*	light_s;
-
 	//	バッファ
 	Surface*	backBuffer;
 	Surface*	ShadowZ;
@@ -48,7 +40,6 @@ public:
 	~sceneMain( void );
 	bool Initialize( void );
 	void	PlayerInitialize( void );
-	void	DifferedInitialize( void );
 
 	//	更新
 	void	Update( void );	//	更新

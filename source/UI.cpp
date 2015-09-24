@@ -59,16 +59,8 @@
 	{
 		timer = new iex2DObj( "DATA/BG/number.png" );
 		coinbar = new iex2DObj( "DATA/BG/coin_gage.png" );
-		face = new iex2DObj( "DATA/chara_emotion.png" );
-		countDown = new Image( "DATA/bfUI.png" );
-
-		//　キャラ種類
-		for (int i = 0; i < 4; i++)
-		{
-			charatype[i] = GameManager::GetCharacterType(i);
-		}
-		roulette = 0;
-		f = 0;
+		face = new iex2DObj( "DATA/UI/chara_emotion.png" );
+		countDown = new Image( "DATA/UI/bfUI.png" );
 
 		//	共通変数初期化
 		changeflag = false;
@@ -78,6 +70,7 @@
 		TimerInitialize();
 		StartAndTimeUpInitialize();
 		NewsBarInitialize();
+		DonketsuDirectionInitialize();
 
 		return	true;
 	}
@@ -98,7 +91,7 @@
 		frame_y = 600;
 		frame_sx = 512;
 		frame_sy = 64;
-		for (int i = 0; i < NUM_BAR; i++)
+		for ( int i = 0; i < NUM_BAR; i++ )
 		{
 			bar_x[i] = frame_x + 16;
 			bar_y[i] = frame_y + 16;
@@ -143,6 +136,18 @@
 		countDown->Initialize( 640, 360, 350, 350, 0, 0, 256, 256 );
 		count = 0;
 		waitTimer = 0;
+	}
+
+	//	どんけつ演出初期化
+	void	UI::DonketsuDirectionInitialize( void )
+	{
+		//　キャラ種類
+		for ( int i = 0; i < 4; i++ )
+		{
+			charatype[i] = GameManager::GetCharacterType( i );
+		}
+		roulette = 0;
+		f = 0;
 	}
 	
 //------------------------------------------------------------------------------
@@ -321,12 +326,12 @@
 		}
 
 		//　顔ルーレット
-		int	step;
+		int 	step;
 		if (wait <= 5 * SECOND)			step = 0;	//　イントロ
 		if (wait <= 4 * SECOND)			step = 1;	//　ルーレット
 		if (wait <= 2 * SECOND + 30)	step = 2;	//　決定
 
-		switch (step)
+		switch ( step )
 		{
 		case 0:
 			break;
@@ -439,10 +444,10 @@
 	{
 		//　グレーバック
 		DWORD	color = 0xD0000000;
-		iexPolygon::Rect(0, 0, 1280, 720, RS_COPY, color);
+		iexPolygon::Rect( 0, 0, 1280, 720, RS_COPY, color );
 
 		//　顔ルーレット
-		face->Render(480, 200, 320, 320, FACE_INFO::Normal * 256, charatype[f] * 256, 256, 256);
+		face->Render( 480, 200, 320, 320, FACE_INFO::Normal * 256, charatype[f] * 256, 256, 256 );
 
 		char	str[256];
 		int		worst = GameManager::GetWorst();
