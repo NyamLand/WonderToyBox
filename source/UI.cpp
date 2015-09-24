@@ -402,10 +402,10 @@
 		coinbar->Render(bar_x[3], bar_y[3], bar_sx[3], 32, 0, 32 * 3, bar_sx[3], bar_sy[3]);
 
 		//Šç
-		face->Render(state_x[0], 550, 32, 32, state_type[0] * 256, 0, 256, 256);
-		face->Render(state_x[1], 550, 32, 32, state_type[1] * 256, 0, 256, 256);
-		face->Render(state_x[2], 550, 32, 32, state_type[2] * 256, 0, 256, 256);
-		face->Render(state_x[3], 550, 32, 32, state_type[3] * 256, 0, 256, 256);
+		face->Render(state_x[0], 550, 32, 32, 0, state_type[0] * 256, 256, 256);
+		face->Render(state_x[1], 550, 32, 32, 0, state_type[1] * 256, 256, 256);
+		face->Render(state_x[2], 550, 32, 32, 0, state_type[2] * 256, 256, 256);
+		face->Render(state_x[3], 550, 32, 32, 0, state_type[3] * 256, 256, 256);
 	}
 
 	//	ƒjƒ…[ƒX•`‰æ
