@@ -59,8 +59,8 @@
 	{
 		timer = new iex2DObj( "DATA/BG/number.png" );
 		coinbar = new iex2DObj( "DATA/BG/coin_gage.png" );
-		face = new iex2DObj( "DATA/chara_emotion.png" );
-		countDown = new Image( "DATA/bfUI.png" );
+		face = new iex2DObj( "DATA/UI/chara_emotion.png" );
+		countDown = new Image( "DATA/UI/bfUI.png" );
 
 		//	ã§í ïœêîèâä˙âª
 		changeflag = false;

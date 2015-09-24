@@ -40,7 +40,7 @@
 	bool	CoinManager::Initialize( void )
 	{
 		org = nullptr;
-		org = new iexMesh( "DATA/coin.imo" );
+		org = new iexMesh( "DATA/Object/coin.imo" );
 		c_Coin = new Coin[ COIN_MAX ];
 		coin_num = 0;
 
