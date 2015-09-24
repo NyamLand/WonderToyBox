@@ -49,13 +49,19 @@
 	//	XV
 	void	ItemManager::Update( void )
 	{
-
+		for ( auto it = itemList.begin(); it != itemList.end(); it++ )
+		{
+			( *it )->Update();
+		}
 	}
 
 	//	•`‰æ
 	void	ItemManager::Render( void )
 	{
-
+		for ( auto it = itemList.begin(); it != itemList.end(); it++ )
+		{
+			( *it )->Render();
+		}
 	}
 
 //------------------------------------------------------------------------------------

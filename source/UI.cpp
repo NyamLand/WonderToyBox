@@ -444,10 +444,10 @@
 	{
 		//　グレーバック
 		DWORD	color = 0xD0000000;
-		iexPolygon::Rect(0, 0, 1280, 720, RS_COPY, color);
+		iexPolygon::Rect( 0, 0, 1280, 720, RS_COPY, color );
 
 		//　顔ルーレット
-		face->Render(480, 200, 320, 320, FACE_INFO::Normal * 256, charatype[f] * 256, 256, 256);
+		face->Render( 480, 200, 320, 320, FACE_INFO::Normal * 256, charatype[f] * 256, 256, 256 );
 
 		char	str[256];
 		int		worst = GameManager::GetWorst();
