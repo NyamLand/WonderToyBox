@@ -31,9 +31,6 @@
     <Filter Include="ソース ファイル\Collision">
       <UniqueIdentifier>{524e60df-a20b-48dd-b8e2-2fad2d28ad16}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\PlayerManager">
-      <UniqueIdentifier>{8f63f319-104a-400f-b24b-8ef9d8ff1674}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Effect">
       <UniqueIdentifier>{f3ef00f9-872e-4d25-b8e2-c67cd4837de8}</UniqueIdentifier>
     </Filter>
@@ -102,6 +99,12 @@
     </Filter>
     <Filter Include="ソース ファイル\Random">
       <UniqueIdentifier>{edb363f6-17c9-459b-8385-297173254a45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Object">
+      <UniqueIdentifier>{a811ecd6-664b-4d75-a307-5625a0fefc09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\PlayerManager">
+      <UniqueIdentifier>{8f63f319-104a-400f-b24b-8ef9d8ff1674}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -240,6 +243,9 @@
     <ClCompile Include="source\Random.cpp">
       <Filter>ソース ファイル\Random</Filter>
     </ClCompile>
+    <ClCompile Include="source\Object.cpp">
+      <Filter>ソース ファイル\Object</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -331,6 +337,9 @@
     </ClInclude>
     <ClInclude Include="source\Random.h">
       <Filter>ソース ファイル\Random</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Object.h">
+      <Filter>ソース ファイル\Object</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

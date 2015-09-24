@@ -14,7 +14,7 @@
 class Item  :public Coin
 {
 private:
-	
+	int		type;
 
 public:
 	//	初期化・解放
@@ -25,9 +25,12 @@ public:
 	void	Move();
 	void	Hitduringtheoperation(const Vector3& pos, const int& Num);	//ヒット時動作
 	
-	//	情報取得・設定
+	//	情報設定
 	void	SetMesh( iexMesh* obj );
 	void	SetState( bool state );
+
+	//	情報取得
+	int		GetType( void );
 };
 
 //*****************************************************************************

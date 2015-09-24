@@ -119,6 +119,7 @@
     <ClCompile Include="source\Item.cpp" />
     <ClCompile Include="source\ItemManager.cpp" />
     <ClCompile Include="source\Knight.cpp" />
+    <ClCompile Include="source\Object.cpp" />
     <ClCompile Include="source\Particle.cpp" />
     <ClCompile Include="source\Player.cpp" />
     <ClCompile Include="source\PlayerManager.cpp" />
@@ -166,6 +167,7 @@
     <ClInclude Include="source\Item.h" />
     <ClInclude Include="source\ItemManager.h" />
     <ClInclude Include="source\Knight.h" />
+    <ClInclude Include="source\Object.h" />
     <ClInclude Include="source\Particle.h" />
     <ClInclude Include="source\Player.h" />
     <ClInclude Include="source\PlayerManager.h" />

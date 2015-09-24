@@ -195,6 +195,7 @@
 		{
 		case 0:
 			moveParam.y += 0.5f;
+			p_pos += moveParam;
 			time++;
 			if ( time >= 20 )
 			{
@@ -218,7 +219,7 @@
 		}
 
 		//	î•ñXV
-		SetMove( moveParam );
+		SetPos( p_pos );
 		SetAngle( angleParam );
 
 		return	false;
