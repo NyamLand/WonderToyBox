@@ -12,10 +12,9 @@
 #include	"Particle.h"
 #include	"Player.h"
 #include	"PlayerManager.h"
-#include	"Item.h"
-#include	"ItemManager.h"
 #include	"Coin.h"
 #include	"CoinManager.h"
+#include	"ItemManager.h"
 #include	"Bullet.h"
 #include	"BulletManager.h"
 #include	"sceneResult.h"
@@ -87,7 +86,7 @@
 		m_BulletManager->Initialize();
 
 		//	アイテム
-		//itemManager->Initialize();
+		itemManager->Initialize();
 			
 		//	パーティクル
 		Particle::Initialize();
@@ -122,6 +121,7 @@
 		SafeDelete(ui);
 		Particle::Release();
 		Random::Release();
+		itemManager->Release();
 		sound->AllStop();
 	}
 
@@ -256,7 +256,7 @@
 		m_BulletManager->Update();
 
 		//	アイテム更新
-		//itemManager->Update();
+		itemManager->Update();
 	}
 
 //*****************************************************************************************************************************
@@ -280,7 +280,7 @@
 		m_Player->Render( shader3D, "toon" );
 		m_CoinManager->Render();
 		m_BulletManager->Render();
-		//itemManager->Render();
+		itemManager->Render();
 		
 		//UI
 		ui->Render( GameManager::GetMode() );
@@ -327,6 +327,7 @@
 		//m_Stage->Render( shader3D, "shadowBuf" );
 		m_Player->Render( shader3D, "ShadowBuf" );
 		m_CoinManager->Render( shader3D, "ShadowBuf" );
+		itemManager->Render( shader3D, "ShadowBuf" );
 
 		//	作ったシャドウテクスチャをシェーダーにセット
 		shader3D->SetValue( "ShadowMap", ShadowTex );

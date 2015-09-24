@@ -92,8 +92,6 @@ namespace
 class Player
 {
 protected:
-	//	定数
-	static const int MIN_INPUT_STATE = 300;	//	スティック判定最小値
 
 protected:
 	struct ParameterState
