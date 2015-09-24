@@ -12,39 +12,11 @@
 //	変数
 //----------------------------------------------------------------------
 	
-	//	extern宣言
-	extern	LPDSSTREAM		stream;
 	extern	bool					debug;
 
 //----------------------------------------------------------------------
 //	定数
 //----------------------------------------------------------------------
-
-	//	サウンド関連
-	namespace SoundInfo
-	{
-		enum SOUNDEFFECT
-		{
-			SELECT_SE,
-			CANCEL_SE,
-		};
-
-		enum BGM
-		{
-			TITLE_BGM,
-			MAIN_BGM,
-			RESULT_BGM,
-		};
-
-		//	ＢＧＭのファイル名はここに
-		//	上の定数と並び順を揃えること
-		const		LPSTR	bgm[]	=
-		{
-			"",
-			"",
-			"",
-		};
-	}
 
 	//	共通モーション番号
 	namespace MotionType
@@ -91,6 +63,21 @@
 		int		GUARD;					//	ガード
 	};
 
+	//	ニュース構造体
+	struct NewsBar
+	{
+		int		left;
+		int		top;
+		int		right;
+		int		bottom;
+		float	alpha;
+		Vector3	color;
+		LPSTR	text;
+		int		textleft;
+		int		step;
+		bool	renderflag;
+	};
+
 //----------------------------------------------------------------------
 //	システム
 //----------------------------------------------------------------------
@@ -111,11 +98,6 @@
 	void	DrawString( LPSTR string, int x, int y, DWORD color = 0xFFFFFFFF );
 	void	DrawString( LPSTR string, int x, int y, float r, float g, float b );
 	void	DrawString( LPSTR string, int x, int y, Vector3 color );
-
-	//	サウンド関連
-	void	SetSound( int type, bool loop = false );
-	void	PlayBGM( int type );
-	void	StopBGM( void );
 
 	//	モーション番号登録
 	void	SetMotionNum( int& motionData, int motionNum );

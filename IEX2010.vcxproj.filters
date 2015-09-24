@@ -91,6 +91,18 @@
     <Filter Include="ソース ファイル\Image">
       <UniqueIdentifier>{31dd35c2-2fa3-45d4-bd41-b6b09747246e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Item">
+      <UniqueIdentifier>{6b7c4bd1-1fe5-4d77-a789-faba6e1d73a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\ItemManager">
+      <UniqueIdentifier>{110c6fa5-d8c4-433a-b7e6-8c154514a95a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Sound">
+      <UniqueIdentifier>{f3a21433-5c02-47a5-bea7-dd91966fb579}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Random">
+      <UniqueIdentifier>{edb363f6-17c9-459b-8385-297173254a45}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -216,6 +228,18 @@
     <ClCompile Include="source\Tiger.cpp">
       <Filter>ソース ファイル\Player\Tiger</Filter>
     </ClCompile>
+    <ClCompile Include="source\Item.cpp">
+      <Filter>ソース ファイル\Item</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ItemManager.cpp">
+      <Filter>ソース ファイル\ItemManager</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Sound.cpp">
+      <Filter>ソース ファイル\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Random.cpp">
+      <Filter>ソース ファイル\Random</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -295,6 +319,18 @@
     </ClInclude>
     <ClInclude Include="source\Tiger.h">
       <Filter>ソース ファイル\Player\Tiger</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Item.h">
+      <Filter>ソース ファイル\Item</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ItemManager.h">
+      <Filter>ソース ファイル\ItemManager</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Sound.h">
+      <Filter>ソース ファイル\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Random.h">
+      <Filter>ソース ファイル\Random</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -11,7 +11,6 @@
 class sceneTitle : public	Scene
 {
 private:	//	定数
-
 	enum Title_Mode
 	{
 		TITLE,
@@ -21,9 +20,9 @@ private:	//	定数
 		SELECT_STAGE,
 		SELECT_CHECK,
 		OPTION,
-		CREDIT
+		CREDIT,
+		MOVE_MAIN,
 	};
-
 	static const int STAGE_MAX = 8;
 
 private:	//	構造体
@@ -72,42 +71,45 @@ public:
 	sceneTitle( void );
 	~sceneTitle( void );
 	bool	Initialize( void );
-	void	InitSound( void );
 
 	//	更新・描画
-	void	Update(void);
-	void	Render(void);
+	void	Update( void );
+	void	Render( void );
 
 	//-------------------------------------
 	//　各画面ごとのメソッド
 	//-------------------------------------
 	//　タイトル
-	void	TitleUpdate(void);
-	void	TitleRender(void);
+	void	TitleUpdate( void );
+	void	TitleRender( void );
+
 	//　メニュー画面
-	void	MenuUpdate(void);
-	void	MenuRender(void);
+	void	MenuUpdate( void );
+	void	MenuRender( void );
 
 	//　人数選択
-	void	SelectPlayerNumUpdate(void);
-	void	SelectPlayerNumRender(void);
+	void	SelectPlayerNumUpdate( void );
+	void	SelectPlayerNumRender( void );
+
 	//　キャラ選択
-	void	SelectCharacterUpdate(void);
-	void	SelectCharacterRender(void);
+	void	SelectCharacterUpdate( void );
+	void	SelectCharacterRender( void );
+	
 	//　ステージ選択
-	void	SelectStageUpdate(void);
-	void	SelectStageRender(void);
+	void	SelectStageUpdate( void );
+	void	SelectStageRender( void );
+	
 	//　最終確認
-	void	SelectCheckUpdate(void);
-	void	SelectCheckRender(void);
+	void	SelectCheckUpdate( void );
+	void	SelectCheckRender( void );
 
 	//　オプション
-	void	OptionUpdate(void);
-	void	OptionRender(void);
+	void	OptionUpdate( void );
+	void	OptionRender( void );
 
 	//　クレジット
-	void	CreditUpdate(void);
-	void	CreditRender(void);
+	void	CreditUpdate( void );
+	void	CreditRender( void );
 };
 
 //*****************************************************************************

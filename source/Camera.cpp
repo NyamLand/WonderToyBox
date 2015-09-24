@@ -1,5 +1,6 @@
 
 #include	"iextreme.h"
+#include	"system/System.h"
 
 #include	"Camera.h"
 
@@ -13,6 +14,11 @@
 //	グローバル変数
 //------------------------------------------------------------------------------------------
 
+namespace 
+{
+
+}
+
 	//	実体の宣言
 	Camera*	m_Camera;
 
@@ -23,8 +29,8 @@
 	//	コンストラクタ
 	Camera::Camera( void )
 	{
-		pos = Vector3( 0.0f, 20.0f, -25.0f );
-		target = Vector3( 0.0f, 2.0f, 0.0f );
+		pos = Vector3( 0.0f, 40.0f, 50.0f );
+		target = Vector3( 0.0f, 2.0f, 0.0f ); 
 		orientation = D3DXQUATERNION( 0, 0, 0, 1 );
 		Set( pos, target );
 	}
@@ -51,7 +57,14 @@
 		case	VIEW_MODE::SLERP:
 			ModeSlerp( target );
 			break;
+
+		case	VIEW_MODE::CHASE:
+			ModeChase();
+			break;
 		}
+
+		shader3D->SetValue("ViewPos", m_Camera->GetPos());
+		shader3D->SetValue("matView", m_Camera->GetMatrix());
 	}
 
 //------------------------------------------------------------------------------------------
@@ -104,6 +117,21 @@
 		Set( pos, target );
 	}
 
+	//	追いかけカメラ
+	void	Camera::ModeChase( void )
+	{
+		//	中心座標・中心からの最大距離・カメラ位置計算
+		this->target = CalcCenterPos();
+		this->length = CalcMaxDist();
+		CalcCameraPos();
+
+		//	回転補間
+		Slerp( this->target, 0.1f );
+
+		//	情報設定
+		Set( pos, this->target );
+	}
+
 	//	球面線形補間使用
 	void	Camera::ModeSlerp( Vector3 target )
 	{
@@ -139,3 +167,91 @@
 		this->wide = wide / ( float )shakeTimer;
 		this->shakeTimer = timer;
 	}
+
+//------------------------------------------------------------------------------------------
+//	数値計算
+//------------------------------------------------------------------------------------------
+
+	//	ターゲット中心座標計算
+	Vector3	Camera::CalcCenterPos( void )
+	{
+		Vector3	out = Vector3( 0.0f, 0.0f, 0.0f );
+
+		for ( int i = 0; i < 4; i++ )	out += playerPos[i];
+
+		out /= 4;
+
+		return	out;
+	}
+
+	//	最大距離算出
+	float	Camera::CalcMaxDist( void )
+	{
+		float	len[4];
+		Vector3 pos[4];
+		float	temp;
+		for ( int i = 0; i < 4; i++ )
+		{
+			pos[i] = playerPos[i];
+		}
+
+		//	それぞれのposからターゲットまでの距離をとる
+		for ( int i = 0; i < 4; i++ )
+		{
+			pos[i] = this->target - pos[i];
+			len[i] = pos[i].Length();
+		}
+
+		//	ソート
+		for (int i = 0; i < 4; ++i)
+		{
+			//	後ろから順番にチェックしていく
+			for (int s = 3; s > i; --s)
+			{
+				//	一つ下の要素と比較
+				if (len[s] >	len[s - 1])
+				{
+					//	一時的に退避
+					temp = len[s - 1];
+
+					//	交換
+					len[s - 1] = len[s];
+
+					//	退避してたやつを戻す
+					len[s] = temp;
+				}
+			}
+		}
+
+		float	out = 0.0f;
+		//	カメラからターゲットまでの長さ調整
+		out = len[0];
+		if ( out < ( float )MIN ) out = ( float )MIN;
+		if ( out >( float )MAX ) out = ( float )MAX;
+
+		return	out;
+	}
+
+	//	カメラ位置計算
+	void	Camera::CalcCameraPos( void ) 
+	{
+		Vector3 vec;
+		vec = Vector3( 0.0f, 40.0f, 50.0f ) - Vector3( 0.0f, 2.0f, 0.0f );
+		vec.Normalize();
+		this->pos = this->target + vec * length * 3;
+	}
+
+//------------------------------------------------------------------------------------------
+//	情報設定
+//------------------------------------------------------------------------------------------
+
+	//	プレイヤー情報渡し
+	void	Camera::SetPlayerInfo( const Vector3& p_1, const Vector3& p_2, const Vector3& p_3, const Vector3& p_4 )
+	{
+		playerPos[0] = p_1;
+		playerPos[1] = p_2;
+		playerPos[2] = p_3;
+		playerPos[3] = p_4;
+	}
+
+

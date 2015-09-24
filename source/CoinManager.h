@@ -11,7 +11,7 @@ class CoinManager
 {
 private:
 
-private:
+protected:
 	//	’è”
 	static const int COIN_MAX = 201;		//	ƒRƒCƒ“Å‘å”
 
@@ -34,7 +34,7 @@ public:
 	void	Render( iexShader* shader, LPSTR technique );
 
 	//	“®ìŠÖ”
-	void	Set( const Vector3& pos, const Vector3& vec, float speed );
+	void	Set( const Vector3& pos, const Vector3& vec, const float& speed );
 	void	DistCheck( int n );
 };
 

@@ -1,8 +1,10 @@
 
 #include	"iextreme.h"
+#include	"Random.h"
 #include	"GlobalFunction.h"
 #include	"system/Framework.h"
 #include	"system/System.h"
+#include	"Image.h"
 #include	"GameManager.h"
 #include	"Player.h"
 #include	"sceneTitle.h"
@@ -30,6 +32,7 @@
 	sceneResult::~sceneResult( void )
 	{
 		SafeDelete( view );
+		Random::Release();
 	}
 
 	//	初期化
@@ -40,12 +43,25 @@
 
 		for ( int i = 0; i < 4; i++ )
 		{
+			coinNum[i] = 0;
 			resultInfo[i].p_Coin = GameManager::GetCoinNum( i );
 			resultInfo[i].p_num = i;
 		}
 
+		//	変数初期化
+		lastBonus = 0;
+		step = 0;
+		playerNum = 0;
+		wait = 0;
+		
+		//	乱数初期化
+		Random::Initialize();
+
 		//	ソート
 		BubbleSort();
+
+		//	ラストボーナス設定
+		SetLastBonus();
 
 		return	true;
 	}
@@ -65,7 +81,7 @@
 	}
 
 	//	描画
-	void	sceneResult::Render( void )
+	void	sceneResult::Render( void ) 
 	{
 		view->Activate();
 		view->Clear();
@@ -73,6 +89,7 @@
 		//	デバッグ文字描画
 		DrawString( "[sceneResult]", 50, 50 );
 		DrawString( "すぺーすでタイトルへ", 300, 400, 0xFFFFFF00 );
+		DrawString( GameInfo::LastBonus[lastBonus], 300, 150 );
 
 		for ( int i = 0; i < 4; i++ )
 		{
@@ -107,6 +124,24 @@
 					//	退避してたやつを戻す
 					resultInfo[s] = temp;
 				}
+			}
+		}
+	}
+
+	//	ラストボーナス設定
+	void	sceneResult::SetLastBonus( void )
+	{
+		if ( Random::PercentageRandom( 0.3f ) )
+		{
+			//	ラストボーナスを設定
+			lastBonus = GameManager::GetLastBonus();
+		}
+		else
+		{
+			//	違う結果が出るまでループ
+			while ( lastBonus == GameManager::GetLastBonus() )
+			{
+				lastBonus = rand() % 5;
 			}
 		}
 	}

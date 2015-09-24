@@ -5,6 +5,9 @@
 #include	"Collision.h"
 #include	"UI.h"
 #include	"sceneResult.h"
+#include	"Image.h"
+#include	"Player.h"
+#include	"PlayerManager.h"
 #include	"GameManager.h"
 
 //*******************************************************************************
@@ -22,11 +25,12 @@
 	int		GameManager::coinNum[4] = { 0, 0, 0, 0 };
 	int		GameManager::playerNum = 0;
 	int		GameManager::stageType = 0;
-	int		GameManager::waitTimer = 0;
-	bool	GameManager::changeSceneflag = false; 
 	bool	GameManager::donketsuBoostState = false;
 	int		GameManager::timer = 0;
 	int		GameManager::mode = 0;
+	int		GameManager::worst = 0;
+	int		GameManager::lastBonus = 0;
+	bool	GameManager::newsflag = false;
 
 //-------------------------------------------------------------------------
 //	初期化・解放
@@ -54,11 +58,10 @@
 		}
 		playerNum = 0;
 		stageType = 0;
-		changeSceneflag = false;
 		timer = TIMELIMIT;
-		waitTimer = 2 * SECOND;
 		mode = 0;
 		donketsuBoostState = false;
+		lastBonus = rand() % 4;
 		return	true;
 	}
 
@@ -75,104 +78,41 @@
 	//	更新
 	void	GameManager::Update( void )
 	{
-		switch ( mode )
-		{
-		case MAINGAME:
-			MainGameUpdate();
-			break;
+		//	タイマー更新
+		timer--;
 
-		case TIMEUP:
-			TimeUpUpdate();
-			break;
+		//	残り時間３０秒でどんけつ演出へ
+		if ( timer == 30 * SECOND )
+		{
+			DecideWorst();
+			mode = GAME_MODE::DONKETSU_DIRECTION;
 		}
+
+		//	時間切れ
+		if ( timer <= 0 )
+		{
+			timer = 0;
+			mode = GAME_MODE::TIMEUP;
+			for ( int i = 0; i < PLAYER_NUM; i++ )	m_Player->SetMode( i, PlayerData::WAIT );
+		}
+
+		//	どんけつブースト設定
+		if ( timer <= 30 * SECOND )		donketsuBoostState = true;
+		else	donketsuBoostState = false;
+
+		//	ニュース設定
+		if ( timer == 1 * MINUTE )		newsflag = true;
 	}
 
 	//	描画
 	void	GameManager::Render( void )
 	{
-		switch ( mode )
-		{
-		case MAINGAME:
-			MainGameInfoRender();
-			break;
-
-		case TIMEUP:
-			TimeUpRender();
-			break;
-		}
-	}
-
-	//	メインゲーム情報描画
-	void	GameManager::MainGameInfoRender( void )
-	{
-		m_UI->Render();
-
-		if ( !debug )	return;
-		//	デバッグ用
-		char	str[256];
-		int		maxCoin = 0;
-		for ( int i = 0; i < 4; i++ )
-		{
-			sprintf_s( str, "p%d_coin = %d", i + 1, coinNum[i] );
-			DrawString( str, 20, 150 + i * 30 );
-		}
-
-		if ( donketsuBoostState )
-		{
-			DrawString( "どんけつブーストなう", 600, 250 );
-		}
-	}
-
-	//	タイムアップ描画
-	void	GameManager::TimeUpRender( void )
-	{
-		m_UI->Render();
-
-		if ( !debug )	return;
-		//	デバッグ用
-		char	str[256];
-		int		maxCoin = 0;
-		for ( int i = 0; i < 4; i++ )
-		{
-			sprintf_s( str, "p%d_coin = %d", i + 1, coinNum[i] );
-			DrawString( str, 20, 150 + i * 30 );
-		}
-
-		DrawString( "TimeUp!!", 600, 350, Vector3( 1.0f, 1.0f, 0.0f ) );
+		//	情報描画
 	}
 
 //-------------------------------------------------------------------------
 //	動作関数
 //-------------------------------------------------------------------------
-
-	//	メインゲーム更新
-	void	GameManager::MainGameUpdate( void )
-	{
-		timer--;
-		if ( timer <= 0 )
-		{
-			mode = TIMEUP;
-		}
-		m_UI->SetTimer( timer );
-		m_UI->Update();
-
-		if ( m_UI->GetTimer() <= 30 * SECOND )		donketsuBoostState = true;
-		else	donketsuBoostState = false;
-
-		m_UI->SetDonketsuBoostState( donketsuBoostState );
-	}
-
-	//	タイムアップ更新
-	void	GameManager::TimeUpUpdate( void )
-	{
-		waitTimer--;
-
-		if ( waitTimer <= 0 )
-		{
-			MainFrame->ChangeScene( new sceneResult() );
-			return;
-		}
-	}
 
 	//	コイン加算
 	void	GameManager::AddCoin( int playerNum )
@@ -186,15 +126,29 @@
 		coinNum[playerNum]--;
 	}
 
+	//　ビリが誰かを決定
+	void	GameManager::DecideWorst( void )
+	{
+		//　プレイヤー同士のコイン数を比較して
+		//　コイン数が最小のプレイヤーの番号を返す（はず）
+
+		int work(coinNum[0]);
+		int Min(0);
+		for (int i = 1; i < 4; i++)
+		{
+			if (coinNum[i] < work)
+			{
+				work = coinNum[i];
+				Min = i;
+			}
+		}
+
+		worst = Min;
+	}
+
 //-------------------------------------------------------------------------
 //	情報取得
 //-------------------------------------------------------------------------
-
-	//	シーン切り替えフラグ取得
-	bool	GameManager::GetChangeSceneFlag( void )
-	{
-		return	changeSceneflag;
-	}
 
 	//	プレイヤー人数取得
 	int		GameManager::GetPlayerNum( void )
@@ -205,19 +159,64 @@
 	//	プレイヤータイプ取得
 	int		GameManager::GetCharacterType( int num )
 	{
-		return	charatype[num];
+		int		out = charatype[num];
+		return	out;
 	}
 
 	//	ステージタイプ取得
 	int		GameManager::GetStageType( void )
 	{
-		return	stageType;
+		int		out = stageType;
+		return	out;
 	}
 
 	//	コイン情報取得
 	int		GameManager::GetCoinNum( int num )
 	{
-		return	coinNum[num];
+		int		out = coinNum[num];
+		return out;
+	}
+
+	//　どんけつ中かどうかを取得
+	bool	GameManager::GetDonketsuBoostState( void )
+	{
+		bool	out = donketsuBoostState;
+		return	out;
+	}
+
+	//	ラストボーナス取得
+	int		GameManager::GetLastBonus( void )
+	{
+		int		out = lastBonus;
+		return	out;
+	}
+
+	//	タイマー取得
+	int		GameManager::GetTimer( void )
+	{
+		int		out = timer;
+		return	out;
+	}
+
+	//	ニュースフラグ取得
+	bool	GameManager::GetNewsFlag( void )
+	{
+		bool	out = newsflag;
+		return	out;
+	}
+
+	//	最下位取得
+	int		GameManager::GetWorst( void )
+	{
+		int		out = worst;
+		return	worst;
+	}
+
+	//	モード取得
+	int		GameManager::GetMode( void )
+	{
+		int		out = mode;
+		return	out;
 	}
 
 //-------------------------------------------------------------------------
@@ -247,3 +246,16 @@
 	{
 		coinNum[num] = param;
 	}
+
+	//	モード設定
+	void	GameManager::SetMode( const int& modeNum )
+	{
+		mode = modeNum;
+	}
+
+	//	ニュースフラグ設定
+	void	GameManager::SetNewsFlag( const bool& flag )
+	{
+		newsflag = flag;
+	}
+

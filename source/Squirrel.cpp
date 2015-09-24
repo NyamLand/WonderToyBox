@@ -116,10 +116,8 @@
 		static int time = 0;
 		
 		//	î•ñæ“¾
-		Matrix	mat = GetMatrix();
-		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
+		Vector3	front = GetFront();
 		Vector3	p_pos = GetPos();
-		front.Normalize();
 
 		//	î•ñİ’è
 		Vector3	vec = front * 5.0f;
@@ -142,11 +140,8 @@
 		static int time = 0;
 
 		//	s—ñ‚©‚çî•ñæ“¾
-		Matrix	mat = GetMatrix();
-		Vector3	right = Vector3( mat._11, mat._12, mat._13 );
-		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
-		front.Normalize();
-		right.Normalize();
+		Vector3	front = GetFront();
+		Vector3	right = GetRight();
 		Vector3	p_pos = GetPos();
 
 		//	î•ñİ’è
@@ -183,13 +178,13 @@
 		static int time = 0;
 	
 		//	î•ñæ“¾
-		move = Vector3( 0.0f, 0.0f, 0.0f );
+		SetMove( Vector3( 0.0f, 0.0f, 0.0f ) );
 		Matrix	mat = GetMatrix();
-		Vector3	up = Vector3( mat._21, mat._22, mat._23 );
-		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
+		Vector3	front = GetFront();
+		Vector3	up = GetUp();
 		Vector3	p_pos = GetPos();
-		front.Normalize();
-		up.Normalize();
+		Vector3	moveParam = GetMove();
+		float	angleParam = GetAngle();
 
 		//	î•ñİ’è
 		Vector3	vec = front * 5.0f + up * -15.0f;
@@ -199,7 +194,7 @@
 		switch ( step )
 		{
 		case 0:
-			move.y += 0.5f;
+			moveParam.y += 0.5f;
 			time++;
 			if ( time >= 20 )
 			{
@@ -209,7 +204,7 @@
 			break;
 
 		case 1:
-			angle += 0.1f;
+			angleParam += 0.1f;
 			if ( time % 16 == 0 ) m_BulletManager->Set( p_pos, vec, bulletScale, bulletSpeed );
 			time++;
 			if ( time > 16 * 4 - 1 ) step++;
@@ -221,6 +216,10 @@
 			return true;
 			break;
 		}
+
+		//	î•ñXV
+		SetMove( moveParam );
+		SetAngle( angleParam );
 
 		return	false;
 	}

@@ -1,5 +1,6 @@
 
 #include	"iextreme.h"
+#include	"Random.h"
 #include	"system/System.h"
 #include	"Collision.h"
 #include	"GlobalFunction.h"
@@ -17,6 +18,10 @@
 //	Bulletクラス
 //
 //******************************************************************************
+
+//-------------------------------------------------------------------------------
+//	グローバル
+//-------------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------------
 //	初期化・解放
@@ -141,7 +146,7 @@
 
 				//	コインばらまき方向設定
 				std::uniform_real_distribution<float>	vecrand( -1.0f, 1.0f );
-				Vector3	vec = Vector3( vecrand( ran ), 1.0f, vecrand( ran ) );
+				Vector3	vec = Vector3( Random::GetFloat( -1.0f, 1.0f ), 1.0f, Random::GetFloat( -1.0f, 1.0f ) );
 				vec.Normalize();
 
 				//	プレイヤー番号取得とばらまきパワー設定

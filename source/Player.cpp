@@ -2,8 +2,11 @@
 #include	"iextreme.h"
 #include	"system/System.h"
 #include	"GlobalFunction.h"
+#include	"GameManager.h"
 #include	"Collision.h"
 #include	"Camera.h"
+#include	"PlayerManager.h"
+
 #include	"Player.h"
 
 //****************************************************************************************
@@ -18,10 +21,10 @@
 
 	//	コンストラクタ
 	Player::Player( void ) : obj( NULL ),
-		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ), power( 0 ), diffence( 0 ), knockBackVec( 0.0f, 0.0f, 0.0f ),
-		angle( 0.0f ), scale( 0.0f ), speed( 0.0f ), mode( 0 ), unrivaled( false ),
+		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ), power( 0 ), bPower(power), diffence( 0 ), knockBackVec( 0.0f, 0.0f, 0.0f ),
+		angle( 0.0f ), scale( 0.0f ), speed( 0.0f ),bSpeed(speed), mode( 0 ), unrivaled( false ),
 		attackParam( 0 ), attackPos( 0.0f, 0.0f, 0.0f ), attackPos_top( 0.0f, 0.0f, 0.0f ), attackPos_bottom( 0.0f, 0.0f, 0.0f ), attack_r( 0.0f ), attack_t( 0.0f ), knockBackType( 0 ),
-		isGround( true ), force( 0.0f ), type( 0 ), p_num( 0 )
+		isGround(true), force(0.0f), type(0), p_num(0), CanHyper(true), boosting(false)
 	{
 
 	}
@@ -35,14 +38,47 @@
 	//	初期化
 	bool	Player::Initialize( int input, iex3DObj* org, Vector3 pos )
 	{
+		this->obj = nullptr;
 		this->obj = org;
 		this->input = ::input[input];
 		this->p_num = input;
 		this->pos = pos;
+		this->mode = PlayerData::WAIT;
 		this->passDamageColor = PlayerData::DAMAGE_COLOR[input];
 
-		if ( obj == NULL )	return	false;
+		//　仮（→各キャラのcppでそれぞれ設定すればいい）
+		bPower = power * 2;
+		bSpeed = speed * 2;
+
+		//	パラメータ状態初期化
+		ParameterStateInitialize();
+
+		obj->SetPos( pos );
+		obj->SetAngle( angle );
+		obj->SetScale( scale );
+		obj->Update();
+
+		if ( obj == nullptr )	return	false;
 		return	true;
+	}
+
+	//	パラメータ状態初期化
+	void	Player::ParameterStateInitialize( void )
+	{
+		ParameterStateInitialize( slip );
+		ParameterStateInitialize( boost );
+		ParameterStateInitialize( outrage );
+		ParameterStateInitialize( attackUp );
+		ParameterStateInitialize( speedUp );
+		ParameterStateInitialize( bomb );
+		ParameterStateInitialize( jump );
+	}
+
+	//	パラメータ状態初期化
+	void	Player::ParameterStateInitialize( ParameterState& ps )
+	{
+		ps.state = false;
+		ps.timer = 0;
 	}
 
 //-------------------------------------------------------------------------------------
@@ -74,12 +110,12 @@
 		//	移動値加算
 		pos += move;
 
+		//　どんけつかどうかでパラメータ更新
+		power = (boosting) ? bPower : power;
+		speed = (boosting) ? bSpeed : speed;
+
 		//	情報更新
-		obj->SetPos( pos );
-		obj->SetAngle( angle );
-		obj->SetScale( scale );
 		obj->Animation();
-		obj->Update();
 	}
 
 	//	共通描画
@@ -91,7 +127,6 @@
 	//	共通シェーダー付き描画
 	void	Player::CommonRender( iexShader* shader, LPSTR technique )
 	{
-
 		//	ダメージ時白化計算
 		colorParam -= Vector3( 0.035f, 0.035f, 0.035f );
 		if ( colorParam.x <= 0.0f ){
@@ -105,6 +140,10 @@
 		}
 
 		shader3D->SetValue( "colorParam", colorParam );
+		obj->SetPos(pos);
+		obj->SetAngle(angle);
+		obj->SetScale(scale);
+		obj->Update();
 		obj->Render( shader, technique );
 	}
 
@@ -117,12 +156,16 @@
 	{
 		switch ( mode )
 		{
+		case PlayerData::WAIT:
+			Wait();
+			break;
+
 		case PlayerData::MOVE:
 			Move();
 			break;
 
 		case PlayerData::ATTACK:
-		case	PlayerData::POWERARTS:
+		case PlayerData::POWERARTS:
 		case PlayerData::HYPERARTS:
 		case PlayerData::QUICKARTS:
 			unrivaled = true;
@@ -152,7 +195,7 @@
 	void	Player::StageCollisionCheck( void )
 	{
 		//　床判定
-		float work = Collision::GetHeight( pos, 50.0f );
+		float work = Collision::GetHeight( pos );
 		if ( pos.y <= work )
 		{
 			pos.y = work;
@@ -239,11 +282,14 @@
 			SetMotion( motionData.POSTURE );
 
 			//	徐々に移動量と力減らす
-			move.x *= 0.8f;
-			move.z *= 0.8f;
+			SetResistance( 0.8f );
+			float	param = GetResistance();
+			move.x *=	 param;
+			move.z *=	 param;
 		}
 	}
 
+	//	共通移動
 	void	Player::CommonMove( float speed )
 	{
 		move.x = sinf( angle ) * speed;
@@ -312,6 +358,12 @@
 		this->force = force;
 	}
 
+	//	モードWait
+	void	Player::Wait( void )
+	{
+		SetMotion( motionData.POSTURE );
+	}
+
 	//	モードMove
 	void	Player::Move( void )
 	{
@@ -319,7 +371,11 @@
 
 		if ( input->Get( KEY_A ) == 3 )		mode = PlayerData::QUICKARTS;
 		if ( input->Get( KEY_B ) == 3 )		mode = PlayerData::POWERARTS;
-		if ( input->Get( KEY_C ) == 3 )		mode = PlayerData::HYPERARTS;
+		CanHyper = m_Player->CanHyper;
+		if (CanHyper)
+		{
+			if (input->Get(KEY_C) == 3)		mode = PlayerData::HYPERARTS;
+		}
 		if ( input->Get( KEY_D ) == 3 )		mode = PlayerData::JUMP;
 		if ( input->Get( KEY_B7 ) == 3 )	mode = PlayerData::GUARD;
 		if ( input->Get( KEY_B10 ) == 3 )	mode = PlayerData::DAMAGE_STRENGTH;
@@ -347,6 +403,7 @@
 
 		case PlayerData::HYPERARTS:
 			isEnd = HyperArts();
+			CanHyper = isEnd;
 			if ( !isEnd )	SetAttackParam( attackKind );
 			break;
 		}
@@ -385,10 +442,51 @@
 	}
 
 //-------------------------------------------------------------------------------------
-//	情報設定・取得
+//	パラメータ状態動作関数
 //-------------------------------------------------------------------------------------
 
-	//	設定
+	//	ステート管理
+	void	Player::ParameterStateUpdate( void )
+	{	
+		//--------各イベント・アイテム効果処理を書く--------//
+
+		//	攻撃力アップアイテム効果動作
+		AttackUp();
+	}
+
+	//	攻撃力Upアイテム効果動作
+	void	Player::AttackUp( void )
+	{
+		if ( !attackUp.state )	return;
+		
+		//	タイマー減算
+		attackUp.timer--;
+		
+		//	時間が来たら効果取り消し
+		if ( attackUp.timer <= 0 )
+		{
+			attackUp.timer = 0;
+			attackUp.state = false;
+		}
+	}
+
+	//	スリップ
+
+	//	どんけつブースト
+
+	//	暴走状態
+
+	//	スピードUpアイテム効果動作
+
+	//	ジャンプアイテム効果動作
+
+	//	爆発アイテム効果動作
+
+//-------------------------------------------------------------------------------------
+//	情報設定
+//-------------------------------------------------------------------------------------
+
+	//	モーション設定
 	void	Player::SetMotion( int motion )
 	{
 		if ( obj->GetMotion() != motion )
@@ -396,43 +494,307 @@
 			obj->SetMotion( motion );
 		}
 	}
+
+	//	モード設定
 	void	Player::SetMode( int mode )
 	{
 		if ( this->mode != mode )		this->mode = mode;
 	}
 
-	void	Player::SetPos( Vector3 pos ){ this->pos = pos; }
-	void	Player::SetPos( float x, float y, float z ){ this->pos = Vector3( x, y, z ); }
-	void	Player::SetAngle( float angle ){ this->angle = angle; }
-	void	Player::SetScale( float scale ){ this->scale = scale; }
-	void	Player::SetKnockBackVec( Vector3 knockBackVec ){ this->knockBackVec = knockBackVec; }
-	void	Player::SetMode( PlayerData::STATE state )
+	//	座標設定
+	void	Player::SetPos( const Vector3& pos )
+	{ 
+		this->pos = pos;
+	}
+
+	//	座標設定
+	void	Player::SetPos( const float& x, const float& y, const float& z )
 	{
-		if (GetMode() != state)
+		this->pos = Vector3( x, y, z );
+	}
+
+	//	向き設定
+	void	Player::SetAngle( const float& angle )
+	{ 
+		this->angle = angle;
+	}
+
+	//	スケール設定
+	void	Player::SetScale( const float& scale )
+	{ 
+		this->scale = scale; 
+	}
+
+	//	ノックバック方向設定
+	void	Player::SetKnockBackVec( const Vector3& knockBackVec )
+	{ 
+		this->knockBackVec = knockBackVec;
+	}
+
+	//	モード設定
+	void	Player::SetMode( const PlayerData::STATE& state )
+	{
+		if ( GetMode() != state )		mode = state;
+	}
+
+	//	タイプ設定
+	void	Player::SetType( const int& type )
+	{
+		this->type = type;
+	}
+
+	//	ダメージ時色設定
+	void	Player::SetDamageColor( const Vector3& color )
+	{ 
+		this->colorParam = color;
+	}
+
+	//	渡す色設定
+	void	Player::SetReceiveColor( const Vector3& color )
+	{
+		this->receiveDamageColor = color;
+	}
+
+	//	パワー設定
+	void	Player::SetPower( const int& power )
+	{
+		this->power = power;
+	}
+
+	//	スピード設定
+	void	Player::SetSpeed( const float& speed )
+	{
+		this->speed = speed;
+	}
+
+	//	ブースト設定
+	void	Player::SetBoosting( const bool& boosting )
+	{ 
+		this->boosting = boosting; 
+	}
+
+	//	パラメータ状態設定
+	void	Player::SetParameterState( const PARAMETER_STATE::PARAMETERSTATE& parameterState )
+	{
+		switch ( parameterState )
 		{
-			mode = state;
+		case PARAMETER_STATE::SLIP:
+			SetParameterState( slip, 10 * SECOND );
+			break;
+
+		case PARAMETER_STATE::BOOST:
+			SetParameterState( boost, 30 * SECOND );
+			break;
+
+		case PARAMETER_STATE::OUTRAGE:
+			SetParameterState( outrage, 10 * SECOND );
+			break;
+
+		case PARAMETER_STATE::ATTACKUP:
+			SetParameterState( attackUp, 10 * SECOND );
+			break;
+
+		case PARAMETER_STATE::SPEEDUP:
+			SetParameterState( speedUp, 10 * SECOND );
+			break;
+
+		case PARAMETER_STATE::BOMB:
+			SetParameterState( speedUp, 5 * SECOND );
+			break;
+
+		case PARAMETER_STATE::JUMP:
+			SetParameterState( jump, 10 * SECOND );
+			break;
 		}
 	}
-	void	Player::SetType( int type ){ this->type = type; }
-	void	Player::SetDamageColor( Vector3 color ){ this->colorParam = color; }
-	void	Player::SetReceiveColor( Vector3 color ){ this->receiveDamageColor = color; }
 
-	//	取得
-	Vector3		Player::GetPos( void ){ return	pos; }
-	Matrix		Player::GetMatrix( void ){ return obj->TransMatrix; }
-	float			Player::GetAngle( void ){ return angle; }
-	bool			Player::GetUnrivaled( void ){ return unrivaled; }
-	int				Player::GetMode( void ){ return mode; }
-	int				Player::GetType( void ){ return type; }
-	int				Player::GetP_Num( void ){ return p_num; }
-	Vector3		Player::GetDamageColor( void ){ return	passDamageColor; }
+	//	パラメータ状態設定
+	void	Player::SetParameterState( ParameterState& parameterState, const int& time )
+	{
+		parameterState.state = true;
+		parameterState.timer = time;
+	}
 
-	//	当たり判定用パラメータ取得
-	int				Player::GetAttackParam( void ){ return attackParam; }
-	int				Player::GetKnockBackType( void ){ return knockBackType; }
-	Vector3		Player::GetAttackPos( void ){ return attackPos; }
-	Vector3		Player::GetAttackPos_Top( void ){ return attackPos_top; }
-	Vector3		Player::GetAttackPos_Bottom( void ){ return attackPos_bottom; }
-	float			Player::GetAttack_T( void ){ return attack_t; }
-	float			Player::GetAttack_R( void ){ return attack_r; }
+	//	抵抗力
+	void	Player::SetResistance( const float& resistance )
+	{
+		this->resistance = resistance;
+	}
+
+	//	移動値設定
+	void	Player::SetMove( const Vector3& move )
+	{
+		this->move = move;
+	}
+
+//-------------------------------------------------------------------------------------
+//	情報取得
+//-------------------------------------------------------------------------------------
+	
+	//	座標取得
+	Vector3		Player::GetPos( void )
+	{
+		Vector3	out = pos;
+		return	out;
+	}
+
+	//	行列取得
+	Matrix		Player::GetMatrix( void )
+	{ 
+		Matrix	out = obj->TransMatrix;
+		return	out;
+	}
+
+	//	向き取得
+	float		Player::GetAngle( void )
+	{ 
+		float	out = angle;
+		return out;
+	}
+
+	//	前方取得
+	Vector3	Player::GetFront( void )
+	{
+		Matrix	mat = GetMatrix();
+		Vector3	out = Vector3( mat._31, mat._32, mat._33 );
+		out.Normalize();
+		return	out;
+	}
+
+	//	右方取得
+	Vector3	Player::GetRight( void )
+	{
+		Matrix	mat = GetMatrix();
+		Vector3	out = Vector3( mat._11, mat._12, mat._13 );
+		out.Normalize();
+		return	out;
+	}
+
+	//	上方取得
+	Vector3	Player::GetUp( void )
+	{
+		Matrix	mat = GetMatrix();
+		Vector3	out = Vector3( mat._21, mat._22, mat._23 );
+		out.Normalize();
+		return	out;
+	}
+
+	//	移動値取得
+	Vector3	Player::GetMove( void )
+	{
+		Vector3	out = this->move;
+		return	out;
+	}
+
+	//	無敵状態取得
+	bool		Player::GetUnrivaled( void )
+	{ 
+		bool	out = unrivaled;
+		return out;
+	}
+
+	//	モード取得
+	int			Player::GetMode( void )
+	{
+		int		out = this->mode;
+		return out;
+	}
+
+	//	タイプ取得
+	int			Player::GetType( void )
+	{
+		int		out = this->type;
+		return out; 
+	}
+
+	//	プレイヤー番号取得
+	int			Player::GetP_Num( void )
+	{
+		int		out = this->p_num;
+		return out; 
+	}
+
+	//	ダメージ時色取得
+	Vector3		Player::GetDamageColor( void )
+	{
+		Vector3	out = this->passDamageColor;
+		return	out; 
+	}
+
+	//	ハイパー使用状態取得
+	bool		Player::GetCanHyper( void )
+	{
+		bool	out = CanHyper;
+		return out; 
+	}
+
+	//	パワー取得
+	int			Player::GetPower( void )
+	{
+		int		out = power;
+		return out; 
+	}
+
+	//	スピード取得
+	float		Player::GetSpeed( void )
+	{
+		float	out = speed;
+		return out; 
+	}
+
+	//	攻撃パラメータ取得
+	int			Player::GetAttackParam( void )
+	{
+		int		out = attackParam;
+		return out; 
+	}
+
+	//	ノックバックタイプ取得
+	int			Player::GetKnockBackType( void )
+	{
+		int		out = knockBackType;
+		return out; 
+	}
+
+	//	当たり判定位置取得
+	Vector3		Player::GetAttackPos( void )
+	{
+		Vector3	out = attackPos;
+		return out;
+	}
+
+	//	当たり判定位置上端取得
+	Vector3		Player::GetAttackPos_Top( void )
+	{
+		Vector3	out = attackPos_top;
+		return out; 
+	}
+
+	//	当たり判定位置下端取得
+	Vector3		Player::GetAttackPos_Bottom( void )
+	{
+		Vector3	out = attackPos_bottom;
+		return out; 
+	}
+
+	//	攻撃中割合取得
+	float		Player::GetAttack_T( void )
+	{
+		float	out = attack_t;
+		return out; 
+	}
+
+	//	攻撃当たり判定半径取得
+	float		Player::GetAttack_R( void )
+	{
+		float	out = attack_r;
+		return out; 
+	}
+
+	//	抵抗力・摩擦力取得
+	float		Player::GetResistance( void )
+	{
+		float	out = this->resistance;
+		return	out;
+	}
 

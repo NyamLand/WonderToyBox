@@ -12,9 +12,7 @@
 //	変数
 //----------------------------------------------------------------------------
 
-	//	ストリームサウンド
-	LPDSSTREAM		stream;
-	bool					debug = true;
+	bool		debug = true;
 
 //----------------------------------------------------------------------------
 //	システム
@@ -23,10 +21,10 @@
 	//	解放
 	void	SafeDelete( void* obj )
 	{
-		if ( obj != NULL )
+		if ( obj != nullptr )
 		{
 			delete	obj;
-			obj = NULL;
+			obj = nullptr;
 		}
 	}
 
@@ -114,36 +112,9 @@
 		IEX_DrawText( string, x, y, 300, 300, ARGB( 0xFF, ( DWORD )( 0xFF * color.x ), ( DWORD )( 0xFF * color.y ), ( DWORD )( 0xFF * color.z ) ) );
 	}
 
-
 //----------------------------------------------------------------------------
 //	画像関連
 //----------------------------------------------------------------------------
-
-
-//----------------------------------------------------------------------------
-//	３次関数補間( 出力、始点、終点、現在の割合( 0.0f ~ 1.0f ) )
-//----------------------------------------------------------------------------
-	
-	//	効果音鳴らす
-	void	SetSound( int type, bool loop )
-	{
-		if ( !IEX_GetSoundStatus( type ) )
-		{
-			IEX_PlaySound( type, loop );
-		}
-	}
-	
-	//	BGMならす
-	void	PlayBGM( int type )
-	{
-		stream = IEX_PlayStreamSound( SoundInfo::bgm[type] );
-	}
-
-	//	BGM止める
-	void	StopBGM( void )
-	{
-		IEX_StopStreamSound( stream );
-	}
 
 //----------------------------------------------------------------------
 //	線形補間( 出力、開始値、最終値, 割合 )
@@ -282,7 +253,9 @@
 		case eRapid_Lv4: y2 = 0;                       n = 9; break;//9次元
 		case eRapid_Lv5: y2 = 0;                       n = 11; break;//11次元
 		}
-		return Get(y1, y2, fRate, n);
+
+		float	out = Get( y1, y2, fRate, n );
+		return out;
 	}
 
 //-------------------------------------------------------------------------

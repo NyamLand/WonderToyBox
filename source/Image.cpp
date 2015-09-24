@@ -29,18 +29,22 @@
 	}
 
 	//	初期化
-	bool	Image::Initialize( int x, int y, int w, int h, int sx, int sy, int sw, int sh, float angle, float alpha, int timer )
+	bool	Image::Initialize( float x, float y, float w, float h, int sx, int sy, int sw, int sh, float angle, float alpha, int timer )
 	{
 		this->x = x;
 		this->y = y;
+		this->w = w;
+		this->h = h;
 		this->sx = sx;
 		this->sy = sy;
+		this->sw = sw;
+		this->sh = sh;
 		this->angle = angle;
 		this->alpha = alpha;
 		this->timer = timer;
-		this->plusScale_x = 0;
-		this->plusScale_y = 0;
-		renderflag = true;
+		this->plusScale_x = 0.0f;
+		this->plusScale_y = 0.0f;
+		renderflag = false;
 
 		return	true;
 	}
@@ -65,16 +69,12 @@
 		timer++;
 		alpha -= 1.0f / maxFrame;
 
-		plusScale_x += 140 / ( int )maxFrame;
-		plusScale_y += 140 / ( int )maxFrame;
+		plusScale_x += 140.0f / maxFrame;
+		plusScale_y += 140.0f / maxFrame;
 
-		if ( timer >= ( int )maxFrame )
+		if ( timer >= maxFrame )
 		{
 			alpha = 0.0f;
-		}
-
-		if ( timer >= maxFrame * 2 )
-		{
 			renderflag = false;
 		}
 	}
@@ -86,24 +86,24 @@
 	//	個々のパラメータで描画
 	void	Image::Render( void )
 	{
-		int		width = w + plusScale_x;
-		int		height = h + plusScale_y;
-		int		posx = x - w / 2;
-		int		posy = y - h / 2;
+		float		width = w + plusScale_x;
+		float		height = h + plusScale_y;
+		float		posx = x - width / 2.0f;
+		float		posy = y - height / 2.0f;
 
 		if ( renderflag )
-		obj->Render( posx, posy, width, height, sx, sy, sw, sh, p, angle, RS_COPY, GetColor( 1.0f, 1.0f, 1.0f, alpha ) );
+		obj->Render( ( int )posx, ( int )posy, ( int )width, ( int )height, sx, sy, sw, sh, p, angle, RS_COPY, GetColor( 1.0f, 1.0f, 1.0f, alpha ) );
 	}
 
 	//	個々のパラメータで描画（ 拡大・透明度非採用 ）
 	void	Image::NormalRender( void )
 	{
-		int		width = w;
-		int		height = h;
-		int		posx = x - w / 2;
-		int		posy = y - h / 2;
+		float		width = w;
+		float		height = h;
+		float		posx = x - w / 2;
+		float		posy = y - h / 2;
 
-		obj->Render( posx, posy, width, height, sx, sy, sw, sh, p, angle, RS_COPY );
+		obj->Render( ( int )posx, ( int )posy, ( int )width, ( int )height, sx, sy, sw, sh, p, angle, RS_COPY );
 	}
 
 	//	通常描画
@@ -119,7 +119,7 @@
 	}
 
 	//	回転対応
-	void	Image::Render( int x, int y, int w, int h, int sx, int sy, int sw, int sh, POINT p, float ange, u32 dwFlags, DWORD color )
+	void	Image::Render( int x, int y, int w, int h, int sx, int sy, int sw, int sh, POINT p, float angle, u32 dwFlags, DWORD color )
 	{
 		obj->Render( x, y, w, h, sx, sy, sw, sh, p, angle, dwFlags, color );
 	}
@@ -139,13 +139,34 @@
 	{
 		plusScale_x = plusScale_y = 0;
 		alpha = 1.0f;
-		timer = 0.0f;
+		timer = 0;
 		renderflag = true;
 	}
 
 	//	座標設定(画像の中心を設定)
-	void	Image::SetPos( int x, int y )
+	void	Image::SetPos( float x, float y )
 	{
 		this->x = x;
 		this->y = y;
+	}
+
+	//	サイズ設定
+	void	Image::SetSize( float w, float h )
+	{
+		this->w = w;
+		this->h = h;
+	}
+
+	//	読み込み位置設定
+	void	Image::SetSearchPos( int sx, int sy )
+	{
+		this->sx = sx;
+		this->sy = sy;
+	}
+
+	//	読み込み範囲設定
+	void	Image::SetSearchSize( int sw, int sh )
+	{
+		this->sw = sw;
+		this->sh = sh;
 	}

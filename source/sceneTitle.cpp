@@ -3,6 +3,8 @@
 #include	"system/Framework.h"
 #include	"system/System.h"
 #include	"GlobalFunction.h"
+#include	"Sound.h"
+#include	"Image.h"
 #include	"Collision.h"
 #include	"Camera.h"
 #include	"Particle.h"
@@ -10,10 +12,9 @@
 #include	"PlayerManager.h"
 #include	"sceneMain.h"
 #include	"GameManager.h"
+#include	"sceneLoad.h"
 
 #include	"sceneTitle.h"
-
-#define		PLAYER_NUM	4
 
 //*****************************************************************************
 //
@@ -25,6 +26,8 @@
 //	グローバル
 //-----------------------------------------------------------------------------------
 
+namespace
+{
 	//	カメラ移動用位置情報
 	namespace c_Move{
 		Vector3 TARGET[4]=
@@ -48,6 +51,7 @@
 			"Yねえさん"
 		};
 	}
+}
 
 //-----------------------------------------------------------------------------------
 //	初期化・解放
@@ -66,6 +70,7 @@
 		SafeDelete( m_Camera );
 		SafeDelete( m_Player );
 		SafeDelete( m_CollisionStage );
+		sound->AllStop();
 	}
 	
 	//	初期化
@@ -82,6 +87,9 @@
 
 		//	マネージャー初期化
 		GameManager::Initialize();
+
+		//	音登録
+		sound->Initialize();
 
 		//	カメラ設定
 		m_Camera = new Camera();
@@ -112,7 +120,7 @@
 			//	選択情報初期化
 			selectInfo.playerNum = 1;
 			selectInfo.stageType = 0;
-			for ( int i = 0; i < PLAYER_NUM; i++ )	selectInfo.characterType[i] = 0;
+			for ( int i = 0; i < PLAYER_NUM; i++ )	selectInfo.characterType[i] = i;
 
 			//	カメラ情報構造体初期化
 			cameraInfo.lerpStartPos = cameraInfo.pos = m_Camera->GetPos();
@@ -122,12 +130,6 @@
 		}
 
 		return	true;
-	}
-
-	//	サウンド初期化
-	void	sceneTitle::InitSound( void )
-	{
-
 	}
 
 //-----------------------------------------------------------------------------------
@@ -174,8 +176,12 @@
 			CreditUpdate();
 			break;
 
-		default:
-			mode = 0;
+		case MOVE_MAIN:
+			if ( !sound->GetSEState( SE::DECIDE_SE ) )
+			{
+				MainFrame->ChangeScene( new sceneLoad( new sceneMain() ) );
+				return;
+			}
 			break;
 		}
 
@@ -227,15 +233,9 @@
 			CreditRender();
 			break;
 
-		default:
-			mode = 0;
+		case MOVE_MAIN:
 			break;
 		}
-
-		////	デバッグ用
-		//DrawString( "[sceneTitle]", 50, 50 );
-		//DrawString( "すぺーす押してね", 300, 400, 0xFFFFFF00 );
-		//DrawString( "はーいぷしゅっ！", 1100, 700, 0xFFFFFF00 );
 	}
 
 //******************************************************************
@@ -253,6 +253,7 @@
 			if ( KEY( KEY_SPACE ) == 3 )
 			{
 				mode = MENU;
+				sound->PlaySE( SE::DECIDE_SE );
 			}
 		}
 
@@ -293,17 +294,15 @@
 			}
 
 			//	決定
-			switch ( cameraInfo.posNum )
+			if ( KEY( KEY_SPACE ) == 3 )
 			{
-			case 0:
-				if ( KEY( KEY_SPACE ) == 3 ) mode = SELECT_PLAYERNUM;
-				break;
-			case 1:
-				if ( KEY( KEY_SPACE ) == 3 ) mode = OPTION;
-				break;
-			case 2:
-				if ( KEY( KEY_SPACE ) == 3 ) mode = CREDIT;
-				break;
+				switch ( cameraInfo.posNum )
+				{
+				case 0:		mode = SELECT_PLAYERNUM;	break;
+				case 1:		mode = OPTION;						break;
+				case 2:		mode = CREDIT;						break;
+				}	
+				sound->PlaySE( SE::DECIDE_SE );
 			}
 
 			//	カメラ更新
@@ -355,10 +354,14 @@
 			if ( KEY( KEY_RIGHT ) == 3 )		selectInfo.playerNum++;
 			if ( KEY( KEY_LEFT ) == 3 )		selectInfo.playerNum--;
 
-			if ( selectInfo.playerNum >= PLAYER_NUM )	selectInfo.playerNum = 1;
+			if ( selectInfo.playerNum > PLAYER_NUM )	selectInfo.playerNum = 1;
 			if ( selectInfo.playerNum < 1 )						selectInfo.playerNum = PLAYER_NUM; 
 
-			if ( KEY( KEY_SPACE ) == 3 )		mode = SELECT_CHARACTER;
+			if ( KEY( KEY_SPACE ) == 3 )
+			{
+				mode = SELECT_CHARACTER;
+				sound->PlaySE( SE::DECIDE_SE );
+			}
 			if ( KEY( KEY_DOWN ) == 3 )		mode = MENU;
 		}
 		
@@ -421,11 +424,12 @@
 					if ( input[p]->Get( KEY_SPACE ) == 3 )
 					{
 						//	未選択なら選択
-						//if ( !characterInfo[selectInfo.characterType[p]].select )
-						//{
+						if ( !characterInfo[selectInfo.characterType[p]].select )
+						{
 							characterInfo[selectInfo.characterType[p]].select = true;
 							select[p] = true;
-						//}
+							sound->PlaySE( SE::DECIDE_SE );
+						}
 
 						//	全員分の入力チェック
 						selectCheck = 0;
@@ -438,6 +442,7 @@
 						if ( selectCheck >= selectInfo.playerNum )
 						{
 							step++;
+							sound->PlaySE( SE::DECIDE_SE );
 						}
 					}
 
@@ -460,7 +465,11 @@
 						if ( selectInfo.characterType[p] >= PlayerData::CHARACTER_MAX )	selectInfo.characterType[p] = 0;
 						if ( selectInfo.characterType[p] < 0 )	selectInfo.characterType[p] = PlayerData::CHARACTER_MAX - 1;
 					}
-					if ( KEY( KEY_SPACE ) == 3 ) step++;
+					if ( KEY( KEY_SPACE ) == 3 )
+					{
+						step++;
+						sound->PlaySE( SE::DECIDE_SE );
+					}
 					if ( KEY( KEY_DOWN ) == 3 ) step--;
 				}
 				break;
@@ -508,7 +517,11 @@
 			if ( selectInfo.stageType < 0 )					selectInfo.stageType = STAGE_MAX - 1;
 
 			//	決定・キャンセル
-			if ( KEY( KEY_SPACE ) == 3 )		mode = SELECT_CHECK;
+			if ( KEY( KEY_SPACE ) == 3 )	
+			{
+				mode = SELECT_CHECK;
+				sound->PlaySE( SE::DECIDE_SE );
+			}
 			if ( KEY( KEY_DOWN ) == 3 )		mode = SELECT_CHARACTER;
 		}
 
@@ -544,8 +557,8 @@
 					for ( int p = 0; p < PLAYER_NUM; p++ )		GameManager::SetCharacterType( p, selectInfo.characterType[p] );
 					GameManager::SetPlayerNum( selectInfo.playerNum );
 					GameManager::SetStageType( selectInfo.stageType );
-					MainFrame->ChangeScene( new sceneMain() );
-					return;
+					sound->PlaySE( SE::DECIDE_SE );
+					mode = MOVE_MAIN;
 				}
 				else	mode = SELECT_STAGE;
 			}
@@ -587,7 +600,11 @@
 		//	更新
 		void	sceneTitle::OptionUpdate( void )
 		{
-			if ( KEY( KEY_SPACE ) == 3 ) mode = MENU;
+			if ( KEY( KEY_SPACE ) == 3 )
+			{
+				mode = MENU;
+				sound->PlaySE( SE::DECIDE_SE );
+			}
 		}
 
 		//	描画
@@ -604,7 +621,11 @@
 		//	更新
 		void	sceneTitle::CreditUpdate( void )
 		{
-			if ( KEY( KEY_SPACE ) == 3 ) mode = MENU;
+			if ( KEY( KEY_SPACE ) == 3 )
+			{
+				mode = MENU;
+				sound->PlaySE( SE::DECIDE_SE );
+			}
 		}
 
 		//	描画
