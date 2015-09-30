@@ -236,7 +236,7 @@
 		{
 		case 20:
 			timer++;
-			Particle::BlueFlame( p_pos, 1.0f );
+			particle->BlueFlame(p_pos, 1.0f);
 			
 			if ( timer >= 60 )
 			{

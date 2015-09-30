@@ -135,7 +135,7 @@
 				//	エフェクトだす
 				state = false;
 				float	effectScale = 0.2f;
-				Particle::Spark( p_pos_top, effectScale );
+				particle->Spark( p_pos_top, effectScale );
 
 				//	ノックバック
 				Vector3	knockBackVec = bulletPos - p_pos_bottom;

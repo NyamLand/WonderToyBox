@@ -233,32 +233,31 @@ public:
 
 
 	//	情報取得
-	Vector3	GetPos( void );
-	Vector3	GetDamageColor( void );
-	Vector3	GetFront( void );
-	Vector3	GetRight( void );
-	Vector3	GetUp( void );
-	Vector3	GetMove( void );
-	Matrix	GetMatrix( void );
-	float	GetAngle( void );
-	float	GetSpeed( void );
-	float	GetResistance( void );
-	bool	GetCanHyper( void );
-	bool	GetUnrivaled( void );
-	int		GetMode( void );
-	int		GetType( void );
-	int		GetPower( void );
-	
+	Vector3	GetPos( void )const;
+	Vector3	GetDamageColor( void )const;
+	Vector3	GetFront( void )const;
+	Vector3	GetRight( void )const;
+	Vector3	GetUp( void )const;
+	Vector3	GetMove( void )const;
+	Matrix	GetMatrix( void )const;
+	float	GetAngle( void )const;
+	float	GetSpeed( void )const;
+	float	GetResistance( void )const;
+	bool	GetCanHyper( void )const;
+	bool	GetUnrivaled( void )const;
+	int		GetMode( void )const;
+	int		GetType( void )const;
+	int		GetPower( void )const;
 
 	//	当たり判定用パラメータ取得
-	int		GetAttackParam( void );
-	int		GetKnockBackType( void );
-	Vector3	GetAttackPos( void );
-	Vector3	GetAttackPos_Top( void );
-	Vector3	GetAttackPos_Bottom( void );
-	float	GetAttack_R( void );
-	float	GetAttack_T( void );
-	int		GetP_Num( void );
+	int		GetAttackParam( void )const;
+	int		GetKnockBackType( void )const;
+	Vector3	GetAttackPos( void )const;
+	Vector3	GetAttackPos_Top( void )const;
+	Vector3	GetAttackPos_Bottom( void )const;
+	float	GetAttack_R( void )const;
+	float	GetAttack_T( void )const;
+	int		GetP_Num( void )const;
 };
 
 //****************************************************************************************

@@ -90,7 +90,7 @@
 		itemManager->Initialize();
 			
 		//	パーティクル
-		Particle::Initialize();
+		particle->Initialize();
 
 		//　エフェクト
 		m_Effect = new Effect();
@@ -126,8 +126,8 @@
 		SafeDelete(m_CoinManager);
 		SafeDelete(m_BulletManager);
 		SafeDelete(ui);
-		Particle::Release();
 		Random::Release();
+		particle->Release();
 		itemManager->Release();
 		sound->AllStop();
 	}
@@ -255,7 +255,7 @@
 		m_Player->Update();
 
 		//	パーティクル更新
-		Particle::Update();
+		particle->Update();
 
 		//	コイン更新
 		m_CoinManager->Update();
@@ -300,7 +300,7 @@
 		m_Effect->Render();
 
 		//	パーティクル描画
-		Particle::Render();
+		particle->Render();
 	}
 
 	//	シャドウバッファ描画
