@@ -122,3 +122,12 @@
 		static	Sound	out;
 		return	&out;
 	}
+
+
+
+
+
+
+
+
+
