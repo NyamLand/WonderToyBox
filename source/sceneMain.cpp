@@ -190,7 +190,10 @@
 			}
 			break;
 		}
-
+		if (KEY(KEY_D) == 1){
+			Particle::Hit(Vector3(0, 10.0f, 0), 60, 0.5f);
+		//	Particle::Smoke(Vector3(0, 10.0f, 0), 20, 0.5f);
+		}
 	}
 
 	//	スタート更新

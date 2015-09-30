@@ -976,6 +976,8 @@ public:
 	//	•`‰æ
 	static void Render();
 	static void Render( iexShader* shader, char* name );
+	//	î•ñİ’è
+	static void SetImage( iex2DObj *obj ){ lpTexture = obj; }
 };
 
 //*****************************************************************************

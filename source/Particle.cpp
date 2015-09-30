@@ -15,6 +15,29 @@
 //------------------------------------------------------------------------
 
 iexParticle*	Particle::particle = NULL;
+iex2DObj*		Particle::par[] = {NULL};
+int				Particle::timer = 0;
+
+namespace {
+	namespace{
+		enum{
+			STAR,
+			SMOKE,
+			NONE,
+			AURA,
+		};
+	}
+
+	namespace
+	{
+		const		LPSTR	parpic[] =
+		{
+			"DATA/Effect/star.png",	//	STAR
+			"DATA/Effect/smoke.png",	//	SMOKE
+			"",	//	AURA
+		};
+	}
+}
 
 //------------------------------------------------------------------------
 //	初期化・解放
@@ -33,10 +56,14 @@ iexParticle*	Particle::particle = NULL;
 	}
 
 	//	初期化
-	bool	Particle::Initialize( void )
+	bool	Particle::Initialize(void)
 	{
 		particle = new iexParticle();
-		particle->Initialize( "DATA/particle.png", 10000 );
+		particle->Initialize("DATA/particle.png", 10000);
+		for (int i = 0; i < NONE; i++){
+			par[i] = new iex2DObj(parpic[i]);
+		}
+		timer = 0;
 
 		return	true;
 	}
@@ -55,6 +82,7 @@ iexParticle*	Particle::particle = NULL;
 	void	Particle::Update( void )
 	{
 		particle->Update();
+		timer++;
 	}
 
 	//	描画
@@ -114,24 +142,51 @@ iexParticle*	Particle::particle = NULL;
 	}
 
 	//	ヒット時
-	void	Particle::Hit( const Vector3& pos, const float& scale )
+	void	Particle::Hit( const Vector3& pos, const int& time, const float& scale )
 	{
+		particle->SetImage(par[STAR]);
 		Vector3	Pos, Move, Power;
-		for ( int j = 0; j<10; j++ )
+		if (timer % time != 0) return;
+		for ( int j = 0; j<6; j++ )
 		{
 			Pos.x = pos.x;
 			Pos.y = pos.y;
 			Pos.z = pos.z;
 
-			Move.x = Random::GetInt(-100, 100) * ( 0.002f * scale );
-			Move.y = 1.0f * scale;
-			Move.z = Random::GetInt(-100, 100) * ( 0.002f * scale );
+			Move.x = Random::GetInt(-50, 50) * (0.005f * scale);
+			Move.y = 0.8f * scale + (0.2f * scale * (j % 2));
+			Move.z = Random::GetInt(-20, 20) * 0.02f * scale;
 
 			Power.x = 0.0f;
-			Power.y = Random::GetInt(-100, 0) * ( scale * 0.001f );
+			Power.y = -( scale * 0.05f );
 			Power.z = 0.0f;
 
 			//					画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
-			particle->Set( 1, 0, 0.0f, 30, 0.0f, 20, 1.0f, &Pos, &Move, &Power, 0.8f, 0.8f, 0.0f, scale, RS_COPY );
+			particle->Set( 1, 0, 1.0f, 30, 0.0f, 15, 0.5f, &Pos, &Move, &Power, 0.8f, 0.8f, 0.0f, scale, RS_COPY );
+		}
+	}
+
+	//	ヒット時
+	void	Particle::Smoke( const Vector3& pos, const int& time, const float& scale )
+	{
+		particle->SetImage(par[SMOKE]);
+		Vector3	Pos, Move, Power;
+		if (timer % time != 0) return;
+		for ( int j = 0; j<2; j++ )
+		{
+			Pos.x = pos.x;
+			Pos.y = pos.y;
+			Pos.z = pos.z;
+
+			Move.x = -(0.005f * scale);
+			Move.y = 0.8f * scale;
+			Move.z = 0.0f;// Random::GetInt(-20, 20) * 0.02f * scale;
+
+			Power.x = 0.0f;
+			Power.y = 0.0f;
+			Power.z = 0.0f;
+
+			//					画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
+			particle->Set( 0, 0, 1.0f, 30, 0.0f, 15, 0.5f, &Pos, &Move, &Power, 0.8f, 0.8f, 0.0f, scale, RS_COPY );
 		}
 	}
