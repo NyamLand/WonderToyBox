@@ -12,14 +12,14 @@
 #include	"Particle.h"
 #include	"Player.h"
 #include	"PlayerManager.h"
-#include	"Item.h"
-#include	"ItemManager.h"
 #include	"Coin.h"
 #include	"CoinManager.h"
+#include	"ItemManager.h"
 #include	"Bullet.h"
 #include	"BulletManager.h"
 #include	"sceneResult.h"
 #include	"UI.h"
+#include	"Effect.h"
 
 #include	"sceneMain.h"
 
@@ -87,10 +87,14 @@
 		m_BulletManager->Initialize();
 
 		//	アイテム
-		//itemManager->Initialize();
+		itemManager->Initialize();
 			
 		//	パーティクル
 		Particle::Initialize();
+
+		//　エフェクト
+		m_Effect = new Effect();
+		m_Effect->Initialize();
 
 		//UI
 		ui = new UI();
@@ -103,6 +107,8 @@
 
 		//	BGM再生
 		sound->PlayBGM( BGM::MAIN_BGM );
+
+		//　
 
 		//	全体更新
 		Update();
@@ -122,6 +128,7 @@
 		SafeDelete(ui);
 		Particle::Release();
 		Random::Release();
+		itemManager->Release();
 		sound->AllStop();
 	}
 
@@ -228,6 +235,7 @@
 
 		//	全体更新
 		AllUpdate();
+
 	}
 
 	//	タイムアップ更新
@@ -255,8 +263,11 @@
 		//	リス　バレット更新
 		m_BulletManager->Update();
 
+		//　エフェクト更新
+		m_Effect->Update();
+
 		//	アイテム更新
-		//itemManager->Update();
+		itemManager->Update();
 	}
 
 //*****************************************************************************************************************************
@@ -280,10 +291,13 @@
 		m_Player->Render( shader3D, "toon" );
 		m_CoinManager->Render();
 		m_BulletManager->Render();
-		//itemManager->Render();
+		itemManager->Render();
 		
 		//UI
 		ui->Render( GameManager::GetMode() );
+
+		//　エフェクト描画
+		m_Effect->Render();
 
 		//	パーティクル描画
 		Particle::Render();
@@ -327,6 +341,7 @@
 		//m_Stage->Render( shader3D, "shadowBuf" );
 		m_Player->Render( shader3D, "ShadowBuf" );
 		m_CoinManager->Render( shader3D, "ShadowBuf" );
+		itemManager->Render( shader3D, "ShadowBuf" );
 
 		//	作ったシャドウテクスチャをシェーダーにセット
 		shader3D->SetValue( "ShadowMap", ShadowTex );

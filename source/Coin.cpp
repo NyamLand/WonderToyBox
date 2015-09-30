@@ -199,3 +199,8 @@
 		return	out; 
 	}
 	
+	//	ó‘Ôæ“¾
+	bool		Coin::GetState()
+	{
+		return	state;
+	}

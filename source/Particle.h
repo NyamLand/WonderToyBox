@@ -27,6 +27,7 @@ public:
 	//	“®ìŠÖ”
 	static void	BlueFlame( const Vector3& pos, const float& scale = 1.0f );		//	Â‰Š
 	static void Spark( const Vector3& pos, const float& scale = 1.0f );			//	‰Î‰Ô
+	static void Hit( const Vector3& pos, const float& scale = 1.0f );			//	ƒqƒbƒg
 };
 
 //****************************************************************************************

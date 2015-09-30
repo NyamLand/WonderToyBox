@@ -270,6 +270,7 @@
 		float	axisX = ( float )input->Get( KEY_AXISX );
 		float	axisY = ( float )input->Get( KEY_AXISY );
 		float	length = sqrtf( axisX * axisX + axisY * axisY );
+		static const int MIN_INPUT_STATE = 300;	//	スティック判定最小値
 		if ( length > MIN_INPUT_STATE )
 		{
 			SetMotion( motionData.RUN );
