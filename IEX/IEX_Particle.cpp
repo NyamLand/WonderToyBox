@@ -211,7 +211,7 @@ void iexParticle::Initialize( char* filename, int nParticles )
 	//	全リセット
 	Reset();
 	//	テクスチャ設定
-	lpTexture = new iex2DObj(filename);
+	lpTexture = new iex2DObj( filename );
 }
 
 //------------------------------------------------------

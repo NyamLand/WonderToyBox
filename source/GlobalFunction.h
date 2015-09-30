@@ -84,6 +84,26 @@
 
 	//	‰ğ•ú
 	void	SafeDelete( void* obj );
+	//template<typename T>
+	//void	SafeDelete( T*& ptr )
+	//{
+	//	if ( ptr != nullptr )
+	//	{
+	//		delete	ptr;
+	//		ptr = nullptr;
+	//	}
+	//}
+
+	//	s—ñ‰ğ•ú
+	template<typename T>
+	void	SafeDeleteArray( T*& ptr )
+	{
+		if ( ptr != nullptr )
+		{
+			delete[] ptr;
+			ptr = nullptr;
+		}
+	}
 
 	//	•ÏŠ·
 	POINT	GetPoint( int x, int y );

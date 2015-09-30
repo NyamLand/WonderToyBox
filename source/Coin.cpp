@@ -154,7 +154,7 @@
 	{
 		state = false;
 		float	effectScale = 0.2f;
-		Particle::Spark(pos, effectScale);
+		particle->Spark(pos, effectScale);
 		GameManager::AddCoin(Num);
 		sound->PlaySE( SE::COIN_SE );
 	}

@@ -633,28 +633,25 @@
 //-------------------------------------------------------------------------------------
 	
 	//	座標取得
-	Vector3		Player::GetPos( void )
+	Vector3		Player::GetPos( void )const
 	{
-		Vector3	out = pos;
-		return	out;
+		return	pos;
 	}
 
 	//	行列取得
-	Matrix		Player::GetMatrix( void )
+	Matrix		Player::GetMatrix( void )const
 	{ 
-		Matrix	out = obj->TransMatrix;
-		return	out;
+		return	obj->TransMatrix;
 	}
 
 	//	向き取得
-	float		Player::GetAngle( void )
+	float		Player::GetAngle( void )const
 	{ 
-		float	out = angle;
-		return out;
+		return	angle;
 	}
 
 	//	前方取得
-	Vector3	Player::GetFront( void )
+	Vector3	Player::GetFront( void )const
 	{
 		Matrix	mat = GetMatrix();
 		Vector3	out = Vector3( mat._31, mat._32, mat._33 );
@@ -663,7 +660,7 @@
 	}
 
 	//	右方取得
-	Vector3	Player::GetRight( void )
+	Vector3	Player::GetRight( void )const
 	{
 		Matrix	mat = GetMatrix();
 		Vector3	out = Vector3( mat._11, mat._12, mat._13 );
@@ -672,7 +669,7 @@
 	}
 
 	//	上方取得
-	Vector3	Player::GetUp( void )
+	Vector3	Player::GetUp( void )const
 	{
 		Matrix	mat = GetMatrix();
 		Vector3	out = Vector3( mat._21, mat._22, mat._23 );
@@ -681,121 +678,104 @@
 	}
 
 	//	移動値取得
-	Vector3	Player::GetMove( void )
+	Vector3	Player::GetMove( void )const
 	{
-		Vector3	out = this->move;
-		return	out;
+		return	move;
 	}
 
 	//	無敵状態取得
-	bool		Player::GetUnrivaled( void )
+	bool		Player::GetUnrivaled( void )const
 	{ 
-		bool	out = unrivaled;
-		return out;
+		return	unrivaled;
 	}
 
 	//	モード取得
-	int			Player::GetMode( void )
+	int			Player::GetMode( void )const
 	{
-		int		out = this->mode;
-		return out;
+		return	mode;
 	}
 
 	//	タイプ取得
-	int			Player::GetType( void )
+	int			Player::GetType( void )const
 	{
-		int		out = this->type;
-		return out; 
+		return	type;
 	}
 
 	//	プレイヤー番号取得
-	int			Player::GetP_Num( void )
+	int			Player::GetP_Num( void )const
 	{
-		int		out = this->p_num;
-		return out; 
+		return p_num;
 	}
 
 	//	ダメージ時色取得
-	Vector3		Player::GetDamageColor( void )
+	Vector3		Player::GetDamageColor( void )const
 	{
-		Vector3	out = this->passDamageColor;
-		return	out; 
+		return	passDamageColor; 
 	}
 
 	//	ハイパー使用状態取得
-	bool		Player::GetCanHyper( void )
+	bool		Player::GetCanHyper( void )const
 	{
-		bool	out = CanHyper;
-		return out; 
+		return CanHyper;
 	}
 
 	//	パワー取得
-	int			Player::GetPower( void )
+	int			Player::GetPower( void )const
 	{
-		int		out = power;
-		return out; 
+		return	power;
 	}
 
 	//	スピード取得
-	float		Player::GetSpeed( void )
+	float		Player::GetSpeed( void )const
 	{
-		float	out = speed;
-		return out; 
+		return	speed;
 	}
 
 	//	攻撃パラメータ取得
-	int			Player::GetAttackParam( void )
+	int			Player::GetAttackParam( void )const
 	{
-		int		out = attackParam;
-		return out; 
+		return	attackParam;
 	}
 
 	//	ノックバックタイプ取得
-	int			Player::GetKnockBackType( void )
+	int			Player::GetKnockBackType( void )const
 	{
-		int		out = knockBackType;
-		return out; 
+		return	knockBackType;
 	}
 
 	//	当たり判定位置取得
-	Vector3		Player::GetAttackPos( void )
+	Vector3		Player::GetAttackPos( void )const
 	{
-		Vector3	out = attackPos;
-		return out;
+		return	attackPos;
 	}
 
 	//	当たり判定位置上端取得
-	Vector3		Player::GetAttackPos_Top( void )
+	Vector3		Player::GetAttackPos_Top( void )const
 	{
-		Vector3	out = attackPos_top;
-		return out; 
+		return	attackPos_top;
 	}
 
 	//	当たり判定位置下端取得
-	Vector3		Player::GetAttackPos_Bottom( void )
+	Vector3		Player::GetAttackPos_Bottom( void )const
 	{
-		Vector3	out = attackPos_bottom;
-		return out; 
+		return	attackPos_bottom;
 	}
 
 	//	攻撃中割合取得
-	float		Player::GetAttack_T( void )
+	float		Player::GetAttack_T( void )const
 	{
-		float	out = attack_t;
-		return out; 
+		return	attack_t;
 	}
 
 	//	攻撃当たり判定半径取得
-	float		Player::GetAttack_R( void )
+	float		Player::GetAttack_R( void )const
 	{
-		float	out = attack_r;
-		return out; 
+		return	attack_r;
 	}
 
 	//	抵抗力・摩擦力取得
-	float		Player::GetResistance( void )
+	float		Player::GetResistance( void )const
 	{
-		float	out = this->resistance;
-		return	out;
+		return	resistance;
 	}
 

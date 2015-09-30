@@ -90,7 +90,7 @@
 		itemManager->Initialize();
 			
 		//	パーティクル
-		Particle::Initialize();
+		particle->Initialize();
 
 		//　エフェクト
 		m_Effect = new Effect();
@@ -126,8 +126,8 @@
 		SafeDelete(m_CoinManager);
 		SafeDelete(m_BulletManager);
 		SafeDelete(ui);
-		Particle::Release();
 		Random::Release();
+		particle->Release();
 		itemManager->Release();
 		sound->AllStop();
 	}
@@ -191,8 +191,8 @@
 			break;
 		}
 		if (KEY(KEY_D) == 1){
-			Particle::Hit(Vector3(0, 10.0f, 0), 60, 0.5f);
-		//	Particle::Smoke(Vector3(0, 10.0f, 0), 20, 0.5f);
+			particle->Hit(Vector3(0, 10.0f, 0), 20, 0.5f);
+
 		}
 	}
 
@@ -258,7 +258,7 @@
 		m_Player->Update();
 
 		//	パーティクル更新
-		Particle::Update();
+		particle->Update();
 
 		//	コイン更新
 		m_CoinManager->Update();
@@ -303,7 +303,7 @@
 		m_Effect->Render();
 
 		//	パーティクル描画
-		Particle::Render();
+		particle->Render();
 	}
 
 	//	シャドウバッファ描画

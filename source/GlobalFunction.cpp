@@ -148,7 +148,7 @@
 		if ( t >= 1.0f )	return	true;
 		float rate = t * t * ( 3.0f - 2.0f * t );   // 3ŸŠÖ”•âŠÔ’l‚É•ÏŠ·
 
-		out = p1 * ( 1.0f - rate ) + p2 * rate;   // ‚¢‚í‚ä‚éLerp
+		out = p1 * ( 1.0f - rate ) + p2 * rate;
 		return	false;
 	}
 
