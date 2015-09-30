@@ -46,11 +46,12 @@
 		this->mode = PlayerData::WAIT;
 		this->passDamageColor = PlayerData::DAMAGE_COLOR[input];
 
-		//	パラメータ状態初期化
-		ParameterStateInitialize();
-		
+		//　仮（→各キャラのcppでそれぞれ設定すればいい）
 		bPower = power * 2;
 		bSpeed = speed * 2;
+
+		//	パラメータ状態初期化
+		ParameterStateInitialize();
 
 		obj->SetPos( pos );
 		obj->SetAngle( angle );
@@ -269,6 +270,7 @@
 		float	axisX = ( float )input->Get( KEY_AXISX );
 		float	axisY = ( float )input->Get( KEY_AXISY );
 		float	length = sqrtf( axisX * axisX + axisY * axisY );
+		static const int MIN_INPUT_STATE = 300;	//	スティック判定最小値
 		if ( length > MIN_INPUT_STATE )
 		{
 			SetMotion( motionData.RUN );

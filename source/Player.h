@@ -15,10 +15,11 @@ namespace PlayerData
 	//	被ダメージ用各色
 	const Vector3	DAMAGE_COLOR[] =
 	{
-		{ 1.0f, 1.0f, 1.0f },
-		{ 1.0f, 0.0f, 0.0f },
-		{ 0.0f, 1.0f, 0.0f },
-		{ 0.0f, 0.0f, 1.0f },
+		Vector3( 1.0f, 1.0f, 1.0f ),
+		Vector3( 1.0f, 1.0f, 1.0f ),
+		Vector3( 1.0f, 0.0f, 0.0f ),
+		Vector3( 0.0f, 1.0f, 0.0f ),
+		Vector3( 0.0f, 0.0f, 1.0f ),
 	};
 	
 	//	キャラクター名文字列
@@ -91,9 +92,6 @@ namespace
 class Player
 {
 protected:
-	//	定数
-	const float GRAVITY = -0.01f;
-	static const int MIN_INPUT_STATE = 300;	//	スティック判定最小値
 
 protected:
 	struct ParameterState

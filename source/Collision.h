@@ -17,6 +17,7 @@ public:
 	Collision( void );
 	~Collision( void );
 	static	bool	Initiallize( iexMesh* org );
+	static	void	Release( void );
 
 	//	ステージ判定
 	static	float	GetHeight( const Vector3 pos );

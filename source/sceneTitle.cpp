@@ -3,6 +3,7 @@
 #include	"system/Framework.h"
 #include	"system/System.h"
 #include	"GlobalFunction.h"
+#include	"Sound.h"
 #include	"Image.h"
 #include	"Collision.h"
 #include	"Camera.h"
@@ -11,10 +12,9 @@
 #include	"PlayerManager.h"
 #include	"sceneMain.h"
 #include	"GameManager.h"
+#include	"sceneLoad.h"
 
 #include	"sceneTitle.h"
-
-#define		PLAYER_NUM	4
 
 //*****************************************************************************
 //
@@ -70,7 +70,7 @@ namespace
 		SafeDelete( m_Camera );
 		SafeDelete( m_Player );
 		SafeDelete( m_CollisionStage );
-		//GameManager::Release();
+		sound->AllStop();
 	}
 	
 	//	初期化
@@ -89,7 +89,7 @@ namespace
 		GameManager::Initialize();
 
 		//	音登録
-		InitSound();
+		sound->Initialize();
 
 		//	カメラ設定
 		m_Camera = new Camera();
@@ -130,17 +130,6 @@ namespace
 		}
 
 		return	true;
-	}
-
-	//	サウンド初期化
-	void	sceneTitle::InitSound( void )
-	{
-		IEX_SetWAV( SoundInfo::HYPER_SE, "DATA/Sound/attack-h.wav" );
-		IEX_SetWAV( SoundInfo::POWER_SE, "DATA/Sound/attack-p.wav" );
-		IEX_SetWAV( SoundInfo::QUICK_SE, "DATA/Sound/attack-q.wav" );
-		IEX_SetWAV( SoundInfo::COIN_SE, "DATA/Sound/coin.wav" );
-		IEX_SetWAV( SoundInfo::DECIDE_SE, "DATA/Sound/decide.wav" );
-		IEX_SetWAV( SoundInfo::NEWS_SE, "DATA/Sound/decision3.wav" );
 	}
 
 //-----------------------------------------------------------------------------------
@@ -187,8 +176,12 @@ namespace
 			CreditUpdate();
 			break;
 
-		default:
-			mode = 0;
+		case MOVE_MAIN:
+			if ( !sound->GetSEState( SE::DECIDE_SE ) )
+			{
+				MainFrame->ChangeScene( new sceneLoad( new sceneMain() ) );
+				return;
+			}
 			break;
 		}
 
@@ -240,15 +233,9 @@ namespace
 			CreditRender();
 			break;
 
-		default:
-			mode = 0;
+		case MOVE_MAIN:
 			break;
 		}
-
-		////	デバッグ用
-		//DrawString( "[sceneTitle]", 50, 50 );
-		//DrawString( "すぺーす押してね", 300, 400, 0xFFFFFF00 );
-		//DrawString( "はーいぷしゅっ！", 1100, 700, 0xFFFFFF00 );
 	}
 
 //******************************************************************
@@ -266,7 +253,7 @@ namespace
 			if ( KEY( KEY_SPACE ) == 3 )
 			{
 				mode = MENU;
-				SetSound( SoundInfo::DECIDE_SE );
+				sound->PlaySE( SE::DECIDE_SE );
 			}
 		}
 
@@ -307,29 +294,15 @@ namespace
 			}
 
 			//	決定
-			switch ( cameraInfo.posNum )
+			if ( KEY( KEY_SPACE ) == 3 )
 			{
-			case 0:
-				if ( KEY( KEY_SPACE ) == 3 )
+				switch ( cameraInfo.posNum )
 				{
-					mode = SELECT_PLAYERNUM;
-					SetSound( SoundInfo::DECIDE_SE );
-				}
-				break;
-			case 1:
-				if ( KEY( KEY_SPACE ) == 3 )
-				{
-					mode = OPTION;
-					SetSound( SoundInfo::DECIDE_SE );
-				}
-				break;
-			case 2:
-				if ( KEY( KEY_SPACE ) == 3 )
-				{
-					mode = CREDIT;
-					SetSound( SoundInfo::DECIDE_SE );
-				}
-				break;
+				case 0:		mode = SELECT_PLAYERNUM;	break;
+				case 1:		mode = OPTION;						break;
+				case 2:		mode = CREDIT;						break;
+				}	
+				sound->PlaySE( SE::DECIDE_SE );
 			}
 
 			//	カメラ更新
@@ -387,7 +360,7 @@ namespace
 			if ( KEY( KEY_SPACE ) == 3 )
 			{
 				mode = SELECT_CHARACTER;
-				SetSound( SoundInfo::DECIDE_SE );
+				sound->PlaySE( SE::DECIDE_SE );
 			}
 			if ( KEY( KEY_DOWN ) == 3 )		mode = MENU;
 		}
@@ -455,7 +428,7 @@ namespace
 						{
 							characterInfo[selectInfo.characterType[p]].select = true;
 							select[p] = true;
-							SetSound( SoundInfo::DECIDE_SE );
+							sound->PlaySE( SE::DECIDE_SE );
 						}
 
 						//	全員分の入力チェック
@@ -469,7 +442,7 @@ namespace
 						if ( selectCheck >= selectInfo.playerNum )
 						{
 							step++;
-							SetSound( SoundInfo::DECIDE_SE );
+							sound->PlaySE( SE::DECIDE_SE );
 						}
 					}
 
@@ -495,7 +468,7 @@ namespace
 					if ( KEY( KEY_SPACE ) == 3 )
 					{
 						step++;
-						SetSound( SoundInfo::DECIDE_SE );
+						sound->PlaySE( SE::DECIDE_SE );
 					}
 					if ( KEY( KEY_DOWN ) == 3 ) step--;
 				}
@@ -547,7 +520,7 @@ namespace
 			if ( KEY( KEY_SPACE ) == 3 )	
 			{
 				mode = SELECT_CHECK;
-				SetSound( SoundInfo::DECIDE_SE );
+				sound->PlaySE( SE::DECIDE_SE );
 			}
 			if ( KEY( KEY_DOWN ) == 3 )		mode = SELECT_CHARACTER;
 		}
@@ -584,9 +557,8 @@ namespace
 					for ( int p = 0; p < PLAYER_NUM; p++ )		GameManager::SetCharacterType( p, selectInfo.characterType[p] );
 					GameManager::SetPlayerNum( selectInfo.playerNum );
 					GameManager::SetStageType( selectInfo.stageType );
-					SetSound( SoundInfo::DECIDE_SE );
-					MainFrame->ChangeScene( new sceneMain() );
-					return;
+					sound->PlaySE( SE::DECIDE_SE );
+					mode = MOVE_MAIN;
 				}
 				else	mode = SELECT_STAGE;
 			}
@@ -631,7 +603,7 @@ namespace
 			if ( KEY( KEY_SPACE ) == 3 )
 			{
 				mode = MENU;
-				SetSound( SoundInfo::DECIDE_SE );
+				sound->PlaySE( SE::DECIDE_SE );
 			}
 		}
 
@@ -652,7 +624,7 @@ namespace
 			if ( KEY( KEY_SPACE ) == 3 )
 			{
 				mode = MENU;
-				SetSound( SoundInfo::DECIDE_SE );
+				sound->PlaySE( SE::DECIDE_SE );
 			}
 		}
 

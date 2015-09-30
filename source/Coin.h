@@ -10,7 +10,7 @@
 class Coin
 {
 protected:
-	const float GRAVITY = -0.01f;
+
 
 protected:
 	iexMesh*	obj;
@@ -44,6 +44,7 @@ public:
 	void	SetScale( const float& angle );
 	Vector3	GetPos( void );
 	float		GetAngle( void );
+	bool		GetState( void );
 
 private:
 	friend	class CoinManager;

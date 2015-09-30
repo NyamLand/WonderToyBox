@@ -1,8 +1,10 @@
 
 #include	"iextreme.h"
+#include	"Random.h"
 #include	"system/System.h"
 #include	"Collision.h"
 #include	"GlobalFunction.h"
+#include	"Sound.h"
 #include	"Particle.h"
 #include	"Player.h"
 #include	"PlayerManager.h"
@@ -15,6 +17,10 @@
 //	Coinクラス
 //
 //******************************************************************************
+
+//-------------------------------------------------------------------------------
+//	グローバル
+//-------------------------------------------------------------------------------
 
 //-------------------------------------------------------------------------------
 //	初期化・解放
@@ -93,6 +99,7 @@
 	//	ステージ当たり判定チェック
 	void	Coin::StageCollisionCheck( void )
 	{
+		if ( pos.y >= 15.0f )		return;
 		float work = Collision::GetHeight( pos );
 
 		if ( pos.y <= work )
@@ -138,19 +145,20 @@
 		{
 			std::uniform_real_distribution<float> posrand( -10.0f, 10.0f );
 			std::uniform_real_distribution<float> heightrand( 0.0f, 50.0f );
-			SetPos( Vector3( posrand( ran ), heightrand( ran ), posrand( ran ) ) );
+			SetPos( Vector3( Random::GetFloat( -10.0f, 10.0f ), Random::GetFloat( 0.0f, 50.0f ), Random::GetFloat( -10.0f, 10.0f ) ) );
 		}
 	}
 
-
+	//	ヒット時動作
 	void	Coin::Hitduringtheoperation(const Vector3& pos, const int& Num)
 	{
 		state = false;
 		float	effectScale = 0.2f;
 		Particle::Spark(pos, effectScale);
 		GameManager::AddCoin(Num);
-		IEX_PlaySound(SoundInfo::COIN_SE, false);
+		sound->PlaySE( SE::COIN_SE );
 	}
+
 //-------------------------------------------------------------------------------
 //	情報設定
 //-------------------------------------------------------------------------------
@@ -191,3 +199,8 @@
 		return	out; 
 	}
 	
+	//	状態取得
+	bool		Coin::GetState()
+	{
+		return	state;
+	}

@@ -1,5 +1,6 @@
 
 #include	"iextreme.h"
+#include	"Random.h"
 #include	"GlobalFunction.h"
 #include	"system/Framework.h"
 #include	"system/System.h"
@@ -31,6 +32,7 @@
 	sceneResult::~sceneResult( void )
 	{
 		SafeDelete( view );
+		Random::Release();
 	}
 
 	//	初期化
@@ -51,6 +53,9 @@
 		step = 0;
 		playerNum = 0;
 		wait = 0;
+		
+		//	乱数初期化
+		Random::Initialize();
 
 		//	ソート
 		BubbleSort();
@@ -126,8 +131,7 @@
 	//	ラストボーナス設定
 	void	sceneResult::SetLastBonus( void )
 	{
-		std::uniform_real_distribution<float> bonusrand( 0.0f, 1.0f );
-		if ( bonusrand( ran ) > 0.3f )
+		if ( Random::PercentageRandom( 0.3f ) )
 		{
 			//	ラストボーナスを設定
 			lastBonus = GameManager::GetLastBonus();

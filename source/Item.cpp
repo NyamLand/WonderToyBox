@@ -3,6 +3,7 @@
 #include	"system/System.h"
 #include	"Collision.h"
 #include	"GlobalFunction.h"
+#include	"Sound.h"
 #include	"Particle.h"
 #include	"Player.h"
 #include	"PlayerManager.h"
@@ -17,20 +18,24 @@
 //******************************************************************************
 
 //-------------------------------------------------------------------------------
+//	グローバル
+//-------------------------------------------------------------------------------
+
+//-------------------------------------------------------------------------------
 //	初期化・解放
 //-------------------------------------------------------------------------------
 
-//	コンストラクタ
-Item::Item(void)
-{
+	//	コンストラクタ
+	Item::Item(void)
+	{
 
-}
+	}
 
-//	デストラクタ
-Item::~Item(void)
-{
+	//	デストラクタ
+	Item::~Item(void)
+	{
 
-}
+	}
 
 //-------------------------------------------------------------------------------
 //	更新・描画
@@ -41,22 +46,50 @@ Item::~Item(void)
 //	動作関数
 //-------------------------------------------------------------------------------
 
-//	動作
-void	Item::Move(void)
-{
-	//	重力加算
-	move.y += GRAVITY;
+	//	動作
+	void	Item::Move( void )
+	{
+		//	重力加算
+		move.y += GRAVITY;
 
-	//	回転
-	angle += 0.05f;
+		//	回転
+		angle += 0.05f;
 
-}
+	}
 
-void	Item::Hitduringtheoperation(const Vector3& pos, const int& Num)
-{
-	state = false;
-	float	effectScale = 0.2f;
-	Particle::Spark(pos, effectScale);
+	//	ヒット時動作
+	void	Item::Hitduringtheoperation( const Vector3& pos, const int& Num )
+	{
+		state = false;
+		float	effectScale = 0.2f;
+		Particle::Spark(pos, effectScale);
 	
-	IEX_PlaySound(SoundInfo::COIN_SE, false);
-}
+		sound->PlaySE( SE::COIN_SE );
+	}
+
+//-------------------------------------------------------------------------------
+//	情報設定
+//-------------------------------------------------------------------------------
+
+	//	モデル渡し
+	void	Item::SetMesh( iexMesh* obj )
+	{
+		this->obj = obj;
+	}
+
+	//	状態設定
+	void	Item::SetState( bool state )
+	{
+		this->state = state;
+	}
+
+//-------------------------------------------------------------------------------
+//	情報取得
+//-------------------------------------------------------------------------------
+
+	//	タイプ取得
+	int		Item::GetType( void )
+	{
+		int		out = type;
+		return	out;
+	}

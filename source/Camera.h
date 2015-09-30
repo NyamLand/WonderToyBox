@@ -54,7 +54,7 @@ public:
 
 	//	î•ñæ“¾
 	Vector3	GetPos( void ){ return pos; }
-	Vector3	GetTarget( void ){ return Target; }
+	Vector3	GetTarget( void ){ return target; }
 	Matrix	GetMatrix( void ){ return matView; }
 	
 	//	”’lŒvZ

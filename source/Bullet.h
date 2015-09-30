@@ -10,7 +10,6 @@
 class Bullet
 {
 private:
-	const float GRAVITY = -0.01f;
 	int				limitTimer;
 private:
 	iexMesh*	obj;

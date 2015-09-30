@@ -11,7 +11,6 @@ iexShader*	shader;
 iexShader*	shader2D;
 iexShader*	shader3D;
 iexShader*	shaderD;
-std::mt19937 ran{ std::random_device()() };
 
 //*****************************************************************************************************************************
 //

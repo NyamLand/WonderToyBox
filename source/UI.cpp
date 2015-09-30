@@ -24,11 +24,13 @@
 		//	顔情報
 		namespace FACE_INFO
 		{
+			//　「喜・怒・哀・楽」
 			enum
 			{
-				Normal,
 				Good,
-				Bad,
+				Angry,
+				Sad,
+				Normal,
 			};
 		}	
 	}
@@ -57,8 +59,8 @@
 	{
 		timer = new iex2DObj( "DATA/BG/number.png" );
 		coinbar = new iex2DObj( "DATA/BG/coin_gage.png" );
-		face = new iex2DObj( "DATA/BG/face.png" );
-		countDown = new Image( "DATA/bfUI.png" );
+		face = new iex2DObj( "DATA/UI/chara_emotion.png" );
+		countDown = new Image( "DATA/UI/bfUI.png" );
 
 		//	共通変数初期化
 		changeflag = false;
@@ -68,6 +70,7 @@
 		TimerInitialize();
 		StartAndTimeUpInitialize();
 		NewsBarInitialize();
+		DonketsuDirectionInitialize();
 
 		return	true;
 	}
@@ -88,7 +91,7 @@
 		frame_y = 600;
 		frame_sx = 512;
 		frame_sy = 64;
-		for (int i = 0; i < NUM_BAR; i++)
+		for ( int i = 0; i < NUM_BAR; i++ )
 		{
 			bar_x[i] = frame_x + 16;
 			bar_y[i] = frame_y + 16;
@@ -134,6 +137,18 @@
 		count = 0;
 		waitTimer = 0;
 	}
+
+	//	どんけつ演出初期化
+	void	UI::DonketsuDirectionInitialize( void )
+	{
+		//　キャラ種類
+		for ( int i = 0; i < 4; i++ )
+		{
+			charatype[i] = GameManager::GetCharacterType( i );
+		}
+		roulette = 0;
+		f = 0;
+	}
 	
 //------------------------------------------------------------------------------
 //	更新
@@ -161,6 +176,10 @@
 		case GAME_MODE::CLIMAX:
 			TimerUpdate();
 			NewsBarUpdate();
+			CoinBarUpdate();
+
+			//　どんけつの顔は「怒」に。（時間管理してるとこで↓の処理書きたいけどこれから変更ありそうやからとりあえずここに書いてる許してニャンっ♪）
+			state_type[GameManager::GetWorst()] = FACE_INFO::Angry;
 			break;
 
 		case GAME_MODE::TIMEUP:
@@ -295,17 +314,37 @@
 		if ( waitTimer <= 0 )	changeflag = true;
 	}
 
-	//	どんけつ演出
+	//	どんけつ決定演出
 	void	UI::DonketsuDirectionUpdate( void )
 	{
+		//　演出用時間更新
 		static int wait( 5 * SECOND );
-		wait--;
-
 		if ( wait <= 0 )
 		{
-			wait = 30;
+			//wait = 30;
 			changeflag = true;
 		}
+
+		//　顔ルーレット
+		int 	step;
+		if (wait <= 5 * SECOND)			step = 0;	//　イントロ
+		if (wait <= 4 * SECOND)			step = 1;	//　ルーレット
+		if (wait <= 2 * SECOND + 30)	step = 2;	//　決定
+
+		switch ( step )
+		{
+		case 0:
+			break;
+		case 1:
+			f = roulette % 4;
+			roulette++;
+			break;
+		case 2:
+			f = GameManager::GetWorst();
+			break;
+		}
+
+		wait--;
 	}
 
 //------------------------------------------------------------------------------
@@ -337,6 +376,8 @@
 		case GAME_MODE::CLIMAX:
 			TimerRender();
 			NewsBarRender();
+			CoinBarRender();
+
 			break;
 
 		case GAME_MODE::TIMEUP:
@@ -361,10 +402,10 @@
 		coinbar->Render(bar_x[3], bar_y[3], bar_sx[3], 32, 0, 32 * 3, bar_sx[3], bar_sy[3]);
 
 		//顔
-		face->Render(state_x[0], 550, 32, 32, state_type[0] * 32, 0, 32, 32);
-		face->Render(state_x[1], 550, 32, 32, state_type[1] * 32, 0, 32, 32);
-		face->Render(state_x[2], 550, 32, 32, state_type[2] * 32, 0, 32, 32);
-		face->Render(state_x[3], 550, 32, 32, state_type[3] * 32, 0, 32, 32);
+		face->Render(state_x[0], 550, 32, 32, 0, state_type[0] * 256, 256, 256);
+		face->Render(state_x[1], 550, 32, 32, 0, state_type[1] * 256, 256, 256);
+		face->Render(state_x[2], 550, 32, 32, 0, state_type[2] * 256, 256, 256);
+		face->Render(state_x[3], 550, 32, 32, 0, state_type[3] * 256, 256, 256);
 	}
 
 	//	ニュース描画
@@ -401,6 +442,13 @@
 	//	どんけつ演出
 	void	UI::DonketsuDirectionRender( void )
 	{
+		//　グレーバック
+		DWORD	color = 0xD0000000;
+		iexPolygon::Rect( 0, 0, 1280, 720, RS_COPY, color );
+
+		//　顔ルーレット
+		face->Render( 480, 200, 320, 320, FACE_INFO::Normal * 256, charatype[f] * 256, 256, 256 );
+
 		char	str[256];
 		int		worst = GameManager::GetWorst();
 		DrawString( "どんけつ演出", 200, 50 );
@@ -467,7 +515,7 @@
 					switch ( j )
 					{
 					case 0:
-						state_type[i] = FACE_INFO::Bad;
+						state_type[i] = FACE_INFO::Sad;
 						break;
 
 					case 1:
