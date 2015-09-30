@@ -19,6 +19,7 @@
 #include	"BulletManager.h"
 #include	"sceneResult.h"
 #include	"UI.h"
+#include	"Effect.h"
 
 #include	"sceneMain.h"
 
@@ -91,6 +92,10 @@
 		//	パーティクル
 		Particle::Initialize();
 
+		//　エフェクト
+		m_Effect = new Effect();
+		m_Effect->Initialize();
+
 		//UI
 		ui = new UI();
 		ui->Initialize();
@@ -102,6 +107,8 @@
 
 		//	BGM再生
 		sound->PlayBGM( BGM::MAIN_BGM );
+
+		//　
 
 		//	全体更新
 		Update();
@@ -228,6 +235,7 @@
 
 		//	全体更新
 		AllUpdate();
+
 	}
 
 	//	タイムアップ更新
@@ -254,6 +262,9 @@
 
 		//	リス　バレット更新
 		m_BulletManager->Update();
+
+		//　エフェクト更新
+		m_Effect->Update();
 
 		//	アイテム更新
 		itemManager->Update();
@@ -284,6 +295,9 @@
 		
 		//UI
 		ui->Render( GameManager::GetMode() );
+
+		//　エフェクト描画
+		m_Effect->Render();
 
 		//	パーティクル描画
 		Particle::Render();
