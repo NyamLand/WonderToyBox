@@ -8,6 +8,7 @@
 #include	"GameManager.h"
 #include	"Player.h"
 #include	"sceneTitle.h"
+#include	"PlayerManager.h"
 #include	"sceneMain.h"
 
 #include	"sceneResult.h"
@@ -32,6 +33,8 @@
 	sceneResult::~sceneResult( void )
 	{
 		SafeDelete( view );
+	
+		SafeDelete( back );
 		Random::Release();
 	}
 
@@ -40,12 +43,16 @@
 	{
 		//	カメラ設定
 		view = new iexView();
+	
+		back = new iex2DObj("DATA/Result/back.png");
 
 		for ( int i = 0; i < 4; i++ )
 		{
 			coinNum[i] = 0;
 			resultInfo[i].p_Coin = GameManager::GetCoinNum( i );
 			resultInfo[i].p_num = i;
+
+			
 		}
 
 		//	変数初期化
@@ -86,6 +93,8 @@
 		view->Activate();
 		view->Clear();
 
+		back->Render();
+		
 		//	デバッグ文字描画
 		DrawString( "[sceneResult]", 50, 50 );
 		DrawString( "すぺーすでタイトルへ", 300, 400, 0xFFFFFF00 );
