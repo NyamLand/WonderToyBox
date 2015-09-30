@@ -13,29 +13,47 @@
 //	グローバル
 //------------------------------------------------------------------------
 
-iexParticle*	Particle::particle = NULL;
+namespace
+{
+	namespace
+	{
+		enum EFF_TYPE
+		{
+			NORMAL,
+			STAR,
+			END,
+		};
+	}
+
+	namespace
+	{
+		const		LPSTR	filename[] =
+		{
+			"DATA/particle.png",
+			"DATA/Effect/star.png",
+			"",
+			"",
+		};
+	}
+}
+
 
 //------------------------------------------------------------------------
 //	初期化・解放
 //------------------------------------------------------------------------
 
-	//	コンストラクタ
-	Particle::Particle( void )
-	{
-
-	}
-
-	//	デストラクタ
-	Particle::~Particle( void )
-	{
-		Release();
-	}
-
 	//	初期化
 	bool	Particle::Initialize( void )
 	{
-		particle = new iexParticle();
-		particle->Initialize( "DATA/particle.png", 10000 );
+		pt = nullptr;
+		pt = new iexParticle();
+		pt->Initialize( "DATA/particle.png", 10000 );
+
+		effectImage = nullptr;
+		effectImage = new iex2DObj * [END];
+		for ( int i = 0; i < END; i++ )	effectImage[i] = new iex2DObj( filename[i] );
+
+		pt->SetImage( effectImage[ STAR ] );
 
 		return	true;
 	}
@@ -43,7 +61,8 @@ iexParticle*	Particle::particle = NULL;
 	//	解放
 	void	Particle::Release( void )
 	{
-		SafeDelete( particle );
+		SafeDelete( pt );
+		SafeDeleteArray( effectImage );
 	}
 
 //------------------------------------------------------------------------
@@ -53,13 +72,13 @@ iexParticle*	Particle::particle = NULL;
 	//	更新
 	void	Particle::Update( void )
 	{
-		particle->Update();
+		pt->Update();
 	}
 
 	//	描画
 	void	Particle::Render( void )
 	{
-		particle->Render();
+		pt->Render();
 	}
 
 //------------------------------------------------------------------------
@@ -85,7 +104,7 @@ iexParticle*	Particle::particle = NULL;
 			Power.z = 0.0f;
 
 			//	画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
-			particle->Set( 6, 0, 0.0f, 30, 0.0f, 20, 1.0f, &Pos, &Move, &Power, 0.2f, 1.0f, 0.3f, scale, RS_COPY );
+			pt->Set( 6, 0, 0.0f, 30, 0.0f, 20, 1.0f, &Pos, &Move, &Power, 0.2f, 1.0f, 0.3f, scale, RS_COPY );
 		}
 	}
 
@@ -108,6 +127,17 @@ iexParticle*	Particle::particle = NULL;
 			Power.z = 0.0f;
 
 			//					画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
-			particle->Set( 1, 0, 0.0f, 30, 0.0f, 20, 1.0f, &Pos, &Move, &Power, 0.8f, 0.8f, 0.0f, scale, RS_COPY );
+			pt->Set( 1, 0, 0.0f, 30, 0.0f, 20, 1.0f, &Pos, &Move, &Power, 0.8f, 0.8f, 0.0f, scale, RS_COPY );
 		}
+	}
+
+//------------------------------------------------------------------------
+//	情報取得
+//------------------------------------------------------------------------
+
+	//	実体取得
+	Particle*	Particle::GetInstance( void )
+	{
+		static	Particle	out;
+		return	&out;
 	}

@@ -89,7 +89,7 @@
 		itemManager->Initialize();
 			
 		//	パーティクル
-		Particle::Initialize();
+		particle->Initialize();
 
 		//UI
 		ui = new UI();
@@ -119,8 +119,8 @@
 		SafeDelete(m_CoinManager);
 		SafeDelete(m_BulletManager);
 		SafeDelete(ui);
-		Particle::Release();
 		Random::Release();
+		particle->Release();
 		itemManager->Release();
 		sound->AllStop();
 	}
@@ -247,7 +247,7 @@
 		m_Player->Update();
 
 		//	パーティクル更新
-		Particle::Update();
+		particle->Update();
 
 		//	コイン更新
 		m_CoinManager->Update();
@@ -286,7 +286,7 @@
 		ui->Render( GameManager::GetMode() );
 
 		//	パーティクル描画
-		Particle::Render();
+		particle->Render();
 	}
 
 	//	シャドウバッファ描画

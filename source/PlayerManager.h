@@ -37,7 +37,7 @@ public:
 	void	Render( iexShader* shader, LPSTR technique );
 
 	//	“®ìŠÖ”
-	void	DonketsuBoost();
+	void	DonketsuBoost( void );
 	void	RaiseStatus( int worst, int type );
 
 	//	“–‚½‚è”»’è
@@ -46,17 +46,17 @@ public:
 	void	HitCheckCapsuleVSCapsule( Player* p1, Player* p2 );
 
 	//	î•ñæ“¾
-	Vector3		GetPos( int player );
-	float		GetAngle( int player );
-	Matrix		GetMatrix( int player );
-	bool		GetUnrivaled( int player );
-	int			GetAttackParam( int player );
-	int			GetCoinNum( int player );
-	int			GetType( int player );
-	int			GetP_Num( int player );
-	bool		GetCanHyper( int player );
-	int			GetPower( int player );
-	float		GetSpeed( int player );
+	Vector3	GetPos( int player )const;
+	float		GetAngle( int player )const;
+	Matrix	GetMatrix( int player )const;
+	bool		GetUnrivaled( int player )const;
+	int			GetAttackParam( int player )const;
+	int			GetCoinNum( int player )const;
+	int			GetType( int player )const;
+	int			GetP_Num( int player )const;
+	bool		GetCanHyper( int player )const;
+	int			GetPower( int player )const;
+	float		GetSpeed( int player )const;
 
 	//	î•ñİ’è
 	void		SetPos( int player, Vector3 pos );

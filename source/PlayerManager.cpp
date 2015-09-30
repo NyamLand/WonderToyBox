@@ -27,7 +27,7 @@
 //------------------------------------------------------------------------------
 
 	//	実体の宣言
-	PlayerManager*		m_Player = NULL;
+	PlayerManager*		m_Player = nullptr;
 
 //------------------------------------------------------------------------------
 //	初期化・解放
@@ -155,7 +155,7 @@
 	}
 
 	//　ステータス上昇（どんけつ）
-	void		PlayerManager::RaiseStatus( int worst, int type )
+	void	PlayerManager::RaiseStatus( int worst, int type )
 	{
 		
 	}
@@ -222,7 +222,7 @@
 		{		
 			//	エフェクトだす
 			float	effectScale = 1.0f;
-			Particle::Spark( p2_top, effectScale );
+			particle->Spark(p2_top, effectScale);
 
 			//	ノックバック
 			Vector3	knockBackVec = p1_attackPos - p2_bottom;
@@ -274,7 +274,7 @@
 		{
 			//	エフェクトだす
 			float	effectScale = 1.0f;
-			Particle::Spark( p2_top, effectScale );
+			particle->Spark(p2_top, effectScale);
 
 			//	ノックバック
 			Vector3	knockBackVec = p1_attack_top - p2_bottom;
@@ -308,15 +308,15 @@
 //------------------------------------------------------------------------------
 
 	//	情報取得
-	Vector3	PlayerManager::GetPos( int player ){ return	c_Player[player]->GetPos();	}
-	float		PlayerManager::GetAngle( int player ){ return	c_Player[player]->GetAngle(); }
-	Matrix	PlayerManager::GetMatrix( int player ){ return	c_Player[player]->GetMatrix(); }
-	bool		PlayerManager::GetUnrivaled( int player ){ return c_Player[player]->GetUnrivaled(); }
-	int			PlayerManager::GetType( int player ){ return c_Player[player]->GetType(); }
-	int			PlayerManager::GetP_Num( int player ){ return c_Player[player]->GetP_Num(); }
-	bool		PlayerManager::GetCanHyper(int player){ return c_Player[player]->GetCanHyper(); }
-	int			PlayerManager::GetPower(int player){ return c_Player[player]->GetPower(); }
-	float		PlayerManager::GetSpeed(int player){ return c_Player[player]->GetSpeed(); }
+	Vector3	PlayerManager::GetPos( int player )const{ return	c_Player[player]->GetPos();	}
+	float		PlayerManager::GetAngle( int player )const{ return	c_Player[player]->GetAngle(); }
+	Matrix	PlayerManager::GetMatrix( int player )const{ return	c_Player[player]->GetMatrix(); }
+	bool		PlayerManager::GetUnrivaled( int player )const{ return c_Player[player]->GetUnrivaled(); }
+	int			PlayerManager::GetType( int player )const{ return c_Player[player]->GetType(); }
+	int			PlayerManager::GetP_Num( int player )const{ return c_Player[player]->GetP_Num(); }
+	bool		PlayerManager::GetCanHyper(int player)const{ return c_Player[player]->GetCanHyper(); }
+	int			PlayerManager::GetPower(int player)const{ return c_Player[player]->GetPower(); }
+	float		PlayerManager::GetSpeed(int player)const{ return c_Player[player]->GetSpeed(); }
 
 	//	情報設定
 	void		PlayerManager::SetPos( int player, Vector3 pos ){ c_Player[player]->SetPos( pos ); }
