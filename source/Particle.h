@@ -13,6 +13,7 @@ class Particle
 private:
 	iexParticle*		pt;
 	iex2DObj**		effectImage;
+	int						timer;
 
 public:
 	//	‰Šú‰»E‰ğ•ú
@@ -25,7 +26,9 @@ public:
 
 	//	“®ìŠÖ”
 	void	BlueFlame( const Vector3& pos, const float& scale = 1.0f );		//	Â‰Š
-	void Spark( const Vector3& pos, const float& scale = 1.0f );			//	‰Î‰Ô
+	void	Spark( const Vector3& pos, const float& scale = 1.0f );			//	‰Î‰Ô
+	void	Particle::Hit( const Vector3& pos, const int& time = 1, const float& scale = 1.0f );				//	¯
+	void	Particle::Smoke( const Vector3& pos, const int& time = 1, const float& scale = 1.0f );				//	‰Œ
 
 	//	î•ñæ“¾
 	static	Particle*	GetInstance( void );

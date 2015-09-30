@@ -190,7 +190,10 @@
 			}
 			break;
 		}
+		if (KEY(KEY_D) == 1){
+			particle->Hit(Vector3(0, 10.0f, 0), 20, 0.5f);
 
+		}
 	}
 
 	//	スタート更新
