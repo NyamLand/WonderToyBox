@@ -269,7 +269,7 @@ namespace
 		//	XV
 		void	sceneTitle::TitleUpdate( void )
 		{
-			
+			if ( input[0]->Get( KEY_SPACE ) == 3 )	mode = TITLE_MODE::MENU;
 		}
 
 		//	•`‰æ

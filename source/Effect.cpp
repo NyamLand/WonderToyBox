@@ -2,6 +2,7 @@
 #include	"iextreme.h"
 #include	"system\System.h"
 #include	"GlobalFunction.h"
+#include	"Particle.h"
 #include	"Effect.h"
 #include	"PlayerManager.h"
 #include	"GameManager.h"
@@ -38,7 +39,7 @@
 
 		circle_pic = new iex2DObj("DATA/Effect/circle.png");
 
-		for (int i = 0; i < 4; i++){
+		for ( int i = 0; i < 4; i++ ){
 			//	’¸“_Ý’è
 			circle[i].poligon[0].x = -3.6f;
 			circle[i].poligon[0].y = 0;
@@ -120,6 +121,7 @@
 		PoligonSet();
 		CirclePosSet();
 		c_angle += 0.1f;
+
 	}
 
 	//	•`‰æ
@@ -127,7 +129,8 @@
 	{
 		if(isAura)	aura->Render(shader3D,"effect_add");
 		for (int i = 0; i < 4; i++){
-			iexPolygon::Render3D(circle_out[i].poligon, 2, circle_pic, RS_COPY);
+			iexPolygon::Render3D( circle_out[i].poligon, 2, circle_pic, RS_COPY );
+			particle->BlueFlame( Vector3( circle_out[0].poligon[i].x, circle_out[0].poligon[i].y, circle_out[0].poligon[i].z ), 0.1f );
 		}
 	}
 
@@ -190,11 +193,14 @@
 			circle_out[i].poligon[3].tu = 1.0f;
 			circle_out[i].poligon[3].tv = 1.0f;
 
-
+			//	’¸“_‰ñ“]
 			for (int i = 0; i < 4; i++)
 			{
-				circle_out[i].poligon[i].x = cosf(c_angle) * (circle[i].poligon[i].x - circle[i].c_pos.x) - sinf(c_angle) * (circle[i].poligon[i].z - circle[i].c_pos.z) + circle[i].c_pos.x;
-				circle_out[i].poligon[i].z = sinf(c_angle) * (circle[i].poligon[i].x - circle[i].c_pos.x) + cosf(c_angle) * (circle[i].poligon[i].z - circle[i].c_pos.z) + circle[i].c_pos.z;
+				for (int n = 0; n < 4; n++)
+				{
+					circle_out[i].poligon[n].x = cosf(c_angle) * (circle[i].poligon[n].x - circle[i].c_pos.x) - sinf(c_angle) * (circle[i].poligon[n].z - circle[i].c_pos.z) + circle[i].c_pos.x;
+					circle_out[i].poligon[n].z = sinf(c_angle) * (circle[i].poligon[n].x - circle[i].c_pos.x) + cosf(c_angle) * (circle[i].poligon[n].z - circle[i].c_pos.z) + circle[i].c_pos.z;
+				}
 			}
 		}
 	}
@@ -203,8 +209,8 @@
 	{
 		for (int i = 0; i < 4; i++)
 		{
-			circle[i].c_pos = m_Player->GetPos(i) + Vector3(0, 0.4, 0);
-			circle_out[i].c_pos = m_Player->GetPos(i) + Vector3(0, 0.4, 0);
+			circle[i].c_pos = m_Player->GetPos(i) + Vector3( 0.0f, 0.4f, 0.0f );
+			circle_out[i].c_pos = m_Player->GetPos(i) + Vector3( 0.0f, 0.4f, 0.0f );
 		}
 	}
 
