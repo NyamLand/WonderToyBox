@@ -56,7 +56,7 @@
 			resultInfo[i].p_Coin = gameManager->GetCoinNum( i );
 			resultInfo[i].p_num = i;
 
-			int		characterType = GameManager::GetCharacterType(i);
+			int		characterType = gameManager->GetCharacterType(i);
 			//Vector3	pos = Vector3(-20.0f + (10.0f * i), 0.0f, 0.0f);
 			Vector3	pos = Vector3(0.0f, 0.0f, 0.0f);
 			m_Player->Initialize(i, characterType, pos);
