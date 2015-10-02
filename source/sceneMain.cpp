@@ -191,7 +191,9 @@
 			break;
 		}
 		if (KEY(KEY_D) == 1){
-			particle->Hit(Vector3(0, 10.0f, 0), 20, 0.5f);
+			//particle->Hit(Vector3(0, 10.0f, 0), 20, 0.5f);
+			//particle->Smoke(Vector3(0, 10.0f, 0), 20, 0.5f);
+			particle->Aura(Vector3(0, 10.0f, 0), 3, 0.5f);
 
 		}
 	}

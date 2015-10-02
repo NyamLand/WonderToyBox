@@ -29,6 +29,8 @@ public:
 	void	Spark( const Vector3& pos, const float& scale = 1.0f );			//	‰Î‰Ô
 	void	Particle::Hit( const Vector3& pos, const int& time = 1, const float& scale = 1.0f );				//	¯
 	void	Particle::Smoke( const Vector3& pos, const int& time = 1, const float& scale = 1.0f );				//	‰Œ
+	void	Particle::Aura(const Vector3& pos, const int& time = 1, const float& scale = 1.0f);				//	‰Œ
+
 
 	//	î•ñæ“¾
 	static	Particle*	GetInstance( void );

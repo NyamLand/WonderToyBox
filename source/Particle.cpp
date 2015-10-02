@@ -23,6 +23,7 @@ namespace
 			NORMAL,
 			STAR,
 			SMOKE,
+			AURA,
 			END,
 		};
 	}
@@ -76,7 +77,6 @@ namespace
 	void	Particle::Update( void )
 	{
 		pt->Update();
-		timer++;
 	}
 
 	//	描画
@@ -137,11 +137,12 @@ namespace
 		}
 	}
 
-	//	ヒット時
+	//	星
 	void	Particle::Hit( const Vector3& pos,const int& time, const float& scale )
 	{
 		pt->SetImage( effectImage[STAR] );
 		Vector3	Pos, Move, Power;
+		timer++;
 		if (timer % time != 0) return;
 
 		for ( int j = 0; j<10; j++ )
@@ -163,20 +164,21 @@ namespace
 		}
 	}
 
-	//	ヒット時
+	//	煙
 	void	Particle::Smoke(const Vector3& pos,const int& time, const float& scale)
 	{
 		pt->SetImage(effectImage[SMOKE]);
 		Vector3	Pos, Move, Power;
+		timer++;
 		if (timer % time != 0) return;
-		for (int j = 0; j<10; j++)
+		for (int j = 0; j<1; j++)
 		{
 			Pos.x = pos.x;
 			Pos.y = pos.y;
 			Pos.z = pos.z;
 
-			Move.x = -(0.005f * scale);
-			Move.y = 0.8f * scale;
+			Move.x = 0.1f * scale;
+			Move.y = 0.08f * scale;
 			Move.z = 0.0f;
 
 			Power.x = 0.0f;
@@ -184,10 +186,49 @@ namespace
 			Power.z = 0.0f;
 
 			//					画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
-			pt->Set(0, 0, 1.0f, 30, 0.0f, 15, 0.5f, &Pos, &Move, &Power, 0.8f, 0.8f, 0.0f, scale, RS_COPY);
+			pt->Set(0, 0, 1.0f, 30, 1.0f, 15, 1.0f, &Pos, &Move, &Power, 1.0f, 1.0f, 1.0f, scale, RS_COPY);
 		}
 	}
 
+
+	//	オーラ
+	void	Particle::Aura(const Vector3& pos, const int& time, const float& scale)
+	{
+		pt->SetImage(effectImage[NORMAL]);
+		Vector3	Pos, Move, Power;
+		timer++;
+		if (timer % time != 0) return;
+		for (int j = 0; j<20; j++)
+		{
+			//Pos.x = pos.x;// + (Random::GetInt(-500, 500)	 * (0.001f * scale));
+			//Pos.y = pos.y;// + (Random::GetInt(-500, 0)	 * (0.001f * scale));
+			//Pos.z = pos.z;// + (Random::GetInt(-500, 500)	 * (0.001f * scale));
+
+			//Move.x = Random::GetInt(-100, 100)	 * (0.001f * scale);
+			//Move.y = 0.0f;
+			//Move.z = Random::GetInt(-100, 100)	 * (0.001f * scale);
+
+			//Power.x = 0.0f;
+			//Power.y = Random::GetInt( 0  , 200 ) * ( scale * 0.00015f );
+			//Power.z = 0.0f;
+
+
+			Pos.x = pos.x+ (Random::GetInt(-100, 100)	 * (0.03f * scale));
+			Pos.y = pos.y+ (Random::GetInt(-100, 100)	 * (0.03f * scale));
+			Pos.z = pos.z+ (Random::GetInt(-100, 100)	 * (0.03f * scale));
+
+			Move.x = Random::GetInt(-100, 100)	 * (0.001f * scale);
+			Move.y = Random::GetInt(-100, 100)	 * (0.001f * scale);
+			Move.z = Random::GetInt(-100, 100)	 * (0.001f * scale);
+
+			Power.x = 0.0f;
+			Power.y = 0.001f * scale;
+			Power.z = 0.0f;
+
+			//					画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
+			pt->Set(0, 0, 0.7f, 10, 0.7f, 5, 0.7f, &Pos, &Move, &Power, 0.2f, 0.2f, 0.0f, scale, RS_COPY);
+		}
+	}
 //------------------------------------------------------------------------
 //	情報取得
 //------------------------------------------------------------------------
