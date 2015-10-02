@@ -4,6 +4,7 @@
 #include	"GlobalFunction.h"
 #include	"system/Framework.h"
 #include	"system/System.h"
+#include	"Collision.h"
 #include	"Image.h"
 #include	"GameManager.h"
 #include	"Player.h"
@@ -34,7 +35,7 @@ int y = 0;
 	//	デストラクタ
 	sceneResult::~sceneResult( void )
 	{
-		SafeDelete( view );
+		SafeDelete( m_Camera );
 		SafeDelete(m_Player);
 		SafeDelete( back );
 		Random::Release();
@@ -44,24 +45,30 @@ int y = 0;
 	bool	sceneResult::Initialize( void )
 	{
 		//	カメラ設定
-		view = new iexView();
-		m_Player = new PlayerManager();
-		back = new iex2DObj("DATA/Result/back.png");
-		r_number = new iex2DObj("DATA/UI/number.png");
 		m_Camera = new Camera();
-		
+
+		//	プレイヤー初期化
+		m_Player = new PlayerManager();
+
+		//	画像初期化
+		back = new iex2DObj( "DATA/Result/back.png");
+		r_number = new iex2DObj( "DATA/UI/number.png");
+
+		//	コリジョン
+		collision = new iexMesh( "DATA/BG/CollisionGround.imo" );
+		Collision::Initiallize( collision );
 		
 		for ( int i = 0; i < 4; i++ )
 		{
-			coinNum[i] = GameManager::GetCoinNum(i);
-			resultInfo[i].p_Coin = GameManager::GetCoinNum( i );
+			//	リザルト情報初期化
+			coinNum[i] = gameManager->GetCoinNum(i);
+			resultInfo[i].p_Coin = gameManager->GetCoinNum( i );
 			resultInfo[i].p_num = i;
 
-			int		characterType = GameManager::GetCharacterType(i);
-			//Vector3	pos = Vector3(-20.0f + (10.0f * i), 0.0f, 0.0f);
-			Vector3	pos = Vector3(0.0f, 0.0f, 0.0f);
+			//	プレイヤー初期化
+			int		characterType = gameManager->GetCharacterType(i);
+			Vector3	pos = Vector3(-20.0f + (10.0f * i), 0.0f, 0.0f);
 			m_Player->Initialize(i, characterType, pos);
-		//	m_Player->Update();
 		}
 
 		//	変数初期化
@@ -89,12 +96,19 @@ int y = 0;
 	//	更新
 	void	sceneResult::Update( void ) 
 	{
+		//	画像移動
 		if (KEY_Get(KEY_UP) == 1)y -= 10;
 		if (KEY_Get(KEY_DOWN) == 1)y += 10;
 		if (KEY_Get(KEY_RIGHT) == 1)x += 10;
 		if (KEY_Get(KEY_LEFT) == 1)x -= 10;
-		//view->Set(Vector3(0.0f,0.0f,-10.0f),m_Player->GetPos(0));
-		m_Camera->Update(VIEW_MODE::SLERP, m_Player->GetPos(0));
+
+		//	カメラ更新
+		m_Camera->Update(VIEW_MODE::FIX, Vector3( 0.0f, 0.0f, 0.0f ) );
+
+		//	プレイヤー更新
+		m_Player->Update();
+
+		//	タイトルへ
 		if ( KEY( KEY_SPACE ) == 3 )
 		{
 			MainFrame->ChangeScene( new sceneTitle() );
@@ -105,14 +119,14 @@ int y = 0;
 	//	描画
 	void	sceneResult::Render( void ) 
 	{
-		view->Activate();
-		view->Clear();
+		m_Camera->Activate();
+		m_Camera->Clear();
 
 		iexSystem::GetDevice()->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
 		back->Render(0, 0, 1280, 720, 0, 0, 2048, 1024);
 		iexSystem::GetDevice()->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
 
-		//m_Player->Render(shader3D,"copy");
+		m_Player->Render( shader3D,"toon" );
 
 		//	デバッグ文字描画
 		DrawString( "[sceneResult]", 50, 50 );
@@ -170,12 +184,12 @@ int y = 0;
 		if ( Random::PercentageRandom( 0.3f ) )
 		{
 			//	ラストボーナスを設定
-			lastBonus = GameManager::GetLastBonus();
+			lastBonus = gameManager->GetLastBonus();
 		}
 		else
 		{
 			//	違う結果が出るまでループ
-			while ( lastBonus == GameManager::GetLastBonus() )
+			while ( lastBonus == gameManager->GetLastBonus() )
 			{
 				lastBonus = rand() % 5;
 			}
