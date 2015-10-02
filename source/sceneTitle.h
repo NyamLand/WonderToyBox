@@ -52,6 +52,8 @@ private:
 
 	//	タイトル用パラメータ
 	iex2DObj*	curtain;
+	iexMesh*	stage;
+
 
 public:
 	//	初期化・解放

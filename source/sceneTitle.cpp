@@ -110,6 +110,9 @@ namespace
 
 		//	スクリーン初期化
 		screen->Initialize();
+		
+		//	ステージ
+		stage = new iexMesh( "DATA/BG/2_1/FIELD2_1.IMO" );
 
 		//	乱数初期化
 		Random::Initialize();
@@ -197,8 +200,7 @@ namespace
 		particle->Update();
 
 		//	スクリーン更新
-		screen->Update();
-		
+		screen->Update();	
 	}
 
 	//	描画
@@ -207,6 +209,9 @@ namespace
 		//	画面クリア
 		m_Camera->Activate();
 		m_Camera->Clear();
+
+		//	ステージ描画
+		stage->Render( shader3D, "full" );
 
 		//	パーティクル描画
 		particle->Render();
