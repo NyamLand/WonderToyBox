@@ -44,10 +44,10 @@
 	//	XV
 	void	Effect::Update( void )
 	{
-		if (GameManager::GetMode() == GAME_MODE::CLIMAX)	isAura = true;
+		if (gameManager->GetMode() == GAME_MODE::CLIMAX)	isAura = true;
 		if (isAura)
 		{
-			Vector3 p = m_Player->GetPos(GameManager::GetWorst()) + Vector3(0, 1.5f, 0);
+			Vector3 p = m_Player->GetPos(gameManager->GetWorst()) + Vector3(0, 1.5f, 0);
 			aura->SetPos(p);
 			aura->SetScale(0.02f);
 			aura->SetAngle(0.0f);

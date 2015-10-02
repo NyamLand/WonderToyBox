@@ -7,12 +7,19 @@
 //	Cameraクラス
 //
 //****************************************************************************************
-enum VIEW_MODE
+
+namespace
 {
-	FIX,
-	SLERP,
-	CHASE,		//	※このモードの場合はSetTargetでtargetに値を与える必要があります。
-};
+	namespace VIEW_MODE
+	{
+		enum
+		{
+			FIX,
+			SLERP,
+			CHASE,		//	※このモードの場合はSetTargetでtargetに値を与える必要があります。
+		};
+	}
+}
 
 class Camera : public iexView
 {
@@ -42,7 +49,7 @@ public:
 	~Camera( void );
 
 	//	更新
-	void	Update( VIEW_MODE mode, Vector3 target );
+	void	Update( int viewmode, Vector3 target );
 
 	//	動作関数
 	void	ModeFix( Vector3 target );

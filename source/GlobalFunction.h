@@ -165,22 +165,25 @@
 	bool	BezierCurve( Vector3& out, Vector3 start, Vector3 p1, Vector3 p2, Vector3 end, float t );
 
 	//	始点終点の動作種類
-	enum ePrm_t {           // Prm1                   / Prm2
-		eSlow_Lv5,      // 強　ゆっくり動き始める / ゆっくり動き終える
-		eSlow_Lv4,      // ↑　ゆっくり動き始める / ゆっくり動き終える
-		eSlow_Lv3,      // 　　ゆっくり動き始める / ゆっくり動き終える
-		eSlow_Lv2,      // ↓　ゆっくり動き始める / ゆっくり動き終える
-		eSlow_Lv1,      // 弱　ゆっくり動き始める / ゆっくり動き終える
-		eNoAccel,       // 　　直線的な動きをする
-		eRapid_Lv1,     // 弱　急に動き始める      / 急に動き終える
-		eRapid_Lv2,     // ↑　急に動き始める      / 急に動き終える
-		eRapid_Lv3,     // 　　急に動き始める      / 急に動き終える
-		eRapid_Lv4,     // ↓　急に動き始める      / 急に動き終える
-		eRapid_Lv5,     // 強　急に動き始める      / 急に動き終える
-	};
+	namespace ePrm_t
+	{
+		enum {           // Prm1                   / Prm2
+			eSlow_Lv5,      // 強　ゆっくり動き始める / ゆっくり動き終える
+			eSlow_Lv4,      // ↑　ゆっくり動き始める / ゆっくり動き終える
+			eSlow_Lv3,      // 　　ゆっくり動き始める / ゆっくり動き終える
+			eSlow_Lv2,      // ↓　ゆっくり動き始める / ゆっくり動き終える
+			eSlow_Lv1,      // 弱　ゆっくり動き始める / ゆっくり動き終える
+			eNoAccel,       // 　　直線的な動きをする
+			eRapid_Lv1,     // 弱　急に動き始める      / 急に動き終える
+			eRapid_Lv2,     // ↑　急に動き始める      / 急に動き終える
+			eRapid_Lv3,     // 　　急に動き始める      / 急に動き終える
+			eRapid_Lv4,     // ↓　急に動き始める      / 急に動き終える
+			eRapid_Lv5,     // 強　急に動き始める      / 急に動き終える
+		};
+	}
 
 	//	高次元ベジェ曲線パラメータ取得( 0.0f ~ 1.0f )
-	float GetBezier( ePrm_t ePrm1, ePrm_t ePrm2, float fRate );
+	float GetBezier( int ePrm1, int ePrm2, float fRate );
 
 //----------------------------------------------------------------------
 //	D3DXとIEXの入れ替え

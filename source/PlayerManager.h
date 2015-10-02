@@ -65,7 +65,7 @@ public:
 	void		SetScale( int player, float scale );
 	void		SetType( int player, int type );
 	void		SetKnockBackVec( int player, Vector3	knockBackVec );
-	void		SetMode( int player, PlayerData::STATE state );
+	void		SetMode( int player, int state );
 	void		SetPower( int player, int power );
 	void		SetSpeed( int player, float speed );
 	void		SetBoosting(int player, bool boosting);

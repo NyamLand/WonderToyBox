@@ -43,8 +43,8 @@
 		this->input = ::input[input];
 		this->p_num = input;
 		this->pos = pos;
-		this->mode = PlayerData::WAIT;
-		this->passDamageColor = PlayerData::DAMAGE_COLOR[input];
+		this->mode = MODE_STATE::WAIT;
+		this->passDamageColor = DAMAGE_COLOR[input];
 
 		//　仮（→各キャラのcppでそれぞれ設定すればいい）
 		bPower = power * 2;
@@ -156,36 +156,36 @@
 	{
 		switch ( mode )
 		{
-		case PlayerData::WAIT:
+		case MODE_STATE::WAIT:
 			Wait();
 			break;
 
-		case PlayerData::MOVE:
+		case MODE_STATE::MOVE:
 			Move();
 			break;
 
-		case PlayerData::ATTACK:
-		case PlayerData::POWERARTS:
-		case PlayerData::HYPERARTS:
-		case PlayerData::QUICKARTS:
+		case MODE_STATE::ATTACK:
+		case MODE_STATE::POWERARTS:
+		case MODE_STATE::HYPERARTS:
+		case MODE_STATE::QUICKARTS:
 			unrivaled = true;
 			Attack( mode );
 			break;
 
-		case PlayerData::JUMP:
+		case MODE_STATE::JUMP:
 			Jump();
 			break;
 
-		case PlayerData::GUARD:
+		case MODE_STATE::GUARD:
 			Guard();
 			break;
 
-		case PlayerData::DAMAGE_STRENGTH:
+		case MODE_STATE::DAMAGE_STRENGTH:
 			CommonKnockBackStrength();
 			SetDamageColor( receiveDamageColor );
 			break;
 
-		case PlayerData::DAMAGE:
+		case MODE_STATE::DAMAGE:
 			Damage();
 			break;
 		}
@@ -300,7 +300,7 @@
 	//	ジャンプ
 	void	Player::CommonJump( void )
 	{
-		mode = PlayerData::MOVE;
+		mode = MODE_STATE::MOVE;
 		if ( !isGround )	return;
 		static	float	toY = pos.y + 20.0f;
 
@@ -314,7 +314,7 @@
 		CommonMove();
 
 		//	接地してたら
-		if ( isGround )	mode = PlayerData::MOVE;
+		if ( isGround )	mode = MODE_STATE::MOVE;
 	}
 
 	//	ガード
@@ -324,7 +324,7 @@
 		SetMotion( motionData.GUARD );
 		if ( input->Get( KEY_B7 ) == 2 )
 		{
-			mode = PlayerData::MOVE;
+			mode = MODE_STATE::MOVE;
 			unrivaled = false;
 		}
 	}
@@ -335,7 +335,7 @@
 		AddForce( 0.3f );
 
 		move = knockBackVec * force;
-		mode = PlayerData::DAMAGE;
+		mode = MODE_STATE::DAMAGE;
 	}
 
 	//	ノックバック	共通
@@ -348,7 +348,7 @@
 		SetMotion( motionData.POSTURE );
 		if ( move.Length() <= 0.01f )
 		{
-			mode = PlayerData::MOVE;
+			mode = MODE_STATE::MOVE;
 			unrivaled = false;
 		}
 	}
@@ -370,16 +370,16 @@
 	{
 		CommonMove();
 
-		if ( input->Get( KEY_A ) == 3 )		mode = PlayerData::QUICKARTS;
-		if ( input->Get( KEY_B ) == 3 )		mode = PlayerData::POWERARTS;
+		if ( input->Get( KEY_A ) == 3 )		mode = MODE_STATE::QUICKARTS;
+		if ( input->Get( KEY_B ) == 3 )		mode = MODE_STATE::POWERARTS;
 		CanHyper = m_Player->CanHyper;
 		if (CanHyper)
 		{
-			if (input->Get(KEY_C) == 3)		mode = PlayerData::HYPERARTS;
+			if (input->Get(KEY_C) == 3)		mode = MODE_STATE::HYPERARTS;
 		}
-		if ( input->Get( KEY_D ) == 3 )		mode = PlayerData::JUMP;
-		if ( input->Get( KEY_B7 ) == 3 )	mode = PlayerData::GUARD;
-		if ( input->Get( KEY_B10 ) == 3 )	mode = PlayerData::DAMAGE_STRENGTH;
+		if ( input->Get( KEY_D ) == 3 )		mode = MODE_STATE::JUMP;
+		if ( input->Get( KEY_B7 ) == 3 )	mode = MODE_STATE::GUARD;
+		if ( input->Get( KEY_B10 ) == 3 )	mode = MODE_STATE::DAMAGE_STRENGTH;
 	}
 
 	//	モードAttack
@@ -392,17 +392,17 @@
 
 		switch ( attackKind )
 		{
-		case PlayerData::QUICKARTS:
+		case MODE_STATE::QUICKARTS:
 			isEnd = QuickArts();
 			if ( !isEnd )	SetAttackParam( attackKind );
 			break;
 
-		case PlayerData::POWERARTS:
+		case MODE_STATE::POWERARTS:
 			isEnd = PowerArts();
 			if ( !isEnd )	SetAttackParam( attackKind );
 			break;
 
-		case PlayerData::HYPERARTS:
+		case MODE_STATE::HYPERARTS:
 			isEnd = HyperArts();
 			CanHyper = isEnd;
 			if ( !isEnd )	SetAttackParam( attackKind );
@@ -412,7 +412,7 @@
 		//	モーション終了時に
 		if ( isEnd )
 		{
-			mode = PlayerData::MOVE;
+			mode = MODE_STATE::MOVE;
 			attack_t = 0.0f;
 			attack_r = 0.0f;
 			attackParam = 0;
@@ -532,12 +532,6 @@
 		this->knockBackVec = knockBackVec;
 	}
 
-	//	モード設定
-	void	Player::SetMode( const PlayerData::STATE& state )
-	{
-		if ( GetMode() != state )		mode = state;
-	}
-
 	//	タイプ設定
 	void	Player::SetType( const int& type )
 	{
@@ -575,7 +569,7 @@
 	}
 
 	//	パラメータ状態設定
-	void	Player::SetParameterState( const PARAMETER_STATE::PARAMETERSTATE& parameterState )
+	void	Player::SetParameterState( const int& parameterState )
 	{
 		switch ( parameterState )
 		{

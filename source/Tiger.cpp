@@ -290,19 +290,19 @@
 	{
 		switch ( attackKind )
 		{
-		case PlayerData::QUICKARTS:
-			attackParam = PlayerData::SPHEREVSCAPSULE;
-			knockBackType = PlayerData::KNOCKBACK_WEAK;
+		case MODE_STATE::QUICKARTS:
+			attackParam = COLLISION_TYPE::SPHEREVSCAPSULE;
+			knockBackType = KNOCKBACK_TYPE::WEAK;
 			break;
 
-		case PlayerData::POWERARTS:
+		case MODE_STATE::POWERARTS:
 			attackParam = 0;
-			knockBackType = PlayerData::KNOCKBACK_MIDDLE;
+			knockBackType = KNOCKBACK_TYPE::MIDDLE;
 			break;
 
-		case PlayerData::HYPERARTS:
-			attackParam = PlayerData::SPHEREVSCYRINDER;
-			knockBackType = PlayerData::KNOCKBACK_STRENGTH;
+		case MODE_STATE::HYPERARTS:
+			attackParam = COLLISION_TYPE::SPHEREVSCYRINDER;
+			knockBackType = KNOCKBACK_TYPE::STRENGTH;
 			break;
 		}
 	}

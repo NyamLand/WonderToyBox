@@ -123,7 +123,7 @@
 		newsbar.top = 0;
 		newsbar.right = 1280;
 		newsbar.bottom = 50;
-		newsbar.text = GameInfo::NewsText[ GameManager::GetLastBonus() ];
+		newsbar.text = GameInfo::NewsText[ gameManager->GetLastBonus() ];
 		newsbar.alpha = 0.5f;
 		newsbar.color = Vector3( 0.3f, 0.3f, 0.3f );
 		newsbar.step = 0;
@@ -144,7 +144,7 @@
 		//　キャラ種類
 		for ( int i = 0; i < 4; i++ )
 		{
-			charatype[i] = GameManager::GetCharacterType( i );
+			charatype[i] = gameManager->GetCharacterType( i );
 		}
 		roulette = 0;
 		f = 0;
@@ -179,7 +179,7 @@
 			CoinBarUpdate();
 
 			//　どんけつの顔は「怒」に。（時間管理してるとこで↓の処理書きたいけどこれから変更ありそうやからとりあえずここに書いてる許してニャンっ♪）
-			state_type[GameManager::GetWorst()] = FACE_INFO::Angry;
+			state_type[gameManager->GetWorst()] = FACE_INFO::Angry;
 			break;
 
 		case GAME_MODE::TIMEUP:
@@ -191,7 +191,7 @@
 	//	タイマー関連動作
 	void	UI::TimerUpdate( void )
 	{
-		this->time = GameManager::GetTimer();
+		this->time = gameManager->GetTimer();
 		//分
 		second = this->time / MINUTE % 10;
 		//秒二桁目
@@ -203,7 +203,7 @@
 	//	ニュースバー関連動作
 	void	UI::NewsBarUpdate( void )
 	{
-		if ( !GameManager::GetNewsFlag() )	return;
+		if ( !gameManager->GetNewsFlag() )	return;
 
 		switch ( newsbar.step )
 		{
@@ -239,7 +239,7 @@
 
 		case 3:
 			//	初期化
-			GameManager::SetNewsFlag( false );
+			gameManager->SetNewsFlag( false );
 			newsbar.left = 1280;
 			newsbar.right = 1280;
 			newsbar.textleft = 1500;
@@ -340,7 +340,7 @@
 			roulette++;
 			break;
 		case 2:
-			f = GameManager::GetWorst();
+			f = gameManager->GetWorst();
 			break;
 		}
 
@@ -411,7 +411,7 @@
 	//	ニュース描画
 	void	UI::NewsBarRender( void )
 	{
-		if( !GameManager::GetNewsFlag() )	return;
+		if( !gameManager->GetNewsFlag() )	return;
 		
 		iexPolygon::Rect( newsbar.left, newsbar.top, newsbar.right - newsbar.left, newsbar.bottom - newsbar.top, RS_COPY, GetColor( newsbar.color, newsbar.alpha ) );
 		IEX_DrawText( newsbar.text, newsbar.textleft, newsbar.top + 10, 500, 200, 0xFFFFFFFF );
@@ -450,7 +450,7 @@
 		face->Render( 480, 200, 320, 320, FACE_INFO::Normal * 256, charatype[f] * 256, 256, 256 );
 
 		char	str[256];
-		int		worst = GameManager::GetWorst();
+		int		worst = gameManager->GetWorst();
 		DrawString( "どんけつ演出", 200, 50 );
 		wsprintf( str, "ビリは p%d", worst + 1 );
 		DrawString( str, 200, 70 );
@@ -472,7 +472,7 @@
 		int num_coin[4];
 		for ( int i = 0; i < 4; i++ )
 		{
-			num_coin[i] = GameManager::GetCoinNum( i );
+			num_coin[i] = gameManager->GetCoinNum( i );
 			bar_sx[i] = 480 * num_coin[i] / MAX_COIN;
 		}
 	}
@@ -490,7 +490,7 @@
 		int num_coin[4], temp_coin[4];
 		for (int i = 0; i < 4; i++)
 		{
-			num_coin[i] = temp_coin[i] = GameManager::GetCoinNum(i);
+			num_coin[i] = temp_coin[i] = gameManager->GetCoinNum(i);
 		}
 
 		for (int i = 0, temp; i < 4 - 1; i++)

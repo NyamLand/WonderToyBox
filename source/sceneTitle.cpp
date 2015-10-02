@@ -5,10 +5,9 @@
 #include	"GlobalFunction.h"
 #include	"Sound.h"
 #include	"Image.h"
-#include	"Collision.h"
 #include	"Camera.h"
 #include	"Particle.h"
-#include	"Player.h"
+#include	"Random.h"
 #include	"PlayerManager.h"
 #include	"sceneMain.h"
 #include	"GameManager.h"
@@ -51,6 +50,22 @@ namespace
 			"Yねえさん"
 		};
 	}
+
+	namespace TITLE_MODE
+	{
+		enum
+		{
+			TITLE,
+			MENU,
+			SELECT_PLAYERNUM,
+			SELECT_CHARACTER,
+			SELECT_STAGE,
+			SELECT_CHECK,
+			OPTION,
+			CREDIT,
+			MOVE_MAIN,
+		};
+	}
 }
 
 //-----------------------------------------------------------------------------------
@@ -58,7 +73,7 @@ namespace
 //-----------------------------------------------------------------------------------
 
 	//	コンストラクタ
-	sceneTitle::sceneTitle( void )	: mode( TITLE )
+	sceneTitle::sceneTitle( void )	: mode( TITLE_MODE::TITLE )
 	{
 
 	}
@@ -66,10 +81,7 @@ namespace
 	//	デストラクタ
 	sceneTitle::~sceneTitle( void )
 	{
-		SafeDelete( m_Stage );
 		SafeDelete( m_Camera );
-		SafeDelete( m_Player );
-		SafeDelete( m_CollisionStage );
 		sound->AllStop();
 	}
 	
@@ -86,34 +98,26 @@ namespace
 		iexLight::DirLight( shader3D, 0, &dir, 0.8f, 0.8f, 0.8f );
 
 		//	マネージャー初期化
-		GameManager::Initialize();
+		gameManager->Initialize();
+
+		//	パーティクル初期化
+		particle->Initialize();
 
 		//	音登録
 		sound->Initialize();
 
+		//	乱数初期化
+		Random::Initialize();
+		
 		//	カメラ設定
 		m_Camera = new Camera();
-
-		//	ステージ
-		m_CollisionStage = new iexMesh( "DATA/BG/CollisionGround.IMO" );
-		m_Stage = new iexMesh( "DATA/BG/2_1/FIELD2_1.IMO" );
-
-		//	当たり判定
-		Collision::Initiallize( m_CollisionStage );
-
-		//	プレイヤー初期化
-		m_Player = new PlayerManager();
-		for ( int i = 0; i < PLAYER_NUM; i++ )
-		{
-			m_Player->Initialize( i, PlayerData::PRINCESS, c_Move::TARGET[i] );
-		}
 
 		//	構造体初期化
 		{
 			//	キャラクター情報初期化
-			for ( int i = 0; i < PlayerData::CHARACTER_MAX; i++ )
+			for ( int i = 0; i < PLAYER_TYPE::MAX; i++ )
 			{
-				characterInfo[i].name = PlayerData::characterName[i];
+				characterInfo[i].name = characterName[i];
 				characterInfo[i].select = false;
 			}
 			
@@ -139,44 +143,42 @@ namespace
 	//	更新
 	void	sceneTitle::Update( void )
 	{
-		//	プレイヤー更新
-		m_Player->Update();
-
+		//	各モード動作
 		switch ( mode )
 		{
-		case TITLE:
+		case TITLE_MODE::TITLE:
 			TitleUpdate();
 			break;
 		
-		case MENU:
+		case TITLE_MODE::MENU:
 			MenuUpdate();
 			break;
 
-		case SELECT_PLAYERNUM:
+		case TITLE_MODE::SELECT_PLAYERNUM:
 			SelectPlayerNumUpdate();
 			break;
 
-		case SELECT_CHARACTER:
+		case TITLE_MODE::SELECT_CHARACTER:
 			SelectCharacterUpdate();
 			break;
 
-		case SELECT_STAGE:
+		case TITLE_MODE::SELECT_STAGE:
 			SelectStageUpdate();
 			break;
 
-		case SELECT_CHECK:
+		case TITLE_MODE::SELECT_CHECK:
 			SelectCheckUpdate();
 			break;
 
-		case OPTION:
+		case TITLE_MODE::OPTION:
 			OptionUpdate();
 			break;
 
-		case CREDIT:
+		case TITLE_MODE::CREDIT:
 			CreditUpdate();
 			break;
 
-		case MOVE_MAIN:
+		case TITLE_MODE::MOVE_MAIN:
 			if ( !sound->GetSEState( SE::DECIDE_SE ) )
 			{
 				MainFrame->ChangeScene( new sceneLoad( new sceneMain() ) );
@@ -185,6 +187,9 @@ namespace
 			break;
 		}
 
+		//	ターゲット位置にパーティクル配置
+		for ( int i = 0; i < PLAYER_NUM; i++)	particle->BlueFlame( c_Move::TARGET[i] );
+		particle->Update();
 		
 	}
 
@@ -195,45 +200,44 @@ namespace
 		m_Camera->Activate();
 		m_Camera->Clear();
 
-		//	オブジェクト描画
-		m_Stage->Render( shader3D, "full" );
-		m_Player->Render( shader3D, "full" );
+		//	パーティクル描画
+		particle->Render();
 
 		switch ( mode )
 		{
-		case TITLE:
+		case TITLE_MODE::TITLE:
 			TitleRender();
 			break;
 
-		case MENU:
+		case TITLE_MODE::MENU:
 			MenuRender();
 			break;
 
-		case SELECT_PLAYERNUM:
+		case TITLE_MODE::SELECT_PLAYERNUM:
 			SelectPlayerNumRender();
 			break;
 
-		case SELECT_CHARACTER:
+		case TITLE_MODE::SELECT_CHARACTER:
 			SelectCharacterRender();
 			break;
 
-		case SELECT_STAGE:
+		case TITLE_MODE::SELECT_STAGE:
 			SelectStageRender();
 			break;
 
-		case SELECT_CHECK:
+		case TITLE_MODE::SELECT_CHECK:
 			SelectCheckRender();
 			break;
 
-		case OPTION:
+		case TITLE_MODE::OPTION:
 			OptionRender();
 			break;
 
-		case CREDIT:
+		case TITLE_MODE::CREDIT:
 			CreditRender();
 			break;
 
-		case MOVE_MAIN:
+		case TITLE_MODE::MOVE_MAIN:
 			break;
 		}
 	}
@@ -249,12 +253,7 @@ namespace
 		//	更新
 		void	sceneTitle::TitleUpdate( void )
 		{
-			//　SPACEでスタート
-			if ( KEY( KEY_SPACE ) == 3 )
-			{
-				mode = MENU;
-				sound->PlaySE( SE::DECIDE_SE );
-			}
+			
 		}
 
 		//	描画
@@ -298,9 +297,9 @@ namespace
 			{
 				switch ( cameraInfo.posNum )
 				{
-				case 0:		mode = SELECT_PLAYERNUM;	break;
-				case 1:		mode = OPTION;						break;
-				case 2:		mode = CREDIT;						break;
+				case 0:		mode = TITLE_MODE::SELECT_PLAYERNUM;	break;
+				case 1:		mode = TITLE_MODE::OPTION;						break;
+				case 2:		mode = TITLE_MODE::CREDIT;						break;
 				}	
 				sound->PlaySE( SE::DECIDE_SE );
 			}
@@ -359,10 +358,10 @@ namespace
 
 			if ( KEY( KEY_SPACE ) == 3 )
 			{
-				mode = SELECT_CHARACTER;
+				mode = TITLE_MODE::SELECT_CHARACTER;
 				sound->PlaySE( SE::DECIDE_SE );
 			}
-			if ( KEY( KEY_DOWN ) == 3 )		mode = MENU;
+			if ( KEY( KEY_DOWN ) == 3 )		mode = TITLE_MODE::MENU;
 		}
 		
 		//	描画
@@ -409,7 +408,7 @@ namespace
 						//	全員未選択なら戻る
 						if ( selectCheck == 0 )
 						{
-							mode = SELECT_PLAYERNUM;
+							mode = TITLE_MODE::SELECT_PLAYERNUM;
 							return;
 						}
 
@@ -447,8 +446,8 @@ namespace
 					}
 
 					//	数値制限
-					if ( selectInfo.characterType[p] >= PlayerData::CHARACTER_MAX )	selectInfo.characterType[p] = 0;
-					if ( selectInfo.characterType[p] < 0 )	selectInfo.characterType[p] = PlayerData::CHARACTER_MAX - 1;
+					if ( selectInfo.characterType[p] >= PLAYER_TYPE::MAX )	selectInfo.characterType[p] = 0;
+					if ( selectInfo.characterType[p] < 0 )	selectInfo.characterType[p] = PLAYER_TYPE::MAX - 1;
 				}
 				break;
 
@@ -462,8 +461,8 @@ namespace
 						if ( KEY( KEY_LEFT ) == 3 )	selectInfo.characterType[p]--;
 
 						//	数値制限
-						if ( selectInfo.characterType[p] >= PlayerData::CHARACTER_MAX )	selectInfo.characterType[p] = 0;
-						if ( selectInfo.characterType[p] < 0 )	selectInfo.characterType[p] = PlayerData::CHARACTER_MAX - 1;
+						if ( selectInfo.characterType[p] >= PLAYER_TYPE::MAX )	selectInfo.characterType[p] = 0;
+						if ( selectInfo.characterType[p] < 0 )	selectInfo.characterType[p] = PLAYER_TYPE::MAX - 1;
 					}
 					if ( KEY( KEY_SPACE ) == 3 )
 					{
@@ -475,7 +474,7 @@ namespace
 				break;
 
 			case 2:
-				mode = SELECT_STAGE;
+				mode = TITLE_MODE::SELECT_STAGE;
 				step = 0;
 				break;
 			}
@@ -519,10 +518,10 @@ namespace
 			//	決定・キャンセル
 			if ( KEY( KEY_SPACE ) == 3 )	
 			{
-				mode = SELECT_CHECK;
+				mode = TITLE_MODE::SELECT_CHECK;
 				sound->PlaySE( SE::DECIDE_SE );
 			}
-			if ( KEY( KEY_DOWN ) == 3 )		mode = SELECT_CHARACTER;
+			if ( KEY( KEY_DOWN ) == 3 )		mode = TITLE_MODE::SELECT_CHARACTER;
 		}
 
 		//	描画
@@ -548,19 +547,19 @@ namespace
 			//　	「S」で戻る
 			if ( KEY( KEY_RIGHT ) == 3 )		selectInfo.ready = !selectInfo.ready;
 			if ( KEY( KEY_LEFT ) == 3 )		selectInfo.ready = !selectInfo.ready;
-			if ( KEY( KEY_DOWN ) == 3 )		mode = SELECT_STAGE;
+			if ( KEY( KEY_DOWN ) == 3 )		mode = TITLE_MODE::SELECT_STAGE;
 			if ( KEY( KEY_SPACE ) == 3 )
 			{
 				if ( selectInfo.ready )
 				{
 					//	情報をマネージャーに登録
-					for ( int p = 0; p < PLAYER_NUM; p++ )		GameManager::SetCharacterType( p, selectInfo.characterType[p] );
-					GameManager::SetPlayerNum( selectInfo.playerNum );
-					GameManager::SetStageType( selectInfo.stageType );
+					for ( int p = 0; p < PLAYER_NUM; p++ )		gameManager->SetCharacterType( p, selectInfo.characterType[p] );
+					gameManager->SetPlayerNum( selectInfo.playerNum );
+					gameManager->SetStageType( selectInfo.stageType );
 					sound->PlaySE( SE::DECIDE_SE );
-					mode = MOVE_MAIN;
+					mode = TITLE_MODE::MOVE_MAIN;
 				}
-				else	mode = SELECT_STAGE;
+				else	mode = TITLE_MODE::SELECT_STAGE;
 			}
 		}
 		
@@ -602,7 +601,7 @@ namespace
 		{
 			if ( KEY( KEY_SPACE ) == 3 )
 			{
-				mode = MENU;
+				mode = TITLE_MODE::MENU;
 				sound->PlaySE( SE::DECIDE_SE );
 			}
 		}
@@ -623,7 +622,7 @@ namespace
 		{
 			if ( KEY( KEY_SPACE ) == 3 )
 			{
-				mode = MENU;
+				mode = TITLE_MODE::MENU;
 				sound->PlaySE( SE::DECIDE_SE );
 			}
 		}

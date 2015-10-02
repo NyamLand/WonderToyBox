@@ -14,10 +14,10 @@
 //	グローバル変数
 //------------------------------------------------------------------------------------------
 
-namespace 
-{
+	namespace 
+	{
 
-}
+	}
 
 	//	実体の宣言
 	Camera*	m_Camera;
@@ -46,9 +46,9 @@ namespace
 //------------------------------------------------------------------------------------------
 
 	//	更新
-	void	Camera::Update( VIEW_MODE mode, Vector3 target )
+	void	Camera::Update( int viewmode, Vector3 target )
 	{
-		switch ( mode )
+		switch ( viewmode )
 		{
 		case  VIEW_MODE::FIX:
 			ModeFix( target );

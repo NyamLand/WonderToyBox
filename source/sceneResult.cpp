@@ -44,7 +44,7 @@
 		for ( int i = 0; i < 4; i++ )
 		{
 			coinNum[i] = 0;
-			resultInfo[i].p_Coin = GameManager::GetCoinNum( i );
+			resultInfo[i].p_Coin = gameManager->GetCoinNum( i );
 			resultInfo[i].p_num = i;
 		}
 
@@ -134,12 +134,12 @@
 		if ( Random::PercentageRandom( 0.3f ) )
 		{
 			//	ラストボーナスを設定
-			lastBonus = GameManager::GetLastBonus();
+			lastBonus = gameManager->GetLastBonus();
 		}
 		else
 		{
 			//	違う結果が出るまでループ
-			while ( lastBonus == GameManager::GetLastBonus() )
+			while ( lastBonus == gameManager->GetLastBonus() )
 			{
 				lastBonus = rand() % 5;
 			}

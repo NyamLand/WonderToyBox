@@ -102,8 +102,8 @@
 
 		//	変数初期化
 		timer = 0;
-		playerNum = GameManager::GetPlayerNum();
-		stageType = GameManager::GetStageType();
+		playerNum =gameManager->GetPlayerNum();
+		stageType = gameManager->GetStageType();
 
 		//	BGM再生
 		sound->PlayBGM( BGM::MAIN_BGM );
@@ -137,7 +137,7 @@
 	{
 		for ( int i = 0; i < 4; i++ )
 		{
-			int		characterType = GameManager::GetCharacterType( i );
+			int		characterType = gameManager->GetCharacterType( i );
 			Vector3	pos = Vector3( -20.0f + ( 10.0f * i ), 10.0f, 0.0f );
 			m_Player->Initialize( i, characterType, pos );
 		}
@@ -157,12 +157,12 @@
 		m_Camera->Update( VIEW_MODE::CHASE, Vector3( 0.0f, 2.0f, 0.0f ) );
 
 		//	UI
-		ui->Update( GameManager::GetMode() );
+		ui->Update( gameManager->GetMode() );
 
 		//	デバッグモード切り替え
 		if ( KEY( KEY_ENTER ) == 3 )		debug = !debug;
 
-		switch ( GameManager::GetMode() )
+		switch ( gameManager->GetMode() )
 		{
 		case GAME_MODE::GAMESTART:		
 			StartUpdate();
@@ -204,8 +204,8 @@
 
 		if ( ui->GetChangeFlag() ) 
 		{
-			GameManager::SetMode( GAME_MODE::MAINGAME );
-			for ( int i = 0; i < 4; i++ )		m_Player->SetMode( i, PlayerData::MOVE );
+			gameManager->SetMode( GAME_MODE::MAINGAME );
+			for ( int i = 0; i < 4; i++ )		m_Player->SetMode( i, MODE_STATE::MOVE );
 			ui->SetChangeFlag( false );
 		}
 	}
@@ -214,7 +214,7 @@
 	void	sceneMain::MainGameUpdate( void )
 	{			
 		//	ゲームマネージャー
-		GameManager::Update();
+		gameManager->Update();
 
 		//	全体更新
 		AllUpdate();
@@ -225,7 +225,7 @@
 	{
 		if ( ui->GetChangeFlag() )
 		{
-			GameManager::SetMode( GAME_MODE::CLIMAX );
+			gameManager->SetMode( GAME_MODE::CLIMAX );
 			ui->SetChangeFlag( false );
 		}
 	}
@@ -234,7 +234,7 @@
 	void	sceneMain::ClimaxUpdate( void )
 	{
 		//	ゲームマネージャー
-		GameManager::Update();
+		gameManager->Update();
 
 		//	全体更新
 		AllUpdate();
@@ -245,7 +245,7 @@
 	void	sceneMain::FinishUpdate( void )
 	{
 		//	ゲームマネージャー
-		GameManager::Update();
+		gameManager->Update();
 
 		//	全体更新
 		AllUpdate();
@@ -297,7 +297,7 @@
 		itemManager->Render();
 		
 		//UI
-		ui->Render( GameManager::GetMode() );
+		ui->Render( gameManager->GetMode() );
 
 		//　エフェクト描画
 		m_Effect->Render();

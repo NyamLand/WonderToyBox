@@ -56,8 +56,6 @@ namespace
 		for ( int i = 0; i < END; i++ )	effectImage[i] = new iex2DObj( filename[i] );
 		timer = 0;
 
-
-
 		return	true;
 	}
 
@@ -96,9 +94,9 @@ namespace
 		Vector3	Pos, Move, Power;
 		for ( int j = 0; j<5; j++ )
 		{
-			Pos.x = pos.x + ( Random::GetInt(-1000, 0)	 * (0.001f * scale ) );
-			Pos.y = pos.y + ( Random::GetInt(-500, 0)	 * ( 0.001f * scale ) );
-			Pos.z = pos.z + ( Random::GetInt(-1000, 0)		* ( 0.001f * scale ) );
+			Pos.x = pos.x + ( Random::GetInt( -1000, 0 )	 * ( 0.001f * scale ) );
+			Pos.y = pos.y + ( Random::GetInt( -500, 0 )	 * ( 0.001f * scale ) );
+			Pos.z = pos.z + ( Random::GetInt( -1000, 0 )		* ( 0.001f * scale ) );
 
 			Move.x = 0.0f;
 			Move.y = 0.0f;

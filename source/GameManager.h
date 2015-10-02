@@ -56,61 +56,62 @@ class GameManager
 {
 private:
 	//	ゲーム設定用
-	static	int		playerNum;
-	static	int		charatype[4];
-	static	int		stageType;
+	int		playerNum;
+	int		charatype[4];
+	int		stageType;
 
 	//	ゲーム中情報
-	static	int		timer;
-	static	int		mode;
-	static	int		coinNum[4];
-	static	bool	donketsuBoostState;
-	static	int		worst;
-	static	int		lastBonus;
-	static	bool	newsflag;
+	int		timer;
+	int		mode;
+	int		coinNum[4];
+	bool	donketsuBoostState;
+	int		worst;
+	int		lastBonus;
+	bool	newsflag;
 	
 public:
 
 	//	初期化・解放
 	GameManager( void );
 	~GameManager( void );
-	static	bool	Initialize( void );
-	static	void	Release( void );
-	static	void	InitImage( void );
+	bool	Initialize( void );
+	void	Release( void );
+	void	InitImage( void );
 
 	//	更新
-	static	void	Update( void );
+	void	Update( void );
 
 	//	描画
-	static	void	Render( void );
+	void	Render( void );
 
 	//	動作関数
-	static	void	AddCoin( int playerNum );
-	static	void	SubCoin( int playerNum );
-	static	void	DecideWorst( void );
+	void	AddCoin( int playerNum );
+	void	SubCoin( int playerNum );
+	void	DecideWorst( void );
 
 	//	情報取得
-	static	int		GetCharacterType( int num );
-	static	int		GetPlayerNum( void );
-	static	int		GetStageType( void );
-	static	int		GetCoinNum( int num );
-	static	bool	GetDonketsuBoostState( void );
-	static	int		GetLastBonus( void );
-	static	int		GetTimer( void );
-	static	bool	GetNewsFlag( void );
-	static	int		GetWorst( void );
-	static	int		GetMode( void );
+	int		GetCharacterType( int num );
+	int		GetPlayerNum( void );
+	int		GetStageType( void );
+	int		GetCoinNum( int num );
+	bool	GetDonketsuBoostState( void );
+	int		GetLastBonus( void );
+	int		GetTimer( void );
+	bool	GetNewsFlag( void );
+	int		GetWorst( void );
+	int		GetMode( void );
+	static	GameManager*	GetInstance( void );
 
 	//	情報設定
-	static	void	SetCharacterType( int num, int type );
-	static	void	SetPlayerNum( int num );
-	static	void	SetStageType( int type );
-	static	void	SetCoinNum( int num, int param );
-	static	void	SetLastBonusNews( void );
-	static	void	SetMode( const int& modeNum );
-	static	void	SetNewsFlag( const bool& flag );
+	void	SetCharacterType( int num, int type );
+	void	SetPlayerNum( int num );
+	void	SetStageType( int type );
+	void	SetCoinNum( int num, int param );
+	void	SetLastBonusNews( void );
+	void	SetMode( const int& modeNum );
+	void	SetNewsFlag( const bool& flag );
 };
-
+#define	gameManager ( GameManager::GetInstance() )
 
 //*******************************************************************************
 #endif // !__GAMEMANAGER_H__
