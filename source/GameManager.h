@@ -13,7 +13,7 @@ namespace
 	//	íËêî
 	const		int		SECOND = 60;			//	ÇPïb
 	const		int		MINUTE = 60 * 60;	//	ÇPï™
-	const		int		TIMELIMIT = 40 * SECOND;
+	const		int		TIMELIMIT = 5 * SECOND;
 	const		int		PLAYER_NUM = 4;
 	const		float	GRAVITY = -0.01f;
 

@@ -33,6 +33,7 @@ private:
 	int		playerNum;
 	int		wait;
 	iex2DObj*	back; //”wŒi
+	iex2DObj*	r_number; //ƒRƒCƒ“‚Ì–‡”
 
 public:
 	//	‰Šú‰»E‰ğ•ú
