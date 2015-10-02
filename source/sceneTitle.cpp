@@ -4,6 +4,7 @@
 #include	"system/System.h"
 #include	"GlobalFunction.h"
 #include	"Sound.h"
+#include	"Screen.h"
 #include	"Image.h"
 #include	"Camera.h"
 #include	"Particle.h"
@@ -51,6 +52,7 @@ namespace
 		};
 	}
 
+	//	タイトルモード
 	namespace TITLE_MODE
 	{
 		enum
@@ -105,6 +107,9 @@ namespace
 
 		//	音登録
 		sound->Initialize();
+
+		//	スクリーン初期化
+		screen->Initialize();
 
 		//	乱数初期化
 		Random::Initialize();
@@ -190,6 +195,9 @@ namespace
 		//	ターゲット位置にパーティクル配置
 		for ( int i = 0; i < PLAYER_NUM; i++)	particle->BlueFlame( c_Move::TARGET[i] );
 		particle->Update();
+
+		//	スクリーン更新
+		screen->Update();
 		
 	}
 
@@ -240,6 +248,9 @@ namespace
 		case TITLE_MODE::MOVE_MAIN:
 			break;
 		}
+
+		//	スクリーン描画
+		screen->Render();
 	}
 
 //******************************************************************

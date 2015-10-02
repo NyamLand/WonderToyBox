@@ -106,6 +106,9 @@
     <Filter Include="ソース ファイル\PlayerManager">
       <UniqueIdentifier>{8f63f319-104a-400f-b24b-8ef9d8ff1674}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Screen">
+      <UniqueIdentifier>{f549f8e3-6aa3-4b3c-b46d-dd5693a58522}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -246,6 +249,9 @@
     <ClCompile Include="source\Object.cpp">
       <Filter>ソース ファイル\Object</Filter>
     </ClCompile>
+    <ClCompile Include="source\Screen.cpp">
+      <Filter>ソース ファイル\Screen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -340,6 +346,9 @@
     </ClInclude>
     <ClInclude Include="source\Object.h">
       <Filter>ソース ファイル\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Screen.h">
+      <Filter>ソース ファイル\Screen</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
