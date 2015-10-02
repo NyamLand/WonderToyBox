@@ -32,6 +32,7 @@ private:
 	int		step;
 	int		playerNum;
 	int		wait;
+	iex2DObj*	back; //”wŒi
 
 public:
 	//	‰Šú‰»E‰ğ•ú

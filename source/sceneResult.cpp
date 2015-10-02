@@ -7,7 +7,9 @@
 #include	"Image.h"
 #include	"GameManager.h"
 #include	"Player.h"
+#include	"Camera.h"
 #include	"sceneTitle.h"
+#include	"PlayerManager.h"
 #include	"sceneMain.h"
 
 #include	"sceneResult.h"
@@ -32,6 +34,8 @@
 	sceneResult::~sceneResult( void )
 	{
 		SafeDelete( view );
+		SafeDelete(m_Player);
+		SafeDelete( back );
 		Random::Release();
 	}
 
@@ -40,12 +44,23 @@
 	{
 		//	カメラ設定
 		view = new iexView();
+		m_Player = new PlayerManager();
+		back = new iex2DObj("DATA/Result/back.png");
+
+		m_Camera = new Camera();
+		
 
 		for ( int i = 0; i < 4; i++ )
 		{
 			coinNum[i] = 0;
 			resultInfo[i].p_Coin = gameManager->GetCoinNum( i );
 			resultInfo[i].p_num = i;
+
+			int		characterType = GameManager::GetCharacterType(i);
+			//Vector3	pos = Vector3(-20.0f + (10.0f * i), 0.0f, 0.0f);
+			Vector3	pos = Vector3(0.0f, 0.0f, 0.0f);
+			m_Player->Initialize(i, characterType, pos);
+		//	m_Player->Update();
 		}
 
 		//	変数初期化
@@ -73,6 +88,8 @@
 	//	更新
 	void	sceneResult::Update( void ) 
 	{
+		view->Set(Vector3(0.0f,0.0f,-10.0f),m_Player->GetPos(0));
+
 		if ( KEY( KEY_SPACE ) == 3 )
 		{
 			MainFrame->ChangeScene( new sceneTitle() );
@@ -85,6 +102,12 @@
 	{
 		view->Activate();
 		view->Clear();
+
+		iexSystem::GetDevice()->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
+		back->Render(0, 0, 1280, 720, 0, 0, 2048, 1024);
+		iexSystem::GetDevice()->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
+
+		m_Player->Render(shader3D, "ShadowBuf");
 
 		//	デバッグ文字描画
 		DrawString( "[sceneResult]", 50, 50 );
