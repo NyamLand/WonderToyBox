@@ -136,7 +136,7 @@
 				//	エフェクトだす
 				state = false;
 				float	effectScale = 0.2f;
-				Particle::Spark( p_pos_top, effectScale );
+				particle->Spark( p_pos_top, effectScale );
 
 				//	ノックバック
 				Vector3	knockBackVec = bulletPos - p_pos_bottom;
@@ -146,7 +146,7 @@
 				m_Player->SetReceiveColor(i,color);
 				m_Player->SetKnockBackVec(i, -knockBackVec);
 				m_Player->SetLeanFrame(i, leanpower);
-				m_Player->SetMode( i, PlayerData::DAMAGE_LEANBACKWARD );
+				m_Player->SetMode( i, MODE_STATE::DAMAGE_LEANBACKWARD );
 
 				//	コインばらまき方向設定
 				std::uniform_real_distribution<float>	vecrand( -1.0f, 1.0f );
@@ -156,13 +156,13 @@
 				//	プレイヤー番号取得とばらまきパワー設定
 				float	power = 0.2f;
 				int		p2_Num = m_Player->GetP_Num( i );
-				int		p2_coinNum = GameManager::GetCoinNum( p2_Num );
+				int		p2_coinNum = gameManager->GetCoinNum( p2_Num );
 
 				//	コインがあればばらまき
 				if ( p2_coinNum > 0 )
 				{
 					m_CoinManager->Set( p_pos_top, vec, power );
-					GameManager::SubCoin( p2_Num );
+					gameManager->SubCoin( p2_Num );
 				}
 			}
 		}

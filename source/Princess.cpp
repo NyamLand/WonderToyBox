@@ -192,20 +192,20 @@
 	{
 		switch ( attackKind )
 		{
-		case PlayerData::QUICKARTS:
-			attackParam = PlayerData::SPHEREVSCAPSULE;
-			if(attack_t < 0.6) knockBackType = PlayerData::KNOCKBACK_LEANBACKWARD;	//2HitÇ‹Ç≈ÇÕã¬ÇØîΩÇËÇÃÇ›
-			if (attack_t >= 0.6) knockBackType = PlayerData::KNOCKBACK_WEAK;		//3hitñ⁄Ç©ÇÁÇÕêÅÇ´îÚÇŒÇµÇ†ÇË
+		case MODE_STATE::QUICKARTS:
+			attackParam = COLLISION_TYPE::SPHEREVSCAPSULE;
+			if(attack_t < 0.6) knockBackType = KNOCKBACK_TYPE::LEANBACKWARD;	//2HitÇ‹Ç≈ÇÕã¬ÇØîΩÇËÇÃÇ›
+			if (attack_t >= 0.6) knockBackType = KNOCKBACK_TYPE::WEAK;		//3hitñ⁄Ç©ÇÁÇÕêÅÇ´îÚÇŒÇµÇ†ÇË
 			break;
 
-		case PlayerData::POWERARTS:
-			attackParam = PlayerData::SPHEREVSCAPSULE;
-			knockBackType = PlayerData::KNOCKBACK_MIDDLE;
+		case MODE_STATE::POWERARTS:
+			attackParam = COLLISION_TYPE::SPHEREVSCAPSULE;
+			knockBackType = KNOCKBACK_TYPE::MIDDLE;
 			break;
 
-		case PlayerData::HYPERARTS:
-			attackParam = PlayerData::SPHEREVSCYRINDER;
-			knockBackType = PlayerData::KNOCKBACK_STRENGTH;
+		case MODE_STATE::HYPERARTS:
+			attackParam = COLLISION_TYPE::SPHEREVSCYRINDER;
+			knockBackType = KNOCKBACK_TYPE::STRENGTH;
 			break;
 		}
 	}

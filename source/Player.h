@@ -10,68 +10,17 @@
 
 namespace PlayerData
 {
-	const int CHARACTER_MAX = 4;
 
-	//	被ダメージ用各色
-	const Vector3	DAMAGE_COLOR[] =
-	{
-		Vector3( 1.0f, 1.0f, 1.0f ),
-		Vector3( 1.0f, 1.0f, 1.0f ),
-		Vector3( 1.0f, 0.0f, 0.0f ),
-		Vector3( 0.0f, 1.0f, 0.0f ),
-		Vector3( 0.0f, 0.0f, 1.0f ),
-	};
 	
-	//	キャラクター名文字列
-	const		LPSTR	characterName[CHARACTER_MAX] =
-	{
-		"ナイト",
-		"プリンセス",
-		"リス",
-		"とら",
-	};
 
-	enum PLAYER_TYPE
-	{
-		KNIGHT,		//	騎士
-		PRINCESS,	//	姫
-		SQUIRREL,	//	リス
-		TIGER,			//	トラ
-	};
 
-	enum KNOCKBACK_TYPE
-	{
-		KNOCKBACK_STRENGTH = 1,		//	強
-		KNOCKBACK_MIDDLE,				//	中
-		KNOCKBACK_WEAK,					//	弱
-		KNOCKBACK_LEANBACKWARD,			//	ノックバックなし、仰け反り
-	};
 
-	enum COLLISION_TYPE
-	{
-		SPHEREVSCAPSULE = 1,	//	球VSカプセル
-		SPHEREVSSPHERE,			//	球VS球
-		CAPSULEVSCAPSULE,			//	カプセルVSカプセル
-		SPHEREVSCYRINDER,			//	球VS円柱（円柱の回転なし）
-		SPHEREVSPOINT,				//	球VS点
-	};
 
-	enum STATE
-	{
-		WAIT,
-		MOVE,
-		ATTACK,
-		POWERARTS,
-		QUICKARTS,
-		HYPERARTS,
-		JUMP,
-		GUARD,
-		DAMAGE,
-		DAMAGE_STRENGTH,
-		DAMAGE_MIDDLE,
-		DAMAGE_WEAK,
-		DAMAGE_LEANBACKWARD,
-	};
+
+
+
+
+
 }
 
 namespace
@@ -87,6 +36,86 @@ namespace
 			SPEEDUP,
 			BOMB,
 			JUMP,
+		};
+	}
+
+	namespace MODE_STATE
+	{
+		enum
+		{
+			WAIT,
+			MOVE,
+			ATTACK,
+			POWERARTS,
+			QUICKARTS,
+			HYPERARTS,
+			JUMP,
+			GUARD,
+			DAMAGE,
+			DAMAGE_STRENGTH,
+			DAMAGE_MIDDLE,
+			DAMAGE_WEAK,
+			DAMAGE_LEANBACKWARD,
+		};
+	}
+
+	namespace COLLISION_TYPE
+	{
+		enum
+		{
+			SPHEREVSCAPSULE = 1,	//	球VSカプセル
+			SPHEREVSSPHERE,			//	球VS球
+			CAPSULEVSCAPSULE,			//	カプセルVSカプセル
+			SPHEREVSCYRINDER,			//	球VS円柱（円柱の回転なし）
+			SPHEREVSPOINT,				//	球VS点
+		};
+	}
+
+	namespace KNOCKBACK_TYPE
+	{
+		enum
+		{
+			STRENGTH = 1,		//	強
+			MIDDLE,				//	中
+			WEAK,					//	弱
+			LEANBACKWARD,			//	ノックバックなし、仰け反り
+		};
+	}
+
+	namespace PLAYER_TYPE
+	{
+		enum
+		{
+			KNIGHT,		//	騎士
+			PRINCESS,	//	姫
+			SQUIRREL,	//	リス
+			TIGER,			//	トラ
+			MAX,
+		};
+	}
+
+	namespace
+	{
+		//	キャラクター名文字列
+		const		LPSTR	characterName[PLAYER_TYPE::MAX] =
+		{
+			"ナイト",
+			"プリンセス",
+			"リス",
+			"とら",
+		};
+	}
+
+	namespace
+	{
+		//	被ダメージ用各色
+		const Vector3	DAMAGE_COLOR[] =
+		{
+			Vector3(1.0f, 1.0f, 1.0f),
+			Vector3(1.0f, 1.0f, 1.0f),
+			Vector3(1.0f, 0.0f, 0.0f),
+			Vector3(0.0f, 1.0f, 0.0f),
+			Vector3(0.0f, 0.0f, 1.0f),
 		};
 	}
 }
@@ -168,7 +197,6 @@ protected:
 protected:
 	//	関数
 	void	SetMotion( int motion );
-	void	SetMode( int mode );
 
 public:
 	//	初期化・解放
@@ -220,7 +248,7 @@ public:
 	virtual	void	SetAttackParam( int attackKind ) = 0;
 
 	//	情報設定
-	void	SetMode( const PlayerData::STATE& state );
+	void	SetMode( const int& state );
 	void	SetPos( const Vector3& pos );
 	void	SetPos( const float& x, const float& y, const float& z );
 	void	SetAngle( const float& angle );

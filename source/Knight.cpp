@@ -261,22 +261,22 @@
 	{
 		switch ( attackKind )
 		{
-		case PlayerData::QUICKARTS:
-			attackParam = PlayerData::COLLISION_TYPE::CAPSULEVSCAPSULE;
-			if (attack_t < 0.6f) knockBackType = PlayerData::KNOCKBACK_LEANBACKWARD;	//2Hit‚Ü‚Å‚Í‹Â‚¯”½‚è‚Ì‚İ
-			if (attack_t >= 0.6f) knockBackType = PlayerData::KNOCKBACK_WEAK;		//3hit–Ú‚©‚ç‚Í‚«”ò‚Î‚µ‚ ‚è
+		case MODE_STATE::QUICKARTS:
+			attackParam = COLLISION_TYPE::CAPSULEVSCAPSULE;
+			if (attack_t < 0.6f) knockBackType = KNOCKBACK_TYPE::LEANBACKWARD;	//2Hit‚Ü‚Å‚Í‹Â‚¯”½‚è‚Ì‚İ
+			if (attack_t >= 0.6f) knockBackType = KNOCKBACK_TYPE::WEAK;		//3hit–Ú‚©‚ç‚Í‚«”ò‚Î‚µ‚ ‚è
 			break;
 
-		case PlayerData::POWERARTS:
-			attackParam = PlayerData::COLLISION_TYPE::CAPSULEVSCAPSULE;
-			knockBackType = PlayerData::KNOCKBACK_STRENGTH;
+		case MODE_STATE::POWERARTS:
+			attackParam = COLLISION_TYPE::CAPSULEVSCAPSULE;
+			knockBackType = KNOCKBACK_TYPE::STRENGTH;
 			break;
 
-		case PlayerData::HYPERARTS:
-			attackParam = PlayerData::COLLISION_TYPE::CAPSULEVSCAPSULE;
-			if (attack_t != 0) knockBackType = PlayerData::KNOCKBACK_STRENGTH;	//2Hit‚Ü‚Å‚Í‚«”ò‚Î‚µ‚ ‚è
-			if (attack_t == 0 && lance_r < 360 * 4) knockBackType = PlayerData::KNOCKBACK_LEANBACKWARD;		//3~6hit–Ú‚©‚ç‚Í‚«”ò‚Î‚µ‚ ‚è
-			if (attack_t == 0 && lance_r >= 360 * 4) knockBackType = PlayerData::KNOCKBACK_STRENGTH;		//6hit–Ú‚©‚ç‚Í‚«”ò‚Î‚µ‚ ‚è
+		case MODE_STATE::HYPERARTS:
+			attackParam = COLLISION_TYPE::CAPSULEVSCAPSULE;
+			if (attack_t != 0) knockBackType = KNOCKBACK_TYPE::STRENGTH;	//2Hit‚Ü‚Å‚Í‚«”ò‚Î‚µ‚ ‚è
+			if (attack_t == 0 && lance_r < 360 * 4) knockBackType = KNOCKBACK_TYPE::LEANBACKWARD;		//3~6hit–Ú‚©‚ç‚Í‚«”ò‚Î‚µ‚ ‚è
+			if (attack_t == 0 && lance_r >= 360 * 4) knockBackType = KNOCKBACK_TYPE::STRENGTH;		//6hit–Ú‚©‚ç‚Í‚«”ò‚Î‚µ‚ ‚è
 			break;
 		}
 	}
