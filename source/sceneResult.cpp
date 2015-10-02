@@ -3,6 +3,7 @@
 #include	"Random.h"
 #include	"GlobalFunction.h"
 #include	"system/Framework.h"
+#include	"Collision.h"
 #include	"system/System.h"
 #include	"Image.h"
 #include	"GameManager.h"
@@ -33,8 +34,9 @@
 	//	デストラクタ
 	sceneResult::~sceneResult( void )
 	{
-		SafeDelete( view );
+		SafeDelete(m_Camera);
 		SafeDelete(m_Player);
+		SafeDelete( collision );
 		SafeDelete( back );
 		Random::Release();
 	}
@@ -42,25 +44,36 @@
 	//	初期化
 	bool	sceneResult::Initialize( void )
 	{
+		//	環境設定
+		iexLight::SetAmbient(0x404040);
+		iexLight::SetFog(800, 1000, 0);
+
+		//	ライト設定
+		Vector3 dir(1.0f, -1.0f, -0.5f);
+		dir.Normalize();
+		iexLight::DirLight(shader3D, 0, &dir, 0.8f, 0.8f, 0.8f);
+
 		//	カメラ設定
-		view = new iexView();
-		m_Player = new PlayerManager();
-		back = new iex2DObj("DATA/Result/back.png");
-
 		m_Camera = new Camera();
-		
 
+		//	背景初期化
+		back = new iex2DObj( "DATA/Result/back.png" );
+
+		//	コリジョン
+		collision = new iexMesh( "DATA/BG/CollisionGround.IMO" );
+		Collision::Initiallize( collision );
+
+		//	プレイヤー初期化
+		m_Player = new PlayerManager();
 		for ( int i = 0; i < 4; i++ )
 		{
 			coinNum[i] = 0;
 			resultInfo[i].p_Coin = gameManager->GetCoinNum( i );
 			resultInfo[i].p_num = i;
 
-			int		characterType = gameManager->GetCharacterType(i);
-			//Vector3	pos = Vector3(-20.0f + (10.0f * i), 0.0f, 0.0f);
-			Vector3	pos = Vector3(0.0f, 0.0f, 0.0f);
-			m_Player->Initialize(i, characterType, pos);
-		//	m_Player->Update();
+			int		characterType = gameManager->GetCharacterType( i );
+			Vector3	pos = Vector3( 0.0f, 0.0f, 0.0f );
+			m_Player->Initialize( i, characterType, pos );
 		}
 
 		//	変数初期化
@@ -88,8 +101,8 @@
 	//	更新
 	void	sceneResult::Update( void ) 
 	{
-		view->Set(Vector3(0.0f,0.0f,-10.0f),m_Player->GetPos(0));
-
+		m_Player->Update();
+		m_Camera->Update( VIEW_MODE::SLERP, m_Player->GetPos( 0 ) );
 		if ( KEY( KEY_SPACE ) == 3 )
 		{
 			MainFrame->ChangeScene( new sceneTitle() );
@@ -100,14 +113,14 @@
 	//	描画
 	void	sceneResult::Render( void ) 
 	{
-		view->Activate();
-		view->Clear();
+		m_Camera->Activate();
+		m_Camera->Clear();
 
-		iexSystem::GetDevice()->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
-		back->Render(0, 0, 1280, 720, 0, 0, 2048, 1024);
-		iexSystem::GetDevice()->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
+		//iexSystem::GetDevice()->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
+		//back->Render(0, 0, 1280, 720, 0, 0, 2048, 1024);
+		//iexSystem::GetDevice()->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
 
-		m_Player->Render(shader3D, "ShadowBuf");
+		m_Player->Render( shader3D, "ShadowBuf" );
 
 		//	デバッグ文字描画
 		DrawString( "[sceneResult]", 50, 50 );
