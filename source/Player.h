@@ -44,6 +44,7 @@ namespace PlayerData
 		KNOCKBACK_STRENGTH = 1,		//	強
 		KNOCKBACK_MIDDLE,				//	中
 		KNOCKBACK_WEAK,					//	弱
+		KNOCKBACK_LEANBACKWARD,			//	ノックバックなし、仰け反り
 	};
 
 	enum COLLISION_TYPE
@@ -69,6 +70,7 @@ namespace PlayerData
 		DAMAGE_STRENGTH,
 		DAMAGE_MIDDLE,
 		DAMAGE_WEAK,
+		DAMAGE_LEANBACKWARD,
 	};
 }
 
@@ -125,6 +127,7 @@ protected:
 	bool				isGround;	//	接地判定
 	int					p_num;		//	自分の番号
 	int					type;			//	プレイヤータイプ
+	int					leanFrame;		//　仰け反り時間
 
 	//	ブースト情報
 	float		bSpeed;		//　ブースト中スピード
@@ -195,7 +198,8 @@ public:
 	void	CommonGuard( void );
 	void	CommonKnockBackStrength( void );
 	void	CommonKnockBackMiddle( void );
-	void	CommonKnockBackWeak( void );
+	void	CommonKnockBackWeak(void);
+	void	CommonKnockBackLeanBackWard(void);
 	void	CommonKnockBack( void );
 	void	AddForce( float force );
 	void	Wait( void );
@@ -223,6 +227,7 @@ public:
 	void	SetScale( const float& scale );
 	void	SetKnockBackVec( const Vector3& knockBackVec );
 	void	SetType( const int& type );
+	void	SetLeanFrame( const int& frame );
 	void	SetDamageColor( const Vector3& color );
 	void	SetReceiveColor( const Vector3& color );
 	void	SetPower( const int& power );
@@ -250,6 +255,7 @@ public:
 	int		GetMode( void );
 	int		GetType( void );
 	int		GetPower( void );
+	int		GetLeanFrame(void);
 	
 
 	//	当たり判定用パラメータ取得

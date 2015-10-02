@@ -231,7 +231,23 @@
 			Vector3	color = p1->GetDamageColor();
 			p2->SetReceiveColor( color );
 			p2->SetKnockBackVec( -knockBackVec );
-			p2->SetMode( PlayerData::DAMAGE_STRENGTH );
+
+			switch (p1->GetKnockBackType())
+			{
+			case PlayerData::KNOCKBACK_STRENGTH :
+				p2->SetMode(PlayerData::DAMAGE_STRENGTH);
+				break;
+			case PlayerData::KNOCKBACK_MIDDLE:
+				p2->SetMode(PlayerData::DAMAGE_MIDDLE);
+				break;
+			case PlayerData::KNOCKBACK_WEAK:
+				p2->SetMode(PlayerData::DAMAGE_WEAK);
+				break;
+			case PlayerData::KNOCKBACK_LEANBACKWARD:
+				p2->SetLeanFrame( p1->GetLeanFrame() );
+				p2->SetMode(PlayerData::DAMAGE_LEANBACKWARD);
+				break;
+			}
 
 			//	FÝ’è
 
@@ -283,7 +299,23 @@
 			Vector3	color = p1->GetDamageColor();
 			p2->SetReceiveColor(color);
 			p2->SetKnockBackVec( -knockBackVec );
-			p2->SetMode( PlayerData::DAMAGE_STRENGTH );
+
+			switch (p1->GetKnockBackType())
+			{
+			case PlayerData::KNOCKBACK_STRENGTH:
+				p2->SetMode(PlayerData::DAMAGE_STRENGTH);
+				break;
+			case PlayerData::KNOCKBACK_MIDDLE:
+				p2->SetMode(PlayerData::DAMAGE_MIDDLE);
+				break;
+			case PlayerData::KNOCKBACK_WEAK:
+				p2->SetMode(PlayerData::DAMAGE_WEAK);
+				break;
+			case PlayerData::KNOCKBACK_LEANBACKWARD:
+				p2->SetLeanFrame(p1->GetLeanFrame());
+				p2->SetMode(PlayerData::DAMAGE_LEANBACKWARD);
+				break;
+			}
 			
 			//	ƒRƒCƒ“‚Î‚ç‚Ü‚«•ûŒüÝ’è
 			Vector3	vec = Vector3( Random::GetFloat( -1.0f, 1.0f ), 1.0f, Random::GetFloat( -1.0f, 1.0f ) );
@@ -317,6 +349,7 @@
 	bool		PlayerManager::GetCanHyper(int player){ return c_Player[player]->GetCanHyper(); }
 	int			PlayerManager::GetPower(int player){ return c_Player[player]->GetPower(); }
 	float		PlayerManager::GetSpeed(int player){ return c_Player[player]->GetSpeed(); }
+	Vector3		PlayerManager::GetDamageColor(int player){ return c_Player[player]->GetDamageColor(); }
 
 	//	î•ñÝ’è
 	void		PlayerManager::SetPos( int player, Vector3 pos ){ c_Player[player]->SetPos( pos ); }
@@ -329,3 +362,5 @@
 	void		PlayerManager::SetPower(int player, int power){ c_Player[player]->SetPower(power); }
 	void		PlayerManager::SetSpeed(int player, float speed){ c_Player[player]->SetSpeed(speed); }
 	void		PlayerManager::SetBoosting(int player, bool boosting){ c_Player[player]->SetBoosting(boosting); }
+	void		PlayerManager::SetLeanFrame(int player, int leanframe){ c_Player[player]->SetLeanFrame(leanframe); }
+	void		PlayerManager::SetReceiveColor(int player, Vector3 color){ c_Player[player]->SetDamageColor(color); }

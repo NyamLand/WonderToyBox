@@ -103,6 +103,8 @@
 	//	クイックアーツ
 	bool	Princess::QuickArts( void )
 	{
+		//相手を仰け反らせる時間(適当)
+		leanFrame = 20;
 		//	行列から前方取得
 		Vector3	front = GetFront();
 		SetMove( Vector3( 0.0f, 0.0f, 0.0f ) );
@@ -192,7 +194,8 @@
 		{
 		case PlayerData::QUICKARTS:
 			attackParam = PlayerData::SPHEREVSCAPSULE;
-			knockBackType = PlayerData::KNOCKBACK_WEAK;
+			if(attack_t < 0.6) knockBackType = PlayerData::KNOCKBACK_LEANBACKWARD;	//2Hitまでは仰け反りのみ
+			if (attack_t >= 0.6) knockBackType = PlayerData::KNOCKBACK_WEAK;		//3hit目からは吹き飛ばしあり
 			break;
 
 		case PlayerData::POWERARTS:

@@ -214,6 +214,7 @@
 	//	ハイパーアーツ
 	bool	Tiger::HyperArts( void )
 	{
+		leanFrame = 60.0f;
 		//	情報取得
 		static	int		timer = 0;
 		Vector3	front = GetFront();
@@ -302,7 +303,9 @@
 
 		case PlayerData::HYPERARTS:
 			attackParam = PlayerData::SPHEREVSCYRINDER;
-			knockBackType = PlayerData::KNOCKBACK_STRENGTH;
+			if (attackCount <= 20) knockBackType = PlayerData::KNOCKBACK_STRENGTH;
+			if (attackCount > 20) knockBackType = PlayerData::KNOCKBACK_LEANBACKWARD;
+			
 			break;
 		}
 	}

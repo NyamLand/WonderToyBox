@@ -57,6 +57,7 @@ public:
 	bool		GetCanHyper( int player );
 	int			GetPower( int player );
 	float		GetSpeed( int player );
+	Vector3		GetDamageColor(int player);
 
 	//	î•ñİ’è
 	void		SetPos( int player, Vector3 pos );
@@ -69,6 +70,8 @@ public:
 	void		SetPower( int player, int power );
 	void		SetSpeed( int player, float speed );
 	void		SetBoosting(int player, bool boosting);
+	void		SetLeanFrame(int player, int leanframe);
+	void		SetReceiveColor(int player, Vector3 color);
 };
 extern	PlayerManager*		m_Player;
 //****************************************************************************************

@@ -52,6 +52,7 @@
 		activate = false;
 		state = false;
 		number = 0;
+		leanpower = 0;
 
 		return	true;
 	}
@@ -141,8 +142,11 @@
 				Vector3	knockBackVec = bulletPos - p_pos_bottom;
 				knockBackVec.y = p_pos_bottom.y;
 				knockBackVec.Normalize();
-				m_Player->SetKnockBackVec( i, -knockBackVec );
-				m_Player->SetMode( i, PlayerData::DAMAGE_STRENGTH );
+				Vector3	color = m_Player->GetDamageColor(i);
+				m_Player->SetReceiveColor(i,color);
+				m_Player->SetKnockBackVec(i, -knockBackVec);
+				m_Player->SetLeanFrame(i, leanpower);
+				m_Player->SetMode( i, PlayerData::DAMAGE_LEANBACKWARD );
 
 				//	ƒRƒCƒ“‚Î‚ç‚Ü‚«•ûŒüİ’è
 				std::uniform_real_distribution<float>	vecrand( -1.0f, 1.0f );
