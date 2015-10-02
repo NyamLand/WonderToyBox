@@ -70,9 +70,6 @@
 		//	ステージ
 		m_CollisionStage = new iexMesh( "DATA/BG/desk_Collision.IMO" );
 		m_Stage = new iexMesh( "DATA/back/stage.IMO" );
-
-		//m_CollisionStage = new iexMesh("DATA/BG/CollisionGround.IMO");
-		//m_Stage = new iexMesh("DATA/BG/2_1/FIELD2_1.IMO");
 		
 		//	当たり判定
 		Collision::Initiallize( m_CollisionStage );
