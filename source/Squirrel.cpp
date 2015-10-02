@@ -123,7 +123,8 @@
 		Vector3	vec = front * 5.0f;
 		static float bulletSpeed = 0.5f;
 
-		if ( time == 0 )m_BulletManager->Set( p_pos, vec, bulletSpeed );
+		int leanpower = 0;
+		if ( time == 0 )m_BulletManager->Set( p_pos, vec, bulletSpeed ,leanpower);
 		time++;
 
 		if ( time >= 60 )
@@ -152,13 +153,14 @@
 			front * 5.0f + right * -5.0f
 		};
 		static float	 bulletSpeed = 0.5f;
+		int leanpower = 30;
 
 
 		if ( time == 0 )
 		{
 			for ( int i = 0; i < 3; i++ )
 			{
-				m_BulletManager->Set( p_pos, vec[i], bulletSpeed );
+				m_BulletManager->Set( p_pos, vec[i], bulletSpeed ,leanpower);
 			}
 		}
 		time++;

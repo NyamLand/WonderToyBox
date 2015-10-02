@@ -37,7 +37,7 @@ public:
 	void	Render( iexShader* shader, LPSTR technique );
 
 	//	“®ìŠÖ”
-	void	DonketsuBoost( void );
+	void	DonketsuBoost();
 	void	RaiseStatus( int worst, int type );
 
 	//	“–‚½‚è”»’è
@@ -46,17 +46,18 @@ public:
 	void	HitCheckCapsuleVSCapsule( Player* p1, Player* p2 );
 
 	//	î•ñæ“¾
-	Vector3	GetPos( int player )const;
-	float		GetAngle( int player )const;
-	Matrix	GetMatrix( int player )const;
-	bool		GetUnrivaled( int player )const;
-	int			GetAttackParam( int player )const;
-	int			GetCoinNum( int player )const;
-	int			GetType( int player )const;
-	int			GetP_Num( int player )const;
-	bool		GetCanHyper( int player )const;
-	int			GetPower( int player )const;
-	float		GetSpeed( int player )const;
+	Vector3		GetPos( int player );
+	float		GetAngle( int player );
+	Matrix		GetMatrix( int player );
+	bool		GetUnrivaled( int player );
+	int			GetAttackParam( int player );
+	int			GetCoinNum( int player );
+	int			GetType( int player );
+	int			GetP_Num( int player );
+	bool		GetCanHyper( int player );
+	int			GetPower( int player );
+	float		GetSpeed( int player );
+	Vector3		GetDamageColor(int player);
 
 	//	î•ñİ’è
 	void		SetPos( int player, Vector3 pos );
@@ -65,10 +66,12 @@ public:
 	void		SetScale( int player, float scale );
 	void		SetType( int player, int type );
 	void		SetKnockBackVec( int player, Vector3	knockBackVec );
-	void		SetMode( int player, int state );
+	void		SetMode( int player, PlayerData::STATE state );
 	void		SetPower( int player, int power );
 	void		SetSpeed( int player, float speed );
 	void		SetBoosting(int player, bool boosting);
+	void		SetLeanFrame(int player, int leanframe);
+	void		SetReceiveColor(int player, Vector3 color);
 };
 extern	PlayerManager*		m_Player;
 //****************************************************************************************

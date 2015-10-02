@@ -35,7 +35,8 @@ public:
 
 	//	ìÆçÏä÷êî
 	void	Set( Vector3 pos, const Vector3 vec, float speed);
-	void	Set( Vector3 pos, const Vector3 vec, const float& scale, float speed);
+	void	Set(Vector3 pos, const Vector3 vec, const float& scale, float speed);
+	void	Set(Vector3 pos, const Vector3 vec, float speed, int leanpower);
 	void	DistCheck(int n);
 };
 

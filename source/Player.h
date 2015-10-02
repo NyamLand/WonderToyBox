@@ -8,12 +8,77 @@
 //
 //****************************************************************************************
 
+namespace PlayerData
+{
+	const int CHARACTER_MAX = 4;
+
+	//	被ダメージ用各色
+	const Vector3	DAMAGE_COLOR[] =
+	{
+		Vector3( 1.0f, 1.0f, 1.0f ),
+		Vector3( 1.0f, 1.0f, 1.0f ),
+		Vector3( 1.0f, 0.0f, 0.0f ),
+		Vector3( 0.0f, 1.0f, 0.0f ),
+		Vector3( 0.0f, 0.0f, 1.0f ),
+	};
+	
+	//	キャラクター名文字列
+	const		LPSTR	characterName[CHARACTER_MAX] =
+	{
+		"ナイト",
+		"プリンセス",
+		"リス",
+		"とら",
+	};
+
+	enum PLAYER_TYPE
+	{
+		KNIGHT,		//	騎士
+		PRINCESS,	//	姫
+		SQUIRREL,	//	リス
+		TIGER,			//	トラ
+	};
+
+	enum KNOCKBACK_TYPE
+	{
+		KNOCKBACK_STRENGTH = 1,		//	強
+		KNOCKBACK_MIDDLE,				//	中
+		KNOCKBACK_WEAK,					//	弱
+		KNOCKBACK_LEANBACKWARD,			//	ノックバックなし、仰け反り
+	};
+
+	enum COLLISION_TYPE
+	{
+		SPHEREVSCAPSULE = 1,	//	球VSカプセル
+		SPHEREVSSPHERE,			//	球VS球
+		CAPSULEVSCAPSULE,			//	カプセルVSカプセル
+		SPHEREVSCYRINDER,			//	球VS円柱（円柱の回転なし）
+		SPHEREVSPOINT,				//	球VS点
+	};
+
+	enum STATE
+	{
+		WAIT,
+		MOVE,
+		ATTACK,
+		POWERARTS,
+		QUICKARTS,
+		HYPERARTS,
+		JUMP,
+		GUARD,
+		DAMAGE,
+		DAMAGE_STRENGTH,
+		DAMAGE_MIDDLE,
+		DAMAGE_WEAK,
+		DAMAGE_LEANBACKWARD,
+	};
+}
+
 namespace
 {
-	//	パラメータ管理
 	namespace PARAMETER_STATE
 	{
-		enum
+		enum PARAMETERSTATE
 		{
 			SLIP,
 			BOOST,
@@ -24,96 +89,13 @@ namespace
 			JUMP,
 		};
 	}
-
-	//	モード管理
-	namespace MODE_STATE
-	{
-		enum
-		{
-			WAIT,
-			MOVE,
-			ATTACK,
-			POWERARTS,
-			QUICKARTS,
-			HYPERARTS,
-			JUMP,
-			GUARD,
-			DAMAGE,
-			DAMAGE_STRENGTH,
-			DAMAGE_MIDDLE,
-			DAMAGE_WEAK,
-		};
-	}
-
-	//	当たり判定タイプ
-	namespace COLLISION_TYPE
-	{
-		enum
-		{
-			SPHEREVSCAPSULE = 1,	//	球VSカプセル
-			SPHEREVSSPHERE,			//	球VS球
-			CAPSULEVSCAPSULE,			//	カプセルVSカプセル
-			SPHEREVSCYRINDER,			//	球VS円柱（円柱の回転なし）
-			SPHEREVSPOINT,				//	球VS点
-		};
-	}
-
-	//	ノックバックタイプ
-	namespace KNOCKBACK_TYPE
-	{
-		enum
-		{
-			STRENGTH = 1,		//	強
-			MIDDLE,				//	中
-			WEAK,					//	弱
-		};
-	}
-
-	//	プレイヤータイプ
-	namespace PLAYER_TYPE
-	{
-		enum
-		{
-			KNIGHT,		//	騎士
-			PRINCESS,	//	姫
-			SQUIRREL,	//	リス
-			TIGER,			//	トラ
-			MAX,				//	終端
-		};
-
-	}
-
-	//	キャラクターの名前
-	namespace
-	{
-		//	キャラクター名文字列
-		const		LPSTR	characterName[PLAYER_TYPE::MAX] =
-		{
-			"ナイト",
-			"プリンセス",
-			"リス",
-			"とら",
-		};
-	}
-
-	//	各キャラクターの色
-	namespace
-	{
-		//	被ダメージ用各色
-		const Vector3	DAMAGE_COLOR[] =
-		{
-			Vector3( 1.0f, 1.0f, 1.0f ),
-			Vector3( 1.0f, 1.0f, 1.0f ),
-			Vector3( 1.0f, 0.0f, 0.0f ),
-			Vector3( 0.0f, 1.0f, 0.0f ),
-			Vector3( 0.0f, 0.0f, 1.0f ),
-		};
-	}
 }
 
 class Player
 {
 protected:
+	//	定数
+	static const int MIN_INPUT_STATE = 300;	//	スティック判定最小値
 
 protected:
 	struct ParameterState
@@ -145,6 +127,7 @@ protected:
 	bool				isGround;	//	接地判定
 	int					p_num;		//	自分の番号
 	int					type;			//	プレイヤータイプ
+	int					leanFrame;		//　仰け反り時間
 
 	//	ブースト情報
 	float		bSpeed;		//　ブースト中スピード
@@ -185,6 +168,7 @@ protected:
 protected:
 	//	関数
 	void	SetMotion( int motion );
+	void	SetMode( int mode );
 
 public:
 	//	初期化・解放
@@ -214,7 +198,8 @@ public:
 	void	CommonGuard( void );
 	void	CommonKnockBackStrength( void );
 	void	CommonKnockBackMiddle( void );
-	void	CommonKnockBackWeak( void );
+	void	CommonKnockBackWeak(void);
+	void	CommonKnockBackLeanBackWard(void);
 	void	CommonKnockBack( void );
 	void	AddForce( float force );
 	void	Wait( void );
@@ -235,50 +220,53 @@ public:
 	virtual	void	SetAttackParam( int attackKind ) = 0;
 
 	//	情報設定
-	void	SetMode( int mode );
+	void	SetMode( const PlayerData::STATE& state );
 	void	SetPos( const Vector3& pos );
 	void	SetPos( const float& x, const float& y, const float& z );
 	void	SetAngle( const float& angle );
 	void	SetScale( const float& scale );
 	void	SetKnockBackVec( const Vector3& knockBackVec );
 	void	SetType( const int& type );
+	void	SetLeanFrame( const int& frame );
 	void	SetDamageColor( const Vector3& color );
 	void	SetReceiveColor( const Vector3& color );
 	void	SetPower( const int& power );
 	void	SetSpeed( const float& speed );
 	void	SetBoosting( const bool& boosting );
-	void	SetParameterState( const int& parameterState );
+	void	SetParameterState( const PARAMETER_STATE::PARAMETERSTATE& parameterState );
 	void	SetParameterState( ParameterState& parameterState, const int& time );
 	void	SetResistance( const float& resistance );
 	void	SetMove( const Vector3& move );
 
 
 	//	情報取得
-	Vector3	GetPos( void )const;
-	Vector3	GetDamageColor( void )const;
-	Vector3	GetFront( void )const;
-	Vector3	GetRight( void )const;
-	Vector3	GetUp( void )const;
-	Vector3	GetMove( void )const;
-	Matrix	GetMatrix( void )const;
-	float	GetAngle( void )const;
-	float	GetSpeed( void )const;
-	float	GetResistance( void )const;
-	bool	GetCanHyper( void )const;
-	bool	GetUnrivaled( void )const;
-	int		GetMode( void )const;
-	int		GetType( void )const;
-	int		GetPower( void )const;
+	Vector3	GetPos( void );
+	Vector3	GetDamageColor( void );
+	Vector3	GetFront( void );
+	Vector3	GetRight( void );
+	Vector3	GetUp( void );
+	Vector3	GetMove( void );
+	Matrix	GetMatrix( void );
+	float	GetAngle( void );
+	float	GetSpeed( void );
+	float	GetResistance( void );
+	bool	GetCanHyper( void );
+	bool	GetUnrivaled( void );
+	int		GetMode( void );
+	int		GetType( void );
+	int		GetPower( void );
+	int		GetLeanFrame(void);
+	
 
 	//	当たり判定用パラメータ取得
-	int		GetAttackParam( void )const;
-	int		GetKnockBackType( void )const;
-	Vector3	GetAttackPos( void )const;
-	Vector3	GetAttackPos_Top( void )const;
-	Vector3	GetAttackPos_Bottom( void )const;
-	float	GetAttack_R( void )const;
-	float	GetAttack_T( void )const;
-	int		GetP_Num( void )const;
+	int		GetAttackParam( void );
+	int		GetKnockBackType( void );
+	Vector3	GetAttackPos( void );
+	Vector3	GetAttackPos_Top( void );
+	Vector3	GetAttackPos_Bottom( void );
+	float	GetAttack_R( void );
+	float	GetAttack_T( void );
+	int		GetP_Num( void );
 };
 
 //****************************************************************************************

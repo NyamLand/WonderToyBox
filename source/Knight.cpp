@@ -107,6 +107,8 @@
 	//	クイックアーツ
 	bool	Knight::QuickArts( void )
 	{
+		//相手を仰け反らせる時間(適当)
+		leanFrame = 20;
 		//	行列から前方取得
 		SetMove( Vector3( 0.0f, 0.0f, 0.0f ) );
 		Vector3	front = GetFront();
@@ -172,6 +174,8 @@
 	//	ハイパーアーツ
 	bool	Knight::HyperArts( void )
 	{
+		//相手を仰け反らせる時間(適当)
+		leanFrame = 35;
 		SetMove( Vector3( 0.0f, 0.0f, 0.0f ) );
 		static	int		num = 0;	//	回数
 		//行列から前方取得
@@ -257,19 +261,22 @@
 	{
 		switch ( attackKind )
 		{
-		case MODE_STATE::QUICKARTS:
-			attackParam = COLLISION_TYPE::CAPSULEVSCAPSULE;
-			knockBackType = KNOCKBACK_TYPE::WEAK;
+		case PlayerData::QUICKARTS:
+			attackParam = PlayerData::COLLISION_TYPE::CAPSULEVSCAPSULE;
+			if (attack_t < 0.6f) knockBackType = PlayerData::KNOCKBACK_LEANBACKWARD;	//2Hitまでは仰け反りのみ
+			if (attack_t >= 0.6f) knockBackType = PlayerData::KNOCKBACK_WEAK;		//3hit目からは吹き飛ばしあり
 			break;
 
-		case MODE_STATE::POWERARTS:
-			attackParam = COLLISION_TYPE::CAPSULEVSCAPSULE;
-			knockBackType = KNOCKBACK_TYPE::MIDDLE;
+		case PlayerData::POWERARTS:
+			attackParam = PlayerData::COLLISION_TYPE::CAPSULEVSCAPSULE;
+			knockBackType = PlayerData::KNOCKBACK_STRENGTH;
 			break;
 
-		case MODE_STATE::HYPERARTS:
-			attackParam = COLLISION_TYPE::CAPSULEVSCAPSULE;
-			knockBackType = KNOCKBACK_TYPE::STRENGTH;
+		case PlayerData::HYPERARTS:
+			attackParam = PlayerData::COLLISION_TYPE::CAPSULEVSCAPSULE;
+			if (attack_t != 0) knockBackType = PlayerData::KNOCKBACK_STRENGTH;	//2Hitまでは吹き飛ばしあり
+			if (attack_t == 0 && lance_r < 360 * 4) knockBackType = PlayerData::KNOCKBACK_LEANBACKWARD;		//3~6hit目からは吹き飛ばしあり
+			if (attack_t == 0 && lance_r >= 360 * 4) knockBackType = PlayerData::KNOCKBACK_STRENGTH;		//6hit目からは吹き飛ばしあり
 			break;
 		}
 	}
