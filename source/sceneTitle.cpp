@@ -132,6 +132,7 @@ namespace
 			//	‘I‘ğî•ñ‰Šú‰»
 			selectInfo.playerNum = 1;
 			selectInfo.stageType = 0;
+			selectInfo.step_cs = 0;
 			for ( int i = 0; i < PLAYER_MAX; i++ )	selectInfo.characterType[i] = i;
 
 			//	ƒJƒƒ‰î•ñ\‘¢‘Ì‰Šú‰»
