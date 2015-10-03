@@ -214,6 +214,7 @@
 	//	ハイパーアーツ
 	bool	Tiger::HyperArts( void )
 	{
+		leanFrame = 60.0f;
 		//	情報取得
 		static	int		timer = 0;
 		Vector3	front = GetFront();
@@ -236,7 +237,7 @@
 		{
 		case 20:
 			timer++;
-			Particle::BlueFlame( p_pos, 1.0f );
+			particle->BlueFlame( p_pos, 1.0f );
 			
 			if ( timer >= 60 )
 			{
@@ -290,19 +291,21 @@
 	{
 		switch ( attackKind )
 		{
-		case PlayerData::QUICKARTS:
-			attackParam = PlayerData::SPHEREVSCAPSULE;
-			knockBackType = PlayerData::KNOCKBACK_WEAK;
+		case MODE_STATE::QUICKARTS:
+			attackParam = COLLISION_TYPE::SPHEREVSCAPSULE;
+			knockBackType = KNOCKBACK_TYPE::WEAK;
 			break;
 
-		case PlayerData::POWERARTS:
+		case MODE_STATE::POWERARTS:
 			attackParam = 0;
-			knockBackType = PlayerData::KNOCKBACK_MIDDLE;
+			knockBackType = KNOCKBACK_TYPE::MIDDLE;
 			break;
 
-		case PlayerData::HYPERARTS:
-			attackParam = PlayerData::SPHEREVSCYRINDER;
-			knockBackType = PlayerData::KNOCKBACK_STRENGTH;
+		case MODE_STATE::HYPERARTS:
+			attackParam = COLLISION_TYPE::SPHEREVSCYRINDER;
+			if (attackCount <= 20) knockBackType = KNOCKBACK_TYPE::STRENGTH;
+			if (attackCount > 20) knockBackType = KNOCKBACK_TYPE::LEANBACKWARD;
+			
 			break;
 		}
 	}

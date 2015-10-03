@@ -11,18 +11,6 @@
 class sceneTitle : public	Scene
 {
 private:	//	定数
-	enum Title_Mode
-	{
-		TITLE,
-		MENU,
-		SELECT_PLAYERNUM,
-		SELECT_CHARACTER,
-		SELECT_STAGE,
-		SELECT_CHECK,
-		OPTION,
-		CREDIT,
-		MOVE_MAIN,
-	};
 	static const int STAGE_MAX = 8;
 
 private:	//	構造体
@@ -54,17 +42,18 @@ private:	//	構造体
 	};
 
 private:
-	//	オブジェクト
-	iexMesh*	m_CollisionStage;
-	iexMesh*	m_Stage;	
-
 	//	カメラ用パラメータ
 	CameraInfo	cameraInfo;
 
 	//	ゲーム設定用パラメータ
-	CharacterInfo	characterInfo[PlayerData::CHARACTER_MAX];
+	CharacterInfo	characterInfo[PLAYER_TYPE::MAX];
 	SelectInfo			selectInfo;
 	int		mode;
+
+	//	タイトル用パラメータ
+	iex2DObj*	curtain;
+	iexMesh*	stage;
+
 
 public:
 	//	初期化・解放

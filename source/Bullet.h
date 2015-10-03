@@ -21,6 +21,7 @@ private:
 	bool			activate;
 	int				judgeTimer;	//	判定有効時間
 	int				number;		//	番号割り当て用
+	int				leanpower; //	仰け反り時間用
 
 public:
 	//	初期化・解放

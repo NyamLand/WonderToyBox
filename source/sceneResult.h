@@ -20,7 +20,6 @@ private:
 	};
 
 private:
-	iexView*	view;
 	RESULT_INFO	resultInfo[4];
 	
 	//	ソート用
@@ -32,6 +31,9 @@ private:
 	int		step;
 	int		playerNum;
 	int		wait;
+	iex2DObj*	back; //背景
+	iex2DObj*	r_number; //コインの枚数
+	iexMesh*	collision;
 
 public:
 	//	初期化・解放

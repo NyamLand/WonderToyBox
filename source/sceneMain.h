@@ -28,7 +28,6 @@ private:
 
 	//	テクスチャ
 	iex2DObj*	ShadowTex;
-	iex2DObj*	screen;
 
 	//	バッファ
 	Surface*	backBuffer;

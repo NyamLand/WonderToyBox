@@ -11,24 +11,32 @@
 class Particle
 {
 private:
-	static	iexParticle*	particle;
+	iexParticle*		pt;
+	iex2DObj**		effectImage;
+	int						timer;
 
 public:
 	//	初期化・解放
-	Particle( void );
-	~Particle( void );
-	static bool	Initialize( void );
-	static void Release( void );
+	bool	Initialize( void );
+	void Release( void );
 
 	//	更新・描画
-	static void	Update( void );
-	static void	Render( void );
+	void	Update( void );
+	void	Render( void );
 
 	//	動作関数
-	static void	BlueFlame( const Vector3& pos, const float& scale = 1.0f );		//	青炎
-	static void Spark( const Vector3& pos, const float& scale = 1.0f );			//	火花
-	static void Hit( const Vector3& pos, const float& scale = 1.0f );			//	ヒット時
+	void	BlueFlame( const Vector3& pos, const float& scale = 1.0f );		//	青炎
+	void	Spark( const Vector3& pos, const float& scale = 1.0f );			//	火花
+	void	Particle::Hit( const Vector3& pos, const int& time = 1, const float& scale = 1.0f );				//	星
+	void	Particle::Smoke( const Vector3& pos, const int& time = 1, const float& scale = 1.0f );				//	煙
+	void	Particle::Aura(const Vector3& pos, const int& time = 1, const float& scale = 1.0f);				//	煙
+
+
+	//	情報取得
+	static	Particle*	GetInstance( void );
 };
+
+#define	particle ( Particle::GetInstance() )
 
 //****************************************************************************************
 #endif // !__PARTICLE_H__

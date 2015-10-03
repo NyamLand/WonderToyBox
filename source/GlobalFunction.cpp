@@ -148,7 +148,7 @@
 		if ( t >= 1.0f )	return	true;
 		float rate = t * t * ( 3.0f - 2.0f * t );   // 3次関数補間値に変換
 
-		out = p1 * ( 1.0f - rate ) + p2 * rate;   // いわゆるLerp
+		out = p1 * ( 1.0f - rate ) + p2 * rate;
 		return	false;
 	}
 
@@ -224,34 +224,34 @@
 	}
 
 	//	ベジェ曲線パラメータ取得（ 0.0f ~ 1.0f で返す ）　
-	float GetBezier( ePrm_t ePrm1, ePrm_t ePrm2, float fRate ){
+	float GetBezier( int ePrm1, int ePrm2, float fRate ){
 		int n = 3;                //n次元指定
 		float y1, y2;
 		switch (ePrm1){
-		case eSlow_Lv5: y1 = 0;						n = 11; break;//11次元
-		case eSlow_Lv4: y1 = 0;                        n = 9; break;//9次元
-		case eSlow_Lv3: y1 = 0;                        n = 7; break;//7次元
-		case eSlow_Lv2: y1 = 0;                        n = 5; break;//5次元
-		case eSlow_Lv1: y1 = 0;                        n = 3; break;//3次元
-		case eNoAccel: y1 = 0.333333f;				n = 3; break;//直線の場合は3次元中1/3の点
-		case eRapid_Lv1: y1 = 1;						n = 3; break;//3次元
-		case eRapid_Lv2: y1 = 1;						n = 5; break;//5次元
-		case eRapid_Lv3: y1 = 1;						n = 7; break;//7次元
-		case eRapid_Lv4: y1 = 1;						n = 9; break;//9次元
-		case eRapid_Lv5: y1 = 1;						n = 11; break;//11次元
+		case ePrm_t::eSlow_Lv5: y1 = 0;						n = 11; break;//11次元
+		case ePrm_t::eSlow_Lv4: y1 = 0;                        n = 9; break;//9次元
+		case ePrm_t::eSlow_Lv3: y1 = 0;                        n = 7; break;//7次元
+		case ePrm_t::eSlow_Lv2: y1 = 0;                        n = 5; break;//5次元
+		case ePrm_t::eSlow_Lv1: y1 = 0;                        n = 3; break;//3次元
+		case ePrm_t::eNoAccel: y1 = 0.333333f;				n = 3; break;//直線の場合は3次元中1/3の点
+		case ePrm_t::eRapid_Lv1: y1 = 1;						n = 3; break;//3次元
+		case ePrm_t::eRapid_Lv2: y1 = 1;						n = 5; break;//5次元
+		case ePrm_t::eRapid_Lv3: y1 = 1;						n = 7; break;//7次元
+		case ePrm_t::eRapid_Lv4: y1 = 1;						n = 9; break;//9次元
+		case ePrm_t::eRapid_Lv5: y1 = 1;						n = 11; break;//11次元
 		}
 		switch (ePrm2){
-		case eSlow_Lv5: y2 = 1;                       n = 11; break;//11次元
-		case eSlow_Lv4: y2 = 1;                       n = 9; break;//9次元
-		case eSlow_Lv3: y2 = 1;                       n = 7; break;//7次元
-		case eSlow_Lv2: y2 = 1;                       n = 5; break;//5次元
-		case eSlow_Lv1: y2 = 1;                       n = 3; break;//3次元
-		case eNoAccel: y2 = 0.6666667f;              n = 3; break;//直線の場合は3次元中2/3の点
-		case eRapid_Lv1: y2 = 0;                       n = 3; break;//3次元
-		case eRapid_Lv2: y2 = 0;                       n = 5; break;//5次元
-		case eRapid_Lv3: y2 = 0;                       n = 7; break;//7次元
-		case eRapid_Lv4: y2 = 0;                       n = 9; break;//9次元
-		case eRapid_Lv5: y2 = 0;                       n = 11; break;//11次元
+		case ePrm_t::eSlow_Lv5: y2 = 1;                       n = 11; break;//11次元
+		case ePrm_t::eSlow_Lv4: y2 = 1;                       n = 9; break;//9次元
+		case ePrm_t::eSlow_Lv3: y2 = 1;                       n = 7; break;//7次元
+		case ePrm_t::eSlow_Lv2: y2 = 1;                       n = 5; break;//5次元
+		case ePrm_t::eSlow_Lv1: y2 = 1;                       n = 3; break;//3次元
+		case ePrm_t::eNoAccel: y2 = 0.6666667f;              n = 3; break;//直線の場合は3次元中2/3の点
+		case ePrm_t::eRapid_Lv1: y2 = 0;                       n = 3; break;//3次元
+		case ePrm_t::eRapid_Lv2: y2 = 0;                       n = 5; break;//5次元
+		case ePrm_t::eRapid_Lv3: y2 = 0;                       n = 7; break;//7次元
+		case ePrm_t::eRapid_Lv4: y2 = 0;                       n = 9; break;//9次元
+		case ePrm_t::eRapid_Lv5: y2 = 0;                       n = 11; break;//11次元
 		}
 
 		float	out = Get( y1, y2, fRate, n );

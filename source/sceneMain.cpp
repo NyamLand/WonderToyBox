@@ -70,6 +70,9 @@
 		//	ステージ
 		m_CollisionStage = new iexMesh( "DATA/BG/desk_Collision.IMO" );
 		m_Stage = new iexMesh( "DATA/back/stage.IMO" );
+
+		//m_CollisionStage = new iexMesh("DATA/BG/CollisionGround.IMO");
+		//m_Stage = new iexMesh("DATA/BG/2_1/FIELD2_1.IMO");
 		
 		//	当たり判定
 		Collision::Initiallize( m_CollisionStage );
@@ -90,7 +93,7 @@
 		itemManager->Initialize();
 			
 		//	パーティクル
-		Particle::Initialize();
+		particle->Initialize();
 
 		//　エフェクト
 		m_Effect = new Effect();
@@ -102,8 +105,8 @@
 
 		//	変数初期化
 		timer = 0;
-		playerNum = GameManager::GetPlayerNum();
-		stageType = GameManager::GetStageType();
+		playerNum =gameManager->GetPlayerNum();
+		stageType = gameManager->GetStageType();
 
 		//	BGM再生
 		sound->PlayBGM( BGM::MAIN_BGM );
@@ -126,8 +129,8 @@
 		SafeDelete(m_CoinManager);
 		SafeDelete(m_BulletManager);
 		SafeDelete(ui);
-		Particle::Release();
 		Random::Release();
+		particle->Release();
 		itemManager->Release();
 		sound->AllStop();
 	}
@@ -137,7 +140,7 @@
 	{
 		for ( int i = 0; i < 4; i++ )
 		{
-			int		characterType = GameManager::GetCharacterType( i );
+			int		characterType = gameManager->GetCharacterType( i );
 			Vector3	pos = Vector3( -20.0f + ( 10.0f * i ), 10.0f, 0.0f );
 			m_Player->Initialize( i, characterType, pos );
 		}
@@ -157,12 +160,12 @@
 		m_Camera->Update( VIEW_MODE::CHASE, Vector3( 0.0f, 2.0f, 0.0f ) );
 
 		//	UI
-		ui->Update( GameManager::GetMode() );
+		ui->Update( gameManager->GetMode() );
 
 		//	デバッグモード切り替え
 		if ( KEY( KEY_ENTER ) == 3 )		debug = !debug;
 
-		switch ( GameManager::GetMode() )
+		switch ( gameManager->GetMode() )
 		{
 		case GAME_MODE::GAMESTART:		
 			StartUpdate();
@@ -190,7 +193,12 @@
 			}
 			break;
 		}
+		if (KEY(KEY_D) == 1){
+			//particle->Hit(Vector3(0, 10.0f, 0), 20, 0.5f);
+			//particle->Smoke(Vector3(0, 10.0f, 0), 20, 0.5f);
+			particle->Aura(Vector3(0, 10.0f, 0), 3, 0.5f);
 
+		}
 	}
 
 	//	スタート更新
@@ -201,8 +209,8 @@
 
 		if ( ui->GetChangeFlag() ) 
 		{
-			GameManager::SetMode( GAME_MODE::MAINGAME );
-			for ( int i = 0; i < 4; i++ )		m_Player->SetMode( i, PlayerData::MOVE );
+			gameManager->SetMode( GAME_MODE::MAINGAME );
+			for ( int i = 0; i < 4; i++ )		m_Player->SetMode( i, MODE_STATE::MOVE );
 			ui->SetChangeFlag( false );
 		}
 	}
@@ -211,7 +219,7 @@
 	void	sceneMain::MainGameUpdate( void )
 	{			
 		//	ゲームマネージャー
-		GameManager::Update();
+		gameManager->Update();
 
 		//	全体更新
 		AllUpdate();
@@ -222,7 +230,7 @@
 	{
 		if ( ui->GetChangeFlag() )
 		{
-			GameManager::SetMode( GAME_MODE::CLIMAX );
+			gameManager->SetMode( GAME_MODE::CLIMAX );
 			ui->SetChangeFlag( false );
 		}
 	}
@@ -231,7 +239,7 @@
 	void	sceneMain::ClimaxUpdate( void )
 	{
 		//	ゲームマネージャー
-		GameManager::Update();
+		gameManager->Update();
 
 		//	全体更新
 		AllUpdate();
@@ -242,7 +250,7 @@
 	void	sceneMain::FinishUpdate( void )
 	{
 		//	ゲームマネージャー
-		GameManager::Update();
+		gameManager->Update();
 
 		//	全体更新
 		AllUpdate();
@@ -255,7 +263,7 @@
 		m_Player->Update();
 
 		//	パーティクル更新
-		Particle::Update();
+		particle->Update();
 
 		//	コイン更新
 		m_CoinManager->Update();
@@ -294,13 +302,13 @@
 		itemManager->Render();
 		
 		//UI
-		ui->Render( GameManager::GetMode() );
+		ui->Render( gameManager->GetMode() );
 
 		//　エフェクト描画
 		m_Effect->Render();
 
 		//	パーティクル描画
-		Particle::Render();
+		particle->Render();
 	}
 
 	//	シャドウバッファ描画
