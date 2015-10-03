@@ -66,6 +66,22 @@
 		case PLAYER_TYPE::TIGER:
 			c_Player[input] = new Tiger();
 			break;
+
+		//case PlayerData::PRINCESS_CPU:
+		//	c_Player[input] = new Princess_CPU();
+		//	break;
+
+		//case PlayerData::KNIGHT_CPU:
+		//	c_Player[input] = new Knight_CPU();
+		//	break;
+
+		//case PlayerData::SQUIRREL_CPU:
+		//	c_Player[input] = new Squirrel_CPU();
+		//	break;
+
+		//case PlayerData::TIGER_CPU:
+		//	c_Player[input] = new Tiger_CPU();
+		//	break;
 		}
 
 		//	モデル読み込み
@@ -82,6 +98,11 @@
 		org[PLAYER_TYPE::KNIGHT] = new iex3DObj( "DATA/CHR/ミノタウルス/minotaurus.IEM" );
 		org[PLAYER_TYPE::SQUIRREL] = new iex3DObj( "DATA/CHR/SQUIRREL/SQUIRREL.IEM" );
 		org[PLAYER_TYPE::TIGER] = new iex3DObj( "DATA/CHR/ECCMAN/ECCMAN.IEM" );
+	
+		//org[PlayerData::PRINCESS_CPU] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
+		//org[PlayerData::KNIGHT_CPU] = new iex3DObj("DATA/CHR/ミノタウルス/minotaurus.IEM");
+		//org[PlayerData::SQUIRREL_CPU] = new iex3DObj("DATA/CHR/SQUIRREL/SQUIRREL.IEM");
+		//org[PlayerData::TIGER_CPU] = new iex3DObj("DATA/CHR/ECCMAN/ECCMAN.IEM");
 	}
 
 //------------------------------------------------------------------------------

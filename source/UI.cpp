@@ -21,18 +21,21 @@
 
 	namespace
 	{
-		//	顔情報
+		//    顔情報
 		namespace FACE_INFO
 		{
-			//　「喜・怒・哀・楽」
+			//　「楽・喜・哀・怒」
 			enum
 			{
-				Good,
-				Angry,
-				Sad,
+	
+	
+	
 				Normal,
+				Good,
+				Sad,
+				Angry
 			};
-		}	
+		}
 	}
 
 	//	実体
