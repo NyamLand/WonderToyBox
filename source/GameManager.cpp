@@ -81,7 +81,7 @@
 		{
 			timer = 0;
 			mode = GAME_MODE::TIMEUP;
-			for ( int i = 0; i < PLAYER_NUM; i++ )	m_Player->SetMode( i, MODE_STATE::WAIT );
+			for ( int i = 0; i < PLAYER_MAX; i++ )	m_Player->SetMode( i, MODE_STATE::WAIT );
 		}
 
 		//	どんけつブースト設定

@@ -67,6 +67,11 @@
 		//	カメラ設定
 		m_Camera = new Camera();
 
+		//	変数初期化
+		timer = 0;
+		playerNum = gameManager->GetPlayerNum();
+		stageType = gameManager->GetStageType();
+
 		//	ステージ
 		m_CollisionStage = new iexMesh( "DATA/BG/desk_Collision.IMO" );
 		m_Stage = new iexMesh( "DATA/back/stage.IMO" );
@@ -103,11 +108,6 @@
 		ui = new UI();
 		ui->Initialize();
 
-		//	変数初期化
-		timer = 0;
-		playerNum =gameManager->GetPlayerNum();
-		stageType = gameManager->GetStageType();
-
 		//	BGM再生
 		sound->PlayBGM( BGM::MAIN_BGM );
 
@@ -136,14 +136,31 @@
 	}
 
 	//	プレイヤー初期化
-	void	sceneMain::PlayerInitialize( void )
+	void    sceneMain::PlayerInitialize(void)
 	{
-		for ( int i = 0; i < 4; i++ )
+		/*
+			このスコープ内＆PlayerManagerのInitializeとLoadの中の
+			コメントを外したらPlayer＆CPUとして識別＆読み込みをする。（はず）
+			（１ ～ playerNum番目がプレイヤー、playerNum ～ PLAYER_MAX番目がCPU）
+		*/
+
+
+		//　プレイヤー設定
+		for (int i = 0; i < 4; i++)
+		//for (int i = 0; i < playerNum; i++)
 		{
-			int		characterType = gameManager->GetCharacterType( i );
-			Vector3	pos = Vector3( -20.0f + ( 10.0f * i ), 10.0f, 0.0f );
-			m_Player->Initialize( i, characterType, pos );
+			int        characterType = gameManager->GetCharacterType(i);
+			Vector3    pos = Vector3(-20.0f + (10.0f * i), 10.0f, 0.0f);
+			m_Player->Initialize(i, characterType, pos);
 		}
+
+		//　ＣＰＵ設定
+		//for (int i = playerNum; i < PLAYER_MAX; i++)
+		//{
+		//	int        characterType = gameManager->GetCharacterType(i);
+		//	Vector3    pos = Vector3(-20.0f + (10.0f * i), 10.0f, 0.0f);
+		//	m_Player->Initialize(i, characterType + CHARATYPE_MAX, pos);
+		//}
 	}
 
 //*****************************************************************************************************************************
