@@ -109,6 +109,21 @@
     <Filter Include="ソース ファイル\Character\BaseChara">
       <UniqueIdentifier>{513e19ed-cf76-423a-87ab-7fdb7a3e9588}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Character\CPU">
+      <UniqueIdentifier>{5a435e47-5bc7-4298-becf-504a8199a2d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Character\CPU\Knight">
+      <UniqueIdentifier>{ce4359e8-afaf-409f-a4ce-c8cefc8a6aa9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Character\CPU\Princess">
+      <UniqueIdentifier>{6cbea11b-6ac9-46c6-87bf-05a573ce2bcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Character\CPU\Tiger">
+      <UniqueIdentifier>{69615b52-f60d-4a3f-a992-91ddf0368256}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Character\CPU\Squirrel">
+      <UniqueIdentifier>{218a895b-aa0f-4c4f-91ea-995c036980d1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -252,6 +267,18 @@
     <ClCompile Include="source\Squirrel.cpp">
       <Filter>ソース ファイル\Character\Squirrel</Filter>
     </ClCompile>
+    <ClCompile Include="source\Knight_CPU.cpp">
+      <Filter>ソース ファイル\Character\CPU\Knight</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Princess_CPU.cpp">
+      <Filter>ソース ファイル\Character\CPU\Princess</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Tiger_CPU.cpp">
+      <Filter>ソース ファイル\Character\CPU\Tiger</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Squirrel_CPU.cpp">
+      <Filter>ソース ファイル\Character\CPU\Squirrel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -349,6 +376,18 @@
     </ClInclude>
     <ClInclude Include="source\Squirrel.h">
       <Filter>ソース ファイル\Character\Squirrel</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Knight_CPU.h">
+      <Filter>ソース ファイル\Character\CPU\Knight</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Princess_CPU.h">
+      <Filter>ソース ファイル\Character\CPU\Princess</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Tiger_CPU.h">
+      <Filter>ソース ファイル\Character\CPU\Tiger</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Squirrel_CPU.h">
+      <Filter>ソース ファイル\Character\CPU\Squirrel</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

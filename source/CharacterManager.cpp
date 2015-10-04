@@ -39,19 +39,23 @@
 		switch ( type )
 		{
 		case CHARACTER_TYPE::PRINCESS:
-			character[playerNum] = new Princess();
+			if ( isPlayer )		character[playerNum] = new Princess();
+			else					character[playerNum] = new Princess_CPU();
 			break;
 
 		case CHARACTER_TYPE::KNIGHT:
-			character[playerNum] = new Knight();
+			if ( isPlayer )		character[playerNum] = new Knight();
+			else					character[playerNum] = new Knight_CPU();
 			break;
 
 		case CHARACTER_TYPE::SQUIRREL:
-			character[playerNum] = new Squirrel();
+			if ( isPlayer )		character[playerNum] = new Squirrel();
+			else					character[playerNum] = new Squirrel_CPU();
 			break;
 
 		case CHARACTER_TYPE::TIGER:
-			character[playerNum] = new Tiger();
+			if (isPlayer)		character[playerNum] = new Tiger();
+			else					character[playerNum] = new Tiger_CPU();
 			break;
 
 		default:

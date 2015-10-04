@@ -139,21 +139,21 @@
 		*/
 
 		//　プレイヤー設定
-		for (int i = 0; i < 4; i++)
-		//for (int i = 0; i < playerNum; i++)
+		//for (int i = 0; i < 4; i++)
+		for ( int i = 0; i < playerNum; i++ )
 		{
-			int        characterType = gameManager->GetCharacterType(i);
-			Vector3    pos = Vector3(-20.0f + (10.0f * i), 10.0f, 0.0f);
+			int        characterType = gameManager->GetCharacterType( i );
+			Vector3    pos = Vector3( -20.0f + ( 10.0f * i ), 10.0f, 0.0f );
 			characterManager->Initialize( i, characterType, pos, true );
 		}
 
 		//　ＣＰＵ設定
-		//for (int i = playerNum; i < PLAYER_MAX; i++)
-		//{
-		//	int        characterType = gameManager->GetCharacterType(i);
-		//	Vector3    pos = Vector3(-20.0f + (10.0f * i), 10.0f, 0.0f);
-		//	m_Player->Initialize(i, characterType + CHARATYPE_MAX, pos);
-		//}
+		for ( int i = playerNum; i < PLAYER_MAX; i++ )
+		{
+			int        characterType = gameManager->GetCharacterType( i );
+			Vector3    pos = Vector3( -20.0f + ( 10.0f * i ), 10.0f, 0.0f );
+			characterManager->Initialize( i, characterType, pos, false );
+		}
 	}
 
 //*****************************************************************************************************************************
