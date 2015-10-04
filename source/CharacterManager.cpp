@@ -22,7 +22,7 @@
 	//	コンストラクタ
 	CharacterManager::CharacterManager( void ) : loadflag( false )
 	{
-	
+		int a = 0;
 	}
 
 	//	デストラクタ

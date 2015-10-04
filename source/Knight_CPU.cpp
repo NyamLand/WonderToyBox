@@ -17,7 +17,7 @@
 //-----------------------------------------------------------------------------
 
 	//	コンストラクタ
-	Knight_CPU::Knight_CPU( void ) : Knight_CPU()
+	Knight_CPU::Knight_CPU( void ) : Knight()
 	{
 	
 	}
