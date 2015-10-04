@@ -25,9 +25,11 @@ private:
 private:
 	BaseChara*	character[CHARACTER_MAX];
 	iex3DObj*		org[OBJ_MAX];
-	bool	canHyper;	//	ハイパーアーツ同時発動制限用
-	bool	loadflag = false;
-
+	bool	canHyper;		//	ハイパーアーツ同時発動制限用
+	bool	loadflag;
+private:
+	CharacterManager( void );
+	~CharacterManager( void );
 public:
 	//	初期化・解放
 	bool	Initialize( int playerNum, int type, Vector3 pos, bool isPlayer = true );

@@ -19,6 +19,18 @@
 //	初期化・解放
 //-------------------------------------------------------------------------------------
 
+	//	コンストラクタ
+	CharacterManager::CharacterManager( void ) : loadflag( false )
+	{
+	
+	}
+
+	//	デストラクタ
+	CharacterManager::~CharacterManager( void )
+	{
+
+	}
+
 	//	初期化
 	bool	CharacterManager::Initialize( int playerNum, int type, Vector3 pos, bool isPlayer )
 	{
