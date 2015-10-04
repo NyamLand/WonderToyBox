@@ -47,7 +47,7 @@ private:
 	CameraInfo	cameraInfo;
 
 	//	ゲーム設定用パラメータ
-	CharacterInfo	characterInfo[PLAYER_TYPE::MAX];
+	CharacterInfo	characterInfo[CHARACTER_TYPE::MAX];
 	SelectInfo		selectInfo;
 	int				mode;
 

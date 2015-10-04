@@ -9,7 +9,8 @@
 #include	"Camera.h"
 #include	"Particle.h"
 #include	"Random.h"
-#include	"PlayerManager.h"
+#include	"BaseChara.h"
+#include	"CharacterManager.h"
 #include	"sceneMain.h"
 #include	"GameManager.h"
 #include	"sceneLoad.h"
@@ -123,7 +124,7 @@ namespace
 		//	構造体初期化
 		{
 			//	キャラクター情報初期化
-			for ( int i = 0; i < PLAYER_TYPE::MAX; i++ )
+			for ( int i = 0; i < CHARACTER_TYPE::MAX; i++ )
 			{
 				characterInfo[i].name = characterName[i];
 				characterInfo[i].select = false;
@@ -462,8 +463,8 @@ namespace
 					}
 
 					//	数値制限
-					if ( selectInfo.characterType[p] >= PLAYER_TYPE::MAX )	selectInfo.characterType[p] = 0;
-					if ( selectInfo.characterType[p] < 0 )	selectInfo.characterType[p] = PLAYER_TYPE::MAX - 1;
+					if ( selectInfo.characterType[p] >= CHARACTER_TYPE::MAX )	selectInfo.characterType[p] = 0;
+					if ( selectInfo.characterType[p] < 0 )	selectInfo.characterType[p] = CHARACTER_TYPE::MAX - 1;
 				}
 				break;
 
@@ -477,8 +478,8 @@ namespace
 						if ( KEY( KEY_LEFT ) == 3 )	selectInfo.characterType[p]--;
 
 						//	数値制限
-						if ( selectInfo.characterType[p] >= PLAYER_TYPE::MAX )	selectInfo.characterType[p] = 0;
-						if ( selectInfo.characterType[p] < 0 )	selectInfo.characterType[p] = PLAYER_TYPE::MAX - 1;
+						if ( selectInfo.characterType[p] >= CHARACTER_TYPE::MAX )	selectInfo.characterType[p] = 0;
+						if ( selectInfo.characterType[p] < 0 )	selectInfo.characterType[p] = CHARACTER_TYPE::MAX - 1;
 					}
 					if ( KEY( KEY_SPACE ) == 3 )
 					{

@@ -22,9 +22,6 @@
     <Filter Include="IEX">
       <UniqueIdentifier>{38fbec0a-1dc8-4967-afe0-3a6584026b2f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Player">
-      <UniqueIdentifier>{42712adf-649b-4e76-82f0-c0174ed1fd2f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Camera">
       <UniqueIdentifier>{8b651f56-31d6-4b4e-a7a8-c2c61a9284d0}</UniqueIdentifier>
     </Filter>
@@ -49,9 +46,6 @@
     <Filter Include="ソース ファイル\GlobalFunction">
       <UniqueIdentifier>{8e799579-24e9-427f-b7b7-ff56950440aa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Player\Player">
-      <UniqueIdentifier>{8c405ba8-5fef-44a1-8cb7-21eeafd65dcf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Scene\sceneResult">
       <UniqueIdentifier>{4e1cd947-8df4-4b09-8285-72f3aa39d98a}</UniqueIdentifier>
     </Filter>
@@ -61,29 +55,17 @@
     <Filter Include="ソース ファイル\GameManager">
       <UniqueIdentifier>{ef95c7b5-3a14-4bc5-81a4-bfa87c427341}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Player\Squirrel">
-      <UniqueIdentifier>{3d62d4f6-76a8-41b3-9af3-c44914c1aceb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Bullet">
       <UniqueIdentifier>{ab27c35f-3def-44fa-b507-427aed3b3f42}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\BulletManager">
       <UniqueIdentifier>{06e234ff-76bf-4d07-a702-8f484e153871}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Player\Knight">
-      <UniqueIdentifier>{2ac1b34f-a140-4426-ad12-bad920e92a94}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Scene\sceneMain">
       <UniqueIdentifier>{cc606a43-d8db-4916-9d6a-efc4d1b60c3c}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\Scene\sceneLoad">
       <UniqueIdentifier>{6896f326-e1c2-4544-b66e-034745faaa30}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Player\Princess">
-      <UniqueIdentifier>{7d3f933e-27f2-451e-b24c-c7fcbdb2403e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Player\Tiger">
-      <UniqueIdentifier>{4523eb51-1621-4eed-ab81-350487aedf33}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\Image">
       <UniqueIdentifier>{31dd35c2-2fa3-45d4-bd41-b6b09747246e}</UniqueIdentifier>
@@ -103,11 +85,29 @@
     <Filter Include="ソース ファイル\Object">
       <UniqueIdentifier>{a811ecd6-664b-4d75-a307-5625a0fefc09}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\PlayerManager">
-      <UniqueIdentifier>{8f63f319-104a-400f-b24b-8ef9d8ff1674}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Screen">
       <UniqueIdentifier>{f549f8e3-6aa3-4b3c-b46d-dd5693a58522}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\CharacterManager">
+      <UniqueIdentifier>{74b3ff91-d37d-4bfa-852d-0b78ebbe2c00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Character">
+      <UniqueIdentifier>{a760acd8-28be-4a80-ad31-f0e5b34a6045}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Character\Knight">
+      <UniqueIdentifier>{23f38452-a546-4242-9994-7c9a0c912d49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Character\Princess">
+      <UniqueIdentifier>{a568f097-eb5b-4fbb-ad6c-cc2d8dd5590e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Character\Tiger">
+      <UniqueIdentifier>{54bb7012-1b08-4ac4-9e49-4ae0504e3b86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Character\Squirrel">
+      <UniqueIdentifier>{d6922f6c-6433-4278-8f52-686ad5a188ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Character\BaseChara">
+      <UniqueIdentifier>{513e19ed-cf76-423a-87ab-7fdb7a3e9588}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -177,9 +177,6 @@
     <ClCompile Include="source\Collision.cpp">
       <Filter>ソース ファイル\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="source\PlayerManager.cpp">
-      <Filter>ソース ファイル\PlayerManager</Filter>
-    </ClCompile>
     <ClCompile Include="source\Particle.cpp">
       <Filter>ソース ファイル\Effect</Filter>
     </ClCompile>
@@ -195,32 +192,20 @@
     <ClCompile Include="source\GlobalFunction.cpp">
       <Filter>ソース ファイル\GlobalFunction</Filter>
     </ClCompile>
-    <ClCompile Include="source\Player.cpp">
-      <Filter>ソース ファイル\Player\Player</Filter>
-    </ClCompile>
     <ClCompile Include="source\sceneResult.cpp">
       <Filter>ソース ファイル\Scene\sceneResult</Filter>
     </ClCompile>
     <ClCompile Include="source\UI.cpp">
       <Filter>ソース ファイル\UI</Filter>
     </ClCompile>
-    <ClCompile Include="source\Princess.cpp">
-      <Filter>ソース ファイル\Player\Princess</Filter>
-    </ClCompile>
     <ClCompile Include="source\GameManager.cpp">
       <Filter>ソース ファイル\GameManager</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Squirrel.cpp">
-      <Filter>ソース ファイル\Player\Squirrel</Filter>
     </ClCompile>
     <ClCompile Include="source\Bullet.cpp">
       <Filter>ソース ファイル\Bullet</Filter>
     </ClCompile>
     <ClCompile Include="source\BulletManager.cpp">
       <Filter>ソース ファイル\BulletManager</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Knight.cpp">
-      <Filter>ソース ファイル\Player\Knight</Filter>
     </ClCompile>
     <ClCompile Include="source\sceneLoad.cpp">
       <Filter>ソース ファイル\Scene\sceneLoad</Filter>
@@ -230,9 +215,6 @@
     </ClCompile>
     <ClCompile Include="source\Image.cpp">
       <Filter>ソース ファイル\Image</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Tiger.cpp">
-      <Filter>ソース ファイル\Player\Tiger</Filter>
     </ClCompile>
     <ClCompile Include="source\Item.cpp">
       <Filter>ソース ファイル\Item</Filter>
@@ -251,6 +233,24 @@
     </ClCompile>
     <ClCompile Include="source\Screen.cpp">
       <Filter>ソース ファイル\Screen</Filter>
+    </ClCompile>
+    <ClCompile Include="source\BaseChara.cpp">
+      <Filter>ソース ファイル\Character\BaseChara</Filter>
+    </ClCompile>
+    <ClCompile Include="source\CharacterManager.cpp">
+      <Filter>ソース ファイル\CharacterManager</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Knight.cpp">
+      <Filter>ソース ファイル\Character\Knight</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Princess.cpp">
+      <Filter>ソース ファイル\Character\Princess</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Tiger.cpp">
+      <Filter>ソース ファイル\Character\Tiger</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Squirrel.cpp">
+      <Filter>ソース ファイル\Character\Squirrel</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -272,9 +272,6 @@
     <ClInclude Include="source\Collision.h">
       <Filter>ソース ファイル\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="source\PlayerManager.h">
-      <Filter>ソース ファイル\PlayerManager</Filter>
-    </ClInclude>
     <ClInclude Include="source\Particle.h">
       <Filter>ソース ファイル\Effect</Filter>
     </ClInclude>
@@ -293,32 +290,20 @@
     <ClInclude Include="source\GlobalFunction.h">
       <Filter>ソース ファイル\GlobalFunction</Filter>
     </ClInclude>
-    <ClInclude Include="source\Player.h">
-      <Filter>ソース ファイル\Player\Player</Filter>
-    </ClInclude>
     <ClInclude Include="source\sceneResult.h">
       <Filter>ソース ファイル\Scene\sceneResult</Filter>
     </ClInclude>
     <ClInclude Include="source\UI.h">
       <Filter>ソース ファイル\UI</Filter>
     </ClInclude>
-    <ClInclude Include="source\Princess.h">
-      <Filter>ソース ファイル\Player\Princess</Filter>
-    </ClInclude>
     <ClInclude Include="source\GameManager.h">
       <Filter>ソース ファイル\GameManager</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Squirrel.h">
-      <Filter>ソース ファイル\Player\Squirrel</Filter>
     </ClInclude>
     <ClInclude Include="source\Bullet.h">
       <Filter>ソース ファイル\Bullet</Filter>
     </ClInclude>
     <ClInclude Include="source\BulletManager.h">
       <Filter>ソース ファイル\BulletManager</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Knight.h">
-      <Filter>ソース ファイル\Player\Knight</Filter>
     </ClInclude>
     <ClInclude Include="source\sceneLoad.h">
       <Filter>ソース ファイル\Scene\sceneLoad</Filter>
@@ -328,9 +313,6 @@
     </ClInclude>
     <ClInclude Include="source\Image.h">
       <Filter>ソース ファイル\Image</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Tiger.h">
-      <Filter>ソース ファイル\Player\Tiger</Filter>
     </ClInclude>
     <ClInclude Include="source\Item.h">
       <Filter>ソース ファイル\Item</Filter>
@@ -349,6 +331,24 @@
     </ClInclude>
     <ClInclude Include="source\Screen.h">
       <Filter>ソース ファイル\Screen</Filter>
+    </ClInclude>
+    <ClInclude Include="source\BaseChara.h">
+      <Filter>ソース ファイル\Character\BaseChara</Filter>
+    </ClInclude>
+    <ClInclude Include="source\CharacterManager.h">
+      <Filter>ソース ファイル\CharacterManager</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Knight.h">
+      <Filter>ソース ファイル\Character\Knight</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Princess.h">
+      <Filter>ソース ファイル\Character\Princess</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Tiger.h">
+      <Filter>ソース ファイル\Character\Tiger</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Squirrel.h">
+      <Filter>ソース ファイル\Character\Squirrel</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -6,8 +6,7 @@
 #include	"UI.h"
 #include	"sceneResult.h"
 #include	"Image.h"
-#include	"Player.h"
-#include	"PlayerManager.h"
+#include	"CharacterManager.h"
 #include	"GameManager.h"
 
 //*******************************************************************************
@@ -81,7 +80,7 @@
 		{
 			timer = 0;
 			mode = GAME_MODE::TIMEUP;
-			for ( int i = 0; i < PLAYER_MAX; i++ )	m_Player->SetMode( i, MODE_STATE::WAIT );
+			for ( int i = 0; i < PLAYER_MAX; i++ )	characterManager->SetMode( i, MODE_STATE::WAIT );
 		}
 
 		//	どんけつブースト設定

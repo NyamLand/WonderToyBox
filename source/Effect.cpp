@@ -2,10 +2,11 @@
 #include	"iextreme.h"
 #include	"system\System.h"
 #include	"GlobalFunction.h"
-#include	"Particle.h"
-#include	"Effect.h"
-#include	"PlayerManager.h"
 #include	"GameManager.h"
+#include	"CharacterManager.h"
+#include	"Particle.h"
+
+#include	"Effect.h"
 
 //*******************************************************************************
 //
@@ -108,7 +109,7 @@
 		if (gameManager->GetMode() == GAME_MODE::CLIMAX)	isAura = true;
 		if (isAura)
 		{
-			Vector3 p = m_Player->GetPos(gameManager->GetWorst()) + Vector3(0, 1.5f, 0);
+			Vector3 p = characterManager->GetPos(gameManager->GetWorst()) + Vector3(0, 1.5f, 0);
 			aura->SetPos(p);
 			aura->SetScale(0.02f);
 			aura->SetAngle(0.0f);
@@ -209,8 +210,8 @@
 	{
 		for (int i = 0; i < 4; i++)
 		{
-			circle[i].c_pos = m_Player->GetPos(i) + Vector3( 0.0f, 0.4f, 0.0f );
-			circle_out[i].c_pos = m_Player->GetPos(i) + Vector3( 0.0f, 0.4f, 0.0f );
+			circle[i].c_pos = characterManager->GetPos(i) + Vector3( 0.0f, 0.4f, 0.0f );
+			circle_out[i].c_pos = characterManager->GetPos(i) + Vector3( 0.0f, 0.4f, 0.0f );
 		}
 	}
 

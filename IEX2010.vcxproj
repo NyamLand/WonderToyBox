@@ -106,9 +106,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\BaseChara.cpp" />
     <ClCompile Include="source\Bullet.cpp" />
     <ClCompile Include="source\BulletManager.cpp" />
     <ClCompile Include="source\Camera.cpp" />
+    <ClCompile Include="source\CharacterManager.cpp" />
     <ClCompile Include="source\Coin.cpp" />
     <ClCompile Include="source\CoinManager.cpp" />
     <ClCompile Include="source\Collision.cpp" />
@@ -121,8 +123,6 @@
     <ClCompile Include="source\Knight.cpp" />
     <ClCompile Include="source\Object.cpp" />
     <ClCompile Include="source\Particle.cpp" />
-    <ClCompile Include="source\Player.cpp" />
-    <ClCompile Include="source\PlayerManager.cpp" />
     <ClCompile Include="source\Princess.cpp" />
     <ClCompile Include="source\Random.cpp" />
     <ClCompile Include="source\sceneLoad.cpp" />
@@ -155,9 +155,11 @@
     <ClCompile Include="source\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\BaseChara.h" />
     <ClInclude Include="source\Bullet.h" />
     <ClInclude Include="source\BulletManager.h" />
     <ClInclude Include="source\Camera.h" />
+    <ClInclude Include="source\CharacterManager.h" />
     <ClInclude Include="source\Coin.h" />
     <ClInclude Include="source\CoinManager.h" />
     <ClInclude Include="source\Collision.h" />
@@ -170,8 +172,6 @@
     <ClInclude Include="source\Knight.h" />
     <ClInclude Include="source\Object.h" />
     <ClInclude Include="source\Particle.h" />
-    <ClInclude Include="source\Player.h" />
-    <ClInclude Include="source\PlayerManager.h" />
     <ClInclude Include="source\Princess.h" />
     <ClInclude Include="source\Random.h" />
     <ClInclude Include="source\sceneLoad.h" />

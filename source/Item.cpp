@@ -5,8 +5,7 @@
 #include	"GlobalFunction.h"
 #include	"Sound.h"
 #include	"Particle.h"
-#include	"Player.h"
-#include	"PlayerManager.h"
+#include	"CharacterManager.h"
 #include	"GameManager.h"
 
 #include	"Item.h"
