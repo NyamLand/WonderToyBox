@@ -4,7 +4,6 @@
 #include	"iextreme.h"
 #include	"GlobalFunction.h"
 #include	"Collision.h"
-#include	"Player.h"
 #include	"Bullet.h"
 #include	"BulletManager.h"
 #include	"Coin.h"
@@ -50,36 +49,21 @@
 //-----------------------------------------------------------------------------------
 
 	//	コンストラクタ
-	Squirrel::Squirrel( void )
+	Squirrel::Squirrel( void ) : BaseChara()
 	{
 		//	パラメータ初期化
-		attack_r	= 0.0f;
-		attack_t	= 0.0f;
+		attackInfo.r	= 0.0f;
+		attackInfo.t	= 0.0f;
 		speed		= 0.3f;
 		scale			= 0.02f;
 		diffence		= -5;
 		isGround	= true;
-		SetMotionData();
 	}
 
 	//	デストラクタ
 	Squirrel::~Squirrel( void )
 	{
 
-	}
-
-	//	モーションデータ登録
-	void	Squirrel::SetMotionData( void )
-	{
-		motionData.STAND		=	SquirrelData::STAND;
-		motionData.POSTURE	=	SquirrelData::POSTURE;
-		motionData.RUN			=	SquirrelData::RUN;
-		motionData.ATTACK1		=	SquirrelData::ATTACK1;
-		motionData.JUMP			=	SquirrelData::JUMP;
-		motionData.ATTACK2		=	SquirrelData::ATTACK2;
-		motionData.ATTACK3		=	SquirrelData::ATTACK3;
-		motionData.GUARD		=	SquirrelData::GUARD;
-		motionData.POSTURE	=	SquirrelData::POSTURE;
 	}
 
 //-----------------------------------------------------------------------------------
@@ -89,12 +73,12 @@
 	//	描画
 	void	Squirrel::Render( iexShader* shader, LPSTR technique )
 	{
-		CommonRender( shader, technique );
+		BaseChara::Render( shader, technique );
 
 		//	デバッグ用
 		if ( !debug ) 	return;
 		char	str[256];
-		DrawSphere( attackPos, attack_r, 0xFFFFFFFF );
+		DrawSphere( attackInfo.pos, attackInfo.r, 0xFFFFFFFF );
 	
 		Vector3	stringPos;
 		Vector3	p_pos = GetPos();
@@ -114,6 +98,7 @@
 	bool	Squirrel::QuickArts( void )
 	{
 		static int time = 0;
+		SetMove( Vector3( 0.0f, move.y, 0.0f ) );
 		
 		//	情報取得
 		Vector3	front = GetFront();
@@ -144,6 +129,7 @@
 		Vector3	front = GetFront();
 		Vector3	right = GetRight();
 		Vector3	p_pos = GetPos();
+		SetMove( Vector3( 0.0f, move.y, 0.0f ) );
 
 		//	情報設定
 		Vector3	vec[3] =
@@ -197,6 +183,7 @@
 		{
 		case 0:
 			moveParam.y += 0.5f;
+			p_pos += moveParam;
 			time++;
 			if ( time >= 20 )
 			{
@@ -220,10 +207,53 @@
 		}
 
 		//	情報更新
-		SetMove( moveParam );
+		SetPos( p_pos );
 		SetAngle( angleParam );
 
 		return	false;
+	}
+
+	//	モーション管理
+	void	Squirrel::MotionManagement(int motion)
+	{
+		switch (motion)
+		{
+		case MOTION_NUM::STAND:
+			obj->SetMotion(MOTION_DATA::STAND);
+			break;
+
+		case MOTION_NUM::POSTURE:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+
+		case MOTION_NUM::JUMP:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+
+		case MOTION_NUM::GUARD:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+
+		case MOTION_NUM::LANDING:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+
+		case MOTION_NUM::RUN:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+
+		case MOTION_NUM::ATTACK1:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+
+		case MOTION_NUM::ATTACK2:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+
+		case MOTION_NUM::ATTACK3:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+		}
 	}
 
 //-----------------------------------------------------------------------------------
@@ -235,19 +265,19 @@
 	{
 		switch ( attackKind )
 		{
-		case PlayerData::QUICKARTS:
-			attackParam = PlayerData::SPHEREVSCAPSULE;
-			knockBackType = PlayerData::KNOCKBACK_WEAK;
+		case MODE_STATE::QUICKARTS:
+			attackInfo.type = COLLISION_TYPE::SPHEREVSCAPSULE;
+			knockBackInfo.type = KNOCKBACK_TYPE::WEAK;
 			break;
 
-		case PlayerData::POWERARTS:
-			attackParam = PlayerData::SPHEREVSCAPSULE;
-			knockBackType = PlayerData::KNOCKBACK_MIDDLE;
+		case MODE_STATE::POWERARTS:
+			attackInfo.type = COLLISION_TYPE::SPHEREVSCAPSULE;
+			knockBackInfo.type = KNOCKBACK_TYPE::MIDDLE;
 			break;
 
-		case PlayerData::HYPERARTS:
-			attackParam = PlayerData::SPHEREVSCYRINDER;
-			knockBackType = PlayerData::KNOCKBACK_STRENGTH;
+		case MODE_STATE::HYPERARTS:
+			attackInfo.type =	COLLISION_TYPE::SPHEREVSCYRINDER;
+			knockBackInfo.type = KNOCKBACK_TYPE::STRENGTH;
 			break;
 		}
 	}

@@ -6,8 +6,7 @@
 #include	"UI.h"
 #include	"sceneResult.h"
 #include	"Image.h"
-#include	"Player.h"
-#include	"PlayerManager.h"
+#include	"CharacterManager.h"
 #include	"GameManager.h"
 
 //*******************************************************************************
@@ -20,18 +19,6 @@
 //	グローバル
 //-------------------------------------------------------------------------
 	
-	//	static
-	int		GameManager::charatype[4] = { 0, 0, 0, 0 };
-	int		GameManager::coinNum[4] = { 0, 0, 0, 0 };
-	int		GameManager::playerNum = 0;
-	int		GameManager::stageType = 0;
-	bool	GameManager::donketsuBoostState = false;
-	int		GameManager::timer = 0;
-	int		GameManager::mode = 0;
-	int		GameManager::worst = 0;
-	int		GameManager::lastBonus = 0;
-	bool	GameManager::newsflag = false;
-
 //-------------------------------------------------------------------------
 //	初期化・解放
 //-------------------------------------------------------------------------
@@ -93,7 +80,7 @@
 		{
 			timer = 0;
 			mode = GAME_MODE::TIMEUP;
-			for ( int i = 0; i < PLAYER_NUM; i++ )	m_Player->SetMode( i, PlayerData::WAIT );
+			for ( int i = 0; i < PLAYER_MAX; i++ )	characterManager->SetMode( i, MODE_STATE::WAIT );
 		}
 
 		//	どんけつブースト設定
@@ -217,6 +204,13 @@
 	{
 		int		out = mode;
 		return	out;
+	}
+
+	//	実体取得
+	GameManager*	GameManager::GetInstance( void )
+	{
+		static	GameManager	out;
+		return	&out;
 	}
 
 //-------------------------------------------------------------------------

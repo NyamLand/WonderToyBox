@@ -51,21 +51,37 @@
 	{
 		switch ( type )
 		{
-		case PlayerData::PRINCESS:
+		case PLAYER_TYPE::PRINCESS:
 			c_Player[input] = new Princess();
 			break;
 
-		case PlayerData::KNIGHT:
+		case PLAYER_TYPE::KNIGHT:
 			c_Player[input] = new Knight();
 			break;
 
-		case PlayerData::SQUIRREL:
+		case PLAYER_TYPE::SQUIRREL:
 			c_Player[input] = new Squirrel();
 			break;
 
-		case PlayerData::TIGER:
+		case PLAYER_TYPE::TIGER:
 			c_Player[input] = new Tiger();
 			break;
+
+		//case PlayerData::PRINCESS_CPU:
+		//	c_Player[input] = new Princess_CPU();
+		//	break;
+
+		//case PlayerData::KNIGHT_CPU:
+		//	c_Player[input] = new Knight_CPU();
+		//	break;
+
+		//case PlayerData::SQUIRREL_CPU:
+		//	c_Player[input] = new Squirrel_CPU();
+		//	break;
+
+		//case PlayerData::TIGER_CPU:
+		//	c_Player[input] = new Tiger_CPU();
+		//	break;
 		}
 
 		//	モデル読み込み
@@ -78,10 +94,15 @@
 	//	モデル読み込み
 	void	PlayerManager::Load( void )
 	{
-		org[PlayerData::PRINCESS] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
-		org[PlayerData::KNIGHT] = new iex3DObj( "DATA/CHR/ミノタウルス/minotaurus.IEM" );
-		org[PlayerData::SQUIRREL] = new iex3DObj( "DATA/CHR/SQUIRREL/SQUIRREL.IEM" );
-		org[PlayerData::TIGER] = new iex3DObj( "DATA/CHR/ECCMAN/ECCMAN.IEM" );
+		org[PLAYER_TYPE::PRINCESS] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+		org[PLAYER_TYPE::KNIGHT] = new iex3DObj( "DATA/CHR/ミノタウルス/minotaurus.IEM" );
+		org[PLAYER_TYPE::SQUIRREL] = new iex3DObj( "DATA/CHR/SQUIRREL/SQUIRREL.IEM" );
+		org[PLAYER_TYPE::TIGER] = new iex3DObj( "DATA/CHR/ECCMAN/ECCMAN.IEM" );
+	
+		//org[PlayerData::PRINCESS_CPU] = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
+		//org[PlayerData::KNIGHT_CPU] = new iex3DObj("DATA/CHR/ミノタウルス/minotaurus.IEM");
+		//org[PlayerData::SQUIRREL_CPU] = new iex3DObj("DATA/CHR/SQUIRREL/SQUIRREL.IEM");
+		//org[PlayerData::TIGER_CPU] = new iex3DObj("DATA/CHR/ECCMAN/ECCMAN.IEM");
 	}
 
 //------------------------------------------------------------------------------
@@ -139,10 +160,10 @@
 	//　どんけつブースト
 	void	PlayerManager::DonketsuBoost()
 	{
-		if (GameManager::GetDonketsuBoostState())
+		if (gameManager->GetDonketsuBoostState())
 		{
 			//　（決定された）ビリが誰かを取得・どんけつモードセット
-			int worst = GameManager::GetWorst();
+			int worst = gameManager->GetWorst();
 			SetBoosting(worst, true);
 
 			
@@ -181,21 +202,21 @@
 				//	タイプ別当たり判定
 				switch ( attackParam )
 				{
-				case PlayerData::COLLISION_TYPE::SPHEREVSCAPSULE:
+				case COLLISION_TYPE::SPHEREVSCAPSULE:
 					HitCheckSphereVSCapsule( c_Player[i], c_Player[n] );
 					break;
 
-				case PlayerData::COLLISION_TYPE::CAPSULEVSCAPSULE:
+				case COLLISION_TYPE::CAPSULEVSCAPSULE:
 					HitCheckCapsuleVSCapsule( c_Player[i], c_Player[n] );
 					break;
 
-				case PlayerData::COLLISION_TYPE::SPHEREVSCYRINDER:
+				case COLLISION_TYPE::SPHEREVSCYRINDER:
 					break;
 
-				case PlayerData::COLLISION_TYPE::SPHEREVSPOINT:
+				case COLLISION_TYPE::SPHEREVSPOINT:
 					break;
 
-				case PlayerData::COLLISION_TYPE::SPHEREVSSPHERE:
+				case COLLISION_TYPE::SPHEREVSSPHERE:
 					break;
 				}
 			}
@@ -222,7 +243,7 @@
 		{		
 			//	エフェクトだす
 			float	effectScale = 1.0f;
-			Particle::Spark( p2_top, effectScale );
+			particle->Spark( p2_top, effectScale );
 
 			//	ノックバック
 			Vector3	knockBackVec = p1_attackPos - p2_bottom;
@@ -234,18 +255,18 @@
 
 			switch (p1->GetKnockBackType())
 			{
-			case PlayerData::KNOCKBACK_STRENGTH :
-				p2->SetMode(PlayerData::DAMAGE_STRENGTH);
+			case KNOCKBACK_TYPE::STRENGTH :
+				p2->SetMode(MODE_STATE::DAMAGE_STRENGTH);
 				break;
-			case PlayerData::KNOCKBACK_MIDDLE:
-				p2->SetMode(PlayerData::DAMAGE_MIDDLE);
+			case KNOCKBACK_TYPE::MIDDLE:
+				p2->SetMode(MODE_STATE::DAMAGE_MIDDLE);
 				break;
-			case PlayerData::KNOCKBACK_WEAK:
-				p2->SetMode(PlayerData::DAMAGE_WEAK);
+			case KNOCKBACK_TYPE::WEAK:
+				p2->SetMode(MODE_STATE::DAMAGE_WEAK);
 				break;
-			case PlayerData::KNOCKBACK_LEANBACKWARD:
+			case KNOCKBACK_TYPE::LEANBACKWARD:
 				p2->SetLeanFrame( p1->GetLeanFrame() );
-				p2->SetMode(PlayerData::DAMAGE_LEANBACKWARD);
+				p2->SetMode(MODE_STATE::DAMAGE_LEANBACKWARD);
 				break;
 			}
 
@@ -258,13 +279,13 @@
 			//	プレイヤー番号取得とばらまきパワー設定
 			float	power = 0.2f;
 			int		p2_Num = p2->GetP_Num();
-			int		p2_coinNum = GameManager::GetCoinNum( p2_Num );
+			int		p2_coinNum = gameManager->GetCoinNum( p2_Num );
 
 			//	コインがあればばらまき
 			if ( p2_coinNum > 0 )
 			{
 				m_CoinManager->Set( p2_top, vec, power );
-				GameManager::SubCoin( p2_Num );
+				gameManager->SubCoin( p2_Num );
 			}
 		}
 	}
@@ -290,7 +311,7 @@
 		{
 			//	エフェクトだす
 			float	effectScale = 1.0f;
-			Particle::Spark( p2_top, effectScale );
+			particle->Spark( p2_top, effectScale );
 
 			//	ノックバック
 			Vector3	knockBackVec = p1_attack_top - p2_bottom;
@@ -302,18 +323,18 @@
 
 			switch (p1->GetKnockBackType())
 			{
-			case PlayerData::KNOCKBACK_STRENGTH:
-				p2->SetMode(PlayerData::DAMAGE_STRENGTH);
+			case KNOCKBACK_TYPE::STRENGTH:
+				p2->SetMode(MODE_STATE::DAMAGE_STRENGTH);
 				break;
-			case PlayerData::KNOCKBACK_MIDDLE:
-				p2->SetMode(PlayerData::DAMAGE_MIDDLE);
+			case KNOCKBACK_TYPE::MIDDLE:
+				p2->SetMode(MODE_STATE::DAMAGE_MIDDLE);
 				break;
-			case PlayerData::KNOCKBACK_WEAK:
-				p2->SetMode(PlayerData::DAMAGE_WEAK);
+			case KNOCKBACK_TYPE::WEAK:
+				p2->SetMode(MODE_STATE::DAMAGE_WEAK);
 				break;
-			case PlayerData::KNOCKBACK_LEANBACKWARD:
+			case KNOCKBACK_TYPE::LEANBACKWARD:
 				p2->SetLeanFrame(p1->GetLeanFrame());
-				p2->SetMode(PlayerData::DAMAGE_LEANBACKWARD);
+				p2->SetMode(MODE_STATE::DAMAGE_LEANBACKWARD);
 				break;
 			}
 			
@@ -324,13 +345,13 @@
 			//	プレイヤー番号取得とばらまきパワー設定
 			float	power = 0.15f;
 			int		p2_Num = p2->GetP_Num();
-			int		p2_coinNum = GameManager::GetCoinNum( p2_Num );
+			int		p2_coinNum = gameManager->GetCoinNum( p2_Num );
 
 			//	コインがあればばらまき
 			if ( p2_coinNum > 0 )
 			{
 				m_CoinManager->Set( p2_top, vec, power );
-				GameManager::SubCoin( p2_Num );
+				gameManager->SubCoin( p2_Num );
 			}
 		}
 	}
@@ -358,7 +379,7 @@
 	void		PlayerManager::SetScale( int player, float scale ){ c_Player[player]->SetScale( scale ); }
 	void		PlayerManager::SetType( int player, int type ){ c_Player[player]->SetType(type); }
 	void		PlayerManager::SetKnockBackVec( int player, Vector3 knockBackVec ){ c_Player[player]->SetKnockBackVec( knockBackVec ); }
-	void		PlayerManager::SetMode( int player, PlayerData::STATE state ){ c_Player[player]->SetMode( state ); }
+	void		PlayerManager::SetMode( int player, int state ){ c_Player[player]->SetMode( state ); }
 	void		PlayerManager::SetPower(int player, int power){ c_Player[player]->SetPower(power); }
 	void		PlayerManager::SetSpeed(int player, float speed){ c_Player[player]->SetSpeed(speed); }
 	void		PlayerManager::SetBoosting(int player, bool boosting){ c_Player[player]->SetBoosting(boosting); }

@@ -5,8 +5,7 @@
 #include	"GlobalFunction.h"
 #include	"Sound.h"
 #include	"Particle.h"
-#include	"Player.h"
-#include	"PlayerManager.h"
+#include	"CharacterManager.h"
 #include	"GameManager.h"
 
 #include	"Item.h"
@@ -62,7 +61,34 @@
 	{
 		state = false;
 		float	effectScale = 0.2f;
-		Particle::Spark(pos, effectScale);
+		particle->Spark(pos, effectScale);
 	
 		sound->PlaySE( SE::COIN_SE );
+	}
+
+//-------------------------------------------------------------------------------
+//	情報設定
+//-------------------------------------------------------------------------------
+
+	//	モデル渡し
+	void	Item::SetMesh( iexMesh* obj )
+	{
+		this->obj = obj;
+	}
+
+	//	状態設定
+	void	Item::SetState( bool state )
+	{
+		this->state = state;
+	}
+
+//-------------------------------------------------------------------------------
+//	情報取得
+//-------------------------------------------------------------------------------
+
+	//	タイプ取得
+	int		Item::GetType( void )
+	{
+		int		out = type;
+		return	out;
 	}

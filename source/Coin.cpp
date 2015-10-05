@@ -4,11 +4,10 @@
 #include	"system/System.h"
 #include	"Collision.h"
 #include	"GlobalFunction.h"
+#include	"GameManager.h"
+#include	"CharacterManager.h"
 #include	"Sound.h"
 #include	"Particle.h"
-#include	"Player.h"
-#include	"PlayerManager.h"
-#include	"GameManager.h"
 
 #include	"Coin.h"
 
@@ -116,8 +115,8 @@
 		for ( int i = 0; i < 4; i++ )
 		{
 			if ( !activate )	continue;
-			if ( m_Player->GetUnrivaled( i ) )	continue;
-			p_pos[i] = m_Player->GetPos( i );
+			if ( characterManager->GetUnrivaled( i ) )	continue;
+			p_pos[i] = characterManager->GetPos( i );
 			bool isHit = Collision::CapsuleVSSphere( p_pos[i],Vector3( p_pos[i].x, p_pos[i].y + 3.0f, p_pos[i].z ), 1.0f, Vector3( pos.x, pos.y + 0.5f, pos.z ), 0.5f );
 
 			if ( isHit )
@@ -154,8 +153,8 @@
 	{
 		state = false;
 		float	effectScale = 0.2f;
-		Particle::Spark(pos, effectScale);
-		GameManager::AddCoin(Num);
+		particle->Spark(pos, effectScale);
+		gameManager->AddCoin(Num);
 		sound->PlaySE( SE::COIN_SE );
 	}
 
@@ -199,3 +198,8 @@
 		return	out; 
 	}
 	
+	//	ó‘Ôæ“¾
+	bool		Coin::GetState()
+	{
+		return	state;
+	}
