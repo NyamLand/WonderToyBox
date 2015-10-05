@@ -9,7 +9,8 @@
 #include	"Camera.h"
 #include	"Particle.h"
 #include	"Random.h"
-#include	"PlayerManager.h"
+#include	"BaseChara.h"
+#include	"CharacterManager.h"
 #include	"sceneMain.h"
 #include	"GameManager.h"
 #include	"sceneLoad.h"
@@ -123,7 +124,7 @@ namespace
 		//	構造体初期化
 		{
 			//	キャラクター情報初期化
-			for ( int i = 0; i < PLAYER_TYPE::MAX; i++ )
+			for ( int i = 0; i < CHARACTER_TYPE::MAX; i++ )
 			{
 				characterInfo[i].name = characterName[i];
 				characterInfo[i].select = false;
@@ -132,7 +133,8 @@ namespace
 			//	選択情報初期化
 			selectInfo.playerNum = 1;
 			selectInfo.stageType = 0;
-			for ( int i = 0; i < PLAYER_NUM; i++ )	selectInfo.characterType[i] = i;
+			selectInfo.step_cs = 0;
+			for ( int i = 0; i < PLAYER_MAX; i++ )	selectInfo.characterType[i] = i;
 
 			//	カメラ情報構造体初期化
 			cameraInfo.lerpStartPos = cameraInfo.pos = m_Camera->GetPos();
@@ -196,7 +198,7 @@ namespace
 		}
 
 		//	ターゲット位置にパーティクル配置
-		for ( int i = 0; i < PLAYER_NUM; i++)	particle->BlueFlame( c_Move::TARGET[i] );
+		for ( int i = 0; i < PLAYER_MAX; i++)	particle->BlueFlame( c_Move::TARGET[i] );
 		particle->Update();
 
 		//	スクリーン更新
@@ -369,8 +371,8 @@ namespace
 			if ( KEY( KEY_RIGHT ) == 3 )		selectInfo.playerNum++;
 			if ( KEY( KEY_LEFT ) == 3 )		selectInfo.playerNum--;
 
-			if ( selectInfo.playerNum > PLAYER_NUM )	selectInfo.playerNum = 1;
-			if ( selectInfo.playerNum < 1 )						selectInfo.playerNum = PLAYER_NUM; 
+			if ( selectInfo.playerNum > PLAYER_MAX )	selectInfo.playerNum = 1;
+			if ( selectInfo.playerNum < 1 )						selectInfo.playerNum = PLAYER_MAX; 
 
 			if ( KEY( KEY_SPACE ) == 3 )
 			{
@@ -380,15 +382,15 @@ namespace
 			if ( KEY( KEY_DOWN ) == 3 )		mode = TITLE_MODE::MENU;
 		}
 		
-		//	描画
-		void	sceneTitle::SelectPlayerNumRender( void )
+		//    描画
+		void    sceneTitle::SelectPlayerNumRender(void)
 		{
-			DrawString( "人数選択だよ", 50, 50 );
-			DrawString( "[SPACE]：キャラ選択へ", 300, 400, 0xFFFFFF00 );
+			DrawString("人数選択だよ", 50, 50);
+			DrawString("[SPACE]：キャラ選択へ", 300, 400);
 
-			char	str[64];
-			wsprintf( str, "プレイヤー人数：%d\n", selectInfo.playerNum );
-			IEX_DrawText( str, 300, 300, 200, 20, 0xFFFF00FF );
+			char    str[64];
+			wsprintf(str, "プレイヤー人数：%d\n", selectInfo.playerNum);
+			IEX_DrawText(str, 300, 300, 200, 20, 0xFFFFFFFF);
 		}
 
 	//--------------------------------------------------------
@@ -404,10 +406,9 @@ namespace
 			//　「S」で戻る
 
 			static bool	select[4] = { false, false, false, false };
-			static int step = 0;
 			int selectCheck = 0;
 
-			switch ( step )
+			switch ( selectInfo.step_cs )
 			{
 			case 0:		//　プレイヤーキャラ選択
 				for ( int p = 0; p < selectInfo.playerNum; p++ )
@@ -416,7 +417,7 @@ namespace
 					{
 						//	全員分の入力チェック
 						selectCheck = 0;
-						for ( int i = 0; i < PLAYER_NUM; i++ )
+						for ( int i = 0; i < PLAYER_MAX; i++ )
 						{
 							if ( select[i] )		selectCheck++;
 						}
@@ -448,7 +449,7 @@ namespace
 
 						//	全員分の入力チェック
 						selectCheck = 0;
-						for ( int i = 0; i < PLAYER_NUM; i++ )
+						for ( int i = 0; i < PLAYER_MAX; i++ )
 						{
 							if (select[i])		selectCheck++;
 						}
@@ -456,60 +457,79 @@ namespace
 						//	全員選択済みだったら次のステップへ
 						if ( selectCheck >= selectInfo.playerNum )
 						{
-							step++;
+							selectInfo.step_cs++;
 							sound->PlaySE( SE::DECIDE_SE );
 						}
 					}
 
 					//	数値制限
-					if ( selectInfo.characterType[p] >= PLAYER_TYPE::MAX )	selectInfo.characterType[p] = 0;
-					if ( selectInfo.characterType[p] < 0 )	selectInfo.characterType[p] = PLAYER_TYPE::MAX - 1;
+					if ( selectInfo.characterType[p] >= CHARACTER_TYPE::MAX )	selectInfo.characterType[p] = 0;
+					if ( selectInfo.characterType[p] < 0 )	selectInfo.characterType[p] = CHARACTER_TYPE::MAX - 1;
 				}
 				break;
 
 			case 1:		//　CPUキャラ選択
-				if ( selectInfo.playerNum == PLAYER_NUM )	step++;
+				if ( selectInfo.playerNum == PLAYER_MAX )	selectInfo.step_cs++;
 				else
 				{
-					for ( int p = selectInfo.playerNum; p < PLAYER_NUM; p++ )
+					for ( int p = selectInfo.playerNum; p < PLAYER_MAX; p++ )
 					{
 						if ( KEY( KEY_RIGHT ) == 3 )	selectInfo.characterType[p]++;
 						if ( KEY( KEY_LEFT ) == 3 )	selectInfo.characterType[p]--;
 
 						//	数値制限
-						if ( selectInfo.characterType[p] >= PLAYER_TYPE::MAX )	selectInfo.characterType[p] = 0;
-						if ( selectInfo.characterType[p] < 0 )	selectInfo.characterType[p] = PLAYER_TYPE::MAX - 1;
+						if ( selectInfo.characterType[p] >= CHARACTER_TYPE::MAX )	selectInfo.characterType[p] = 0;
+						if ( selectInfo.characterType[p] < 0 )	selectInfo.characterType[p] = CHARACTER_TYPE::MAX - 1;
 					}
 					if ( KEY( KEY_SPACE ) == 3 )
 					{
-						step++;
+						selectInfo.step_cs++;
 						sound->PlaySE( SE::DECIDE_SE );
 					}
-					if ( KEY( KEY_DOWN ) == 3 ) step--;
+					if ( KEY( KEY_DOWN ) == 3 ) selectInfo.step_cs--;
 				}
 				break;
 
 			case 2:
 				mode = TITLE_MODE::SELECT_STAGE;
-				step = 0;
+				selectInfo.step_cs = 0;
 				break;
 			}
 		}
 		
-		//	描画
-		void	sceneTitle::SelectCharacterRender( void )
+		//    描画
+		void    sceneTitle::SelectCharacterRender(void)
 		{
-			DrawString( "キャラ選択だよ", 50, 50 );
-			DrawString( "[SPACE]：ステージ選択へ", 300, 400, 0xFFFFFF00 );
+			DrawString("キャラ選択だよ", 300, 100);
+			//DrawString( "[SPACE]：ステージ選択へ", 300, 400, 0xFFFFFF00 );
 
-			char	str[64];
-			for ( int p = 0; p < PLAYER_NUM; p++ )
+			char    str[64];
+			for (int p = 0; p < selectInfo.playerNum; p++)
 			{
 				LPSTR string = characterInfo[selectInfo.characterType[p]].name;
-				sprintf_s( str, "\n%dＰのキャラタイプ：", p + 1 );
-				strcat( str, string );
-				DrawString( str, 300, 300 + p * 20 );
+				sprintf_s(str, "\n%dＰのキャラタイプ：", p + 1);
+				strcat(str, string);
+				DrawString(str, 300, 300 + p * 20, 0xFFFFFF00);
 			}
+			for (int p = selectInfo.playerNum; p < PLAYER_MAX; p++)
+			{
+				LPSTR string = characterInfo[selectInfo.characterType[p]].name;
+				sprintf_s(str, "\n%dＰのキャラタイプ：", p + 1);
+				strcat(str, string);
+				DrawString(str, 300, 300 + p * 20);
+			}
+
+			switch (selectInfo.step_cs)
+			{
+			case 0:
+				DrawString("プレイヤーが使うキャラを選んでね", 300, 280, 0xFFFFFF00);
+				break;
+
+			case 1:
+				DrawString("ＣＰＵが使うキャラを選んでね", 300, 280);
+				break;
+			}
+
 		}
 
 	//--------------------------------------------------------
@@ -540,15 +560,15 @@ namespace
 			if ( KEY( KEY_DOWN ) == 3 )		mode = TITLE_MODE::SELECT_CHARACTER;
 		}
 
-		//	描画
-		void	sceneTitle::SelectStageRender( void )
+		//    描画
+		void    sceneTitle::SelectStageRender(void)
 		{
-			DrawString( "ステージ選択だよ", 50, 50 );
-			DrawString( "[SPACE]：最終確認へ", 300, 400, 0xFFFFFF00 );
+			DrawString("ステージ選択だよ", 50, 50);
+			DrawString("[SPACE]：最終確認へ", 300, 400);
 
-			char	str[64];
-			wsprintf( str, "ステージ：%d番\n", selectInfo.stageType );
-			IEX_DrawText( str, 300, 300, 200, 20, 0xFFFF00FF );
+			char    str[64];
+			wsprintf(str, "ステージ：%d番\n", selectInfo.stageType);
+			IEX_DrawText(str, 300, 300, 200, 20, 0xFFFFFFFF);
 		}
 
 	//--------------------------------------------------------
@@ -569,7 +589,7 @@ namespace
 				if ( selectInfo.ready )
 				{
 					//	情報をマネージャーに登録
-					for ( int p = 0; p < PLAYER_NUM; p++ )		gameManager->SetCharacterType( p, selectInfo.characterType[p] );
+					for ( int p = 0; p < PLAYER_MAX; p++ )		gameManager->SetCharacterType( p, selectInfo.characterType[p] );
 					gameManager->SetPlayerNum( selectInfo.playerNum );
 					gameManager->SetStageType( selectInfo.stageType );
 					sound->PlaySE( SE::DECIDE_SE );
@@ -579,33 +599,33 @@ namespace
 			}
 		}
 		
-		//	描画
-		void	sceneTitle::SelectCheckRender( void )
+		//    描画
+		void    sceneTitle::SelectCheckRender(void)
 		{
 			//　選択情報
-			char	str[64];
-			for ( int p = 0; p < PLAYER_NUM; p++ )
+			char    str[64];
+			for (int p = 0; p < PLAYER_MAX; p++)
 			{
 				LPSTR string = characterInfo[selectInfo.characterType[p]].name;
-				wsprintf( str, "\n%dＰのキャラタイプ：", p + 1 );
-				strcat( str, string );
-				DrawString( str, 300, 250 + p * 20, 0xFFFF00FF );
+				wsprintf(str, "\n%dＰのキャラタイプ：", p + 1);
+				strcat(str, string);
+				DrawString(str, 300, 250 + p * 20);
 			}
 
-			wsprintf( str, "プレイヤー人数：%d\n", selectInfo.playerNum );
-			DrawString( str, 300, 350, 0xFFFF00FF );
+			wsprintf(str, "プレイヤー人数：%d\n", selectInfo.playerNum);
+			DrawString(str, 300, 350);
 
-			wsprintf( str, "ステージ：%d番\n", selectInfo.stageType );
-			DrawString( str, 300, 370, 0xFFFF00FF );
+			wsprintf(str, "ステージ：%d番\n", selectInfo.stageType);
+			DrawString(str, 300, 370);
 
-			DrawString( "最終確認だよ", 50, 50 );
-			DrawString( "[SPACE]：sceneMainへ", 300, 470, 0xFFFFFF00 );
+			DrawString("最終確認だよ", 50, 50);
+			DrawString("[SPACE]：sceneMainへ", 300, 470);
 
 			static bool ready = true;
-			if ( KEY( KEY_RIGHT ) == 3 ) ready = !ready;
-			if ( KEY( KEY_LEFT ) == 3 ) ready = !ready;
-			wsprintf( str, "はい＝1、いいえ＝0：%d番\n", ready );
-			IEX_DrawText( str, 300, 390, 200, 20, 0xFFFF00FF );
+			if (KEY(KEY_RIGHT) == 3) ready = !ready;
+			if (KEY(KEY_LEFT) == 3) ready = !ready;
+			wsprintf(str, "はい＝1、いいえ＝0：%d番\n", ready);
+			IEX_DrawText(str, 300, 390, 200, 20, 0xFFFFFFFF);
 		}
 
 	//--------------------------------------------------------

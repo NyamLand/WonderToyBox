@@ -3,8 +3,7 @@
 #include	"system/system.h"
 #include	"system/Framework.h"
 #include	"GlobalFunction.h"
-#include	"Player.h"
-#include	"PlayerManager.h"
+#include	"CharacterManager.h"
 #include	"GameManager.h"
 #include	"Image.h"
 #include	"UI.h"
@@ -21,18 +20,21 @@
 
 	namespace
 	{
-		//	顔情報
+		//    顔情報
 		namespace FACE_INFO
 		{
-			//　「喜・怒・哀・楽」
+			//　「楽・喜・哀・怒」
 			enum
 			{
-				Good,
-				Angry,
-				Sad,
+	
+	
+	
 				Normal,
+				Good,
+				Sad,
+				Angry
 			};
-		}	
+		}
 	}
 
 	//	実体

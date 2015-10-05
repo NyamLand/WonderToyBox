@@ -1,7 +1,7 @@
 #include	"iextreme.h"
 #include	"Framework.h"
 #include	"GlobalFunction.h"
-#include	"Player.h"
+#include	"CharacterManager.h"
 
 #include	"sceneTitle.h"
 

@@ -10,9 +10,7 @@
 #include	"Collision.h"
 #include	"Camera.h"
 #include	"Particle.h"
-#include	"Player.h"
-#include	"PlayerManager.h"
-#include	"Coin.h"
+#include	"CharacterManager.h"
 #include	"CoinManager.h"
 #include	"ItemManager.h"
 #include	"Bullet.h"
@@ -67,18 +65,19 @@
 		//	カメラ設定
 		m_Camera = new Camera();
 
+		//	変数初期化
+		timer = 0;
+		playerNum = gameManager->GetPlayerNum();
+		stageType = gameManager->GetStageType();
+
 		//	ステージ
 		m_CollisionStage = new iexMesh( "DATA/BG/desk_Collision.IMO" );
 		m_Stage = new iexMesh( "DATA/back/stage.IMO" );
-
-		//m_CollisionStage = new iexMesh("DATA/BG/CollisionGround.IMO");
-		//m_Stage = new iexMesh("DATA/BG/2_1/FIELD2_1.IMO");
 		
 		//	当たり判定
 		Collision::Initiallize( m_CollisionStage );
 
 		//	プレイヤー
-		m_Player = new PlayerManager();
 		PlayerInitialize();
 		
 		//	コイン
@@ -103,11 +102,6 @@
 		ui = new UI();
 		ui->Initialize();
 
-		//	変数初期化
-		timer = 0;
-		playerNum =gameManager->GetPlayerNum();
-		stageType = gameManager->GetStageType();
-
 		//	BGM再生
 		sound->PlayBGM( BGM::MAIN_BGM );
 
@@ -125,24 +119,40 @@
 		SafeDelete(ShadowTex);
 		SafeDelete(m_Camera);
 		SafeDelete(m_CollisionStage);
-		SafeDelete(m_Player);
 		SafeDelete(m_CoinManager);
 		SafeDelete(m_BulletManager);
 		SafeDelete(ui);
 		Random::Release();
 		particle->Release();
 		itemManager->Release();
+		characterManager->Release();
 		sound->AllStop();
 	}
 
 	//	プレイヤー初期化
-	void	sceneMain::PlayerInitialize( void )
+	void    sceneMain::PlayerInitialize(void)
 	{
-		for ( int i = 0; i < 4; i++ )
+		/*
+			このスコープ内＆PlayerManagerのInitializeとLoadの中の
+			コメントを外したらPlayer＆CPUとして識別＆読み込みをする。（はず）
+			（１ ～ playerNum番目がプレイヤー、playerNum ～ PLAYER_MAX番目がCPU）
+		*/
+
+		//　プレイヤー設定
+		//for (int i = 0; i < 4; i++)
+		for ( int i = 0; i < playerNum; i++ )
 		{
-			int		characterType = gameManager->GetCharacterType( i );
-			Vector3	pos = Vector3( -20.0f + ( 10.0f * i ), 10.0f, 0.0f );
-			m_Player->Initialize( i, characterType, pos );
+			int        characterType = gameManager->GetCharacterType( i );
+			Vector3    pos = Vector3( -20.0f + ( 10.0f * i ), 10.0f, 0.0f );
+			characterManager->Initialize( i, characterType, pos, true );
+		}
+
+		//　ＣＰＵ設定
+		for ( int i = playerNum; i < PLAYER_MAX; i++ )
+		{
+			int        characterType = gameManager->GetCharacterType( i );
+			Vector3    pos = Vector3( -20.0f + ( 10.0f * i ), 10.0f, 0.0f );
+			characterManager->Initialize( i, characterType, pos, false );
 		}
 	}
 
@@ -156,7 +166,7 @@
 	void	sceneMain::Update( void )
 	{
 		//	カメラ更新
-		m_Camera->SetPlayerInfo( m_Player->GetPos( 0 ), m_Player->GetPos( 1 ), m_Player->GetPos( 2 ), m_Player->GetPos( 3 ) );
+		m_Camera->SetPlayerInfo( characterManager->GetPos(0), characterManager->GetPos(1), characterManager->GetPos(2), characterManager->GetPos(3) );
 		m_Camera->Update( VIEW_MODE::CHASE, Vector3( 0.0f, 2.0f, 0.0f ) );
 
 		//	UI
@@ -186,18 +196,21 @@
 		case GAME_MODE::TIMEUP:
 			FinishUpdate();
 
-			if ( ui->GetChangeFlag() )
-			{
-				MainFrame->ChangeScene( new sceneResult() );
-				return;
-			}
 			break;
 		}
-		if (KEY(KEY_D) == 1){
+
+		if (KEY(KEY_D) == 1)
+		{
 			//particle->Hit(Vector3(0, 10.0f, 0), 20, 0.5f);
 			//particle->Smoke(Vector3(0, 10.0f, 0), 20, 0.5f);
 			particle->Aura(Vector3(0, 10.0f, 0), 3, 0.5f);
 
+		}
+
+		if ( ui->GetChangeFlag() )
+		{
+			MainFrame->ChangeScene( new sceneResult() );
+			return;
 		}
 	}
 
@@ -210,7 +223,7 @@
 		if ( ui->GetChangeFlag() ) 
 		{
 			gameManager->SetMode( GAME_MODE::MAINGAME );
-			for ( int i = 0; i < 4; i++ )		m_Player->SetMode( i, MODE_STATE::MOVE );
+			for ( int i = 0; i < 4; i++ )		characterManager->SetMode( i, MODE_STATE::MOVE );
 			ui->SetChangeFlag( false );
 		}
 	}
@@ -260,7 +273,7 @@
 	void	sceneMain::AllUpdate( void )
 	{
 		//	player
-		m_Player->Update();
+		characterManager->Update();
 
 		//	パーティクル更新
 		particle->Update();
@@ -296,7 +309,7 @@
 		
 		//	オブジェクト描画
 		m_Stage->Render( shader3D, "nolight_s" );
-		m_Player->Render( shader3D, "toon" );
+		characterManager->Render( shader3D, "toon" );
 		m_CoinManager->Render();
 		m_BulletManager->Render();
 		itemManager->Render();
@@ -347,7 +360,7 @@
 
 		//	描画
 		//m_Stage->Render( shader3D, "shadowBuf" );
-		m_Player->Render( shader3D, "ShadowBuf" );
+		characterManager->Render( shader3D, "ShadowBuf" );
 		m_CoinManager->Render( shader3D, "ShadowBuf" );
 		itemManager->Render( shader3D, "ShadowBuf" );
 

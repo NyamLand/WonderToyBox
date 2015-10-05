@@ -3,7 +3,6 @@
 #include	"GlobalFunction.h"
 #include	"Collision.h"
 #include	"Particle.h"
-#include	"Player.h"
 #include	"Tiger.h"
 
 //*********************************************************************************
@@ -48,12 +47,11 @@
 	Tiger::Tiger( void )
 	{
 		//	パラメータ初期化
-		attack_r = 0.5f;
-		attack_t = 0.0f;
+		attackInfo.r = 0.5f;
+		attackInfo.t = 0.0f;
 		speed = 0.2f;
 		scale = 0.02f;
 		diffence = -1;
-		SetMotionData();
 		isGround = true;
 		attackCount = 0;
 		attackFlag = false;
@@ -65,20 +63,6 @@
 
 	}
 
-	//	モーションデータ登録
-	void	Tiger::SetMotionData( void )
-	{
-		motionData.STAND = TigerData::STAND;
-		motionData.POSTURE = TigerData::POSTURE;
-		motionData.RUN = TigerData::RUN;
-		motionData.ATTACK1 = TigerData::ATTACK1;
-		motionData.JUMP = TigerData::JUMP;
-		motionData.ATTACK2 = TigerData::ATTACK2;
-		motionData.ATTACK3 = TigerData::ATTACK3;
-		motionData.GUARD = TigerData::GUARD;
-		motionData.POSTURE = TigerData::POSTURE;
-	}
-
 //-----------------------------------------------------------------------------------
 //	更新・描画
 //-----------------------------------------------------------------------------------
@@ -86,11 +70,11 @@
 	//	描画
 	void	Tiger::Render( iexShader* shader, LPSTR technique )
 	{
-		CommonRender( shader, technique );
+		BaseChara::Render( shader, technique );
 
 		//	デバッグ用
 		if ( !debug )	return;
-		DrawSphere( attackPos, attack_r, 0xFFFFFFFF );
+		DrawSphere( attackInfo.pos, attackInfo.r, 0xFFFFFFFF );
 
 		char	str[256];
 		Vector3	stringPos;
@@ -98,7 +82,7 @@
 		stringPos.y -= 150.0f;
 		sprintf_s( str, "と\nら\n↓" );
 		DrawString( str, ( int )stringPos.x, ( int )stringPos.y );
-		sprintf_s( str, "attackPos.x = %f\nattackPos.y = %f\nattackPos.z = %f", attackPos.x, attackPos.y, attackPos.z );
+		sprintf_s( str, "attackPos.x = %f\nattackPos.y = %f\nattackPos.z = %f", attackInfo.pos.x, attackInfo.pos.y, attackInfo.pos.z );
 		DrawString( str, 100, 500, 0xFF00FFFF );
 	}
 
@@ -120,10 +104,10 @@
 		Vector3	finLinePos = startPos + front * 5.0f;
 		Vector3	finCurvePos = startPos + front * 3.0f + up * 5.0f;
 		Vector3	controlPoint = startPos + front * 5.0f + up * 3.5f;
-		float	t = GetBezier( ePrm_t::eRapid_Lv5, ePrm_t::eSlow_Lv5, attack_t );
-		attack_r = 0.5f;
-		attack_t += 0.03f;
-		if ( attack_t >= 1.0f )	attack_t = 1.0f;
+		float	t = GetBezier( ePrm_t::eRapid_Lv5, ePrm_t::eSlow_Lv5, attackInfo.t );
+		attackInfo.r = 0.5f;
+		attackInfo.t += 0.03f;
+		if ( attackInfo.t >= 1.0f )	attackInfo.t = 1.0f;
 
 		switch ( attackCount )
 		{
@@ -132,14 +116,14 @@
 		case 2:
 		case 3:
 			//	線形補間
-			Lerp( attackPos, startPos, finLinePos, t );
+			Lerp( attackInfo.pos, startPos, finLinePos, t );
 
 			//	動作中にボタン押すと次の攻撃へ
 			if ( input->Get( KEY_A ) == 3 )
 			{
 				if ( !attackFlag )
 				{
-					if ( attack_t >= 0.3f )
+					if ( attackInfo.t >= 0.3f )
 					{
 						attackFlag = true;
 					}
@@ -148,23 +132,23 @@
 			break;
 
 		default:
-			BezierCurve( attackPos, startPos, controlPoint, finCurvePos, t );
+			BezierCurve( attackInfo.pos, startPos, controlPoint, finCurvePos, t );
 			break;
 		}
 		
-		if ( attack_t >= 1.0f )
+		if ( attackInfo.t >= 1.0f )
 		{
 			if ( attackFlag )
 			{
 				attackFlag = false;
 				attackCount++;
-				attack_t = 0.0f;
+				attackInfo.t = 0.0f;
 			}
 			else
 			{
-				attack_t = 0.0f;
+				attackInfo.t = 0.0f;
 				attackCount = 0;
-				attackPos = GetPos();
+				attackInfo.pos = GetPos();
 				attackFlag = false;
 				return	true;
 			}
@@ -193,8 +177,7 @@
 
 		case 1:
 			p_pos += moveParam;
-			SetResistance( 0.9f );
-			moveParam *= GetResistance();
+			SetDrag( 0.9f );
 
 			if ( moveParam.Length() <= 0.01f )
 			{
@@ -214,7 +197,7 @@
 	//	ハイパーアーツ
 	bool	Tiger::HyperArts( void )
 	{
-		leanFrame = 60.0f;
+		leanFrame = 60;
 		//	情報取得
 		static	int		timer = 0;
 		Vector3	front = GetFront();
@@ -228,10 +211,10 @@
 		Vector3	startPos_left = p_pos + up * 1.5f + right * -0.5f;
 		Vector3	finPos_right = startPos_right + front * 5.0f;
 		Vector3	finPos_left = startPos_left + front * 5.0f;
-		float	t = GetBezier( ePrm_t::eRapid_Lv5, ePrm_t::eSlow_Lv5, attack_t );
-		attack_r = 0.5f;
-		attack_t += 0.07f;	//	スピード設定
-		if ( attack_t >= 1.0f )	attack_t = 1.0f;
+		float	t = GetBezier( ePrm_t::eRapid_Lv5, ePrm_t::eSlow_Lv5, attackInfo.t );
+		attackInfo.r = 0.5f;
+		attackInfo.t += 0.07f;	//	スピード設定
+		if ( attackInfo.t >= 1.0f )	attackInfo.t = 1.0f;
 
 		switch ( attackCount )
 		{
@@ -242,20 +225,20 @@
 			if ( timer >= 60 )
 			{
 				attackCount++;
-				attack_t = 0.0f;
+				attackInfo.t = 0.0f;
 			}
 			break;
 
 		case 21:
-			attack_r = 1.0f;
-			Lerp( attackPos, startPos_right, finPos_right, t );
+			attackInfo.r = 1.0f;
+			Lerp( attackInfo.pos, startPos_right, finPos_right, t );
 
-			if ( attack_t >= 1.0f )
+			if ( attackInfo.t >= 1.0f )
 			{
-				attack_t = 0.0f;
+				attackInfo.t = 0.0f;
 				timer = 0;
 				attackCount = 0;
-				attackPos = p_pos;
+				attackInfo.pos = p_pos;
 				attackFlag = false;
 				return	true;
 			}
@@ -263,23 +246,66 @@
 
 		default:
 			//	線形補間
-			if ( attackCount % 2 == 0 )		Lerp( attackPos, startPos_right, finPos_right, t );
-			else											Lerp( attackPos, startPos_left, finPos_left, t );
+			if ( attackCount % 2 == 0 )		Lerp( attackInfo.pos, startPos_right, finPos_right, t );
+			else											Lerp( attackInfo.pos, startPos_left, finPos_left, t );
 
 			//	ゆっくり回転
 			if ( input->Get( KEY_AXISX ) < 0 )		angle -= 0.02f;
 			if ( input->Get( KEY_AXISX ) > 0 )		angle += 0.02f;
 
-			if ( attack_t >= 1.0f )
+			if ( attackInfo.t >= 1.0f )
 			{
 				attackFlag = false;
 				attackCount++;
-				attack_t = 0.0f;
+				attackInfo.t = 0.0f;
 			}
 			break;
 		}
 
 		return	false;
+	}
+
+	//	モーション管理
+	void	Tiger::MotionManagement(int motion)
+	{
+		switch (motion)
+		{
+		case MOTION_NUM::STAND:
+			obj->SetMotion(MOTION_DATA::STAND);
+			break;
+
+		case MOTION_NUM::POSTURE:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+
+		case MOTION_NUM::JUMP:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+
+		case MOTION_NUM::GUARD:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+
+		case MOTION_NUM::LANDING:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+
+		case MOTION_NUM::RUN:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+
+		case MOTION_NUM::ATTACK1:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+
+		case MOTION_NUM::ATTACK2:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+
+		case MOTION_NUM::ATTACK3:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+		}
 	}
 
 //-----------------------------------------------------------------------------------
@@ -292,19 +318,19 @@
 		switch ( attackKind )
 		{
 		case MODE_STATE::QUICKARTS:
-			attackParam = COLLISION_TYPE::SPHEREVSCAPSULE;
-			knockBackType = KNOCKBACK_TYPE::WEAK;
+			attackInfo.type = COLLISION_TYPE::SPHEREVSCAPSULE;
+			knockBackInfo.type = KNOCKBACK_TYPE::WEAK;
 			break;
 
 		case MODE_STATE::POWERARTS:
-			attackParam = 0;
-			knockBackType = KNOCKBACK_TYPE::MIDDLE;
+			attackInfo.type = 0;
+			knockBackInfo.type = KNOCKBACK_TYPE::MIDDLE;
 			break;
 
 		case MODE_STATE::HYPERARTS:
-			attackParam = COLLISION_TYPE::SPHEREVSCYRINDER;
-			if (attackCount <= 20) knockBackType = KNOCKBACK_TYPE::STRENGTH;
-			if (attackCount > 20) knockBackType = KNOCKBACK_TYPE::LEANBACKWARD;
+			attackInfo.type = COLLISION_TYPE::SPHEREVSCYRINDER;
+			if (attackCount <= 20) knockBackInfo.type = KNOCKBACK_TYPE::STRENGTH;
+			if (attackCount > 20) knockBackInfo.type = KNOCKBACK_TYPE::LEANBACKWARD;
 			
 			break;
 		}

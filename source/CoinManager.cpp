@@ -3,7 +3,6 @@
 #include	"system/System.h"
 #include	"Random.h"
 #include	"GlobalFunction.h"
-#include	"Coin.h"
 
 #include	"CoinManager.h"
 

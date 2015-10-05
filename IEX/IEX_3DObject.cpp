@@ -79,7 +79,7 @@ iex3DObj*	iex3DObj::Clone()
 //------------------------------------------------------
 void iex3DObj::SetMotion( int motion )
 {
-	int		param;
+	int		param = 0;
 
 	if( M_Offset[motion] == 65535 ) return;
 	Motion  = motion;

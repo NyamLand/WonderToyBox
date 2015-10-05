@@ -18,7 +18,7 @@ private:	//	構造体
 	//	各キャラクター情報
 	struct CharacterInfo
 	{
-		LPSTR name;		//	キャラクター名
+		LPSTR	name;		//	キャラクター名
 		bool	select;		//	選択されているか
 	};
 
@@ -26,17 +26,18 @@ private:	//	構造体
 	struct SelectInfo
 	{
 		int		characterType[4];
-		int 	playerNum;	//　何人で遊ぶ？
-		int		stageType;	//　どのステージ？
+		int 	playerNum;		//　何人で遊ぶ？
+		int		stageType;		//　どのステージ？
 		bool	ready;			//	準備OKか？
+		int		step_cs;
 	};
 
 	//	カメラ用パラメータ構造体
 	struct CameraInfo
 	{
 		int			posNum;				//	仮のカメラ移動先のポジションを指し示す値
-		float		t;							//	補間パラメータ
-		Vector3		pos;					//	カメラポジション
+		float		t;					//	補間パラメータ
+		Vector3		pos;				//	カメラポジション
 		Vector3		target;				//	カメラのターゲットポジション
 		Vector3		lerpStartPos;		//	ラープスタートポジション
 	};
@@ -46,9 +47,9 @@ private:
 	CameraInfo	cameraInfo;
 
 	//	ゲーム設定用パラメータ
-	CharacterInfo	characterInfo[PLAYER_TYPE::MAX];
-	SelectInfo			selectInfo;
-	int		mode;
+	CharacterInfo	characterInfo[CHARACTER_TYPE::MAX];
+	SelectInfo		selectInfo;
+	int				mode;
 
 	//	タイトル用パラメータ
 	iex2DObj*	curtain;
