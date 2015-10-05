@@ -109,8 +109,8 @@
 //	線形補間( 出力、開始値、最終値, 割合 )
 //----------------------------------------------------------------------
 
-	template<typename T>
-	bool	Lerp( T& out, T p1, T p2, float t )
+	template<typename T, typename T2>
+	bool	Lerp( T& out, T2 p1, T2 p2, float t )
 	{
 		if ( t >= 1.0f )	return	true;
 

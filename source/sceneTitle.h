@@ -8,6 +8,9 @@
 //
 //*****************************************************************************
 
+//	クラス前方宣言
+class Image;
+
 class sceneTitle : public	Scene
 {
 private:	//	定数
@@ -51,6 +54,9 @@ private:	//	構造体
 	};
 
 private:
+	//	背景
+	iexMesh*	stage;
+
 	//	カメラ用パラメータ
 	CameraInfo	cameraInfo;
 
@@ -62,9 +68,9 @@ private:
 	//	タイトル用パラメータ
 	CurtainInfo	curtainR;
 	CurtainInfo	curtainL;
+	Image*			pressSpace;
 	iex2DObj*		titleImage;
 	bool				title_renderflag;
-	iexMesh*	stage;
 
 public:
 	//	初期化・解放

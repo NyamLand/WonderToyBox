@@ -122,6 +122,8 @@ namespace
 		curtainR.obj = new iex2DObj( "DATA/curtain2.png" );
 		titleImage = new iex2DObj( "DATA/UI/title.png" );
 		title_renderflag = true;
+		pressSpace = new Image( "DATA/UI/pressspace.png" );
+		pressSpace->Initialize( 640, 500, 300, 150, 0, 0, 256, 128 );
 
 		//	乱数初期化
 		Random::Initialize();
@@ -301,27 +303,30 @@ namespace
 			{
 				changeflag = true;
 				title_renderflag = false;
+				pressSpace->SetWave();
 				screen->SetScreenMode( SCREEN_MODE::WHITE_OUT, speed );
 			}
 
 			//	選択後動作
 			if ( changeflag )
 			{
+				//	パラメータ加算
 				curtainL.t += D3DX_PI / 180 * speed;
 				curtainR.t += D3DX_PI / 180 * speed;
 
+				//	パラメータ上限設定
 				if ( curtainL.t >= 1.0f )	curtainL.t = 1.0f;
 				if ( curtainR.t >= 1.0f )	curtainR.t = 1.0f;
 				
 				//	各頂点移動
-				curtainStateL = ::CubicFunctionInterpolation( curtainL.tlv[0].sx, 0, -640, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainL.t ) );
-				curtainStateL = ::CubicFunctionInterpolation( curtainL.tlv[1].sx, 640, 0, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainL.t ) );
-				curtainStateL = ::CubicFunctionInterpolation( curtainL.tlv[2].sx, 0, -640, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainL.t ) );
-				curtainStateL = ::CubicFunctionInterpolation( curtainL.tlv[3].sx, 640, 0, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainL.t ) );
-				curtainStateR = ::CubicFunctionInterpolation( curtainR.tlv[0].sx, 640, 1280, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainL.t ) );
-				curtainStateR = ::CubicFunctionInterpolation( curtainR.tlv[1].sx, 1280, 1920, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainL.t ) );
-				curtainStateR = ::CubicFunctionInterpolation( curtainR.tlv[2].sx, 640, 1280, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainL.t ) );
-				curtainStateR = ::CubicFunctionInterpolation( curtainR.tlv[3].sx, 1280, 1920, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainL.t ) );
+				curtainStateL = Lerp( curtainL.tlv[0].sx, 0, -640, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainL.t ) );
+				curtainStateL = Lerp( curtainL.tlv[1].sx, 640, 0, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainL.t ) );
+				curtainStateL = Lerp( curtainL.tlv[2].sx, 0, -640, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainL.t ) );
+				curtainStateL = Lerp( curtainL.tlv[3].sx, 640, 0, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainL.t ) );
+				curtainStateR = Lerp( curtainR.tlv[0].sx, 640, 1280, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainL.t ) );
+				curtainStateR = Lerp( curtainR.tlv[1].sx, 1280, 1920, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainL.t ) );
+				curtainStateR = Lerp( curtainR.tlv[2].sx, 640, 1280, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainL.t ) );
+				curtainStateR = Lerp( curtainR.tlv[3].sx, 1280, 1920, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainL.t ) );
 			}
 
 			//	次のモードへ
@@ -333,6 +338,8 @@ namespace
 				screen->SetScreenMode( SCREEN_MODE::WHITE_IN, 1.0f );
 				mode = TITLE_MODE::MENU;
 			}
+
+			//pressSpace->Update();
 		}
 
 		//	描画
@@ -347,6 +354,10 @@ namespace
 
 			//	タイトル画像描画
 			if ( title_renderflag )	titleImage->Render( 400, 100, 500, 500, 0, 0, 512, 512 );
+
+			//	pressspace描画
+			pressSpace->NormalRender();
+			pressSpace->Render();
 
 			//	文字描画
 			DrawString( "タイトルだよ", 50, 50 );
