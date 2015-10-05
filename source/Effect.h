@@ -21,7 +21,8 @@ private:
 	iexMesh*	aura;
 	bool		isAura;
 	float		_adjustV;
-	iex2DObj*	circle_pic;
+
+	iex2DObj*	circle_pic[4];
 	Circle		circle[4];
 	Circle		circle_out[4];
 	float		c_angle;
@@ -35,12 +36,13 @@ public:
 	void	Initialize();
 
 	//	更新・描画
+	void	Spin( void );
 	void	Update( void );
 	void	Render( void );
 
 	//	情報更新
-	void	PoligonSet( void );
-	void	CirclePosSet( void );
+	void	PoligonSet( Circle* );
+	void	CirclePosSet( Circle*, int );
 
 	//	情報変換
 	void	LVChange( LVERTEX& l,Vector3& p );
