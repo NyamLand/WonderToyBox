@@ -103,6 +103,88 @@
 	}
 
 //----------------------------------------------------------------------------
+//	画像関連
+//----------------------------------------------------------------------------
+
+	//	初期化
+	void	ImageInitialize( ImageObj& image, int x, int y, int w, int h, int sx, int sy, int sw, int sh )
+	{
+		image.x = x;
+		image.y = y;
+		image.w = w;
+		image.h = h;
+		image.sx = sx;
+		image.sy = sy;
+		image.sw = sw;
+		image.sh = sh;
+		image.plusScaleX = 0;
+		image.plusScaleY = 0;
+		image.t = 0.0f;
+		image.alpha = 1.0f;
+		image.angle = 0.0f;
+		image.renderflag = false;
+		image.wavespeed = 0.0f;
+		image.waveState = false;
+	}
+	
+	//	画像
+	void	RenderImage( ImageObj image, int sx, int sy, int sw, int sh, bool normal )
+	{
+		if ( normal )
+		{
+			int		width = image.w;
+			int		height = image.h;
+			int		posx = image.x - width / 2;
+			int		posy = image.y - height / 2;
+			
+			image.obj->Render( posx, posy, width, height, sx, sy, sw, sh );
+		}
+		else
+		{
+			int		width = image.w + image.plusScaleX;
+			int		height = image.h + image.plusScaleY;
+			int		posx = image.x - width / 2;
+			int		posy = image.y - height / 2;
+
+			if ( image.renderflag )
+			image.obj->Render( posx, posy, width, height, sx, sy, sw, sh, RS_COPY, GetColor( 1.0f, 1.0f, 1.0f, image.alpha ) );
+		}
+	}
+
+	//	波紋設定
+	void	SetWave( ImageObj& image, float speed )
+	{
+		image.alpha = 1.0f;
+		image.plusScaleX = 0;
+		image.plusScaleY = 0;
+		image.waveState = true;
+		image.wavespeed = speed;
+		image.renderflag = true;
+	}
+
+	//	波紋更新
+	void	WaveUpdate( ImageObj& image )
+	{
+		if ( image.waveState )
+		{
+			//	パラメータ加算
+			image.t += D3DX_PI / 180 * image.wavespeed;
+
+			//	パラメータ上限設定
+			if ( image.t >= 1.0f )
+			{
+				image.t = 1.0f;
+				image.waveState = false;
+				image.renderflag = false;
+			}
+
+			Lerp( image.alpha, 1.0f, 0.0f, image.t );
+			Lerp( image.plusScaleX, 0, 140, image.t );
+			Lerp( image.plusScaleY, 0, 140, image.t );
+		}
+	}
+
+//----------------------------------------------------------------------------
 //	ベジェ曲線( 出力、始点、制御点、終点、現在の割合( 0.0f ~ 1.0f ) )
 //----------------------------------------------------------------------------
 

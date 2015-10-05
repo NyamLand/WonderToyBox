@@ -6,7 +6,6 @@
 #include	"Random.h"
 #include	"GameManager.h"
 #include	"Collision.h"
-#include	"Image.h"
 #include	"Camera.h"
 #include	"CharacterManager.h"
 #include	"sceneTitle.h"

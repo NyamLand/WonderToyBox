@@ -5,7 +5,6 @@
 #include	"GlobalFunction.h"
 #include	"Sound.h"
 #include	"Screen.h"
-#include	"Image.h"
 #include	"Camera.h"
 #include	"Particle.h"
 #include	"Random.h"
@@ -87,6 +86,9 @@ namespace
 		SafeDelete( m_Camera );
 		SafeDelete( curtainL.obj );
 		SafeDelete( curtainR.obj );
+		SafeDelete( titleImage.obj );
+		SafeDelete( stage );
+		SafeDelete( pressSpace.obj );
 		sound->AllStop();
 	}
 	
@@ -120,10 +122,11 @@ namespace
 		//	画像読み込み
 		curtainL.obj = new iex2DObj( "DATA/curtain1.png" );
 		curtainR.obj = new iex2DObj( "DATA/curtain2.png" );
-		titleImage = new iex2DObj( "DATA/UI/title.png" );
+		titleImage.obj = new iex2DObj( "DATA/UI/title.png" );
+		pressSpace.obj = new iex2DObj( "DATA/UI/pressspace.png" );
+		ImageInitialize( pressSpace, 640, 560, 300, 100, 0, 0, 256, 128 );
+		ImageInitialize( titleImage, 640, 300, 500, 500, 0, 0, 512, 512 );
 		title_renderflag = true;
-		pressSpace = new Image( "DATA/UI/pressspace.png" );
-		pressSpace->Initialize( 640, 500, 300, 150, 0, 0, 256, 128 );
 
 		//	乱数初期化
 		Random::Initialize();
@@ -293,6 +296,7 @@ namespace
 		//	更新
 		void	sceneTitle::TitleUpdate( void )
 		{
+			//	パラメータ
 			static	bool	changeflag = false;
 			static	float	speed = 0.5f;
 			static	bool	curtainStateL = false;
@@ -303,13 +307,16 @@ namespace
 			{
 				changeflag = true;
 				title_renderflag = false;
-				pressSpace->SetWave();
 				screen->SetScreenMode( SCREEN_MODE::WHITE_OUT, speed );
+				SetWave( pressSpace, 1.5f );
 			}
 
 			//	選択後動作
 			if ( changeflag )
 			{
+				//	波紋設定
+				WaveUpdate( pressSpace );
+
 				//	パラメータ加算
 				curtainL.t += D3DX_PI / 180 * speed;
 				curtainR.t += D3DX_PI / 180 * speed;
@@ -317,7 +324,7 @@ namespace
 				//	パラメータ上限設定
 				if ( curtainL.t >= 1.0f )	curtainL.t = 1.0f;
 				if ( curtainR.t >= 1.0f )	curtainR.t = 1.0f;
-				
+
 				//	各頂点移動
 				curtainStateL = Lerp( curtainL.tlv[0].sx, 0, -640, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainL.t ) );
 				curtainStateL = Lerp( curtainL.tlv[1].sx, 640, 0, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainL.t ) );
@@ -338,8 +345,6 @@ namespace
 				screen->SetScreenMode( SCREEN_MODE::WHITE_IN, 1.0f );
 				mode = TITLE_MODE::MENU;
 			}
-
-			//pressSpace->Update();
 		}
 
 		//	描画
@@ -353,11 +358,12 @@ namespace
 			iexPolygon::Render2D( curtainR.tlv, 2, curtainL.obj, RS_COPY );
 
 			//	タイトル画像描画
-			if ( title_renderflag )	titleImage->Render( 400, 100, 500, 500, 0, 0, 512, 512 );
+			if ( title_renderflag )	RenderImage( titleImage, 0, 0, 512, 512, true );
 
-			//	pressspace描画
-			pressSpace->NormalRender();
-			pressSpace->Render();
+			//	pressSpace描画
+			RenderImage( pressSpace, 0, 0, 256, 128, true );
+			RenderImage( pressSpace, 0, 0, 256, 128 );
+
 
 			//	文字描画
 			DrawString( "タイトルだよ", 50, 50 );

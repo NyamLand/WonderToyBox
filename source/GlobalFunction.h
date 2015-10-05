@@ -47,6 +47,22 @@
 		bool	renderflag;
 	};
 
+	//	画像構造体
+	struct ImageObj
+	{
+		iex2DObj*	obj;
+		int	 x, y, w, h;
+		int	 sx, sy, sw, sh;
+		int	 plusScaleX;
+		int	 plusScaleY;
+		float	t;
+		float	alpha;
+		float	angle;
+		float	wavespeed;
+		bool	waveState;
+		bool	renderflag;
+	};
+
 //----------------------------------------------------------------------
 //	システム
 //----------------------------------------------------------------------
@@ -87,6 +103,11 @@
 	void	DrawString( LPSTR string, int x, int y, float r, float g, float b );
 	void	DrawString( LPSTR string, int x, int y, Vector3 color );
 
+	//	画像操作
+	void	ImageInitialize( ImageObj& image, int x, int y, int w, int h, int sx, int sy, int sw, int sh );
+	void	RenderImage( ImageObj image, int sx, int sy, int sw, int sh, bool normal = false/*通常描画*/ );
+	void	SetWave( ImageObj& image, float speed );
+	void	WaveUpdate( ImageObj& image );
 //----------------------------------------------------------------------
 //	図形描画
 //----------------------------------------------------------------------

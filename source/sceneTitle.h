@@ -8,9 +8,6 @@
 //
 //*****************************************************************************
 
-//	クラス前方宣言
-class Image;
-
 class sceneTitle : public	Scene
 {
 private:	//	定数
@@ -68,9 +65,14 @@ private:
 	//	タイトル用パラメータ
 	CurtainInfo	curtainR;
 	CurtainInfo	curtainL;
-	Image*			pressSpace;
-	iex2DObj*		titleImage;
+	ImageObj		pressSpace;
+	ImageObj		titleImage;
+	int					plusScaleX;
+	int					plusScaleY;
 	bool				title_renderflag;
+	float				alpha;
+	float				t;
+
 
 public:
 	//	初期化・解放
