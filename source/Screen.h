@@ -28,6 +28,7 @@ class Screen
 private:
 	int			mode;
 	float		alpha;
+	float		speed;
 	bool		screenState;
 	Vector3	color;
 
@@ -45,7 +46,7 @@ public:
 	bool	FadeOut( void );
 
 	//	î•ñİ’è
-	void	SetScreenMode( int mode );
+	void	SetScreenMode( int mode, float speed );
 
 	//	î•ñæ“¾
 	bool	GetScreenState( void )const;

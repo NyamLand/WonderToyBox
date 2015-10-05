@@ -18,16 +18,6 @@
 //	システム
 //----------------------------------------------------------------------------
 
-	//	解放
-	void	SafeDelete( void* obj )
-	{
-		if ( obj != nullptr )
-		{
-			delete	obj;
-			obj = nullptr;
-		}
-	}
-
 	//	変数変換
 	POINT	GetPoint( int x, int y )
 	{
@@ -110,57 +100,6 @@
 	void	DrawString( LPSTR string, int x, int y, Vector3 color )
 	{
 		IEX_DrawText( string, x, y, 300, 300, ARGB( 0xFF, ( DWORD )( 0xFF * color.x ), ( DWORD )( 0xFF * color.y ), ( DWORD )( 0xFF * color.z ) ) );
-	}
-
-//----------------------------------------------------------------------------
-//	画像関連
-//----------------------------------------------------------------------------
-
-//----------------------------------------------------------------------
-//	線形補間( 出力、開始値、最終値, 割合 )
-//----------------------------------------------------------------------
-
-	bool	Lerp( Vector3& out, Vector3 p1, Vector3 p2, float t )
-	{
-		if ( t >= 1.0f )	return	true;
-
-		out = p1 * ( 1 - t ) + p2 * t ;
-
-		return	false;
-	}
-
-	bool	Lerp( float& out, float p1, float p2, float t )
-	{
-		if ( t >= 1.0f )	return	true;
-
-		out = p1 * ( 1 - t ) + p2 * t;
-
-		return	false;
-	}
-
-//----------------------------------------------------------------------------
-//	３次関数補間( 出力、始点、終点、現在の割合( 0.0f ~ 1.0f ) )
-//----------------------------------------------------------------------------
-
-	//	Vector3
-	bool	CubicFunctionInterpolation( Vector3& out, Vector3 p1, Vector3 p2, float t )
-	{
-		if ( t >= 1.0f )	return	true;
-		float rate = t * t * ( 3.0f - 2.0f * t );   // 3次関数補間値に変換
-
-		out = p1 * ( 1.0f - rate ) + p2 * rate;
-		return	false;
-	}
-
-	//	float
-	bool	CubicFunctionInterpolation( float& out, float p1, float p2, float t )
-	{
-		if ( t >= 1.0f )	return	true;
-		float rate = t * t * ( 3.0f - 2.0f * t );   // 3次関数補間値に変換
-
-		out = p1 * ( 1.0f - rate ) + p2 * rate;   // いわゆるLerp
-
-		return	false;
 	}
 
 //----------------------------------------------------------------------------
@@ -376,6 +315,34 @@
 		DrawCapsule( iexSystem::GetDevice(), D3DXVECTOR3( p1.x, p1.y, p1.z ), D3DXVECTOR3( p2.x, p2.y, p2.z ), r, color );
 		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
 	}
+
+//----------------------------------------------------------------------------
+//	図形設定
+//----------------------------------------------------------------------------
+
+	//	頂点設定
+	void	SetVertex( LVERTEX& v, float x, float y, float z, float tu, float tv, DWORD color )
+	{
+		v.x = x;
+		v.y = y;
+		v.z = z;
+		v.tu = tu;
+		v.tv = tv;
+		v.color = color;
+	}
+
+	//	頂点初期化
+	void	SetVertex( TLVERTEX& v, float x, float y, float z, float tu, float tv, DWORD color )
+	{
+		v.sx = x;
+		v.sy = y;
+		v.sz = z;
+		v.tu = tu;
+		v.tv = tv;
+		v.color = color;
+		v.rhw = 1.0f;
+	}
+
 
 //-------------------------------------------------------------------------
 //	相互変換DirectX<->IEX

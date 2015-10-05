@@ -33,6 +33,7 @@
 		color = Color::BLACK;
 		screenState = false;
 		alpha = 1.0f;
+		speed = 1.0f;
 
 		return	false;
 	}
@@ -81,7 +82,7 @@
 	//	フェードイン
 	bool	Screen::FadeIn( void )
 	{
-		alpha -= D3DX_PI / 180.0f * 1.0f;
+		alpha -= D3DX_PI / 180.0f * speed;
 		
 		if ( alpha <= 0.0f ){
 			alpha = 0.0f;
@@ -99,7 +100,7 @@
 			return true;
 		}
 
-		alpha += D3DX_PI / 180.0f * 10.0f;
+		alpha += D3DX_PI / 180.0f * speed;
 
 		return	false;
 	}
@@ -109,9 +110,11 @@
 //-----------------------------------------------------------------------------------
 
 	//	スクリーンモード
-	void	Screen::SetScreenMode( int mode )
+	void	Screen::SetScreenMode( int mode, float speed )
 	{
 		this->mode = mode;
+		this->speed = speed;
+		this->screenState = false;
 
 		switch ( this->mode )
 		{
