@@ -84,11 +84,11 @@ namespace
 	sceneTitle::~sceneTitle( void )
 	{
 		SafeDelete( m_Camera );
-		SafeDelete( curtainL.obj );
-		SafeDelete( curtainR.obj );
-		SafeDelete( titleImage.obj );
+		SafeDelete( titleInfo.curtainL.obj );
+		SafeDelete( titleInfo.curtainR.obj );
+		SafeDelete( titleInfo.titleImage.obj );
+		SafeDelete( titleInfo.pressSpace.obj );
 		SafeDelete( stage );
-		SafeDelete( pressSpace.obj );
 		sound->AllStop();
 	}
 	
@@ -103,6 +103,9 @@ namespace
 		Vector3 dir( 1.0f, -1.0f, -0.5f );
 		dir.Normalize();
 		iexLight::DirLight( shader3D, 0, &dir, 0.8f, 0.8f, 0.8f );
+
+		//	カメラ設定
+		m_Camera = new Camera();
 
 		//	マネージャー初期化
 		gameManager->Initialize();
@@ -119,20 +122,11 @@ namespace
 		//	ステージ
 		stage = new iexMesh( "DATA/BG/2_1/FIELD2_1.IMO" );
 
-		//	画像読み込み
-		curtainL.obj = new iex2DObj( "DATA/curtain1.png" );
-		curtainR.obj = new iex2DObj( "DATA/curtain2.png" );
-		titleImage.obj = new iex2DObj( "DATA/UI/title.png" );
-		pressSpace.obj = new iex2DObj( "DATA/UI/pressspace.png" );
-		ImageInitialize( pressSpace, 640, 560, 300, 100, 0, 0, 256, 128 );
-		ImageInitialize( titleImage, 640, 300, 500, 500, 0, 0, 512, 512 );
-		title_renderflag = true;
-
 		//	乱数初期化
-		Random::Initialize();
-		
-		//	カメラ設定
-		m_Camera = new Camera();
+		Random::Initialize();		
+
+		//	各モード初期化
+		TitleInitialize();
 
 		//	構造体初期化
 		{
@@ -154,21 +148,44 @@ namespace
 			cameraInfo.target = Vector3( 0.0f, 0.0f, 0.0f );
 			cameraInfo.t = 0.0f;
 			cameraInfo.posNum = 0;
-
-			//	カーテン用構造体初期化
-			curtainL.t = 0.0f;
-			curtainR.t = 0.0f;
-			SetVertex( curtainL.tlv[0], 0, 0, 0, 0, 0, 0xFFFFFFFF );
-			SetVertex( curtainL.tlv[1], 640, 0, 0, 1, 0, 0xFFFFFFFF );
-			SetVertex( curtainL.tlv[2], 0, 720, 0, 0, 1, 0xFFFFFFFF );
-			SetVertex( curtainL.tlv[3], 640, 720, 0, 1, 1, 0xFFFFFFFF );
-			SetVertex( curtainR.tlv[0], 640, 0, 0, 0, 0, 0xFFFFFFFF );
-			SetVertex( curtainR.tlv[1], 1280, 0, 0, 1, 0, 0xFFFFFFFF );
-			SetVertex( curtainR.tlv[2], 640, 720, 0, 0, 1, 0xFFFFFFFF );
-			SetVertex( curtainR.tlv[3], 1280, 720, 0, 1, 1, 0xFFFFFFFF );
 		}
 
 		return	true;
+	}
+
+	//	タイトル初期化
+	void	sceneTitle::TitleInitialize( void )
+	{
+		//	画像読み込み
+		titleInfo.curtainL.obj = new iex2DObj( "DATA/curtain1.png" );
+		titleInfo.curtainR.obj = new iex2DObj( "DATA/curtain2.png" );
+		titleInfo.titleImage.obj = new iex2DObj( "DATA/UI/title.png" );
+		titleInfo.pressSpace.obj = new iex2DObj( "DATA/UI/pressspace.png" );
+
+		//	画像構造体初期化
+		ImageInitialize( titleInfo.pressSpace, 640, 560, 300, 100, 0, 0, 256, 128 );
+		ImageInitialize( titleInfo.titleImage, 640, 300, 500, 500, 0, 0, 512, 512 );
+
+		//	カーテン用構造体初期化
+		{
+			//	パラメータ初期化
+			titleInfo.curtainL.t = 0.0f;
+			titleInfo.curtainR.t = 0.0f;
+
+			//	頂点設定
+			SetVertex( titleInfo.curtainL.tlv[0], 0, 0, 0, 0, 0, 0xFFFFFFFF );
+			SetVertex( titleInfo.curtainL.tlv[1], 640, 0, 0, 1, 0, 0xFFFFFFFF );
+			SetVertex( titleInfo.curtainL.tlv[2], 0, 720, 0, 0, 1, 0xFFFFFFFF );
+			SetVertex( titleInfo.curtainL.tlv[3], 640, 720, 0, 1, 1, 0xFFFFFFFF );
+			SetVertex( titleInfo.curtainR.tlv[0], 640, 0, 0, 0, 0, 0xFFFFFFFF );
+			SetVertex( titleInfo.curtainR.tlv[1], 1280, 0, 0, 1, 0, 0xFFFFFFFF );
+			SetVertex( titleInfo.curtainR.tlv[2], 640, 720, 0, 0, 1, 0xFFFFFFFF );
+			SetVertex( titleInfo.curtainR.tlv[3], 1280, 720, 0, 1, 1, 0xFFFFFFFF );
+		}
+
+		//	変数初期化
+		titleInfo.titleImage.renderflag = true;
+		titleInfo.step = 0;
 	}
 
 //-----------------------------------------------------------------------------------
@@ -302,48 +319,65 @@ namespace
 			static	bool	curtainStateL = false;
 			static	bool	curtainStateR = false;
 
-			//	SPACEキーで選択
-			if ( !changeflag && input[0]->Get( KEY_SPACE ) == 3 )
+			switch ( titleInfo.step )
 			{
-				changeflag = true;
-				title_renderflag = false;
-				screen->SetScreenMode( SCREEN_MODE::WHITE_OUT, speed );
-				SetWave( pressSpace, 1.5f );
-			}
+			case 0:
+				//	点滅更新
+				FlashingUpdate( titleInfo.pressSpace, D3DX_PI / 180 * 4.0f );
 
-			//	選択後動作
-			if ( changeflag )
-			{
-				//	波紋設定
-				WaveUpdate( pressSpace );
+				//	SPACEキーで選択
+				if ( input[0]->Get( KEY_SPACE ) == 3 )
+				{
+					//	タイトル画像を隠す
+					titleInfo.titleImage.renderflag = false;
+
+					//	画面制御
+					screen->SetScreenMode( SCREEN_MODE::WHITE_OUT, speed );
+
+					//	pressspace波紋
+					static	float	wavespeed = 1.5f;
+					SetWave( titleInfo.pressSpace, wavespeed );
+					titleInfo.step++;
+				}
+				break;
+
+			case 1:
+				//	波紋更新
+				WaveUpdate( titleInfo.pressSpace );
+
+				//	点滅更新
+				FlashingUpdate( titleInfo.pressSpace, D3DX_PI / 180.0f * 10.0f );
 
 				//	パラメータ加算
-				curtainL.t += D3DX_PI / 180 * speed;
-				curtainR.t += D3DX_PI / 180 * speed;
+				titleInfo.curtainL.t += D3DX_PI / 180 * speed;
+				titleInfo.curtainR.t += D3DX_PI / 180 * speed;
 
 				//	パラメータ上限設定
-				if ( curtainL.t >= 1.0f )	curtainL.t = 1.0f;
-				if ( curtainR.t >= 1.0f )	curtainR.t = 1.0f;
+				if ( titleInfo.curtainL.t >= 1.0f )	titleInfo.curtainL.t = 1.0f;
+				if ( titleInfo.curtainR.t >= 1.0f )	titleInfo.curtainR.t = 1.0f;
 
 				//	各頂点移動
-				curtainStateL = Lerp( curtainL.tlv[0].sx, 0, -640, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainL.t ) );
-				curtainStateL = Lerp( curtainL.tlv[1].sx, 640, 0, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainL.t ) );
-				curtainStateL = Lerp( curtainL.tlv[2].sx, 0, -640, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainL.t ) );
-				curtainStateL = Lerp( curtainL.tlv[3].sx, 640, 0, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainL.t ) );
-				curtainStateR = Lerp( curtainR.tlv[0].sx, 640, 1280, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainL.t ) );
-				curtainStateR = Lerp( curtainR.tlv[1].sx, 1280, 1920, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainL.t ) );
-				curtainStateR = Lerp( curtainR.tlv[2].sx, 640, 1280, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainL.t ) );
-				curtainStateR = Lerp( curtainR.tlv[3].sx, 1280, 1920, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainL.t ) );
-			}
+				curtainStateL = Lerp( titleInfo.curtainL.tlv[0].sx, 0, -640, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, titleInfo.curtainL.t ) );
+				curtainStateL = Lerp( titleInfo.curtainL.tlv[1].sx, 640, 0, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, titleInfo.curtainL.t ) );
+				curtainStateL = Lerp( titleInfo.curtainL.tlv[2].sx, 0, -640, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, titleInfo.curtainL.t ) );
+				curtainStateL = Lerp( titleInfo.curtainL.tlv[3].sx, 640, 0, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, titleInfo.curtainL.t ) );
+				curtainStateR = Lerp( titleInfo.curtainR.tlv[0].sx, 640, 1280, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, titleInfo.curtainL.t ) );
+				curtainStateR = Lerp( titleInfo.curtainR.tlv[1].sx, 1280, 1920, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, titleInfo.curtainL.t ) );
+				curtainStateR = Lerp( titleInfo.curtainR.tlv[2].sx, 640, 1280, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, titleInfo.curtainL.t ) );
+				curtainStateR = Lerp( titleInfo.curtainR.tlv[3].sx, 1280, 1920, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, titleInfo.curtainL.t ) );
 
-			//	次のモードへ
-			if ( changeflag && curtainStateL && curtainStateR )
-			{
+				//	動作済みで次のステップへ
+				if ( curtainStateL && curtainStateR )	titleInfo.step++;
+				break;
+
+			case 2:
 				changeflag = false;
 				curtainStateL = false;
 				curtainStateR = false;
-				screen->SetScreenMode( SCREEN_MODE::WHITE_IN, 1.0f );
+				static	float	screenSpeed = 1.0f;
+				screen->SetScreenMode( SCREEN_MODE::WHITE_IN, screenSpeed );
 				mode = TITLE_MODE::MENU;
+				break;
 			}
 		}
 
@@ -354,20 +388,15 @@ namespace
 			iexPolygon::Rect( 0, 0, 1280, 720, RS_COPY, 0xFFFFFFFF );
 
 			//	幕描画
-			iexPolygon::Render2D( curtainL.tlv, 2, curtainL.obj, RS_COPY );
-			iexPolygon::Render2D( curtainR.tlv, 2, curtainL.obj, RS_COPY );
+			iexPolygon::Render2D( titleInfo.curtainL.tlv, 2, titleInfo.curtainL.obj, RS_COPY );
+			iexPolygon::Render2D( titleInfo.curtainR.tlv, 2, titleInfo.curtainL.obj, RS_COPY );
 
 			//	タイトル画像描画
-			if ( title_renderflag )	RenderImage( titleImage, 0, 0, 512, 512, true );
+			RenderImage( titleInfo.titleImage, 0, 0, 512, 512, IMAGE_MODE::NORMAL );
 
 			//	pressSpace描画
-			RenderImage( pressSpace, 0, 0, 256, 128, true );
-			RenderImage( pressSpace, 0, 0, 256, 128 );
-
-
-			//	文字描画
-			DrawString( "タイトルだよ", 50, 50 );
-			DrawString( "[SPACE]：メニューへ", 300, 400, 0xFFFFFF00 );
+			RenderImage( titleInfo.pressSpace, 0, 0, 256, 128, IMAGE_MODE::FLASH );
+			RenderImage( titleInfo.pressSpace, 0, 0, 256, 128, IMAGE_MODE::WAVE );
 		}
 
 	//--------------------------------------------------------

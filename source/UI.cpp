@@ -135,6 +135,7 @@
 	void	UI::StartAndTimeUpInitialize( void )
 	{
 		ImageInitialize( countImage, 640, 360, 350, 350, 0, 0, 256, 256 );
+		countImage.renderflag = true;
 		count = 0;
 		waitTimer = 0;
 	}
@@ -438,14 +439,14 @@
 	//	カウントダウン・スタート演出
 	void	UI::StartRender( void )
 	{
-		RenderImage( countImage, countImage.sx, countImage.sy, countImage.sw, countImage.sh, true );
-		RenderImage( countImage, countImage.sx, countImage.sy, countImage.sw, countImage.sh );
+		RenderImage( countImage, countImage.sx, countImage.sy, countImage.sw, countImage.sh, IMAGE_MODE::NORMAL );
+		RenderImage( countImage, countImage.sx, countImage.sy, countImage.sw, countImage.sh, IMAGE_MODE::WAVE );
 	}
 
 	//	タイムアップ演出
 	void	UI::FinishRender( void )
 	{
-		RenderImage(countImage, countImage.sx, countImage.sy, countImage.sw, countImage.sh, true );
+		RenderImage(countImage, countImage.sx, countImage.sy, countImage.sw, countImage.sh, IMAGE_MODE::NORMAL );
 	}
 
 	//	どんけつ演出

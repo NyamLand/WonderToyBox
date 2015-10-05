@@ -18,6 +18,18 @@
 //	定数
 //----------------------------------------------------------------------
 
+	namespace IMAGE_MODE
+	{
+		enum
+		{
+			NORMAL,			//	オリジナル描画
+			ADOPTPARAM,	//	パラメータ採用
+			WAVE,				//	波紋
+			FLASH,				//	点滅
+			END,					//	終端
+		};
+	}
+
 //----------------------------------------------------------------------
 //	構造体
 //----------------------------------------------------------------------
@@ -53,14 +65,25 @@
 		iex2DObj*	obj;
 		int	 x, y, w, h;
 		int	 sx, sy, sw, sh;
-		int	 plusScaleX;
-		int	 plusScaleY;
 		float	t;
 		float	alpha;
 		float	angle;
-		float	wavespeed;
-		bool	waveState;
+		POINT	p;
 		bool	renderflag;
+
+		//	wave用パラメータ
+		int	 plusScaleX;
+		int	 plusScaleY;
+		float	wavespeed;
+		float	waveAlpha;
+		bool	waveState;
+		bool	waverenderflag;
+
+		//	flashing用パラメータ
+		float	flashingSpeed;
+		float	flashingAlpha;
+		float	flashingRenderflag;
+		float	flashingParam;
 	};
 
 //----------------------------------------------------------------------
@@ -105,9 +128,11 @@
 
 	//	画像操作
 	void	ImageInitialize( ImageObj& image, int x, int y, int w, int h, int sx, int sy, int sw, int sh );
-	void	RenderImage( ImageObj image, int sx, int sy, int sw, int sh, bool normal = false/*通常描画*/ );
+	void	RenderImage( ImageObj image, int sx, int sy, int sw, int sh, int mode );
 	void	SetWave( ImageObj& image, float speed );
 	void	WaveUpdate( ImageObj& image );
+	void	FlashingUpdate( ImageObj& image, float speed = -1.0f );
+
 //----------------------------------------------------------------------
 //	図形描画
 //----------------------------------------------------------------------

@@ -122,44 +122,68 @@
 		image.t = 0.0f;
 		image.alpha = 1.0f;
 		image.angle = 0.0f;
+		image.p = GetPoint( image.x, image.y );
 		image.renderflag = false;
+
+		//	wave用パラメータ
+		image.waveAlpha = 1.0f;
+		image.waverenderflag = false;
 		image.wavespeed = 0.0f;
 		image.waveState = false;
+
+		//	flashing用パラメータ
+		image.flashingSpeed = 0.0f;
+		image.flashingAlpha = 0.0f;
+		image.flashingParam = 0.0f;
+		image.flashingRenderflag = true;
 	}
 	
 	//	画像
-	void	RenderImage( ImageObj image, int sx, int sy, int sw, int sh, bool normal )
+	void	RenderImage( ImageObj image, int sx, int sy, int sw, int sh, int mode )
 	{
-		if ( normal )
-		{
-			int		width = image.w;
-			int		height = image.h;
-			int		posx = image.x - width / 2;
-			int		posy = image.y - height / 2;
-			
-			image.obj->Render( posx, posy, width, height, sx, sy, sw, sh );
-		}
-		else
-		{
-			int		width = image.w + image.plusScaleX;
-			int		height = image.h + image.plusScaleY;
-			int		posx = image.x - width / 2;
-			int		posy = image.y - height / 2;
+		int		width = image.w;
+		int		height = image.h;
+		int		posx = image.x - width / 2;
+		int		posy = image.y - height / 2;
 
+		switch ( mode )
+		{
+		case IMAGE_MODE::NORMAL:
 			if ( image.renderflag )
-			image.obj->Render( posx, posy, width, height, sx, sy, sw, sh, RS_COPY, GetColor( 1.0f, 1.0f, 1.0f, image.alpha ) );
+			image.obj->Render( posx, posy, width, height, sx, sy, sw, sh );
+			break;
+
+		case IMAGE_MODE::ADOPTPARAM:
+			if ( image.renderflag )
+				image.obj->Render( posx, posy, width, height, sx, sy, sw, sh, image.p, image.angle, RS_COPY, GetColor( 1.0f, 1.0f, 1.0f, image.alpha ) );
+			break;
+
+		case IMAGE_MODE::WAVE:
+			width = image.w + image.plusScaleX;
+			height = image.h + image.plusScaleY;
+			posx = image.x - width / 2;
+			posy = image.y - height / 2;
+
+			if ( image.waverenderflag )
+			image.obj->Render( posx, posy, width, height, sx, sy, sw, sh, RS_COPY, GetColor( 1.0f, 1.0f, 1.0f, image.waveAlpha ) );
+			break;
+
+		case IMAGE_MODE::FLASH:
+			if ( image.flashingRenderflag )
+				image.obj->Render( posx, posy, width, height, sx, sy, sw, sh, RS_COPY, GetColor( 1.0f, 1.0f, 1.0f, image.flashingAlpha ) );
+			break;
 		}
 	}
 
 	//	波紋設定
 	void	SetWave( ImageObj& image, float speed )
 	{
-		image.alpha = 1.0f;
 		image.plusScaleX = 0;
 		image.plusScaleY = 0;
+		image.waveAlpha = 1.0f;
 		image.waveState = true;
 		image.wavespeed = speed;
-		image.renderflag = true;
+		image.waverenderflag = true;
 	}
 
 	//	波紋更新
@@ -175,13 +199,27 @@
 			{
 				image.t = 1.0f;
 				image.waveState = false;
-				image.renderflag = false;
+				image.waverenderflag = false;
 			}
 
-			Lerp( image.alpha, 1.0f, 0.0f, image.t );
+			Lerp( image.waveAlpha, 1.0f, 0.0f, image.t );
 			Lerp( image.plusScaleX, 0, 140, image.t );
 			Lerp( image.plusScaleY, 0, 140, image.t );
 		}
+	}
+
+	//	点滅処理
+	void	FlashingUpdate( ImageObj& image, float speed )
+	{
+		if ( speed > 0.0f )
+			image.flashingParam += speed;
+		else
+			image.flashingParam += image.flashingSpeed;
+
+		if ( image.flashingParam >= D3DX_PI * 2.0f )	image.flashingParam = 0.0f;
+
+		//	透明度更新
+		image.flashingAlpha = 0.5f + 0.5f * sinf( image.flashingParam );
 	}
 
 //----------------------------------------------------------------------------
