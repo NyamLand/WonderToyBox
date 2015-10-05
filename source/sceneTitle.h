@@ -42,6 +42,14 @@ private:	//	構造体
 		Vector3		lerpStartPos;		//	ラープスタートポジション
 	};
 
+	//	カーテン用構造体
+	struct CurtainInfo
+	{
+		iex2DObj*	obj;
+		TLVERTEX	tlv[4];
+		float			t;
+	};
+
 private:
 	//	カメラ用パラメータ
 	CameraInfo	cameraInfo;
@@ -52,9 +60,11 @@ private:
 	int				mode;
 
 	//	タイトル用パラメータ
-	iex2DObj*	curtain;
+	CurtainInfo	curtainR;
+	CurtainInfo	curtainL;
+	iex2DObj*		titleImage;
+	bool				title_renderflag;
 	iexMesh*	stage;
-
 
 public:
 	//	初期化・解放

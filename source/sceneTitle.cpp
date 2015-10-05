@@ -85,6 +85,8 @@ namespace
 	sceneTitle::~sceneTitle( void )
 	{
 		SafeDelete( m_Camera );
+		SafeDelete( curtainL.obj );
+		SafeDelete( curtainR.obj );
 		sound->AllStop();
 	}
 	
@@ -115,6 +117,12 @@ namespace
 		//	ステージ
 		stage = new iexMesh( "DATA/BG/2_1/FIELD2_1.IMO" );
 
+		//	画像読み込み
+		curtainL.obj = new iex2DObj( "DATA/curtain1.png" );
+		curtainR.obj = new iex2DObj( "DATA/curtain2.png" );
+		titleImage = new iex2DObj( "DATA/UI/title.png" );
+		title_renderflag = true;
+
 		//	乱数初期化
 		Random::Initialize();
 		
@@ -141,6 +149,18 @@ namespace
 			cameraInfo.target = Vector3( 0.0f, 0.0f, 0.0f );
 			cameraInfo.t = 0.0f;
 			cameraInfo.posNum = 0;
+
+			//	カーテン用構造体初期化
+			curtainL.t = 0.0f;
+			curtainR.t = 0.0f;
+			SetVertex( curtainL.tlv[0], 0, 0, 0, 0, 0, 0xFFFFFFFF );
+			SetVertex( curtainL.tlv[1], 640, 0, 0, 1, 0, 0xFFFFFFFF );
+			SetVertex( curtainL.tlv[2], 0, 720, 0, 0, 1, 0xFFFFFFFF );
+			SetVertex( curtainL.tlv[3], 640, 720, 0, 1, 1, 0xFFFFFFFF );
+			SetVertex( curtainR.tlv[0], 640, 0, 0, 0, 0, 0xFFFFFFFF );
+			SetVertex( curtainR.tlv[1], 1280, 0, 0, 1, 0, 0xFFFFFFFF );
+			SetVertex( curtainR.tlv[2], 640, 720, 0, 0, 1, 0xFFFFFFFF );
+			SetVertex( curtainR.tlv[3], 1280, 720, 0, 1, 1, 0xFFFFFFFF );
 		}
 
 		return	true;
@@ -271,12 +291,64 @@ namespace
 		//	更新
 		void	sceneTitle::TitleUpdate( void )
 		{
-			if ( input[0]->Get( KEY_SPACE ) == 3 )	mode = TITLE_MODE::MENU;
+			static	bool	changeflag = false;
+			static	float	speed = 0.5f;
+			static	bool	curtainStateL = false;
+			static	bool	curtainStateR = false;
+
+			//	SPACEキーで選択
+			if ( !changeflag && input[0]->Get( KEY_SPACE ) == 3 )
+			{
+				changeflag = true;
+				title_renderflag = false;
+				screen->SetScreenMode( SCREEN_MODE::WHITE_OUT, speed );
+			}
+
+			//	選択後動作
+			if ( changeflag )
+			{
+				curtainL.t += D3DX_PI / 180 * speed;
+				curtainR.t += D3DX_PI / 180 * speed;
+
+				if ( curtainL.t >= 1.0f )	curtainL.t = 1.0f;
+				if ( curtainR.t >= 1.0f )	curtainR.t = 1.0f;
+				
+				//	各頂点移動
+				curtainStateL = ::CubicFunctionInterpolation( curtainL.tlv[0].sx, 0, -640, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainL.t ) );
+				curtainStateL = ::CubicFunctionInterpolation( curtainL.tlv[1].sx, 640, 0, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainL.t ) );
+				curtainStateL = ::CubicFunctionInterpolation( curtainL.tlv[2].sx, 0, -640, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainL.t ) );
+				curtainStateL = ::CubicFunctionInterpolation( curtainL.tlv[3].sx, 640, 0, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainL.t ) );
+				curtainStateR = ::CubicFunctionInterpolation( curtainR.tlv[0].sx, 640, 1280, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainL.t ) );
+				curtainStateR = ::CubicFunctionInterpolation( curtainR.tlv[1].sx, 1280, 1920, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainL.t ) );
+				curtainStateR = ::CubicFunctionInterpolation( curtainR.tlv[2].sx, 640, 1280, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainL.t ) );
+				curtainStateR = ::CubicFunctionInterpolation( curtainR.tlv[3].sx, 1280, 1920, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainL.t ) );
+			}
+
+			//	次のモードへ
+			if ( changeflag && curtainStateL && curtainStateR )
+			{
+				changeflag = false;
+				curtainStateL = false;
+				curtainStateR = false;
+				screen->SetScreenMode( SCREEN_MODE::WHITE_IN, 1.0f );
+				mode = TITLE_MODE::MENU;
+			}
 		}
 
 		//	描画
 		void	sceneTitle::TitleRender( void )
 		{
+			//	背景描画
+			iexPolygon::Rect( 0, 0, 1280, 720, RS_COPY, 0xFFFFFFFF );
+
+			//	幕描画
+			iexPolygon::Render2D( curtainL.tlv, 2, curtainL.obj, RS_COPY );
+			iexPolygon::Render2D( curtainR.tlv, 2, curtainL.obj, RS_COPY );
+
+			//	タイトル画像描画
+			if ( title_renderflag )	titleImage->Render( 400, 100, 500, 500, 0, 0, 512, 512 );
+
+			//	文字描画
 			DrawString( "タイトルだよ", 50, 50 );
 			DrawString( "[SPACE]：メニューへ", 300, 400, 0xFFFFFF00 );
 		}
