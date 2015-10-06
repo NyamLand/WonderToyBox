@@ -50,7 +50,20 @@ private:	//	構造体
 		float			t;
 	};
 
+	//	タイトル用パラメータ
+	struct TITLE_INFO
+	{
+		int		step;
+		CurtainInfo	curtainR;
+		CurtainInfo	curtainL;
+		ImageObj		pressSpace;
+		ImageObj		titleImage;
+	};
+
 private:
+	//	背景
+	iexMesh*	stage;
+
 	//	カメラ用パラメータ
 	CameraInfo	cameraInfo;
 
@@ -59,18 +72,15 @@ private:
 	SelectInfo		selectInfo;
 	int				mode;
 
-	//	タイトル用パラメータ
-	CurtainInfo	curtainR;
-	CurtainInfo	curtainL;
-	iex2DObj*		titleImage;
-	bool				title_renderflag;
-	iexMesh*	stage;
+	//	各モード用パラメータ
+	TITLE_INFO	titleInfo;
 
 public:
 	//	初期化・解放
 	sceneTitle( void );
 	~sceneTitle( void );
 	bool	Initialize( void );
+	void	TitleInitialize( void );
 
 	//	更新・描画
 	void	Update( void );

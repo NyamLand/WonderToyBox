@@ -6,7 +6,6 @@
 #include	"GlobalFunction.h"
 #include	"Sound.h"
 #include	"GameManager.h"
-#include	"Image.h"
 #include	"Collision.h"
 #include	"Camera.h"
 #include	"Particle.h"
