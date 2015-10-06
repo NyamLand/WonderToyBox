@@ -18,20 +18,15 @@
 //	定数
 //----------------------------------------------------------------------
 
-	//	共通モーション番号
-	namespace MotionType
+	namespace IMAGE_MODE
 	{
-		enum Motion
+		enum
 		{
-			STAND,					//	立ち
-			POSTURE,				//	構え
-			RUN,						//	走り
-			JUMP,					//	ジャンプ
-			LANDING,				//	着地
-			ATTACK1,				//	攻撃１段階目
-			ATTACK2,				//	攻撃２段階目
-			ATTACK3,				//	攻撃３段階目
-			GUARD,					//	ガード
+			NORMAL,			//	オリジナル描画
+			ADOPTPARAM,	//	パラメータ採用
+			WAVE,				//	波紋
+			FLASH,				//	点滅
+			END,					//	終端
 		};
 	}
 
@@ -49,20 +44,6 @@
 		LPDIRECT3DVERTEXBUFFER9		operator -> (){ return p; }
 	};
 
-	//	モーション番号保存用構造体
-	struct MotionData
-	{
-		int		STAND;					//	立ち
-		int		POSTURE;				//	構え
-		int		RUN;						//	走り
-		int		ATTACK1;				//	攻撃１段階目
-		int		JUMP;					//	ジャンプ
-		int		LANDING;				//	着地
-		int		ATTACK2;				//	攻撃２段階目
-		int		ATTACK3;				//	攻撃３段階目
-		int		GUARD;					//	ガード
-	};
-
 	//	ニュース構造体
 	struct NewsBar
 	{
@@ -78,21 +59,47 @@
 		bool	renderflag;
 	};
 
+	//	画像構造体
+	struct ImageObj
+	{
+		iex2DObj*	obj;
+		int	 x, y, w, h;
+		int	 sx, sy, sw, sh;
+		float	t;
+		float	alpha;
+		float	angle;
+		POINT	p;
+		bool	renderflag;
+
+		//	wave用パラメータ
+		int	 plusScaleX;
+		int	 plusScaleY;
+		float	wavespeed;
+		float	waveAlpha;
+		bool	waveState;
+		bool	waverenderflag;
+
+		//	flashing用パラメータ
+		float	flashingSpeed;
+		float	flashingAlpha;
+		float	flashingRenderflag;
+		float	flashingParam;
+	};
+
 //----------------------------------------------------------------------
 //	システム
 //----------------------------------------------------------------------
 
 	//	解放
-	void	SafeDelete( void* obj );
-	//template<typename T>
-	//void	SafeDelete( T*& ptr )
-	//{
-	//	if ( ptr != nullptr )
-	//	{
-	//		delete	ptr;
-	//		ptr = nullptr;
-	//	}
-	//}
+	template<typename T>
+	void	SafeDelete( T*& ptr )
+	{
+		if ( ptr != nullptr )
+		{
+			delete	ptr;
+			ptr = nullptr;
+		}
+	}
 
 	//	行列解放
 	template<typename T>
@@ -119,12 +126,12 @@
 	void	DrawString( LPSTR string, int x, int y, float r, float g, float b );
 	void	DrawString( LPSTR string, int x, int y, Vector3 color );
 
-	//	モーション番号登録
-	void	SetMotionNum( int& motionData, int motionNum );
-
-//----------------------------------------------------------------------
-//	画像関連
-//----------------------------------------------------------------------
+	//	画像操作
+	void	ImageInitialize( ImageObj& image, int x, int y, int w, int h, int sx, int sy, int sw, int sh );
+	void	RenderImage( ImageObj image, int sx, int sy, int sw, int sh, int mode );
+	void	SetWave( ImageObj& image, float speed );
+	void	WaveUpdate( ImageObj& image );
+	void	FlashingUpdate( ImageObj& image, float speed = -1.0f );
 
 //----------------------------------------------------------------------
 //	図形描画
@@ -135,24 +142,42 @@
 	void	DrawCapsule( const Vector3& p1, const Vector3& p2, float r, DWORD color = 0xFFFFFFFF );
 
 //----------------------------------------------------------------------
+//	図形設定
+//----------------------------------------------------------------------
+
+	//	頂点初期化
+	void	SetVertex( LVERTEX& v, float x, float y, float z, float tu, float tv, DWORD color );
+
+	//	頂点初期化
+	void	SetVertex( TLVERTEX& v, float x, float y, float z, float tu, float tv, DWORD color );
+
+//----------------------------------------------------------------------
 //	線形補間( 出力、開始値、最終値, 割合 )
 //----------------------------------------------------------------------
 
-	//	Vector3
-	bool	Lerp( Vector3& out, Vector3 p1, Vector3 p2, float t );
+	template<typename T, typename T2>
+	bool	Lerp( T& out, T2 p1, T2 p2, float t )
+	{
+		if ( t >= 1.0f )	return	true;
 
-	//	float
-	bool	Lerp( float& out, float p1, float p2, float t );
+		out = ( T )( p1 * ( 1 - t ) + p2 * t );
+
+		return	false;
+	}
 
 //----------------------------------------------------------------------
 //	３次関数補間( 出力、開始値、最終値, 割合 )
 //----------------------------------------------------------------------
 
-	//	Vector3	
-	bool	CubicFunctionInterpolation( Vector3& out, Vector3 p1, Vector3 p2, float t );
+	template<typename T, typename T2>
+	bool	CubicFunctionInterpolation( T& out, T2 p1, T2 p2, float t )
+	{
+		if ( t >= 1.0f )	return	true;
+		float rate = t * t * ( 3.0f - 2.0f * t );   // 3次関数補間値に変換
 
-	//	float
-	bool	CubicFunctionInterpolation( float& out, float p1, float p2, float t );
+		out = ( T )( p1 * ( 1.0f - rate ) + p2 * rate );
+		return	false;
+	}
 
 //----------------------------------------------------------------------
 //	ベジェ曲線

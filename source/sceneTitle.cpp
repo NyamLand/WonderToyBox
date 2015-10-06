@@ -5,11 +5,11 @@
 #include	"GlobalFunction.h"
 #include	"Sound.h"
 #include	"Screen.h"
-#include	"Image.h"
 #include	"Camera.h"
 #include	"Particle.h"
 #include	"Random.h"
-#include	"PlayerManager.h"
+#include	"BaseChara.h"
+#include	"CharacterManager.h"
 #include	"sceneMain.h"
 #include	"GameManager.h"
 #include	"sceneLoad.h"
@@ -84,6 +84,11 @@ namespace
 	sceneTitle::~sceneTitle( void )
 	{
 		SafeDelete( m_Camera );
+		SafeDelete( titleInfo.curtainL.obj );
+		SafeDelete( titleInfo.curtainR.obj );
+		SafeDelete( titleInfo.titleImage.obj );
+		SafeDelete( titleInfo.pressSpace.obj );
+		SafeDelete( stage );
 		sound->AllStop();
 	}
 	
@@ -98,6 +103,9 @@ namespace
 		Vector3 dir( 1.0f, -1.0f, -0.5f );
 		dir.Normalize();
 		iexLight::DirLight( shader3D, 0, &dir, 0.8f, 0.8f, 0.8f );
+
+		//	カメラ設定
+		m_Camera = new Camera();
 
 		//	マネージャー初期化
 		gameManager->Initialize();
@@ -115,15 +123,15 @@ namespace
 		stage = new iexMesh( "DATA/BG/2_1/FIELD2_1.IMO" );
 
 		//	乱数初期化
-		Random::Initialize();
-		
-		//	カメラ設定
-		m_Camera = new Camera();
+		Random::Initialize();		
+
+		//	各モード初期化
+		TitleInitialize();
 
 		//	構造体初期化
 		{
 			//	キャラクター情報初期化
-			for ( int i = 0; i < PLAYER_TYPE::MAX; i++ )
+			for ( int i = 0; i < CHARACTER_TYPE::MAX; i++ )
 			{
 				characterInfo[i].name = characterName[i];
 				characterInfo[i].select = false;
@@ -132,7 +140,8 @@ namespace
 			//	選択情報初期化
 			selectInfo.playerNum = 1;
 			selectInfo.stageType = 0;
-			for ( int i = 0; i < PLAYER_NUM; i++ )	selectInfo.characterType[i] = i;
+			selectInfo.step_cs = 0;
+			for ( int i = 0; i < PLAYER_MAX; i++ )	selectInfo.characterType[i] = i;
 
 			//	カメラ情報構造体初期化
 			cameraInfo.lerpStartPos = cameraInfo.pos = m_Camera->GetPos();
@@ -142,6 +151,41 @@ namespace
 		}
 
 		return	true;
+	}
+
+	//	タイトル初期化
+	void	sceneTitle::TitleInitialize( void )
+	{
+		//	画像読み込み
+		titleInfo.curtainL.obj = new iex2DObj( "DATA/curtain1.png" );
+		titleInfo.curtainR.obj = new iex2DObj( "DATA/curtain2.png" );
+		titleInfo.titleImage.obj = new iex2DObj( "DATA/UI/title.png" );
+		titleInfo.pressSpace.obj = new iex2DObj( "DATA/UI/pressspace.png" );
+
+		//	画像構造体初期化
+		ImageInitialize( titleInfo.pressSpace, 640, 560, 300, 100, 0, 0, 256, 128 );
+		ImageInitialize( titleInfo.titleImage, 640, 300, 500, 500, 0, 0, 512, 512 );
+
+		//	カーテン用構造体初期化
+		{
+			//	パラメータ初期化
+			titleInfo.curtainL.t = 0.0f;
+			titleInfo.curtainR.t = 0.0f;
+
+			//	頂点設定
+			SetVertex( titleInfo.curtainL.tlv[0], 0, 0, 0, 0, 0, 0xFFFFFFFF );
+			SetVertex( titleInfo.curtainL.tlv[1], 640, 0, 0, 1, 0, 0xFFFFFFFF );
+			SetVertex( titleInfo.curtainL.tlv[2], 0, 720, 0, 0, 1, 0xFFFFFFFF );
+			SetVertex( titleInfo.curtainL.tlv[3], 640, 720, 0, 1, 1, 0xFFFFFFFF );
+			SetVertex( titleInfo.curtainR.tlv[0], 640, 0, 0, 0, 0, 0xFFFFFFFF );
+			SetVertex( titleInfo.curtainR.tlv[1], 1280, 0, 0, 1, 0, 0xFFFFFFFF );
+			SetVertex( titleInfo.curtainR.tlv[2], 640, 720, 0, 0, 1, 0xFFFFFFFF );
+			SetVertex( titleInfo.curtainR.tlv[3], 1280, 720, 0, 1, 1, 0xFFFFFFFF );
+		}
+
+		//	変数初期化
+		titleInfo.titleImage.renderflag = true;
+		titleInfo.step = 0;
 	}
 
 //-----------------------------------------------------------------------------------
@@ -196,7 +240,7 @@ namespace
 		}
 
 		//	ターゲット位置にパーティクル配置
-		for ( int i = 0; i < PLAYER_NUM; i++)	particle->BlueFlame( c_Move::TARGET[i] );
+		for ( int i = 0; i < PLAYER_MAX; i++)	particle->BlueFlame( c_Move::TARGET[i] );
 		particle->Update();
 
 		//	スクリーン更新
@@ -269,14 +313,90 @@ namespace
 		//	更新
 		void	sceneTitle::TitleUpdate( void )
 		{
-			if ( input[0]->Get( KEY_SPACE ) == 3 )	mode = TITLE_MODE::MENU;
+			//	パラメータ
+			static	bool	changeflag = false;
+			static	float	speed = 0.5f;
+			static	bool	curtainStateL = false;
+			static	bool	curtainStateR = false;
+
+			switch ( titleInfo.step )
+			{
+			case 0:
+				//	点滅更新
+				FlashingUpdate( titleInfo.pressSpace, D3DX_PI / 180 * 4.0f );
+
+				//	SPACEキーで選択
+				if ( input[0]->Get( KEY_SPACE ) == 3 )
+				{
+					//	タイトル画像を隠す
+					titleInfo.titleImage.renderflag = false;
+
+					//	画面制御
+					screen->SetScreenMode( SCREEN_MODE::WHITE_OUT, speed );
+
+					//	pressspace波紋
+					static	float	wavespeed = 1.5f;
+					SetWave( titleInfo.pressSpace, wavespeed );
+					titleInfo.step++;
+				}
+				break;
+
+			case 1:
+				//	波紋更新
+				WaveUpdate( titleInfo.pressSpace );
+
+				//	点滅更新
+				FlashingUpdate( titleInfo.pressSpace, D3DX_PI / 180.0f * 10.0f );
+
+				//	パラメータ加算
+				titleInfo.curtainL.t += D3DX_PI / 180 * speed;
+				titleInfo.curtainR.t += D3DX_PI / 180 * speed;
+
+				//	パラメータ上限設定
+				if ( titleInfo.curtainL.t >= 1.0f )	titleInfo.curtainL.t = 1.0f;
+				if ( titleInfo.curtainR.t >= 1.0f )	titleInfo.curtainR.t = 1.0f;
+
+				//	各頂点移動
+				curtainStateL = Lerp( titleInfo.curtainL.tlv[0].sx, 0, -640, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, titleInfo.curtainL.t ) );
+				curtainStateL = Lerp( titleInfo.curtainL.tlv[1].sx, 640, 0, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, titleInfo.curtainL.t ) );
+				curtainStateL = Lerp( titleInfo.curtainL.tlv[2].sx, 0, -640, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, titleInfo.curtainL.t ) );
+				curtainStateL = Lerp( titleInfo.curtainL.tlv[3].sx, 640, 0, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, titleInfo.curtainL.t ) );
+				curtainStateR = Lerp( titleInfo.curtainR.tlv[0].sx, 640, 1280, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, titleInfo.curtainL.t ) );
+				curtainStateR = Lerp( titleInfo.curtainR.tlv[1].sx, 1280, 1920, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, titleInfo.curtainL.t ) );
+				curtainStateR = Lerp( titleInfo.curtainR.tlv[2].sx, 640, 1280, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, titleInfo.curtainL.t ) );
+				curtainStateR = Lerp( titleInfo.curtainR.tlv[3].sx, 1280, 1920, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, titleInfo.curtainL.t ) );
+
+				//	動作済みで次のステップへ
+				if ( curtainStateL && curtainStateR )	titleInfo.step++;
+				break;
+
+			case 2:
+				changeflag = false;
+				curtainStateL = false;
+				curtainStateR = false;
+				static	float	screenSpeed = 1.0f;
+				screen->SetScreenMode( SCREEN_MODE::WHITE_IN, screenSpeed );
+				mode = TITLE_MODE::MENU;
+				break;
+			}
 		}
 
 		//	描画
 		void	sceneTitle::TitleRender( void )
 		{
-			DrawString( "タイトルだよ", 50, 50 );
-			DrawString( "[SPACE]：メニューへ", 300, 400, 0xFFFFFF00 );
+			//	背景描画
+			iexPolygon::Rect( 0, 0, 1280, 720, RS_COPY, 0xFFFFFFFF );
+
+			//	幕描画
+			iexPolygon::Render2D( titleInfo.curtainL.tlv, 2, titleInfo.curtainL.obj, RS_COPY );
+			iexPolygon::Render2D( titleInfo.curtainR.tlv, 2, titleInfo.curtainL.obj, RS_COPY );
+
+			//	タイトル画像描画
+			RenderImage( titleInfo.titleImage, 0, 0, 512, 512, IMAGE_MODE::NORMAL );
+
+			//	pressSpace描画
+			RenderImage( titleInfo.pressSpace, 0, 0, 256, 128, IMAGE_MODE::FLASH );
+			RenderImage( titleInfo.pressSpace, 0, 0, 256, 128, IMAGE_MODE::WAVE );
 		}
 
 	//--------------------------------------------------------
@@ -369,8 +489,8 @@ namespace
 			if ( KEY( KEY_RIGHT ) == 3 )		selectInfo.playerNum++;
 			if ( KEY( KEY_LEFT ) == 3 )		selectInfo.playerNum--;
 
-			if ( selectInfo.playerNum > PLAYER_NUM )	selectInfo.playerNum = 1;
-			if ( selectInfo.playerNum < 1 )						selectInfo.playerNum = PLAYER_NUM; 
+			if ( selectInfo.playerNum > PLAYER_MAX )	selectInfo.playerNum = 1;
+			if ( selectInfo.playerNum < 1 )						selectInfo.playerNum = PLAYER_MAX; 
 
 			if ( KEY( KEY_SPACE ) == 3 )
 			{
@@ -380,15 +500,15 @@ namespace
 			if ( KEY( KEY_DOWN ) == 3 )		mode = TITLE_MODE::MENU;
 		}
 		
-		//	描画
-		void	sceneTitle::SelectPlayerNumRender( void )
+		//    描画
+		void    sceneTitle::SelectPlayerNumRender(void)
 		{
-			DrawString( "人数選択だよ", 50, 50 );
-			DrawString( "[SPACE]：キャラ選択へ", 300, 400, 0xFFFFFF00 );
+			DrawString("人数選択だよ", 50, 50);
+			DrawString("[SPACE]：キャラ選択へ", 300, 400);
 
-			char	str[64];
-			wsprintf( str, "プレイヤー人数：%d\n", selectInfo.playerNum );
-			IEX_DrawText( str, 300, 300, 200, 20, 0xFFFF00FF );
+			char    str[64];
+			wsprintf(str, "プレイヤー人数：%d\n", selectInfo.playerNum);
+			IEX_DrawText(str, 300, 300, 200, 20, 0xFFFFFFFF);
 		}
 
 	//--------------------------------------------------------
@@ -404,10 +524,9 @@ namespace
 			//　「S」で戻る
 
 			static bool	select[4] = { false, false, false, false };
-			static int step = 0;
 			int selectCheck = 0;
 
-			switch ( step )
+			switch ( selectInfo.step_cs )
 			{
 			case 0:		//　プレイヤーキャラ選択
 				for ( int p = 0; p < selectInfo.playerNum; p++ )
@@ -416,7 +535,7 @@ namespace
 					{
 						//	全員分の入力チェック
 						selectCheck = 0;
-						for ( int i = 0; i < PLAYER_NUM; i++ )
+						for ( int i = 0; i < PLAYER_MAX; i++ )
 						{
 							if ( select[i] )		selectCheck++;
 						}
@@ -448,7 +567,7 @@ namespace
 
 						//	全員分の入力チェック
 						selectCheck = 0;
-						for ( int i = 0; i < PLAYER_NUM; i++ )
+						for ( int i = 0; i < PLAYER_MAX; i++ )
 						{
 							if (select[i])		selectCheck++;
 						}
@@ -456,60 +575,79 @@ namespace
 						//	全員選択済みだったら次のステップへ
 						if ( selectCheck >= selectInfo.playerNum )
 						{
-							step++;
+							selectInfo.step_cs++;
 							sound->PlaySE( SE::DECIDE_SE );
 						}
 					}
 
 					//	数値制限
-					if ( selectInfo.characterType[p] >= PLAYER_TYPE::MAX )	selectInfo.characterType[p] = 0;
-					if ( selectInfo.characterType[p] < 0 )	selectInfo.characterType[p] = PLAYER_TYPE::MAX - 1;
+					if ( selectInfo.characterType[p] >= CHARACTER_TYPE::MAX )	selectInfo.characterType[p] = 0;
+					if ( selectInfo.characterType[p] < 0 )	selectInfo.characterType[p] = CHARACTER_TYPE::MAX - 1;
 				}
 				break;
 
 			case 1:		//　CPUキャラ選択
-				if ( selectInfo.playerNum == PLAYER_NUM )	step++;
+				if ( selectInfo.playerNum == PLAYER_MAX )	selectInfo.step_cs++;
 				else
 				{
-					for ( int p = selectInfo.playerNum; p < PLAYER_NUM; p++ )
+					for ( int p = selectInfo.playerNum; p < PLAYER_MAX; p++ )
 					{
 						if ( KEY( KEY_RIGHT ) == 3 )	selectInfo.characterType[p]++;
 						if ( KEY( KEY_LEFT ) == 3 )	selectInfo.characterType[p]--;
 
 						//	数値制限
-						if ( selectInfo.characterType[p] >= PLAYER_TYPE::MAX )	selectInfo.characterType[p] = 0;
-						if ( selectInfo.characterType[p] < 0 )	selectInfo.characterType[p] = PLAYER_TYPE::MAX - 1;
+						if ( selectInfo.characterType[p] >= CHARACTER_TYPE::MAX )	selectInfo.characterType[p] = 0;
+						if ( selectInfo.characterType[p] < 0 )	selectInfo.characterType[p] = CHARACTER_TYPE::MAX - 1;
 					}
 					if ( KEY( KEY_SPACE ) == 3 )
 					{
-						step++;
+						selectInfo.step_cs++;
 						sound->PlaySE( SE::DECIDE_SE );
 					}
-					if ( KEY( KEY_DOWN ) == 3 ) step--;
+					if ( KEY( KEY_DOWN ) == 3 ) selectInfo.step_cs--;
 				}
 				break;
 
 			case 2:
 				mode = TITLE_MODE::SELECT_STAGE;
-				step = 0;
+				selectInfo.step_cs = 0;
 				break;
 			}
 		}
 		
-		//	描画
-		void	sceneTitle::SelectCharacterRender( void )
+		//    描画
+		void    sceneTitle::SelectCharacterRender(void)
 		{
-			DrawString( "キャラ選択だよ", 50, 50 );
-			DrawString( "[SPACE]：ステージ選択へ", 300, 400, 0xFFFFFF00 );
+			DrawString("キャラ選択だよ", 300, 100);
+			//DrawString( "[SPACE]：ステージ選択へ", 300, 400, 0xFFFFFF00 );
 
-			char	str[64];
-			for ( int p = 0; p < PLAYER_NUM; p++ )
+			char    str[64];
+			for (int p = 0; p < selectInfo.playerNum; p++)
 			{
 				LPSTR string = characterInfo[selectInfo.characterType[p]].name;
-				sprintf_s( str, "\n%dＰのキャラタイプ：", p + 1 );
-				strcat( str, string );
-				DrawString( str, 300, 300 + p * 20 );
+				sprintf_s(str, "\n%dＰのキャラタイプ：", p + 1);
+				strcat(str, string);
+				DrawString(str, 300, 300 + p * 20, 0xFFFFFF00);
 			}
+			for (int p = selectInfo.playerNum; p < PLAYER_MAX; p++)
+			{
+				LPSTR string = characterInfo[selectInfo.characterType[p]].name;
+				sprintf_s(str, "\n%dＰのキャラタイプ：", p + 1);
+				strcat(str, string);
+				DrawString(str, 300, 300 + p * 20);
+			}
+
+			switch (selectInfo.step_cs)
+			{
+			case 0:
+				DrawString("プレイヤーが使うキャラを選んでね", 300, 280, 0xFFFFFF00);
+				break;
+
+			case 1:
+				DrawString("ＣＰＵが使うキャラを選んでね", 300, 280);
+				break;
+			}
+
 		}
 
 	//--------------------------------------------------------
@@ -540,15 +678,15 @@ namespace
 			if ( KEY( KEY_DOWN ) == 3 )		mode = TITLE_MODE::SELECT_CHARACTER;
 		}
 
-		//	描画
-		void	sceneTitle::SelectStageRender( void )
+		//    描画
+		void    sceneTitle::SelectStageRender(void)
 		{
-			DrawString( "ステージ選択だよ", 50, 50 );
-			DrawString( "[SPACE]：最終確認へ", 300, 400, 0xFFFFFF00 );
+			DrawString("ステージ選択だよ", 50, 50);
+			DrawString("[SPACE]：最終確認へ", 300, 400);
 
-			char	str[64];
-			wsprintf( str, "ステージ：%d番\n", selectInfo.stageType );
-			IEX_DrawText( str, 300, 300, 200, 20, 0xFFFF00FF );
+			char    str[64];
+			wsprintf(str, "ステージ：%d番\n", selectInfo.stageType);
+			IEX_DrawText(str, 300, 300, 200, 20, 0xFFFFFFFF);
 		}
 
 	//--------------------------------------------------------
@@ -569,7 +707,7 @@ namespace
 				if ( selectInfo.ready )
 				{
 					//	情報をマネージャーに登録
-					for ( int p = 0; p < PLAYER_NUM; p++ )		gameManager->SetCharacterType( p, selectInfo.characterType[p] );
+					for ( int p = 0; p < PLAYER_MAX; p++ )		gameManager->SetCharacterType( p, selectInfo.characterType[p] );
 					gameManager->SetPlayerNum( selectInfo.playerNum );
 					gameManager->SetStageType( selectInfo.stageType );
 					sound->PlaySE( SE::DECIDE_SE );
@@ -579,33 +717,33 @@ namespace
 			}
 		}
 		
-		//	描画
-		void	sceneTitle::SelectCheckRender( void )
+		//    描画
+		void    sceneTitle::SelectCheckRender(void)
 		{
 			//　選択情報
-			char	str[64];
-			for ( int p = 0; p < PLAYER_NUM; p++ )
+			char    str[64];
+			for (int p = 0; p < PLAYER_MAX; p++)
 			{
 				LPSTR string = characterInfo[selectInfo.characterType[p]].name;
-				wsprintf( str, "\n%dＰのキャラタイプ：", p + 1 );
-				strcat( str, string );
-				DrawString( str, 300, 250 + p * 20, 0xFFFF00FF );
+				wsprintf(str, "\n%dＰのキャラタイプ：", p + 1);
+				strcat(str, string);
+				DrawString(str, 300, 250 + p * 20);
 			}
 
-			wsprintf( str, "プレイヤー人数：%d\n", selectInfo.playerNum );
-			DrawString( str, 300, 350, 0xFFFF00FF );
+			wsprintf(str, "プレイヤー人数：%d\n", selectInfo.playerNum);
+			DrawString(str, 300, 350);
 
-			wsprintf( str, "ステージ：%d番\n", selectInfo.stageType );
-			DrawString( str, 300, 370, 0xFFFF00FF );
+			wsprintf(str, "ステージ：%d番\n", selectInfo.stageType);
+			DrawString(str, 300, 370);
 
-			DrawString( "最終確認だよ", 50, 50 );
-			DrawString( "[SPACE]：sceneMainへ", 300, 470, 0xFFFFFF00 );
+			DrawString("最終確認だよ", 50, 50);
+			DrawString("[SPACE]：sceneMainへ", 300, 470);
 
 			static bool ready = true;
-			if ( KEY( KEY_RIGHT ) == 3 ) ready = !ready;
-			if ( KEY( KEY_LEFT ) == 3 ) ready = !ready;
-			wsprintf( str, "はい＝1、いいえ＝0：%d番\n", ready );
-			IEX_DrawText( str, 300, 390, 200, 20, 0xFFFF00FF );
+			if (KEY(KEY_RIGHT) == 3) ready = !ready;
+			if (KEY(KEY_LEFT) == 3) ready = !ready;
+			wsprintf(str, "はい＝1、いいえ＝0：%d番\n", ready);
+			IEX_DrawText(str, 300, 390, 200, 20, 0xFFFFFFFF);
 		}
 
 	//--------------------------------------------------------

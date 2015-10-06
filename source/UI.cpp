@@ -3,10 +3,8 @@
 #include	"system/system.h"
 #include	"system/Framework.h"
 #include	"GlobalFunction.h"
-#include	"Player.h"
-#include	"PlayerManager.h"
+#include	"CharacterManager.h"
 #include	"GameManager.h"
-#include	"Image.h"
 #include	"UI.h"
 
 //****************************************************************************************
@@ -21,18 +19,21 @@
 
 	namespace
 	{
-		//	顔情報
+		//    顔情報
 		namespace FACE_INFO
 		{
-			//　「喜・怒・哀・楽」
+			//　「楽・喜・哀・怒」
 			enum
 			{
-				Good,
-				Angry,
-				Sad,
+	
+	
+	
 				Normal,
+				Good,
+				Sad,
+				Angry
 			};
-		}	
+		}
 	}
 
 	//	実体
@@ -60,7 +61,7 @@
 		timer = new iex2DObj( "DATA/BG/number.png" );
 		coinbar = new iex2DObj( "DATA/BG/coin_gage.png" );
 		face = new iex2DObj( "DATA/UI/chara_emotion.png" );
-		countDown = new Image( "DATA/UI/bfUI.png" );
+		countImage.obj = new iex2DObj( "DATA/UI/bfUI.png" );
 
 		//	共通変数初期化
 		changeflag = false;
@@ -81,7 +82,7 @@
 		SafeDelete( timer );
 		SafeDelete( coinbar );
 		SafeDelete( face );
-		SafeDelete( countDown );
+		SafeDelete( countImage.obj );
 	}
 
 	//	コインバー初期化
@@ -133,7 +134,8 @@
 	//	カウントダウン・スタート・終了演出
 	void	UI::StartAndTimeUpInitialize( void )
 	{
-		countDown->Initialize( 640, 360, 350, 350, 0, 0, 256, 256 );
+		ImageInitialize( countImage, 640, 360, 350, 350, 0, 0, 256, 256 );
+		countImage.renderflag = true;
 		count = 0;
 		waitTimer = 0;
 	}
@@ -274,27 +276,35 @@
 			switch ( count )
 			{
 			case 1:
-				countDown->SetSearchPos( 256, 0 );
+				countImage.sx = 256;
+				countImage.sy = 0;
 				break;
 
 			case 2:
-				countDown->SetSearchPos( 0, 256 );
+				countImage.sx = 0;
+				countImage.sy = 256;
 				break;
 
 			case 3:
-				countDown->SetSearchPos( 512, 0 );
-				countDown->SetSearchSize( 512, 512 );
-				countDown->SetSize( 750, 750 );
-				countDown->SetWave();
+				countImage.sx = 512;
+				countImage.sy = 0;
+				countImage.sw = 512;
+				countImage.sh = 512;
+				countImage.w = 750;
+				countImage.h = 750;
+				SetWave( countImage, 1.5f );
 				break;
 
 			case 4:
 				waitTimer = 2 * SECOND;
 				
-				//	画像読み込み位置・サイズ設定
-				countDown->SetSize( 600, 370 );
-				countDown->SetSearchPos( 0, 512 );
-				countDown->SetSearchSize( 1024, 512 );
+				//	画像読み込み位置・サイズ設定			
+				countImage.w = 600;
+				countImage.h = 370;
+				countImage.sx = 0;
+				countImage.sy = 512;
+				countImage.sw = 1024;
+				countImage.sh = 512;
 
 				//	メインゲームへ
 				changeflag = true;
@@ -303,7 +313,7 @@
 
 		}
 
-		countDown->Update();
+		WaveUpdate( countImage );
 	}
 
 	//	タイムアップ演出
@@ -429,14 +439,14 @@
 	//	カウントダウン・スタート演出
 	void	UI::StartRender( void )
 	{
-		countDown->NormalRender();
-		countDown->Render();
+		RenderImage( countImage, countImage.sx, countImage.sy, countImage.sw, countImage.sh, IMAGE_MODE::NORMAL );
+		RenderImage( countImage, countImage.sx, countImage.sy, countImage.sw, countImage.sh, IMAGE_MODE::WAVE );
 	}
 
 	//	タイムアップ演出
 	void	UI::FinishRender( void )
 	{
-		countDown->NormalRender();
+		RenderImage(countImage, countImage.sx, countImage.sy, countImage.sw, countImage.sh, IMAGE_MODE::NORMAL );
 	}
 
 	//	どんけつ演出

@@ -14,8 +14,9 @@ namespace
 	const		int		SECOND = 60;			//	‚P•b
 	const		int		MINUTE = 60 * 60;	//	‚P•ª
 	const		int		TIMELIMIT = 5 * SECOND;
-	const		int		PLAYER_NUM = 4;
+	const		int		PLAYER_MAX = 4;
 	const		float	GRAVITY = -0.01f;
+	const		int		CHARATYPE_MAX = 4;
 
 	namespace GAME_MODE
 	{

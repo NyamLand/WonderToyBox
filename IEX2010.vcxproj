@@ -106,24 +106,25 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="source\BaseChara.cpp" />
     <ClCompile Include="source\Bullet.cpp" />
     <ClCompile Include="source\BulletManager.cpp" />
     <ClCompile Include="source\Camera.cpp" />
+    <ClCompile Include="source\CharacterManager.cpp" />
     <ClCompile Include="source\Coin.cpp" />
     <ClCompile Include="source\CoinManager.cpp" />
     <ClCompile Include="source\Collision.cpp" />
     <ClCompile Include="source\Effect.cpp" />
     <ClCompile Include="source\GameManager.cpp" />
     <ClCompile Include="source\GlobalFunction.cpp" />
-    <ClCompile Include="source\Image.cpp" />
     <ClCompile Include="source\Item.cpp" />
     <ClCompile Include="source\ItemManager.cpp" />
     <ClCompile Include="source\Knight.cpp" />
+    <ClCompile Include="source\Knight_CPU.cpp" />
     <ClCompile Include="source\Object.cpp" />
     <ClCompile Include="source\Particle.cpp" />
-    <ClCompile Include="source\Player.cpp" />
-    <ClCompile Include="source\PlayerManager.cpp" />
     <ClCompile Include="source\Princess.cpp" />
+    <ClCompile Include="source\Princess_CPU.cpp" />
     <ClCompile Include="source\Random.cpp" />
     <ClCompile Include="source\sceneLoad.cpp" />
     <ClCompile Include="source\sceneMain.cpp" />
@@ -132,6 +133,7 @@
     <ClCompile Include="source\Screen.cpp" />
     <ClCompile Include="source\Sound.cpp" />
     <ClCompile Include="source\Squirrel.cpp" />
+    <ClCompile Include="source\Squirrel_CPU.cpp" />
     <ClCompile Include="source\system\Framework.cpp" />
     <ClCompile Include="source\system\System.cpp" />
     <ClCompile Include="source\system\WinMain.cpp" />
@@ -152,27 +154,29 @@
     <ClCompile Include="IEX\IEX_Texture.cpp" />
     <ClCompile Include="IEX\IEX_View.cpp" />
     <ClCompile Include="source\Tiger.cpp" />
+    <ClCompile Include="source\Tiger_CPU.cpp" />
     <ClCompile Include="source\UI.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="source\BaseChara.h" />
     <ClInclude Include="source\Bullet.h" />
     <ClInclude Include="source\BulletManager.h" />
     <ClInclude Include="source\Camera.h" />
+    <ClInclude Include="source\CharacterManager.h" />
     <ClInclude Include="source\Coin.h" />
     <ClInclude Include="source\CoinManager.h" />
     <ClInclude Include="source\Collision.h" />
     <ClInclude Include="source\Effect.h" />
     <ClInclude Include="source\GameManager.h" />
     <ClInclude Include="source\GlobalFunction.h" />
-    <ClInclude Include="source\Image.h" />
     <ClInclude Include="source\Item.h" />
     <ClInclude Include="source\ItemManager.h" />
     <ClInclude Include="source\Knight.h" />
+    <ClInclude Include="source\Knight_CPU.h" />
     <ClInclude Include="source\Object.h" />
     <ClInclude Include="source\Particle.h" />
-    <ClInclude Include="source\Player.h" />
-    <ClInclude Include="source\PlayerManager.h" />
     <ClInclude Include="source\Princess.h" />
+    <ClInclude Include="source\Princess_CPU.h" />
     <ClInclude Include="source\Random.h" />
     <ClInclude Include="source\sceneLoad.h" />
     <ClInclude Include="source\sceneResult.h" />
@@ -180,12 +184,14 @@
     <ClInclude Include="source\Screen.h" />
     <ClInclude Include="source\Sound.h" />
     <ClInclude Include="source\Squirrel.h" />
+    <ClInclude Include="source\Squirrel_CPU.h" />
     <ClInclude Include="source\system\Framework.h" />
     <ClInclude Include="source\system\Scene.h" />
     <ClInclude Include="source\sceneMain.h" />
     <ClInclude Include="source\system\System.h" />
     <ClInclude Include="IEX\iextreme.h" />
     <ClInclude Include="source\Tiger.h" />
+    <ClInclude Include="source\Tiger_CPU.h" />
     <ClInclude Include="source\UI.h" />
   </ItemGroup>
   <ItemGroup>

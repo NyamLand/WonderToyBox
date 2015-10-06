@@ -8,9 +8,6 @@
 //
 //*********************************************************************************
 
-//	クラス前方宣言
-class Image;
-
 //	UIクラス
 class UI
 {
@@ -19,7 +16,7 @@ private:
 	iex2DObj*	timer;
 	iex2DObj*	coinbar;
 	iex2DObj*	face;
-	Image*		countDown;
+	ImageObj	countImage;
 
 private:
 	//	システム

@@ -18,16 +18,6 @@
 //	システム
 //----------------------------------------------------------------------------
 
-	//	解放
-	void	SafeDelete( void* obj )
-	{
-		if ( obj != nullptr )
-		{
-			delete	obj;
-			obj = nullptr;
-		}
-	}
-
 	//	変数変換
 	POINT	GetPoint( int x, int y )
 	{
@@ -116,51 +106,120 @@
 //	画像関連
 //----------------------------------------------------------------------------
 
-//----------------------------------------------------------------------
-//	線形補間( 出力、開始値、最終値, 割合 )
-//----------------------------------------------------------------------
-
-	bool	Lerp( Vector3& out, Vector3 p1, Vector3 p2, float t )
+	//	初期化
+	void	ImageInitialize( ImageObj& image, int x, int y, int w, int h, int sx, int sy, int sw, int sh )
 	{
-		if ( t >= 1.0f )	return	true;
+		image.x = x;
+		image.y = y;
+		image.w = w;
+		image.h = h;
+		image.sx = sx;
+		image.sy = sy;
+		image.sw = sw;
+		image.sh = sh;
+		image.plusScaleX = 0;
+		image.plusScaleY = 0;
+		image.t = 0.0f;
+		image.alpha = 1.0f;
+		image.angle = 0.0f;
+		image.p = GetPoint( image.x, image.y );
+		image.renderflag = false;
 
-		out = p1 * ( 1 - t ) + p2 * t ;
+		//	wave用パラメータ
+		image.waveAlpha = 1.0f;
+		image.waverenderflag = false;
+		image.wavespeed = 0.0f;
+		image.waveState = false;
 
-		return	false;
+		//	flashing用パラメータ
+		image.flashingSpeed = 0.0f;
+		image.flashingAlpha = 0.0f;
+		image.flashingParam = 0.0f;
+		image.flashingRenderflag = true;
+	}
+	
+	//	画像
+	void	RenderImage( ImageObj image, int sx, int sy, int sw, int sh, int mode )
+	{
+		int		width = image.w;
+		int		height = image.h;
+		int		posx = image.x - width / 2;
+		int		posy = image.y - height / 2;
+
+		switch ( mode )
+		{
+		case IMAGE_MODE::NORMAL:
+			if ( image.renderflag )
+			image.obj->Render( posx, posy, width, height, sx, sy, sw, sh );
+			break;
+
+		case IMAGE_MODE::ADOPTPARAM:
+			if ( image.renderflag )
+				image.obj->Render( posx, posy, width, height, sx, sy, sw, sh, image.p, image.angle, RS_COPY, GetColor( 1.0f, 1.0f, 1.0f, image.alpha ) );
+			break;
+
+		case IMAGE_MODE::WAVE:
+			width = image.w + image.plusScaleX;
+			height = image.h + image.plusScaleY;
+			posx = image.x - width / 2;
+			posy = image.y - height / 2;
+
+			if ( image.waverenderflag )
+			image.obj->Render( posx, posy, width, height, sx, sy, sw, sh, RS_COPY, GetColor( 1.0f, 1.0f, 1.0f, image.waveAlpha ) );
+			break;
+
+		case IMAGE_MODE::FLASH:
+			if ( image.flashingRenderflag )
+				image.obj->Render( posx, posy, width, height, sx, sy, sw, sh, RS_COPY, GetColor( 1.0f, 1.0f, 1.0f, image.flashingAlpha ) );
+			break;
+		}
 	}
 
-	bool	Lerp( float& out, float p1, float p2, float t )
+	//	波紋設定
+	void	SetWave( ImageObj& image, float speed )
 	{
-		if ( t >= 1.0f )	return	true;
-
-		out = p1 * ( 1 - t ) + p2 * t;
-
-		return	false;
+		image.plusScaleX = 0;
+		image.plusScaleY = 0;
+		image.waveAlpha = 1.0f;
+		image.waveState = true;
+		image.wavespeed = speed;
+		image.waverenderflag = true;
 	}
 
-//----------------------------------------------------------------------------
-//	３次関数補間( 出力、始点、終点、現在の割合( 0.0f ~ 1.0f ) )
-//----------------------------------------------------------------------------
-
-	//	Vector3
-	bool	CubicFunctionInterpolation( Vector3& out, Vector3 p1, Vector3 p2, float t )
+	//	波紋更新
+	void	WaveUpdate( ImageObj& image )
 	{
-		if ( t >= 1.0f )	return	true;
-		float rate = t * t * ( 3.0f - 2.0f * t );   // 3次関数補間値に変換
+		if ( image.waveState )
+		{
+			//	パラメータ加算
+			image.t += D3DX_PI / 180 * image.wavespeed;
 
-		out = p1 * ( 1.0f - rate ) + p2 * rate;
-		return	false;
+			//	パラメータ上限設定
+			if ( image.t >= 1.0f )
+			{
+				image.t = 1.0f;
+				image.waveState = false;
+				image.waverenderflag = false;
+			}
+
+			Lerp( image.waveAlpha, 1.0f, 0.0f, image.t );
+			Lerp( image.plusScaleX, 0, 140, image.t );
+			Lerp( image.plusScaleY, 0, 140, image.t );
+		}
 	}
 
-	//	float
-	bool	CubicFunctionInterpolation( float& out, float p1, float p2, float t )
+	//	点滅処理
+	void	FlashingUpdate( ImageObj& image, float speed )
 	{
-		if ( t >= 1.0f )	return	true;
-		float rate = t * t * ( 3.0f - 2.0f * t );   // 3次関数補間値に変換
+		if ( speed > 0.0f )
+			image.flashingParam += speed;
+		else
+			image.flashingParam += image.flashingSpeed;
 
-		out = p1 * ( 1.0f - rate ) + p2 * rate;   // いわゆるLerp
+		if ( image.flashingParam >= D3DX_PI * 2.0f )	image.flashingParam = 0.0f;
 
-		return	false;
+		//	透明度更新
+		image.flashingAlpha = 0.5f + 0.5f * sinf( image.flashingParam );
 	}
 
 //----------------------------------------------------------------------------
@@ -376,6 +435,34 @@
 		DrawCapsule( iexSystem::GetDevice(), D3DXVECTOR3( p1.x, p1.y, p1.z ), D3DXVECTOR3( p2.x, p2.y, p2.z ), r, color );
 		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
 	}
+
+//----------------------------------------------------------------------------
+//	図形設定
+//----------------------------------------------------------------------------
+
+	//	頂点設定
+	void	SetVertex( LVERTEX& v, float x, float y, float z, float tu, float tv, DWORD color )
+	{
+		v.x = x;
+		v.y = y;
+		v.z = z;
+		v.tu = tu;
+		v.tv = tv;
+		v.color = color;
+	}
+
+	//	頂点初期化
+	void	SetVertex( TLVERTEX& v, float x, float y, float z, float tu, float tv, DWORD color )
+	{
+		v.sx = x;
+		v.sy = y;
+		v.sz = z;
+		v.tu = tu;
+		v.tv = tv;
+		v.color = color;
+		v.rhw = 1.0f;
+	}
+
 
 //-------------------------------------------------------------------------
 //	相互変換DirectX<->IEX

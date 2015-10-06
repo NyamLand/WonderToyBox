@@ -7,6 +7,11 @@
 //	CoinManagerƒNƒ‰ƒX
 //
 //******************************************************************************
+
+//	include
+#include	"Coin.h"
+
+//	class
 class CoinManager
 {
 private:

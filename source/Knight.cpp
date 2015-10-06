@@ -2,7 +2,7 @@
 #include	"iextreme.h"
 #include	"GlobalFunction.h"
 #include	"Collision.h"
-#include	"Player.h"
+
 #include	"Knight.h"
 
 //*********************************************************************************
@@ -16,19 +16,6 @@
 //-----------------------------------------------------------------------------------
 	namespace KnightData
 	{
-		//	定数
-		enum MotionNum
-		{
-			STAND = 1,			//	立ち
-			POSTURE,				//	構え
-			RUN = 4,				//	走り
-			ATTACK1,				//	攻撃１段階目
-			ATTACK2,				//	攻撃２段階目
-			ATTACK3,				//	攻撃３段階目
-			JUMP,
-			GUARD,
-		};
-
 		enum OFFENSIVE_POWER
 		{
 			QUICK0 = 1,
@@ -44,16 +31,13 @@
 //-----------------------------------------------------------------------------------
 
 	//	コンストラクタ
-	Knight::Knight( void )
+	Knight::Knight( void ) : BaseChara()
 	{
 		//	パラメータ初期化
-		attack_r = 0.0f;
-		attack_t = 0.0f;
 		lance_r = 0.0f;
 		power = 5;
 		speed = 0.2f;
 		scale = 0.02f;
-		SetMotionData();
 		isGround = true;
 	}
 
@@ -63,20 +47,6 @@
 
 	}
 
-	//	モーションデータ登録
-	void	Knight::SetMotionData( void )
-	{
-		motionData.STAND = KnightData::STAND;
-		motionData.POSTURE = KnightData::POSTURE;
-		motionData.RUN = KnightData::RUN;
-		motionData.ATTACK1 = KnightData::ATTACK1;
-		motionData.JUMP = KnightData::JUMP;
-		motionData.ATTACK2 = KnightData::ATTACK2;
-		motionData.ATTACK3 = KnightData::ATTACK3;
-		motionData.GUARD = KnightData::GUARD;
-		motionData.POSTURE = KnightData::POSTURE;
-	}
-
 //-----------------------------------------------------------------------------------
 //	更新・描画
 //-----------------------------------------------------------------------------------
@@ -84,11 +54,11 @@
 	//	描画
 	void	Knight::Render( iexShader* shader, LPSTR technique )
 	{
-		CommonRender( shader, technique );
+		BaseChara::Render( shader, technique );
 
 		//	デバッグ用
 		if ( !debug )	return;
-		DrawCapsule( attackPos_bottom, attackPos_top, attack_r, 0xFFFFFFFF );
+		DrawCapsule( attackInfo.bottom, attackInfo.top, attackInfo.r, 0xFFFFFFFF );
 
 		char	str[256];
 		Vector3	stringPos;
@@ -117,21 +87,21 @@
 		Vector3	finPos = startPos + front * 5.0f;
 
 		//	当たり判定位置移動&範囲拡大
-		float t = GetBezier( ePrm_t::eRapid_Lv1, ePrm_t::eSlow_Lv3, attack_t );
+		float t = GetBezier( ePrm_t::eRapid_Lv1, ePrm_t::eSlow_Lv3, attackInfo.t );
 		if ( t < 0.5f ){
-			Lerp( attackPos_bottom, startPos, finPos, t );
+			Lerp( attackInfo.bottom, startPos, finPos, t );
 		}
 		else{
-			Lerp( attackPos_bottom, finPos, startPos, t );
+			Lerp( attackInfo.bottom, finPos, startPos, t );
 		}
 		//	あたり判定のパラメータを与える
-		attack_r = 0.5f;
-		attackPos_top = attackPos_bottom + front * 2.0f;
+		attackInfo.r = 0.5f;
+		attackInfo.top = attackInfo.bottom + front * 2.0f;
 	
 		//	パラメータ加算
-		attack_t += 0.015f;
+		attackInfo.t += 0.015f;
 
-		if ( attack_t >= 1.0f )	return	true;
+		if ( attackInfo.t >= 1.0f )	return	true;
 		return	false;
 	}
 
@@ -145,26 +115,26 @@
 		Vector3	p_pos = GetPos();
 		static int step = 0;
 		//	当たり判定位置移動&範囲拡大
-		float t = GetBezier( ePrm_t::eRapid_Lv5, ePrm_t::eSlow_Lv1, attack_t );
+		float t = GetBezier( ePrm_t::eRapid_Lv5, ePrm_t::eSlow_Lv1, attackInfo.t );
 		Vector3 f = front * ( 2.0f * sinf( D3DX_PI * t ) );
 		Vector3 r = -right * ( 2.0f * cosf( D3DX_PI * t ) );
-		attackPos_bottom = p_pos + f + r;
-		attackPos_top = attackPos_bottom + f + r;
+		attackInfo.bottom = p_pos + f + r;
+		attackInfo.top = attackInfo.bottom + f + r;
 
 		switch ( step )
 		{
 		case 0:
 			//	あたり判定のパラメータを与える
-			attack_r = 0.5f;
+			attackInfo.r = 0.5f;
 			step++;
 			break;
 		case 1:
 			//	パラメータ加算
-			attack_t += 0.02f;
+			attackInfo.t += 0.02f;
 			break;
 		}
 
-		if ( attack_t >= 1.0f ){
+		if ( attackInfo.t >= 1.0f ){
 			step = 0;
 			return	true;
 		}
@@ -186,57 +156,57 @@
 		Vector3 f, r;
 
 		//	当たり判定位置移動&範囲拡大
-		float t = GetBezier( ePrm_t::eRapid_Lv5, ePrm_t::eSlow_Lv1, attack_t );
+		float t = GetBezier( ePrm_t::eRapid_Lv5, ePrm_t::eSlow_Lv1, attackInfo.t );
 
 
 		switch ( step )
 		{
 		case 0:
 			//	あたり判定のパラメータを与える
-			attack_r = 0.5f;
+			attackInfo.r = 0.5f;
 			step++;
 			break;
 
 		case 1:
 			//	パラメータ加算
-			attack_t += 0.02f;
+			attackInfo.t += 0.02f;
 			
 			//	右から左へ薙ぎ払い
-			f = front * ( 2.0f * sinf( PI * t ) );
-			r = right * ( 2.0f * cosf( PI * t ) );
+			f = front * ( 2.0f * sinf( D3DX_PI * t ) );
+			r = right * ( 2.0f * cosf( D3DX_PI * t ) );
 			p_pos += front * 0.1f + -right * 0.1f;
-			attackPos_bottom = p_pos + f + r;
-			attackPos_top = attackPos_bottom + f + r;
+			attackInfo.bottom = p_pos + f + r;
+			attackInfo.top = attackInfo.bottom + f + r;
 			
 			//	薙ぎ払い終えたら次へ
-			if ( attack_t >= 1.0f ){
-				attack_t = 0.0f;
+			if ( attackInfo.t >= 1.0f ){
+				attackInfo.t = 0.0f;
 				step++;
 			}
 			break;
 
 		case 2:
 			//	左から右へ薙ぎ払い
-			f = front * ( 2.0f * sinf( PI * t ) );
-			r = -right * ( 2.0f * cosf( PI * t ) );
+			f = front * ( 2.0f * sinf( D3DX_PI * t ) );
+			r = -right * ( 2.0f * cosf( D3DX_PI * t ) );
 			p_pos += front * 0.1f + right * 0.1f;
-			attackPos_bottom = p_pos + f + r;
-			attackPos_top = attackPos_bottom + f + r;
+			attackInfo.bottom = p_pos + f + r;
+			attackInfo.top = attackInfo.bottom + f + r;
 			//	パラメータ加算
-			attack_t += 0.02f;
+			attackInfo.t += 0.02f;
 			//	薙ぎ払い終えたら次へ
-			if ( attack_t >= 1.0f ){
-				attack_t = 0.0f;
+			if ( attackInfo.t >= 1.0f ){
+				attackInfo.t = 0.0f;
 				step++;
 			}
 			break;
 
 		case 3:
 			//	回転切り
-			attackPos_bottom.x = p_pos.x + 2.0f * cosf( PI / 180 * lance_r );
-			attackPos_bottom.z = p_pos.z + 2.0f * sinf( PI / 180 * lance_r );
-			attackPos_top.x = p_pos.x + 4.0f * cosf( PI / 180 * lance_r );
-			attackPos_top.z = p_pos.z + 4.0f * sinf( PI / 180 * lance_r );
+			attackInfo.bottom.x = p_pos.x + 2.0f * cosf( D3DX_PI / 180 * lance_r );
+			attackInfo.bottom.z = p_pos.z + 2.0f * sinf( D3DX_PI / 180 * lance_r );
+			attackInfo.top.x = p_pos.x + 4.0f * cosf( D3DX_PI / 180 * lance_r );
+			attackInfo.top.z = p_pos.z + 4.0f * sinf( D3DX_PI / 180 * lance_r );
 			lance_r += 10.0f;
 			if ( lance_r >= 360 * 5 )
 			{
@@ -252,6 +222,49 @@
 		return false;
 	}
 
+	//	モーション管理
+	void	Knight::MotionManagement( int motion )
+	{
+		switch ( motion )
+		{
+		case MOTION_NUM::STAND:
+			obj->SetMotion(MOTION_DATA::STAND);
+			break;
+
+		case MOTION_NUM::POSTURE:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+
+		case MOTION_NUM::JUMP:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+
+		case MOTION_NUM::GUARD:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+
+		case MOTION_NUM::LANDING:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+
+		case MOTION_NUM::RUN:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+
+		case MOTION_NUM::ATTACK1:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+
+		case MOTION_NUM::ATTACK2:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+
+		case MOTION_NUM::ATTACK3:
+			obj->SetMotion(MOTION_DATA::POSTURE);
+			break;
+		}
+	}
+
 //-----------------------------------------------------------------------------------
 //	情報設定
 //-----------------------------------------------------------------------------------
@@ -262,21 +275,21 @@
 		switch ( attackKind )
 		{
 		case MODE_STATE::QUICKARTS:
-			attackParam = COLLISION_TYPE::CAPSULEVSCAPSULE;
-			if (attack_t < 0.6f) knockBackType = KNOCKBACK_TYPE::LEANBACKWARD;	//2Hitまでは仰け反りのみ
-			if (attack_t >= 0.6f) knockBackType = KNOCKBACK_TYPE::WEAK;		//3hit目からは吹き飛ばしあり
+			attackInfo.type = COLLISION_TYPE::CAPSULEVSCAPSULE;
+			if (attackInfo.t < 0.6f) knockBackInfo.type = KNOCKBACK_TYPE::LEANBACKWARD;	//2Hitまでは仰け反りのみ
+			if (attackInfo.t >= 0.6f) knockBackInfo.type = KNOCKBACK_TYPE::WEAK;		//3hit目からは吹き飛ばしあり
 			break;
 
 		case MODE_STATE::POWERARTS:
-			attackParam = COLLISION_TYPE::CAPSULEVSCAPSULE;
-			knockBackType = KNOCKBACK_TYPE::STRENGTH;
+			attackInfo.type = COLLISION_TYPE::CAPSULEVSCAPSULE;
+			knockBackInfo.type = KNOCKBACK_TYPE::STRENGTH;
 			break;
 
 		case MODE_STATE::HYPERARTS:
-			attackParam = COLLISION_TYPE::CAPSULEVSCAPSULE;
-			if (attack_t != 0) knockBackType = KNOCKBACK_TYPE::STRENGTH;	//2Hitまでは吹き飛ばしあり
-			if (attack_t == 0 && lance_r < 360 * 4) knockBackType = KNOCKBACK_TYPE::LEANBACKWARD;		//3~6hit目からは吹き飛ばしあり
-			if (attack_t == 0 && lance_r >= 360 * 4) knockBackType = KNOCKBACK_TYPE::STRENGTH;		//6hit目からは吹き飛ばしあり
+			attackInfo.type = COLLISION_TYPE::CAPSULEVSCAPSULE;
+			if (attackInfo.t != 0) knockBackInfo.type = KNOCKBACK_TYPE::STRENGTH;	//2Hitまでは吹き飛ばしあり
+			if (attackInfo.t == 0 && lance_r < 360 * 4) knockBackInfo.type = KNOCKBACK_TYPE::LEANBACKWARD;		//3~6hit目からは吹き飛ばしあり
+			if (attackInfo.t == 0 && lance_r >= 360 * 4) knockBackInfo.type = KNOCKBACK_TYPE::STRENGTH;		//6hit目からは吹き飛ばしあり
 			break;
 		}
 	}

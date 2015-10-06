@@ -1,16 +1,14 @@
 
 #include	"iextreme.h"
-#include	"Random.h"
 #include	"GlobalFunction.h"
 #include	"system/Framework.h"
 #include	"system/System.h"
-#include	"Collision.h"
-#include	"Image.h"
+#include	"Random.h"
 #include	"GameManager.h"
-#include	"Player.h"
+#include	"Collision.h"
 #include	"Camera.h"
+#include	"CharacterManager.h"
 #include	"sceneTitle.h"
-#include	"PlayerManager.h"
 #include	"sceneMain.h"
 
 #include	"sceneResult.h"
@@ -36,8 +34,8 @@ int y = 100;
 	sceneResult::~sceneResult( void )
 	{
 		SafeDelete( m_Camera );
-		SafeDelete(m_Player);
 		SafeDelete( back );
+		characterManager->Release();
 		Random::Release();
 	}
 
@@ -46,9 +44,6 @@ int y = 100;
 	{
 		//	カメラ設定
 		m_Camera = new Camera();
-
-		//	プレイヤー初期化
-		m_Player = new PlayerManager();
 
 		//	画像初期化
 		back = new iex2DObj( "DATA/Result/back.png");
@@ -67,8 +62,8 @@ int y = 100;
 
 			//	プレイヤー初期化
 			int		characterType = gameManager->GetCharacterType(i);
-			Vector3	pos = Vector3(-20.0f + (10.0f * i), 0.0f, 0.0f);
-			m_Player->Initialize(i, characterType, pos);
+			Vector3	pos = Vector3( -20.0f + ( 10.0f  *  i ), 0.0f, 0.0f );
+			characterManager->Initialize( i, characterType, pos, true );
 		}
 
 		//	変数初期化
@@ -106,7 +101,7 @@ int y = 100;
 		m_Camera->Update(VIEW_MODE::FIX, Vector3( 0.0f, 0.0f, 0.0f ) );
 
 		//	プレイヤー更新
-		m_Player->Update();
+		characterManager->Update();
 
 		//	タイトルへ
 		if ( KEY( KEY_SPACE ) == 3 )
@@ -126,7 +121,7 @@ int y = 100;
 		back->Render(0, 0, 1280, 720, 0, 0, 2048, 1024);
 		iexSystem::GetDevice()->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
 
-		m_Player->Render( shader3D,"toon" );
+		characterManager->Render( shader3D, "toon" );
 
 		//	デバッグ文字描画
 		DrawString( "[sceneResult]", 50, 50 );
