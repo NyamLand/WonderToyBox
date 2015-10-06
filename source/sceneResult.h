@@ -31,6 +31,8 @@ private:
 	int		step;
 	int		playerNum;
 	int		wait;
+	int		ten;	//コイン二桁目
+	int		one;	//コイン一桁目
 	iex2DObj*	back; //背景
 	iex2DObj*	r_number; //コインの枚数
 	iexMesh*	collision;
