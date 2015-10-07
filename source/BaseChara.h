@@ -275,6 +275,7 @@ public:
 	void	SetLeanFrame( int frame );
 	void	SetBoosting( bool boosting );
 	void	SetKnockBackVec( Vector3 vec );
+	void	SetUnrivaled( bool state );
 
 	//	î•ñæ“¾
 	Matrix	GetMatrix( void )const;

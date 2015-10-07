@@ -266,7 +266,7 @@ namespace
 	//	ÉÇÅ[Éhä«óù
 	void	BaseChara::ModeManagement( void )
 	{
-		switch (mode)
+		switch ( mode )
 		{
 		case MODE_STATE::WAIT:
 			Wait();
@@ -419,7 +419,7 @@ namespace
 		SetDrag( 0.9f );
 
 		SetMotion( MOTION_NUM::POSTURE );
-		if ( move.Length() <= 0.01f )
+		if ( move.Length() <= 0.001f )
 		{
 			SetMode( MODE_STATE::MOVE );
 			unrivaled = false;
@@ -865,4 +865,10 @@ namespace
 	void	BaseChara::SetKnockBackVec( Vector3 vec )
 	{
 		knockBackInfo.vec = vec;
+	}
+
+	//	ñ≥ìGèÛë‘ê›íË
+	void	BaseChara::SetUnrivaled( bool state )
+	{
+		this->unrivaled = state;
 	}

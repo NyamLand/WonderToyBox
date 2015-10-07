@@ -69,7 +69,7 @@
 		step = 0;
 		playerNum = 0;
 		wait = 0;
-		for (int i = 0; i < 4; i++){
+		for ( int i = 0; i < 4; i++ ){
 			ten[i] = 0;
 			one[i] = 0;
 		}
@@ -135,10 +135,10 @@
 
 		for (int i = 0; i < 4; i++){
 			Vector3 stringPos;
-			WorldToClient(characterManager->GetPos(i), stringPos, matView* matProjection);
+			WorldToClient( characterManager->GetPos(i), stringPos, matView* matProjection );
 			stringPos.y = 100;
-			r_number->Render(stringPos.x  -40 * 1, stringPos.y, 64, 64, ten[i] * 64, 0, 64, 64);	//	コイン二桁目
-			r_number->Render(stringPos.x  -40 * 0, stringPos.y, 64, 64, one[i] * 64, 0, 64, 64);	//	コイン一桁目
+			r_number->Render( ( int )stringPos.x  -40 * 1, ( int )stringPos.y, 64, 64, ten[i] * 64, 0, 64, 64);	//	コイン二桁目
+			r_number->Render( ( int )stringPos.x  -40 * 0, ( int )stringPos.y, 64, 64, one[i] * 64, 0, 64, 64);	//	コイン一桁目
 
 			
 		}

@@ -22,7 +22,7 @@
 	//	コンストラクタ
 	CharacterManager::CharacterManager( void ) : loadflag( false )
 	{
-		int a = 0;
+
 	}
 
 	//	デストラクタ
@@ -156,24 +156,24 @@
 	{
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
+			//	攻撃タイプ取得( 攻撃中でなかったらつぎへ )
+			int	 attackParam = character[i]->GetAttackParam();
+			if ( attackParam == 0 )	continue;
 			for ( int n = 0; n < PLAYER_MAX; n++ )
 			{
 				//	自分か相手が無敵状態だとつぎへ
 				if ( i == n )	continue;
 				if ( character[n]->GetUnrivaled() )	continue;
 
-				//	攻撃タイプを取得
-				int		attackParam = character[i]->GetAttackParam();
-
 				//	タイプ別当たり判定
 				switch ( attackParam )
 				{
 				case COLLISION_TYPE::SPHEREVSCAPSULE:
-					HitCheckSphereVSCapsule(character[i], character[n]);
+					HitCheckSphereVSCapsule( character[i], character[n] );
 					break;
 
 				case COLLISION_TYPE::CAPSULEVSCAPSULE:
-					HitCheckCapsuleVSCapsule(character[i], character[n]);
+					HitCheckCapsuleVSCapsule( character[i], character[n] );
 					break;
 
 				case COLLISION_TYPE::SPHEREVSCYRINDER:
@@ -203,10 +203,11 @@
 
 		//	攻撃判定
 		bool	isHit = Collision::CapsuleVSSphere( bc2_bottom, bc2_top, bc2_r, bc1_attackPos, bc1_attack_r );
-
 		//	当たっていたら
-		if (isHit)
+		if ( isHit )
 		{
+			if ( bc2->GetUnrivaled() )	return;
+			bc2->SetUnrivaled( true );
 			//	エフェクトだす
 			float	effectScale = 1.0f;
 			particle->Spark( bc2_top, effectScale );
@@ -224,19 +225,20 @@
 			case KNOCKBACK_TYPE::STRENGTH:
 				bc2->SetMode( MODE_STATE::DAMAGE_STRENGTH );
 				break;
+
 			case KNOCKBACK_TYPE::MIDDLE:
 				bc2->SetMode( MODE_STATE::DAMAGE_MIDDLE );
 				break;
+
 			case KNOCKBACK_TYPE::WEAK:
 				bc2->SetMode( MODE_STATE::DAMAGE_WEAK );
 				break;
+
 			case KNOCKBACK_TYPE::LEANBACKWARD:
 				bc2->SetLeanFrame( bc1->GetLeanFrame() );
 				bc2->SetMode( MODE_STATE::DAMAGE_LEANBACKWARD );
 				break;
 			}
-
-			//	色設定
 
 			//	コインばらまき方向設定
 			Vector3	vec = Vector3( Random::GetFloat( -1.0f, 1.0f ), 1.0f, Random::GetFloat( -1.0f, 1.0f ) );
@@ -275,6 +277,10 @@
 		//	当たっていたら
 		if ( isHit )
 		{
+			//	無敵状態取得・設定
+			if ( bc2->GetUnrivaled() )	return;
+			bc2->SetUnrivaled( true );
+
 			//	エフェクトだす
 			float	effectScale = 1.0f;
 			particle->Spark( bc2_top, effectScale );
@@ -292,12 +298,15 @@
 			case KNOCKBACK_TYPE::STRENGTH:
 				bc2->SetMode( MODE_STATE::DAMAGE_STRENGTH );
 				break;
+
 			case KNOCKBACK_TYPE::MIDDLE:
 				bc2->SetMode( MODE_STATE::DAMAGE_MIDDLE );
 				break;
+
 			case KNOCKBACK_TYPE::WEAK:
 				bc2->SetMode( MODE_STATE::DAMAGE_WEAK );
 				break;
+
 			case KNOCKBACK_TYPE::LEANBACKWARD:
 				bc2->SetLeanFrame( bc1->GetLeanFrame() );
 				bc2->SetMode( MODE_STATE::DAMAGE_LEANBACKWARD );
