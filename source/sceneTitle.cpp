@@ -300,6 +300,14 @@ namespace
 
 		//	スクリーン描画
 		screen->Render();
+
+		//	デバッグ
+		char	str[256];
+		Matrix	mat = m_Camera->GetMatrix();
+		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
+		front.Normalize();
+		sprintf_s( str, "t.x = %f\nt.y = %f\nt.z = %f\n", front.x, front.y, front.z );
+		DrawString( str, 50, 500 );
 	}
 
 //******************************************************************
@@ -342,6 +350,9 @@ namespace
 				break;
 
 			case 1:
+				//	カメラ更新
+				m_Camera->Update( VIEW_MODE::SLERP, c_Move::TARGET[cameraInfo.posNum] );
+
 				//	波紋更新
 				WaveUpdate( titleInfo.pressSpace );
 

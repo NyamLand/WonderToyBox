@@ -29,8 +29,8 @@
 	//	コンストラクタ
 	Camera::Camera( void )
 	{
-		pos = Vector3( 0.0f, 40.0f, 50.0f );
-		target = Vector3( 0.0f, 2.0f, 0.0f ); 
+		pos = Vector3( 0.0f, 60.0f, -100.0f );
+		target = Vector3( 0.0f, 0.6f, 0.8f ); 
 		orientation = D3DXQUATERNION( 0, 0, 0, 1 );
 		Set( pos, target );
 	}
@@ -244,7 +244,7 @@
 	void	Camera::CalcCameraPos( void ) 
 	{
 		Vector3 vec;
-		vec = Vector3( 0.0f, 40.0f, 50.0f ) - Vector3( 0.0f, 2.0f, 0.0f );
+		vec = Vector3( 0.0f, 40.0f, -50.0f ) - Vector3( 0.0f, 2.0f, 0.0f );
 		vec.Normalize();
 		this->pos = this->target + vec * length * 3;
 	}

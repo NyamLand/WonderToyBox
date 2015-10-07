@@ -115,6 +115,7 @@ namespace
 		{
 			//	çUåÇèÓïÒèâä˙âª
 			{
+				attackInfo.type = 0;
 				attackInfo.bottom = Vector3( 0.0f, 0.0f, 0.0f );
 				attackInfo.top = Vector3( 0.0f, 0.0f, 0.0f );
 				attackInfo.pos = Vector3( 0.0f, 0.0f, 0.0f );
@@ -502,18 +503,18 @@ namespace
 		{
 		case	MODE_STATE::QUICKARTS:
 			isEnd = QuickArts();
-			if ( !isEnd )	SetAttackParam( attackInfo.type );
+			if ( !isEnd )	SetAttackParam( attackKind );
 			break;
 
 		case MODE_STATE::POWERARTS:
 			isEnd = PowerArts();
-			if ( !isEnd )	SetAttackParam( attackInfo.type );
+			if ( !isEnd )	SetAttackParam( attackKind );
 			break;
 
 		case MODE_STATE::HYPERARTS:
 			isEnd = HyperArts();
 			canHyper = isEnd;
-			if ( !isEnd )	SetAttackParam( attackInfo.type );
+			if ( !isEnd )	SetAttackParam( attackKind );
 			break;
 		}
 
