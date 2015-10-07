@@ -332,6 +332,7 @@
 		if ( wait <= 0 )
 		{
 			//wait = 30;
+			wait = 5 * SECOND;
 			changeflag = true;
 		}
 

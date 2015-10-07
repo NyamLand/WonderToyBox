@@ -1,6 +1,7 @@
 
 #include	"iextreme.h"
 #include	"system/System.h"
+#include	"GlobalFunction.h"
 
 #include	"Camera.h"
 
@@ -14,10 +15,7 @@
 //	グローバル変数
 //------------------------------------------------------------------------------------------
 
-	namespace 
-	{
 
-	}
 
 	//	実体の宣言
 	Camera*	m_Camera;
@@ -29,9 +27,15 @@
 	//	コンストラクタ
 	Camera::Camera( void )
 	{
-		pos = Vector3( 0.0f, 60.0f, -100.0f );
+		pos = Vector3( 0.0f, 60.0f, -200.0f );
 		target = Vector3( 0.0f, 0.6f, 0.8f ); 
 		orientation = D3DXQUATERNION( 0, 0, 0, 1 );
+		nextPoint = TITLE_MOVE_INFO::pos[TITLE_TARGET::PLAYERNUMBER];
+		startPos = pos;
+		t = 0.0f;
+		moveState = false;
+		target = nextTarget = TITLE_MOVE_INFO::target[TITLE_TARGET::PLAYERNUMBER];
+		speed = 0.005f;
 		Set( pos, target );
 	}
 
@@ -50,6 +54,10 @@
 	{
 		switch ( viewmode )
 		{
+		case VIEW_MODE::SETUP:
+			ModeSlerp( nextTarget );
+			break;
+
 		case  VIEW_MODE::FIX:
 			ModeFix( target );
 			break;
@@ -61,13 +69,25 @@
 		case	VIEW_MODE::CHASE:
 			ModeChase();
 			break;
+
 		case	VIEW_MODE::RESULT:
 			ModeResult();
+			break;
+
+		case VIEW_MODE::TITLE:
+			ModeTitle();
 			break;
 		}
 
 		shader3D->SetValue("ViewPos", m_Camera->GetPos());
 		shader3D->SetValue("matView", m_Camera->GetMatrix());
+	}
+
+	void	Camera::Render()
+	{
+		char	str[256];
+		sprintf_s( str, "t.x = %f\nt.y = %f\nt.z = %f\n", target.x, target.y, target.z);
+		DrawString(str, 50, 500);
 	}
 
 //------------------------------------------------------------------------------------------
@@ -143,6 +163,38 @@
 		Set( pos, this->target );
 	}
 
+	//	リザルト用カメラ
+	void	Camera::ModeResult( void )
+	{
+		Set(Vector3(0.0f, 5.0f, 13.0f), Vector3(0.0f, 5.0f, -30.0f));
+	}
+
+	//	タイトル用カメラ
+	void	Camera::ModeTitle( void )
+	{
+
+		//	移動保管
+		CubicFunctionInterpolation( pos, startPos, nextPoint, t );
+
+		//	パラメータ加算
+		t += speed;
+		if ( t >= 1.0f )
+		{
+			t = 1.0f;
+			moveState = true;
+		}
+		else
+		{
+			moveState = false;
+		}
+		
+		//	回転
+		Slerp( nextTarget, 0.1f );
+
+		//	情報更新
+		Set( pos, this->target );
+	}
+	
 	//	振動
 	void	Camera::Shake( void )
 	{
@@ -171,10 +223,6 @@
 		this->shakeTimer = timer;
 	}
 
-	void	Camera::ModeResult( void )
-	{
-		Set(Vector3(0.0f, 5.0f, 13.0f), Vector3(0.0f, 5.0f, -30.0f));
-	}
 
 //------------------------------------------------------------------------------------------
 //	数値計算
@@ -260,6 +308,17 @@
 		playerPos[1] = p_2;
 		playerPos[2] = p_3;
 		playerPos[3] = p_4;
+	}
+	
+	//	次の移動場所設定
+	void	Camera::SetNextPoint( int num, float speed )
+	{
+		if ( !moveState )	return;
+		this->speed = speed;
+		t = 0.0f;
+		startPos = nextPoint;
+		nextPoint = TITLE_MOVE_INFO::pos[num];
+		nextTarget = TITLE_MOVE_INFO::target[num];
 	}
 
 

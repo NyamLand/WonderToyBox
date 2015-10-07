@@ -277,7 +277,7 @@
 		case MODE_STATE::QUICKARTS:
 			attackInfo.type = COLLISION_TYPE::CAPSULEVSCAPSULE;
 			if (attackInfo.t < 0.6f) knockBackInfo.type = KNOCKBACK_TYPE::LEANBACKWARD;	//2Hit‚Ü‚Å‚Í‹Â‚¯”½‚è‚Ì‚Ý
-			if (attackInfo.t >= 0.6f) knockBackInfo.type = KNOCKBACK_TYPE::WEAK;		//3hit–Ú‚©‚ç‚Í‚«”ò‚Î‚µ‚ ‚è
+			if (attackInfo.t >= 0.6f && attackInfo.t < 0.8f ) knockBackInfo.type = KNOCKBACK_TYPE::WEAK;		//3hit–Ú‚©‚ç‚Í‚«”ò‚Î‚µ‚ ‚è
 			break;
 
 		case MODE_STATE::POWERARTS:

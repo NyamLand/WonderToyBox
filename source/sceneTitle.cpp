@@ -28,18 +28,6 @@
 
 namespace
 {
-	//	カメラ移動用位置情報
-	namespace c_Move{
-		Vector3 TARGET[4]=
-		{
-			Vector3( 0.0f, 0.0f, 0.0f ),
-			Vector3( 20.0f, 0.0f, 10.0f ),
-			Vector3( 5.0f, 0.0f, -10.0f ),
-			Vector3( -20.0f, 0.0f, 10.0f ),
-		};
-
-	}
-
 	//	タイトルメニュー用情報
 	namespace Title_Info
 	{
@@ -66,6 +54,17 @@ namespace
 			OPTION,
 			CREDIT,
 			MOVE_MAIN,
+		};
+	}
+
+	//	メニューモード
+	namespace SELECT_MODE
+	{
+		enum
+		{
+			PLAYER_NUM,
+			CHARACTER,
+			STAGE,
 		};
 	}
 }
@@ -120,35 +119,15 @@ namespace
 		screen->Initialize();
 		
 		//	ステージ
-		stage = new iexMesh( "DATA/BG/2_1/FIELD2_1.IMO" );
+		stage = new iexMesh( "DATA/BG/title_map.IMO" );
 
 		//	乱数初期化
 		Random::Initialize();		
 
 		//	各モード初期化
 		TitleInitialize();
-
-		//	構造体初期化
-		{
-			//	キャラクター情報初期化
-			for ( int i = 0; i < CHARACTER_TYPE::MAX; i++ )
-			{
-				characterInfo[i].name = characterName[i];
-				characterInfo[i].select = false;
-			}
-			
-			//	選択情報初期化
-			selectInfo.playerNum = 1;
-			selectInfo.stageType = 0;
-			selectInfo.step_cs = 0;
-			for ( int i = 0; i < PLAYER_MAX; i++ )	selectInfo.characterType[i] = i;
-
-			//	カメラ情報構造体初期化
-			cameraInfo.lerpStartPos = cameraInfo.pos = m_Camera->GetPos();
-			cameraInfo.target = Vector3( 0.0f, 0.0f, 0.0f );
-			cameraInfo.t = 0.0f;
-			cameraInfo.posNum = 0;
-		}
+		MenuInitialize();
+		SelectInitialize();
 
 		return	true;
 	}
@@ -188,6 +167,41 @@ namespace
 		titleInfo.step = 0;
 	}
 
+	//	メニュー初期化
+	void	sceneTitle::MenuInitialize( void )
+	{
+		menuInfo.menu_num = 0;
+	}
+
+	//	選択初期化
+	void	sceneTitle::SelectInitialize( void )
+	{
+		//	キャラクター情報初期化
+		for ( int i = 0; i < CHARACTER_TYPE::MAX; i++ )
+		{
+			characterInfo[i].name = characterName[i];
+			characterInfo[i].select = false;
+		}
+
+		//	選択情報初期化
+		setInfo.playerNum = 1;
+		setInfo.stageType = 0;
+		setInfo.step_cs = 0;
+		for ( int i = 0; i < PLAYER_MAX; i++ )	setInfo.characterType[i] = i;
+
+		//	パラメータ初期化
+		selectInfo.menu_num = 0;
+		selectInfo.mode = SELECT_MODE::PLAYER_NUM;
+		selectInfo.select_mode = 0;
+
+		//	プレイヤー選択情報初期化
+		for ( int i = 0; i < PLAYER_MAX; i++ )  
+		{
+			selectInfo.playerselectInfo[i].isSelect = false;
+			selectInfo.playerselectInfo[i].num = i;
+		}
+	}
+
 //-----------------------------------------------------------------------------------
 //	更新・描画
 //-----------------------------------------------------------------------------------
@@ -207,15 +221,7 @@ namespace
 			break;
 
 		case TITLE_MODE::SELECT_PLAYERNUM:
-			SelectPlayerNumUpdate();
-			break;
-
-		case TITLE_MODE::SELECT_CHARACTER:
-			SelectCharacterUpdate();
-			break;
-
-		case TITLE_MODE::SELECT_STAGE:
-			SelectStageUpdate();
+			SelectUpdate();
 			break;
 
 		case TITLE_MODE::SELECT_CHECK:
@@ -240,11 +246,12 @@ namespace
 		}
 
 		//	ターゲット位置にパーティクル配置
-		for ( int i = 0; i < PLAYER_MAX; i++)	particle->BlueFlame( c_Move::TARGET[i] );
+		for ( int i = 0; i < TITLE_TARGET::END; i++)	particle->BlueFlame( TITLE_MOVE_INFO::target[i] );
 		particle->Update();
-
+		
 		//	スクリーン更新
 		screen->Update();	
+		particle->BlueFlame( eff_pos, 1.0f );
 	}
 
 	//	描画
@@ -255,7 +262,7 @@ namespace
 		m_Camera->Clear();
 
 		//	ステージ描画
-		stage->Render( shader3D, "full" );
+		stage->Render();
 
 		//	パーティクル描画
 		particle->Render();
@@ -271,15 +278,7 @@ namespace
 			break;
 
 		case TITLE_MODE::SELECT_PLAYERNUM:
-			SelectPlayerNumRender();
-			break;
-
-		case TITLE_MODE::SELECT_CHARACTER:
-			SelectCharacterRender();
-			break;
-
-		case TITLE_MODE::SELECT_STAGE:
-			SelectStageRender();
+			SelectRender();
 			break;
 
 		case TITLE_MODE::SELECT_CHECK:
@@ -302,12 +301,14 @@ namespace
 		screen->Render();
 
 		//	デバッグ
+		m_Camera->Render();
+
 		char	str[256];
 		Matrix	mat = m_Camera->GetMatrix();
 		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
 		front.Normalize();
-		sprintf_s( str, "t.x = %f\nt.y = %f\nt.z = %f\n", front.x, front.y, front.z );
-		DrawString( str, 50, 500 );
+		//sprintf_s( str, "t.x = %f\nt.y = %f\nt.z = %f\n", eff_pos.x, eff_pos.y, eff_pos.z );
+		//DrawString( str, 50, 500 );
 	}
 
 //******************************************************************
@@ -330,6 +331,9 @@ namespace
 			switch ( titleInfo.step )
 			{
 			case 0:
+				//	カメラ更新
+				m_Camera->Update( VIEW_MODE::SETUP );
+
 				//	点滅更新
 				FlashingUpdate( titleInfo.pressSpace, D3DX_PI / 180 * 4.0f );
 
@@ -351,7 +355,7 @@ namespace
 
 			case 1:
 				//	カメラ更新
-				m_Camera->Update( VIEW_MODE::SLERP, c_Move::TARGET[cameraInfo.posNum] );
+				m_Camera->Update( VIEW_MODE::TITLE );
 
 				//	波紋更新
 				WaveUpdate( titleInfo.pressSpace );
@@ -417,47 +421,47 @@ namespace
 		//	更新
 		void	sceneTitle::MenuUpdate( void )
 		{
-			//	移動先を変える
-			if ( KEY( KEY_C ) == 3 && cameraInfo.t > 0.7f )
+			//	移動先をかえる
+			if ( m_Camera->GetMoveState() )	//	移動が終了してたら
 			{
-				if ( cameraInfo.posNum < 3 )	cameraInfo.posNum++;
-				else cameraInfo.posNum = 0;
-				cameraInfo.t = 0.0f;
-			}
-			if ( KEY( KEY_D ) == 3 && cameraInfo.t > 0.7f )
-			{
-				if ( cameraInfo.posNum > 0 )	cameraInfo.posNum--;
-				else cameraInfo.posNum = 3;
-				cameraInfo.t = 0;
-			}
-
-			//	カメラ移動
-			if ( cameraInfo.t <= 0.7f ){
-				CubicFunctionInterpolation( cameraInfo.pos, cameraInfo.lerpStartPos, c_Move::TARGET[cameraInfo.posNum], cameraInfo.t - 0.1f );
-			}
-			else{
-				cameraInfo.lerpStartPos = m_Camera->GetPos();
-			}
-
-			//	決定
-			if ( KEY( KEY_SPACE ) == 3 )
-			{
-				switch ( cameraInfo.posNum )
+				//	C,Vキーで選択
+				if ( KEY( KEY_C ) == 3 )
 				{
-				case 0:		mode = TITLE_MODE::SELECT_PLAYERNUM;	break;
-				case 1:		mode = TITLE_MODE::OPTION;						break;
-				case 2:		mode = TITLE_MODE::CREDIT;						break;
-				}	
-				sound->PlaySE( SE::DECIDE_SE );
+					menuInfo.menu_num--;
+					if ( menuInfo.menu_num < 0 )		menuInfo.menu_num = TITLE_TARGET::CREDIT;
+					m_Camera->SetNextPoint( menuInfo.menu_num, 0.01f );
+				}
+				if ( KEY( KEY_D ) == 3 )
+				{
+					menuInfo.menu_num++;
+					if ( menuInfo.menu_num > TITLE_TARGET::CREDIT )	menuInfo.menu_num = 0;
+					m_Camera->SetNextPoint( menuInfo.menu_num, 0.01f );
+				}
+
+				//	決定
+				if ( KEY( KEY_SPACE ) == 3 )
+				{
+					switch ( menuInfo.menu_num )
+					{
+					case TITLE_TARGET::PLAYERNUMBER:
+						mode = TITLE_MODE::SELECT_PLAYERNUM;
+						break;
+
+					case TITLE_TARGET::OPTION:
+						mode = TITLE_MODE::OPTION;
+						break;
+
+					case TITLE_TARGET::CREDIT:
+						mode = TITLE_MODE::CREDIT;
+						break;
+					}	
+					sound->PlaySE( SE::DECIDE_SE );
+					m_Camera->SetNextPoint( menuInfo.menu_num, 0.01f );
+				}
 			}
 
 			//	カメラ更新
-			m_Camera->Update( VIEW_MODE::SLERP, c_Move::TARGET[cameraInfo.posNum] );
-			m_Camera->SetPos( cameraInfo.pos );
-
-			//	パラメータ加算
-			cameraInfo.t += 0.01f;
-			if ( cameraInfo.t >= 1.0f )	cameraInfo.t = 1.0f;
+			m_Camera->Update( VIEW_MODE::TITLE );
 		}
 
 		//	描画
@@ -466,24 +470,69 @@ namespace
 			DrawString( "メニュー画面だよ", 50, 50 );
 			DrawString( "C・Vでどれか選んでね", 300, 400, 0xFFFFFF00 );
 
-			switch ( cameraInfo.posNum )
+			switch ( menuInfo.menu_num )
 			{
-			case 0:
+			case TITLE_TARGET::PLAYERNUMBER:
 				DrawString( "みんなであそぶモード！", 50, 100 );
 				DrawString( "[SPACE]：キャラ選択へ", 300, 200, 0xFFFFFF00 );
 				break;
 
-			case 1:
+			case TITLE_TARGET::OPTION:
 				DrawString( "オプション", 50, 100 );
 				DrawString( "[SPACE]：オプションへ", 300, 200, 0xFFFFFF00 );
 				break;
 
-			case 2:
+			case TITLE_TARGET::CREDIT:
 				DrawString( "つくった戦士たち！", 50, 100 );
 				DrawString( "[SPACE]：クレジットへ", 300, 200, 0xFFFFFF00 );
 				break;
 			}
 
+		}
+
+	//--------------------------------------------------------
+	//	選択
+	//--------------------------------------------------------
+
+		//	更新
+		void	sceneTitle::SelectUpdate( void )
+		{
+			switch ( selectInfo.mode )
+			{
+			case SELECT_MODE::PLAYER_NUM:
+				SelectPlayerNumUpdate();
+				break;
+
+			case SELECT_MODE::CHARACTER:
+				SelectCharacterUpdate();
+				break;
+
+			case SELECT_MODE::STAGE:
+				SelectStageUpdate();
+				break;
+			}
+
+			//	カメラ更新
+			m_Camera->Update( VIEW_MODE::TITLE );
+		}
+
+		//	描画
+		void	sceneTitle::SelectRender( void )
+		{
+			switch ( selectInfo.mode )
+			{
+			case SELECT_MODE::PLAYER_NUM:
+				SelectPlayerNumRender();
+				break;
+
+			case SELECT_MODE::CHARACTER:
+				SelectCharacterRender();
+				break;
+
+			case SELECT_MODE::STAGE:
+				SelectStageRender();
+				break;
+			}
 		}
 
 	//--------------------------------------------------------
@@ -493,32 +542,42 @@ namespace
 		//	更新
 		void	sceneTitle::SelectPlayerNumUpdate( void )
 		{
-			//　「A」「D」で選択
-			//　「SPACE」で決定
-			//　「S」で戻る
+			//	移動中は選択不可
+			if( !m_Camera->GetMoveState() )	return;
 
-			if ( KEY( KEY_RIGHT ) == 3 )		selectInfo.playerNum++;
-			if ( KEY( KEY_LEFT ) == 3 )		selectInfo.playerNum--;
+			//	選択
+			if ( KEY( KEY_RIGHT ) == 3 )		setInfo.playerNum++;
+			if ( KEY( KEY_LEFT ) == 3 )		setInfo.playerNum--;
 
-			if ( selectInfo.playerNum > PLAYER_MAX )	selectInfo.playerNum = 1;
-			if ( selectInfo.playerNum < 1 )						selectInfo.playerNum = PLAYER_MAX; 
+			//	制限
+			if ( setInfo.playerNum > PLAYER_MAX )		setInfo.playerNum = 1;
+			if ( setInfo.playerNum < 1 )						setInfo.playerNum = PLAYER_MAX; 
 
+			//	選択
 			if ( KEY( KEY_SPACE ) == 3 )
 			{
-				mode = TITLE_MODE::SELECT_CHARACTER;
+				selectInfo.mode = SELECT_MODE::CHARACTER;
+				m_Camera->SetNextPoint( TITLE_TARGET::SELECTCHARACTER, 0.01f );
 				sound->PlaySE( SE::DECIDE_SE );
+				return;
 			}
-			if ( KEY( KEY_DOWN ) == 3 )		mode = TITLE_MODE::MENU;
+
+			//	キャンセル
+			if ( KEY( KEY_DOWN ) == 3 )
+			{
+				mode = TITLE_MODE::MENU;
+				m_Camera->SetNextPoint( TITLE_TARGET::PLAYERNUMBER, 0.01f );
+			}
 		}
 		
 		//    描画
-		void    sceneTitle::SelectPlayerNumRender(void)
+		void    sceneTitle::SelectPlayerNumRender( void )
 		{
 			DrawString("人数選択だよ", 50, 50);
 			DrawString("[SPACE]：キャラ選択へ", 300, 400);
 
 			char    str[64];
-			wsprintf(str, "プレイヤー人数：%d\n", selectInfo.playerNum);
+			wsprintf(str, "プレイヤー人数：%d\n", setInfo.playerNum);
 			IEX_DrawText(str, 300, 300, 200, 20, 0xFFFFFFFF);
 		}
 
@@ -529,126 +588,48 @@ namespace
 		//	更新
 		void	sceneTitle::SelectCharacterUpdate( void )
 		{
-			//　プレイヤーキャラ選択　→　CPUキャラ選択
-			//　「A」「D」で選択
-			//　「SPACE」で決定
-			//　「S」で戻る
-
-			static bool	select[4] = { false, false, false, false };
-			int selectCheck = 0;
-
-			switch ( selectInfo.step_cs )
+			if ( !m_Camera->GetMoveState() )	return;
+			switch ( selectInfo.select_mode )
 			{
-			case 0:		//　プレイヤーキャラ選択
-				for ( int p = 0; p < selectInfo.playerNum; p++ )
-				{
-					if ( input[p]->Get( KEY_DOWN ) == 3 )
-					{
-						//	全員分の入力チェック
-						selectCheck = 0;
-						for ( int i = 0; i < PLAYER_MAX; i++ )
-						{
-							if ( select[i] )		selectCheck++;
-						}
-
-						//	全員未選択なら戻る
-						if ( selectCheck == 0 )
-						{
-							mode = TITLE_MODE::SELECT_PLAYERNUM;
-							return;
-						}
-
-						//	選択時キャンセル
-						characterInfo[selectInfo.characterType[p]].select = false;
-						select[p] = false;
-					};
-
-					if ( select[p] )	continue;
-					if ( input[p]->Get( KEY_RIGHT ) == 3 )	selectInfo.characterType[p]++;
-					if ( input[p]->Get( KEY_LEFT ) == 3 )	selectInfo.characterType[p]--;
-					if ( input[p]->Get( KEY_SPACE ) == 3 )
-					{
-						//	未選択なら選択
-						if ( !characterInfo[selectInfo.characterType[p]].select )
-						{
-							characterInfo[selectInfo.characterType[p]].select = true;
-							select[p] = true;
-							sound->PlaySE( SE::DECIDE_SE );
-						}
-
-						//	全員分の入力チェック
-						selectCheck = 0;
-						for ( int i = 0; i < PLAYER_MAX; i++ )
-						{
-							if (select[i])		selectCheck++;
-						}
-
-						//	全員選択済みだったら次のステップへ
-						if ( selectCheck >= selectInfo.playerNum )
-						{
-							selectInfo.step_cs++;
-							sound->PlaySE( SE::DECIDE_SE );
-						}
-					}
-
-					//	数値制限
-					if ( selectInfo.characterType[p] >= CHARACTER_TYPE::MAX )	selectInfo.characterType[p] = 0;
-					if ( selectInfo.characterType[p] < 0 )	selectInfo.characterType[p] = CHARACTER_TYPE::MAX - 1;
-				}
+			case 0:
+				SelectPlayer();
 				break;
 
-			case 1:		//　CPUキャラ選択
-				if ( selectInfo.playerNum == PLAYER_MAX )	selectInfo.step_cs++;
-				else
-				{
-					for ( int p = selectInfo.playerNum; p < PLAYER_MAX; p++ )
-					{
-						if ( KEY( KEY_RIGHT ) == 3 )	selectInfo.characterType[p]++;
-						if ( KEY( KEY_LEFT ) == 3 )	selectInfo.characterType[p]--;
-
-						//	数値制限
-						if ( selectInfo.characterType[p] >= CHARACTER_TYPE::MAX )	selectInfo.characterType[p] = 0;
-						if ( selectInfo.characterType[p] < 0 )	selectInfo.characterType[p] = CHARACTER_TYPE::MAX - 1;
-					}
-					if ( KEY( KEY_SPACE ) == 3 )
-					{
-						selectInfo.step_cs++;
-						sound->PlaySE( SE::DECIDE_SE );
-					}
-					if ( KEY( KEY_DOWN ) == 3 ) selectInfo.step_cs--;
-				}
+			case 1:
+				SelectCPU();
 				break;
 
 			case 2:
-				mode = TITLE_MODE::SELECT_STAGE;
-				selectInfo.step_cs = 0;
+				selectInfo.mode = SELECT_MODE::STAGE;
+				selectInfo.select_mode = 0;
+				m_Camera->SetNextPoint( TITLE_TARGET::SELECTSTAGE, 0.01f );
 				break;
 			}
 		}
 		
 		//    描画
-		void    sceneTitle::SelectCharacterRender(void)
+		void	sceneTitle::SelectCharacterRender( void )
 		{
 			DrawString("キャラ選択だよ", 300, 100);
 			//DrawString( "[SPACE]：ステージ選択へ", 300, 400, 0xFFFFFF00 );
 
 			char    str[64];
-			for (int p = 0; p < selectInfo.playerNum; p++)
+			for (int p = 0; p < setInfo.playerNum; p++)
 			{
-				LPSTR string = characterInfo[selectInfo.characterType[p]].name;
+				LPSTR string = characterInfo[selectInfo.playerselectInfo[p].num].name;
 				sprintf_s(str, "\n%dＰのキャラタイプ：", p + 1);
 				strcat(str, string);
 				DrawString(str, 300, 300 + p * 20, 0xFFFFFF00);
 			}
-			for (int p = selectInfo.playerNum; p < PLAYER_MAX; p++)
+			for (int p = setInfo.playerNum; p < PLAYER_MAX; p++)
 			{
-				LPSTR string = characterInfo[selectInfo.characterType[p]].name;
+				LPSTR string = characterInfo[selectInfo.playerselectInfo[p].num].name;
 				sprintf_s(str, "\n%dＰのキャラタイプ：", p + 1);
 				strcat(str, string);
 				DrawString(str, 300, 300 + p * 20);
 			}
 
-			switch (selectInfo.step_cs)
+			switch (selectInfo.select_mode)
 			{
 			case 0:
 				DrawString("プレイヤーが使うキャラを選んでね", 300, 280, 0xFFFFFF00);
@@ -661,6 +642,129 @@ namespace
 
 		}
 
+		//	プレイヤー選択
+		void	sceneTitle::SelectPlayer( void )
+		{
+			for ( int p = 0; p < setInfo.playerNum; p++ )
+			{
+				if ( input[p]->Get( KEY_DOWN ) == 3 )
+				{
+					//	全員未選択なら戻る
+					bool	isSelect[PLAYER_MAX] = 
+					{
+						selectInfo.playerselectInfo[0].isSelect,
+						selectInfo.playerselectInfo[1].isSelect,
+						selectInfo.playerselectInfo[2].isSelect,
+						selectInfo.playerselectInfo[3].isSelect,
+					};
+
+					//	全員未選択なら前のメニューへ
+					if ( !isSelect[0] && !isSelect[1] && !isSelect[2] && !isSelect[3] )
+					{
+						selectInfo.mode = TITLE_TARGET::PLAYERNUMBER;
+						return;
+					}
+
+					//	選択時キャンセル
+					characterInfo[selectInfo.playerselectInfo[p].num].select = false;
+					selectInfo.playerselectInfo[p].isSelect= false;
+				};
+
+				//	選択済みはスルー
+				if ( selectInfo.playerselectInfo[p].isSelect )	continue;
+
+				//	左右で選択
+				if ( input[p]->Get( KEY_RIGHT ) == 3 )	selectInfo.playerselectInfo[p].num++;
+				if ( input[p]->Get( KEY_LEFT ) == 3 )	selectInfo.playerselectInfo[p].num--;
+				
+				//	数値制限
+				if ( selectInfo.playerselectInfo[p].num >= CHARACTER_TYPE::MAX )	selectInfo.playerselectInfo[p].num = 0;
+				if ( selectInfo.playerselectInfo[p].num < 0 )	selectInfo.playerselectInfo[p].num = CHARACTER_TYPE::MAX - 1;
+
+				if ( input[p]->Get( KEY_SPACE ) == 3 )
+				{
+					//	未選択なら選択
+					if ( !characterInfo[selectInfo.playerselectInfo[p].num].select )
+					{
+						characterInfo[selectInfo.playerselectInfo[p].num].select = true;
+						selectInfo.playerselectInfo[p].isSelect = true;
+						sound->PlaySE( SE::DECIDE_SE );
+					}
+
+					//	全員未選択なら戻る
+					bool	isSelect[PLAYER_MAX] =
+					{
+						selectInfo.playerselectInfo[0].isSelect,
+						selectInfo.playerselectInfo[1].isSelect,
+						selectInfo.playerselectInfo[2].isSelect,
+						selectInfo.playerselectInfo[3].isSelect,
+					};
+
+					//	全員の選択チェック
+					bool	state = false;
+					switch ( setInfo.playerNum )
+					{
+					case 1:
+						if ( isSelect[0] )	state = true;
+						break;
+
+					case 2:
+						if ( isSelect[0] && isSelect[1] )	state = true;
+						break;
+
+					case 3:
+						if ( isSelect[0] && isSelect[1] && isSelect[2] )	state = true;
+						break;
+
+					case 4:
+						if ( isSelect[0] && isSelect[1] && isSelect[2] && isSelect[3] )	state = true;
+						break;
+					}
+					//	全員選択済みだったら次のステップへ
+					if ( state )
+					{
+						selectInfo.select_mode++;
+						sound->PlaySE( SE::DECIDE_SE );
+						for ( int i = 0; i < PLAYER_MAX; i++ )
+						{
+							setInfo.characterType[i] = selectInfo.playerselectInfo[i].num;
+						}
+					}
+				}
+
+			}
+		}
+
+		//	CPU選択
+		void	sceneTitle::SelectCPU( void )
+		{
+			//	プレイヤーが４人だったらつぎへ
+			if ( setInfo.playerNum == PLAYER_MAX )	selectInfo.select_mode++;
+			else
+			{
+				for ( int p = setInfo.playerNum; p < PLAYER_MAX; p++ )
+				{
+					//	選択
+					if (KEY(KEY_RIGHT) == 3)	setInfo.characterType[p]++;
+					if (KEY(KEY_LEFT) == 3)	setInfo.characterType[p]--;
+
+					//	数値制限
+					if ( setInfo.characterType[p] >= CHARACTER_TYPE::MAX )	setInfo.characterType[p] = 0;
+					if ( setInfo.characterType[p] < 0 )	setInfo.characterType[p] = CHARACTER_TYPE::MAX - 1;
+				}
+				
+				//	決定
+				if ( KEY( KEY_SPACE ) == 3 )
+				{
+					selectInfo.select_mode++;
+					sound->PlaySE( SE::DECIDE_SE );
+				}
+				
+				//	キャンセル
+				if ( KEY( KEY_DOWN ) == 3 ) selectInfo.select_mode--;
+			}
+		}
+
 	//--------------------------------------------------------
 	//	ステージ選択
 	//--------------------------------------------------------
@@ -668,35 +772,42 @@ namespace
 		//	更新
 		void	sceneTitle::SelectStageUpdate( void )
 		{
-			//　「A」「D」で選択
-			//　「SPACE」で決定
-			//　「S」で戻る
+			//	移動中は選択不可
+			if ( !m_Camera->GetMoveState() )	return;
 
 			//	選択
-			if ( KEY( KEY_RIGHT ) == 3 ) 	selectInfo.stageType++;
-			if ( KEY( KEY_LEFT ) == 3 )		selectInfo.stageType--;
+			if ( KEY( KEY_RIGHT ) == 3 ) 	setInfo.stageType++;
+			if ( KEY( KEY_LEFT ) == 3 )		setInfo.stageType--;
 
 			//	上下限設定
-			if ( selectInfo.stageType >= STAGE_MAX )	selectInfo.stageType = 0;
-			if ( selectInfo.stageType < 0 )					selectInfo.stageType = STAGE_MAX - 1;
+			if ( setInfo.stageType >= STAGE_MAX )	setInfo.stageType = 0;
+			if ( setInfo.stageType < 0 )						setInfo.stageType = STAGE_MAX - 1;
 
-			//	決定・キャンセル
+			//	決定
 			if ( KEY( KEY_SPACE ) == 3 )	
 			{
 				mode = TITLE_MODE::SELECT_CHECK;
 				sound->PlaySE( SE::DECIDE_SE );
+				m_Camera->SetNextPoint( TITLE_TARGET::CHECK, 0.01f );
+				return;
 			}
-			if ( KEY( KEY_DOWN ) == 3 )		mode = TITLE_MODE::SELECT_CHARACTER;
+
+			//	キャンセル
+			if ( KEY( KEY_DOWN ) == 3 )
+			{
+				selectInfo.mode = TITLE_TARGET::SELECTCHARACTER;
+				m_Camera->SetNextPoint( selectInfo.mode, 0.01f );
+			}
 		}
 
 		//    描画
-		void    sceneTitle::SelectStageRender(void)
+		void    sceneTitle::SelectStageRender( void )
 		{
 			DrawString("ステージ選択だよ", 50, 50);
 			DrawString("[SPACE]：最終確認へ", 300, 400);
 
 			char    str[64];
-			wsprintf(str, "ステージ：%d番\n", selectInfo.stageType);
+			wsprintf(str, "ステージ：%d番\n", setInfo.stageType);
 			IEX_DrawText(str, 300, 300, 200, 20, 0xFFFFFFFF);
 		}
 
@@ -707,44 +818,43 @@ namespace
 		//	更新
 		void	sceneTitle::SelectCheckUpdate( void )
 		{
-			//		「A」「D」で、はい・いいえ的なやつを選ぶ
-			//　	「SPACE」で決定
-			//　	「S」で戻る
-			if ( KEY( KEY_RIGHT ) == 3 )		selectInfo.ready = !selectInfo.ready;
-			if ( KEY( KEY_LEFT ) == 3 )		selectInfo.ready = !selectInfo.ready;
-			if ( KEY( KEY_DOWN ) == 3 )		mode = TITLE_MODE::SELECT_STAGE;
+			m_Camera->Update( VIEW_MODE::TITLE );
+			if ( !m_Camera->GetMoveState() )	return;
+			if ( KEY( KEY_RIGHT ) == 3 )		setInfo.ready = !setInfo.ready;
+			if ( KEY( KEY_LEFT ) == 3 )		setInfo.ready = !setInfo.ready;
+			if ( KEY( KEY_DOWN ) == 3 )		mode = TITLE_MODE::SELECT_PLAYERNUM;
 			if ( KEY( KEY_SPACE ) == 3 )
 			{
-				if ( selectInfo.ready )
+				if ( setInfo.ready )
 				{
 					//	情報をマネージャーに登録
-					for ( int p = 0; p < PLAYER_MAX; p++ )		gameManager->SetCharacterType( p, selectInfo.characterType[p] );
-					gameManager->SetPlayerNum( selectInfo.playerNum );
-					gameManager->SetStageType( selectInfo.stageType );
+					for ( int p = 0; p < PLAYER_MAX; p++ )		gameManager->SetCharacterType( p, setInfo.characterType[p] );
+					gameManager->SetPlayerNum( setInfo.playerNum );
+					gameManager->SetStageType( setInfo.stageType );
 					sound->PlaySE( SE::DECIDE_SE );
 					mode = TITLE_MODE::MOVE_MAIN;
 				}
-				else	mode = TITLE_MODE::SELECT_STAGE;
+				else	mode = TITLE_MODE::SELECT_PLAYERNUM;
 			}
 		}
 		
 		//    描画
-		void    sceneTitle::SelectCheckRender(void)
+		void    sceneTitle::SelectCheckRender( void )
 		{
 			//　選択情報
 			char    str[64];
 			for (int p = 0; p < PLAYER_MAX; p++)
 			{
-				LPSTR string = characterInfo[selectInfo.characterType[p]].name;
+				LPSTR string = characterInfo[setInfo.characterType[p]].name;
 				wsprintf(str, "\n%dＰのキャラタイプ：", p + 1);
 				strcat(str, string);
 				DrawString(str, 300, 250 + p * 20);
 			}
 
-			wsprintf(str, "プレイヤー人数：%d\n", selectInfo.playerNum);
+			wsprintf(str, "プレイヤー人数：%d\n", setInfo.playerNum);
 			DrawString(str, 300, 350);
 
-			wsprintf(str, "ステージ：%d番\n", selectInfo.stageType);
+			wsprintf(str, "ステージ：%d番\n", setInfo.stageType);
 			DrawString(str, 300, 370);
 
 			DrawString("最終確認だよ", 50, 50);
@@ -764,10 +874,13 @@ namespace
 		//	更新
 		void	sceneTitle::OptionUpdate( void )
 		{
+			m_Camera->Update( VIEW_MODE::TITLE );
+			if ( !m_Camera->GetMoveState() )	return;
 			if ( KEY( KEY_SPACE ) == 3 )
 			{
 				mode = TITLE_MODE::MENU;
 				sound->PlaySE( SE::DECIDE_SE );
+				m_Camera->SetNextPoint( TITLE_TARGET::PLAYERNUMBER, 0.01f );
 			}
 		}
 
@@ -785,10 +898,13 @@ namespace
 		//	更新
 		void	sceneTitle::CreditUpdate( void )
 		{
+			m_Camera->Update( VIEW_MODE::TITLE );
+			if ( !m_Camera->GetMoveState() )	return;
 			if ( KEY( KEY_SPACE ) == 3 )
 			{
 				mode = TITLE_MODE::MENU;
 				sound->PlaySE( SE::DECIDE_SE );
+				m_Camera->SetNextPoint( TITLE_TARGET::PLAYERNUMBER, 0.01f );
 			}
 		}
 

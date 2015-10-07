@@ -47,7 +47,7 @@
 	//	èâä˙âª
 	void	Effect::Initialize()
 	{
-		aura = new iexMesh("DATA\\Effect\\aura.IMO");
+		aura = new iexMesh("DATA\\Effect\\up.IMO");
 
 		circle_pic[0] = new iex2DObj("DATA/Effect/PL1.png");
 		circle_pic[1] = new iex2DObj("DATA/Effect/PL2.png");
