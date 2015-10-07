@@ -61,6 +61,9 @@
 		case	VIEW_MODE::CHASE:
 			ModeChase();
 			break;
+		case	VIEW_MODE::RESULT:
+			ModeResult();
+			break;
 		}
 
 		shader3D->SetValue("ViewPos", m_Camera->GetPos());
@@ -166,6 +169,11 @@
 		shakeflag = true;
 		this->wide = wide / ( float )shakeTimer;
 		this->shakeTimer = timer;
+	}
+
+	void	Camera::ModeResult( void )
+	{
+		Set(Vector3(0.0f, 5.0f, 13.0f), Vector3(0.0f, 5.0f, -30.0f));
 	}
 
 //------------------------------------------------------------------------------------------

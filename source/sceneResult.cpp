@@ -22,8 +22,6 @@
 //----------------------------------------------------------------------------
 //	初期化・解放
 //----------------------------------------------------------------------------
-int x = 250;
-int y = 100;
 	//	コンストラクタ
 	sceneResult::sceneResult( void )
 	{
@@ -62,7 +60,7 @@ int y = 100;
 
 			//	プレイヤー初期化
 			int		characterType = gameManager->GetCharacterType(i);
-			Vector3	pos = Vector3( -20.0f + ( 10.0f  *  i ), 0.0f, 0.0f );
+			Vector3	pos = Vector3( -6.0f + ( 4.0f  *  i ), 0.0f, 0.0f );
 			characterManager->Initialize( i, characterType, pos, true );
 		}
 
@@ -91,14 +89,9 @@ int y = 100;
 	//	更新
 	void	sceneResult::Update( void ) 
 	{
-		//	画像移動
-		if (KEY_Get(KEY_UP) == 1)y -= 10;
-		if (KEY_Get(KEY_DOWN) == 1)y += 10;
-		if (KEY_Get(KEY_RIGHT) == 1)x += 10;
-		if (KEY_Get(KEY_LEFT) == 1)x -= 10;
 
 		//	カメラ更新
-		m_Camera->Update(VIEW_MODE::FIX, Vector3( 0.0f, 0.0f, 0.0f ) );
+		m_Camera->Update(VIEW_MODE::RESULT, Vector3( 0.0f, 0.0f, 0.0f ) );
 
 		//	プレイヤー更新
 		characterManager->Update();
@@ -139,9 +132,13 @@ int y = 100;
 			ten = coinNum[i] / 10;
 			//コイン一桁目
 			one = coinNum[i] % 10;
+			Vector3 stringPos;
+			WorldToClient(characterManager->GetPos(i), stringPos, matView* matProjection);
+			stringPos.y = 100;
+			r_number->Render(stringPos.x  -40 * 1, stringPos.y, 64, 64, ten * 64, 0, 64, 64);	//	コイン二桁目
+			r_number->Render(stringPos.x  -40 * 0, stringPos.y, 64, 64, one * 64, 0, 64, 64);	//	コイン一桁目
 
-			r_number->Render(x + 40 * 0+200*i, y, 64, 64, ten * 64, 0, 64, 64);
-			r_number->Render(x + 40 * 1+200*i, y, 64, 64, one * 64, 0, 64, 64);
+			
 		}
 	}
 

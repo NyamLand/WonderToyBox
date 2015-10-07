@@ -17,6 +17,7 @@ namespace
 			FIX,
 			SLERP,
 			CHASE,		//	※このモードの場合はSetTargetでtargetに値を与える必要があります。
+			RESULT,
 		};
 	}
 }
@@ -58,6 +59,7 @@ public:
 	void	Slerp( Vector3 target, float speed ) ;
 	void	Shake( void );
 	void	ShakeSet( float wide, int timer );
+	void	ModeResult( void );
 
 	//	情報取得
 	Vector3	GetPos( void ){ return pos; }
