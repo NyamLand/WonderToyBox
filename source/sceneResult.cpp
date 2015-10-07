@@ -69,7 +69,11 @@
 		step = 0;
 		playerNum = 0;
 		wait = 0;
-		
+		for (int i = 0; i < 4; i++){
+			ten[i] = 0;
+			one[i] = 0;
+		}
+		resultcount = 0;
 		//	乱数初期化
 		Random::Initialize();
 
@@ -96,6 +100,8 @@
 		//	プレイヤー更新
 		characterManager->Update();
 
+		Production();
+		
 		//	タイトルへ
 		if ( KEY( KEY_SPACE ) == 3 )
 		{
@@ -128,15 +134,11 @@
 		}
 
 		for (int i = 0; i < 4; i++){
-			//コイン二桁目
-			ten = coinNum[i] / 10;
-			//コイン一桁目
-			one = coinNum[i] % 10;
 			Vector3 stringPos;
 			WorldToClient(characterManager->GetPos(i), stringPos, matView* matProjection);
 			stringPos.y = 100;
-			r_number->Render(stringPos.x  -40 * 1, stringPos.y, 64, 64, ten * 64, 0, 64, 64);	//	コイン二桁目
-			r_number->Render(stringPos.x  -40 * 0, stringPos.y, 64, 64, one * 64, 0, 64, 64);	//	コイン一桁目
+			r_number->Render(stringPos.x  -40 * 1, stringPos.y, 64, 64, ten[i] * 64, 0, 64, 64);	//	コイン二桁目
+			r_number->Render(stringPos.x  -40 * 0, stringPos.y, 64, 64, one[i] * 64, 0, 64, 64);	//	コイン一桁目
 
 			
 		}
@@ -188,4 +190,57 @@
 				lastBonus = rand() % 5;
 			}
 		}
+	}
+
+	void	sceneResult::Production( void )
+	{
+		switch (step)
+		{
+		case 0:
+			Production_Rotation( 0 );
+			break;
+
+		case 1:
+			Production_Coin_hand_off(0);
+			Production_Rotation( 1 );
+			break;
+
+		case 2:
+			Production_Coin_hand_off(1);
+			Production_Rotation( 2 );
+			break;
+
+		case 3:
+			Production_Coin_hand_off(2);
+			Production_Rotation( 3 );
+			break;
+		
+		case 4:
+			Production_Coin_hand_off(3);
+			break;
+		}
+
+	}
+
+	void	sceneResult::Production_Rotation(int start)
+	{
+		resultcount++;
+		for (int i = start; i < 4; i++){
+
+			ten[i]++;
+			if (ten[i] > 10)ten[i] = 0;
+			one[i]++;
+			if (one[i] > 10)one[i] = 0;
+		}
+		if (resultcount > 60){
+			resultcount = 0;
+			step++;
+		}
+	}
+
+	void	sceneResult::Production_Coin_hand_off(int chara)
+	{
+		ten[chara] = coinNum[chara] / 10;
+		one[chara] = coinNum[chara] % 10;
+
 	}
