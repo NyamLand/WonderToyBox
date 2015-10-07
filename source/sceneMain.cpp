@@ -70,8 +70,10 @@
 		stageType = gameManager->GetStageType();
 
 		//	ステージ
-		m_CollisionStage = new iexMesh( "DATA/BG/desk_Collision.IMO" );
+		m_CollisionStage = new iexMesh( "DATA/back/Collision.IMO" );
 		m_Stage = new iexMesh( "DATA/back/stage.IMO" );
+		m_Stage->SetAngle( D3DX_PI );
+		m_Stage->Update();
 		
 		//	当たり判定
 		Collision::Initiallize( m_CollisionStage );

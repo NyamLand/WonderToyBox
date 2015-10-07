@@ -17,6 +17,7 @@ namespace
 			FIX,
 			SLERP,
 			CHASE,		//	※このモードの場合はSetTargetでtargetに値を与える必要があります。
+			TITLE,
 		};
 	}
 }
@@ -48,13 +49,15 @@ public:
 	Camera( void );
 	~Camera( void );
 
-	//	更新
+	//	更新・描画
 	void	Update( int viewmode, Vector3 target );
+	void	Render( void );
 
 	//	動作関数
 	void	ModeFix( Vector3 target );
 	void	ModeSlerp( Vector3 target );
 	void	ModeChase( void );
+	void	ModeTitle( Vector3	 target );
 	void	Slerp( Vector3 target, float speed ) ;
 	void	Shake( void );
 	void	ShakeSet( float wide, int timer );
