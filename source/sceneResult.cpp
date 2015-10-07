@@ -22,8 +22,8 @@
 //----------------------------------------------------------------------------
 //	初期化・解放
 //----------------------------------------------------------------------------
-int x = 200;
-int y = 0;
+int x = 250;
+int y = 100;
 	//	コンストラクタ
 	sceneResult::sceneResult( void )
 	{
@@ -133,14 +133,16 @@ int y = 0;
 			sprintf_s( str, "%d位 : player%d　%d枚", i + 1, resultInfo[i].p_num + 1, resultInfo[i].p_Coin );
 			DrawString( str, 550, 250 + i * 30, 0xFFFFFFFF );
 		}
-		//コイン二桁目
-		int ten = coinNum[0] / 10;
-		//コイン一桁目
-		int one = coinNum[0] % 10;
 
-		int a = 0;
-		r_number->Render(x + 50 * 0, y, 64, 64, ten * 64, 0, 64, 64);
-		r_number->Render(x + 50 * 1, y, 64, 64, one * 64, 0, 64, 64);
+		for (int i = 0; i < 4; i++){
+			//コイン二桁目
+			ten = coinNum[i] / 10;
+			//コイン一桁目
+			one = coinNum[i] % 10;
+
+			r_number->Render(x + 40 * 0+200*i, y, 64, 64, ten * 64, 0, 64, 64);
+			r_number->Render(x + 40 * 1+200*i, y, 64, 64, one * 64, 0, 64, 64);
+		}
 	}
 
 //----------------------------------------------------------------------------
