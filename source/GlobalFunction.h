@@ -145,10 +145,10 @@
 //	図形設定
 //----------------------------------------------------------------------
 
-	//	頂点初期化
+	//	頂点設定
 	void	SetVertex( LVERTEX& v, float x, float y, float z, float tu, float tv, DWORD color );
 
-	//	頂点初期化
+	//	頂点設定
 	void	SetVertex( TLVERTEX& v, float x, float y, float z, float tu, float tv, DWORD color );
 
 //----------------------------------------------------------------------
