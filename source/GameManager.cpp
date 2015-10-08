@@ -5,7 +5,6 @@
 #include	"Collision.h"
 #include	"UI.h"
 #include	"sceneResult.h"
-#include	"Image.h"
 #include	"CharacterManager.h"
 #include	"GameManager.h"
 

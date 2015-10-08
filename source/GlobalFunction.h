@@ -18,6 +18,18 @@
 //	定数
 //----------------------------------------------------------------------
 
+	namespace IMAGE_MODE
+	{
+		enum
+		{
+			NORMAL,			//	オリジナル描画
+			ADOPTPARAM,	//	パラメータ採用
+			WAVE,				//	波紋
+			FLASH,				//	点滅
+			END,					//	終端
+		};
+	}
+
 //----------------------------------------------------------------------
 //	構造体
 //----------------------------------------------------------------------
@@ -45,6 +57,33 @@
 		int		textleft;
 		int		step;
 		bool	renderflag;
+	};
+
+	//	画像構造体
+	struct ImageObj
+	{
+		iex2DObj*	obj;
+		int	 x, y, w, h;
+		int	 sx, sy, sw, sh;
+		float	t;
+		float	alpha;
+		float	angle;
+		POINT	p;
+		bool	renderflag;
+
+		//	wave用パラメータ
+		int	 plusScaleX;
+		int	 plusScaleY;
+		float	wavespeed;
+		float	waveAlpha;
+		bool	waveState;
+		bool	waverenderflag;
+
+		//	flashing用パラメータ
+		float	flashingSpeed;
+		float	flashingAlpha;
+		float	flashingRenderflag;
+		float	flashingParam;
 	};
 
 //----------------------------------------------------------------------
@@ -87,6 +126,13 @@
 	void	DrawString( LPSTR string, int x, int y, float r, float g, float b );
 	void	DrawString( LPSTR string, int x, int y, Vector3 color );
 
+	//	画像操作
+	void	ImageInitialize( ImageObj& image, int x, int y, int w, int h, int sx, int sy, int sw, int sh );
+	void	RenderImage( ImageObj image, int sx, int sy, int sw, int sh, int mode );
+	void	SetWave( ImageObj& image, float speed );
+	void	WaveUpdate( ImageObj& image );
+	void	FlashingUpdate( ImageObj& image, float speed = -1.0f );
+
 //----------------------------------------------------------------------
 //	図形描画
 //----------------------------------------------------------------------
@@ -99,18 +145,18 @@
 //	図形設定
 //----------------------------------------------------------------------
 
-	//	頂点初期化
+	//	頂点設定
 	void	SetVertex( LVERTEX& v, float x, float y, float z, float tu, float tv, DWORD color );
 
-	//	頂点初期化
+	//	頂点設定
 	void	SetVertex( TLVERTEX& v, float x, float y, float z, float tu, float tv, DWORD color );
 
 //----------------------------------------------------------------------
 //	線形補間( 出力、開始値、最終値, 割合 )
 //----------------------------------------------------------------------
 
-	template<typename T>
-	bool	Lerp( T& out, T p1, T p2, float t )
+	template<typename T, typename T2>
+	bool	Lerp( T& out, T2 p1, T2 p2, float t )
 	{
 		if ( t >= 1.0f )	return	true;
 

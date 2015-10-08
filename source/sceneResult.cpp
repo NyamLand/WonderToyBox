@@ -6,7 +6,6 @@
 #include	"Random.h"
 #include	"GameManager.h"
 #include	"Collision.h"
-#include	"Image.h"
 #include	"Camera.h"
 #include	"CharacterManager.h"
 #include	"sceneTitle.h"
@@ -23,8 +22,6 @@
 //----------------------------------------------------------------------------
 //	初期化・解放
 //----------------------------------------------------------------------------
-int x = 200;
-int y = 0;
 	//	コンストラクタ
 	sceneResult::sceneResult( void )
 	{
@@ -63,7 +60,7 @@ int y = 0;
 
 			//	プレイヤー初期化
 			int		characterType = gameManager->GetCharacterType(i);
-			Vector3	pos = Vector3( -20.0f + ( 10.0f  *  i ), 0.0f, 0.0f );
+			Vector3	pos = Vector3( -6.0f + ( 4.0f  *  i ), 0.0f, 0.0f );
 			characterManager->Initialize( i, characterType, pos, true );
 		}
 
@@ -72,7 +69,11 @@ int y = 0;
 		step = 0;
 		playerNum = 0;
 		wait = 0;
-		
+		for ( int i = 0; i < 4; i++ ){
+			ten[i] = 0;
+			one[i] = 0;
+		}
+		resultcount = 0;
 		//	乱数初期化
 		Random::Initialize();
 
@@ -92,18 +93,15 @@ int y = 0;
 	//	更新
 	void	sceneResult::Update( void ) 
 	{
-		//	画像移動
-		if (KEY_Get(KEY_UP) == 1)y -= 10;
-		if (KEY_Get(KEY_DOWN) == 1)y += 10;
-		if (KEY_Get(KEY_RIGHT) == 1)x += 10;
-		if (KEY_Get(KEY_LEFT) == 1)x -= 10;
 
 		//	カメラ更新
-		m_Camera->Update(VIEW_MODE::FIX, Vector3( 0.0f, 0.0f, 0.0f ) );
+		m_Camera->Update(VIEW_MODE::RESULT, Vector3( 0.0f, 0.0f, 0.0f ) );
 
 		//	プレイヤー更新
 		characterManager->Update();
 
+		Production();
+		
 		//	タイトルへ
 		if ( KEY( KEY_SPACE ) == 3 )
 		{
@@ -134,14 +132,16 @@ int y = 0;
 			sprintf_s( str, "%d位 : player%d　%d枚", i + 1, resultInfo[i].p_num + 1, resultInfo[i].p_Coin );
 			DrawString( str, 550, 250 + i * 30, 0xFFFFFFFF );
 		}
-		//コイン二桁目
-		int ten = coinNum[0] / 10;
-		//コイン一桁目
-		int one = coinNum[0] % 10;
 
-		int a = 0;
-		r_number->Render(x + 50 * 0, y, 64, 64, ten * 64, 0, 64, 64);
-		r_number->Render(x + 50 * 1, y, 64, 64, one * 64, 0, 64, 64);
+		for (int i = 0; i < 4; i++){
+			Vector3 stringPos;
+			WorldToClient( characterManager->GetPos(i), stringPos, matView* matProjection );
+			stringPos.y = 100;
+			r_number->Render( ( int )stringPos.x  -40 * 1, ( int )stringPos.y, 64, 64, ten[i] * 64, 0, 64, 64);	//	コイン二桁目
+			r_number->Render( ( int )stringPos.x  -40 * 0, ( int )stringPos.y, 64, 64, one[i] * 64, 0, 64, 64);	//	コイン一桁目
+
+			
+		}
 	}
 
 //----------------------------------------------------------------------------
@@ -190,4 +190,57 @@ int y = 0;
 				lastBonus = rand() % 5;
 			}
 		}
+	}
+
+	void	sceneResult::Production( void )
+	{
+		switch (step)
+		{
+		case 0:
+			Production_Rotation( 0 );
+			break;
+
+		case 1:
+			Production_Coin_hand_off(0);
+			Production_Rotation( 1 );
+			break;
+
+		case 2:
+			Production_Coin_hand_off(1);
+			Production_Rotation( 2 );
+			break;
+
+		case 3:
+			Production_Coin_hand_off(2);
+			Production_Rotation( 3 );
+			break;
+		
+		case 4:
+			Production_Coin_hand_off(3);
+			break;
+		}
+
+	}
+
+	void	sceneResult::Production_Rotation(int start)
+	{
+		resultcount++;
+		for (int i = start; i < 4; i++){
+
+			ten[i]++;
+			if (ten[i] > 10)ten[i] = 0;
+			one[i]++;
+			if (one[i] > 10)one[i] = 0;
+		}
+		if (resultcount > 60){
+			resultcount = 0;
+			step++;
+		}
+	}
+
+	void	sceneResult::Production_Coin_hand_off(int chara)
+	{
+		ten[chara] = coinNum[chara] / 10;
+		one[chara] = coinNum[chara] % 10;
+
 	}

@@ -31,6 +31,9 @@ private:
 	int		step;
 	int		playerNum;
 	int		wait;
+	int		ten[4];	//コイン二桁目
+	int		one[4];	//コイン一桁目
+	int		resultcount;	//	演出用カウント
 	iex2DObj*	back; //背景
 	iex2DObj*	r_number; //コインの枚数
 	iexMesh*	collision;
@@ -48,7 +51,10 @@ public:
 	//	動作関数
 	void	BubbleSort( void );
 	void	SetLastBonus( void );
+	//	演出用関数
+	void	Production( void );	
+	void	Production_Rotation( int start );
+	void	Production_Coin_hand_off(int chara);
 };
-
 //*******************************************************************************
 #endif // !__SCENERESULT_H__

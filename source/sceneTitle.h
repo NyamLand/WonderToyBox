@@ -23,13 +23,20 @@ private:	//	構造体
 	};
 
 	//	選択情報
-	struct SelectInfo
+	struct SetInfo
 	{
 		int		characterType[4];
 		int 	playerNum;		//　何人で遊ぶ？
 		int		stageType;		//　どのステージ？
 		bool	ready;			//	準備OKか？
 		int		step_cs;
+	};
+
+	//	プレイヤー選択情報
+	struct PlayerSelectInfo
+	{
+		int		num;
+		bool	isSelect;
 	};
 
 	//	カメラ用パラメータ構造体
@@ -50,27 +57,58 @@ private:	//	構造体
 		float			t;
 	};
 
+	//	タイトル用パラメータ
+	struct TITLE_INFO
+	{
+		int		step;
+		CurtainInfo	curtainR;
+		CurtainInfo	curtainL;
+		ImageObj		pressSpace;
+		ImageObj		titleImage;
+	};
+
+	//	メニュー用パラメータ
+	struct MENU_INFO
+	{
+		int	 menu_num;
+	};
+
+	//	情報選択用パラメータ
+	struct SELECT_INFO
+	{
+		int		mode;
+		int		select_mode;
+		int		menu_num;
+		PlayerSelectInfo	playerselectInfo[4];
+	};
+
 private:
+	//	背景
+	iexMesh*	stage;
+
 	//	カメラ用パラメータ
 	CameraInfo	cameraInfo;
 
 	//	ゲーム設定用パラメータ
 	CharacterInfo	characterInfo[CHARACTER_TYPE::MAX];
-	SelectInfo		selectInfo;
+	SetInfo		setInfo;
 	int				mode;
 
-	//	タイトル用パラメータ
-	CurtainInfo	curtainR;
-	CurtainInfo	curtainL;
-	iex2DObj*		titleImage;
-	bool				title_renderflag;
-	iexMesh*	stage;
+	//	各モード用パラメータ
+	TITLE_INFO		titleInfo;
+	MENU_INFO		menuInfo;
+	SELECT_INFO	selectInfo;
+
+	Vector3	eff_pos;
 
 public:
 	//	初期化・解放
 	sceneTitle( void );
 	~sceneTitle( void );
 	bool	Initialize( void );
+	void	TitleInitialize( void );
+	void	MenuInitialize( void );
+	void	SelectInitialize( void );
 
 	//	更新・描画
 	void	Update( void );
@@ -87,6 +125,10 @@ public:
 	void	MenuUpdate( void );
 	void	MenuRender( void );
 
+	//	選択
+	void	SelectUpdate( void );
+	void	SelectRender( void );
+
 	//　人数選択
 	void	SelectPlayerNumUpdate( void );
 	void	SelectPlayerNumRender( void );
@@ -94,6 +136,10 @@ public:
 	//　キャラ選択
 	void	SelectCharacterUpdate( void );
 	void	SelectCharacterRender( void );
+
+	//	キャラクター選択動作
+	void	SelectPlayer( void );
+	void	SelectCPU( void );
 	
 	//　ステージ選択
 	void	SelectStageUpdate( void );

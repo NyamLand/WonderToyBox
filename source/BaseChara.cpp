@@ -63,8 +63,8 @@ namespace
 	BaseChara::BaseChara( void ) : obj( nullptr ), input( nullptr ),		//	pointer
 		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ),	//	Vector3
 		angle(0.0f), scale(0.0f), speed(0.0f),	drag(0.0f), force( 0.0f ),	//	float
-		unrivaled(false), isGround(false), boosting(false), isPlayer(false),	//	bool
-		mode(0), playerNum(0), power(0), leanFrame(0)		//	int
+		unrivaled(false), isGround(false), boosting(false), isPlayer(false),	jumpState(false),//	bool
+		mode(0), playerNum(0), power(0), leanFrame(0), jumpStep(0)		//	int
 	{
 	
 	}
@@ -270,7 +270,7 @@ namespace
 	//	モード管理
 	void	BaseChara::ModeManagement( void )
 	{
-		switch (mode)
+		switch ( mode )
 		{
 		case MODE_STATE::WAIT:
 			Wait();
@@ -347,21 +347,24 @@ namespace
 	//	ステージ当たり判定
 	void	BaseChara::StageCollisionCheck( void )
 	{
+		//	壁判定
+		Collision::CheckWall( pos, move );
+
 		//　床判定
 		float work = Collision::GetHeight( pos );
-		if ( pos.y <= work )
+
+		if ( pos.y < work )
 		{
 			pos.y = work;
 			move.y = 0;
 			isGround = true;
+			jumpState = true;
 		}
 		else
 		{
 			isGround = false;
 		}
 
-		//	壁判定
-		Collision::CheckWall( pos, move );
 	}
 
 	//	角度調整
@@ -423,7 +426,7 @@ namespace
 		SetDrag( 0.9f );
 
 		SetMotion( MOTION_NUM::POSTURE );
-		if ( move.Length() <= 0.01f )
+		if ( move.Length() <= 0.001f )
 		{
 			SetMode( MODE_STATE::MOVE );
 			unrivaled = false;
@@ -507,18 +510,30 @@ namespace
 		{
 		case	MODE_STATE::QUICKARTS:
 			isEnd = QuickArts();
+<<<<<<< HEAD
 			if (!isEnd)	SetAttackParam(attackKind);
+=======
+			if ( !isEnd )	SetAttackParam( attackKind );
+>>>>>>> 9201917789fb0fa56ff59c85644608081ac046b9
 			break;
 
 		case MODE_STATE::POWERARTS:
 			isEnd = PowerArts();
+<<<<<<< HEAD
 			if (!isEnd)	SetAttackParam(attackKind);
+=======
+			if ( !isEnd )	SetAttackParam( attackKind );
+>>>>>>> 9201917789fb0fa56ff59c85644608081ac046b9
 			break;
 
 		case MODE_STATE::HYPERARTS:
 			isEnd = HyperArts();
 			canHyper = isEnd;
+<<<<<<< HEAD
 			if (!isEnd)	SetAttackParam(attackKind);
+=======
+			if ( !isEnd )	SetAttackParam( attackKind );
+>>>>>>> 9201917789fb0fa56ff59c85644608081ac046b9
 			break;
 		}
 
@@ -538,20 +553,39 @@ namespace
 	//	ジャンプ
 	void	BaseChara::Jump( void )
 	{
-		SetMode( MODE_STATE::MOVE );
-		if ( !isGround )	return;
-		static	float toY = pos.y = 10.0f;
-
-		if ( pos.y <= toY )
+		static	float toY = 10.0f;
+		switch ( jumpStep )
 		{
-			move.y += 0.2f;
-		}
-		
-		//	移動
-		Run();
+		case 0:
+			jumpState = false;
+			toY = pos.y + 0.3f;
+			jumpStep++;
+			break;
 
-		//	設置してたら
-		if ( isGround )	SetMode( MODE_STATE::MOVE );
+		case 1:
+			Control();
+			if ( pos.y <= toY )
+			{
+				move.y += 0.1f;
+			}
+			else
+			{
+				jumpStep++;
+			}
+			break;
+
+		case 2:
+			Control();
+			if ( isGround )
+			{
+				jumpStep = 0;
+				jumpState = true;
+				toY = 0;
+				SetMode( MODE_STATE::MOVE );
+			}
+			break;
+		}
+
 	}
 
 	//	ガード
@@ -613,7 +647,10 @@ namespace
 			if ( input->Get( KEY_C ) == 3 )	mode = MODE_STATE::HYPERARTS;
 		}
 	
-		if ( input->Get( KEY_D ) == 3 )		mode = MODE_STATE::JUMP;
+		if ( input->Get( KEY_D ) == 3 )
+		{
+			if ( jumpState )		mode = MODE_STATE::JUMP;
+		}
 		if ( input->Get( KEY_B7 ) == 3 )	mode = MODE_STATE::GUARD;
 		if ( input->Get( KEY_B10 ) == 3 )	mode = MODE_STATE::DAMAGE_STRENGTH;
 	}
@@ -869,4 +906,10 @@ namespace
 	void	BaseChara::SetKnockBackVec( Vector3 vec )
 	{
 		knockBackInfo.vec = vec;
+	}
+
+	//	無敵状態設定
+	void	BaseChara::SetUnrivaled( bool state )
+	{
+		this->unrivaled = state;
 	}

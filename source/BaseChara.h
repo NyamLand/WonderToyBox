@@ -188,10 +188,12 @@ protected:
 	bool			canHyper;
 	bool			boosting;
 	bool			isPlayer;
+	bool			jumpState;
 	int				mode;
 	int				playerNum;
 	int				power;
 	int				leanFrame;		//	仰け反り時間
+	int				jumpStep;			//	ジャンプ動作
 
 	//	各情報構造体
 	DAMAGECOLOR_INFO		damageColor;
@@ -275,6 +277,7 @@ public:
 	void	SetLeanFrame( int frame );
 	void	SetBoosting( bool boosting );
 	void	SetKnockBackVec( Vector3 vec );
+	void	SetUnrivaled( bool state );
 
 	//	情報取得
 	Matrix	GetMatrix( void )const;

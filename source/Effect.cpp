@@ -47,7 +47,7 @@
 	//	èâä˙âª
 	void	Effect::Initialize()
 	{
-		aura = new iexMesh("DATA\\Effect\\aura.IMO");
+		aura = new iexMesh("DATA\\Effect\\up.IMO");
 
 		circle_pic[0] = new iex2DObj("DATA/Effect/PL1.png");
 		circle_pic[1] = new iex2DObj("DATA/Effect/PL2.png");
@@ -153,8 +153,8 @@
 		{
 			for (int n = 0; n < 4; n++)
 			{
-				circle_out[i].poligon[n].x = cosf(c_angle) * (circle[i].poligon[n].x - circle[i].c_pos.x) - sinf(c_angle) * (circle[i].poligon[n].z - circle[i].c_pos.z) + circle[i].c_pos.x;
-				circle_out[i].poligon[n].z = sinf(c_angle) * (circle[i].poligon[n].x - circle[i].c_pos.x) + cosf(c_angle) * (circle[i].poligon[n].z - circle[i].c_pos.z) + circle[i].c_pos.z;
+				circle_out[i].poligon[n].x = cosf( c_angle) * (circle[i].poligon[n].x - circle[i].c_pos.x) - sinf(c_angle) * (circle[i].poligon[n].z - circle[i].c_pos.z) + circle[i].c_pos.x;
+				circle_out[i].poligon[n].z = sinf( c_angle) * (circle[i].poligon[n].x - circle[i].c_pos.x) + cosf(c_angle) * (circle[i].poligon[n].z - circle[i].c_pos.z) + circle[i].c_pos.z;
 			}
 		}
 	}
@@ -162,10 +162,9 @@
 	//	ï`âÊ
 	void	Effect::Render( void )
 	{
-		if(isAura)	aura->Render(shader3D,"effect_add");
-		for (int i = 0; i < 4; i++){
+		if( isAura )	aura->Render( shader3D,"effect_add" );
+		for ( int i = 0; i < 4; i++ ){
 			iexPolygon::Render3D( circle_out[i].poligon, 2, circle_pic[i], RS_COPY );
-			particle->BlueFlame( Vector3( circle_out[0].poligon[i].x, circle_out[0].poligon[i].y, circle_out[0].poligon[i].z ), 0.1f );
 		}
 	}
 
