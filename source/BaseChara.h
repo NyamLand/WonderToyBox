@@ -188,10 +188,12 @@ protected:
 	bool			canHyper;
 	bool			boosting;
 	bool			isPlayer;
+	bool			jumpState;
 	int				mode;
 	int				playerNum;
 	int				power;
 	int				leanFrame;		//	仰け反り時間
+	int				jumpStep;			//	ジャンプ動作
 
 	//	各情報構造体
 	DAMAGECOLOR_INFO		damageColor;
