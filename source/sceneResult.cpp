@@ -70,6 +70,7 @@
 		playerNum = 0;
 		wait = 0;
 		for ( int i = 0; i < 4; i++ ){
+			hundred[i] = 0;
 			ten[i] = 0;
 			one[i] = 0;
 		}
@@ -137,6 +138,7 @@
 			Vector3 stringPos;
 			WorldToClient( characterManager->GetPos(i), stringPos, matView* matProjection );
 			stringPos.y = 100;
+			r_number->Render( ( int )stringPos.x - 40 * 2, ( int )stringPos.y, 64, 64, hundred[i] * 64, 0, 64, 64);	//	コイン三桁目
 			r_number->Render( ( int )stringPos.x  -40 * 1, ( int )stringPos.y, 64, 64, ten[i] * 64, 0, 64, 64);	//	コイン二桁目
 			r_number->Render( ( int )stringPos.x  -40 * 0, ( int )stringPos.y, 64, 64, one[i] * 64, 0, 64, 64);	//	コイン一桁目
 
@@ -227,6 +229,8 @@
 		resultcount++;
 		for (int i = start; i < 4; i++){
 
+			hundred[i]++;
+			if (hundred[i]>10)hundred[i] = 0;
 			ten[i]++;
 			if (ten[i] > 10)ten[i] = 0;
 			one[i]++;
@@ -240,7 +244,9 @@
 
 	void	sceneResult::Production_Coin_hand_off(int chara)
 	{
+		hundred[chara] = coinNum[chara] / 100;
 		ten[chara] = coinNum[chara] / 10;
+		if (ten[chara] > 10)ten[chara] %= 10;
 		one[chara] = coinNum[chara] % 10;
 
 	}

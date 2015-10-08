@@ -10,6 +10,9 @@
 
 //	include
 #include	"Coin.h"
+#include	<list>
+
+using namespace std;
 
 //	class
 class CoinManager
@@ -22,6 +25,7 @@ protected:
 
 	//	オブジェクト
 	iexMesh*	org;			//	オリジナルモデル
+	list<Coin*>	coinList;
 	Coin*		c_Coin;
 
 	//	変数

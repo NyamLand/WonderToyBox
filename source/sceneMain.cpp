@@ -133,14 +133,7 @@
 	//	プレイヤー初期化
 	void    sceneMain::PlayerInitialize(void)
 	{
-		/*
-			このスコープ内＆PlayerManagerのInitializeとLoadの中の
-			コメントを外したらPlayer＆CPUとして識別＆読み込みをする。（はず）
-			（１ ～ playerNum番目がプレイヤー、playerNum ～ PLAYER_MAX番目がCPU）
-		*/
-
 		//　プレイヤー設定
-		//for (int i = 0; i < 4; i++)
 		for ( int i = 0; i < playerNum; i++ )
 		{
 			int        characterType = gameManager->GetCharacterType( i );
@@ -204,7 +197,9 @@
 		{
 			//particle->Hit(Vector3(0, 10.0f, 0), 20, 0.5f);
 			//particle->Smoke(Vector3(0, 10.0f, 0), 20, 0.5f);
-			particle->Aura(Vector3(0, 10.0f, 0), 3, 0.5f);
+		//	particle->Aura(Vector3(0, 10.0f, 0), 3, 0.5f);
+			//particle->Arrow(Vector3(0, 15.0f, 0), 6, 0.5f, 100);
+
 
 		}
 
@@ -273,6 +268,9 @@
 	//	全体更新
 	void	sceneMain::AllUpdate( void )
 	{
+		//	アイテム更新
+		itemManager->Update();
+
 		//	player
 		characterManager->Update();
 
@@ -288,8 +286,6 @@
 		//　エフェクト更新
 		m_Effect->Update();
 
-		//	アイテム更新
-		itemManager->Update();
 	}
 
 //*****************************************************************************************************************************

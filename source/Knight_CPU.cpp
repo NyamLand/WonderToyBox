@@ -19,7 +19,12 @@
 	//	コンストラクタ
 	Knight_CPU::Knight_CPU( void ) : Knight()
 	{
-	
+		//	パラメータ初期化
+		//lance_r = 0.0f;
+		power = 5;
+		speed = 0.2f;
+		scale = 0.02f;
+		isGround = true;
 	}
 
 	//	デストラクタ
@@ -33,7 +38,7 @@
 //-----------------------------------------------------------------------------
 
 	//	AI動作
-	void	Knight_CPU::ControlAI( void )
-	{
-		particle->BlueFlame( GetPos(), 1.0f );
-	}
+	//void	Knight_CPU::ControlAI( void )
+	//{
+	//	particle->BlueFlame( GetPos(), 1.0f );
+	//}
