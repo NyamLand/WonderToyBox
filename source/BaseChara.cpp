@@ -226,39 +226,39 @@ namespace
 		switch ( motion )
 		{
 		case MOTION_NUM::STAND:
-			obj->SetMotion( MOTION_DATA::STAND );
+			obj->SetMotion( STAND );
 			break;
 			
 		case MOTION_NUM::POSTURE:
-			obj->SetMotion( MOTION_DATA::POSTURE );
+			obj->SetMotion( POSTURE );
 			break;
 
 		case MOTION_NUM::JUMP:
-			obj->SetMotion( MOTION_DATA::POSTURE );
+			obj->SetMotion( POSTURE );
 			break;
 
 		case MOTION_NUM::GUARD:
-			obj->SetMotion( MOTION_DATA::POSTURE );
+			obj->SetMotion( POSTURE );
 			break;
 
 		case MOTION_NUM::LANDING:
-			obj->SetMotion( MOTION_DATA::POSTURE );
+			obj->SetMotion( POSTURE );
 			break;
 
 		case MOTION_NUM::RUN:
-			obj->SetMotion( MOTION_DATA::POSTURE );
+			obj->SetMotion( POSTURE );
 			break;
 
 		case MOTION_NUM::ATTACK1:
-			obj->SetMotion( MOTION_DATA::POSTURE );
+			obj->SetMotion( POSTURE );
 			break;
 
 		case MOTION_NUM::ATTACK2:
-			obj->SetMotion( MOTION_DATA::POSTURE );
+			obj->SetMotion( POSTURE );
 			break;
 
 		case MOTION_NUM::ATTACK3:
-			obj->SetMotion( MOTION_DATA::POSTURE );
+			obj->SetMotion( POSTURE );
 			break;
 
 
@@ -679,7 +679,7 @@ namespace
 		}*/
 
 		//　コインがある時
-			AutoRun();
+			//AutoRun();
 		//if ()
 		//{
 		//}
@@ -730,11 +730,11 @@ namespace
 		Vector3	vEye(m_Camera->GetTarget() - m_Camera->GetPos());
 		float	cameraAngle = atan2f(vEye.x, vEye.z);
 
-		Vector3	vec = pos - target;
+		Vector3	vec = target - pos;
 		vec.Normalize();
 
 		//	入力方向を求める
-		float inputAngle = atan2f(vec.x, vec.z);
+		float inputAngle = atan2f(vec.z, vec.x);
 
 		//	目標の角度を求める
 		float	targetAngle = cameraAngle + inputAngle;
