@@ -23,7 +23,7 @@ namespace
 			NORMAL,
 			STAR,
 			SMOKE,
-			AURA,
+			ARROW,
 			END,
 		};
 	}
@@ -35,7 +35,7 @@ namespace
 			"DATA/particle.png",
 			"DATA/Effect/star.png",
 			"DATA/Effect/smoke.png",
-			"",
+			"DATA/Effect/arrow.png",
 		};
 	}
 }
@@ -189,42 +189,57 @@ namespace
 	}
 
 
-	//	オーラ
-	void	Particle::Aura(const Vector3& pos, const int& time, const float& scale)
+	//		矢印アップ
+	void	Particle::Arrow_UP(const Vector3& pos, const int& time, const float& scale , const int move)
 	{
-		pt->SetImage(effectImage[NORMAL]);
+		pt->SetImage(effectImage[ARROW]);
 		Vector3	Pos, Move, Power;
 		timer++;
 		if (timer % time != 0) return;
-		for (int j = 0; j<20; j++)
+		for (int j = 0; j<1; j++)
 		{
-			//Pos.x = pos.x;// + (Random::GetInt(-500, 500)	 * (0.001f * scale));
-			//Pos.y = pos.y;// + (Random::GetInt(-500, 0)	 * (0.001f * scale));
-			//Pos.z = pos.z;// + (Random::GetInt(-500, 500)	 * (0.001f * scale));
+			Pos.x = pos.x + (Random::GetInt(-move, move)	 * (0.01f * scale));
+			Pos.y = pos.y;
+			Pos.z = pos.z + (Random::GetInt(-move, move)	 * (0.01f * scale));
 
-			//Move.x = Random::GetInt(-100, 100)	 * (0.001f * scale);
-			//Move.y = 0.0f;
-			//Move.z = Random::GetInt(-100, 100)	 * (0.001f * scale);
-
-			//Power.x = 0.0f;
-			//Power.y = Random::GetInt( 0  , 200 ) * ( scale * 0.00015f );
-			//Power.z = 0.0f;
-
-
-			Pos.x = pos.x+ (Random::GetInt(-100, 100)	 * (0.03f * scale));
-			Pos.y = pos.y+ (Random::GetInt(-100, 100)	 * (0.03f * scale));
-			Pos.z = pos.z+ (Random::GetInt(-100, 100)	 * (0.03f * scale));
-
-			Move.x = Random::GetInt(-100, 100)	 * (0.001f * scale);
-			Move.y = Random::GetInt(-100, 100)	 * (0.001f * scale);
-			Move.z = Random::GetInt(-100, 100)	 * (0.001f * scale);
+			Move.x = 0.0f;
+			Move.y = Random::GetInt(0, 100)	 * (0.001f * scale);
+			Move.z = 0.0f;
 
 			Power.x = 0.0f;
-			Power.y = 0.001f * scale;
+			Power.y = 0.0f;
 			Power.z = 0.0f;
 
+
 			//					画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
-			pt->Set(0, 0, 0.7f, 10, 0.7f, 5, 0.7f, &Pos, &Move, &Power, 0.2f, 0.2f, 0.0f, scale, RS_COPY);
+			pt->Set(0, 0, 0.6f, 25, 0.0f, 10, 0.3f, &Pos, &Move, &Power, 0.7f, 0.1f, 0.1f, scale, RS_COPY);
+		}
+	}
+
+	//	矢印ダウン
+	void	Particle::Arrow_DOWN(const Vector3& pos, const int& time, const float& scale, const int move)
+	{
+		pt->SetImage(effectImage[ARROW]);
+		Vector3	Pos, Move, Power;
+		timer++;
+		if (timer % time != 0) return;
+		for (int j = 0; j < 1; j++)
+		{
+			Pos.x = pos.x + (Random::GetInt(-move, move)	 * (0.01f * scale));
+			Pos.y = pos.y + 1.5 * scale;
+			Pos.z = pos.z + (Random::GetInt(-move, move)	 * (0.01f * scale));
+
+			Move.x = 0.0f;
+			Move.y = Random::GetInt(-100, 0)	 * (0.001f * scale);
+			Move.z = 0.0f;
+
+			Power.x = 0.0f;
+			Power.y = 0.0f;
+			Power.z = 0.0f;
+
+
+			//					画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
+			pt->Set(0, 0, 0.6f, 25, 0.0f, 10, 0.3f, &Pos, &Move, &Power, 1.0f, 1.0f, 1.0f, scale, RS_COPY);
 		}
 	}
 //------------------------------------------------------------------------

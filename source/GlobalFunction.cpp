@@ -180,6 +180,7 @@
 	{
 		image.plusScaleX = 0;
 		image.plusScaleY = 0;
+		image.t = 0;
 		image.waveAlpha = 1.0f;
 		image.waveState = true;
 		image.wavespeed = speed;
@@ -187,7 +188,7 @@
 	}
 
 	//	îgñ‰çXêV
-	void	WaveUpdate( ImageObj& image )
+	void	WaveUpdate( ImageObj& image, int max_scale, float max_alpha )
 	{
 		if ( image.waveState )
 		{
@@ -202,9 +203,9 @@
 				image.waverenderflag = false;
 			}
 
-			Lerp( image.waveAlpha, 1.0f, 0.0f, image.t );
-			Lerp( image.plusScaleX, 0, 140, image.t );
-			Lerp( image.plusScaleY, 0, 140, image.t );
+			Lerp( image.waveAlpha, max_alpha, 0.0f, image.t );
+			Lerp( image.plusScaleX, 0, max_scale, image.t );
+			Lerp( image.plusScaleY, 0, max_scale, image.t );
 		}
 	}
 

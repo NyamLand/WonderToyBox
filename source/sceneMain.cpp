@@ -197,7 +197,9 @@
 		{
 			//particle->Hit(Vector3(0, 10.0f, 0), 20, 0.5f);
 			//particle->Smoke(Vector3(0, 10.0f, 0), 20, 0.5f);
-			particle->Aura(Vector3(0, 10.0f, 0), 3, 0.5f);
+		//	particle->Aura(Vector3(0, 10.0f, 0), 3, 0.5f);
+			//particle->Arrow(Vector3(0, 15.0f, 0), 6, 0.5f, 100);
+
 
 		}
 
