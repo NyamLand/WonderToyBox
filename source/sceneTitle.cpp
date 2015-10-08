@@ -303,7 +303,7 @@ namespace
 		//	デバッグ
 		m_Camera->Render();
 
-		char	str[256];
+		//char	str[256];
 		Matrix	mat = m_Camera->GetMatrix();
 		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
 		front.Normalize();

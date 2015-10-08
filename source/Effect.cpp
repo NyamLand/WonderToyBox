@@ -113,7 +113,7 @@
 			SetWave(pow_up, 2.0f);
 		}
 		WaveUpdate(pow_up, 30, 0.3f);
-		particle->Arrow_UP(circle_out[0].c_pos, 6, 2.0f, 100);
+		//particle->Arrow_UP(circle_out[0].c_pos, 6, 2.0f, 100);
 
 
 	}

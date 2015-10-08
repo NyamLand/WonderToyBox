@@ -226,7 +226,7 @@ namespace
 		for (int j = 0; j < 1; j++)
 		{
 			Pos.x = pos.x + (Random::GetInt(-move, move)	 * (0.01f * scale));
-			Pos.y = pos.y + 1.5 * scale;
+			Pos.y = pos.y + 1.5f * scale;
 			Pos.z = pos.z + (Random::GetInt(-move, move)	 * (0.01f * scale));
 
 			Move.x = 0.0f;
