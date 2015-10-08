@@ -514,30 +514,21 @@ namespace
 		{
 		case	MODE_STATE::QUICKARTS:
 			isEnd = QuickArts();
-<<<<<<< HEAD
 			if (!isEnd)	SetAttackParam(attackKind);
-=======
 			if ( !isEnd )	SetAttackParam( attackKind );
->>>>>>> 9201917789fb0fa56ff59c85644608081ac046b9
 			break;
 
 		case MODE_STATE::POWERARTS:
 			isEnd = PowerArts();
-<<<<<<< HEAD
 			if (!isEnd)	SetAttackParam(attackKind);
-=======
 			if ( !isEnd )	SetAttackParam( attackKind );
->>>>>>> 9201917789fb0fa56ff59c85644608081ac046b9
 			break;
 
 		case MODE_STATE::HYPERARTS:
 			isEnd = HyperArts();
 			canHyper = isEnd;
-<<<<<<< HEAD
 			if (!isEnd)	SetAttackParam(attackKind);
-=======
 			if ( !isEnd )	SetAttackParam( attackKind );
->>>>>>> 9201917789fb0fa56ff59c85644608081ac046b9
 			break;
 		}
 
