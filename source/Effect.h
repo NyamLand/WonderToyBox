@@ -27,6 +27,9 @@ private:
 	Circle		circle_out[4];
 	float		c_angle;
 
+	ImageObj	pow_up;
+	Vector3		pow_pos;
+	int			pow_time;
 
 public:
 	//	‰Šú‰»E‰ğ•ú

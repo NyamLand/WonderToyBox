@@ -49,68 +49,28 @@
 	{
 		aura = new iexMesh("DATA\\Effect\\aura.IMO");
 
-		circle_pic[0] = new iex2DObj("DATA/Effect/PL1.png");
-		circle_pic[1] = new iex2DObj("DATA/Effect/PL2.png");
-		circle_pic[2] = new iex2DObj("DATA/Effect/PL3.png");
-		circle_pic[3] = new iex2DObj("DATA/Effect/PL4.png");
+		circle_pic[0] = new iex2DObj("DATA/Effect/PL1-2.png");
+		circle_pic[1] = new iex2DObj("DATA/Effect/PL2-2.png");
+		circle_pic[2] = new iex2DObj("DATA/Effect/PL3-2.png");
+		circle_pic[3] = new iex2DObj("DATA/Effect/PL4-2.png");
 
-		for ( int i = 0; i < 4; i++ ){
-			//	頂点設定
-			circle[i].poligon[0].x = 0;
-			circle[i].poligon[0].y = 0;
-			circle[i].poligon[0].z = 0;
-			circle[i].poligon[0].tu = 0;
-			circle[i].poligon[0].tv = 0;
-			
-			circle[i].poligon[1].x = 0;
-			circle[i].poligon[1].y = 0;
-			circle[i].poligon[1].z = 0;
-			circle[i].poligon[1].tu = 0;
-			circle[i].poligon[1].tv = 0;
+		pow_up.obj = new iex2DObj("DATA/Effect/ol-r.png");
+		ImageInitialize(pow_up, 0, 0, 90, 90, 0, 0, 0, 0);
 
-			circle[i].poligon[2].x = 0;
-			circle[i].poligon[2].y = 0;
-			circle[i].poligon[2].z = 0;
-			circle[i].poligon[2].tu = 0;
-			circle[i].poligon[2].tv = 0;
-
-			circle[i].poligon[3].x = 0;
-			circle[i].poligon[3].y = 0;
-			circle[i].poligon[3].z = 0;
-			circle[i].poligon[3].tu = 0;
-			circle[i].poligon[3].tv = 0;
-
-			circle[i].c_pos = Vector3(0, 10, 0);
-		
-			//	頂点設定
-			circle_out[i].poligon[0].x = 0;
-			circle_out[i].poligon[0].y = 0;
-			circle_out[i].poligon[0].z = 0;
-			circle_out[i].poligon[0].tu = 0;
-			circle_out[i].poligon[0].tv = 0;
-
-			circle_out[i].poligon[1].x = 0;
-			circle_out[i].poligon[1].y = 0;
-			circle_out[i].poligon[1].z = 0;
-			circle_out[i].poligon[1].tu = 0;
-			circle_out[i].poligon[1].tv = 0;
-
-			circle_out[i].poligon[2].x = 0;
-			circle_out[i].poligon[2].y = 0;
-			circle_out[i].poligon[2].z = 0;
-			circle_out[i].poligon[2].tu = 0;
-			circle_out[i].poligon[2].tv = 0;
-
-			circle_out[i].poligon[3].x = 0;
-			circle_out[i].poligon[3].y = 0;
-			circle_out[i].poligon[3].z = 0;
-			circle_out[i].poligon[3].tu = 0;
-			circle_out[i].poligon[3].tv = 0;
-		
+		for (int i = 0; i < 4; i++){
+			for (int j = 0; j < 4; j++){
+				//	頂点設定
+				SetVertex(circle[i].poligon[j], 0, 0, 0, 0, 0, 0xFFFFFF);
+				SetVertex(circle_out[i].poligon[j], 0, 0, 0, 0, 0, 0xFFFFFF);
+			}
+			circle[i].c_pos = Vector3(0, 10, 0);	
 			circle_out[i].c_pos = Vector3(0, 10, 0);
-
-			c_angle = 0.0f;
 		}
+
+		c_angle = 0.0f;
+		pow_pos = Vector3(0, 0, 0);
+		pow_time = 0;
+		
 	}
 
 //-------------------------------------------------------------------------
@@ -118,8 +78,12 @@
 //-------------------------------------------------------------------------
 
 	//	更新
-	void	Effect::Update( void )
+	void	Effect::Update(void)
 	{
+		if (gameManager->GetMode() == GAME_MODE::DONKETSU_DIRECTION)
+		{
+			return;
+		}
 		if (gameManager->GetMode() == GAME_MODE::CLIMAX)	isAura = true;
 		if (isAura)
 		{
@@ -134,14 +98,23 @@
 
 		//	情報更新
 		for (int i = 0; i < 4; i++){
-			PoligonSet( &circle[i] );
-			PoligonSet( &circle_out[i] );
-			CirclePosSet( &circle[i], i );
-			CirclePosSet( &circle_out[i], i );
+			PoligonSet(&circle[i]);
+			PoligonSet(&circle_out[i]);
+			CirclePosSet(&circle[i], i);
+			CirclePosSet(&circle_out[i], i);
 		}
 		//	回転
 		Spin();
-		c_angle += 0.1f;
+		c_angle += 0.02f;
+
+		//	パワー更新
+		pow_time++;
+		if (pow_up.waveState == false){
+			SetWave(pow_up, 2.0f);
+		}
+		WaveUpdate(pow_up, 30, 0.3f);
+		particle->Arrow_UP(circle_out[0].c_pos, 6, 2.0f, 100);
+
 
 	}
 
@@ -164,8 +137,19 @@
 	{
 		if(isAura)	aura->Render(shader3D,"effect_add");
 		for (int i = 0; i < 4; i++){
-			iexPolygon::Render3D( circle_out[i].poligon, 2, circle_pic[i], RS_COPY );
-			particle->BlueFlame( Vector3( circle_out[0].poligon[i].x, circle_out[0].poligon[i].y, circle_out[0].poligon[i].z ), 0.1f );
+			iexPolygon::Render3D(circle_out[i].poligon, 2, circle_pic[i], RS_ADD);
+		}
+
+		for (int i = 0; i < 4; i++){
+			//	プレイヤーのポジションより2つ高い位置を取る
+			WorldToClient(circle_out[i].c_pos + Vector3(0, 2.0f, 0), pow_pos, matView* matProjection);
+			pow_up.x = (int)pow_pos.x;	pow_up.y = (int)pow_pos.y;
+			
+			//	ベース（NORMAL）のパラメータ用
+			pow_up.renderflag = true;	pow_up.alpha = 0.3f;
+
+		//	RenderImage(pow_up, 0, 0, 512, 512, IMAGE_MODE::ADOPTPARAM);
+		//	RenderImage(pow_up, 0, 0, 512, 512, IMAGE_MODE::WAVE);
 		}
 	}
 
@@ -183,24 +167,31 @@
 			c->poligon[0].z = POS[0]	+ c->c_pos.z;
 			c->poligon[0].tu = 0.0f;
 			c->poligon[0].tv = 0.0f;
+			c->poligon[0].color = 0xFFFFFFFF;
 
 			c->poligon[1].x = POS[0]	+ c->c_pos.x;
 			c->poligon[1].y = POS[2]	+ c->c_pos.y;
 			c->poligon[1].z = POS[0]	+ c->c_pos.z;
 			c->poligon[1].tu = 1.0;
 			c->poligon[1].tv = 0.0f;
+			c->poligon[1].color = 0xFFFFFFFF;
+
 
 			c->poligon[2].x = POS[1] + c->c_pos.x;
 			c->poligon[2].y = POS[2] + c->c_pos.y;
 			c->poligon[2].z = POS[1] + c->c_pos.z;
 			c->poligon[2].tu = 0.0f;
 			c->poligon[2].tv = 1.0f;
+			c->poligon[2].color = 0xFFFFFFFF;
+
 
 			c->poligon[3].x = POS[0] + c->c_pos.x;
 			c->poligon[3].y = POS[2] + c->c_pos.y;
 			c->poligon[3].z = POS[1] + c->c_pos.z;
 			c->poligon[3].tu = 1.0f;
-			c->poligon[3].tv = 1.0f;			
+			c->poligon[3].tv = 1.0f;
+			c->poligon[3].color = 0xFFFFFFFF;
+
 	}
 
 	void	Effect::CirclePosSet( Circle* c, int i )

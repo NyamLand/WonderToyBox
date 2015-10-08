@@ -27,9 +27,11 @@ public:
 	//	“®ìŠÖ”
 	void	BlueFlame( const Vector3& pos, const float& scale = 1.0f );		//	Â‰Š
 	void	Spark( const Vector3& pos, const float& scale = 1.0f );			//	‰Î‰Ô
-	void	Particle::Hit( const Vector3& pos, const int& time = 1, const float& scale = 1.0f );				//	¯
-	void	Particle::Smoke( const Vector3& pos, const int& time = 1, const float& scale = 1.0f );				//	‰Œ
-	void	Particle::Aura(const Vector3& pos, const int& time = 1, const float& scale = 1.0f);				//	‰Œ
+	void	Particle::Hit( const Vector3& pos, const int& time = 1, const float& scale = 1.0f );										//	¯
+	void	Particle::Smoke( const Vector3& pos, const int& time = 1, const float& scale = 1.0f );										//	‰Œ
+	void	Particle::Arrow_UP(const Vector3& pos, const int& time = 1, const float& scale = 1.0f, const int move = 100);				//	–îˆóUP
+	void	Particle::Arrow_DOWN(const Vector3& pos, const int& time = 1, const float& scale = 1.0f, const int move = 100);				//	–îˆóDOWN
+
 
 
 	//	î•ñæ“¾
