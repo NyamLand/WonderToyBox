@@ -311,14 +311,14 @@
 		m_BulletManager->Render();
 		itemManager->Render();
 		
-		//UI
-		ui->Render( gameManager->GetMode() );
+		//	パーティクル描画
+		particle->Render();
 
 		//　エフェクト描画
 		m_Effect->Render();
 
-		//	パーティクル描画
-		particle->Render();
+		//UI
+		ui->Render( gameManager->GetMode() );
 	}
 
 	//	シャドウバッファ描画
