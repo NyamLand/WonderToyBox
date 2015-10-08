@@ -22,6 +22,6 @@ public:
 
 	//	“®ìŠÖ”
 	bool	CPU_Move( void );
-	void	ControlAI( void )override;
+	//void	ControlAI( void )override;
 };
 

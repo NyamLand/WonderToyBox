@@ -117,3 +117,9 @@
 		return	&out;
 	}
 
+	//	ƒŠƒXƒgæ“¾
+	std::list<Item*>	ItemManager::GetList( void )
+	{
+		return	itemList;
+	}
+

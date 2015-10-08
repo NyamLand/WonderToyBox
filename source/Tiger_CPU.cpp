@@ -19,7 +19,15 @@
 	//	コンストラクタ
 	Tiger_CPU::Tiger_CPU( void ) : Tiger()
 	{
-
+		//	パラメータ初期化
+		attackInfo.r = 0.5f;
+		attackInfo.t = 0.0f;
+		speed = 0.2f;
+		scale = 0.02f;
+		diffence = -1;
+		isGround = true;
+		//attackCount = 0;
+		//attackFlag = false;
 	}
 
 	//	デストラクタ
@@ -33,7 +41,7 @@
 //-----------------------------------------------------------------------------
 
 	//	AI動作
-	void	Tiger_CPU::ControlAI( void )
-	{
-		particle->BlueFlame( GetPos(), 1.0f );
-	}
+	//void	Tiger_CPU::ControlAI( void )
+	//{
+	//	particle->BlueFlame( GetPos(), 1.0f );
+	//}

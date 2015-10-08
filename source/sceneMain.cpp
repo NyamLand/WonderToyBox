@@ -133,14 +133,7 @@
 	//	プレイヤー初期化
 	void    sceneMain::PlayerInitialize(void)
 	{
-		/*
-			このスコープ内＆PlayerManagerのInitializeとLoadの中の
-			コメントを外したらPlayer＆CPUとして識別＆読み込みをする。（はず）
-			（１ ～ playerNum番目がプレイヤー、playerNum ～ PLAYER_MAX番目がCPU）
-		*/
-
 		//　プレイヤー設定
-		//for (int i = 0; i < 4; i++)
 		for ( int i = 0; i < playerNum; i++ )
 		{
 			int        characterType = gameManager->GetCharacterType( i );
@@ -273,6 +266,9 @@
 	//	全体更新
 	void	sceneMain::AllUpdate( void )
 	{
+		//	アイテム更新
+		itemManager->Update();
+
 		//	player
 		characterManager->Update();
 
@@ -288,8 +284,6 @@
 		//　エフェクト更新
 		m_Effect->Update();
 
-		//	アイテム更新
-		itemManager->Update();
 	}
 
 //*****************************************************************************************************************************

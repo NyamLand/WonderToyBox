@@ -19,7 +19,11 @@
 	//	コンストラクタ
 	Princess_CPU::Princess_CPU( void ) : Princess()
 	{
-
+		//	パラメータ初期化
+		speed = 0.25f;
+		scale = 0.02f;
+		diffence = -1;
+		isGround = true;
 	}
 
 	//	デストラクタ
@@ -33,7 +37,7 @@
 //-----------------------------------------------------------------------------
 
 	//	AI動作
-	void	Princess_CPU::ControlAI( void )
-	{
-		particle->BlueFlame( GetPos(), 1.0f );
-	}
+	//void	Princess_CPU::ControlAI( void )
+	//{
+	//	particle->BlueFlame( GetPos(), 1.0f );
+	//}
