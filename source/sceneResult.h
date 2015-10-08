@@ -31,6 +31,7 @@ private:
 	int		step;
 	int		playerNum;
 	int		wait;
+	int		hundred[4];	//コイン三桁目
 	int		ten[4];	//コイン二桁目
 	int		one[4];	//コイン一桁目
 	int		resultcount;	//	演出用カウント
