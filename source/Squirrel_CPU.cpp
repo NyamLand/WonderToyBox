@@ -19,7 +19,13 @@
 	//	コンストラクタ
 	Squirrel_CPU::Squirrel_CPU( void ) : Squirrel()
 	{
-
+		//	パラメータ初期化
+		attackInfo.r = 0.0f;
+		attackInfo.t = 0.0f;
+		speed = 0.3f;
+		scale = 0.02f;
+		diffence = -5;
+		isGround = true;
 	}
 
 	//	デストラクタ
@@ -33,7 +39,7 @@
 //-----------------------------------------------------------------------------
 
 	//	AI動作
-	void	Squirrel_CPU::ControlAI( void )
-	{
-		particle->BlueFlame( GetPos(), 1.0f );
-	}
+	//void	Squirrel_CPU::ControlAI( void )
+	//{
+	//	particle->BlueFlame( GetPos(), 1.0f );
+	//}

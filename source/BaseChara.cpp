@@ -7,8 +7,10 @@
 #include	"Particle.h"
 #include	"Camera.h"
 #include	"CoinManager.h"
+#include	"ItemManager.h"
 #include	"Effect.h"
 #include	"Sound.h"
+#include	"Random.h"
 
 #include	"BaseChara.h"
 
@@ -365,7 +367,7 @@ namespace
 		if ( !( input->Get( KEY_AXISX ) || input->Get( KEY_AXISY ) ) )	return;
 
 		//	左スティックの入力
-		float axisX = input->Get( KEY_AXISX ) * 0.001f;
+		float	axisX = input->Get( KEY_AXISX ) * 0.001f;
 		float	axisY = -input->Get( KEY_AXISY ) * 0.001f;
 
 		//	カメラの前方方向を求める
@@ -478,13 +480,15 @@ namespace
 	}
 
 	//	動作
-	void	BaseChara::Move( void )
+	void	BaseChara::Move(void)
 	{
 		//	プレイヤーかそうでないかで処理を分ける
-		if ( isPlayer )	Control();
-		else				ControlAI();
+		if (isPlayer)	Control();
+		else
+		{
+			ControlAI();
+		}
 	}
-
 	//	移動
 	void	BaseChara::Move( float length )
 	{
@@ -614,29 +618,103 @@ namespace
 	}
 
 	//	AI操作
-	void	BaseChara::ControlAI( void )
+	void	BaseChara::ControlAI(void)
 	{
-		//	今は仮なので適当に変えてください
-		switch ( mode )
+		/*
+		・コインがある時はコインを取りに行く。（1,2歩歩く→ちょっと止まる）、（コイン取る→次を探す）
+		　→ 確率で適当に攻撃出す（キャラによって挙動を変える）
+		 ・段差を見分けてジャンプも出来るようにしたい。
+		 ・コインがない時は１位もしくは距離が近い相手を攻撃。
+		 ・誰かが近くで攻撃行為をしていたら確率でガード。
+		 ・もしどんけつになったら８割ぐらいの確率でハイパーアーツを使う。
+		 */
+
+		/*switch ( aiInfo.mode )
 		{
 		case AI_MODE_STATE::WAIT:
-			break;
+		mode = MODE_STATE::WAIT;
+		break;
 
-		case AI_MODE_STATE::MOVE:
-			break;
+		case AI_MODE_STATE::MOVE:	//　→ここでAIっぽい挙動に割り当て
+		AutoMove();
+		break;
 
 		case AI_MODE_STATE::ATTACK:
-			break;
+		break;
 
 		case AI_MODE_STATE::GUARD:
-			break;
+		break;
 
 		case AI_MODE_STATE::JUMP:
-			break;
+		break;
 
 		default:
-			break;
-		}
+		break;
+		}*/
+
+		//　コインがある時
+			AutoRun();
+		//if ()
+		//{
+		//}
+		//// else
+		//{
+		//
+		//}
+	}
+
+//----------------------------------------------------------------------------
+//	AI動作関数
+//----------------------------------------------------------------------------
+	
+	//	コイン探す（戻り値：一番近くのコインの番号）
+	int		BaseChara::SearchCoin()
+	{
+		//　仮
+		return Random::GetInt(0, 200);
+	}
+
+	//　num番目コインが存在するか
+	bool	BaseChara::CheckSearchedCoin(int num)
+	{
+		return	true;
+	}
+
+	//　コインを取りに行く
+	void	BaseChara::AutoRun()
+	{
+		Vector3		target = Vector3( 0, 0, 0 );
+		itemManager->GetMinPos( target, pos );
+		particle->BlueFlame(target, 1.0f);
+		
+		//　targetに向けて1～3歩歩く
+		SetMotion(MOTION_NUM::RUN);
+		static	float adjustSpeed = 0.2f;
+		AutoAngleAdjust(adjustSpeed, target);
+		move.x = sinf(angle) * speed;
+		move.z = cosf(angle) * speed;
+
+		//　ちょっと止まる
+
+	}
+
+	void	BaseChara::AutoAngleAdjust(float speed, Vector3 target)
+	{
+		//	カメラの前方方向を求める
+		Vector3	vEye(m_Camera->GetTarget() - m_Camera->GetPos());
+		float	cameraAngle = atan2f(vEye.x, vEye.z);
+
+		Vector3	vec = pos - target;
+		vec.Normalize();
+
+		//	入力方向を求める
+		float inputAngle = atan2f(vec.x, vec.z);
+
+		//	目標の角度を求める
+		float	targetAngle = cameraAngle + inputAngle;
+
+		//	親に投げる
+		AngleAdjust(Vector3(sinf(targetAngle), 0.0f, cosf(targetAngle)), speed);
 	}
 
 //----------------------------------------------------------------------------

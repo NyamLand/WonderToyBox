@@ -92,3 +92,9 @@
 		int		out = type;
 		return	out;
 	}
+
+	bool	Item::GetState( void )
+	{
+		bool		out = state;
+		return	out;
+	}

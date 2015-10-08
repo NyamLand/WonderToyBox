@@ -8,6 +8,7 @@
 //*******************************************************************************
 
 //	include
+#include	"ItemManager.h"
 
 //	parameter
 namespace
@@ -262,6 +263,11 @@ public:
 	virtual	void	Control( void );
 
 	//	AI動作関数
+	int 	SearchCoin();					//　コイン探す
+	bool	CheckSearchedCoin(int num);		//　見つけたコインが存在するか
+	void	AutoRun();						//　コインを取りに行く
+	void	AutoAngleAdjust(float speed, Vector3 target);
+	//void	AutoAngleAdjust(const Vector3& direction, float speed);
 
 	//	情報設定
 	void	SetMode( int mode );
