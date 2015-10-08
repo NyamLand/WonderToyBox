@@ -66,7 +66,7 @@
 	void	GameManager::Update( void )
 	{
 		//	タイマー更新
-		timer--;
+		//timer--;
 
 		//	残り時間３０秒でどんけつ演出へ
 		if ( timer == 30 * SECOND )

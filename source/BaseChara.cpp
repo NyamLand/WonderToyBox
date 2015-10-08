@@ -115,6 +115,7 @@ namespace
 		{
 			//	攻撃情報初期化
 			{
+				attackInfo.type = 0;
 				attackInfo.bottom = Vector3( 0.0f, 0.0f, 0.0f );
 				attackInfo.top = Vector3( 0.0f, 0.0f, 0.0f );
 				attackInfo.pos = Vector3( 0.0f, 0.0f, 0.0f );
@@ -176,6 +177,10 @@ namespace
 	//	更新
 	void	BaseChara::Update( void )
 	{
+		if (unrivaled == false)
+		{
+			int a = 0;
+		}
 		//	モード管理
 		ModeManagement();
 
@@ -428,7 +433,7 @@ namespace
 	//	ノックバック	強
 	void	BaseChara::KnockBackStrength( void )
 	{
-		float	force = 1.5f;
+		float	force = 3.0f;
 
 		move = knockBackInfo.vec * force;
 		SetMode( MODE_STATE::DAMAGE );
@@ -437,7 +442,7 @@ namespace
 	//	ノックバック　中
 	void	BaseChara::KnockBackMiddle( void )
 	{
-		float force = 0.7f;
+		float force = 2.0f;
 
 		move = knockBackInfo.vec * force;
 		SetMode( MODE_STATE::DAMAGE );
@@ -446,7 +451,7 @@ namespace
 	//	ノックバック　弱
 	void	BaseChara::KnockBackWeak( void )
 	{
-		float force = 0.5f;
+		float force = 1.0f;
 
 		move = knockBackInfo.vec * force;
 		SetMode( MODE_STATE::DAMAGE );
@@ -458,7 +463,7 @@ namespace
 		static int branktime = 0;	//仮の仰け反り時間　後でモーションフレームからとる可能性大
 
 		unrivaled = true;
-		if ( branktime == 0 ) ( SetDamageColor( damageColor.catchColor ) );
+		if ( branktime == 0 )  SetDamageColor( damageColor.catchColor );
 		branktime++;
 		SetMove( Vector3( 0.0f, move.y, 0.0f ) );
 		SetMotion( MOTION_NUM::POSTURE );
@@ -502,18 +507,18 @@ namespace
 		{
 		case	MODE_STATE::QUICKARTS:
 			isEnd = QuickArts();
-			if ( !isEnd )	SetAttackParam( attackInfo.type );
+			if (!isEnd)	SetAttackParam(attackKind);
 			break;
 
 		case MODE_STATE::POWERARTS:
 			isEnd = PowerArts();
-			if ( !isEnd )	SetAttackParam( attackInfo.type );
+			if (!isEnd)	SetAttackParam(attackKind);
 			break;
 
 		case MODE_STATE::HYPERARTS:
 			isEnd = HyperArts();
 			canHyper = isEnd;
-			if ( !isEnd )	SetAttackParam( attackInfo.type );
+			if (!isEnd)	SetAttackParam(attackKind);
 			break;
 		}
 
