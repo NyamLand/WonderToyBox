@@ -340,7 +340,7 @@ namespace
 				FlashingUpdate( titleInfo.pressSpace, D3DX_PI / 180 * 4.0f );
 
 				//	SPACEキーで選択
-				if ( input[0]->Get( KEY_SPACE ) == 3 )
+				if ( KEY( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )
 				{
 					//	タイトル画像を隠す
 					titleInfo.titleImage.renderflag = false;
@@ -427,13 +427,13 @@ namespace
 			if ( m_Camera->GetMoveState() )	//	移動が終了してたら
 			{
 				//	C,Vキーで選択
-				if ( KEY( KEY_C ) == 3 )
+				if ( KEY( KEY_LEFT ) == 3 )
 				{
 					menuInfo.menu_num--;
 					if ( menuInfo.menu_num < 0 )		menuInfo.menu_num = TITLE_TARGET::CREDIT;
 					m_Camera->SetNextPoint( menuInfo.menu_num, 0.01f );
 				}
-				if ( KEY( KEY_D ) == 3 )
+				if ( KEY( KEY_RIGHT ) == 3 )
 				{
 					menuInfo.menu_num++;
 					if ( menuInfo.menu_num > TITLE_TARGET::CREDIT )	menuInfo.menu_num = 0;
@@ -441,7 +441,7 @@ namespace
 				}
 
 				//	決定
-				if ( KEY( KEY_SPACE ) == 3 )
+				if ( KEY( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )
 				{
 					switch ( menuInfo.menu_num )
 					{
@@ -556,7 +556,7 @@ namespace
 			if ( setInfo.playerNum < 1 )						setInfo.playerNum = PLAYER_MAX; 
 
 			//	選択
-			if ( KEY( KEY_SPACE ) == 3 )
+			if ( KEY( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )
 			{
 				selectInfo.mode = SELECT_MODE::CHARACTER;
 				m_Camera->SetNextPoint( TITLE_TARGET::SELECTCHARACTER, 0.01f );
@@ -565,7 +565,7 @@ namespace
 			}
 
 			//	キャンセル
-			if ( KEY( KEY_DOWN ) == 3 )
+			if ( KEY( KEY_B ) == 3 )
 			{
 				mode = TITLE_MODE::MENU;
 				m_Camera->SetNextPoint( TITLE_TARGET::PLAYERNUMBER, 0.01f );
@@ -649,7 +649,7 @@ namespace
 		{
 			for ( int p = 0; p < setInfo.playerNum; p++ )
 			{
-				if ( input[p]->Get( KEY_DOWN ) == 3 )
+				if ( input[p]->Get( KEY_B ) == 3 )
 				{
 					//	全員未選択なら戻る
 					bool	isSelect[PLAYER_MAX] = 
@@ -683,7 +683,7 @@ namespace
 				if ( selectInfo.playerselectInfo[p].num >= CHARACTER_TYPE::MAX )	selectInfo.playerselectInfo[p].num = 0;
 				if ( selectInfo.playerselectInfo[p].num < 0 )	selectInfo.playerselectInfo[p].num = CHARACTER_TYPE::MAX - 1;
 
-				if ( input[p]->Get( KEY_SPACE ) == 3 )
+				if ( input[p]->Get( KEY_SPACE ) == 3 || input[p]->Get( KEY_A ) == 3 )
 				{
 					//	未選択なら選択
 					if ( !characterInfo[selectInfo.playerselectInfo[p].num].select )
@@ -756,14 +756,14 @@ namespace
 				}
 				
 				//	決定
-				if ( KEY( KEY_SPACE ) == 3 )
+				if ( KEY( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )
 				{
 					selectInfo.select_mode++;
 					sound->PlaySE( SE::DECIDE_SE );
 				}
 				
 				//	キャンセル
-				if ( KEY( KEY_DOWN ) == 3 ) selectInfo.select_mode--;
+				if ( KEY( KEY_B ) == 3 ) selectInfo.select_mode--;
 			}
 		}
 
@@ -786,7 +786,7 @@ namespace
 			if ( setInfo.stageType < 0 )						setInfo.stageType = STAGE_MAX - 1;
 
 			//	決定
-			if ( KEY( KEY_SPACE ) == 3 )	
+			if ( KEY( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )	
 			{
 				mode = TITLE_MODE::SELECT_CHECK;
 				sound->PlaySE( SE::DECIDE_SE );
@@ -795,7 +795,7 @@ namespace
 			}
 
 			//	キャンセル
-			if ( KEY( KEY_DOWN ) == 3 )
+			if ( KEY( KEY_B ) == 3 )
 			{
 				selectInfo.mode = TITLE_TARGET::SELECTCHARACTER;
 				m_Camera->SetNextPoint( selectInfo.mode, 0.01f );
@@ -824,8 +824,8 @@ namespace
 			if ( !m_Camera->GetMoveState() )	return;
 			if ( KEY( KEY_RIGHT ) == 3 )		setInfo.ready = !setInfo.ready;
 			if ( KEY( KEY_LEFT ) == 3 )		setInfo.ready = !setInfo.ready;
-			if ( KEY( KEY_DOWN ) == 3 )		mode = TITLE_MODE::SELECT_PLAYERNUM;
-			if ( KEY( KEY_SPACE ) == 3 )
+			if ( KEY( KEY_B ) == 3 )		mode = TITLE_MODE::SELECT_PLAYERNUM;
+			if ( KEY( KEY_SPACE ) == 3  || KEY( KEY_A ) == 3 )
 			{
 				if ( setInfo.ready )
 				{
@@ -878,7 +878,7 @@ namespace
 		{
 			m_Camera->Update( VIEW_MODE::TITLE );
 			if ( !m_Camera->GetMoveState() )	return;
-			if ( KEY( KEY_SPACE ) == 3 )
+			if ( KEY( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )
 			{
 				mode = TITLE_MODE::MENU;
 				sound->PlaySE( SE::DECIDE_SE );
@@ -902,7 +902,7 @@ namespace
 		{
 			m_Camera->Update( VIEW_MODE::TITLE );
 			if ( !m_Camera->GetMoveState() )	return;
-			if ( KEY( KEY_SPACE ) == 3 )
+			if ( KEY( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )
 			{
 				mode = TITLE_MODE::MENU;
 				sound->PlaySE( SE::DECIDE_SE );

@@ -497,9 +497,10 @@ namespace
 		if (isPlayer)	Control();
 		else
 		{
-			ControlAI();
+			//ControlAI();
 		}
 	}
+	
 	//	ˆÚ“®
 	void	BaseChara::Move( float length )
 	{
@@ -638,19 +639,19 @@ namespace
 	{
 		Run();
 
-		if ( input->Get( KEY_A ) == 3 )		mode = MODE_STATE::QUICKARTS;
-		if ( input->Get( KEY_B ) == 3 )		mode = MODE_STATE::POWERARTS;
+		if ( input->Get( KEY_D ) == 3 )		mode = MODE_STATE::QUICKARTS;
+		if ( input->Get( KEY_C ) == 3 )		mode = MODE_STATE::POWERARTS;
 		if ( canHyper )
 		{
-			if ( input->Get( KEY_C ) == 3 )	mode = MODE_STATE::HYPERARTS;
+			if ( input->Get( KEY_A ) == 3 )	mode = MODE_STATE::HYPERARTS;
 		}
 	
-		if ( input->Get( KEY_D ) == 3 )
+		if ( input->Get( KEY_B ) == 3 )
 		{
 			if ( jumpState )		mode = MODE_STATE::JUMP;
 		}
-		if ( input->Get( KEY_B7 ) == 3 )	mode = MODE_STATE::GUARD;
-		if ( input->Get( KEY_B10 ) == 3 )	mode = MODE_STATE::DAMAGE_STRENGTH;
+		if ( input->Get( KEY_B6 ) == 3 )	mode = MODE_STATE::GUARD;
+		//if ( input->Get( KEY_B10 ) == 3 )	mode = MODE_STATE::DAMAGE_STRENGTH;
 	}
 
 	//	AI‘€ì
@@ -761,6 +762,7 @@ namespace
 		}
 	}
 
+	//	Œü‚«’²®
 	void	BaseChara::AutoAngleAdjust(float speed, Vector3 target)
 	{
 		//	ƒJƒƒ‰‚Ì‘O•û•ûŒü‚ğ‹‚ß‚é

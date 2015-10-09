@@ -56,8 +56,6 @@
 	{
 		BaseChara::Render( shader, technique );
 
-		//	デバッグ用
-		if ( !debug )	return;
 		DrawCapsule( attackInfo.bottom, attackInfo.top, attackInfo.r, 0xFFFFFFFF );
 
 		char	str[256];

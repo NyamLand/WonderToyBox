@@ -114,7 +114,6 @@
 			character[i]->Render( shader, technique );
 			Vector3	p_pos = character[i]->GetPos();
 
-			if ( !debug )continue;
 			DrawCapsule( p_pos, Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z ), 1.0f );
 
 			char str[256];

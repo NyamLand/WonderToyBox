@@ -119,7 +119,7 @@
 			Lerp( attackInfo.pos, startPos, finLinePos, t );
 
 			//	“®ì’†‚Éƒ{ƒ^ƒ“‰Ÿ‚·‚ÆŽŸ‚ÌUŒ‚‚Ö
-			if ( input->Get( KEY_A ) == 3 )
+			if ( input->Get( KEY_D ) == 3 )
 			{
 				if ( !attackFlag )
 				{
