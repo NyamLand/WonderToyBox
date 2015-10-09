@@ -19,6 +19,8 @@ private:
 		int		p_num;
 	};
 
+
+
 private:
 	RESULT_INFO	resultInfo[4];
 	
@@ -53,9 +55,9 @@ public:
 	void	BubbleSort( void );
 	void	SetLastBonus( void );
 	//	演出用関数
-	void	Production( void );	
-	void	Production_Rotation( int start );
-	void	Production_Coin_hand_off(int chara);
+	void	Production( void );		//リザルトの演出用関数
+	void	Production_Rotation( int playerNum );	//コイン枚数回転関数
+	void	Production_Coin_hand_off(int playerNum);	//コイン枚数引き渡し
 };
 //*******************************************************************************
 #endif // !__SCENERESULT_H__

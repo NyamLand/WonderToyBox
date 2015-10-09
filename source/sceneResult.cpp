@@ -20,6 +20,21 @@
 //********************************************************************************
 
 //----------------------------------------------------------------------------
+//	グローバル
+//----------------------------------------------------------------------------
+
+namespace
+{
+	namespace MOVE_MODE
+	{
+		enum
+		{
+
+		};
+	}
+}
+
+//----------------------------------------------------------------------------
 //	初期化・解放
 //----------------------------------------------------------------------------
 	//	コンストラクタ
@@ -60,7 +75,7 @@
 
 			//	プレイヤー初期化
 			int		characterType = gameManager->GetCharacterType(i);
-			Vector3	pos = Vector3( -6.0f + ( 4.0f  *  i ), 0.0f, 0.0f );
+			Vector3	pos = Vector3( 6.0f - ( 4.0f  *  i ), 0.0f, 0.0f );
 			characterManager->Initialize( i, characterType, pos, true );
 		}
 
@@ -196,57 +211,69 @@
 
 	void	sceneResult::Production( void )
 	{
+		int	player = 0;
+		int player_num = 0;
+
 		switch (step)
 		{
 		case 0:
-			Production_Rotation( 0 );
+			Production_Rotation( player );
 			break;
 
 		case 1:
-			Production_Coin_hand_off(0);
-			Production_Rotation( 1 );
+			player = 1;
+			Production_Coin_hand_off(player_num);
+			Production_Rotation( player );
 			break;
 
 		case 2:
-			Production_Coin_hand_off(1);
-			Production_Rotation( 2 );
+			player=2;
+			player_num=1;
+			Production_Coin_hand_off(player_num);
+			Production_Rotation(player);
 			break;
 
 		case 3:
-			Production_Coin_hand_off(2);
-			Production_Rotation( 3 );
+			player=3;
+			player_num=2;
+			Production_Coin_hand_off(player_num);
+			Production_Rotation(player);
 			break;
 		
 		case 4:
-			Production_Coin_hand_off(3);
+			player_num=3;
+			Production_Coin_hand_off(player_num);
 			break;
 		}
 
 	}
 
-	void	sceneResult::Production_Rotation(int start)
+	void	sceneResult::Production_Rotation(int playerNum)
 	{
 		resultcount++;
-		for (int i = start; i < 4; i++){
+		for (int i = playerNum; i < 4; i++){
 
 			hundred[i]++;
-			if (hundred[i]>10)hundred[i] = 0;
+			if (hundred[i]>=10)hundred[i] = 0;
 			ten[i]++;
-			if (ten[i] > 10)ten[i] = 0;
+			if (ten[i] >= 10)ten[i] = 0;
 			one[i]++;
-			if (one[i] > 10)one[i] = 0;
+			if (one[i] >= 10)one[i] = 0;
 		}
 		if (resultcount > 60){
 			resultcount = 0;
 			step++;
 		}
+		if (KEY_Get(KEY_ENTER) == 3){
+			resultcount = 0;
+			step++;
+		}
 	}
 
-	void	sceneResult::Production_Coin_hand_off(int chara)
+	void	sceneResult::Production_Coin_hand_off(int playerNum)
 	{
-		hundred[chara] = coinNum[chara] / 100;
-		ten[chara] = coinNum[chara] / 10;
-		if (ten[chara] > 10)ten[chara] %= 10;
-		one[chara] = coinNum[chara] % 10;
+		hundred[playerNum] = coinNum[playerNum] / 100 % 10;
+		ten[playerNum] = coinNum[playerNum] / 10 % 10;
+		one[playerNum] = coinNum[playerNum] % 10;
 
 	}
