@@ -435,6 +435,7 @@
 		timer->Render( x + 64 * 1, y, 64, 64, 10 * 64, 0, sx, sy );
 		timer->Render( x + 64 * 2, y, 64, 64, minute[0] * 64, 0, sx, sy );
 		timer->Render( x + 64 * 3, y, 64, 64, minute[1] * 64, 0, sx, sy );
+
 	}
 
 	//	カウントダウン・スタート演出
