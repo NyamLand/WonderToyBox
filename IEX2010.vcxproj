@@ -46,7 +46,7 @@
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(DXSDK_DIR)include;C:\Users\2130026.MAETEL.000\Desktop\ToyBox最新\source;$(IncludePath)</IncludePath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(DXSDK_DIR)lib/x86;$(LibraryPath)</LibraryPath>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(DXSDK_DIR)include;C:\Users\2130026.MAETEL.000\Desktop\ToyBox最新\source;$(IncludePath)</IncludePath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(DXSDK_DIR)include;C:\Users\takayan\Desktop\toybox-Git\WonderToyBox\source;$(IncludePath)</IncludePath>
     <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(DXSDK_DIR)lib/x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
