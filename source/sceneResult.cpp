@@ -244,9 +244,8 @@
 
 	void	sceneResult::Production_Coin_hand_off(int chara)
 	{
-		hundred[chara] = coinNum[chara] / 100;
-		ten[chara] = coinNum[chara] / 10;
-		if (ten[chara] > 10)ten[chara] %= 10;
+		hundred[chara] = coinNum[chara] / 100 % 10;
+		ten[chara] = coinNum[chara] / 10 % 10;
 		one[chara] = coinNum[chara] % 10;
 
 	}
