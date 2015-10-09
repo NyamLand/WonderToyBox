@@ -98,6 +98,8 @@ namespace
 		};
 	}
 
+
+
 	//	キャラクター名文字列
 	namespace
 	{
@@ -169,6 +171,9 @@ protected:
 	{
 		int		mode;
 		int		param;
+		int		step_autorun;
+		int		count_walk;		//	歩く時間（２～４秒）
+		int		count_wait;		//　待機時間（１秒未満）
 	};
 
 protected:

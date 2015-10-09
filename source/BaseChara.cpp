@@ -152,6 +152,9 @@ namespace
 			{
 				aiInfo.mode = AI_MODE_STATE::WAIT;
 				aiInfo.param = 0;
+				aiInfo.step_autorun = 0;
+				aiInfo.count_walk = 4 * SECOND;
+				aiInfo.count_wait = 30;
 			}
 		}
 
@@ -653,7 +656,7 @@ namespace
 		 ・コインがない時は１位もしくは距離が近い相手を攻撃。
 		 ・誰かが近くで攻撃行為をしていたら確率でガード。
 		 ・もしどんけつになったら８割ぐらいの確率でハイパーアーツを使う。
-		 */
+		*/
 
 		/*switch ( aiInfo.mode )
 		{
@@ -679,7 +682,7 @@ namespace
 		}*/
 
 		//　コインがある時
-			//AutoRun();
+		AutoRun();
 		//if ()
 		//{
 		//}
@@ -709,19 +712,46 @@ namespace
 	//　コインを取りに行く
 	void	BaseChara::AutoRun()
 	{
-		Vector3		target = Vector3( 0, 0, 0 );
-		itemManager->GetMinPos( target, pos );
-		particle->BlueFlame(target, 1.0f);
-		
-		//　targetに向けて1～3歩歩く
-		SetMotion(MOTION_NUM::RUN);
+		Vector3		target = Vector3(0, 0, 0);
 		static	float adjustSpeed = 0.2f;
-		AutoAngleAdjust(adjustSpeed, target);
-		move.x = sinf(angle) * speed;
-		move.z = cosf(angle) * speed;
 
-		//　ちょっと止まる
+		enum 
+		{
+			AUTORUN_WALK = 0,
+			AUTORUN_STAND
+		};
 
+		switch (aiInfo.step_autorun)
+		{
+		case AUTORUN_WALK:	//　targetに向けて1～3歩歩く
+			itemManager->GetMinPos(target, pos);
+			particle->BlueFlame(target, 1.0f);
+			SetMotion(MOTION_NUM::RUN);
+			AutoAngleAdjust(adjustSpeed, target);
+			move.x = sinf(angle) * speed;
+			move.z = cosf(angle) * speed;
+
+			if (aiInfo.count_walk <= 0)
+			{
+				aiInfo.count_walk = 2 * SECOND;
+				aiInfo.step_autorun = AUTORUN_STAND;
+			}
+			else aiInfo.count_walk--;
+			break;
+
+		
+		case AUTORUN_STAND:	//　ちょっと立ち止まる
+			SetMotion(MOTION_NUM::STAND);
+			move = Vector3(0, move.y, 0);
+
+			if (aiInfo.count_wait <= 0)
+			{
+				aiInfo.count_wait = 45;
+				aiInfo.step_autorun = AUTORUN_WALK;
+			}
+			else aiInfo.count_wait--;	
+			break;
+		}
 	}
 
 	void	BaseChara::AutoAngleAdjust(float speed, Vector3 target)
