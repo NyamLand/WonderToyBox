@@ -62,6 +62,12 @@ void iexView::Set( float x, float y, float z, float ax, float ay, float az )
 	Set( p, t );
 }
 
+//	傾き設定
+void	iexView::SetSlope( float slope )
+{
+	this->Slope = slope;
+}
+
 //*****************************************************************************
 //		投影平面設定
 //*****************************************************************************
@@ -118,7 +124,9 @@ void iexView::Activate()
 	Vector p, t;
 	p = Pos;
 	t = Target;
-	LookAtLH( matView, p, t, Vector3( .0f, 1.0f, .0f ) );
+	float	x = sinf( Slope );
+	float	y = cosf( Slope );
+	LookAtLH(matView, p, t, Vector3( x, y, .0f ) );
 
 	//	ビューポート設定
 	if( Viewport.Width != 0 ) iexSystem::GetDevice()->SetViewport( &Viewport );
