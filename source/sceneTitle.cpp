@@ -303,6 +303,8 @@ namespace
 		//	デバッグ
 		m_Camera->Render();
 
+
+
 		//char	str[256];
 		Matrix	mat = m_Camera->GetMatrix();
 		Vector3	front = Vector3( mat._31, mat._32, mat._33 );

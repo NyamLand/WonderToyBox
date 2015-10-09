@@ -349,6 +349,7 @@ Quaternion QuaternionSlerp(Quaternion& q, Quaternion& r, float a);
 //		３Ｄ基本設定
 //
 //*****************************************************************************************************************************
+
 //*****************************************************************************
 //
 //		レンダーステート設定
@@ -404,11 +405,15 @@ protected:
 	float Near, Far;
 	float Aspect;
 
+	//	傾き
+	float	Slope;
+
 public:
 	iexView()
 	{
 		SetViewport();
 		SetProjection( D3DX_PI / 4.0f, 0.1f, 1000.0f );
+		Slope = 0.0f;
 	}
 
 	//	視界クリア
@@ -421,6 +426,7 @@ public:
 	
 	void SetPos( float x, float y, float z );
 	void SetAngle( float x, float y, float z );
+	void SetSlope( float slope );
 
 	//	投影平面設定
 	void SetViewport();

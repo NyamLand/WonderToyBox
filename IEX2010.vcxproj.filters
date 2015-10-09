@@ -82,9 +82,6 @@
     <Filter Include="ソース ファイル\Object">
       <UniqueIdentifier>{a811ecd6-664b-4d75-a307-5625a0fefc09}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Screen">
-      <UniqueIdentifier>{f549f8e3-6aa3-4b3c-b46d-dd5693a58522}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\CharacterManager">
       <UniqueIdentifier>{74b3ff91-d37d-4bfa-852d-0b78ebbe2c00}</UniqueIdentifier>
     </Filter>
@@ -120,6 +117,9 @@
     </Filter>
     <Filter Include="ソース ファイル\Character\CPU\Squirrel">
       <UniqueIdentifier>{218a895b-aa0f-4c4f-91ea-995c036980d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Screen">
+      <UniqueIdentifier>{f549f8e3-6aa3-4b3c-b46d-dd5693a58522}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

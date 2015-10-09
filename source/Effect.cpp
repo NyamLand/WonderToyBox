@@ -42,6 +42,12 @@
 	Effect::~Effect( void )
 	{
 		SafeDelete(aura);
+		SafeDelete( pow_up.obj );
+		
+		for ( int i = 0; i < 4; i++ )
+		{
+			SafeDelete( circle_pic[i] );
+		}
 	}
 
 	//	‰Šú‰»
