@@ -2,6 +2,7 @@
 #include	"iextreme.h"
 #include	"GlobalFunction.h"
 #include	"Collision.h"
+#include	"Particle.h"
 #include	"Princess.h"
 
 //*********************************************************************************
@@ -56,6 +57,10 @@
 		//	デバッグ用
 		if ( !debug )	return;
 		DrawSphere( attackInfo.pos, attackInfo.r, 0xFFFFFFFF );
+		particle->BlueFlame( Vector3( attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z - attackInfo.r ), 0.3f );
+		particle->BlueFlame( Vector3( attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z + attackInfo.r ), 0.3f );
+		particle->BlueFlame( Vector3( attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z ), 0.3f );
+		particle->BlueFlame( Vector3( attackInfo.pos.x - attackInfo.r, attackInfo.pos.y, attackInfo.pos.z ), 0.3f );
 		
 		char	str[256];
 		Vector3	stringPos;

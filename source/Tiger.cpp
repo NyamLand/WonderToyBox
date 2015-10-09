@@ -75,6 +75,7 @@
 		//	デバッグ用
 		if ( !debug )	return;
 		DrawSphere( attackInfo.pos, attackInfo.r, 0xFFFFFFFF );
+		particle->BlueFlame( Vector3( attackInfo.pos.x, attackInfo.pos.y, attackInfo.pos.z ), 0.3f ); 
 
 		char	str[256];
 		Vector3	stringPos;
