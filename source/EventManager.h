@@ -17,11 +17,11 @@ namespace
 		enum
 		{
 			SLOPE_CAMERA,
+			COIN_GETAWAY,
+			NONE,
 			SLIP,
 			FALL_BOMB,
-			COIN_GETAWAY,
 			UFO,
-			NONE,
 		};
 	}
 }
@@ -38,9 +38,16 @@ private:
 		float	slope;
 		int		step;
 	};
+	struct EVENT_COIN_GETAWAY
+	{
+		bool	eventflag;
+		int		count;
+		int		step;
+	};
 private:
-	int		mode;
-	EVENT_SLOPE	eventSlope;
+	int		eventflag;
+	EVENT_SLOPE				eventSlope;
+	EVENT_COIN_GETAWAY	eventCoinGetAway;
 
 public:
 	//	‰Šú‰»E‰ğ•ú
@@ -53,6 +60,7 @@ public:
 
 	//	“®ìŠÖ”
 	void	EventSlope( void );
+	void	EventCoinGetAway( void );
 
 	//	î•ñæ“¾
 	static	EventManager*	GetInstance( void );

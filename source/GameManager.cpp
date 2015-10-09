@@ -2,6 +2,7 @@
 #include	"iextreme.h"
 #include	"system/Framework.h"
 #include	"GlobalFunction.h"
+#include	"Random.h"
 #include	"Collision.h"
 #include	"UI.h"
 #include	"EventManager.h"
@@ -92,7 +93,7 @@
 
 		//	ƒCƒxƒ“ƒgÝ’è
 		if ( timer == 42 * SECOND )	ui->SetAlertFlag( true );
-		if ( timer == 40 * SECOND )	eventManager->SetEvent( EVENT_MODE::SLOPE_CAMERA );
+		if ( timer == 40 * SECOND )	eventManager->SetEvent( Random::GetInt( 0, EVENT_MODE::NONE - 1 ) );
 	}
 
 	//	•`‰æ

@@ -45,6 +45,9 @@ public:
 	//	“®ìŠÖ”
 	void	Set( const Vector3& pos, const Vector3& vec, const float& speed );
 	void	DistCheck( int n );
+
+	//	î•ñİ’è
+	void	SetCoinGetAwayFlag( bool flag );
 };
 
 extern	CoinManager*	m_CoinManager;
