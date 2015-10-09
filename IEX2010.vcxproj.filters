@@ -121,6 +121,9 @@
     <Filter Include="ソース ファイル\Screen">
       <UniqueIdentifier>{f549f8e3-6aa3-4b3c-b46d-dd5693a58522}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\EventManager">
+      <UniqueIdentifier>{b3b0d18b-79b1-4ba7-9e23-b152e0b6ef51}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -273,6 +276,9 @@
     <ClCompile Include="source\Squirrel_CPU.cpp">
       <Filter>ソース ファイル\Character\CPU\Squirrel</Filter>
     </ClCompile>
+    <ClCompile Include="source\EventManager.cpp">
+      <Filter>ソース ファイル\EventManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -379,6 +385,9 @@
     </ClInclude>
     <ClInclude Include="source\Squirrel_CPU.h">
       <Filter>ソース ファイル\Character\CPU\Squirrel</Filter>
+    </ClInclude>
+    <ClInclude Include="source\EventManager.h">
+      <Filter>ソース ファイル\EventManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

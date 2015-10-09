@@ -25,9 +25,6 @@
 			//　「楽・喜・哀・怒」
 			enum
 			{
-	
-	
-	
 				Normal,
 				Good,
 				Sad,
@@ -62,6 +59,7 @@
 		coinbar = new iex2DObj( "DATA/BG/coin_gage.png" );
 		face = new iex2DObj( "DATA/UI/chara_emotion.png" );
 		countImage.obj = new iex2DObj( "DATA/UI/bfUI.png" );
+		alertImage.obj = new iex2DObj( "DATA/UI/alert.png" );
 
 		//	共通変数初期化
 		changeflag = false;
@@ -72,6 +70,7 @@
 		StartAndTimeUpInitialize();
 		NewsBarInitialize();
 		DonketsuDirectionInitialize();
+		AlertInitialize();
 
 		return	true;
 	}
@@ -83,6 +82,7 @@
 		SafeDelete( coinbar );
 		SafeDelete( face );
 		SafeDelete( countImage.obj );
+		SafeDelete( alertImage.obj );
 	}
 
 	//	コインバー初期化
@@ -151,6 +151,19 @@
 		roulette = 0;
 		f = 0;
 	}
+
+	//	警告演出初期化
+	void	UI::AlertInitialize( void )
+	{
+		alertInfo.flag = false;
+		alertInfo.alpha = 0.0f;
+		alertInfo.timer = 0;
+		alertInfo.param = 0.0f;
+
+		//	画像構造体初期化
+		ImageInitialize( alertImage, 640, 360, 200, 200, 0, 0, 256, 256 );
+		alertImage.renderflag = true;
+	}
 	
 //------------------------------------------------------------------------------
 //	更新
@@ -188,6 +201,9 @@
 			FinishUpdate();
 			break;
 		}
+
+		//	警告動作
+		if ( alertInfo.flag )	AlertUpdate();
 	}
 
 	//	タイマー関連動作
@@ -358,6 +374,23 @@
 		wait--;
 	}
 
+	//	警告演出
+	void	UI::AlertUpdate( void )
+	{
+		alertInfo.param += D3DX_PI / 30.0f;
+		alertInfo.alpha = 0.1f + 0.1f * sinf( alertInfo.param );
+
+		alertInfo.timer++;
+		if ( alertInfo.timer % 15 == 0 )	alertImage.renderflag = !alertImage.renderflag;
+
+		//	二秒半で終了
+		if ( alertInfo.timer >= 120 )
+		{
+			alertInfo.flag = false;
+			alertInfo.alpha = 0.0f;
+		}
+	}
+
 //------------------------------------------------------------------------------
 //	描画
 //------------------------------------------------------------------------------
@@ -395,6 +428,8 @@
 			FinishRender();
 			break;
 		}
+
+		if ( alertInfo.flag )	AlertRender();
 	}
 
 	//	コインバー描画
@@ -463,6 +498,16 @@
 		DrawString( "どんけつ演出", 200, 50 );
 		wsprintf( str, "ビリは p%d", worst + 1 );
 		DrawString( str, 200, 70 );
+	}
+
+	//	警告描画
+	void	UI::AlertRender( void )
+	{
+		//	赤フィルター描画
+		iexPolygon::Rect( 0, 0, 1280, 720, RS_COPY, GetColor( 1.0f, 0.0f, 0.0f, alertInfo.alpha ) );
+
+		//	警告画像描画
+		RenderImage( alertImage, 0, 0, 256, 256, IMAGE_MODE::NORMAL );
 	}
 
 //------------------------------------------------------------------------------
@@ -551,10 +596,18 @@
 		this->changeflag = flag;
 	}
 
+	//	警告フラグ設定
+	void	UI::SetAlertFlag( bool flag )
+	{
+		alertInfo.flag = flag;
+	}
+
 	//	モード変更フラグ取得
 	bool	UI::GetChangeFlag( void )
 	{
 		bool	out = this->changeflag;
 		return	out;
 	}
+
+	
 

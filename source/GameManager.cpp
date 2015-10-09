@@ -4,6 +4,7 @@
 #include	"GlobalFunction.h"
 #include	"Collision.h"
 #include	"UI.h"
+#include	"EventManager.h"
 #include	"sceneResult.h"
 #include	"CharacterManager.h"
 #include	"GameManager.h"
@@ -88,6 +89,10 @@
 
 		//	ニュース設定
 		if ( timer == 1 * MINUTE )		newsflag = true;
+
+		//	イベント設定
+		if ( timer == 42 * SECOND )	ui->SetAlertFlag( true );
+		if ( timer == 40 * SECOND )	eventManager->SetEvent( EVENT_MODE::SLOPE_CAMERA );
 	}
 
 	//	描画

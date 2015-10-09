@@ -64,7 +64,7 @@ namespace
 	//	コンストラクタ
 	BaseChara::BaseChara( void ) : obj( nullptr ), input( nullptr ),		//	pointer
 		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ),	//	Vector3
-		angle(0.0f), scale(0.0f), speed(0.0f),	drag(0.0f), force( 0.0f ),	//	float
+		angle(0.0f), scale(0.0f), speed(0.0f),	drag(0.0f), force( 0.0f ), moveVec( 0.0f ),	//	float
 		unrivaled(false), isGround(false), boosting(false), isPlayer(false),	jumpState(false),//	bool
 		mode(0), playerNum(0), power(0), leanFrame(0), jumpStep(0)		//	int
 	{
@@ -400,6 +400,7 @@ namespace
 	{
 		//	現在の向きと目標の向きの差を求める
 		float	targetAngle( atan2f( direction.x, direction.z ) );
+		moveVec = targetAngle;
 		float	dAngle( targetAngle - GetAngle() );
 
 		//	差の正規化
@@ -491,20 +492,14 @@ namespace
 	}
 
 	//	動作
-	void	BaseChara::Move(void)
+	void	BaseChara::Move( void )
 	{
 		//	プレイヤーかそうでないかで処理を分ける
-		if (isPlayer)	Control();
+		if ( isPlayer )	Control();
 		else
 		{
 			//ControlAI();
 		}
-	}
-	
-	//	移動
-	void	BaseChara::Move( float length )
-	{
-
 	}
 
 	//	攻撃
@@ -618,15 +613,15 @@ namespace
 		if ( length > MIN_INPUT_STATE )
 		{
 			SetMotion( MOTION_NUM::RUN );
-			static	float adjustSpeed = 0.2f;
-			AngleAdjust(adjustSpeed);
-			move.x = sinf(angle) * speed;
-			move.z = cosf(angle) * speed;
+			static	float adjustSpeed = 0.3f;
+			AngleAdjust( adjustSpeed );
+			move.x = sinf( moveVec ) * speed;
+			move.z = cosf( moveVec ) * speed;
 		}
 		else
 		{
-			SetMotion(MOTION_NUM::POSTURE);
-			SetDrag(0.8f);
+			SetMotion( MOTION_NUM::POSTURE );
+			SetDrag( 0.8f );
 		}
 	}
 
@@ -655,7 +650,7 @@ namespace
 	}
 
 	//	AI操作
-	void	BaseChara::ControlAI(void)
+	void	BaseChara::ControlAI( void )
 	{
 		/*
 		・コインがある時はコインを取りに行く。（1,2歩歩く→ちょっと止まる）、（コイン取る→次を探す）
@@ -705,20 +700,20 @@ namespace
 //----------------------------------------------------------------------------
 	
 	//	コイン探す（戻り値：一番近くのコインの番号）
-	int		BaseChara::SearchCoin()
+	int		BaseChara::SearchCoin( void )
 	{
 		//　仮
 		return Random::GetInt(0, 200);
 	}
 
 	//　num番目コインが存在するか
-	bool	BaseChara::CheckSearchedCoin(int num)
+	bool	BaseChara::CheckSearchedCoin( int num )
 	{
 		return	true;
 	}
 
 	//　コインを取りに行く
-	void	BaseChara::AutoRun()
+	void	BaseChara::AutoRun( void )
 	{
 		Vector3		target = Vector3(0, 0, 0);
 		static	float adjustSpeed = 0.2f;
@@ -763,7 +758,7 @@ namespace
 	}
 
 	//	向き調整
-	void	BaseChara::AutoAngleAdjust(float speed, Vector3 target)
+	void	BaseChara::AutoAngleAdjust( float speed, Vector3 target )
 	{
 		//	カメラの前方方向を求める
 		Vector3	vEye(m_Camera->GetTarget() - m_Camera->GetPos());

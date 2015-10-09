@@ -12,11 +12,21 @@
 class UI
 {
 private:
+	struct ALERT_INFO
+	{
+		bool	flag;
+		int		timer;
+		float	alpha;
+		float	param;
+	};
+
+private:
 	//	各画像
 	iex2DObj*	timer;
 	iex2DObj*	coinbar;
 	iex2DObj*	face;
 	ImageObj	countImage;
+	ImageObj	alertImage;
 
 private:
 	//	システム
@@ -45,6 +55,9 @@ private:
 	int		charatype[4];
 	int		f;
 	int		roulette;
+
+	//	警告パラメータ
+	ALERT_INFO	alertInfo;
 	
 public:
 	//	初期化・解放
@@ -56,6 +69,7 @@ public:
 	void	NewsBarInitialize( void );
 	void	StartAndTimeUpInitialize( void );
 	void	DonketsuDirectionInitialize( void );
+	void	AlertInitialize( void );
 	void	Release( void );
 
 	//	更新
@@ -66,6 +80,7 @@ public:
 	void	StartUpdate( void );
 	void	FinishUpdate( void );
 	void	DonketsuDirectionUpdate( void );
+	void	AlertUpdate( void );
 
 	//	描画
 	void	Render( const int& mode );
@@ -75,6 +90,7 @@ public:
 	void	StartRender( void );
 	void	FinishRender( void );
 	void	DonketsuDirectionRender( void );
+	void	AlertRender( void );
 
 	//	動作関数
 	void BarControl( void );
@@ -82,6 +98,7 @@ public:
 
 	//	情報取得・設定
 	void	SetChangeFlag( const bool& flag );
+	void	SetAlertFlag( bool flag );
 	bool	GetChangeFlag( void );
 };
 

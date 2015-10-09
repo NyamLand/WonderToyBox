@@ -10,6 +10,7 @@
 #include	"Camera.h"
 #include	"Particle.h"
 #include	"CharacterManager.h"
+#include	"EventManager.h"
 #include	"CoinManager.h"
 #include	"ItemManager.h"
 #include	"Bullet.h"
@@ -276,6 +277,9 @@
 
 		//	パーティクル更新
 		particle->Update();
+
+		//	イベント更新
+		eventManager->Update();
 
 		//	コイン更新
 		m_CoinManager->Update();

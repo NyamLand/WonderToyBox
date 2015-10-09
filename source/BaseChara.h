@@ -98,8 +98,6 @@ namespace
 		};
 	}
 
-
-
 	//	キャラクター名文字列
 	namespace
 	{
@@ -185,6 +183,7 @@ protected:
 	Vector3		move;
 	float			drag;		//	抵抗力・摩擦力
 	float			angle;
+	float			moveVec;
 	float			scale;
 	float			speed;
 	float			force;
