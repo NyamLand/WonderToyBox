@@ -25,9 +25,6 @@
 			//　「楽・喜・哀・怒」
 			enum
 			{
-	
-	
-	
 				Normal,
 				Good,
 				Sad,
@@ -406,17 +403,14 @@
 		//灰色のバー
 		coinbar->Render(bar_x[0], bar_y[0], 480, 32, 0, 32 * 4, 480, 32);
 
-		//色のバー
-		coinbar->Render(bar_x[0], bar_y[0], bar_sx[0], 32, 0, 32 * 0, bar_sx[0], bar_sy[0]);
-		coinbar->Render(bar_x[1], bar_y[1], bar_sx[1], 32, 0, 32 * 1, bar_sx[1], bar_sy[1]);
-		coinbar->Render(bar_x[2], bar_y[2], bar_sx[2], 32, 0, 32 * 2, bar_sx[2], bar_sy[2]);
-		coinbar->Render(bar_x[3], bar_y[3], bar_sx[3], 32, 0, 32 * 3, bar_sx[3], bar_sy[3]);
+		for (int i = 0; i < PLAYER_MAX; i++)
+		{
+			//色のバー
+			coinbar->Render(bar_x[i], bar_y[i], bar_sx[i], 32, 0, 32 * i, bar_sx[i], bar_sy[i]);
 
-		//顔
-		face->Render(state_x[0], 550, 32, 32, 0, state_type[0] * 256, 256, 256);
-		face->Render(state_x[1], 550, 32, 32, 0, state_type[1] * 256, 256, 256);
-		face->Render(state_x[2], 550, 32, 32, 0, state_type[2] * 256, 256, 256);
-		face->Render(state_x[3], 550, 32, 32, 0, state_type[3] * 256, 256, 256);
+			//顔
+			face->Render(state_x[i], 550, 32, 32, state_type[i] * 256, charatype[i] * 256, 256, 256);
+		}
 	}
 
 	//	ニュース描画
