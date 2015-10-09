@@ -2,10 +2,14 @@
 Debug/
 <<<<<<< HEAD
 IEX2010.sdf
+IEX2010.v12.suo
+IEX2010.opensdf
 =======
 .gitignore.rej
->>>>>>> 424381859c686b2150832f3f39b2063bbcddade9
-IEX2010.opensdf
 *.sdf
+*.suo
 Release/
-IEX2010.v12.suo
+
+>>>>>>> 424381859c686b2150832f3f39b2063bbcddade9
+
+
