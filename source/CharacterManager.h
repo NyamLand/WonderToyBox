@@ -60,6 +60,7 @@ public:
 	float		GetAngle( int player )const;
 	bool		GetUnrivaled( int player )const;
 	bool		GetCanHyper( int player )const;
+	bool		GetParameterState( int player, int type )const;
 	int			GetAttackParam( int player )const;
 	int			GetPlayerNum( int playerNum )const;
 	int			GetPower( int playerNum )const;
@@ -74,6 +75,7 @@ public:
 	void		SetBoosting( int player, bool boosting );
 	void		SetLeanFrame( int player, int leanframe );
 	void		SetPassColor( int player, Vector3 color );
+	void		SetParameterInfo( int player, int parameterInfo );
 };
 
 #define	characterManager ( CharacterManager::GetInstance() )

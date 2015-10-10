@@ -18,8 +18,8 @@ namespace
 		{
 			SLOPE_CAMERA,
 			COIN_GETAWAY,
-			NONE,
 			SLIP,
+			NONE,
 			FALL_BOMB,
 			UFO,
 		};
@@ -38,16 +38,26 @@ private:
 		float	slope;
 		int		step;
 	};
+
 	struct EVENT_COIN_GETAWAY
 	{
 		bool	eventflag;
 		int		count;
 		int		step;
 	};
+
+	struct EVENT_SLIP
+	{
+		bool	eventflag;
+		int		count;
+		int		step;
+	};
+
 private:
 	int		eventflag;
 	EVENT_SLOPE				eventSlope;
 	EVENT_COIN_GETAWAY	eventCoinGetAway;
+	EVENT_SLIP					eventSlip;
 
 public:
 	//	‰Šú‰»E‰ğ•ú
@@ -61,6 +71,7 @@ public:
 	//	“®ìŠÖ”
 	void	EventSlope( void );
 	void	EventCoinGetAway( void );
+	void	EventSlip( void );
 
 	//	î•ñæ“¾
 	static	EventManager*	GetInstance( void );

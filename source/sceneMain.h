@@ -28,10 +28,20 @@ private:
 
 	//	テクスチャ
 	iex2DObj*	ShadowTex;
+	iex2DObj*	RefTex;
 
 	//	バッファ
+	iex2DObj*	hdr;
 	Surface*	backBuffer;
 	Surface*	ShadowZ;
+
+	//	ディファード用
+	//iex2DObj*	diffuse;
+	//iex2DObj*	specular;
+	//iex2DObj*	depth;
+	//iex2DObj*	normal;
+	//iex2DObj*	light;
+	//iex2DObj*	light_s;
 
 public:
 	//	初期化・解放
@@ -39,6 +49,7 @@ public:
 	~sceneMain( void );
 	bool Initialize( void );
 	void	PlayerInitialize( void );
+	void	DifferedInitialize( void );
 
 	//	更新
 	void	Update( void );	//	更新
@@ -53,6 +64,8 @@ public:
 	void	Render( void );
 	void	RenderShadowBuffer( void );
 	void	RenderDiffered( void );
+	void	RenderRef( void );
+	void	RenderHDR( void );
 
 	//	動作関数
 	void	PointLight( const Vector3& pos, const Vector3& color, float range );

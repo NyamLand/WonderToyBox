@@ -17,6 +17,7 @@ namespace
 		{
 			NORMAL,
 			GETAWAY,
+			MAGNET,
 		};
 	}
 }
@@ -51,6 +52,7 @@ public:
 	void	Move( void );
 	void	Hitduringtheoperation( const Vector3& pos, const int& Num );	//ƒqƒbƒg“®ì
 	void	GetAway( void );
+	void	Magnet( void );
 
 	//	î•ñæ“¾Eİ’è
 	void	SetPos( const Vector3& pos );

@@ -94,6 +94,7 @@
 		//	ƒCƒxƒ“ƒgÝ’è
 		if ( timer == 42 * SECOND )	ui->SetAlertFlag( true );
 		if ( timer == 40 * SECOND )	eventManager->SetEvent( Random::GetInt( 0, EVENT_MODE::NONE - 1 ) );
+
 	}
 
 	//	•`‰æ

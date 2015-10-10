@@ -20,6 +20,7 @@ namespace
 			SLIP,
 			BOOST,
 			OUTRAGE,
+			MAGNET,
 			ATTACKUP,
 			SPEEDUP,
 			BOMB,
@@ -174,6 +175,13 @@ protected:
 		int		count_wait;		//　待機時間（１秒未満）
 	};
 
+	//	slip情報
+	struct SLIP_INFO
+	{
+		float	speed;
+		float	drag;
+	};
+
 protected:
 	iex3DObj*	obj;
 
@@ -205,6 +213,7 @@ protected:
 	ATTACK_INFO				attackInfo;
 	KNOCKBACK_INFO			knockBackInfo;
 	AI_INFO						aiInfo;
+	SLIP_INFO						slipInfo;
 
 	//	状態	
 	PARAMETER_INFO		slip;
@@ -212,6 +221,7 @@ protected:
 	PARAMETER_INFO		outrage;
 	PARAMETER_INFO		attackUp;
 	PARAMETER_INFO		speedUp;
+	PARAMETER_INFO		magnet;
 	PARAMETER_INFO		bomb;
 	PARAMETER_INFO		jump;
 
@@ -219,6 +229,7 @@ private:
 	virtual	void	MotionManagement( int motion );
 	virtual	void	ModeManagement( void );
 	void	SetMotion( int motion );
+	void	ParameterInfoInitialize( void );
 	void	ParameterInfoInitialize( PARAMETER_INFO& ps );
 
 public:
@@ -237,7 +248,7 @@ public:
 	void	CalcDrag( void );
 	void	AddMove( void );
 	void	StageCollisionCheck( void );
-	void	CalcColoParameter( void );
+	void	CalcColorParameter( void );
 	void	AngleAdjust( float speed );
 	void	AngleAdjust( const Vector3& direction, float speed );
 	void	Move( void );
@@ -255,8 +266,10 @@ public:
 	void	KnockBackLeanBackWard( void );
 
 	//	パラメータ状態動作
-	void	ParameterStateUpdate( void );
+	void	ParameterInfoUpdate( void );
 	void	AttackUp( void );
+	void	EventSlip( void );
+	void	ItemMagnet( void );
 
 	//	子クラスで実装
 	virtual	bool	QuickArts( void ) = 0;
@@ -288,6 +301,8 @@ public:
 	void	SetBoosting( bool boosting );
 	void	SetKnockBackVec( Vector3 vec );
 	void	SetUnrivaled( bool state );
+	void	SetParameterState( int parameterState );
+	void	SetParameterState( PARAMETER_INFO& paramterState, int time );
 
 	//	情報取得
 	Matrix	GetMatrix( void )const;
@@ -306,6 +321,7 @@ public:
 	float		GetAttack_T( void )const;
 	bool		GetUnrivaled( void )const;
 	bool		GetCanHyper( void )const;
+	bool		GetParameterState( int type )const;
 	int			GetPower( void )const;
 	int			GetMode( void )const;
 	int			GetPlayerNum( void )const;

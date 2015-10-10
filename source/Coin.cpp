@@ -68,6 +68,9 @@
 		//	逃げ
 		if ( getAwayflag )	GetAway();
 
+		//	マグネット
+		Magnet();
+
 		//	判定無効時間減算
 		if ( judgeTimer > 0 )	judgeTimer--;
 		else							activate = true;
@@ -194,6 +197,30 @@
 			{
 				vec.Normalize();
 				move = -vec * 0.1f;
+			}
+		}
+	}
+
+	//	マグネット
+	void	Coin::Magnet( void )
+	{
+		Vector3	p_pos[4];
+		for ( int i = 0; i < PLAYER_MAX; i++ )
+		{
+			if ( !activate )	continue;
+			if ( !characterManager->GetParameterState( i, PARAMETER_STATE::MAGNET ) )	continue;
+			p_pos[i] = characterManager->GetPos( i );
+			p_pos[i].y = pos.y;
+
+			//	プレイヤーへのベクトル取得
+			Vector3	vec = p_pos[i] - pos;
+			float	length = vec.Length();
+
+			//	近ければ吸い寄せられる
+			if ( length <= GETAWAY_LENGTH )
+			{
+				vec.Normalize();
+				move = vec * 0.01f;
 			}
 		}
 	}
