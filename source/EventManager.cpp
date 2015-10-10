@@ -8,6 +8,7 @@
 #include	"Camera.h"
 #include	"Particle.h"
 #include	"CoinManager.h"
+#include	"CharacterManager.h"
 
 #include	"EventManager.h"
 
@@ -51,6 +52,13 @@
 				eventCoinGetAway.count = 0;
 				eventCoinGetAway.eventflag = false;
 			}
+
+			//	スリップイベント初期化
+			{
+				eventSlip.step = 0;
+				eventSlip.count = 0;
+				eventSlip.eventflag = false;
+			}
 		}
 
 		return	true;
@@ -74,6 +82,9 @@
 
 		//	コイン逃走
 		if ( eventCoinGetAway.eventflag )	EventCoinGetAway();
+
+		//	スリップ
+		if ( eventSlip.eventflag )		EventSlip();
 	}
 
 	//	描画
@@ -192,6 +203,27 @@
 			break;
 		}
 	}
+
+	//	スリップ
+	void	EventManager::EventSlip( void )
+	{
+		switch ( eventSlip.step )
+		{
+		case 0:
+			for ( int i = 0; i < PLAYER_MAX; i++ )
+			{
+				characterManager->SetParameterInfo( i, PARAMETER_STATE::SLIP );
+			}
+			eventSlip.step++;
+			break;
+
+		case 1:
+			eventSlip.eventflag = false;
+			eventSlip.count = 0;
+			eventSlip.step = 0;
+			break;
+		}
+	}
 	
 //--------------------------------------------------------------------------------
 //	情報取得
@@ -225,6 +257,7 @@
 			break;
 
 		case	EVENT_MODE::SLIP:
+			eventSlip.eventflag = true;
 			break;
 
 		case EVENT_MODE::FALL_BOMB:

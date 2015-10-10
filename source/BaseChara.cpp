@@ -8,6 +8,7 @@
 #include	"Camera.h"
 #include	"CoinManager.h"
 #include	"ItemManager.h"
+#include	"EventManager.h"
 #include	"Effect.h"
 #include	"Sound.h"
 #include	"Random.h"
@@ -24,8 +25,9 @@
 //	グローバル
 //----------------------------------------------------------------------------
 
-#define	MIN_INPUT_STATE 300	//	スティック判定最小値
-
+#define	MIN_INPUT_STATE	300	//	スティック判定最小値
+#define	MIN_SLIP_LENGTH	0.01f	//	滑り長さ最小値
+#define	SLIP_TIMER_MAX		300	
 namespace
 {
 
@@ -138,15 +140,7 @@ namespace
 			}
 
 			//	パラメータ状態初期化
-			{
-				ParameterInfoInitialize( slip );
-				ParameterInfoInitialize( boost );
-				ParameterInfoInitialize( outrage );
-				ParameterInfoInitialize( attackUp );
-				ParameterInfoInitialize( speedUp );
-				ParameterInfoInitialize( bomb );
-				ParameterInfoInitialize( jump );
-			}
+			ParameterInfoInitialize();
 
 			//	AI情報初期化
 			{
@@ -155,6 +149,12 @@ namespace
 				aiInfo.step_autorun = 0;
 				aiInfo.count_walk = 4 * SECOND;
 				aiInfo.count_wait = 30;
+			}
+
+			//	slip情報初期化
+			{
+				slipInfo.speed = 0.003f;
+				slipInfo.drag = 0.99f;
 			}
 		}
 
@@ -166,6 +166,19 @@ namespace
 	void	BaseChara::Release( void )
 	{
 		SafeDelete( obj );
+	}
+
+	//	パラメータ状態初期化
+	void	BaseChara::ParameterInfoInitialize( void )
+	{
+		ParameterInfoInitialize( slip );
+		ParameterInfoInitialize( boost );
+		ParameterInfoInitialize( outrage );
+		ParameterInfoInitialize( attackUp );
+		ParameterInfoInitialize( speedUp );
+		ParameterInfoInitialize( bomb );
+		ParameterInfoInitialize( jump );
+		ParameterInfoInitialize( magnet );
 	}
 
 	//	パラメータ状態初期化
@@ -188,6 +201,9 @@ namespace
 		}
 		//	モード管理
 		ModeManagement();
+
+		//	パラメータ情報更新
+		ParameterInfoUpdate();
 
 		//	重力加算
 		move.y += GRAVITY;
@@ -218,7 +234,7 @@ namespace
 		}
 		else
 		{
-			CalcColoParameter();
+			CalcColorParameter();
 			obj->Render( shader, technique );
 		}
 	}
@@ -328,8 +344,16 @@ namespace
 	//	抗力加算
 	void	BaseChara::CalcDrag( void )
 	{
-		move.x *= drag;
-		move.z *= drag;
+		if ( !slip.state )
+		{
+			move.x *= drag;
+			move.z *= drag;
+		}
+		else
+		{
+			move.x *= slipInfo.drag;
+			move.z *= slipInfo.drag;
+		}
 	}
 
 	//	移動値加算
@@ -339,7 +363,7 @@ namespace
 	}
 
 	//	ダメージ時カラー計算
-	void	BaseChara::CalcColoParameter( void )
+	void	BaseChara::CalcColorParameter( void )
 	{
 		damageColor.param -= Vector3( 0.035f, 0.035f, 0.035f );
 		if ( damageColor.param.x <= 0.0f )	damageColor.param.x = 0.0f;
@@ -498,7 +522,7 @@ namespace
 		if ( isPlayer )	Control();
 		else
 		{
-			//ControlAI();
+			ControlAI();
 		}
 	}
 
@@ -615,8 +639,19 @@ namespace
 			SetMotion( MOTION_NUM::RUN );
 			static	float adjustSpeed = 0.3f;
 			AngleAdjust( adjustSpeed );
-			move.x = sinf( moveVec ) * speed;
-			move.z = cosf( moveVec ) * speed;
+			if ( !slip.state )
+			{
+				move.x = sinf( moveVec ) * speed;
+				move.z = cosf( moveVec ) * speed;
+			}
+			else
+			{
+				if ( move.Length() < speed )
+				{
+					move.x += sinf( moveVec ) * slipInfo.speed;
+					move.z += cosf( moveVec ) * slipInfo.speed;
+				}				
+			}
 		}
 		else
 		{
@@ -624,6 +659,84 @@ namespace
 			SetDrag( 0.8f );
 		}
 	}
+
+//-------------------------------------------------------------------------------------
+//	パラメータ情報動作関数
+//-------------------------------------------------------------------------------------
+
+	//	ステート管理
+	void	BaseChara::ParameterInfoUpdate( void )
+	{
+		//--------各イベント・アイテム効果処理を書く--------//
+
+		//	攻撃力アップアイテム効果動作
+		AttackUp();
+
+		//	スリップイベント
+		EventSlip();
+
+		//	アイテム・マグネット
+		ItemMagnet();
+	}
+
+	//	攻撃力Upアイテム効果動作
+	void	BaseChara::AttackUp( void )
+	{
+		if ( !attackUp.state )	return;
+
+		//	タイマー減算
+		attackUp.timer--;
+
+		//	時間が来たら効果取り消し
+		if ( attackUp.timer <= 0 )
+		{
+			attackUp.timer = 0;
+			attackUp.state = false;
+		}
+	}
+
+	//	スリップ
+	void	BaseChara::EventSlip( void )
+	{
+		if ( !slip.state )	return;
+
+		//	タイマー減算
+		slip.timer--;
+
+		//	時間が来たら効果取り消し
+		if ( slip.timer <= 0 )
+		{
+			slip.timer = 0;
+			slip.state = false;
+		}
+	}
+
+	//	マグネット
+	void	BaseChara::ItemMagnet( void )
+	{
+		if ( !magnet.state )	return;
+
+		//	タイマー減算
+		magnet.timer--;
+
+		//	時間が来たら効果取り消し
+		if ( magnet.timer <= 0 )
+		{
+			magnet.timer = 0;
+			magnet.state = false;
+		}
+	}
+
+	//	どんけつブースト
+
+	//	暴走状態
+
+	//	スピードUpアイテム効果動作
+
+	//	ジャンプアイテム効果動作
+
+	//	爆発アイテム効果動作
+
 
 //----------------------------------------------------------------------------
 //	操作方法別動作
@@ -727,19 +840,19 @@ namespace
 		switch (aiInfo.step_autorun)
 		{
 		case AUTORUN_WALK:	//　targetに向けて1～3歩歩く
-			itemManager->GetMinPos(target, pos);
-			particle->BlueFlame(target, 1.0f);
-			SetMotion(MOTION_NUM::RUN);
-			AutoAngleAdjust(adjustSpeed, target);
-			move.x = sinf(angle) * speed;
-			move.z = cosf(angle) * speed;
+			itemManager->GetMinPos( target, pos );
+			particle->BlueFlame( target, 1.0f );
+			SetMotion( MOTION_NUM::RUN );
+			AutoAngleAdjust( adjustSpeed, target );
+			move.x = sinf( angle ) * speed;
+			move.z = cosf( angle ) * speed;
 
-			if (aiInfo.count_walk <= 0)
-			{
-				aiInfo.count_walk = 2 * SECOND;
-				aiInfo.step_autorun = AUTORUN_STAND;
-			}
-			else aiInfo.count_walk--;
+			//if (aiInfo.count_walk <= 0)
+			//{
+			//	aiInfo.count_walk = 2 * SECOND;
+			//	aiInfo.step_autorun = AUTORUN_STAND;
+			//}
+			//else aiInfo.count_walk--;
 			break;
 
 		
@@ -768,7 +881,8 @@ namespace
 		vec.Normalize();
 
 		//	入力方向を求める
-		float inputAngle = atan2f(vec.z, vec.x);
+		float inputAngle = atan2f( vec.x, -vec.z );
+		moveVec = inputAngle;
 
 		//	目標の角度を求める
 		float	targetAngle = cameraAngle + inputAngle;
@@ -891,6 +1005,45 @@ namespace
 	{
 		return	canHyper;
 	}
+	
+	//	パラメーター状態取得
+	bool		BaseChara::GetParameterState( int type )const
+	{
+		bool	out = false;
+
+		switch ( type )
+		{
+		case PARAMETER_STATE::SLIP:
+			out = slip.state;
+			break;
+
+		case PARAMETER_STATE::BOOST:
+			out = boost.state;
+			break;
+
+		case PARAMETER_STATE::OUTRAGE:
+			out = outrage.state;
+			break;
+
+		case PARAMETER_STATE::ATTACKUP:
+			out = attackUp.state;
+			break;
+
+		case PARAMETER_STATE::SPEEDUP:
+			out = speedUp.state;
+			break;
+
+		case PARAMETER_STATE::BOMB:
+			out = bomb.state;
+			break;
+
+		case PARAMETER_STATE::JUMP:
+			out = jump.state;
+			break;
+		}
+
+		return	out;
+	}
 
 	//	モード取得
 	int			BaseChara::GetMode( void )const
@@ -1008,4 +1161,46 @@ namespace
 	void	BaseChara::SetUnrivaled( bool state )
 	{
 		this->unrivaled = state;
+	}
+
+	//	パラメータ状態設定
+	void	BaseChara::SetParameterState( int parameterState )
+	{
+		switch ( parameterState )
+		{
+		case PARAMETER_STATE::SLIP:
+			SetParameterState( slip, 10 * SECOND );
+			break;
+
+		case PARAMETER_STATE::BOOST:
+			SetParameterState(boost, 30 * SECOND);
+			break;
+
+		case PARAMETER_STATE::OUTRAGE:
+			SetParameterState(outrage, 10 * SECOND);
+			break;
+
+		case PARAMETER_STATE::ATTACKUP:
+			SetParameterState(attackUp, 10 * SECOND);
+			break;
+
+		case PARAMETER_STATE::SPEEDUP:
+			SetParameterState(speedUp, 10 * SECOND);
+			break;
+
+		case PARAMETER_STATE::BOMB:
+			SetParameterState(speedUp, 5 * SECOND);
+			break;
+
+		case PARAMETER_STATE::JUMP:
+			SetParameterState(jump, 10 * SECOND);
+			break;
+		}
+	}
+
+	//	パラメータ状態設定
+	void	BaseChara::SetParameterState( PARAMETER_INFO& parameterState, int time )
+	{
+		parameterState.state = true;
+		parameterState.timer = time;
 	}
