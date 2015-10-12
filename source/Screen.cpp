@@ -86,6 +86,7 @@
 		
 		if ( alpha <= 0.0f ){
 			alpha = 0.0f;
+			screenState = true;
 			return true;
 		}
 		
@@ -97,6 +98,7 @@
 	{
 		if ( alpha >= 1.0f ){
 			alpha = 1.0f;
+			screenState = true;
 			return true;
 		}
 

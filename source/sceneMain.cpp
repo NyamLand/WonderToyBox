@@ -106,7 +106,7 @@
 
 		//UI
 		ui = new UI();
-		ui->Initialize();
+		ui->Initialize( UI_MODE::MAIN );
 
 		//	BGMÄ¶
 		sound->PlayBGM( BGM::MAIN_BGM );

@@ -881,7 +881,7 @@ namespace
 		vec.Normalize();
 
 		//	“ü—Í•ûŒü‚ğ‹‚ß‚é
-		float inputAngle = atan2f( vec.x, -vec.z );
+		float inputAngle = atan2f( vec.x, vec.z );
 		moveVec = inputAngle;
 
 		//	–Ú•W‚ÌŠp“x‚ğ‹‚ß‚é

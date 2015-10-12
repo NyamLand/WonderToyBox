@@ -8,6 +8,38 @@
 //
 //*****************************************************************************
 
+//	タイトル情報
+namespace
+{
+	//	タイトルモード
+	namespace TITLE_MODE
+	{
+		enum
+		{
+			TITLE,
+			MENU,
+			SELECT_PLAYERNUM,
+			SELECT_CHARACTER,
+			SELECT_STAGE,
+			SELECT_CHECK,
+			OPTION,
+			CREDIT,
+			MOVE_MAIN,
+		};
+	}
+
+	//	メニューモード
+	namespace SELECT_MODE
+	{
+		enum
+		{
+			PLAYER_NUM,
+			CHARACTER,
+			STAGE,
+		};
+	}
+}
+
 class sceneTitle : public	Scene
 {
 private:	//	定数
@@ -98,8 +130,6 @@ private:
 	TITLE_INFO		titleInfo;
 	MENU_INFO		menuInfo;
 	SELECT_INFO	selectInfo;
-
-	Vector3	eff_pos;
 
 public:
 	//	初期化・解放

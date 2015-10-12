@@ -8,6 +8,19 @@
 //
 //*********************************************************************************
 
+namespace
+{
+	namespace UI_MODE
+	{
+		enum
+		{
+			TITLE,
+			MAIN,
+			RESULT,
+		};
+	}
+}
+
 //	UIクラス
 class UI
 {
@@ -18,6 +31,17 @@ private:
 		int		timer;
 		float	alpha;
 		float	param;
+	};
+
+	struct TITLE_INFO
+	{
+		ImageObj	textImage;
+		float	param;
+		float	t;
+		int		step;
+		int		mode;
+		bool	moveState;
+		int		savePos;
 	};
 
 private:
@@ -58,22 +82,59 @@ private:
 
 	//	警告パラメータ
 	ALERT_INFO	alertInfo;
+
+	//	タイトルパラメータ
+	TITLE_INFO	titleInfo;
+
+	//	パラメータ
+	int		scene;
 	
 public:
+	//------------------------------共通処理------------------------------------//
 	//	初期化・解放
 	UI( void );
 	~UI( void );
-	bool	Initialize( void );
+	bool	Initialize( int scene );
+	void	Release( void );
+
+	//	各シーン初期化
+	void	TitleInitialize( void );
+	void	MainInitialize( void );
+	void	ResultInitialize( void );
+	
+	//	各シーン解放
+	void	TitleRelease( void );
+	void	MainRelease( void );
+	void	ResultRelease( void );
+
+	//	更新・描画
+	void	Update( const int& mode );
+	void	Render( const int& mode );
+
+	//	各シーン更新
+	void	TitleUpdate( int mode );
+	void	MainUpdate( int mode );
+	void	ResultUpdate( int mode );
+
+	//	各シーン描画
+	void	TitleRender( int mode );
+	void	MainRender( int mode );
+	void	ResultRender( int mode );
+
+	//------------------------------タイトル処理------------------------------------//
+	bool	FlyingIn( void );
+	bool	FlyingOut( int startPos );
+
+	//-------------------------------メイン処理-------------------------------------//
+	//	メイン動作初期化
 	void	CoinBarInitialize( void );
 	void	TimerInitialize( void );
 	void	NewsBarInitialize( void );
 	void	StartAndTimeUpInitialize( void );
 	void	DonketsuDirectionInitialize( void );
 	void	AlertInitialize( void );
-	void	Release( void );
 
-	//	更新
-	void	Update( const int& mode );
+	//	メイン動作更新
 	void	TimerUpdate( void );
 	void	CoinBarUpdate( void );
 	void	NewsBarUpdate( void );
@@ -82,8 +143,7 @@ public:
 	void	DonketsuDirectionUpdate( void );
 	void	AlertUpdate( void );
 
-	//	描画
-	void	Render( const int& mode );
+	//	メイン描画
 	void	TimerRender( void );
 	void	CoinBarRender( void );
 	void	NewsBarRender( void );
@@ -92,14 +152,22 @@ public:
 	void	DonketsuDirectionRender( void );
 	void	AlertRender( void );
 
-	//	動作関数
+	//	メイン動作関数
 	void BarControl( void );
 	void StateImageControl( void );
 
-	//	情報取得・設定
+	//------------------------------情報取得・設定------------------------------------//
+
+	//	情報設定
 	void	SetChangeFlag( const bool& flag );
 	void	SetAlertFlag( bool flag );
+	void	SetFlyingIn( int type );
+	void	SetImageSrcPos( int mode );
+	void	SetImageSrcPos( int sx, int sy );
+
+	//	情報取得
 	bool	GetChangeFlag( void );
+	bool	GetMoveState( void );
 };
 
 //	extern

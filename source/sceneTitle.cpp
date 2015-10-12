@@ -3,6 +3,7 @@
 #include	"system/Framework.h"
 #include	"system/System.h"
 #include	"GlobalFunction.h"
+#include	"GameManager.h"
 #include	"Sound.h"
 #include	"Screen.h"
 #include	"Camera.h"
@@ -10,8 +11,8 @@
 #include	"Random.h"
 #include	"BaseChara.h"
 #include	"CharacterManager.h"
+#include	"UI.h"
 #include	"sceneMain.h"
-#include	"GameManager.h"
 #include	"sceneLoad.h"
 
 #include	"sceneTitle.h"
@@ -37,34 +38,6 @@ namespace
 			"プリンセス",
 			"リス",
 			"Yねえさん"
-		};
-	}
-
-	//	タイトルモード
-	namespace TITLE_MODE
-	{
-		enum
-		{
-			TITLE,
-			MENU,
-			SELECT_PLAYERNUM,
-			SELECT_CHARACTER,
-			SELECT_STAGE,
-			SELECT_CHECK,
-			OPTION,
-			CREDIT,
-			MOVE_MAIN,
-		};
-	}
-
-	//	メニューモード
-	namespace SELECT_MODE
-	{
-		enum
-		{
-			PLAYER_NUM,
-			CHARACTER,
-			STAGE,
 		};
 	}
 }
@@ -117,6 +90,10 @@ namespace
 
 		//	スクリーン初期化
 		screen->Initialize();
+
+		//	UI初期化
+		ui = new UI();
+		ui->Initialize( UI_MODE::TITLE );
 		
 		//	ステージ
 		stage = new iexMesh( "DATA/BG/title_map.IMO" );
@@ -237,7 +214,9 @@ namespace
 			break;
 
 		case TITLE_MODE::MOVE_MAIN:
-			if ( !sound->GetSEState( SE::DECIDE_SE ) )
+			ui->Update( mode );
+			m_Camera->Update( VIEW_MODE::TITLE );
+			if ( screen->GetScreenState() )
 			{
 				MainFrame->ChangeScene( new sceneLoad( new sceneMain() ) );
 				return;
@@ -250,8 +229,7 @@ namespace
 		particle->Update();
 		
 		//	スクリーン更新
-		screen->Update();	
-		particle->BlueFlame( eff_pos, 1.0f );
+		screen->Update();
 	}
 
 	//	描画
@@ -296,6 +274,9 @@ namespace
 		case TITLE_MODE::MOVE_MAIN:
 			break;
 		}
+
+		//	UI描画
+		ui->Render( mode );
 
 		//	スクリーン描画
 		screen->Render();
@@ -464,6 +445,26 @@ namespace
 
 			//	カメラ更新
 			m_Camera->Update( VIEW_MODE::TITLE );
+
+
+			//	UI更新
+			switch ( menuInfo.menu_num )
+			{
+			case TITLE_TARGET::PLAYERNUMBER:
+				ui->Update(TITLE_MODE::MENU);
+				break;
+
+			case TITLE_TARGET::OPTION:
+				ui->Update(TITLE_MODE::OPTION);
+				break;
+
+			case TITLE_TARGET::CREDIT:
+				ui->Update(TITLE_MODE::CREDIT);
+				break;
+			}
+
+
+
 		}
 
 		//	描画
@@ -489,7 +490,7 @@ namespace
 				DrawString( "[SPACE]：クレジットへ", 300, 200, 0xFFFFFF00 );
 				break;
 			}
-
+			ui->Render( 0 );
 		}
 
 	//--------------------------------------------------------
@@ -503,14 +504,17 @@ namespace
 			{
 			case SELECT_MODE::PLAYER_NUM:
 				SelectPlayerNumUpdate();
+				ui->Update( TITLE_MODE::SELECT_PLAYERNUM );
 				break;
 
 			case SELECT_MODE::CHARACTER:
 				SelectCharacterUpdate();
+				ui->Update( TITLE_MODE::SELECT_CHARACTER );
 				break;
 
 			case SELECT_MODE::STAGE:
 				SelectStageUpdate();
+				ui->Update( TITLE_MODE::SELECT_STAGE );
 				break;
 			}
 
@@ -573,7 +577,7 @@ namespace
 		}
 		
 		//    描画
-		void    sceneTitle::SelectPlayerNumRender( void )
+		void	sceneTitle::SelectPlayerNumRender( void )
 		{
 			DrawString("人数選択だよ", 50, 50);
 			DrawString("[SPACE]：キャラ選択へ", 300, 400);
@@ -803,7 +807,7 @@ namespace
 		}
 
 		//    描画
-		void    sceneTitle::SelectStageRender( void )
+		void	sceneTitle::SelectStageRender( void )
 		{
 			DrawString("ステージ選択だよ", 50, 50);
 			DrawString("[SPACE]：最終確認へ", 300, 400);
@@ -821,6 +825,7 @@ namespace
 		void	sceneTitle::SelectCheckUpdate( void )
 		{
 			m_Camera->Update( VIEW_MODE::TITLE );
+			ui->Update( mode );
 			if ( !m_Camera->GetMoveState() )	return;
 			if ( KEY( KEY_RIGHT ) == 3 )		setInfo.ready = !setInfo.ready;
 			if ( KEY( KEY_LEFT ) == 3 )		setInfo.ready = !setInfo.ready;
@@ -834,14 +839,16 @@ namespace
 					gameManager->SetPlayerNum( setInfo.playerNum );
 					gameManager->SetStageType( setInfo.stageType );
 					sound->PlaySE( SE::DECIDE_SE );
+					screen->SetScreenMode( SCREEN_MODE::WHITE_OUT, 0.5f );
 					mode = TITLE_MODE::MOVE_MAIN;
+					m_Camera->SetNextPoint( TITLE_TARGET::MOVE_MAIN, 0.003f );
 				}
 				else	mode = TITLE_MODE::SELECT_PLAYERNUM;
 			}
 		}
 		
 		//    描画
-		void    sceneTitle::SelectCheckRender( void )
+		void	sceneTitle::SelectCheckRender( void )
 		{
 			//　選択情報
 			char    str[64];
@@ -877,6 +884,7 @@ namespace
 		void	sceneTitle::OptionUpdate( void )
 		{
 			m_Camera->Update( VIEW_MODE::TITLE );
+			ui->Update( mode );
 			if ( !m_Camera->GetMoveState() )	return;
 			if ( KEY( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )
 			{
@@ -900,6 +908,7 @@ namespace
 		//	更新
 		void	sceneTitle::CreditUpdate( void )
 		{
+			ui->Update( mode );
 			m_Camera->Update( VIEW_MODE::TITLE );
 			if ( !m_Camera->GetMoveState() )	return;
 			if ( KEY( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )
