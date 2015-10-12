@@ -39,23 +39,8 @@ public:
 	//	動作関数
 	void	Append( const Vector3& pos );
 	std::list<Item*>	GetList( void );
-	void	GetMinPos( Vector3& out, const Vector3& pos )
-	{
-		float		dist = 10000;
-
-		//　取りに行くコインが存在するか確認して
-		for ( auto it = itemList.begin(); it != itemList.end(); it++ )
-		{
-			Vector3 i_pos = ( *it )->GetPos();
-			float	length = ( i_pos - pos ).Length();
-			if ( length < dist )
-			{
-				dist = length;
-				out = i_pos;
-			}
-		}
-	}
 	//	情報取得
+	bool	GetMinPos( Vector3& out, const Vector3& pos );
 	static	ItemManager*	GetInstance();
 };
 

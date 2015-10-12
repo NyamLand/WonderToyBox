@@ -123,3 +123,30 @@
 		return	itemList;
 	}
 
+	//	与えた座標に一番近い座標を取得
+	bool	ItemManager::GetMinPos( Vector3& out, const Vector3& pos )
+	{
+		//	適当に数値を用意
+		float		dist = 1000.0f;
+
+		//	リストの末端まで検索
+		for ( auto it = itemList.begin(); it != itemList.end(); it++ )
+		{
+			//	アイテムの座標を取得
+			Vector3 i_pos = ( *it )->GetPos();
+
+			//	受け取った座標とアイテムの座標の距離を算出
+			float	length = ( i_pos - pos ).Length();
+
+			//	距離が最小値より小さかったら情報を上書き
+			if ( length < dist )
+			{
+				dist = length;
+				out = i_pos;
+			}
+		}
+
+		//	値が変わってなかったらfalseを返す
+		if ( dist >= 1000.0f )	return	false;
+		else	return	true;
+	}

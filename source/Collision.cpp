@@ -99,7 +99,7 @@ iexMesh*	Collision::obj = NULL;
 	}
 
 	//	ï«Ç∆ÇÃìñÇΩÇËîªíË
-	void	Collision::CheckWall( const Vector3 pos, Vector3& p_move )
+	bool	Collision::CheckWall( const Vector3 pos, Vector3& p_move )
 	{
 		const	float	DIST = 2.0f;	//	ï«Ç∆ÇÃãóó£
 		Vector3	p_pos = Vector3( pos.x, pos.y + 1.0f, pos.z );
@@ -136,8 +136,12 @@ iexMesh*	Collision::obj = NULL;
 				//	à⁄ìÆó ÇÃí≤êÆ
 				p_move.x = vCrossSide.x * move * ( dotNP + 1.0f );
 				p_move.z = vCrossSide.z * move * ( dotNP + 1.0f );
+
+				return	true;
 			}
 		}
+
+		return	false;
 	}
 
 //--------------------------------------------------------------------------------------------

@@ -202,6 +202,7 @@ protected:
 	bool			boosting;
 	bool			isPlayer;
 	bool			jumpState;
+	bool			checkWall;
 	int				mode;
 	int				playerNum;
 	int				power;

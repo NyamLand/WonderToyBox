@@ -67,7 +67,7 @@ namespace
 	BaseChara::BaseChara( void ) : obj( nullptr ), input( nullptr ),		//	pointer
 		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ),	//	Vector3
 		angle(0.0f), scale(0.0f), speed(0.0f),	drag(0.0f), force( 0.0f ), moveVec( 0.0f ),	//	float
-		unrivaled(false), isGround(false), boosting(false), isPlayer(false),	jumpState(false),//	bool
+		unrivaled(false), isGround(false), boosting(false), isPlayer(false), jumpState(false), checkWall(false),//	bool
 		mode(0), playerNum(0), power(0), leanFrame(0), jumpStep(0)		//	int
 	{
 	
@@ -377,7 +377,7 @@ namespace
 	void	BaseChara::StageCollisionCheck( void )
 	{
 		//	壁判定
-		Collision::CheckWall( pos, move );
+		checkWall = Collision::CheckWall( pos, move );
 
 		//　床判定
 		float work = Collision::GetHeight( pos );
@@ -774,38 +774,10 @@ namespace
 		 ・もしどんけつになったら８割ぐらいの確率でハイパーアーツを使う。
 		*/
 
-		/*switch ( aiInfo.mode )
-		{
-		case AI_MODE_STATE::WAIT:
-		mode = MODE_STATE::WAIT;
-		break;
-
-		case AI_MODE_STATE::MOVE:	//　→ここでAIっぽい挙動に割り当て
-		AutoMove();
-		break;
-
-		case AI_MODE_STATE::ATTACK:
-		break;
-
-		case AI_MODE_STATE::GUARD:
-		break;
-
-		case AI_MODE_STATE::JUMP:
-		break;
-
-		default:
-		break;
-		}*/
-
-		//　コインがある時
+		//	走る
 		AutoRun();
-		//if ()
-		//{
-		//}
-		//// else
-		//{
-		//
-		//}
+
+		//	壁を感知したらジャンプ
 	}
 
 //----------------------------------------------------------------------------
@@ -828,39 +800,37 @@ namespace
 	//　コインを取りに行く
 	void	BaseChara::AutoRun( void )
 	{
-		Vector3		target = Vector3(0, 0, 0);
+		Vector3		target = Vector3( 0, 0, 0 );
 		static	float adjustSpeed = 0.2f;
-
+		bool			existence = false;
 		enum 
 		{
 			AUTORUN_WALK = 0,
 			AUTORUN_STAND
 		};
 
-		switch (aiInfo.step_autorun)
+		switch ( aiInfo.step_autorun )
 		{
 		case AUTORUN_WALK:	//　targetに向けて1～3歩歩く
-			itemManager->GetMinPos( target, pos );
-			particle->BlueFlame( target, 1.0f );
-			SetMotion( MOTION_NUM::RUN );
-			AutoAngleAdjust( adjustSpeed, target );
-			move.x = sinf( angle ) * speed;
-			move.z = cosf( angle ) * speed;
-
-			//if (aiInfo.count_walk <= 0)
-			//{
-			//	aiInfo.count_walk = 2 * SECOND;
-			//	aiInfo.step_autorun = AUTORUN_STAND;
-			//}
-			//else aiInfo.count_walk--;
+			existence = m_CoinManager->GetMinPos( target, pos );
+			
+			//	対象が存在していたら対象に向かって走る
+			if ( existence )
+			{
+				particle->BlueFlame( target, 1.0f );
+				SetMotion( MOTION_NUM::RUN );
+				AutoAngleAdjust( adjustSpeed, target );
+				move.x = sinf( angle ) * speed;
+				move.z = cosf( angle ) * speed;
+			}
 			break;
 
 		
 		case AUTORUN_STAND:	//　ちょっと立ち止まる
-			SetMotion(MOTION_NUM::STAND);
-			move = Vector3(0, move.y, 0);
+			SetMotion( MOTION_NUM::STAND );
+			move = Vector3( 0, move.y, 0 );
 
-			if (aiInfo.count_wait <= 0)
+			if ( aiInfo.count_wait <= 0 )
 			{
 				aiInfo.count_wait = 45;
 				aiInfo.step_autorun = AUTORUN_WALK;
