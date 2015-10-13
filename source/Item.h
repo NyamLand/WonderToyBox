@@ -39,6 +39,7 @@ public:
 	//	‰Šú‰»E‰ğ•ú
 	Item( void );
 	~Item( void );
+	bool	Initialize( void )override;
 	
 	//	“®ìŠÖ”
 	void	Move( void )override;

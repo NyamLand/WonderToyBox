@@ -39,7 +39,7 @@ public:
 	//	初期化・解放
 	Coin( void );
 	~Coin( void );
-	bool	Initialize( void );
+	virtual	bool	Initialize( void );
 
 	//	更新・描画
 	void	Update( void );

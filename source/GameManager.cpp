@@ -100,22 +100,26 @@
 		if ( timer == 42 * SECOND )	ui->SetAlertFlag( true );
 		if ( timer == 40 * SECOND )	eventManager->SetEvent( Random::GetInt( 0, EVENT_MODE::NONE - 1 ) );
 
-		//	‚R•b‚²‚Æ‚ÉƒAƒCƒeƒ€‚ð‚RŠ„‚ÌŠm—¦‚Å‚Åƒ‰ƒ“ƒ_ƒ€‚É”z’u
-		if ( timer % ( 3* SECOND ) == 0 )
-		{
-			if ( Random::PercentageRandom( 0.7f ) )
-			{
-				itemManager->Append( Vector3( Random::GetFloat( -20.0f, 20.0f ), 50.0f, Random::GetFloat( -20.0f, 15.0f ) ), ITEM_TYPE::ATTACK_UP );
-			}
-		}
 
-		//	‚Q•b‚²‚Æ‚ÉƒRƒCƒ“‚ð‚SŠ„‚ÌŠm—¦‚Åƒ‰ƒ“ƒ_ƒ€‚É”z’u
-		if ( timer % ( 1 * SECOND ) == 0 )
+		if ( timer != 0 )
 		{
-			if ( Random::PercentageRandom( 0.6f ) )
+			//	‚R•b‚²‚Æ‚ÉƒAƒCƒeƒ€‚ð‚RŠ„‚ÌŠm—¦‚Å‚Åƒ‰ƒ“ƒ_ƒ€‚É”z’u
+			if ( timer % ( 3* SECOND ) == 0 )
 			{
-				if ( coinNum[0] + coinNum[1] + coinNum[2] + coinNum[3] + m_CoinManager->GetFreeCoinNum() < 201)
-				m_CoinManager->Set( Vector3( Random::GetFloat( -20.0f, 20.0f ), 50.0f, Random::GetFloat( -20.0f, 12.0f ) ), Vector3( 0.0f, -1.0f, 0.0f ), 1.0f );
+				if ( Random::PercentageRandom( 0.7f ) )
+				{
+					itemManager->Append( Vector3( Random::GetFloat( -20.0f, 20.0f ), 50.0f, Random::GetFloat( -20.0f, 15.0f ) ), ITEM_TYPE::ATTACK_UP );
+				}
+			}
+
+			//	‚Q•b‚²‚Æ‚ÉƒRƒCƒ“‚ð‚SŠ„‚ÌŠm—¦‚Åƒ‰ƒ“ƒ_ƒ€‚É”z’u
+			if ( timer % ( 1 * SECOND ) == 0 )
+			{
+				if ( Random::PercentageRandom( 0.6f ) )
+				{
+					if ( coinNum[0] + coinNum[1] + coinNum[2] + coinNum[3] + m_CoinManager->GetFreeCoinNum() < 201)
+					m_CoinManager->Set( Vector3( Random::GetFloat( -20.0f, 20.0f ), 50.0f, Random::GetFloat( -20.0f, 12.0f ) ), Vector3( 0.0f, -1.0f, 0.0f ), 1.0f );
+				}
 			}
 		}
 	}

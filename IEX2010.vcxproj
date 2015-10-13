@@ -156,6 +156,7 @@
     <ClCompile Include="IEX\IEX_System.cpp" />
     <ClCompile Include="IEX\IEX_Texture.cpp" />
     <ClCompile Include="IEX\IEX_View.cpp" />
+    <ClCompile Include="source\textLoader.cpp" />
     <ClCompile Include="source\Tiger.cpp" />
     <ClCompile Include="source\Tiger_CPU.cpp" />
     <ClCompile Include="source\UI.cpp" />
@@ -194,6 +195,7 @@
     <ClInclude Include="source\sceneMain.h" />
     <ClInclude Include="source\system\System.h" />
     <ClInclude Include="IEX\iextreme.h" />
+    <ClInclude Include="source\textLoader.h" />
     <ClInclude Include="source\Tiger.h" />
     <ClInclude Include="source\Tiger_CPU.h" />
     <ClInclude Include="source\UI.h" />
