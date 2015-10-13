@@ -66,9 +66,9 @@ namespace
 	//	コンストラクタ
 	BaseChara::BaseChara( void ) : obj( nullptr ), input( nullptr ),		//	pointer
 		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ),	//	Vector3
-		angle(0.0f), scale(0.0f), speed(0.0f),	drag(0.0f), force( 0.0f ), moveVec( 0.0f ),	//	float
+		angle(0.0f), scale(0.0f), speed(0.0f),	totalSpeed(0.0f), drag(0.0f), force( 0.0f ), moveVec( 0.0f ),	//	float
 		unrivaled(false), isGround(false), boosting(false), isPlayer(false), jumpState(false), checkWall(false),//	bool
-		mode(0), playerNum(0), power(0), leanFrame(0), jumpStep(0)		//	int
+		mode(0), playerNum(0), power(0), totalPower(0), leanFrame(0), jumpStep(0)		//	int
 	{
 	
 	}
@@ -156,6 +156,12 @@ namespace
 				slipInfo.speed = 0.003f;
 				slipInfo.drag = 0.99f;
 			}
+
+			//	パラメータ加算情報構造体初期化
+			{
+				plusStatusInfo.power = 1;
+				plusStatusInfo.speed = 0.1f;
+			}
 		}
 
 		if ( obj == nullptr )	return	false;
@@ -195,7 +201,7 @@ namespace
 	//	更新
 	void	BaseChara::Update( void )
 	{
-		if (unrivaled == false)
+		if ( unrivaled == false )
 		{
 			int a = 0;
 		}
@@ -204,6 +210,7 @@ namespace
 
 		//	パラメータ情報更新
 		ParameterInfoUpdate();
+		ParameterAdjust();
 
 		//	重力加算
 		move.y += GRAVITY;
@@ -216,6 +223,9 @@ namespace
 		
 		//	抗力計算
 		CalcDrag();
+
+		//	落下チェック
+		FallCheck();
 
 		//	情報更新
 		obj->Animation();
@@ -392,8 +402,7 @@ namespace
 		else
 		{
 			isGround = false;
-		}
-
+		}	
 	}
 
 	//	角度調整
@@ -666,6 +675,26 @@ namespace
 		}
 	}
 
+	//	落下チェック
+	void	BaseChara::FallCheck( void )
+	{
+		if ( pos.y < -3.0f )
+		{
+			for ( int i = 0; i < 3; i++ )
+			{
+				gameManager->SubCoin( this->playerNum );
+			}
+			pos = gameManager->InitPos[this->playerNum];
+		}
+	} 
+
+	//	パラメータ調整
+	void	BaseChara::ParameterAdjust( void )
+	{
+		if ( attackUp.state )	totalPower = power + plusStatusInfo.power;
+		if (speedUp.state)	totalSpeed = plusStatusInfo.speed;
+	}
+
 //-------------------------------------------------------------------------------------
 //	パラメータ情報動作関数
 //-------------------------------------------------------------------------------------
@@ -689,6 +718,8 @@ namespace
 	void	BaseChara::AttackUp( void )
 	{
 		if ( !attackUp.state )	return;
+
+		particle->Arrow_UP( pos );
 
 		//	タイマー減算
 		attackUp.timer--;

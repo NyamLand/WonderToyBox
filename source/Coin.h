@@ -49,8 +49,8 @@ public:
 	//	動作関数
 	void	StageCollisionCheck( void );
 	void	PlayerCollisionCheck( void );
-	void	Move( void );
-	void	Hitduringtheoperation( const Vector3& pos, const int& Num );	//ヒット時動作
+	virtual	void	Move( void );
+	virtual	void	Hitduringtheoperation( const Vector3& pos, const int& Num );	//ヒット時動作
 	void	GetAway( void );
 	void	Magnet( void );
 

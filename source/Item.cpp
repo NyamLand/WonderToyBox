@@ -53,13 +53,19 @@
 
 		//	回転
 		angle += 0.05f;
-
 	}
 
 	//	ヒット時動作
 	void	Item::Hitduringtheoperation( const Vector3& pos, const int& Num )
 	{
 		state = false;
+
+		switch ( type )
+		{
+		case ITEM_TYPE::ATTACK_UP:
+			characterManager->SetParameterInfo( Num, PARAMETER_STATE::ATTACKUP );
+			break;
+		}
 		float	effectScale = 0.2f;
 		particle->Spark(pos, effectScale);
 	
@@ -80,6 +86,12 @@
 	void	Item::SetState( bool state )
 	{
 		this->state = state;
+	}
+
+	//	タイプ設定
+	void	Item::SetType( const int& type )
+	{
+		this->type = type;
 	}
 
 //-------------------------------------------------------------------------------

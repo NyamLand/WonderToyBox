@@ -49,12 +49,6 @@
 			c_Coin[i].state = false;
 		}
 
-		//	コインをランダム生成
-		for ( int i = 0; i < COIN_MAX; i++ )
-		{
-			Set( Vector3( Random::GetFloat( -10.0f, 10.0f ), Random::GetFloat( 0.0f, 50.0f ), Random::GetFloat( -10.0f, 10.0f ) ), Vector3( 0.0f, 0.0f, 0.0f ), 1.0f );
-		}
-
 		if ( org != nullptr ) 	return	false;
 		return	true;
 	}
@@ -211,4 +205,10 @@
 		//	値が変わってなかったらfalseを返す
 		if ( dist >= 1000.0f )	return	false;
 		return	true;
+	}
+
+	//	フィールドに存在するコインの枚数を取得
+	int		CoinManager::GetFreeCoinNum( void )const
+	{
+		return	coin_num;
 	}

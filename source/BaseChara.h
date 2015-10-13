@@ -182,6 +182,13 @@ protected:
 		float	drag;
 	};
 
+	//	plusStatus情報
+	struct PLUS_STATUS_INFO
+	{
+		int		power;
+		float	speed;
+	};
+
 protected:
 	iex3DObj*	obj;
 
@@ -194,6 +201,7 @@ protected:
 	float			moveVec;
 	float			scale;
 	float			speed;
+	float			totalSpeed;
 	float			force;
 	float			diffence;
 	bool			unrivaled;
@@ -206,6 +214,7 @@ protected:
 	int				mode;
 	int				playerNum;
 	int				power;
+	int				totalPower;
 	int				leanFrame;		//	仰け反り時間
 	int				jumpStep;			//	ジャンプ動作
 
@@ -215,6 +224,7 @@ protected:
 	KNOCKBACK_INFO			knockBackInfo;
 	AI_INFO						aiInfo;
 	SLIP_INFO						slipInfo;
+	PLUS_STATUS_INFO		plusStatusInfo;
 
 	//	状態	
 	PARAMETER_INFO		slip;
@@ -265,6 +275,8 @@ public:
 	void	KnockBackMiddle( void );
 	void	KnockBackWeak( void );
 	void	KnockBackLeanBackWard( void );
+	void	FallCheck( void );
+	void	ParameterAdjust( void );
 
 	//	パラメータ状態動作
 	void	ParameterInfoUpdate( void );
