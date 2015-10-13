@@ -29,6 +29,9 @@ public:
 	static	bool	GetReflect( Vector3& pos, Vector3& vec, float rate );
 	static	bool	GetReflect( iexMesh* org, Vector3& pos, Vector3& vec, float rate );
 
+	//	Ş¿”»’è
+	static	int		GetMaterial(const Vector3& pos);
+
 	//	“–‚½‚è”»’è
 	static	float DistancePointSegmentSq( const Vector3& p1, const Vector3& l1p1, const Vector3& l1p2 );
 	static	float DistanceSegmentSegmentSq( const Vector3& l1p1, const Vector3& l1p2, const Vector3& l2p1, const Vector3& l2p2 );

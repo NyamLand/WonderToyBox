@@ -236,6 +236,30 @@ iexMesh*	Collision::obj = NULL;
 	}
 
 //--------------------------------------------------------------------------------------------
+//	材質判定
+//--------------------------------------------------------------------------------------------
+
+	//	現在立っている位置の材質取得(テクスチャの番号)
+	int		Collision::GetMaterial( const Vector3& pos )
+	{
+		Vector3	out;
+		float	d = 50.0f;
+		Vector3	p = pos + Vector3( 0.0f, 2.0f, 0.0f );
+		Vector3	v = Vector3( 0.0f, -1.0f, 0.0f );
+
+		int index = obj->RayPick( &out, &p, &v, &d );
+		if ( index == -1 )	return	-1;
+
+		DWORD*	pAttr;
+		obj->GetMesh()->LockAttributeBuffer( D3DLOCK_READONLY, &pAttr );
+
+		DWORD	mat = pAttr[index];
+		obj->GetMesh()->UnlockAttributeBuffer();
+
+		return	mat;
+	}
+
+//--------------------------------------------------------------------------------------------
 //	当たり判定
 //--------------------------------------------------------------------------------------------
 	
