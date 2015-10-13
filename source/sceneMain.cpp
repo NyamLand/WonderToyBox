@@ -244,7 +244,7 @@
 		//	‚Æ‚è‚ ‚¦‚¸‰¼
 		if ( gameStartCoinNum < GAME_START_COIN_NUM )
 		{
-			m_CoinManager->Set( Vector3( 0.0f, 5.0f, -25.0f ), Vector3( Random::GetFloat( -0.5f, 0.5f ), Random::GetFloat( 0.1f, 0.3f ), 1.0f ), Random::GetFloat( 2.0f, 4.0f ) );
+			m_CoinManager->Set( Vector3( 0.0f, 5.0f, -25.0f ), Vector3( Random::GetFloat( -0.5f, 0.5f ), Random::GetFloat( 0.1f, 0.3f ), 1.0f ), Random::GetFloat( 2.0f, 3.5f ) );
 			gameStartCoinNum++;
 		}
 
@@ -359,7 +359,7 @@
 		m_Effect->Render();
 
 		//UI
-		//ui->Render( gameManager->GetMode() );
+		ui->Render( gameManager->GetMode() );
 	}
 
 	//	HDR•`‰æ

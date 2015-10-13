@@ -390,17 +390,14 @@ namespace
 		checkWall = Collision::CheckWall( pos, move );
 
 		//Å@è∞îªíË
-		float work = Collision::GetHeight( pos );
-
-		if ( pos.y < work )
+		if ( Collision::CheckDown( pos, move ) )
 		{
-			pos.y = work;
-			move.y = 0;
 			isGround = true;
 			jumpState = true;
 		}
 		else
 		{
+			jumpState = false;
 			isGround = false;
 		}	
 	}

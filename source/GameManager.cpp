@@ -115,7 +115,7 @@
 			if ( Random::PercentageRandom( 0.6f ) )
 			{
 				if ( coinNum[0] + coinNum[1] + coinNum[2] + coinNum[3] + m_CoinManager->GetFreeCoinNum() < 201)
-				m_CoinManager->Set( Vector3( Random::GetFloat( -20.0f, 20.0f ), 50.0f, Random::GetFloat( -20.0f, 15.0f ) ), Vector3( 0.0f, -1.0f, 0.0f ), 1.0f );
+				m_CoinManager->Set( Vector3( Random::GetFloat( -20.0f, 20.0f ), 50.0f, Random::GetFloat( -20.0f, 12.0f ) ), Vector3( 0.0f, -1.0f, 0.0f ), 1.0f );
 			}
 		}
 	}
