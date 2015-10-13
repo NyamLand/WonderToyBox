@@ -830,8 +830,19 @@ namespace
 				particle->BlueFlame( target, 1.0f );
 				SetMotion( MOTION_NUM::RUN );
 				AutoAngleAdjust( adjustSpeed, target );
-				move.x = sinf( angle ) * speed;
-				move.z = cosf( angle ) * speed;
+				if (!slip.state)
+				{
+					move.x = sinf(angle ) * speed;
+					move.z = cosf(angle ) * speed;
+				}
+				else
+				{
+					if (move.Length() < speed)
+					{
+						move.x += sinf(angle) * slipInfo.speed;
+						move.z += cosf(angle) * slipInfo.speed;
+					}
+				}
 			}
 			break;
 
