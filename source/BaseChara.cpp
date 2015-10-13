@@ -581,7 +581,10 @@ namespace
 			break;
 
 		case 1:
-			Control();
+			//	プレイヤーかCPUかで処理を分ける
+			if ( isPlayer )	Control();
+			else				ControlAI();
+
 			if ( pos.y <= toY )
 			{
 				move.y += 0.1f;
@@ -593,7 +596,10 @@ namespace
 			break;
 
 		case 2:
-			Control();
+			//	プレイヤーかCPUかで処理を分ける
+			if ( isPlayer )	Control();
+			else				ControlAI();
+
 			if ( isGround )
 			{
 				jumpStep = 0;
@@ -778,7 +784,10 @@ namespace
 		AutoRun();
 
 		//	壁を感知したらジャンプ
-		if ( checkWall )	particle->BlueFlame( pos, 2.0f );	//	今は通常よりでかい炎を描画
+		if ( checkWall )
+		{
+			if ( jumpState )		mode = MODE_STATE::JUMP;
+		}
 	}
 
 //----------------------------------------------------------------------------
