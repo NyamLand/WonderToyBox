@@ -62,10 +62,10 @@ namespace
 		m_Camera = new Camera();
 
 		//	画像初期化
-		back = new iex2DObj( "DATA/Result/back.png");
-		r_number = new iex2DObj( "DATA/UI/number.png");
-		Sback = new iex2DObj("DATA/Result/black.png");
-		Smenu = new iex2DObj("DATA/Result/result-cho.png");
+		back = new iex2DObj( "DATA/Result/back.png" );
+		r_number = new iex2DObj( "DATA/UI/number.png" );
+		Sback = new iex2DObj( "DATA/Result/black.png" );
+		Smenu = new iex2DObj( "DATA/Result/result-cho.png" );
 
 		//	コリジョン
 		collision = new iexMesh( "DATA/BG/CollisionGround.imo" );
@@ -74,12 +74,12 @@ namespace
 		for ( int i = 0; i < 4; i++ )
 		{
 			//	リザルト情報初期化
-			coinNum[i] = gameManager->GetCoinNum(i);
+			coinNum[i] = gameManager->GetCoinNum( i );
 			resultInfo[i].p_Coin = gameManager->GetCoinNum( i );
 			resultInfo[i].p_num = i;
 			addcoinNum[i] = 0;
 			//	プレイヤー初期化
-			int		characterType = gameManager->GetCharacterType(i);
+			int		characterType = gameManager->GetCharacterType( i );
 			Vector3	pos = Vector3( 6.0f - ( 4.0f  *  i ), 0.0f, 0.0f );
 			characterManager->Initialize( i, characterType, pos, true );
 		}
@@ -99,6 +99,7 @@ namespace
 		Mode = 0;
 		Sy = -720.0f;
 		Sx = 0.0f;
+		
 		//	乱数初期化
 		Random::Initialize();
 
@@ -118,7 +119,7 @@ namespace
 	//	更新
 	void	sceneResult::Update( void ) 
 	{
-		switch (Mode)
+		switch ( Mode )
 		{
 		case 0:
 			ResultUpdate();
@@ -162,7 +163,6 @@ namespace
 		}
 
 	}
-
 
 	//	描画
 	void	sceneResult::Render( void ) 
