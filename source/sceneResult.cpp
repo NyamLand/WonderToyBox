@@ -29,7 +29,8 @@ namespace
 	{
 		enum
 		{
-
+			RESULT_MODE,
+			SELECT_MODE
 		};
 	}
 }
@@ -48,6 +49,8 @@ namespace
 	{
 		SafeDelete( m_Camera );
 		SafeDelete( back );
+		SafeDelete( Sback );
+		SafeDelete( Smenu );
 		characterManager->Release();
 		Random::Release();
 	}
@@ -61,6 +64,8 @@ namespace
 		//	画像初期化
 		back = new iex2DObj( "DATA/Result/back.png");
 		r_number = new iex2DObj( "DATA/UI/number.png");
+		Sback = new iex2DObj("DATA/Result/black.png");
+		Smenu = new iex2DObj("DATA/Result/result-cho.png");
 
 		//	コリジョン
 		collision = new iexMesh( "DATA/BG/CollisionGround.imo" );
@@ -72,7 +77,7 @@ namespace
 			coinNum[i] = gameManager->GetCoinNum(i);
 			resultInfo[i].p_Coin = gameManager->GetCoinNum( i );
 			resultInfo[i].p_num = i;
-
+			addcoinNum[i] = 0;
 			//	プレイヤー初期化
 			int		characterType = gameManager->GetCharacterType(i);
 			Vector3	pos = Vector3( 6.0f - ( 4.0f  *  i ), 0.0f, 0.0f );
@@ -84,12 +89,16 @@ namespace
 		step = 0;
 		playerNum = 0;
 		wait = 0;
+		Modeflg = false;
 		for ( int i = 0; i < 4; i++ ){
 			hundred[i] = 0;
 			ten[i] = 0;
 			one[i] = 0;
 		}
 		resultcount = 0;
+		Mode = 0;
+		Sy = -720.0f;
+		Sx = 0.0f;
 		//	乱数初期化
 		Random::Initialize();
 
@@ -109,22 +118,51 @@ namespace
 	//	更新
 	void	sceneResult::Update( void ) 
 	{
+		switch (Mode)
+		{
+		case 0:
+			ResultUpdate();
+			break;
+		case 1:
+			SelectUpdata();
+			break;
+		default:
+			break;
+		}
+		
+	}
 
+	//リザルト時の更新
+	void	sceneResult::ResultUpdate( void )
+	{
 		//	カメラ更新
-		m_Camera->Update(VIEW_MODE::RESULT, Vector3( 0.0f, 0.0f, 0.0f ) );
+		m_Camera->Update(VIEW_MODE::RESULT, Vector3(0.0f, 0.0f, 0.0f));
 
 		//	プレイヤー更新
 		characterManager->Update();
-
+		for (int i = 0; i < 4; i++){
+			addcoinNum[i] = coinNum[i] + lastBonus;
+		}
 		Production();
-		
+		if (Modeflg)Mode = 1;
 		//	タイトルへ
-		if ( KEY( KEY_SPACE ) == 3 )
+		if (KEY(KEY_SPACE) == 3)
 		{
-			MainFrame->ChangeScene( new sceneTitle() );
+			MainFrame->ChangeScene(new sceneTitle());
 			return;
 		}
 	}
+
+	//セレクト時の更新
+	void	sceneResult::SelectUpdata(void)
+	{
+		Sy +=20;
+		if (Sy > 0){
+			Sy = 0;
+		}
+
+	}
+
 
 	//	描画
 	void	sceneResult::Render( void ) 
@@ -151,15 +189,43 @@ namespace
 
 		for (int i = 0; i < 4; i++){
 			Vector3 stringPos;
+			Vector3 addcoinPos;
+			Vector3 juniPos;
 			WorldToClient( characterManager->GetPos(i), stringPos, matView* matProjection );
+			WorldToClient(characterManager->GetPos(i), addcoinPos, matView* matProjection);
+			WorldToClient(characterManager->GetPos(i), juniPos, matView* matProjection);
 			stringPos.y = 100;
+			addcoinPos.y = 250;
+			juniPos.y = 350;
 			r_number->Render( ( int )stringPos.x - 40 * 2, ( int )stringPos.y, 64, 64, hundred[i] * 64, 0, 64, 64);	//	コイン三桁目
 			r_number->Render( ( int )stringPos.x  -40 * 1, ( int )stringPos.y, 64, 64, ten[i] * 64, 0, 64, 64);	//	コイン二桁目
 			r_number->Render( ( int )stringPos.x  -40 * 0, ( int )stringPos.y, 64, 64, one[i] * 64, 0, 64, 64);	//	コイン一桁目
 
-			
+			if (Modeflg){
+				r_number->Render((int)addcoinPos.x - 40 * 2, (int)addcoinPos.y, 64, 64, (addcoinNum[i] / 100 % 10) * 64, 0, 64, 64);	//	コイン三桁目
+				r_number->Render((int)addcoinPos.x - 40 * 1, (int)addcoinPos.y, 64, 64, (addcoinNum[i] / 10 % 10) * 64, 0, 64, 64);	//	コイン二桁目
+				r_number->Render((int)addcoinPos.x - 40 * 0, (int)addcoinPos.y, 64, 64, (addcoinNum[i] % 10) * 64, 0, 64, 64);	//	コイン一桁目
+
+				r_number->Render((int)juniPos.x - 40 * 2, (int)juniPos.y, 128, 64, (resultInfo[i].p_num) * 128, 128, 128, 64);	//	コイン一桁目
+			}
+		}
+
+		/*if (Mode >= 1){
+			SelectRender();
+		}*/
+	}
+
+	void	sceneResult::SelectRender( void )
+	{
+		Sback->Render(Sx, Sy, 1280, 720, 0, 0, 64, 64);
+		if (Sy >= 0)
+		{
+			Smenu->Render(50, 150, 1200, 720, 0, 0, 512, 512);
+			Smenu->Render(50, 150, 1200, 250, 512, 0, 512, 170);
+			Smenu->Render(50, 300, 1200, 250, 512, 100, 512, 170);
 		}
 	}
+
 
 //----------------------------------------------------------------------------
 //	動作関数
@@ -217,38 +283,48 @@ namespace
 		switch (step)
 		{
 		case 0:
-			Production_Rotation( player );
+			ProductionRotation( player );
 			break;
 
 		case 1:
 			player = 1;
-			Production_Coin_hand_off(player_num);
-			Production_Rotation( player );
+			ProductionCoinHandOff(player_num);
+			ProductionRotation(player);
 			break;
 
 		case 2:
 			player=2;
 			player_num=1;
-			Production_Coin_hand_off(player_num);
-			Production_Rotation(player);
+			ProductionCoinHandOff(player_num);
+			ProductionRotation(player);
 			break;
 
 		case 3:
 			player=3;
 			player_num=2;
-			Production_Coin_hand_off(player_num);
-			Production_Rotation(player);
+			ProductionCoinHandOff(player_num);
+			ProductionRotation(player);
 			break;
 		
 		case 4:
 			player_num=3;
-			Production_Coin_hand_off(player_num);
+			ProductionCoinHandOff(player_num);
+			step++;
 			break;
+		case 5:
+			resultcount++;
+			if (resultcount > 60){
+				resultcount = 0;
+				step++;
+			}
+			break;
+		case 6:
+			Modeflg = true;
 		}
 
 	}
 
-	void	sceneResult::Production_Rotation(int playerNum)
+	void	sceneResult::ProductionRotation(int playerNum)
 	{
 		resultcount++;
 		for (int i = playerNum; i < 4; i++){
@@ -270,7 +346,7 @@ namespace
 		}
 	}
 
-	void	sceneResult::Production_Coin_hand_off(int playerNum)
+	void	sceneResult::ProductionCoinHandOff(int playerNum)
 	{
 		hundred[playerNum] = coinNum[playerNum] / 100 % 10;
 		ten[playerNum] = coinNum[playerNum] / 10 % 10;
