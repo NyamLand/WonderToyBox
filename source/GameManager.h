@@ -32,23 +32,31 @@ namespace
 	
 	namespace GameInfo
 	{
-		const LPSTR	LastBonus[] =
+		// ラストボーナステキスト
+		namespace
 		{
-			"ラストボーナス１",
-			"ラストボーナス２",
-			"ラストボーナス３",
-			"ラストボーナス４",
-			"ラストボーナス５",
-			"ラストボーナス６",
-		};
+			const LPSTR	LastBonus[] =
+			{
+				"ラストボーナス１",
+				"ラストボーナス２",
+				"ラストボーナス３",
+				"ラストボーナス４",
+				"ラストボーナス５",
+				"ラストボーナス６",
+			};
+		}
 
-		const	 LPSTR	NewsText[] =
+		//	ラストボーナス予想テキスト
+		namespace
 		{
-			"ラストボーナス１になりそうです",
-			"ラストボーナス２になりそうです",
-			"ラストボーナス３になりそうです",
-			"ラストボーナス４になりそうです",
-		};
+			const	 LPSTR	NewsText[] =
+			{
+				"ラストボーナス１になりそうです",
+				"ラストボーナス２になりそうです",
+				"ラストボーナス３になりそうです",
+				"ラストボーナス４になりそうです",
+			};
+		}
 	}
 }
 
@@ -69,6 +77,9 @@ private:
 	int		worst;
 	int		lastBonus;
 	bool	newsflag;
+
+public:
+	Vector3	InitPos[4];
 	
 public:
 

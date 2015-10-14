@@ -117,6 +117,7 @@
     <ClCompile Include="source\CoinManager.cpp" />
     <ClCompile Include="source\Collision.cpp" />
     <ClCompile Include="source\Effect.cpp" />
+    <ClCompile Include="source\EventManager.cpp" />
     <ClCompile Include="source\GameManager.cpp" />
     <ClCompile Include="source\GlobalFunction.cpp" />
     <ClCompile Include="source\Item.cpp" />
@@ -155,6 +156,7 @@
     <ClCompile Include="IEX\IEX_System.cpp" />
     <ClCompile Include="IEX\IEX_Texture.cpp" />
     <ClCompile Include="IEX\IEX_View.cpp" />
+    <ClCompile Include="source\textLoader.cpp" />
     <ClCompile Include="source\Tiger.cpp" />
     <ClCompile Include="source\Tiger_CPU.cpp" />
     <ClCompile Include="source\UI.cpp" />
@@ -169,6 +171,7 @@
     <ClInclude Include="source\CoinManager.h" />
     <ClInclude Include="source\Collision.h" />
     <ClInclude Include="source\Effect.h" />
+    <ClInclude Include="source\EventManager.h" />
     <ClInclude Include="source\GameManager.h" />
     <ClInclude Include="source\GlobalFunction.h" />
     <ClInclude Include="source\Item.h" />
@@ -192,6 +195,7 @@
     <ClInclude Include="source\sceneMain.h" />
     <ClInclude Include="source\system\System.h" />
     <ClInclude Include="IEX\iextreme.h" />
+    <ClInclude Include="source\textLoader.h" />
     <ClInclude Include="source\Tiger.h" />
     <ClInclude Include="source\Tiger_CPU.h" />
     <ClInclude Include="source\UI.h" />

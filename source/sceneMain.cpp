@@ -10,6 +10,7 @@
 #include	"Camera.h"
 #include	"Particle.h"
 #include	"CharacterManager.h"
+#include	"EventManager.h"
 #include	"CoinManager.h"
 #include	"ItemManager.h"
 #include	"Bullet.h"
@@ -25,7 +26,6 @@
 //	グローバル変数
 //
 //*****************************************************************************************************************************
-
 
 //*****************************************************************************************************************************
 //
@@ -51,15 +51,19 @@
 
 		//	バックバッファポインタ退避
 		iexSystem::GetDevice()->GetRenderTarget( 0, &backBuffer );
+		hdr = new iex2DObj( 512, 512, IEX2D_RENDERTARGET );
 
 		//	シャドウマップ
 		ShadowTex = new iex2DObj( SHADOW_SIZE, SHADOW_SIZE, IEX2D_RENDERTARGET );
 		iexSystem::GetDevice()->CreateDepthStencilSurface( SHADOW_SIZE, SHADOW_SIZE, D3DFMT_D16, D3DMULTISAMPLE_NONE,	0, FALSE, &ShadowZ, NULL );
 
+		//	反射マップ
+		RefTex = new iex2DObj( 1280, 720, IEX2D_RENDERTARGET );
+
 		//	ライト設定
-		Vector3 dir( 1.0f, -1.0f, -0.5f );
+		Vector3 dir( 1.0f, -2.0f, -1.0f );
 		dir.Normalize();
-		iexLight::DirLight( shader3D, 0, &dir, 0.8f, 0.8f, 0.8f );
+		iexLight::DirLight( shader3D, 0, &dir, 1.5f, 1.5f, 1.5f );
 
 		//	カメラ設定
 		m_Camera = new Camera();
@@ -68,6 +72,7 @@
 		timer = 0;
 		playerNum = gameManager->GetPlayerNum();
 		stageType = gameManager->GetStageType();
+		gameStartCoinNum = 0;
 
 		//	ステージ
 		m_CollisionStage = new iexMesh( "DATA/back/Collision.IMO" );
@@ -101,12 +106,10 @@
 
 		//UI
 		ui = new UI();
-		ui->Initialize();
+		ui->Initialize( UI_MODE::MAIN );
 
 		//	BGM再生
 		sound->PlayBGM( BGM::MAIN_BGM );
-
-		//　
 
 		//	全体更新
 		Update();
@@ -117,12 +120,21 @@
 	sceneMain::~sceneMain( void )
 	{
 		backBuffer->Release();
-		SafeDelete(ShadowTex);
-		SafeDelete(m_Camera);
-		SafeDelete(m_CollisionStage);
-		SafeDelete(m_CoinManager);
-		SafeDelete(m_BulletManager);
-		SafeDelete(ui);
+		SafeDelete( ShadowTex );
+		SafeDelete( RefTex );
+		SafeDelete( m_Camera );
+		SafeDelete( m_CollisionStage );
+		SafeDelete( m_CoinManager );
+		SafeDelete( m_BulletManager );
+		SafeDelete( ui );
+
+		//SafeDelete( diffuse );
+		//SafeDelete( specular );
+		//SafeDelete( depth );
+		//SafeDelete( normal );
+		//SafeDelete( light );
+		//SafeDelete( light_s );
+
 		Random::Release();
 		particle->Release();
 		itemManager->Release();
@@ -137,7 +149,7 @@
 		for ( int i = 0; i < playerNum; i++ )
 		{
 			int        characterType = gameManager->GetCharacterType( i );
-			Vector3    pos = Vector3( -20.0f + ( 10.0f * i ), 10.0f, 0.0f );
+			Vector3    pos = gameManager->InitPos[i];
 			characterManager->Initialize( i, characterType, pos, true );
 		}
 
@@ -145,9 +157,22 @@
 		for ( int i = playerNum; i < PLAYER_MAX; i++ )
 		{
 			int        characterType = gameManager->GetCharacterType( i );
-			Vector3    pos = Vector3( -20.0f + ( 10.0f * i ), 10.0f, 0.0f );
+			Vector3    pos = gameManager->InitPos[i];
 			characterManager->Initialize( i, characterType, pos, false );
 		}
+	}
+
+	//	ディファード初期化
+	void	sceneMain::DifferedInitialize( void )
+	{
+		//diffuse = new iex2DObj(1280, 720, IEX2D_RENDERTARGET);
+		//specular = new iex2DObj(1280, 720, IEX2D_RENDERTARGET);
+		//depth = new iex2DObj(1280, 720, IEX2D_FLOAT);
+		//normal = new iex2DObj(1280, 720, IEX2D_RENDERTARGET);
+		//light = new iex2DObj(1280, 720, IEX2D_RENDERTARGET);
+		//light_s = new iex2DObj(1280, 720, IEX2D_RENDERTARGET);
+		//shaderD->SetValue("DepthBuf", depth);
+		//shaderD->SetValue("SpecularBuf", specular);
 	}
 
 //*****************************************************************************************************************************
@@ -216,6 +241,13 @@
 		//	全体更新
 		AllUpdate();
 
+		//	とりあえず仮
+		if ( gameStartCoinNum < GAME_START_COIN_NUM )
+		{
+			m_CoinManager->Set( Vector3( 0.0f, 5.0f, -25.0f ), Vector3( Random::GetFloat( -0.5f, 0.5f ), Random::GetFloat( 0.1f, 0.3f ), 1.0f ), Random::GetFloat( 2.0f, 3.5f ) );
+			gameStartCoinNum++;
+		}
+
 		if ( ui->GetChangeFlag() ) 
 		{
 			gameManager->SetMode( GAME_MODE::MAINGAME );
@@ -277,6 +309,9 @@
 		//	パーティクル更新
 		particle->Update();
 
+		//	イベント更新
+		eventManager->Update();
+
 		//	コイン更新
 		m_CoinManager->Update();
 
@@ -297,15 +332,21 @@
 	//	描画
 	void	sceneMain::Render( void )
 	{
-		//	カメラ設定
 		m_Camera->Activate();
 		m_Camera->Clear();
-		
+
 		//	影
 		RenderShadowBuffer();
-		
+
 		//	オブジェクト描画
-		m_Stage->Render( shader3D, "nolight_s" );
+		if ( characterManager->GetParameterState( 0, PARAMETER_STATE::SLIP ) )
+		{
+			m_Stage->Render( shader3D, "full_s" );
+		}
+		else
+		{
+			m_Stage->Render( shader3D, "full_s" );
+		}
 		characterManager->Render( shader3D, "toon" );
 		m_CoinManager->Render();
 		m_BulletManager->Render();
@@ -319,6 +360,37 @@
 
 		//UI
 		ui->Render( gameManager->GetMode() );
+	}
+
+	//	HDR描画
+	void	sceneMain::RenderHDR( void )
+	{
+		//	HDR用バッファへ切り替え
+		hdr->RenderTarget();
+		m_Camera->SetViewport( 0, 0, 512, 512 );
+		m_Camera->SetProjection( 0.8f, 0.1f, 300.0f, 1280.0f / 720.0f );
+		m_Camera->Activate();
+		m_Camera->Clear();
+
+		//	物体の描画
+		m_Stage->Render( shader3D, "specular" );
+		m_CoinManager->Render( shader3D, "specular" );
+		characterManager->Render( shader3D, "specular" );
+		itemManager->Render( shader3D, "specular" );
+
+		//	ぼかし
+		DWORD	color = ( ( 8 * 6 ) << 24 ) | 0xFFFFFF;
+		for ( int i = 0; i < 24; i += 4 )
+		{
+			hdr->Render( -i, 0, 512, 512, 0, 0, 512, 512, RS_ADD, color );
+			hdr->Render( i, 0, 512, 512, 0, 0, 512, 512, RS_ADD, color );
+			hdr->Render( 0, -i, 512, 512, 0, 0, 512, 512, RS_ADD, color );
+			hdr->Render( 0, i, 512, 512, 0, 0, 512, 512, RS_ADD, color );
+			color -= 8 << 24;
+		}
+
+		//	バックバッファへ切り替え
+		iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );
 	}
 
 	//	シャドウバッファ描画
@@ -367,4 +439,22 @@
 		//	レンダーターゲットの復元
 		iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );
 		iexSystem::GetDevice()->SetDepthStencilSurface( orgZ );
+	}
+
+	//	反射
+	void	sceneMain::RenderRef( void )
+	{
+		RefTex->RenderTarget();
+		m_Camera->SetViewport();
+
+		m_Camera->Activate();
+		m_Camera->Clear();
+
+		//	物体描画
+		m_Stage->Render( shader3D, "Refrect" );
+		characterManager->Render( shader3D, "Refrect" );
+		shader3D->SetValue( "RefMap", RefTex );
+
+		//	レンダーターゲットの復元
+		iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );
 	}

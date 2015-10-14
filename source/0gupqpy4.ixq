@@ -5,7 +5,6 @@
 #include	"GlobalFunction.h"
 #include	"CharacterManager.h"
 #include	"GameManager.h"
-#include	"sceneTitle.h"
 #include	"UI.h"
 
 //****************************************************************************************
@@ -30,32 +29,6 @@
 				Good,
 				Sad,
 				Angry
-			};
-		}
-
-		//	タイトルテキスト座標情報
-		namespace TITLE_TEXT_POS_INFO
-		{
-			enum
-			{
-				IN_START_POS_X = 1980,
-				IN_START_POS_Y = 300,
-				IN_END_POS_X = 640,
-				IN_END_POS_Y = 550,
-				OUT_START_POS_X = 640,
-				OUT_END_POS_X = -700,
-				OUT_END_POS_Y = 400,
-				ROLL_POINT_ADJUST_X = 200,
-			};
-		}
-
-		//	タイトルテキスト読み込み座標情報
-		namespace TITLE_TEXT_SRCPOS_INFO
-		{
-			enum
-			{
-				MENU_SRC_POS_X,
-				MENU_SRC_POS_Y,
 			};
 		}
 	}
@@ -175,7 +148,8 @@
 		titleInfo.textImage.obj = new iex2DObj( "DATA/UI/menu-int.png" );
 
 		//	構造体初期化
-		ImageInitialize( titleInfo.textImage, 1300, 750, 800, 100, TITLE_TEXT_SRCPOS_INFO::MENU_SRC_POS_X, TITLE_TEXT_SRCPOS_INFO::MENU_SRC_POS_Y, 1024, 128 );
+		ImageInitialize( titleInfo.textImage, 1300, 750, 800, 100, 0, 0, 1024, 128 );
+		titleInfo.textImage.renderflag = true;
 		
 		//	変数初期化
 		titleInfo.mode = 0;
@@ -183,7 +157,6 @@
 		titleInfo.param = 0.0f;
 		titleInfo.t = 0.0f;
 		titleInfo.moveState = false;
-		titleInfo.savePos = 0;
 	}
 
 	//	メイン用初期化
@@ -246,17 +219,11 @@
 	//	タイトル更新
 	void	UI::TitleUpdate( int mode )
 	{
-		//	画像設定
-		SetImageSrcPos( mode );
-
 		bool	isEnd = false;
 		switch ( titleInfo.step ) 
 		{
 		case 0:
-			//	どっかからやってくる
-			isEnd = FlyingIn();
-			
-			//	処理が終わるとつぎへ
+			isEnd = FlyingIn( mode );
 			if ( isEnd )
 			{
 				titleInfo.step++;
@@ -264,23 +231,10 @@
 			break;
 
 		case 1:
-			//	ふわふわさせる
-			titleInfo.textImage.y = TITLE_TEXT_POS_INFO::IN_END_POS_Y + static_cast<int>( 10.0f * sinf( titleInfo.t ) );
-			titleInfo.textImage.p = GetPoint( titleInfo.textImage.x - TITLE_TEXT_POS_INFO::ROLL_POINT_ADJUST_X, titleInfo.textImage.y  );
-			titleInfo.textImage.angle = 0.0f + ( D3DX_PI / 180.0f * -1.0f ) * cosf( titleInfo.t );
 			titleInfo.t += D3DX_PI / 180.0f * 1.0f;
-
-			if ( mode == TITLE_MODE::MOVE_MAIN )
-			{
-				titleInfo.textImage.t = 0.0f;
-				titleInfo.param = 0.0f;
-				titleInfo.savePos = titleInfo.textImage.y;
-				titleInfo.step++;
-			}
-			break;
-
-		case 2:
-			FlyingOut( titleInfo.savePos );
+			titleInfo.textImage.y = 550 + 50 * sinf( titleInfo.t );
+			titleInfo.textImage.p = GetPoint( titleInfo.textImage.x - 200, titleInfo.textImage.y  );
+			titleInfo.textImage.angle = 0.0f + ( D3DX_PI / 180.0f * -5.0f ) * cosf( titleInfo.t );
 			break;
 		}
 	}
@@ -335,7 +289,7 @@
 	//	タイトル描画
 	void	UI::TitleRender( int mode )
 	{
-		RenderImage( titleInfo.textImage, titleInfo.textImage.sx, titleInfo.textImage.sy, 1024, 128, IMAGE_MODE::ADOPTPARAM );
+		RenderImage( titleInfo.textImage, 0, 0, 1024, 128, IMAGE_MODE::ADOPTPARAM );
 	}
 
 	//	メイン描画
@@ -386,60 +340,26 @@
 //------------------------------------------------------------------------------
 
 	//	飛んでくる
-	bool	UI::FlyingIn( void )
+	bool	UI::FlyingIn( int type )
 	{
 		if ( titleInfo.textImage.t >= 1.0f )	return	true;
 
 		//	パラメータ加算
-		titleInfo.textImage.t += 0.01f;
+		titleInfo.textImage.t += D3DX_PI / 180.0f;
 		if ( titleInfo.textImage.t >= 1.0f )	titleInfo.textImage.t = 1.0f;
 
 		//	パラメータ調整
-		titleInfo.param = GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv5, titleInfo.textImage.t );
+		titleInfo.param = GetBezier( ePrm_t::eRapid_Lv3, ePrm_t::eSlow_Lv1, titleInfo.textImage.t );
 
 		//	上移動
-		Lerp( titleInfo.textImage.y, TITLE_TEXT_POS_INFO::IN_START_POS_Y, TITLE_TEXT_POS_INFO::IN_END_POS_Y, titleInfo.param );
-
-		//	パラメータ調整
-		titleInfo.param = GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, titleInfo.textImage.t );
+		Lerp( titleInfo.textImage.y, 800, 550, titleInfo.param );
 
 		//	左移動
-		Lerp(titleInfo.textImage.x, TITLE_TEXT_POS_INFO::IN_START_POS_X, TITLE_TEXT_POS_INFO::IN_END_POS_X, titleInfo.param);
+		CubicFunctionInterpolation( titleInfo.textImage.x, 1500, 640, titleInfo.textImage.t );
 
 		//	回転
-		titleInfo.textImage.p = GetPoint( titleInfo.textImage.x - TITLE_TEXT_POS_INFO::ROLL_POINT_ADJUST_X, titleInfo.textImage.y );
-		titleInfo.textImage.angle = 0.0f + ( D3DX_PI / 180.0f * -1.0f ) * sinf( D3DX_PI  / 2 * titleInfo.textImage.t );
+		titleInfo.textImage.angle = 0.0f + ( D3DX_PI / 180.0f * -5.0f ) * sinf( titleInfo.textImage.t );
 
-		if ( titleInfo.textImage.t >= 1.0f )	return	true;
-		return	false;
-	}
-
-	//	飛んでいく
-	bool	UI::FlyingOut( int startPos )
-	{
-		if ( titleInfo.textImage.t >= 1.0f )	return	true;
-
-		//	パラメータ加算
-		titleInfo.textImage.t += 0.01f;
-		if ( titleInfo.textImage.t >= 1.0f )	titleInfo.textImage.t = 1.0f;
-
-		//	パラメータ調整
-		titleInfo.param = GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv5, titleInfo.textImage.t );
-
-		//	上移動
-		Lerp( titleInfo.textImage.y, startPos, ( int )TITLE_TEXT_POS_INFO::OUT_END_POS_Y, titleInfo.param );
-
-		//	パラメータ調整
-		titleInfo.param = GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv3, titleInfo.textImage.t );
-
-		//	左移動
-		Lerp( titleInfo.textImage.x, TITLE_TEXT_POS_INFO::OUT_START_POS_X, TITLE_TEXT_POS_INFO::OUT_END_POS_X, titleInfo.param );
-
-		//	回転
-		titleInfo.textImage.p = GetPoint( titleInfo.textImage.x - TITLE_TEXT_POS_INFO::ROLL_POINT_ADJUST_X, titleInfo.textImage.y );
-		titleInfo.textImage.angle = 0.0f + ( D3DX_PI / 180.0f * - 1.0f ) * sinf( D3DX_PI / 2 * titleInfo.textImage.t );
-
-		if ( titleInfo.textImage.t >= 1.0f )	return	true;
 		return	false;
 	}
 
@@ -894,60 +814,6 @@
 	void	UI::SetFlyingIn( int type )
 	{
 
-	}
-
-	//	モード別読み込み位置設定
-	void	UI::SetImageSrcPos( int mode )
-	{
-		if ( mode == TITLE_MODE::TITLE )
-		{
-			titleInfo.textImage.renderflag = false;
-		}
-		else
-		{
-			titleInfo.textImage.renderflag = true;
-		}
-
-		switch ( mode ) 
-		{
-		case TITLE_MODE::MENU:
-			SetImageSrcPos( 0, 0 );
-			break;
-
-		case TITLE_MODE::OPTION:
-			SetImageSrcPos( 0, 128 );
-			break;
-
-		case TITLE_MODE::CREDIT:
-			SetImageSrcPos( 0, 256 );
-			break;
-
-		case TITLE_MODE::SELECT_PLAYERNUM:
-			SetImageSrcPos( 0, 384 );
-			break;
-
-		case TITLE_MODE::SELECT_CHARACTER:
-			SetImageSrcPos( 0, 512 );
-			break;
-
-		case	TITLE_MODE::SELECT_STAGE:
-			SetImageSrcPos( 0, 640 );
-			break;
-
-		case TITLE_MODE::SELECT_CHECK:
-			SetImageSrcPos( 0, 768 );
-			break;
-
-		case TITLE_MODE::MOVE_MAIN:
-			break;
-		}
-	}
-
-	//	読み込み位置設定
-	void	UI::SetImageSrcPos( int sx, int sy )
-	{
-		titleInfo.textImage.sx = sx;
-		titleInfo.textImage.sy = sy;
 	}
 
 	//	モード変更フラグ取得

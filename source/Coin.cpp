@@ -21,6 +21,8 @@
 //	グローバル
 //-------------------------------------------------------------------------------
 
+#define	GETAWAY_LENGTH	3.0f
+
 //-------------------------------------------------------------------------------
 //	初期化・解放
 //-------------------------------------------------------------------------------
@@ -48,6 +50,7 @@
 		judgeTimer = 0;
 		activate = false;
 		state = false;
+		getAwayflag = false;
 
 		return	true;
 	}
@@ -62,13 +65,28 @@
 		//	動作
 		Move();
 
+		//	逃げ
+		if ( getAwayflag )	GetAway();
+
+		//	マグネット
+		Magnet();
+
+		//	判定無効時間減算
 		if ( judgeTimer > 0 )	judgeTimer--;
 		else							activate = true;
 
+		//	移動値加算
 		pos += move;
+
+		//	擬似慣性
+		move.x *= 0.9f;
+		move.z *= 0.9f;
+
+		//	当たり判定
 		StageCollisionCheck();
 		PlayerCollisionCheck();
 
+		//	情報更新
 		obj->SetAngle( angle );
 		obj->SetPos( pos );
 		obj->SetScale( scale );
@@ -81,8 +99,8 @@
 		obj->Render();
 
 		//	デバッグ用
-		if ( !debug )	return;
-		DrawSphere( Vector3( pos.x, pos.y + 0.5f, pos.z ), 0.5f, 0xFFFF0000 );
+		//if ( !debug )	return;
+		//DrawSphere( Vector3( pos.x, pos.y + 0.5f, pos.z ), 0.5f, 0xFFFF0000 );
 	}
 
 	//	シェーダー付き描画
@@ -139,6 +157,8 @@
 		static float rate = 0.4f;
 		Collision::GetReflect( pos, move, rate );
 
+		//	コイン逃走
+
 		//	落下したら再配置
 		if ( GetPos().y <= -3.0f )
 		{
@@ -149,13 +169,60 @@
 	}
 
 	//	ヒット時動作
-	void	Coin::Hitduringtheoperation(const Vector3& pos, const int& Num)
+	void	Coin::Hitduringtheoperation( const Vector3& pos, const int& Num )
 	{
 		state = false;
 		float	effectScale = 0.2f;
 		particle->Spark(pos, effectScale);
 		gameManager->AddCoin(Num);
 		sound->PlaySE( SE::COIN_SE );
+	}
+
+	//	逃走
+	void	Coin::GetAway( void )
+	{
+		Vector3	p_pos[4];
+		for ( int i = 0; i < PLAYER_MAX; i++ )
+		{
+			if ( !activate )	continue;
+			p_pos[i] = characterManager->GetPos( i );
+			p_pos[i].y = pos.y;
+
+			//	プレイヤーへのベクトル取得
+			Vector3	vec = p_pos[i] - pos;
+			float	length = vec.Length();
+
+			//	近ければ逃げる
+			if ( length <= GETAWAY_LENGTH )
+			{
+				vec.Normalize();
+				move = -vec * 0.1f;
+			}
+		}
+	}
+
+	//	マグネット
+	void	Coin::Magnet( void )
+	{
+		Vector3	p_pos[4];
+		for ( int i = 0; i < PLAYER_MAX; i++ )
+		{
+			if ( !activate )	continue;
+			if ( !characterManager->GetParameterState( i, PARAMETER_STATE::MAGNET ) )	continue;
+			p_pos[i] = characterManager->GetPos( i );
+			p_pos[i].y = pos.y;
+
+			//	プレイヤーへのベクトル取得
+			Vector3	vec = p_pos[i] - pos;
+			float	length = vec.Length();
+
+			//	近ければ吸い寄せられる
+			if ( length <= GETAWAY_LENGTH )
+			{
+				vec.Normalize();
+				move = vec * 0.01f;
+			}
+		}
 	}
 
 //-------------------------------------------------------------------------------
@@ -180,6 +247,12 @@
 		this ->scale = scale; 
 	}
 
+	//	逃走フラグ設定
+	void	Coin::SetGetAwayFlag( bool flag )
+	{
+		this->getAwayflag = flag;
+	}
+
 //-------------------------------------------------------------------------------
 //	情報取得
 //-------------------------------------------------------------------------------
@@ -199,7 +272,7 @@
 	}
 	
 	//	状態取得
-	bool		Coin::GetState()
+	bool		Coin::GetState( void )
 	{
 		return	state;
 	}

@@ -20,6 +20,7 @@ namespace
 			SLIP,
 			BOOST,
 			OUTRAGE,
+			MAGNET,
 			ATTACKUP,
 			SPEEDUP,
 			BOMB,
@@ -98,8 +99,6 @@ namespace
 		};
 	}
 
-
-
 	//	キャラクター名文字列
 	namespace
 	{
@@ -176,6 +175,20 @@ protected:
 		int		count_wait;		//　待機時間（１秒未満）
 	};
 
+	//	slip情報
+	struct SLIP_INFO
+	{
+		float	speed;
+		float	drag;
+	};
+
+	//	plusStatus情報
+	struct PLUS_STATUS_INFO
+	{
+		int		power;
+		float	speed;
+	};
+
 protected:
 	iex3DObj*	obj;
 
@@ -185,8 +198,10 @@ protected:
 	Vector3		move;
 	float			drag;		//	抵抗力・摩擦力
 	float			angle;
+	float			moveVec;
 	float			scale;
 	float			speed;
+	float			totalSpeed;
 	float			force;
 	float			diffence;
 	bool			unrivaled;
@@ -195,9 +210,11 @@ protected:
 	bool			boosting;
 	bool			isPlayer;
 	bool			jumpState;
+	bool			checkWall;
 	int				mode;
 	int				playerNum;
 	int				power;
+	int				totalPower;
 	int				leanFrame;		//	仰け反り時間
 	int				jumpStep;			//	ジャンプ動作
 
@@ -206,6 +223,8 @@ protected:
 	ATTACK_INFO				attackInfo;
 	KNOCKBACK_INFO			knockBackInfo;
 	AI_INFO						aiInfo;
+	SLIP_INFO						slipInfo;
+	PLUS_STATUS_INFO		plusStatusInfo;
 
 	//	状態	
 	PARAMETER_INFO		slip;
@@ -213,6 +232,7 @@ protected:
 	PARAMETER_INFO		outrage;
 	PARAMETER_INFO		attackUp;
 	PARAMETER_INFO		speedUp;
+	PARAMETER_INFO		magnet;
 	PARAMETER_INFO		bomb;
 	PARAMETER_INFO		jump;
 
@@ -220,6 +240,7 @@ private:
 	virtual	void	MotionManagement( int motion );
 	virtual	void	ModeManagement( void );
 	void	SetMotion( int motion );
+	void	ParameterInfoInitialize( void );
 	void	ParameterInfoInitialize( PARAMETER_INFO& ps );
 
 public:
@@ -238,7 +259,7 @@ public:
 	void	CalcDrag( void );
 	void	AddMove( void );
 	void	StageCollisionCheck( void );
-	void	CalcColoParameter( void );
+	void	CalcColorParameter( void );
 	void	AngleAdjust( float speed );
 	void	AngleAdjust( const Vector3& direction, float speed );
 	void	Move( void );
@@ -254,10 +275,14 @@ public:
 	void	KnockBackMiddle( void );
 	void	KnockBackWeak( void );
 	void	KnockBackLeanBackWard( void );
+	void	FallCheck( void );
+	void	ParameterAdjust( void );
 
 	//	パラメータ状態動作
-	void	ParameterStateUpdate( void );
+	void	ParameterInfoUpdate( void );
 	void	AttackUp( void );
+	void	EventSlip( void );
+	void	ItemMagnet( void );
 
 	//	子クラスで実装
 	virtual	bool	QuickArts( void ) = 0;
@@ -289,6 +314,8 @@ public:
 	void	SetBoosting( bool boosting );
 	void	SetKnockBackVec( Vector3 vec );
 	void	SetUnrivaled( bool state );
+	void	SetParameterState( int parameterState );
+	void	SetParameterState( PARAMETER_INFO& paramterState, int time );
 
 	//	情報取得
 	Matrix	GetMatrix( void )const;
@@ -307,6 +334,7 @@ public:
 	float		GetAttack_T( void )const;
 	bool		GetUnrivaled( void )const;
 	bool		GetCanHyper( void )const;
+	bool		GetParameterState( int type )const;
 	int			GetPower( void )const;
 	int			GetMode( void )const;
 	int			GetPlayerNum( void )const;

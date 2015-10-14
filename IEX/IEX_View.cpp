@@ -124,7 +124,7 @@ void iexView::Activate()
 	Vector p, t;
 	p = Pos;
 	t = Target;
-	float	x = sinf( Slope );
+	float	x = -sinf( Slope );
 	float	y = cosf( Slope );
 	LookAtLH(matView, p, t, Vector3( x, y, .0f ) );
 

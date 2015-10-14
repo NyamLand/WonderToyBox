@@ -19,6 +19,8 @@ private:
 		int		p_num;
 	};
 
+
+
 private:
 	RESULT_INFO	resultInfo[4];
 	
@@ -28,16 +30,23 @@ private:
 	//	パラメータ
 	int		coinNum[4];
 	int		lastBonus;
+	int		addcoinNum[4];
 	int		step;
 	int		playerNum;
 	int		wait;
-	int		hundred[4];	//コイン三桁目
-	int		ten[4];	//コイン二桁目
-	int		one[4];	//コイン一桁目
+	int		hundred[4];		//コイン三桁目
+	int		ten[4];			//コイン二桁目
+	int		one[4];			//コイン一桁目
 	int		resultcount;	//	演出用カウント
-	iex2DObj*	back; //背景
-	iex2DObj*	r_number; //コインの枚数
+	int		Mode;			//	モード分け用変数
+	bool	Modeflg;		//モード用フラグ
+	float	Sx,Sy;				//セレクト画面ポジション
+	iex2DObj*	back;		//背景
+	iex2DObj*	r_number;	//コインの枚数
+	iex2DObj*	Sback;		//セレクト時の背景
+	iex2DObj*	Smenu;		//セレクト時のメニュー
 	iexMesh*	collision;
+
 
 public:
 	//	初期化・解放
@@ -49,13 +58,17 @@ public:
 	void	Update( void );
 	void	Render( void );
 
+	void	ResultUpdate( void );
+	void	SelectUpdata( void );
+
+	void	SelectRender( void );
 	//	動作関数
 	void	BubbleSort( void );
 	void	SetLastBonus( void );
 	//	演出用関数
-	void	Production( void );	
-	void	Production_Rotation( int start );
-	void	Production_Coin_hand_off(int chara);
+	void	Production( void );						//リザルトの演出用関数
+	void	ProductionRotation( int playerNum );	//コイン枚数回転関数
+	void	ProductionCoinHandOff(int playerNum);	//コイン枚数引き渡し
 };
 //*******************************************************************************
 #endif // !__SCENERESULT_H__

@@ -54,7 +54,7 @@ iexMesh*	Collision::obj = NULL;
 		Vector3	p_pos = Vector3( pos.x, pos.y + 3.0f, pos.z );
 		Vector3	vec = Vector3(0.0f, -1.0f, 0.0f);
 		Vector3	out;
-		float	dist = 50.0f;
+		float	dist = 1000.0f;
 
 		if ( obj->RayPick( &out, &p_pos, &vec, &dist ) == -1 )
 			return	pos.y;
@@ -99,7 +99,7 @@ iexMesh*	Collision::obj = NULL;
 	}
 
 	//	壁との当たり判定
-	void	Collision::CheckWall( const Vector3 pos, Vector3& p_move )
+	bool	Collision::CheckWall( const Vector3 pos, Vector3& p_move )
 	{
 		const	float	DIST = 2.0f;	//	壁との距離
 		Vector3	p_pos = Vector3( pos.x, pos.y + 1.0f, pos.z );
@@ -136,8 +136,33 @@ iexMesh*	Collision::obj = NULL;
 				//	移動量の調整
 				p_move.x = vCrossSide.x * move * ( dotNP + 1.0f );
 				p_move.z = vCrossSide.z * move * ( dotNP + 1.0f );
+
+				return	true;
 			}
 		}
+
+		return	false;
+	}
+
+	//	地面との当たり判定
+	bool	Collision::CheckDown( Vector3& pos, Vector3& p_move )
+	{
+		Vector3	p = pos + Vector3( 0.0f, 3.0f, 0.0f );
+		Vector3 vec = Vector3( 0.0f, -1.0f, 0.0f );
+		Vector3	out;
+		float	dist = 100.0f;
+
+		if ( obj->RayPick( &out, &p, &vec, &dist ) != -1 )
+		{
+			if ( pos.y < out.y )
+			{
+				pos.y = out.y;
+				p_move.y = 0.0f;
+
+				return	true;
+			}
+		}
+		return	false;
 	}
 
 //--------------------------------------------------------------------------------------------
@@ -229,6 +254,30 @@ iexMesh*	Collision::obj = NULL;
 			}
 		}
 		return false;
+	}
+
+//--------------------------------------------------------------------------------------------
+//	材質判定
+//--------------------------------------------------------------------------------------------
+
+	//	現在立っている位置の材質取得(テクスチャの番号)
+	int		Collision::GetMaterial( const Vector3& pos )
+	{
+		Vector3	out;
+		float	d = 50.0f;
+		Vector3	p = pos + Vector3( 0.0f, 2.0f, 0.0f );
+		Vector3	v = Vector3( 0.0f, -1.0f, 0.0f );
+
+		int index = obj->RayPick( &out, &p, &v, &d );
+		if ( index == -1 )	return	-1;
+
+		DWORD*	pAttr;
+		obj->GetMesh()->LockAttributeBuffer( D3DLOCK_READONLY, &pAttr );
+
+		DWORD	mat = pAttr[index];
+		obj->GetMesh()->UnlockAttributeBuffer();
+
+		return	mat;
 	}
 
 //--------------------------------------------------------------------------------------------

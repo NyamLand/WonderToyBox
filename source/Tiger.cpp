@@ -75,6 +75,7 @@
 		//	デバッグ用
 		if ( !debug )	return;
 		DrawSphere( attackInfo.pos, attackInfo.r, 0xFFFFFFFF );
+		particle->BlueFlame( Vector3( attackInfo.pos.x, attackInfo.pos.y, attackInfo.pos.z ), 0.3f ); 
 
 		char	str[256];
 		Vector3	stringPos;
@@ -119,7 +120,7 @@
 			Lerp( attackInfo.pos, startPos, finLinePos, t );
 
 			//	動作中にボタン押すと次の攻撃へ
-			if ( input->Get( KEY_A ) == 3 )
+			if ( input->Get( KEY_D ) == 3 )
 			{
 				if ( !attackFlag )
 				{

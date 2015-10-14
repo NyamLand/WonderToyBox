@@ -22,12 +22,16 @@ public:
 	//	ステージ判定
 	static	float	GetHeight( const Vector3 pos );
 	static	float	GetHeight(const Vector3 pos, float dist);
-	static	void	CheckWall( const Vector3 pos, Vector3& p_move );
+	static	bool	CheckWall( const Vector3 pos, Vector3& p_move );
+	static	bool	CheckDown( Vector3& pos, Vector3& p_move );
 
 	//	反射
 	static	bool	DistCheck( const Vector3 p1, const Vector3 p2, float dist );
 	static	bool	GetReflect( Vector3& pos, Vector3& vec, float rate );
 	static	bool	GetReflect( iexMesh* org, Vector3& pos, Vector3& vec, float rate );
+
+	//	材質判定
+	static	int		GetMaterial(const Vector3& pos);
 
 	//	当たり判定
 	static	float DistancePointSegmentSq( const Vector3& p1, const Vector3& l1p1, const Vector3& l1p2 );

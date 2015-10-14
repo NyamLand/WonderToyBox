@@ -2,6 +2,7 @@
 #include	"iextreme.h"
 #include	"GlobalFunction.h"
 #include	"Collision.h"
+#include	"Particle.h"
 
 #include	"Knight.h"
 
@@ -56,9 +57,9 @@
 	{
 		BaseChara::Render( shader, technique );
 
-		//	デバッグ用
-		if ( !debug )	return;
 		DrawCapsule( attackInfo.bottom, attackInfo.top, attackInfo.r, 0xFFFFFFFF );
+		particle->BlueFlame( attackInfo.top, 0.3f );
+		particle->BlueFlame( attackInfo.bottom, 0.3f );
 
 		char	str[256];
 		Vector3	stringPos;
