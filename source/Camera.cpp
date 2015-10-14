@@ -306,6 +306,10 @@
 		playerPos[1] = p_2;
 		playerPos[2] = p_3;
 		playerPos[3] = p_4;
+		if (p_1.y < -20.0f) playerPos[0].y = 0;
+		if (p_2.y < -20.0f) playerPos[1].y = 0;
+		if (p_3.y < -20.0f) playerPos[2].y = 0;
+		if (p_4.y < -20.0f) playerPos[3].y = 0;
 	}
 	
 	//	ŽŸ‚ÌˆÚ“®êŠÝ’è
