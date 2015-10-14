@@ -102,11 +102,12 @@ namespace
 		//	乱数初期化
 		Random::Initialize();
 
-		//	ソート
-		BubbleSort();
 
 		//	ラストボーナス設定
 		SetLastBonus();
+
+		//	ソート
+		BubbleSort();
 
 		return	true;
 	}
@@ -215,9 +216,10 @@ namespace
 		}*/
 	}
 
+	//セレクト画面描画
 	void	sceneResult::SelectRender( void )
 	{
-		Sback->Render(Sx, Sy, 1280, 720, 0, 0, 64, 64);
+		Sback->Render((int)Sx, (int)Sy, 1280, 720, 0, 0, 64, 64);
 		if (Sy >= 0)
 		{
 			Smenu->Render(50, 150, 1200, 720, 0, 0, 512, 512);
@@ -275,6 +277,7 @@ namespace
 		}
 	}
 
+	//	リザルト演出
 	void	sceneResult::Production( void )
 	{
 		int	player = 0;
@@ -324,6 +327,7 @@ namespace
 
 	}
 
+	//	リザルト時の回転演出関数
 	void	sceneResult::ProductionRotation(int playerNum)
 	{
 		resultcount++;
@@ -345,7 +349,7 @@ namespace
 			step++;
 		}
 	}
-
+	//	リザルトの値渡し
 	void	sceneResult::ProductionCoinHandOff(int playerNum)
 	{
 		hundred[playerNum] = coinNum[playerNum] / 100 % 10;
