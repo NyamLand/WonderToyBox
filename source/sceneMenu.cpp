@@ -50,8 +50,6 @@
 		//	camera
 		m_Camera = new Camera();
 
-		3;
-
 		//	random
 		Random::Initialize();
 
