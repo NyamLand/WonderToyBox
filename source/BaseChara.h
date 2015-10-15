@@ -319,6 +319,7 @@ public:
 
 	//	èÓïÒéÊìæ
 	Matrix	GetMatrix( void )const;
+	Matrix	GetBoneMatrix( int num )const;
 	Vector3	GetPos( void )const;
 	Vector3	GetMove( void )const;
 	Vector3	GetFront( void )const;
@@ -328,6 +329,10 @@ public:
 	Vector3	GetAttackPos( void )const;
 	Vector3	GetAttackPos_Top( void )const;
 	Vector3	GetAttackPos_Bottom( void )const;
+	Vector3	GetBonePos( int num )const;
+	Vector3	GetBoneFront( int num )const;
+	Vector3	GetBoneRight( int num )const;
+	Vector3	GetBoneUp( int num )const;
 	float		GetAngle( void )const;
 	float		GetScale( void )const;
 	float		GetAttack_R( void )const;

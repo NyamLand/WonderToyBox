@@ -113,7 +113,6 @@ namespace
 		mode = MODE_STATE::WAIT;
 		this->pos = pos;
 		angle = 0.0f;
-		scale = 0.02f;
 
 		//	構造体初期化
 		{
@@ -920,6 +919,16 @@ namespace
 		return	obj->TransMatrix;
 	}
 
+	//	ボーン行列取得
+	Matrix	BaseChara::GetBoneMatrix( int num )const
+	{
+		//	ボーン行列取得
+		Matrix	mat = *obj->GetBone( num );
+		mat *= obj->TransMatrix;
+
+		return	mat;
+	}
+
 	//	座標取得
 	Vector3	BaseChara::GetPos( void )const
 	{
@@ -981,6 +990,56 @@ namespace
 	Vector3	BaseChara::GetAttackPos_Top( void )const
 	{
 		return	attackInfo.top;
+	}
+
+	//	ボーン位置取得
+	Vector3	BaseChara::GetBonePos( int num )const
+	{
+		Matrix	mat = GetBoneMatrix( num );
+		
+		//	行列から座標を取得
+		Vector3	bonePos = Vector3( mat._41, mat._42, mat._43 );
+
+		return	bonePos;		
+	}
+
+	//	ボーン前方取得
+	Vector3	BaseChara::GetBoneFront( int num )const
+	{
+		//	行列取得
+		Matrix	mat = GetBoneMatrix( num );
+
+		//	行列から前方取得
+		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
+		front.Normalize();
+
+		return	front;
+	}
+
+	//	ボーン上方取得
+	Vector3	BaseChara::GetBoneUp( int num )const
+	{
+		//	行列取得
+		Matrix	mat = GetBoneMatrix( num );
+
+		//	行列から上方取得
+		Vector3	up = Vector3( mat._21, mat._22, mat._23 );
+		up.Normalize();
+
+		return	up;
+	}
+
+	//	ボーン右方取得
+	Vector3	BaseChara::GetBoneRight( int num )const
+	{
+		//	行列取得
+		Matrix	mat = GetBoneMatrix( num );
+
+		//	行列から右方取得
+		Vector3	right = Vector3( mat._11, mat._12, mat._13 );
+		right.Normalize();
+
+		return	right;
 	}
 
 	//	攻撃判定半径取得

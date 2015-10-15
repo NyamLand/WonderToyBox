@@ -41,7 +41,7 @@
 	//	デストラクタ
 	sceneMenu::~sceneMenu( void )
 	{
-
+		Release();
 	}
 
 	//	初期化
@@ -58,7 +58,7 @@
 		screen->SetScreenMode( SCREEN_MODE::WHITE_IN, 0.5f );
 
 		//	画像読み込み
-		wipe = std::make_unique<iex2DObj*>( "DATA/UI/wipe.png" );
+		wipe = std::make_unique<iex2DObj>( LPSTR( "DATA/UI/wipe.png" ) );
 
 		//	画像構造体初期化
 		ImageInitialize( wipeImage, 640, 360, 1280, 720, 0, 0, 2048, 2048 );

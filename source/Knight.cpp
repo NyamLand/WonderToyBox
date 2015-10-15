@@ -38,7 +38,7 @@
 		lance_r = 0.0f;
 		power = 5;
 		speed = 0.2f;
-		scale = 0.02f;
+		scale = 0.1f;
 		isGround = true;
 	}
 
@@ -60,6 +60,9 @@
 		DrawCapsule( attackInfo.bottom, attackInfo.top, attackInfo.r, 0xFFFFFFFF );
 		particle->BlueFlame( attackInfo.top, 0.3f );
 		particle->BlueFlame( attackInfo.bottom, 0.3f );
+
+
+
 
 		char	str[256];
 		Vector3	stringPos;

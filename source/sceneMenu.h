@@ -17,7 +17,7 @@ class sceneMenu	:	public	Scene
 private:
 
 private:
-	unique_ptr<iex2DObj*>		wipe;
+	unique_ptr<iex2DObj>		wipe;
 	ImageObj							wipeImage;
 	
 public:
