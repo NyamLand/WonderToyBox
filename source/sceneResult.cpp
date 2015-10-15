@@ -88,6 +88,7 @@ int Y = 200;
 			number[i].ten = 0;
 			number[i].one = 0;
 			playerNum[i] = i;
+			rank[i] = 0;
 		}
 
 
@@ -121,6 +122,9 @@ int Y = 200;
 
 		//	ソート
 		BubbleSort();
+
+		//	ランキング設定
+		SetRank();
 
 		return	true;
 	}
@@ -193,8 +197,11 @@ int Y = 200;
 			if (StringPos_Y < 0)StringPos_Y = 2;
 		}
 
-		if (StringPos_Y == 2 && KEY_Get(KEY_SPACE) == 3)MainFrame->ChangeScene(new sceneTitle);
-
+		if (StringPos_Y == 2 && KEY_Get(KEY_SPACE) == 3)
+		{
+			MainFrame->ChangeScene(new sceneTitle);
+			return;
+		}
 		
 
 	}
@@ -219,7 +226,7 @@ int Y = 200;
 
 		for ( int i = 0; i < 4; i++ )
 		{
-			sprintf_s( str, "%d位 : player%d　%d枚", i + 1, resultInfo[i].p_num + 1, resultInfo[i].p_Coin );
+			sprintf_s( str, "%d位 : player%d　%d枚", i + 1, resultInfo[i].p_num + 1, resultInfo[i].p_addCoin );
 			DrawString( str, 550, 250 + i * 30, 0xFFFFFFFF );
 		}
 
@@ -251,7 +258,7 @@ int Y = 200;
 				r_number->Render((int)addcoinPos.x - 40 * 0, (int)addcoinPos.y, 64, 64, number[i].one * 64, 0, 64, 64);	//	コイン一桁目
 
 
-				r_number->Render((int)rankingPos.x - 40 * 2, (int)rankingPos.y, 128, 64, (resultInfo[i].p_num) * 128, 128, 128, 64);	//	順位
+				r_number->Render((int)rankingPos.x - 40 * 2, (int)rankingPos.y, 128, 64, rank[i] * 128, 128, 128, 64);	//	順位
 			}
 		}
 
@@ -417,6 +424,7 @@ int Y = 200;
 			step++;
 		}
 	}
+
 	//	リザルトの値渡し
 	void	sceneResult::ProductionCoinHandOff(NUMBER& number,int coinNum)
 	{
@@ -424,4 +432,19 @@ int Y = 200;
 		number.ten = coinNum / 10 % 10;
 		number.one = coinNum % 10;
 
+	}
+
+	//	ランク設定
+	void	sceneResult::SetRank( void )
+	{
+		for ( int i = 0; i < 4; i++ )
+		{
+			for ( int n = 0; n < 4; n++ )
+			{
+				if ( i == resultInfo[n].p_num )
+				{
+					rank[i] = n;
+				}
+			}
+		}
 	}

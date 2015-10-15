@@ -35,6 +35,7 @@ private:
 
 	//	パラメータ
 	int		coinNum[4];
+	int		rank[4];
 	int		playerNum[4];
 	int		lastBonus;
 	int		lastBonusNum[4];
@@ -69,10 +70,13 @@ public:
 	void	SelectUpdata( void );
 
 	void	SelectRender( void );
+	
 	//	動作関数
 	void	BubbleSort( void );
 	void	SetLastBonus( void );
+
 	//	演出用関数
+	void	SetRank( void );
 	void	Production( void );						//リザルトの演出用関数
 	void	ProductionRotation( int playerNum );	//コイン枚数回転関数
 	void	ProductionCoinHandOff(NUMBER& number, int coinNum);	//コイン枚数引き渡し
