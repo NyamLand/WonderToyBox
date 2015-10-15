@@ -81,7 +81,7 @@ int Y = 200;
 		wait = 0;
 		resultcount = 0;
 		Mode = MOVE_MODE::RESULT_MODE;
-		Sy = -720.0f;
+		Sy = -720;
 		StringPos_Y = 0;
 		for ( int i = 0; i < 4; i++ ){
 			number[i].hundred = 0;
@@ -157,7 +157,6 @@ int Y = 200;
 		
 		Production();
 		if (Modeflg)Mode = MOVE_MODE::SELECT_MODE;
-		//	タイトルへ
 		//デバッグ用
 		if (KEY_Get(KEY_RIGHT) == 1){
 			X += 10;
@@ -246,9 +245,9 @@ int Y = 200;
 			//r_number->Render((int)addcoinPos.x - 40 * 0, (int)addcoinPos.y, 64, 64, (resultInfo[i].p_addCoin % 10) * 64, 0, 64, 64);	//	コイン一桁目
 
 			if (addCoinflg){
-				r_number->Render((int)addcoinPos.x - 40 * 2, (int)addcoinPos.y, 64, 64, number[i].hundred * 64, 0, 64, 64);	//	コイン三桁目
-				r_number->Render((int)addcoinPos.x - 40 * 1, (int)addcoinPos.y, 64, 64, number[i].ten * 64, 0, 64, 64);	//	コイン二桁目
-				r_number->Render((int)addcoinPos.x - 40 * 0, (int)addcoinPos.y, 64, 64, number[i].one * 64, 0, 64, 64);	//	コイン一桁目
+				r_number->Render((int)addcoinPos.x - 40 * 2, (int)addcoinPos.y, 64, 64, addnumber[i].hundred * 64, 0, 64, 64);	//	コイン三桁目
+				r_number->Render((int)addcoinPos.x - 40 * 1, (int)addcoinPos.y, 64, 64, addnumber[i].ten * 64, 0, 64, 64);	//	コイン二桁目
+				r_number->Render((int)addcoinPos.x - 40 * 0, (int)addcoinPos.y, 64, 64, addnumber[i].one * 64, 0, 64, 64);	//	コイン一桁目
 
 
 				r_number->Render((int)rankingPos.x - 40 * 2, (int)rankingPos.y, 128, 64, (resultInfo[i].p_num) * 128, 128, 128, 64);	//	順位
@@ -375,10 +374,10 @@ int Y = 200;
 			}
 			break;
 		case 7://	コイン合算値を描画
-			ProductionCoinHandOff(number[0], resultInfo[0].p_addCoin);
-			ProductionCoinHandOff(number[1], resultInfo[1].p_addCoin);
-			ProductionCoinHandOff(number[2], resultInfo[2].p_addCoin);
-			ProductionCoinHandOff(number[3], resultInfo[3].p_addCoin);
+			ProductionCoinHandOff(addnumber[0], resultInfo[0].p_addCoin);
+			ProductionCoinHandOff(addnumber[1], resultInfo[1].p_addCoin);
+			ProductionCoinHandOff(addnumber[2], resultInfo[2].p_addCoin);
+			ProductionCoinHandOff(addnumber[3], resultInfo[3].p_addCoin);
 
 			addCoinflg = true;
 			/*resultcount++;
@@ -386,9 +385,9 @@ int Y = 200;
 				resultcount = 0;
 				step++;
 			}*/
-			if (KEY_Get(KEY_ENTER) == 3)step++;
+			if (KEY_Get(KEY_SPACE) == 3)step=20;
 			break;
-		case 8:	//
+		case 20:	//	モードフラグをtrueにしてセレクト選択へ
 			Modeflg = true;
 			break;
 		}

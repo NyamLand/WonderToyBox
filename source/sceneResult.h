@@ -29,7 +29,8 @@ private:
 
 private:
 	RESULT_INFO	resultInfo[4];
-	NUMBER		number[4];
+	NUMBER		number[4];		//	取得コイン枚数用ナンバー
+	NUMBER		addnumber[4];	//	取得コインとボーナスの合算用ナンバー
 	//	ソート用
 	char	str[256];
 

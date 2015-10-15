@@ -16,6 +16,7 @@ private:
 	iex2DObj*	load;			//	ロード画像
 	ImageObj	load_anykey;	//	ボタン
 
+
 	//デバック用
 	char	stri[256];
 public:

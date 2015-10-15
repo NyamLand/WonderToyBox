@@ -39,6 +39,8 @@ using namespace std;
 	sceneLoad::~sceneLoad( void )
 	{
 		SafeDelete( load );
+		SafeDelete(load_anykey.obj);
+		
 	}
 
 	//	初期化
@@ -52,6 +54,7 @@ using namespace std;
 		m_Camera = new Camera();
 		load = new iex2DObj("DATA/Load/Lord-back.png");
 		load_anykey.obj = new iex2DObj("DATA/UI/pressspace.png");
+		ImageInitialize(load_anykey, 1100, 675, 256, 128, 0, 0, 256, 128);
 		//	別スレッド作成
 		_beginthread( Thread, 0, ( void* )newScene );
 		
@@ -109,8 +112,10 @@ using namespace std;
 		DrawString( "ロード中", 200, 300 );
 
 		//	pressSpace描画
-		RenderImage(load_anykey, Xs, Ys, 256, 128, IMAGE_MODE::FLASH);
-		RenderImage(load_anykey, Xs, Ys, 256, 128, IMAGE_MODE::WAVE);
+		RenderImage(load_anykey, 0, 0, 256, 128, IMAGE_MODE::FLASH);
+		RenderImage(load_anykey, 0, 0, 256, 128, IMAGE_MODE::WAVE);
+
+
 
 		//デバック用
 		sprintf_s(stri, "%d\n%d", Xs, Ys);
