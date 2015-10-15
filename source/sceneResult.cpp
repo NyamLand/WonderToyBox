@@ -78,6 +78,7 @@ namespace
 			resultInfo[i].p_Coin = gameManager->GetCoinNum( i );
 			resultInfo[i].p_num = i;
 			addcoinNum[i] = 0;
+			rank[i] = 0;
 			//	プレイヤー初期化
 			int		characterType = gameManager->GetCharacterType(i);
 			Vector3	pos = Vector3( 6.0f - ( 4.0f  *  i ), 0.0f, 0.0f );
@@ -108,6 +109,9 @@ namespace
 
 		//	ソート
 		BubbleSort();
+
+		//	ランキング設定
+		SetRank();
 
 		return	true;
 	}
@@ -164,7 +168,6 @@ namespace
 
 	}
 
-
 	//	描画
 	void	sceneResult::Render( void ) 
 	{
@@ -193,21 +196,21 @@ namespace
 			Vector3 addcoinPos;
 			Vector3 juniPos;
 			WorldToClient( characterManager->GetPos(i), stringPos, matView* matProjection );
-			WorldToClient(characterManager->GetPos(i), addcoinPos, matView* matProjection);
-			WorldToClient(characterManager->GetPos(i), juniPos, matView* matProjection);
+			WorldToClient( characterManager->GetPos(i), addcoinPos, matView* matProjection );
+			WorldToClient( characterManager->GetPos(i), juniPos, matView* matProjection );
 			stringPos.y = 100;
 			addcoinPos.y = 250;
 			juniPos.y = 350;
-			r_number->Render( ( int )stringPos.x - 40 * 2, ( int )stringPos.y, 64, 64, hundred[i] * 64, 0, 64, 64);	//	コイン三桁目
-			r_number->Render( ( int )stringPos.x  -40 * 1, ( int )stringPos.y, 64, 64, ten[i] * 64, 0, 64, 64);	//	コイン二桁目
-			r_number->Render( ( int )stringPos.x  -40 * 0, ( int )stringPos.y, 64, 64, one[i] * 64, 0, 64, 64);	//	コイン一桁目
+			r_number->Render( ( int )stringPos.x - 40 * 2, ( int )stringPos.y, 64, 64, hundred[i] * 64, 0, 64, 64 );	//	コイン三桁目
+			r_number->Render( ( int )stringPos.x  -40 * 1, ( int )stringPos.y, 64, 64, ten[i] * 64, 0, 64, 64 );	//	コイン二桁目
+			r_number->Render( ( int )stringPos.x  -40 * 0, ( int )stringPos.y, 64, 64, one[i] * 64, 0, 64, 64 );	//	コイン一桁目
 
-			if (Modeflg){
-				r_number->Render((int)addcoinPos.x - 40 * 2, (int)addcoinPos.y, 64, 64, (addcoinNum[i] / 100 % 10) * 64, 0, 64, 64);	//	コイン三桁目
-				r_number->Render((int)addcoinPos.x - 40 * 1, (int)addcoinPos.y, 64, 64, (addcoinNum[i] / 10 % 10) * 64, 0, 64, 64);	//	コイン二桁目
-				r_number->Render((int)addcoinPos.x - 40 * 0, (int)addcoinPos.y, 64, 64, (addcoinNum[i] % 10) * 64, 0, 64, 64);	//	コイン一桁目
+			if ( Modeflg ){
+				r_number->Render( ( int )addcoinPos.x - 40 * 2, ( int )addcoinPos.y, 64, 64, ( addcoinNum[i] / 100 % 10 ) * 64, 0, 64, 64 );	//	コイン三桁目
+				r_number->Render( ( int )addcoinPos.x - 40 * 1, ( int )addcoinPos.y, 64, 64, ( addcoinNum[i] / 10 % 10 ) * 64, 0, 64, 64 );	//	コイン二桁目
+				r_number->Render( ( int )addcoinPos.x - 40 * 0, ( int )addcoinPos.y, 64, 64, ( addcoinNum[i] % 10 ) * 64, 0, 64, 64 );	//	コイン一桁目
 
-				r_number->Render((int)juniPos.x - 40 * 2, (int)juniPos.y, 128, 64, (resultInfo[i].p_num) * 128, 128, 128, 64);	//	コイン一桁目
+				r_number->Render((int)juniPos.x - 40 * 2, (int)juniPos.y, 128, 64, (rank[i]) * 128, 128, 128, 64);	//	順位
 			}
 		}
 
@@ -349,6 +352,7 @@ namespace
 			step++;
 		}
 	}
+
 	//	リザルトの値渡し
 	void	sceneResult::ProductionCoinHandOff(int playerNum)
 	{
@@ -356,4 +360,16 @@ namespace
 		ten[playerNum] = coinNum[playerNum] / 10 % 10;
 		one[playerNum] = coinNum[playerNum] % 10;
 
+	}
+
+	//	順位設定
+	void	sceneResult::SetRank( void )
+	{
+		for ( int i = 0; i < 4; i++ )
+		{
+			for ( int n = 0; n < 4; n++ )
+			{
+				if ( i == resultInfo[n].p_num )	rank[i] =n;
+			}
+		}
 	}

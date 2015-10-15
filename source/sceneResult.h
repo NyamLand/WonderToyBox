@@ -19,6 +19,12 @@ private:
 		int		p_num;
 	};
 
+	struct NUMBER
+	{
+		int		hundred;
+		int		ten;
+		int		one;
+	};
 
 
 private:
@@ -29,6 +35,7 @@ private:
 
 	//	パラメータ
 	int		coinNum[4];
+	int		rank[4];
 	int		lastBonus;
 	int		addcoinNum[4];
 	int		step;
@@ -46,7 +53,7 @@ private:
 	iex2DObj*	Sback;		//セレクト時の背景
 	iex2DObj*	Smenu;		//セレクト時のメニュー
 	iexMesh*	collision;
-
+	NUMBER	number[4];
 
 public:
 	//	初期化・解放
@@ -65,6 +72,8 @@ public:
 	//	動作関数
 	void	BubbleSort( void );
 	void	SetLastBonus( void );
+	void	SetRank( void );
+
 	//	演出用関数
 	void	Production( void );						//リザルトの演出用関数
 	void	ProductionRotation( int playerNum );	//コイン枚数回転関数
