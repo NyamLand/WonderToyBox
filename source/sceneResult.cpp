@@ -35,6 +35,8 @@ namespace
 	}
 }
 
+int	X = 400;
+int Y = 200;
 //----------------------------------------------------------------------------
 //	初期化・解放
 //----------------------------------------------------------------------------
@@ -62,49 +64,60 @@ namespace
 		m_Camera = new Camera();
 
 		//	画像初期化
-		back = new iex2DObj( "DATA/Result/back.png");
+		back = new iex2DObj( "DATA/Result/result-back.png");
 		r_number = new iex2DObj( "DATA/UI/number.png");
 		Sback = new iex2DObj("DATA/Result/black.png");
 		Smenu = new iex2DObj("DATA/Result/result-cho.png");
+		result = new iex2DObj("DATA/UI/menu-head.png");
 
 		//	コリジョン
 		collision = new iexMesh( "DATA/BG/CollisionGround.imo" );
 		Collision::Initiallize( collision );
 		
-		for ( int i = 0; i < 4; i++ )
-		{
-			//	リザルト情報初期化
-			coinNum[i] = gameManager->GetCoinNum(i);
-			resultInfo[i].p_Coin = gameManager->GetCoinNum( i );
-			resultInfo[i].p_num = i;
-			addcoinNum[i] = 0;
-			//	プレイヤー初期化
-			int		characterType = gameManager->GetCharacterType(i);
-			Vector3	pos = Vector3( 6.0f - ( 4.0f  *  i ), 0.0f, 0.0f );
-			characterManager->Initialize( i, characterType, pos, true );
-		}
 
 		//	変数初期化
 		lastBonus = 0;
 		step = 0;
-		playerNum = 0;
 		wait = 0;
-		Modeflg = false;
-		for ( int i = 0; i < 4; i++ ){
-			hundred[i] = 0;
-			ten[i] = 0;
-			one[i] = 0;
-		}
 		resultcount = 0;
-		Mode = 0;
+		Mode = MOVE_MODE::RESULT_MODE;
 		Sy = -720.0f;
-		Sx = 0.0f;
+		StringPos_Y = 0;
+		for ( int i = 0; i < 4; i++ ){
+			number[i].hundred = 0;
+			number[i].ten = 0;
+			number[i].one = 0;
+			playerNum[i] = i;
+		}
+
+
+		//フラグ全初期化
+		Modeflg = false;
+		addCoinflg	= false;
+		for (int i = 0; i < 4; i++){
+			rankingflg[i] = false;
+		}
+
 		//	乱数初期化
 		Random::Initialize();
 
 
 		//	ラストボーナス設定
 		SetLastBonus();
+
+		for ( int i = 0; i < 4; i++ )
+		{
+			lastBonusNum[i] = 0;
+			//	リザルト情報初期化
+			coinNum[i] = gameManager->GetCoinNum(i);
+			resultInfo[i].p_Coin = gameManager->GetCoinNum( i );
+			resultInfo[i].p_num = i;
+			resultInfo[i].p_addCoin = coinNum[i]+lastBonusNum[i];
+			//	プレイヤー初期化
+			int		characterType = gameManager->GetCharacterType(i);
+			Vector3	pos = Vector3( 6.0f - ( 4.0f  *  i ), 0.0f, 0.0f );
+			characterManager->Initialize( i, characterType, pos, true );
+		}
 
 		//	ソート
 		BubbleSort();
@@ -121,10 +134,10 @@ namespace
 	{
 		switch (Mode)
 		{
-		case 0:
+		case MOVE_MODE::RESULT_MODE:
 			ResultUpdate();
 			break;
-		case 1:
+		case MOVE_MODE::SELECT_MODE:
 			SelectUpdata();
 			break;
 		default:
@@ -141,16 +154,25 @@ namespace
 
 		//	プレイヤー更新
 		characterManager->Update();
-		for (int i = 0; i < 4; i++){
-			addcoinNum[i] = coinNum[i] + lastBonus;
-		}
+		
 		Production();
-		if (Modeflg)Mode = 1;
+		if (Modeflg)Mode = MOVE_MODE::SELECT_MODE;
 		//	タイトルへ
-		if (KEY(KEY_SPACE) == 3)
-		{
-			MainFrame->ChangeScene(new sceneTitle());
-			return;
+		//デバッグ用
+		if (KEY_Get(KEY_RIGHT) == 1){
+			X += 10;
+		}
+		if (KEY_Get(KEY_LEFT) == 1){
+			X -= 10;
+		}
+		if (KEY_Get(KEY_DOWN) == 1){
+			Y += 10;
+
+		}
+
+		if (KEY_Get(KEY_UP) == 1){
+			Y -= 10;
+
 		}
 	}
 
@@ -161,6 +183,19 @@ namespace
 		if (Sy > 0){
 			Sy = 0;
 		}
+		if (KEY_Get(KEY_DOWN) == 3){
+			StringPos_Y++;
+			if (StringPos_Y > 2)StringPos_Y = 0;
+		}
+
+		if (KEY_Get(KEY_UP) == 3){
+			StringPos_Y--;
+			if (StringPos_Y < 0)StringPos_Y = 2;
+		}
+
+		if (StringPos_Y == 2 && KEY_Get(KEY_SPACE) == 3)MainFrame->ChangeScene(new sceneTitle);
+
+		
 
 	}
 
@@ -172,7 +207,7 @@ namespace
 		m_Camera->Clear();
 
 		iexSystem::GetDevice()->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
-		back->Render(0, 0, 1280, 720, 0, 0, 2048, 1024);
+		back->Render(0, 0, 1280, 720, 0, 0, 1280, 720);
 		iexSystem::GetDevice()->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
 
 		characterManager->Render( shader3D, "toon" );
@@ -188,43 +223,61 @@ namespace
 			DrawString( str, 550, 250 + i * 30, 0xFFFFFFFF );
 		}
 
+
+		result->Render(510, -10, 256, 128, 0, 0, 512, 256);	//	リザルト描画
+
 		for (int i = 0; i < 4; i++){
 			Vector3 stringPos;
 			Vector3 addcoinPos;
-			Vector3 juniPos;
+			Vector3 rankingPos;
 			WorldToClient( characterManager->GetPos(i), stringPos, matView* matProjection );
 			WorldToClient(characterManager->GetPos(i), addcoinPos, matView* matProjection);
-			WorldToClient(characterManager->GetPos(i), juniPos, matView* matProjection);
+			WorldToClient(characterManager->GetPos(i), rankingPos, matView* matProjection);
 			stringPos.y = 100;
 			addcoinPos.y = 250;
-			juniPos.y = 350;
-			r_number->Render( ( int )stringPos.x - 40 * 2, ( int )stringPos.y, 64, 64, hundred[i] * 64, 0, 64, 64);	//	コイン三桁目
-			r_number->Render( ( int )stringPos.x  -40 * 1, ( int )stringPos.y, 64, 64, ten[i] * 64, 0, 64, 64);	//	コイン二桁目
-			r_number->Render( ( int )stringPos.x  -40 * 0, ( int )stringPos.y, 64, 64, one[i] * 64, 0, 64, 64);	//	コイン一桁目
+			rankingPos.y = 350;
+			r_number->Render( ( int )stringPos.x - 40 * 2, ( int )stringPos.y, 64, 64, number[i].hundred * 64, 0, 64, 64);	//	コイン三桁目
+			r_number->Render( ( int )stringPos.x  -40 * 1, ( int )stringPos.y, 64, 64, number[i].ten * 64, 0, 64, 64);	//	コイン二桁目
+			r_number->Render( ( int )stringPos.x  -40 * 0, ( int )stringPos.y, 64, 64, number[i].one * 64, 0, 64, 64);	//	コイン一桁目
 
-			if (Modeflg){
-				r_number->Render((int)addcoinPos.x - 40 * 2, (int)addcoinPos.y, 64, 64, (addcoinNum[i] / 100 % 10) * 64, 0, 64, 64);	//	コイン三桁目
-				r_number->Render((int)addcoinPos.x - 40 * 1, (int)addcoinPos.y, 64, 64, (addcoinNum[i] / 10 % 10) * 64, 0, 64, 64);	//	コイン二桁目
-				r_number->Render((int)addcoinPos.x - 40 * 0, (int)addcoinPos.y, 64, 64, (addcoinNum[i] % 10) * 64, 0, 64, 64);	//	コイン一桁目
 
-				r_number->Render((int)juniPos.x - 40 * 2, (int)juniPos.y, 128, 64, (resultInfo[i].p_num) * 128, 128, 128, 64);	//	コイン一桁目
+			//r_number->Render((int)addcoinPos.x - 40 * 2, (int)addcoinPos.y, 64, 64, (resultInfo[i].p_addCoin / 100 % 10) * 64, 0, 64, 64);	//	コイン三桁目
+			//r_number->Render((int)addcoinPos.x - 40 * 1, (int)addcoinPos.y, 64, 64, (resultInfo[i].p_addCoin / 10 % 10) * 64, 0, 64, 64);	//	コイン二桁目
+			//r_number->Render((int)addcoinPos.x - 40 * 0, (int)addcoinPos.y, 64, 64, (resultInfo[i].p_addCoin % 10) * 64, 0, 64, 64);	//	コイン一桁目
+
+			if (addCoinflg){
+				r_number->Render((int)addcoinPos.x - 40 * 2, (int)addcoinPos.y, 64, 64, number[i].hundred * 64, 0, 64, 64);	//	コイン三桁目
+				r_number->Render((int)addcoinPos.x - 40 * 1, (int)addcoinPos.y, 64, 64, number[i].ten * 64, 0, 64, 64);	//	コイン二桁目
+				r_number->Render((int)addcoinPos.x - 40 * 0, (int)addcoinPos.y, 64, 64, number[i].one * 64, 0, 64, 64);	//	コイン一桁目
+
+
+				r_number->Render((int)rankingPos.x - 40 * 2, (int)rankingPos.y, 128, 64, (resultInfo[i].p_num) * 128, 128, 128, 64);	//	順位
 			}
 		}
 
-		/*if (Mode >= 1){
+		if (Mode ==MOVE_MODE::SELECT_MODE){
 			SelectRender();
-		}*/
+		}
+
+
+		//デバック用
+		sprintf_s(str, "%d\n%d", X, Y);
+		DrawString(str, 0, 250, 0xFFFFFFFF);
 	}
 
 	//セレクト画面描画
 	void	sceneResult::SelectRender( void )
 	{
-		Sback->Render((int)Sx, (int)Sy, 1280, 720, 0, 0, 64, 64);
+		Sback->Render(0, Sy, 1280, 720, 0, 0, 64, 64);
 		if (Sy >= 0)
 		{
-			Smenu->Render(50, 150, 1200, 720, 0, 0, 512, 512);
-			Smenu->Render(50, 150, 1200, 250, 512, 0, 512, 170);
-			Smenu->Render(50, 300, 1200, 250, 512, 100, 512, 170);
+			for (int i = 0; i < 3; i++){
+				Smenu->Render(400, 200 + i * 128, 512, 128, 0, i * 128, 512, 128);
+
+			}
+			Smenu->Render(400, 200 + StringPos_Y * 128, 512, 128, 512, StringPos_Y * 128, 512, 128);
+			
+			
 		}
 	}
 
@@ -244,7 +297,7 @@ namespace
 			for ( int s =3; s > i; --s )
 			{
 				//	一つ下の要素と比較
-				if ( resultInfo[s].p_Coin >	resultInfo[s - 1].p_Coin )
+				if ( resultInfo[s].p_addCoin >	resultInfo[s - 1].p_addCoin )
 				{
 					//	一時的に退避
 					temp = resultInfo[s - 1];
@@ -280,49 +333,64 @@ namespace
 	//	リザルト演出
 	void	sceneResult::Production( void )
 	{
-		int	player = 0;
-		int player_num = 0;
+		
 
 		switch (step)
 		{
-		case 0:
-			ProductionRotation( player );
+		case 0://	コイン枚数の回転
+			ProductionRotation(playerNum[0]);
 			break;
 
-		case 1:
-			player = 1;
-			ProductionCoinHandOff(player_num);
-			ProductionRotation(player);
+		case 1://	1Pのコイン枚数描画とその他回転
+			ProductionCoinHandOff(number[0],resultInfo[0].p_Coin);
+			ProductionRotation(playerNum[1]);
 			break;
 
-		case 2:
-			player=2;
-			player_num=1;
-			ProductionCoinHandOff(player_num);
-			ProductionRotation(player);
+		case 2://	2Pのコイン枚数描画とその他回転
+			ProductionCoinHandOff(number[1], resultInfo[1].p_Coin);
+			ProductionRotation(playerNum[2]);
 			break;
 
-		case 3:
-			player=3;
-			player_num=2;
-			ProductionCoinHandOff(player_num);
-			ProductionRotation(player);
+		case 3://	3Pのコイン枚数描画とその他回転
+			ProductionCoinHandOff(number[2], resultInfo[2].p_Coin);
+			ProductionRotation(playerNum[3]);
 			break;
 		
-		case 4:
-			player_num=3;
-			ProductionCoinHandOff(player_num);
+		case 4://	4Pのコイン枚数描画
+			ProductionCoinHandOff(number[3], resultInfo[3].p_Coin);
 			step++;
 			break;
-		case 5:
+		case 5://ボーナス演出->後で作る
 			resultcount++;
-			if (resultcount > 60){
+			if (resultcount > 30){
 				resultcount = 0;
 				step++;
 			}
 			break;
-		case 6:
+		case 6://ボーナス表示->後で作る
+			resultcount++;
+			if (resultcount > 30){
+				resultcount = 0;
+				step++;
+			}
+			break;
+		case 7://	コイン合算値を描画
+			ProductionCoinHandOff(number[0], resultInfo[0].p_addCoin);
+			ProductionCoinHandOff(number[1], resultInfo[1].p_addCoin);
+			ProductionCoinHandOff(number[2], resultInfo[2].p_addCoin);
+			ProductionCoinHandOff(number[3], resultInfo[3].p_addCoin);
+
+			addCoinflg = true;
+			/*resultcount++;
+			if (resultcount > 30){
+				resultcount = 0;
+				step++;
+			}*/
+			if (KEY_Get(KEY_ENTER) == 3)step++;
+			break;
+		case 8:	//
 			Modeflg = true;
+			break;
 		}
 
 	}
@@ -333,12 +401,12 @@ namespace
 		resultcount++;
 		for (int i = playerNum; i < 4; i++){
 
-			hundred[i]++;
-			if (hundred[i]>=10)hundred[i] = 0;
-			ten[i]++;
-			if (ten[i] >= 10)ten[i] = 0;
-			one[i]++;
-			if (one[i] >= 10)one[i] = 0;
+			number[i].hundred++;
+			if (number[i].hundred >= 10)number[i].hundred = 0;
+			number[i].ten++;
+			if (number[i].ten >= 10)number[i].ten = 0;
+			number[i].one++;
+			if (number[i].one >= 10)number[i].one = 0;
 		}
 		if (resultcount > 60){
 			resultcount = 0;
@@ -350,10 +418,10 @@ namespace
 		}
 	}
 	//	リザルトの値渡し
-	void	sceneResult::ProductionCoinHandOff(int playerNum)
+	void	sceneResult::ProductionCoinHandOff(NUMBER& number,int coinNum)
 	{
-		hundred[playerNum] = coinNum[playerNum] / 100 % 10;
-		ten[playerNum] = coinNum[playerNum] / 10 % 10;
-		one[playerNum] = coinNum[playerNum] % 10;
+		number.hundred = coinNum / 100 % 10;
+		number.ten = coinNum / 10 % 10;
+		number.one = coinNum % 10;
 
 	}

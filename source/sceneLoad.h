@@ -11,8 +11,13 @@ class sceneLoad : public	Scene
 {
 private:
 	Scene*		newScene;		//	次のシーン
-	static bool	threadState;		//	スレッドの状態
+	static bool	threadState;	//	スレッドの状態
+	bool		loadflg;		
+	iex2DObj*	load;			//	ロード画像
+	ImageObj	load_anykey;	//	ボタン
 
+	//デバック用
+	char	stri[256];
 public:
 	//	初期化・解放
 	sceneLoad( Scene* nextScene );
