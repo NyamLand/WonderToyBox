@@ -131,6 +131,7 @@
     <ClCompile Include="source\Random.cpp" />
     <ClCompile Include="source\sceneLoad.cpp" />
     <ClCompile Include="source\sceneMain.cpp" />
+    <ClCompile Include="source\sceneMenu.cpp" />
     <ClCompile Include="source\sceneResult.cpp" />
     <ClCompile Include="source\sceneTitle.cpp" />
     <ClCompile Include="source\Screen.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="source\Princess_CPU.h" />
     <ClInclude Include="source\Random.h" />
     <ClInclude Include="source\sceneLoad.h" />
+    <ClInclude Include="source\sceneMenu.h" />
     <ClInclude Include="source\sceneResult.h" />
     <ClInclude Include="source\sceneTitle.h" />
     <ClInclude Include="source\Screen.h" />
