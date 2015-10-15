@@ -50,6 +50,8 @@
 		//	camera
 		m_Camera = new Camera();
 
+		3;
+
 		//	random
 		Random::Initialize();
 
@@ -58,7 +60,6 @@
 		screen->SetScreenMode( SCREEN_MODE::WHITE_IN, 0.5f );
 
 		//	‰æ‘œ“Ç‚İ‚İ
-		wipe = std::make_unique<iex2DObj>( LPSTR( "DATA/UI/wipe.png" ) );
 
 		//	‰æ‘œ\‘¢‘Ì‰Šú‰»
 		ImageInitialize( wipeImage, 640, 360, 1280, 720, 0, 0, 2048, 2048 );

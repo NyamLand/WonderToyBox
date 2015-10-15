@@ -16,9 +16,8 @@ class sceneMenu	:	public	Scene
 {
 private:
 
-private:
-	unique_ptr<iex2DObj>		wipe;
-	ImageObj							wipeImage;
+private:				
+	ImageObj	wipeImage;
 	
 public:
 	//	‰Šú‰»E‰ğ•ú
