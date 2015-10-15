@@ -76,6 +76,7 @@ public:
 	void		SetLeanFrame( int player, int leanframe );
 	void		SetPassColor( int player, Vector3 color );
 	void		SetParameterInfo( int player, int parameterInfo );
+	void		SetKnockBackParam(BaseChara* bc1, BaseChara* bc2);
 };
 
 #define	characterManager ( CharacterManager::GetInstance() )

@@ -63,6 +63,7 @@ iexMesh*	Collision::obj = NULL;
 
 	}
 
+
 	//　ステージ高さ取得（判定距離指定）
 	float	Collision::GetHeight( const Vector3	pos, float dist )
 	{

@@ -278,17 +278,20 @@
 		switch ( attackKind )
 		{
 		case MODE_STATE::QUICKARTS:
+			knockBackInfo.isUp = false;
 			attackInfo.type = COLLISION_TYPE::CAPSULEVSCAPSULE;
 			if (attackInfo.t < 0.6f) knockBackInfo.type = KNOCKBACK_TYPE::LEANBACKWARD;	//2Hit‚Ü‚Å‚Í‹Â‚¯”½‚è‚Ì‚Ý
 			if (attackInfo.t >= 0.6f && attackInfo.t < 0.8f ) knockBackInfo.type = KNOCKBACK_TYPE::WEAK;		//3hit–Ú‚©‚ç‚Í‚«”ò‚Î‚µ‚ ‚è
 			break;
 
 		case MODE_STATE::POWERARTS:
+			knockBackInfo.isUp = false;
 			attackInfo.type = COLLISION_TYPE::CAPSULEVSCAPSULE;
 			knockBackInfo.type = KNOCKBACK_TYPE::STRENGTH;
 			break;
 
 		case MODE_STATE::HYPERARTS:
+			knockBackInfo.isUp = true;
 			attackInfo.type = COLLISION_TYPE::CAPSULEVSCAPSULE;
 			if (attackInfo.t != 0) knockBackInfo.type = KNOCKBACK_TYPE::STRENGTH;	//2Hit‚Ü‚Å‚Í‚«”ò‚Î‚µ‚ ‚è
 			if (attackInfo.t == 0 && lance_r < 360 * 4) knockBackInfo.type = KNOCKBACK_TYPE::LEANBACKWARD;		//3~6hit–Ú‚©‚ç‚Í‚«”ò‚Î‚µ‚ ‚è

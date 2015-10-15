@@ -212,25 +212,7 @@
 			bc2->SetPassColor( color );
 			bc2->SetKnockBackVec( -knockBackVec );
 
-			switch ( bc1->GetKnockBackType() )
-			{
-			case KNOCKBACK_TYPE::STRENGTH:
-				bc2->SetMode( MODE_STATE::DAMAGE_STRENGTH );
-				break;
-
-			case KNOCKBACK_TYPE::MIDDLE:
-				bc2->SetMode( MODE_STATE::DAMAGE_MIDDLE );
-				break;
-
-			case KNOCKBACK_TYPE::WEAK:
-				bc2->SetMode( MODE_STATE::DAMAGE_WEAK );
-				break;
-
-			case KNOCKBACK_TYPE::LEANBACKWARD:
-				bc2->SetLeanFrame( bc1->GetLeanFrame() );
-				bc2->SetMode( MODE_STATE::DAMAGE_LEANBACKWARD );
-				break;
-			}
+			SetKnockBackParam(bc1, bc2);
 
 			//	コインばらまき方向設定
 			Vector3	vec = Vector3( Random::GetFloat( -1.0f, 1.0f ), 1.0f, Random::GetFloat( -1.0f, 1.0f ) );
@@ -285,25 +267,8 @@
 			bc2->SetPassColor( color );
 			bc2->SetKnockBackVec( -knockBackVec );
 
-			switch ( bc1->GetKnockBackType() )
-			{
-			case KNOCKBACK_TYPE::STRENGTH:
-				bc2->SetMode( MODE_STATE::DAMAGE_STRENGTH );
-				break;
 
-			case KNOCKBACK_TYPE::MIDDLE:
-				bc2->SetMode( MODE_STATE::DAMAGE_MIDDLE );
-				break;
-
-			case KNOCKBACK_TYPE::WEAK:
-				bc2->SetMode( MODE_STATE::DAMAGE_WEAK );
-				break;
-
-			case KNOCKBACK_TYPE::LEANBACKWARD:
-				bc2->SetLeanFrame( bc1->GetLeanFrame() );
-				bc2->SetMode( MODE_STATE::DAMAGE_LEANBACKWARD );
-				break;
-			}
+			SetKnockBackParam(bc1, bc2);
 
 			//	コインばらまき方向設定
 			Vector3	vec = Vector3( Random::GetFloat( -1.0f, 1.0f ), 1.0f, Random::GetFloat( -1.0f, 1.0f ) );
@@ -450,4 +415,34 @@
 	void		CharacterManager::SetParameterInfo( int player, int parameterInfo )
 	{
 		character[player]->SetParameterState( parameterInfo );
+	}
+
+	//ノックバック情報設定
+	void		CharacterManager::SetKnockBackParam(BaseChara* bc1, BaseChara* bc2)
+	{
+		switch (bc1->GetKnockBackType())
+		{
+		case KNOCKBACK_TYPE::STRENGTH:
+			bc2->SetForce(3.0f);
+			if (bc1->GetKnockBackIsUp()) bc2->SetMode(MODE_STATE::DAMAGE_FLYUP);
+			else bc2->SetMode(MODE_STATE::DAMAGE);
+			break;
+
+		case KNOCKBACK_TYPE::MIDDLE:
+			bc2->SetForce(2.0f);
+			if (bc1->GetKnockBackIsUp()) bc2->SetMode(MODE_STATE::DAMAGE_FLYUP);
+			else bc2->SetMode(MODE_STATE::DAMAGE);
+			break;
+
+		case KNOCKBACK_TYPE::WEAK:
+			bc2->SetForce(1.0f);
+			if (bc1->GetKnockBackIsUp()) bc2->SetMode(MODE_STATE::DAMAGE_FLYUP);
+			else bc2->SetMode(MODE_STATE::DAMAGE);
+			break;
+
+		case KNOCKBACK_TYPE::LEANBACKWARD:
+			bc2->SetLeanFrame(bc1->GetLeanFrame());
+			bc2->SetMode(MODE_STATE::DAMAGE_LEANBACKWARD);
+			break;
+		}
 	}
