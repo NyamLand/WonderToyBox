@@ -38,7 +38,7 @@
 		lance_r = 0.0f;
 		power = 5;
 		speed = 0.2f;
-		scale = 0.1f;
+		scale = 0.05f;
 		isGround = true;
 	}
 

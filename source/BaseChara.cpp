@@ -811,7 +811,7 @@ namespace
 
 		//	‘–‚é
 		AutoRun();
-
+		
 		//	•Ç‚ðŠ´’m‚µ‚½‚çƒWƒƒƒ“ƒv
 		if ( checkWall )
 		{
