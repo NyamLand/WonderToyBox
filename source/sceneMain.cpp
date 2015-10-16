@@ -75,8 +75,10 @@
 		gameStartCoinNum = 0;
 
 		//	ステージ
-		m_CollisionStage = new iexMesh( "DATA/back/Collision.IMO" );
-		m_Stage = new iexMesh( "DATA/back/stage.IMO" );
+		m_CollisionStage = new iexMesh( "DATA/BG/Forest/Collision/collision_forest.IMO" );
+		m_Stage = new iexMesh( "DATA/BG/Forest/model/forest.IMO" );
+		//m_CollisionStage = new iexMesh( "DATA/back/Collision.IMO" );
+		//m_Stage = new iexMesh( "DATA/back/stage.IMO" );
 		m_Stage->SetAngle( D3DX_PI );
 		m_Stage->Update();
 		

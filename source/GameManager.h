@@ -100,6 +100,7 @@ public:
 	void	AddCoin( int playerNum );
 	void	SubCoin( int playerNum );
 	void	DecideWorst( void );
+	void	LoadTextData( void );
 
 	//	î•ñæ“¾
 	int		GetCharacterType( int num );

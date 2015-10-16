@@ -2,6 +2,7 @@
 #include	"iextreme.h"
 #include	"system/Framework.h"
 #include	"GlobalFunction.h"
+#include	"textLoader.h"
 #include	"Random.h"
 #include	"Collision.h"
 #include	"UI.h"
@@ -164,6 +165,12 @@
 		}
 
 		worst = Min;
+	}
+
+	//	テキスト読み込み
+	void	GameManager::LoadTextData( void )
+	{
+		
 	}
 
 //-------------------------------------------------------------------------

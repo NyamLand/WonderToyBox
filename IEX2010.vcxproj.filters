@@ -130,6 +130,9 @@
     <Filter Include="ソース ファイル\ItemManager\Item">
       <UniqueIdentifier>{6b7c4bd1-1fe5-4d77-a789-faba6e1d73a5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Script">
+      <UniqueIdentifier>{6dfcd678-2542-4f1b-be0c-8df2244cbbb4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -291,6 +294,9 @@
     <ClCompile Include="source\sceneMenu.cpp">
       <Filter>ソース ファイル\Scene\sceneMenu</Filter>
     </ClCompile>
+    <ClCompile Include="source\Script.cpp">
+      <Filter>ソース ファイル\Script</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -406,6 +412,9 @@
     </ClInclude>
     <ClInclude Include="source\sceneMenu.h">
       <Filter>ソース ファイル\Scene\sceneMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Script.h">
+      <Filter>ソース ファイル\Script</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

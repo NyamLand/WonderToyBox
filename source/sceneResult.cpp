@@ -186,7 +186,7 @@ namespace
 			if (StringPos_Y < 0)StringPos_Y = 2;
 		}
 
-		if (StringPos_Y == 2 && KEY_Get(KEY_SPACE) == 3)
+		if (StringPos_Y == 2 && ( KEY_Get(KEY_SPACE) == 3 || KEY( KEY_A ) == 3 ) )
 		{
 			MainFrame->ChangeScene(new sceneTitle);
 			return;
@@ -365,7 +365,7 @@ namespace
 
 			addCoinflg = true;
 
-			if (KEY_Get(KEY_A) == 3)step++;
+			if (KEY_Get(KEY_A) == 3 || KEY( KEY_SPACE ) == 3 )step++;
 			break;
 		case 8:	//
 			Modeflg = true;
@@ -391,7 +391,7 @@ namespace
 			resultcount = 0;
 			step++;
 		}
-		if (KEY_Get(KEY_ENTER) == 3){
+		if (KEY_Get( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 ){
 			resultcount = 0;
 			step++;
 		}
