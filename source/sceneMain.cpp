@@ -75,15 +75,7 @@
 		gameStartCoinNum = 0;
 
 		//	ステージ
-		m_CollisionStage = new iexMesh( "DATA/BG/Forest/Collision/collision_forest.IMO" );
-		m_Stage = new iexMesh( "DATA/BG/Forest/model/forest.IMO" );
-		//m_CollisionStage = new iexMesh( "DATA/back/Collision.IMO" );
-		//m_Stage = new iexMesh( "DATA/back/stage.IMO" );
-		m_Stage->SetAngle( D3DX_PI );
-		m_Stage->Update();
-		
-		//	当たり判定
-		Collision::Initiallize( m_CollisionStage );
+		StageInitialize();
 
 		//	プレイヤー
 		PlayerInitialize();
@@ -160,6 +152,30 @@
 			Vector3    pos = gameManager->InitPos[i];
 			characterManager->Initialize( i, characterType, pos, false );
 		}
+	}
+
+	//	ステージ初期化
+	void	sceneMain::StageInitialize( void )
+	{
+		switch ( gameManager->GetStageType() )
+		{
+		case 0:	//	机ステージ
+			m_CollisionStage = new iexMesh( "DATA/back/Collision.IMO" );
+			m_Stage = new iexMesh( "DATA/back/stage.IMO" );
+			break;
+
+		case 1:	//	森ステージ
+			m_CollisionStage = new iexMesh( "DATA/BG/Forest/Collision/collision_forest.IMO" );
+			m_Stage = new iexMesh( "DATA/BG/Forest/model/forest.IMO" );
+			break;
+		}
+		
+		//	見た目モデルを１８０°回転して情報更新
+		m_Stage->SetAngle( D3DX_PI );
+		m_Stage->Update();
+
+		//	当たり判定用モデル登録
+		Collision::Initiallize( m_CollisionStage );
 	}
 
 	//	ディファード初期化

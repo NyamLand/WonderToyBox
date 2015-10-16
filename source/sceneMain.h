@@ -51,6 +51,7 @@ public:
 	~sceneMain( void );
 	bool Initialize( void );
 	void	PlayerInitialize( void );
+	void	StageInitialize( void );
 	void	DifferedInitialize( void );
 
 	//	çXêV
