@@ -67,9 +67,6 @@
     <Filter Include="ソース ファイル\Scene\sceneLoad">
       <UniqueIdentifier>{6896f326-e1c2-4544-b66e-034745faaa30}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Item">
-      <UniqueIdentifier>{6b7c4bd1-1fe5-4d77-a789-faba6e1d73a5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\ItemManager">
       <UniqueIdentifier>{110c6fa5-d8c4-433a-b7e6-8c154514a95a}</UniqueIdentifier>
     </Filter>
@@ -129,6 +126,9 @@
     </Filter>
     <Filter Include="ソース ファイル\Scene\sceneMenu">
       <UniqueIdentifier>{6ceac51d-2266-4cc7-af1b-738f2d2e6708}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\ItemManager\Item">
+      <UniqueIdentifier>{6b7c4bd1-1fe5-4d77-a789-faba6e1d73a5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -235,7 +235,7 @@
       <Filter>ソース ファイル\Effect</Filter>
     </ClCompile>
     <ClCompile Include="source\Item.cpp">
-      <Filter>ソース ファイル\Item</Filter>
+      <Filter>ソース ファイル\ItemManager\Item</Filter>
     </ClCompile>
     <ClCompile Include="source\ItemManager.cpp">
       <Filter>ソース ファイル\ItemManager</Filter>
@@ -351,7 +351,7 @@
       <Filter>ソース ファイル\Effect</Filter>
     </ClInclude>
     <ClInclude Include="source\Item.h">
-      <Filter>ソース ファイル\Item</Filter>
+      <Filter>ソース ファイル\ItemManager\Item</Filter>
     </ClInclude>
     <ClInclude Include="source\ItemManager.h">
       <Filter>ソース ファイル\ItemManager</Filter>
