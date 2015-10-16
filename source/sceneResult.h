@@ -7,12 +7,15 @@
 //	sceneResultクラス
 //
 //*******************************************************************************
-
-class	PlayerManager;
-
 class sceneResult : public	Scene
 {
 private:
+	struct ORIGIN_INFO
+	{
+		int		coinNum[4];
+		int		rank[4];
+	};
+
 	struct RESULT_INFO
 	{
 		int		p_Coin;
@@ -30,11 +33,14 @@ private:
 private:
 	RESULT_INFO	resultInfo[4];
 	NUMBER		number[4];
+	NUMBER		totalNumber[4];
+
 	//	ソート用
 	char	str[256];
 
 	//	パラメータ
 	int		coinNum[4];
+	int		totalCoinNum[4];
 	int		rank[4];
 	int		playerNum[4];
 	int		lastBonus;
@@ -42,19 +48,18 @@ private:
 	int		step;
 	int		wait;
 	int		resultcount;	//	演出用カウント
-	int		Mode;			//	モード分け用変数
+	int		waitTimer;	//	待機用タイマー
+	int		mode;			//	モード分け用変数
 	int		Sy;				//	セレクト画面ポジション
 	int		StringPos_Y;	//	セレクト画面の文字ポジション
 	bool	Modeflg;		//	モード用フラグ
 	bool	addCoinflg;		//	コイン合算値用フラグ
-	bool	rankingflg[4];	//	順位用フラグ
 	iex2DObj*	back;		//	背景
 	iex2DObj*	r_number;	//	コインの枚数
 	iex2DObj*	Sback;		//	セレクト時の背景
 	iex2DObj*	Smenu;		//	セレクト時のメニュー
 	iex2DObj*	result;		//	リザルト
 	iexMesh*	collision;
-
 
 public:
 	//	初期化・解放
