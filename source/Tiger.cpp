@@ -93,7 +93,9 @@
 
 	//	クイックアーツ
 	bool	Tiger::QuickArts( void )
-	{
+	{		
+		//相手を仰け反らせる時間(適当)
+		leanFrame = 20;
 		//	情報取得
 		Vector3	front = GetFront();
 		Vector3	up = GetUp();
@@ -319,9 +321,17 @@
 		switch ( attackKind )
 		{
 		case MODE_STATE::QUICKARTS:
-			knockBackInfo.isUp = false;
 			attackInfo.type = COLLISION_TYPE::SPHEREVSCAPSULE;
-			knockBackInfo.type = KNOCKBACK_TYPE::WEAK;
+			if (attackCount < 4)
+			{
+				knockBackInfo.isUp = false;
+				knockBackInfo.type = KNOCKBACK_TYPE::LEANBACKWARD;
+			}
+			if (attackCount >= 4)
+			{
+				knockBackInfo.isUp = true;
+				knockBackInfo.type = KNOCKBACK_TYPE::MIDDLE;
+			}
 			break;
 
 		case MODE_STATE::POWERARTS:
