@@ -365,7 +365,7 @@ namespace
 
 			addCoinflg = true;
 
-			if (KEY_Get(KEY_ENTER) == 3)step++;
+			if (KEY_Get(KEY_A) == 3)step++;
 			break;
 		case 8:	//
 			Modeflg = true;
