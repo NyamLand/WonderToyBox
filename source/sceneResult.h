@@ -28,11 +28,13 @@ private:
 		int		hundred;		//コイン三桁目
 		int		ten;			//コイン二桁目
 		int		one;			//コイン一桁目
+		bool	H_flg;			//百の位レンダー用フラグ
 	};
 
 private:
 	RESULT_INFO	resultInfo[4];
 	NUMBER		number[4];
+	NUMBER		BonusNumber[4];
 	NUMBER		totalNumber[4];
 
 	//	ソート用
@@ -48,12 +50,20 @@ private:
 	int		step;
 	int		wait;
 	int		resultcount;	//	演出用カウント
-	int		waitTimer;	//	待機用タイマー
+	int		waitTimer;		//	待機用タイマー
 	int		mode;			//	モード分け用変数
 	int		Sy;				//	セレクト画面ポジション
 	int		StringPos_Y;	//	セレクト画面の文字ポジション
+	
+	//	フラグ関係
 	bool	Modeflg;		//	モード用フラグ
+	bool	bonusflg;		//	ボーナス値用フラグ
 	bool	addCoinflg;		//	コイン合算値用フラグ
+	//bool	C_Rflg;			//	取得コインの百の位レンダー用フラグ
+	//bool	B_Rflg;			//	ボーナスの百の位レンダー用フラグ
+	//bool	T_Rflg;			//	トータルの百の位レンダー用フラグ
+
+	//	画像データ関係
 	iex2DObj*	back;		//	背景
 	iex2DObj*	r_number;	//	コインの枚数
 	iex2DObj*	Sback;		//	セレクト時の背景
