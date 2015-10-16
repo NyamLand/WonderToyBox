@@ -39,7 +39,7 @@ public:
 	//	初期化・解放
 	Coin( void );
 	~Coin( void );
-	bool	Initialize( void );
+	virtual	bool	Initialize( void );
 
 	//	更新・描画
 	void	Update( void );
@@ -49,8 +49,8 @@ public:
 	//	動作関数
 	void	StageCollisionCheck( void );
 	void	PlayerCollisionCheck( void );
-	void	Move( void );
-	void	Hitduringtheoperation( const Vector3& pos, const int& Num );	//ヒット時動作
+	virtual	void	Move( void );
+	virtual	void	Hitduringtheoperation( const Vector3& pos, const int& Num );	//ヒット時動作
 	void	GetAway( void );
 	void	Magnet( void );
 

@@ -34,11 +34,12 @@ public:
 	void	Render( void );
 	
 	//	シェーダー付き描画
-	void	Render(iexShader* shader, LPSTR technique);
+	void	Render( iexShader* shader, LPSTR technique );
 
 	//	動作関数
-	void	Append( const Vector3& pos );
+	void	Append( const Vector3& pos, const int& type );
 	std::list<Item*>	GetList( void );
+
 	//	情報取得
 	bool	GetMinPos( Vector3& out, const Vector3& pos );
 	static	ItemManager*	GetInstance();

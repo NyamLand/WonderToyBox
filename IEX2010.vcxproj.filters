@@ -124,6 +124,12 @@
     <Filter Include="ソース ファイル\EventManager">
       <UniqueIdentifier>{b3b0d18b-79b1-4ba7-9e23-b152e0b6ef51}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\TextLoader">
+      <UniqueIdentifier>{de03cd3a-a7c0-4add-b2fd-7771cd946f2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scene\sceneMenu">
+      <UniqueIdentifier>{6ceac51d-2266-4cc7-af1b-738f2d2e6708}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -279,6 +285,12 @@
     <ClCompile Include="source\EventManager.cpp">
       <Filter>ソース ファイル\EventManager</Filter>
     </ClCompile>
+    <ClCompile Include="source\textLoader.cpp">
+      <Filter>ソース ファイル\TextLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="source\sceneMenu.cpp">
+      <Filter>ソース ファイル\Scene\sceneMenu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -388,6 +400,12 @@
     </ClInclude>
     <ClInclude Include="source\EventManager.h">
       <Filter>ソース ファイル\EventManager</Filter>
+    </ClInclude>
+    <ClInclude Include="source\textLoader.h">
+      <Filter>ソース ファイル\TextLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="source\sceneMenu.h">
+      <Filter>ソース ファイル\Scene\sceneMenu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

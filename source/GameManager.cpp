@@ -6,6 +6,8 @@
 #include	"Collision.h"
 #include	"UI.h"
 #include	"EventManager.h"
+#include	"ItemManager.h"
+#include	"CoinManager.h"
 #include	"sceneResult.h"
 #include	"CharacterManager.h"
 #include	"GameManager.h"
@@ -27,7 +29,10 @@
 	//	コンストラクタ
 	GameManager::GameManager( void )
 	{
-	
+		InitPos[0] = Vector3( -10.0f, 10.0f, 0.0f );
+		InitPos[1] = Vector3( 10.0f, 10.0f, 0.0f );
+		InitPos[2] = Vector3( -10.0f, 10.0f, -15.0f );
+		InitPos[3] = Vector3( 10.0f, 10.0f, -15.0f );
 	}
 
 	//	デストラクタ
@@ -95,6 +100,28 @@
 		if ( timer == 42 * SECOND )	ui->SetAlertFlag( true );
 		if ( timer == 40 * SECOND )	eventManager->SetEvent( Random::GetInt( 0, EVENT_MODE::NONE - 1 ) );
 
+
+		if ( timer != 0 )
+		{
+			//	３秒ごとにアイテムを３割の確率ででランダムに配置
+			if ( timer % ( 3* SECOND ) == 0 )
+			{
+				if ( Random::PercentageRandom( 0.7f ) )
+				{
+					itemManager->Append( Vector3( Random::GetFloat( -20.0f, 20.0f ), 50.0f, Random::GetFloat( -20.0f, 15.0f ) ), ITEM_TYPE::ATTACK_UP );
+				}
+			}
+
+			//	２秒ごとにコインを４割の確率でランダムに配置
+			if ( timer % ( 1 * SECOND ) == 0 )
+			{
+				if ( Random::PercentageRandom( 0.6f ) )
+				{
+					if ( coinNum[0] + coinNum[1] + coinNum[2] + coinNum[3] + m_CoinManager->GetFreeCoinNum() < 201)
+					m_CoinManager->Set( Vector3( Random::GetFloat( -20.0f, 20.0f ), 50.0f, Random::GetFloat( -20.0f, 12.0f ) ), Vector3( 0.0f, -1.0f, 0.0f ), 1.0f );
+				}
+			}
+		}
 	}
 
 	//	描画

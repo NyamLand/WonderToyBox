@@ -27,7 +27,6 @@
 //
 //*****************************************************************************************************************************
 
-
 //*****************************************************************************************************************************
 //
 //	初期化
@@ -62,9 +61,9 @@
 		RefTex = new iex2DObj( 1280, 720, IEX2D_RENDERTARGET );
 
 		//	ライト設定
-		Vector3 dir( 1.0f, -1.0f, -0.5f );
+		Vector3 dir( 1.0f, -2.0f, -1.0f );
 		dir.Normalize();
-		iexLight::DirLight( shader3D, 0, &dir, 1.1f, 1.1f, 1.1f );
+		iexLight::DirLight( shader3D, 0, &dir, 1.5f, 1.5f, 1.5f );
 
 		//	カメラ設定
 		m_Camera = new Camera();
@@ -73,6 +72,7 @@
 		timer = 0;
 		playerNum = gameManager->GetPlayerNum();
 		stageType = gameManager->GetStageType();
+		gameStartCoinNum = 0;
 
 		//	ステージ
 		m_CollisionStage = new iexMesh( "DATA/back/Collision.IMO" );
@@ -149,7 +149,7 @@
 		for ( int i = 0; i < playerNum; i++ )
 		{
 			int        characterType = gameManager->GetCharacterType( i );
-			Vector3    pos = Vector3( -20.0f + ( 10.0f * i ), 10.0f, 0.0f );
+			Vector3    pos = gameManager->InitPos[i];
 			characterManager->Initialize( i, characterType, pos, true );
 		}
 
@@ -157,7 +157,7 @@
 		for ( int i = playerNum; i < PLAYER_MAX; i++ )
 		{
 			int        characterType = gameManager->GetCharacterType( i );
-			Vector3    pos = Vector3( -20.0f + ( 10.0f * i ), 10.0f, 0.0f );
+			Vector3    pos = gameManager->InitPos[i];
 			characterManager->Initialize( i, characterType, pos, false );
 		}
 	}
@@ -240,6 +240,13 @@
 	{
 		//	全体更新
 		AllUpdate();
+
+		//	とりあえず仮
+		if ( gameStartCoinNum < GAME_START_COIN_NUM )
+		{
+			m_CoinManager->Set( Vector3( 0.0f, 5.0f, -25.0f ), Vector3( Random::GetFloat( -0.5f, 0.5f ), Random::GetFloat( 0.1f, 0.3f ), 1.0f ), Random::GetFloat( 2.0f, 3.5f ) );
+			gameStartCoinNum++;
+		}
 
 		if ( ui->GetChangeFlag() ) 
 		{
@@ -334,7 +341,7 @@
 		//	オブジェクト描画
 		if ( characterManager->GetParameterState( 0, PARAMETER_STATE::SLIP ) )
 		{
-			m_Stage->Render( shader3D, "full_sr" );
+			m_Stage->Render( shader3D, "full_s" );
 		}
 		else
 		{

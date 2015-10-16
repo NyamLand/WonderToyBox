@@ -1,0 +1,11 @@
+Mikoto Scene Ver 1
+Character {
+	name = "Knight_Dammy.mqo"
+	coordinate = "Knight_Dammy.mqo"
+	fileName = "Knight_Dammy.mks"
+	readOnly = 0
+	Import "C:\Users\2130024.MAETEL.000\Desktop\Knight\Knight_Dammy.mqo" ro(1)
+	Import "C:\Users\2130024.MAETEL.000\Desktop\Knight\Knight_Dammy.mkm" ro(0)
+}
+Current( "")
+Eof

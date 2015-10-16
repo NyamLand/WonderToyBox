@@ -181,6 +181,13 @@ protected:
 		float	drag;
 	};
 
+	//	plusStatus情報
+	struct PLUS_STATUS_INFO
+	{
+		int		power;
+		float	speed;
+	};
+
 protected:
 	iex3DObj*	obj;
 
@@ -193,6 +200,7 @@ protected:
 	float			moveVec;
 	float			scale;
 	float			speed;
+	float			totalSpeed;
 	float			force;
 	float			diffence;
 	bool			unrivaled;
@@ -205,6 +213,7 @@ protected:
 	int				mode;
 	int				playerNum;
 	int				power;
+	int				totalPower;
 	int				leanFrame;		//	仰け反り時間
 	int				jumpStep;			//	ジャンプ動作
 	int				damageStep;	//仰け反り動作
@@ -215,6 +224,7 @@ protected:
 	KNOCKBACK_INFO			knockBackInfo;
 	AI_INFO						aiInfo;
 	SLIP_INFO						slipInfo;
+	PLUS_STATUS_INFO		plusStatusInfo;
 
 	//	状態	
 	PARAMETER_INFO		slip;
@@ -263,6 +273,8 @@ public:
 	void	KnockBack( void );
 	void	AddKnockBackForce( float force );
 	void	KnockBackLeanBackWard( void );
+	void	FallCheck( void );
+	void	ParameterAdjust( void );
 
 	//	パラメータ状態動作
 	void	ParameterInfoUpdate( void );
@@ -306,6 +318,7 @@ public:
 
 	//	情報取得
 	Matrix	GetMatrix( void )const;
+	Matrix	GetBoneMatrix( int num )const;
 	Vector3	GetPos( void )const;
 	Vector3	GetMove( void )const;
 	Vector3	GetFront( void )const;
@@ -315,6 +328,10 @@ public:
 	Vector3	GetAttackPos( void )const;
 	Vector3	GetAttackPos_Top( void )const;
 	Vector3	GetAttackPos_Bottom( void )const;
+	Vector3	GetBonePos( int num )const;
+	Vector3	GetBoneFront( int num )const;
+	Vector3	GetBoneRight( int num )const;
+	Vector3	GetBoneUp( int num )const;
 	float		GetAngle( void )const;
 	float		GetScale( void )const;
 	float		GetAttack_R( void )const;

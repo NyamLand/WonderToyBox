@@ -35,6 +35,9 @@ private:
 	CharacterManager( void );
 	~CharacterManager( void );
 public:
+
+
+public:
 	//	‰Šú‰»E‰ğ•ú
 	bool	Initialize( int playerNum, int type, Vector3 pos, bool isPlayer = true );
 	void	Release( void );

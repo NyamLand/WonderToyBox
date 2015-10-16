@@ -74,6 +74,16 @@ private:
 	static	const		int		MIN = 8;		//								最少
 
 private:
+	struct Spring
+	{
+		Vector3	desirePos;
+		float		streach;	//	カメラの伸び
+		float		mass;
+		Vector3	acceleration;	//	加速度
+		//力 = -バネの強さ × バネの伸び - カメラに対する、空気の粘っこさ × カメラの速度;
+	};
+
+private:
 	Vector3	playerPos[4];
 	Vector3 target;
 	Vector3	nextPoint;

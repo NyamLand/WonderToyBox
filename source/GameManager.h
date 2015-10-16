@@ -13,7 +13,7 @@ namespace
 	//	定数
 	const		int		SECOND = 60;			//	１秒
 	const		int		MINUTE = 60 * 60;	//	１分
-	const		int		TIMELIMIT = 60 * SECOND;
+	const		int		TIMELIMIT = 3 * SECOND;
 	const		int		PLAYER_MAX = 4;
 	const		float	GRAVITY = -0.01f;
 	const		int		CHARATYPE_MAX = 4;
@@ -32,23 +32,31 @@ namespace
 	
 	namespace GameInfo
 	{
-		const LPSTR	LastBonus[] =
+		// ラストボーナステキスト
+		namespace
 		{
-			"ラストボーナス１",
-			"ラストボーナス２",
-			"ラストボーナス３",
-			"ラストボーナス４",
-			"ラストボーナス５",
-			"ラストボーナス６",
-		};
+			const LPSTR	LastBonus[] =
+			{
+				"ラストボーナス１",
+				"ラストボーナス２",
+				"ラストボーナス３",
+				"ラストボーナス４",
+				"ラストボーナス５",
+				"ラストボーナス６",
+			};
+		}
 
-		const	 LPSTR	NewsText[] =
+		//	ラストボーナス予想テキスト
+		namespace
 		{
-			"ラストボーナス１になりそうです",
-			"ラストボーナス２になりそうです",
-			"ラストボーナス３になりそうです",
-			"ラストボーナス４になりそうです",
-		};
+			const	 LPSTR	NewsText[] =
+			{
+				"ラストボーナス１になりそうです",
+				"ラストボーナス２になりそうです",
+				"ラストボーナス３になりそうです",
+				"ラストボーナス４になりそうです",
+			};
+		}
 	}
 }
 
@@ -69,6 +77,9 @@ private:
 	int		worst;
 	int		lastBonus;
 	bool	newsflag;
+
+public:
+	Vector3	InitPos[4];
 	
 public:
 

@@ -32,11 +32,6 @@
 		org = new iexMesh( "DATA/Object/Item.IMO" );
 		itemList.clear();
 
-		for ( int i = 0; i < ITEM_MAX; i++ )
-		{
-			Append( Vector3( Random::GetFloat( -10.0f, 10.0f ), Random::GetFloat( 0.0f, 50.0f ), Random::GetFloat( -10.0f, 10.0f ) ) );
-		}
-
 		return	true;
 	}
 
@@ -94,12 +89,13 @@
 //------------------------------------------------------------------------------------
 
 	//	ƒŠƒXƒg’Ç‰Á
-	void	ItemManager::Append( const Vector3& pos )
+	void	ItemManager::Append( const Vector3& pos, const int& type )
 	{
 		Item*	item = nullptr;
 		item = new Item();
 		item->Initialize();
 		item->SetMesh( org->Clone() );
+		item->SetType( type );
 		item->SetPos( pos );
 		item->Update();
 		item->SetState( true );

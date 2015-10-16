@@ -131,6 +131,7 @@
     <ClCompile Include="source\Random.cpp" />
     <ClCompile Include="source\sceneLoad.cpp" />
     <ClCompile Include="source\sceneMain.cpp" />
+    <ClCompile Include="source\sceneMenu.cpp" />
     <ClCompile Include="source\sceneResult.cpp" />
     <ClCompile Include="source\sceneTitle.cpp" />
     <ClCompile Include="source\Screen.cpp" />
@@ -156,6 +157,7 @@
     <ClCompile Include="IEX\IEX_System.cpp" />
     <ClCompile Include="IEX\IEX_Texture.cpp" />
     <ClCompile Include="IEX\IEX_View.cpp" />
+    <ClCompile Include="source\textLoader.cpp" />
     <ClCompile Include="source\Tiger.cpp" />
     <ClCompile Include="source\Tiger_CPU.cpp" />
     <ClCompile Include="source\UI.cpp" />
@@ -183,6 +185,7 @@
     <ClInclude Include="source\Princess_CPU.h" />
     <ClInclude Include="source\Random.h" />
     <ClInclude Include="source\sceneLoad.h" />
+    <ClInclude Include="source\sceneMenu.h" />
     <ClInclude Include="source\sceneResult.h" />
     <ClInclude Include="source\sceneTitle.h" />
     <ClInclude Include="source\Screen.h" />
@@ -194,6 +197,7 @@
     <ClInclude Include="source\sceneMain.h" />
     <ClInclude Include="source\system\System.h" />
     <ClInclude Include="IEX\iextreme.h" />
+    <ClInclude Include="source\textLoader.h" />
     <ClInclude Include="source\Tiger.h" />
     <ClInclude Include="source\Tiger_CPU.h" />
     <ClInclude Include="source\UI.h" />

@@ -12,11 +12,13 @@ private:
 	static	const		int		SECOND = 60;			//	‚P•b
 	static	const		int		MINUTE = 60 * 60;	//	‚P•ª
 	static	const		int		TIMELIMIT = 10 * SECOND;		//	•b”~•b
+	static	const		int		GAME_START_COIN_NUM = 100;	//	•S–‡
 
 	//	•Ï”
 	int		timer;
 	int		playerNum;
 	int		stageType;
+	int		gameStartCoinNum;
 
 private:
 	//	ƒIƒuƒWƒFƒNƒg

@@ -51,6 +51,7 @@ public:
 	
 	//	î•ñæ“¾
 	bool	GetMinPos( Vector3& out, const Vector3& pos );
+	int		GetFreeCoinNum( void )const;
 };
 
 extern	CoinManager*	m_CoinManager;
