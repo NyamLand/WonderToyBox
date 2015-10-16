@@ -319,19 +319,22 @@
 		switch ( attackKind )
 		{
 		case MODE_STATE::QUICKARTS:
+			knockBackInfo.isUp = false;
 			attackInfo.type = COLLISION_TYPE::SPHEREVSCAPSULE;
 			knockBackInfo.type = KNOCKBACK_TYPE::WEAK;
 			break;
 
 		case MODE_STATE::POWERARTS:
 			attackInfo.type = 0;
+			knockBackInfo.isUp = false;
 			knockBackInfo.type = KNOCKBACK_TYPE::MIDDLE;
 			break;
 
 		case MODE_STATE::HYPERARTS:
+			knockBackInfo.isUp = false;
 			attackInfo.type = COLLISION_TYPE::SPHEREVSCYRINDER;
-			if (attackCount <= 20) knockBackInfo.type = KNOCKBACK_TYPE::STRENGTH;
-			if (attackCount > 20) knockBackInfo.type = KNOCKBACK_TYPE::LEANBACKWARD;
+			if (attackCount < 20) knockBackInfo.type = KNOCKBACK_TYPE::LEANBACKWARD;
+			if (attackCount >= 20) knockBackInfo.type = KNOCKBACK_TYPE::STRENGTH;
 			
 			break;
 		}

@@ -20,7 +20,7 @@ public:
 	static	void	Release( void );
 
 	//	ステージ判定
-	static	float	GetHeight( const Vector3 pos );
+	static	float	GetHeight(const Vector3 pos);
 	static	float	GetHeight(const Vector3 pos, float dist);
 	static	bool	CheckWall( const Vector3 pos, Vector3& p_move );
 	static	bool	CheckDown( Vector3& pos, Vector3& p_move );
