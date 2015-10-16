@@ -2,7 +2,7 @@
 #include	"iextreme.h"
 #include	"system/System.h"
 #include	"GlobalFunction.h"
-
+#include	<assert.h>
 #include	"Camera.h"
 
 //****************************************************************************************
@@ -25,7 +25,11 @@
 	//	コンストラクタ
 	Camera::Camera( void )
 	{
-		pos = Vector3( 0.0f, 60.0f, -200.0f );
+		q = new Rubber();
+
+		pos = Vector3( 0.0f, 20.0f, -80.0f );
+		q->position = pos;
+		q->mass = 1.0f;
 		target = Vector3( 0.0f, 0.6f, 0.8f ); 
 		orientation = D3DXQUATERNION( 0, 0, 0, 1 );
 		nextPoint = TITLE_MOVE_INFO::pos[TITLE_TARGET::PLAYERNUMBER];
@@ -79,6 +83,7 @@
 
 		shader3D->SetValue("ViewPos", m_Camera->GetPos());
 		shader3D->SetValue("matView", m_Camera->GetMatrix());
+		q->Update();
 	}
 
 	void	Camera::Render()
@@ -146,11 +151,16 @@
 		this->length = CalcMaxDist();
 		CalcCameraPos();
 
+	
+		//	弾力性
+		SpringMove(pos);
+
 		//	回転補間
-		Slerp( this->target, 0.1f );
+	//	Slerp( this->target, 0.1f );
 
 		//	情報設定
-		Set( pos, this->target );
+		Set( q->position, this->target );
+
 	}
 
 	//	球面線形補間使用
@@ -220,6 +230,30 @@
 		this->wide = wide / ( float )shakeTimer;
 		this->shakeTimer = timer;
 	}
+
+	//	弾性力を使ったカメラ移動
+	void	Camera::SpringMove( Vector3 position )
+	{
+		//	初回のみq->positionに現在のposを与える
+		if (q->init_flag)
+		{
+			q->position = position;
+			q->init_flag = false;
+		}
+
+		Vector3 n = position - q->position;
+		float len = n.Length();
+		float F = -2 * (5 - len);
+		n.Normalize();
+		Vector3 drag = -q->velocity * 1.0f;
+
+		q->AddForce((n*F) + drag);
+
+		//	情報更新
+		q->Update();
+
+	}
+
 
 //------------------------------------------------------------------------------------------
 //	数値計算
@@ -291,7 +325,7 @@
 		Vector3 vec;
 		vec = Vector3( 0.0f, 40.0f, -50.0f ) - Vector3( 0.0f, 2.0f, 0.0f );
 		vec.Normalize();
-		this->pos = this->target + vec * length * 3;
+		this->pos = this->target + vec *length *3;
 	}
 
 //------------------------------------------------------------------------------------------
@@ -305,6 +339,10 @@
 		playerPos[1] = p_2;
 		playerPos[2] = p_3;
 		playerPos[3] = p_4;
+		if (p_1.y < -20.0f) playerPos[0].y = 0;
+		if (p_2.y < -20.0f) playerPos[1].y = 0;
+		if (p_3.y < -20.0f) playerPos[2].y = 0;
+		if (p_4.y < -20.0f) playerPos[3].y = 0;
 	}
 	
 	//	次の移動場所設定
@@ -319,3 +357,55 @@
 	}
 
 
+//****************************************************************************************
+//
+//	Springクラス
+//
+//****************************************************************************************
+
+//------------------------------------------------------------------------------------------
+//	グローバル変数
+//------------------------------------------------------------------------------------------
+
+
+//------------------------------------------------------------------------------------------
+//	初期化・解放
+//------------------------------------------------------------------------------------------
+	
+	//	コンストラクタ
+	Rubber::Rubber() : mass( FLT_MAX ), position( 0, 0, 0 ), velocity( 0, 0, 0 ),
+						acceleration( 0, 0, 0 ), resultant( 0, 0, 0 ), init_flag( true )
+	{
+
+	}
+
+	//	デストラクタ
+	Rubber::~Rubber()
+	{
+
+	}
+
+//------------------------------------------------------------------------------------------
+//	更新
+//------------------------------------------------------------------------------------------
+
+	//	更新
+	void	Rubber::Update()
+	{
+		static DWORD last = timeGetTime();
+		DWORD elapse = timeGetTime() - last;
+		if (elapse > 0) Integrate((FLOAT)elapse / 1000.0f);
+		last += elapse;
+
+	}
+	//	情報のすべてを更新
+	void	Rubber::Integrate(float dt)
+	{
+		assert(mass > 0);
+
+		acceleration = (resultant / mass);
+		velocity += acceleration * dt;
+		position += velocity * dt;
+
+		resultant = Vector3(0, 0, 0);
+	}

@@ -65,12 +65,12 @@ namespace
 		};
 	}
 }
-
+class Rubber;
 class Camera : public iexView
 {
 private:
 	//	定数
-	static	const		int		MAX = 20;		//	カメラからターゲットの距離の最大
+	static	const		int		MAX = 15;		//	カメラからターゲットの距離の最大
 	static	const		int		MIN = 8;		//								最少
 
 private:
@@ -94,6 +94,8 @@ private:
 	float		speed;
 	float		t;
 	bool		moveState;
+	Rubber*		q;
+	
 	
 	//	振動用パラメータ
 	Vector3 adjust;
@@ -123,6 +125,7 @@ public:
 	void	Shake( void );
 	void	ShakeSet( float wide, int timer );
 	void	SetNextPoint( int num, float speed );
+	void	SpringMove( Vector3 position );
 
 	//	情報取得
 	Vector3	GetPos( void ){ return pos; }
@@ -139,6 +142,34 @@ public:
 	void	SetPos( Vector3 pos ){ this->pos = pos; }
 	void	SetPos( float posx, float posy, float posz ){ this->pos = Vector3( posx, posy, posz); }
 	void	SetPlayerInfo( const Vector3& p_1, const Vector3& p_2, const Vector3& p_3, const Vector3& p_4 );
+};
+
+//	バネ
+class Rubber
+{
+public:
+	//	質点パラメータ
+	float mass;					//	質量
+	Vector3 position;			//	位置
+	Vector3 velocity;			//	速度
+	bool	init_flag;
+
+private:
+	Vector3 acceleration;		//	加速度
+	Vector3 resultant;			//	力
+
+public:
+	//	コンストラクタ・デストラクタ
+	Rubber();
+	~Rubber();
+
+	//	更新
+	void	Update();
+	void Integrate(float dt);
+
+	//	情報設定・情報取得
+	void AddForce( const Vector3 &force ){	resultant += force;	}
+	const Vector3 &GetAcceleration() const{	return acceleration; }
 };
 
 extern	Camera*		m_Camera;
