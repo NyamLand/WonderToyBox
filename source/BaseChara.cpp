@@ -68,11 +68,7 @@ namespace
 		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ),	//	Vector3
 		angle(0.0f), scale(0.0f), speed(0.0f),	totalSpeed(0.0f), drag(0.0f), force( 0.0f ), moveVec( 0.0f ),	//	float
 		unrivaled(false), isGround(false), boosting(false), isPlayer(false), jumpState(false), checkWall(false),//	bool
-<<<<<<< HEAD
-		mode(0), playerNum(0), power(0), leanFrame(0), jumpStep(0), damageStep(0)	//	int
-=======
-		mode(0), playerNum(0), power(0), totalPower(0), leanFrame(0), jumpStep(0)		//	int
->>>>>>> ab584c9b3ea3dee0bfc7db4a0cb0f7be761e1b9d
+		mode(0), playerNum(0), power(0), leanFrame(0), jumpStep(0), damageStep(0), totalPower(0)	//	int
 	{
 	
 	}
@@ -380,13 +376,10 @@ namespace
 		checkWall = Collision::CheckWall( pos, move );
 
 		//　床判定
-<<<<<<< HEAD
 		float work = Collision::GetHeight( pos );
 
 		if ( pos.y + move.y < work )
-=======
 		if ( Collision::CheckDown( pos, move ) )
->>>>>>> ab584c9b3ea3dee0bfc7db4a0cb0f7be761e1b9d
 		{
 			isGround = true;
 			jumpState = true;
@@ -817,7 +810,7 @@ namespace
 		*/
 
 		//	走る
-		//AutoRun();
+		AutoRun();
 
 		//	壁を感知したらジャンプ
 		if ( checkWall )

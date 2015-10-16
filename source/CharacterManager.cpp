@@ -251,6 +251,7 @@
 		//	“–‚½‚Á‚Ä‚¢‚½‚ç
 		if ( isHit )
 		{
+			if (bc1->GetMode() == MODE_STATE::HYPERARTS){};
 			//	–³“Gó‘ÔŽæ“¾EÝ’è
 			if ( bc2->GetUnrivaled() )	return;
 			bc2->SetUnrivaled( true );
