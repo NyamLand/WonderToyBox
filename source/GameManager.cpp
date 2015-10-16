@@ -183,7 +183,7 @@
 		int		second = 0;		//	秒
 
 		//	ファイルを開く
-		std::ifstream	ifs( "DATA/Script/GameData.txt" );
+		std::ifstream	ifs( "GameData.txt" );
 
 		//	最初はコメントなので読み飛ばす, 値は適当
 		ifs.getline( buffer, 50 );
