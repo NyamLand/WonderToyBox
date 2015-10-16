@@ -780,7 +780,7 @@ namespace
 		*/
 
 		//	‘–‚é
-		//AutoRun();
+		AutoRun();
 
 		//	•Ç‚ðŠ´’m‚µ‚½‚çƒWƒƒƒ“ƒv
 		if ( checkWall )

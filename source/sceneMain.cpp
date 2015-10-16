@@ -111,8 +111,6 @@
 		//	BGMÄ¶
 		sound->PlayBGM( BGM::MAIN_BGM );
 
-		//	‘S‘ÌXV
-		Update();
 		return true;
 	}
 

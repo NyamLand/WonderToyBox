@@ -235,7 +235,7 @@
 	void	Camera::SpringMove( Vector3 position )
 	{
 		//	‰‰ñ‚Ì‚İq->position‚ÉŒ»İ‚Ìpos‚ğ—^‚¦‚é
-		if (q->init_flag)
+		if ( q->init_flag )
 		{
 			q->position = position;
 			q->init_flag = false;

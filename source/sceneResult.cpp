@@ -38,6 +38,7 @@ namespace
 //----------------------------------------------------------------------------
 //	初期化・解放
 //----------------------------------------------------------------------------
+	
 	//	コンストラクタ
 	sceneResult::sceneResult( void )
 	{
@@ -78,7 +79,7 @@ namespace
 		wait = 0;
 		resultcount = 0;
 		mode = MOVE_MODE::RESULT_MODE;
-		Sy = -720.0f;
+		Sy = -720;
 		StringPos_Y = 0;
 		waitTimer = 0;
 
