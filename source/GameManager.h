@@ -71,6 +71,7 @@ private:
 
 	//	ƒQ[ƒ€’†î•ñ
 	int		timer;
+	int		timelimit;	//	§ŒÀŠÔ
 	int		mode;
 	int		coinNum[4];
 	bool	donketsuBoostState;

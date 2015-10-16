@@ -1,6 +1,9 @@
 
 #include	"iextreme.h"
 #include	"system/Framework.h"
+#include	<iostream>
+#include	<fstream>
+#include	<string>
 #include	"GlobalFunction.h"
 #include	"textLoader.h"
 #include	"Random.h"
@@ -52,10 +55,14 @@
 		}
 		playerNum = 0;
 		stageType = 0;
-		timer = TIMELIMIT;
 		mode = 0;
 		donketsuBoostState = false;
 		lastBonus = rand() % 4;
+		
+		//	ゲームデータテキストを読み込む
+		LoadTextData();
+		timer = timelimit;
+
 		return	true;
 	}
 
@@ -170,7 +177,29 @@
 	//	テキスト読み込み
 	void	GameManager::LoadTextData( void )
 	{
-		
+		//	文字列を保存するバッファ,変数を用意
+		char	buffer[256];
+		int		minute = 0;		//	分
+		int		second = 0;		//	秒
+
+		//	ファイルを開く
+		std::ifstream	ifs( "DATA/Script/GameData.txt" );
+
+		//	最初はコメントなので読み飛ばす, 値は適当
+		ifs.getline( buffer, 50 );
+
+		//	読み込んだ値を変数へ代入
+		ifs >> minute;
+
+		//	コメントを読み飛ばす
+		ifs >> buffer;
+		ifs.getline( buffer, 50 );
+
+		//	読み込んだ値を変数へ代入
+		ifs >> second;
+
+		//	合計値をタイムリミット変数へ代入
+		timelimit = minute * MINUTE + second * SECOND;
 	}
 
 //-------------------------------------------------------------------------

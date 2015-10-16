@@ -11,7 +11,7 @@
 #include	"textLoader.h"
 
 //	class
-class Script
+class Script	:	public	textLoader
 {
 private:
 
