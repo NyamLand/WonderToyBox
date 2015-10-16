@@ -378,7 +378,7 @@ namespace
 		//Å@è∞îªíË
 		float work = Collision::GetHeight( pos );
 
-		if ( pos.y + move.y < work )
+		//if ( pos.y + move.y < work )
 		if ( Collision::CheckDown( pos, move ) )
 		{
 			isGround = true;
