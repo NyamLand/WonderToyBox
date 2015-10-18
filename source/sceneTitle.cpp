@@ -13,6 +13,7 @@
 #include	"CharacterManager.h"
 #include	"UI.h"
 #include	"sceneMain.h"
+#include	"sceneMenu.h"
 #include	"sceneLoad.h"
 
 #include	"sceneTitle.h"
@@ -508,8 +509,16 @@ namespace
 				break;
 
 			case SELECT_MODE::CHARACTER:
-				SelectCharacterUpdate();
-				ui->Update( TITLE_MODE::SELECT_CHARACTER );
+				ui->Update( TITLE_MODE::MOVE_MAIN );
+				m_Camera->Update( VIEW_MODE::TITLE );
+				if ( screen->GetScreenState() )
+				{
+					MainFrame->ChangeScene( new sceneMenu() );
+					return;
+				}
+				break;
+				//SelectCharacterUpdate();
+				//ui->Update( TITLE_MODE::SELECT_CHARACTER );
 				break;
 
 			case SELECT_MODE::STAGE:
@@ -563,8 +572,10 @@ namespace
 			if ( KEY( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )
 			{
 				selectInfo.mode = SELECT_MODE::CHARACTER;
-				m_Camera->SetNextPoint( TITLE_TARGET::SELECTCHARACTER, 0.01f );
+				m_Camera->SetNextPoint( TITLE_TARGET::SELECTCHARACTER, 0.005f );
+				gameManager->SetPlayerNum( setInfo.playerNum );
 				sound->PlaySE( SE::DECIDE_SE );
+				screen->SetScreenMode( SCREEN_MODE::WHITE_OUT, 0.5f );
 				return;
 			}
 

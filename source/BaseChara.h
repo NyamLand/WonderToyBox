@@ -247,8 +247,8 @@ public:
 	//	初期化・解放
 	BaseChara( void );
 	~BaseChara( void );
-	virtual	bool	Initialize( int playerNum, iex3DObj* org, Vector3 pos, bool isPlayer );
-	virtual	bool	Initialize( int playerNum, iex3DObj* org, Vector3 pos );
+	virtual	bool	Initialize( int playerNum, Vector3 pos, bool isPlayer );
+	virtual	bool	Initialize( int playerNum, Vector3 pos );
 	void	Release( void );
 
 	//	更新・描画

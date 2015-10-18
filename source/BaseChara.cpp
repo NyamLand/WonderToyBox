@@ -80,14 +80,14 @@ namespace
 	}
 
 	//	初期化
-	bool	BaseChara::Initialize( int playerNum, iex3DObj* org, Vector3 pos, bool isPlayer )
+	bool	BaseChara::Initialize( int playerNum, Vector3 pos, bool isPlayer )
 	{
 		//	プレイヤーならコントローラ登録
 		this->isPlayer = isPlayer;
 		if ( this->isPlayer )		this->input = ::input[playerNum];
 
 		//	パラメータ初期化
-		Initialize( playerNum, org, pos );
+		Initialize( playerNum, pos );
 
 		SetMotion( MOTION_NUM::POSTURE );
 		obj->SetPos( pos );
@@ -100,11 +100,10 @@ namespace
 	}
 
 	//	初期化
-	bool	BaseChara::Initialize( int playerNum, iex3DObj* org, Vector3 pos )
+	bool	BaseChara::Initialize( int playerNum, Vector3 pos )
 	{
 		//	モデル設定
 		obj = nullptr;
-		if ( obj == nullptr )	obj = org;
 		
 		//	プレイヤー番号登録
 		this->playerNum = playerNum;
@@ -164,7 +163,6 @@ namespace
 			}
 		}
 
-		if ( obj == nullptr )	return	false;
 		return	true;
 	}
 
