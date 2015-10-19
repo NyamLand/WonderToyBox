@@ -294,6 +294,7 @@
 			break;
 
 		case MODE_STATE::HYPERARTS:
+			
 			knockBackInfo.isUp = true;
 			attackInfo.type = COLLISION_TYPE::CAPSULEVSCAPSULE;
 			if (attackInfo.t != 0) knockBackInfo.type = KNOCKBACK_TYPE::STRENGTH;	//2HitÇ‹Ç≈ÇÕêÅÇ´îÚÇŒÇµÇ†ÇË

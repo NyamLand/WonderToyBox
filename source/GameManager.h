@@ -77,6 +77,7 @@ private:
 	int		worst;
 	int		lastBonus;
 	bool	newsflag;
+	int		timeStop;	//‰æ–Êˆê’â~—p
 
 public:
 	Vector3	InitPos[4];
@@ -112,6 +113,7 @@ public:
 	bool	GetNewsFlag( void );
 	int		GetWorst( void );
 	int		GetMode( void );
+	int		GetTimeStop(void);
 	static	GameManager*	GetInstance( void );
 
 	//	î•ñİ’è
@@ -122,6 +124,8 @@ public:
 	void	SetLastBonusNews( void );
 	void	SetMode( const int& modeNum );
 	void	SetNewsFlag( const bool& flag );
+	void	SetShakeCamera(float wide, int timer);
+	void	SetTimeStop(int time);
 };
 #define	gameManager ( GameManager::GetInstance() )
 

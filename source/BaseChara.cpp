@@ -472,6 +472,7 @@ namespace
 				SetMode(MODE_STATE::MOVE);
 				unrivaled = false;
 			}
+			break;
 		}
 
 	}
@@ -494,6 +495,7 @@ namespace
 
 		case 1:
 			Damage();
+			break;
 		}
 	}
 
@@ -556,9 +558,10 @@ namespace
 
 		case MODE_STATE::HYPERARTS:
 			isEnd = HyperArts();
+			if (canHyper) gameManager->SetTimeStop(1);
 			canHyper = isEnd;
 			if (!isEnd)	SetAttackParam(attackKind);
-			if ( !isEnd )	SetAttackParam( attackKind );
+			if (!isEnd)	SetAttackParam(attackKind);
 			break;
 		}
 
@@ -810,7 +813,7 @@ namespace
 		*/
 
 		//	‘–‚é
-		AutoRun();
+		//AutoRun();
 		
 		//	•Ç‚ðŠ´’m‚µ‚½‚çƒWƒƒƒ“ƒv
 		if ( checkWall )

@@ -10,6 +10,7 @@
 #include	"CoinManager.h"
 #include	"sceneResult.h"
 #include	"CharacterManager.h"
+#include	"Camera.h"
 #include	"GameManager.h"
 
 //*******************************************************************************
@@ -55,6 +56,7 @@
 		mode = 0;
 		donketsuBoostState = false;
 		lastBonus = rand() % 4;
+		timeStop = 0;
 		return	true;
 	}
 
@@ -73,6 +75,8 @@
 	{
 		//	ƒ^ƒCƒ}[XV
 		timer--;
+
+		if (timeStop > 0) timeStop--;
 
 		//	Žc‚èŽžŠÔ‚R‚O•b‚Å‚Ç‚ñ‚¯‚Â‰‰o‚Ö
 		if ( timer == 30 * SECOND )
@@ -239,6 +243,13 @@
 		return	out;
 	}
 
+	//‰æ–ÊˆêŽž’âŽ~Žc‚è•b”Žæ“¾
+	int		GameManager::GetTimeStop(void)
+	{
+		int out = this->timeStop;
+		return out;
+	}
+
 	//	ŽÀ‘ÌŽæ“¾
 	GameManager*	GameManager::GetInstance( void )
 	{
@@ -284,5 +295,17 @@
 	void	GameManager::SetNewsFlag( const bool& flag )
 	{
 		newsflag = flag;
+	}
+
+	// ƒJƒƒ‰‚ÌU“®’nÝ’è
+	void	GameManager::SetShakeCamera(float wide, int timer)
+	{
+		if (m_Camera) m_Camera->ShakeSet(wide, timer);
+	}
+
+	//‰æ–ÊˆêŽž’âŽ~ŽžŠÔÝ’è
+	void	GameManager::SetTimeStop(int time)
+	{
+		this->timeStop = time * SECOND;
 	}
 
