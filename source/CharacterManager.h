@@ -78,6 +78,7 @@ public:
 	void		SetBoosting( int player, bool boosting );
 	void		SetLeanFrame( int player, int leanframe );
 	void		SetPassColor( int player, Vector3 color );
+	void		SetRank( int player, int rank );
 	void		SetParameterInfo( int player, int parameterInfo );
 };
 

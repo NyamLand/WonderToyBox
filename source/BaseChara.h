@@ -170,6 +170,7 @@ protected:
 	{
 		int		mode;
 		int		param;
+		bool	act_flag;		//　行動中か（true：行動中）
 		int		step_autorun;
 		int		count_walk;		//	歩く時間（２～４秒）
 		int		count_wait;		//　待機時間（１秒未満）
@@ -217,6 +218,7 @@ protected:
 	int				totalPower;
 	int				leanFrame;		//	仰け反り時間
 	int				jumpStep;			//	ジャンプ動作
+	int				rank;
 
 	//	各情報構造体
 	DAMAGECOLOR_INFO		damageColor;
@@ -295,11 +297,11 @@ public:
 	virtual	void	Control( void );
 
 	//	AI動作関数
-	int 	SearchCoin();					//　コイン探す
-	bool	CheckSearchedCoin(int num);		//　見つけたコインが存在するか
 	void	AutoRun();						//　コインを取りに行く
 	void	AutoAngleAdjust(float speed, Vector3 target);
 	//void	AutoAngleAdjust(const Vector3& direction, float speed);
+	void	Getaway();
+	void	AutoGuard(int time);
 
 	//	情報設定
 	void	SetMode( int mode );
@@ -315,6 +317,7 @@ public:
 	void	SetKnockBackVec( Vector3 vec );
 	void	SetUnrivaled( bool state );
 	void	SetParameterState( int parameterState );
+	void	SetRank( int rank );
 	void	SetParameterState( PARAMETER_INFO& paramterState, int time );
 
 	//	情報取得

@@ -37,7 +37,8 @@ namespace
 		enum
 		{
 			ATTACK,
-			MOVE,
+			RUN,
+			GETAWAY,
 			GUARD,
 			JUMP,
 			WAIT,
@@ -68,7 +69,7 @@ namespace
 		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ),	//	Vector3
 		angle(0.0f), scale(0.0f), speed(0.0f),	totalSpeed(0.0f), drag(0.0f), force( 0.0f ), moveVec( 0.0f ),	//	float
 		unrivaled(false), isGround(false), boosting(false), isPlayer(false), jumpState(false), checkWall(false),//	bool
-		mode(0), playerNum(0), power(0), totalPower(0), leanFrame(0), jumpStep(0)		//	int
+		mode(0), playerNum(0), power(0), totalPower(0), leanFrame(0), jumpStep(0),rank(0)		//	int
 	{
 	
 	}
@@ -145,6 +146,7 @@ namespace
 			{
 				aiInfo.mode = AI_MODE_STATE::WAIT;
 				aiInfo.param = 0;
+				aiInfo.act_flag = false;
 				aiInfo.step_autorun = 0;
 				aiInfo.count_walk = 4 * SECOND;
 				aiInfo.count_wait = 30;
@@ -798,6 +800,10 @@ namespace
 	//	AI操作
 	void	BaseChara::ControlAI( void )
 	{
+		//--------------------------------------------
+		//　ここでは各モードになるための条件を実装
+		//--------------------------------------------
+
 		/*
 		・コインがある時はコインを取りに行く。（1,2歩歩く→ちょっと止まる）、（コイン取る→次を探す）
 		　→ 確率で適当に攻撃出す（キャラによって挙動を変える）
@@ -807,33 +813,81 @@ namespace
 		 ・もしどんけつになったら８割ぐらいの確率でハイパーアーツを使う。
 		*/
 
-		//	走る
-		AutoRun();
+		//　フィールドにコインが○○枚以上　→　コイン優先
+		if (m_CoinManager->GetFreeCoinNum() > 10)
+		{
+			aiInfo.mode = AI_MODE_STATE::RUN;
+		}
+		//　コイン○○以下
+		/*
+			１位  ：逃げる(80%)	＞	ガード(20%)
+			２位　：攻撃(50%)	＞	逃げ(30%)	＞　コイン(20%)
+			３位　：攻撃(60%)	＞	コイン(40%)
+			４位　：攻撃(80%)	＞  コイン(20%)
+		*/
+		else
+		{
+			//　それぞれ確率で行動分岐
+			int randi = Random::GetInt(0, 9);
+			switch (rank)
+			{
+			case 1:
+				// 逃げる：ガード（８：２）
+				aiInfo.mode = (randi < 8) ? AI_MODE_STATE::GETAWAY : AI_MODE_STATE::GUARD;
+				break;
+
+			case 2:
+				//　攻撃：逃げる：コイン（５：３：２）
+				if (randi < 4)			aiInfo.mode = AI_MODE_STATE::ATTACK;
+				else if (randi > 9-4)	aiInfo.mode = AI_MODE_STATE::GETAWAY;
+				else					aiInfo.mode = AI_MODE_STATE::RUN;
+				break;
+
+			case 3:
+				//　攻撃：コイン（６：４）
+				aiInfo.mode = (randi < 6) ? AI_MODE_STATE::ATTACK : AI_MODE_STATE::RUN;
+				break;
+
+			case 4:
+				//　攻撃：コイン（８：２）
+				aiInfo.mode = (randi < 8) ? AI_MODE_STATE::ATTACK : AI_MODE_STATE::RUN;
+				break;
+			}
+		}
+
+		switch (aiInfo.mode)
+		{
+		case AI_MODE_STATE::ATTACK:
+			break;
+
+		case AI_MODE_STATE::RUN:		//　コインを取りに行く
+			AutoRun();
+			break;
+		
+		case AI_MODE_STATE::GETAWAY:
+			Getaway();
+			break;
+		
+		case AI_MODE_STATE::GUARD:
+			AutoGuard(60);
+			break;
+		
+		case AI_MODE_STATE::WAIT:
+			break;
+		}
 
 		//	壁を感知したらジャンプ
 		if ( checkWall )
 		{
 			if ( jumpState )		mode = MODE_STATE::JUMP;
 		}
+
 	}
 
 //----------------------------------------------------------------------------
 //	AI動作関数
 //----------------------------------------------------------------------------
 	
-	//	コイン探す（戻り値：一番近くのコインの番号）
-	int		BaseChara::SearchCoin( void )
-	{
-		//　仮
-		return Random::GetInt(0, 200);
-	}
-
-	//　num番目コインが存在するか
-	bool	BaseChara::CheckSearchedCoin( int num )
-	{
-		return	true;
-	}
-
 	//　コインを取りに行く
 	void	BaseChara::AutoRun( void )
 	{
@@ -907,6 +961,28 @@ namespace
 
 		//	親に投げる
 		AngleAdjust(Vector3(sinf(targetAngle), 0.0f, cosf(targetAngle)), speed);
+	}
+
+	//　逃げる
+	void	BaseChara::Getaway()
+	{
+		
+	}
+
+	//　オートガード(引数：フレーム数)
+	void	BaseChara::AutoGuard( int time )
+	{
+		time--;
+
+		move.x = move.z = 0.0f;
+		unrivaled = true;
+		SetMotion(MOTION_NUM::GUARD);
+		
+		if (time <= 0)
+		{
+			SetMode(MODE_STATE::MOVE);
+			unrivaled = false;
+		}
 	}
 
 //----------------------------------------------------------------------------
@@ -1274,6 +1350,12 @@ namespace
 			SetParameterState(jump, 10 * SECOND);
 			break;
 		}
+	}
+
+	//　順位設定
+	void	BaseChara::SetRank(int rank)
+	{
+		this->rank = rank;
 	}
 
 	//	パラメータ状態設定
