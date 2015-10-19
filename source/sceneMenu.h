@@ -17,12 +17,10 @@ class sceneMenu	:	public	Scene
 private:
 	struct PlayerNumSelectInfo
 	{
-		LVERTEX	v[4];
-		TLVERTEX	tv[4];
-		int		num;
-		float	seveY;
-		float	posY;
 		float	t;
+		int		num;
+		int		saveY;
+		int		sy;
 	};
 
 	struct CharacterSelectInfo
@@ -59,7 +57,7 @@ private:
 	unique_ptr<iex2DObj>	playerNumText;
 	unique_ptr<iexMesh>	deskStage;
 	unique_ptr<iexMesh>	forestStage;	
-	iex2DObj*						playerNum;
+	unique_ptr<iex2DObj>	playerNum;
 	iex3DObj*						org[4];
 	iex3DObj*						obj[4];
 	ImageObj						textImage;

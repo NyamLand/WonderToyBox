@@ -84,7 +84,7 @@ namespace
 		checkBack = make_unique<iex2DObj>( LPSTR( "DATA/UI/selectCheck_Back.png" ) );
 		checkCursor = make_unique<iex2DObj>( LPSTR( "DATA/UI/selectCheck_Cursor.png" ) );
 		playerNumText = make_unique<iex2DObj>( LPSTR( "DATA/UI/playerNum_Text.png" ) );
-		playerNum = new iex2DObj( "DATA/UI/playerNum.png" );
+		playerNum = make_unique<iex2DObj>( LPSTR( "DATA/UI/playerNum.png" ) );
 
 		//	モデル読み込み
 		org[CHARACTER_TYPE::KNIGHT] = new iex3DObj( "DATA/CHR/Knight/Knight_Dammy.IEM" );		//	騎士
@@ -103,7 +103,7 @@ namespace
 		}
 
 		//	モード設定
-		SetMode( MENU_MODE::SELECT_CHARACTER );
+		SetMode( MENU_MODE::SELECT_PLAYERNUM );
 
 		//	全体更新
 		Update();
@@ -115,7 +115,6 @@ namespace
 	{
 		SafeDelete( m_Camera );
 		SafeDelete( textImage.obj );
-		SafeDelete( playerNum );
 
 		for ( int i = 0; i < 4; i++ )
 		{
@@ -216,8 +215,8 @@ namespace
 	{
 		playerNumSelectInfo.num = 0;
 		playerNumSelectInfo.t = 1.0f;
-		playerNumSelectInfo.seveY = 6.4f;
-		playerNumSelectInfo.posY = 6.4f;
+		playerNumSelectInfo.saveY = 0;
+		playerNumSelectInfo.sy = 0;
 	}
 
 	//	更新
@@ -233,7 +232,8 @@ namespace
 			//	選択
 			if ( input[0]->Get( KEY_UP ) == 1 )
 			{
-				playerNumSelectInfo.seveY = 6.4f + 2.0f * playerNumSelectInfo.num;
+				//	元の座標を保存
+				playerNumSelectInfo.saveY =  128 * playerNumSelectInfo.num;
 				playerNumSelectInfo.num++;
 				if ( playerNumSelectInfo.num >= 4 )
 				{
@@ -248,7 +248,8 @@ namespace
 
 			if ( input[0]->Get( KEY_DOWN ) == 1 )
 			{
-				playerNumSelectInfo.seveY = 6.4f + 2.0f * playerNumSelectInfo.num;
+				//	元の座標を保存
+				playerNumSelectInfo.saveY = 128 * playerNumSelectInfo.num;
 				playerNumSelectInfo.num--;
 				if ( playerNumSelectInfo.num < 0 )
 				{
@@ -270,21 +271,13 @@ namespace
 		}
 
 		//	補間
-		CubicFunctionInterpolation( playerNumSelectInfo.posY, playerNumSelectInfo.seveY, 6.4f + 2.0f* playerNumSelectInfo.num, playerNumSelectInfo.t );
-
-		//	ポリゴン頂点設定
-		SetVertex( playerNumSelectInfo.v[0], -5.1f, playerNumSelectInfo.posY, 0, 0, 0, 0xFFFFFFFF );
-		SetVertex( playerNumSelectInfo.v[1], -5.1f + 2.0f, playerNumSelectInfo.posY, 0, 1, 0, 0xFFFFFFFF );
-		SetVertex( playerNumSelectInfo.v[2], -5.1f, playerNumSelectInfo.posY - 8.0f, 0, 0, 1, 0xFFFFFFFF );
-		SetVertex( playerNumSelectInfo.v[3], -5.1f + 2.0f, playerNumSelectInfo.posY - 8.0f, 0, 1, 1, 0xFFFFFFFF );
+		CubicFunctionInterpolation( playerNumSelectInfo.sy, playerNumSelectInfo.saveY, 128 * playerNumSelectInfo.num, playerNumSelectInfo.t );
 	}
 
 	//	描画
 	void	sceneMenu::SelectPlayerNumRender( void )
 	{
-		iexPolygon::Rect( 0, 0, 1280, 290, RS_COPY, 0x00FFFFFF );
-		iexPolygon::Rect( 0, 400, 1280, 720, RS_COPY, 0x00FFFFFF );
-		iexPolygon::Render3D( playerNumSelectInfo.v, 2, playerNum, RS_COPY  );
+		playerNum->Render( 360, 290, 100, 110, 0, playerNumSelectInfo.sy, 128, 128 );
 		playerNumText->Render( 450, 300, 500, 100, 0, 0, 512, 128 );
 	}
 
