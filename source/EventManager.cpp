@@ -126,7 +126,7 @@
 			isEnd = CubicFunctionInterpolation( eventSlope.slope, 0.0f, slopeAngle, eventSlope.param );
 
 			//	カメラへ設定
-			m_Camera->SetSlope( eventSlope.slope );
+			mainView->SetSlope( eventSlope.slope );
 
 			//	傾き終わると次のステップへ
 			if ( isEnd )
@@ -161,7 +161,7 @@
 			isEnd = CubicFunctionInterpolation( eventSlope.slope, slopeAngle, 0.0f, eventSlope.param );
 			
 			//	カメラへ設定
-			m_Camera->SetSlope( eventSlope.slope );
+			mainView->SetSlope( eventSlope.slope );
 			
 			//	傾き終わると次のステップへ
 			if ( isEnd )

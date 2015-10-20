@@ -399,7 +399,7 @@ namespace
 		float	axisY = -input->Get( KEY_AXISY ) * 0.001f;
 
 		//	カメラの前方方向を求める
-		Vector3	vEye( m_Camera->GetTarget() - m_Camera->GetPos() );
+		Vector3	vEye( mainView->GetTarget() - mainView->GetPos() );
 		float	cameraAngle = atan2f( vEye.x, vEye.z );
 
 		//	入力方向を求める
@@ -892,7 +892,7 @@ namespace
 	void	BaseChara::AutoAngleAdjust( float speed, Vector3 target )
 	{
 		//	カメラの前方方向を求める
-		Vector3	vEye(m_Camera->GetTarget() - m_Camera->GetPos());
+		Vector3	vEye(mainView->GetTarget() - mainView->GetPos());
 		float	cameraAngle = atan2f(vEye.x, vEye.z);
 
 		Vector3	vec = target - pos;

@@ -4,6 +4,10 @@
 //
 //*****************************************************************************************************************************
 
+//	include
+#include	<memory>
+
+//	class
 class	sceneMain : public Scene
 {
 private:
@@ -25,7 +29,8 @@ private:
 	iexMesh*	m_CollisionStage;
 	iexMesh*	m_Stage;
 
-	//	カメラパラメータ
+	//	カメラ・パラメータ
+	unique_ptr<Camera>	playerView[4];
 	Vector3		ViewPos;
 
 	//	テクスチャ
@@ -36,6 +41,9 @@ private:
 	iex2DObj*	hdr;
 	Surface*	backBuffer;
 	Surface*	ShadowZ;
+
+	//	レンダーターゲット
+	unique_ptr<iex2DObj>	playerWipe[4];
 
 	//	ディファード用
 	//iex2DObj*	diffuse;
@@ -69,6 +77,7 @@ public:
 	void	RenderDiffered( void );
 	void	RenderRef( void );
 	void	RenderHDR( void );
+	void	RenderWipe( void );
 
 	//	動作関数
 	void	PointLight( const Vector3& pos, const Vector3& color, float range );

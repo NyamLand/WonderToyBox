@@ -216,7 +216,7 @@ protected:
 	int				totalPower;
 	int				leanFrame;		//	仰け反り時間
 	int				jumpStep;			//	ジャンプ動作
-	int				damageStep;	//仰け反り動作
+	int				damageStep;		//仰け反り動作
 
 	//	各情報構造体
 	DAMAGECOLOR_INFO		damageColor;

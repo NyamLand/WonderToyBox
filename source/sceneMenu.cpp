@@ -65,9 +65,9 @@ namespace
 	bool	sceneMenu::Initialize( void )
 	{
 		//	camera
-		m_Camera = new Camera();
-		m_Camera->SetProjection( D3DXToRadian( 10.0f ), 1.0f, 1000.0f );
-		m_Camera->Set( Vector3( 0.0f, 5.2f, -70.0f ), Vector3( 0.0, 5.2f, 0.0f ) );
+		mainView = new Camera();
+		mainView->SetProjection( D3DXToRadian( 10.0f ), 1.0f, 1000.0f );
+		mainView->Set( Vector3( 0.0f, 5.2f, -70.0f ), Vector3( 0.0, 5.2f, 0.0f ) );
 
 		//	random
 		Random::Initialize();
@@ -113,7 +113,7 @@ namespace
 	//	解放
 	void	sceneMenu::Release( void )
 	{
-		SafeDelete( m_Camera );
+		SafeDelete( mainView );
 		SafeDelete( textImage.obj );
 
 		for ( int i = 0; i < 4; i++ )
@@ -171,8 +171,8 @@ namespace
 	void	sceneMenu::Render( void )
 	{
 		//	camera
-		m_Camera->Activate();
-		m_Camera->Clear();
+		mainView->Activate();
+		mainView->Clear();
 
 		//	背景( 一番後ろに表示 )
 		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
@@ -223,7 +223,7 @@ namespace
 	void	sceneMenu::SelectPlayerNumUpdate( void )
 	{
 		//	パラメータ加算
-		playerNumSelectInfo.t += 0.05f;
+		playerNumSelectInfo.t += 0.08f;
 		if ( playerNumSelectInfo.t >= 1.0f )	playerNumSelectInfo.t = 1.0f;	
 
 		//	移動が終わったら

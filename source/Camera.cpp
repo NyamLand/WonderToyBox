@@ -16,7 +16,7 @@
 //------------------------------------------------------------------------------------------
 
 	//	実体の宣言
-	Camera*	m_Camera;
+	Camera*	mainView;
 
 //------------------------------------------------------------------------------------------
 //	初期化・解放
@@ -79,14 +79,19 @@
 		case VIEW_MODE::TITLE:
 			ModeTitle();
 			break;
+
+		case VIEW_MODE::INDIVIDUAL:
+			ModeIndividualSurveillance( target );
+			break;
 		}
 
-		shader3D->SetValue("ViewPos", m_Camera->GetPos());
-		shader3D->SetValue("matView", m_Camera->GetMatrix());
+		shader3D->SetValue("ViewPos", mainView->GetPos());
+		shader3D->SetValue("matView", mainView->GetMatrix());
 		q->Update();
 	}
 
-	void	Camera::Render()
+	//	描画
+	void	Camera::Render( void )
 	{
 		char	str[256];
 		sprintf_s( str, "t.x = %f\nt.y = %f\nt.z = %f\n", target.x, target.y, target.z);
@@ -155,8 +160,8 @@
 		//	弾力性
 		SpringMove(pos);
 
-		//	回転補間
-	//	Slerp( this->target, 0.1f );
+		////	回転補間
+		//Slerp( this->target, 0.1f );
 
 		//	情報設定
 		Set( q->position, this->target );
@@ -200,6 +205,16 @@
 		Slerp( nextTarget, 0.1f );
 
 		//	情報更新
+		Set( pos, this->target );
+	}
+
+	//	個々監視カメラ
+	void	Camera::ModeIndividualSurveillance( Vector3 target )
+	{
+		Slerp( target, 0.1f );
+
+		pos = target - Vector3( 0.0f, 10.0f, -10.0f );
+
 		Set( pos, this->target );
 	}
 	
@@ -253,7 +268,6 @@
 		q->Update();
 
 	}
-
 
 //------------------------------------------------------------------------------------------
 //	数値計算
@@ -356,7 +370,6 @@
 		nextTarget = TITLE_MOVE_INFO::target[num];
 	}
 
-
 //****************************************************************************************
 //
 //	Springクラス
@@ -373,14 +386,14 @@
 //------------------------------------------------------------------------------------------
 	
 	//	コンストラクタ
-	Rubber::Rubber() : mass( FLT_MAX ), position( 0, 0, 0 ), velocity( 0, 0, 0 ),
+	Rubber::Rubber( void ) : mass( FLT_MAX ), position( 0, 0, 0 ), velocity( 0, 0, 0 ),
 						acceleration( 0, 0, 0 ), resultant( 0, 0, 0 ), init_flag( true )
 	{
 
 	}
 
 	//	デストラクタ
-	Rubber::~Rubber()
+	Rubber::~Rubber( void )
 	{
 
 	}
@@ -390,7 +403,7 @@
 //------------------------------------------------------------------------------------------
 
 	//	更新
-	void	Rubber::Update()
+	void	Rubber::Update( void )
 	{
 		static DWORD last = timeGetTime();
 		DWORD elapse = timeGetTime() - last;
@@ -398,8 +411,9 @@
 		last += elapse;
 
 	}
+	
 	//	情報のすべてを更新
-	void	Rubber::Integrate(float dt)
+	void	Rubber::Integrate( float dt )
 	{
 		assert(mass > 0);
 
