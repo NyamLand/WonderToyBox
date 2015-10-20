@@ -114,6 +114,7 @@ public:
 	bool	GetNewsFlag( void );
 	int		GetWorst( void );
 	int		GetMode( void );
+	int		GetRank( int rank );
 	static	GameManager*	GetInstance( void );
 
 	//	î•ñİ’è

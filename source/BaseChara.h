@@ -41,7 +41,9 @@ namespace
 			JUMP,
 			GUARD,
 			DAMAGE,
-			DAMAGE_FLYUP,
+			DAMAGE_STRENGTH,
+			DAMAGE_MIDDLE,
+			DAMAGE_WEAK,
 			DAMAGE_LEANBACKWARD,
 		};
 	}
@@ -154,7 +156,6 @@ protected:
 	{
 		Vector3	vec;
 		int			type;
-		bool		isUp;
 	};
 	
 	//	パラメータ情報
@@ -169,6 +170,7 @@ protected:
 	{
 		int		mode;
 		int		param;
+		bool	act_flag;		//　行動中か（true：行動中）
 		int		step_autorun;
 		int		count_walk;		//	歩く時間（２～４秒）
 		int		count_wait;		//　待機時間（１秒未満）
@@ -216,7 +218,7 @@ protected:
 	int				totalPower;
 	int				leanFrame;		//	仰け反り時間
 	int				jumpStep;			//	ジャンプ動作
-	int				damageStep;	//仰け反り動作
+	int				rank;
 
 	//	各情報構造体
 	DAMAGECOLOR_INFO		damageColor;
@@ -247,8 +249,8 @@ public:
 	//	初期化・解放
 	BaseChara( void );
 	~BaseChara( void );
-	virtual	bool	Initialize( int playerNum, Vector3 pos, bool isPlayer );
-	virtual	bool	Initialize( int playerNum, Vector3 pos );
+	virtual	bool	Initialize( int playerNum, iex3DObj* org, Vector3 pos, bool isPlayer );
+	virtual	bool	Initialize( int playerNum, iex3DObj* org, Vector3 pos );
 	void	Release( void );
 
 	//	更新・描画
@@ -271,7 +273,9 @@ public:
 	void	Guard( void );
 	void	Damage( void );
 	void	KnockBack( void );
-	void	AddKnockBackForce( float force );
+	void	KnockBackStrength( void );
+	void	KnockBackMiddle( void );
+	void	KnockBackWeak( void );
 	void	KnockBackLeanBackWard( void );
 	void	FallCheck( void );
 	void	ParameterAdjust( void );
@@ -293,11 +297,11 @@ public:
 	virtual	void	Control( void );
 
 	//	AI動作関数
-	int 	SearchCoin();					//　コイン探す
-	bool	CheckSearchedCoin(int num);		//　見つけたコインが存在するか
 	void	AutoRun();						//　コインを取りに行く
 	void	AutoAngleAdjust(float speed, Vector3 target);
 	//void	AutoAngleAdjust(const Vector3& direction, float speed);
+	void	Getaway();
+	void	AutoGuard(int time);
 
 	//	情報設定
 	void	SetMode( int mode );
@@ -313,8 +317,8 @@ public:
 	void	SetKnockBackVec( Vector3 vec );
 	void	SetUnrivaled( bool state );
 	void	SetParameterState( int parameterState );
+	void	SetRank( int rank );
 	void	SetParameterState( PARAMETER_INFO& paramterState, int time );
-	void	SetForce(float force);
 
 	//	情報取得
 	Matrix	GetMatrix( void )const;
@@ -343,7 +347,6 @@ public:
 	int			GetMode( void )const;
 	int			GetPlayerNum( void )const;
 	int			GetAttackParam( void )const;
-	int			GetKnockBackType(void)const;
-	int			GetKnockBackIsUp(void)const;
+	int			GetKnockBackType( void )const;
 	int			GetLeanFrame( void )const;
 };

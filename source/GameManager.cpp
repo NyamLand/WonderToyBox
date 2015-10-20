@@ -275,6 +275,40 @@
 		return	out;
 	}
 
+	//@‡ˆÊXV
+	int		GameManager::GetRank( int rank )
+	{
+		int num_coin[4], temp_coin[4];
+		for (int i = 0; i < 4; i++)
+		{
+			num_coin[i] = temp_coin[i] = GetCoinNum(i);
+		}
+
+		for (int i = 0, temp; i < 4 - 1; i++)
+		{
+			for (int j = 4 - 1; j > i; j--)
+			{
+				if (temp_coin[j - 1] > temp_coin[j])
+				{
+					temp = temp_coin[j];
+					temp_coin[j] = temp_coin[j - 1];
+					temp_coin[j - 1] = temp;
+				}
+			}
+		}
+
+		for (int i = 0; i < 4; i++)
+		{
+			for (int j = 0; j < 4; j++)
+			{
+				if (num_coin[rank] == temp_coin[j])
+				{
+					return 4 - j;
+				}
+			}
+		}
+	}
+
 	//	À‘Ìæ“¾
 	GameManager*	GameManager::GetInstance( void )
 	{
@@ -321,4 +355,3 @@
 	{
 		newsflag = flag;
 	}
-
