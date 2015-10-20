@@ -31,11 +31,17 @@ private:
 		bool	H_flg;			//百の位レンダー用フラグ
 	};
 
+	struct RANK
+	{
+		int		rank;
+		bool	rankflg;		//	順位用フラグ
+	};
 private:
 	RESULT_INFO	resultInfo[4];
 	NUMBER		number[4];
 	NUMBER		BonusNumber[4];
 	NUMBER		totalNumber[4];
+	RANK		rank[4];
 
 	//	ソート用
 	char	str[256];
@@ -43,7 +49,6 @@ private:
 	//	パラメータ
 	int		coinNum[4];
 	int		totalCoinNum[4];
-	int		rank[4];
 	int		playerNum[4];
 	int		lastBonus;
 	int		lastBonusNum[4];
@@ -59,9 +64,7 @@ private:
 	bool	Modeflg;		//	モード用フラグ
 	bool	bonusflg;		//	ボーナス値用フラグ
 	bool	addCoinflg;		//	コイン合算値用フラグ
-	//bool	C_Rflg;			//	取得コインの百の位レンダー用フラグ
-	//bool	B_Rflg;			//	ボーナスの百の位レンダー用フラグ
-	//bool	T_Rflg;			//	トータルの百の位レンダー用フラグ
+
 
 	//	画像データ関係
 	iex2DObj*	back;		//	背景
@@ -84,6 +87,8 @@ public:
 	void	ResultUpdate( void );
 	void	SelectUpdata( void );
 
+	void	ResultRender(NUMBER& number, Vector3 Pos);
+	void	RankRender(int ranking);
 	void	SelectRender( void );
 	
 	//	動作関数
