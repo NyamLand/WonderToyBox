@@ -14,6 +14,7 @@
 #include	"Random.h"
 
 #include	"BaseChara.h"
+#include	"CharacterManager.h"
 
 //*******************************************************************************
 //
@@ -30,15 +31,13 @@
 #define	SLIP_TIMER_MAX		300	
 namespace
 {
-
-
 	namespace AI_MODE_STATE
 	{
 		enum
 		{
 			ATTACK,
 			RUN,
-			GETAWAY,
+			RUNAWAY,
 			GUARD,
 			JUMP,
 			WAIT,
@@ -148,8 +147,10 @@ namespace
 				aiInfo.param = 0;
 				aiInfo.act_flag = false;
 				aiInfo.step_autorun = 0;
-				aiInfo.count_walk = 4 * SECOND;
-				aiInfo.count_wait = 30;
+				aiInfo.count_wait		= 30;
+				aiInfo.count_run		= 3 * SECOND;
+				aiInfo.count_runaway	= 3 * SECOND;
+				aiInfo.count_guard		= 1 * SECOND;
 			}
 
 			//	slip情報初期化
@@ -800,6 +801,28 @@ namespace
 	//	AI操作
 	void	BaseChara::ControlAI( void )
 	{
+		switch (aiInfo.mode)
+		{
+		case AI_MODE_STATE::ATTACK:
+			break;
+
+		case AI_MODE_STATE::RUN:		//　コインを取りに行く
+			AutoRun();
+			break;
+
+		case AI_MODE_STATE::RUNAWAY:
+			RunAway();
+			break;
+
+		case AI_MODE_STATE::GUARD:
+			AutoGuard();
+			break;
+
+		case AI_MODE_STATE::WAIT:
+			AutoWait();
+			break;
+		}
+
 		//--------------------------------------------
 		//　ここでは各モードになるための条件を実装
 		//--------------------------------------------
@@ -814,7 +837,7 @@ namespace
 		*/
 
 		//　フィールドにコインが○○枚以上　→　コイン優先
-		if (m_CoinManager->GetFreeCoinNum() > 10)
+		if (m_CoinManager->GetFreeCoinNum() > 50)
 		{
 			aiInfo.mode = AI_MODE_STATE::RUN;
 		}
@@ -827,53 +850,40 @@ namespace
 		*/
 		else
 		{
-			//　それぞれ確率で行動分岐
-			int randi = Random::GetInt(0, 9);
+			//　順位別にそれぞれ確率で行動分岐
+			static int randi;
+			if(!aiInfo.act_flag) randi = Random::GetInt(0, 12);
 			switch (rank)
 			{
 			case 1:
 				// 逃げる：ガード（８：２）
-				aiInfo.mode = (randi < 8) ? AI_MODE_STATE::GETAWAY : AI_MODE_STATE::GUARD;
+				if		(randi < 8)			aiInfo.mode = AI_MODE_STATE::RUNAWAY;
+				else if (randi > 12 - 2)	aiInfo.mode = AI_MODE_STATE::GUARD;
+				else						aiInfo.mode = AI_MODE_STATE::WAIT;
 				break;
 
 			case 2:
 				//　攻撃：逃げる：コイン（５：３：２）
-				if (randi < 4)			aiInfo.mode = AI_MODE_STATE::ATTACK;
-				else if (randi > 9-4)	aiInfo.mode = AI_MODE_STATE::GETAWAY;
-				else					aiInfo.mode = AI_MODE_STATE::RUN;
+				if		(randi < 4)					aiInfo.mode = AI_MODE_STATE::ATTACK;
+				else if (randi > 12 - 3)			aiInfo.mode = AI_MODE_STATE::RUNAWAY;
+				else if (randi == 4 || randi == 5)	aiInfo.mode = AI_MODE_STATE::RUN;
+				else								aiInfo.mode = AI_MODE_STATE::WAIT;
 				break;
 
 			case 3:
 				//　攻撃：コイン（６：４）
-				aiInfo.mode = (randi < 6) ? AI_MODE_STATE::ATTACK : AI_MODE_STATE::RUN;
+				if		(randi < 6)			aiInfo.mode = AI_MODE_STATE::ATTACK;
+				else if (randi > 12 - 4)	aiInfo.mode = AI_MODE_STATE::RUN;
+				else						aiInfo.mode = AI_MODE_STATE::WAIT;
 				break;
 
 			case 4:
 				//　攻撃：コイン（８：２）
-				aiInfo.mode = (randi < 8) ? AI_MODE_STATE::ATTACK : AI_MODE_STATE::RUN;
+				if		(randi < 8)			aiInfo.mode = AI_MODE_STATE::ATTACK;
+				else if (randi > 12 - 2)	aiInfo.mode = AI_MODE_STATE::RUN;
+				else						aiInfo.mode = AI_MODE_STATE::WAIT;
 				break;
 			}
-		}
-
-		switch (aiInfo.mode)
-		{
-		case AI_MODE_STATE::ATTACK:
-			break;
-
-		case AI_MODE_STATE::RUN:		//　コインを取りに行く
-			AutoRun();
-			break;
-		
-		case AI_MODE_STATE::GETAWAY:
-			Getaway();
-			break;
-		
-		case AI_MODE_STATE::GUARD:
-			AutoGuard(60);
-			break;
-		
-		case AI_MODE_STATE::WAIT:
-			break;
 		}
 
 		//	壁を感知したらジャンプ
@@ -889,58 +899,42 @@ namespace
 //----------------------------------------------------------------------------
 	
 	//　コインを取りに行く
-	void	BaseChara::AutoRun( void )
+	void	BaseChara::AutoRun(void)
 	{
-		Vector3		target = Vector3( 0, 0, 0 );
+		Vector3		target = Vector3(0, 0, 0);
 		static	float adjustSpeed = 0.2f;
 		bool			existence = false;
-		enum 
+		enum
 		{
 			AUTORUN_WALK = 0,
 			AUTORUN_STAND
 		};
 
-		switch ( aiInfo.step_autorun )
+		//　targetに向けて1～3歩歩く
+		existence = m_CoinManager->GetMinPos(target, pos);
+
+		//	対象が存在していたら対象に向かって走る
+		if (existence)
 		{
-		case AUTORUN_WALK:	//　targetに向けて1～3歩歩く
-			existence = m_CoinManager->GetMinPos( target, pos );
-			
-			//	対象が存在していたら対象に向かって走る
-			if ( existence )
+			particle->BlueFlame(target, 1.0f);
+			SetMotion(MOTION_NUM::RUN);
+			AutoAngleAdjust(adjustSpeed, target);
+			if (!slip.state)
 			{
-				particle->BlueFlame( target, 1.0f );
-				SetMotion( MOTION_NUM::RUN );
-				AutoAngleAdjust( adjustSpeed, target );
-				if (!slip.state)
+				move.x = sinf(angle) * speed;
+				move.z = cosf(angle) * speed;
+			}
+			else
+			{
+				if (move.Length() < speed)
 				{
-					move.x = sinf(angle ) * speed;
-					move.z = cosf(angle ) * speed;
-				}
-				else
-				{
-					if (move.Length() < speed)
-					{
-						move.x += sinf(angle) * slipInfo.speed;
-						move.z += cosf(angle) * slipInfo.speed;
-					}
+					move.x += sinf(angle) * slipInfo.speed;
+					move.z += cosf(angle) * slipInfo.speed;
 				}
 			}
-			break;
-
-		
-		case AUTORUN_STAND:	//　ちょっと立ち止まる
-			SetMotion( MOTION_NUM::STAND );
-			move = Vector3( 0, move.y, 0 );
-
-			if ( aiInfo.count_wait <= 0 )
-			{
-				aiInfo.count_wait = 45;
-				aiInfo.step_autorun = AUTORUN_WALK;
-			}
-			else aiInfo.count_wait--;	
-			break;
 		}
 	}
+	
 
 	//	向き調整
 	void	BaseChara::AutoAngleAdjust( float speed, Vector3 target )
@@ -964,25 +958,101 @@ namespace
 	}
 
 	//　逃げる
-	void	BaseChara::Getaway()
+	void	BaseChara::RunAway()
 	{
-		
+		SetMotion(MOTION_NUM::RUN);
+
+		aiInfo.act_flag = true;
+
+		Vector3 vec_add(0, 0, 0);
+		Vector3 target(0, 0, 0);
+		for (int i = 0; i < PLAYER_MAX; i++)
+		{
+			Vector3 vec[4];
+
+			//	プレイヤーの番号を取得
+			int	p_num = characterManager->GetPlayerNum( i );
+
+			//	自分と同じ番号だったらスキップ
+			if (GetPlayerNum() == p_num)
+			{
+				vec[p_num] = Vector3(0, 0, 0);
+				continue;
+			}
+			
+			//	以下は自分VS相手の処理
+			vec[i] = characterManager->GetPos(characterManager->GetPlayerNum(i)) - pos;
+
+			//　相手３人へのベクトルを合算
+			vec_add += vec[i];
+		}
+
+		//　逃げる方向は相手３人に対して反対方向
+		vec_add.Normalize();
+		target = pos - vec_add;
+
+		//　角度調整
+		static	float	adjustSpeed = 0.2f;
+		AutoAngleAdjust(adjustSpeed, target);
+
+		//　移動
+		if (!slip.state)
+		{
+			move.x = sinf(moveVec) * speed;
+			move.z = cosf(moveVec) * speed;
+		}
+		else
+		{
+			if (move.Length() < speed)
+			{
+				move.x += sinf(moveVec) * slipInfo.speed;
+				move.z += cosf(moveVec) * slipInfo.speed;
+			}
+		}
+
+		//　行動続行是非
+		if (aiInfo.count_runaway <= 0)
+		{
+			aiInfo.count_runaway = 3 * SECOND;
+			aiInfo.act_flag = false;
+			SetMode(MODE_STATE::MOVE);
+		}
+		else aiInfo.count_runaway--;
 	}
 
 	//　オートガード(引数：フレーム数)
-	void	BaseChara::AutoGuard( int time )
+	void	BaseChara::AutoGuard()
 	{
-		time--;
-
+		SetMotion(MOTION_NUM::GUARD);
 		move.x = move.z = 0.0f;
 		unrivaled = true;
-		SetMotion(MOTION_NUM::GUARD);
+		aiInfo.act_flag = true;
 		
-		if (time <= 0)
+		if (aiInfo.count_guard <= 0)
 		{
-			SetMode(MODE_STATE::MOVE);
 			unrivaled = false;
+			aiInfo.count_guard = 1 * SECOND;
+			aiInfo.act_flag = false;
+			SetMode(MODE_STATE::MOVE);
 		}
+		else aiInfo.count_guard--;
+	}
+
+	//　立ち止まり
+	void	BaseChara::AutoWait()
+	{
+		SetMotion(MOTION_NUM::STAND);
+		SetDrag(0.8f);
+		move.x = move.z = 0.0f;
+		aiInfo.act_flag = true;
+
+		if (aiInfo.count_wait <= 0)
+		{
+			aiInfo.count_wait = 45;
+			aiInfo.act_flag = false;
+			SetMode(MODE_STATE::MOVE);
+		}
+		else aiInfo.count_wait--;
 	}
 
 //----------------------------------------------------------------------------
@@ -1204,6 +1274,10 @@ namespace
 	{
 		return	mode;
 	}
+	int			BaseChara::GetAIMode(void)const
+	{
+		return	aiInfo.mode;
+	}
 
 	//	プレイヤー番号取得
 	int			BaseChara::GetPlayerNum( void )const
@@ -1227,6 +1301,12 @@ namespace
 	int			BaseChara::GetKnockBackType( void )const
 	{
 		return	knockBackInfo.type;
+	}
+
+	//　順位取得
+	int			BaseChara::GetRank( void )const
+	{
+		return	rank;
 	}
 
 //----------------------------------------------------------------------------
@@ -1272,6 +1352,13 @@ namespace
 		if ( GetMode() != mode )
 		{
 			this->mode = mode;
+		}
+	}
+	void	BaseChara::SetAIMode(int mode)
+	{
+		if (GetAIMode() != mode)
+		{
+			this->aiInfo.mode = mode;
 		}
 	}
 

@@ -19,6 +19,7 @@
 //	初期化・解放
 //-------------------------------------------------------------------------------------
 
+
 	//	コンストラクタ
 	CharacterManager::CharacterManager( void ) : loadflag( false )
 	{
@@ -110,9 +111,25 @@
 	//	描画
 	void	CharacterManager::Render( iexShader* shader, LPSTR technique )
 	{
+		DrawString("rank", 1020, 30);
+		DrawString("AImode", 1060, 30);
+
+		DrawString("Aimode一覧", 1130, 30);
+		DrawString("０：ATTACK", 1120, 50);
+		DrawString("１：RUN（コイン）",	1120, 70);
+		DrawString("２：GETAWAY（逃げる）", 1120, 90);
+		DrawString("３：GUARD", 1120, 110);
+		DrawString("４：JUMP", 1120, 130);
+		DrawString("５：WAIT", 1120, 150);
+		
+		char str[256];
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			character[i]->Render( shader, technique );
+			
+			//　デバッグ文字
+			sprintf_s(str, "%dＰ：%d    %d", i + 1, GetRank(i), GetAIMode(i));
+			DrawString(str, 1000, 50 + i * 20);
 		}
 	}
 
@@ -388,6 +405,22 @@
 		return	character[player]->GetPower();
 	}
 
+	//　順位取得
+	int			CharacterManager::GetRank( int player )const
+	{
+		return character[player]->GetRank();
+	}
+
+	//　モード取得
+	int			CharacterManager::GetMode( int player )const
+	{
+		return character[player]->GetMode();
+	}
+	int			CharacterManager::GetAIMode(int player)const
+	{
+		return character[player]->GetAIMode();
+	}
+
 	//	実体取得
 	CharacterManager*	CharacterManager::GetInstance( void )
 	{
@@ -427,6 +460,10 @@
 	void		CharacterManager::SetMode( int player, int mode )
 	{
 		character[player]->SetMode( mode );
+	}
+	void		CharacterManager::SetAIMode( int player, int mode )
+	{
+		character[player]->SetAIMode(mode);
 	}
 
 	//	ブースト状態取得
