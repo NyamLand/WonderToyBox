@@ -399,7 +399,7 @@ namespace
 		float	axisY = -input->Get( KEY_AXISY ) * 0.001f;
 
 		//	カメラの前方方向を求める
-		Vector3	vEye( m_Camera->GetTarget() - m_Camera->GetPos() );
+		Vector3	vEye( mainView->GetTarget() - mainView->GetPos() );
 		float	cameraAngle = atan2f( vEye.x, vEye.z );
 
 		//	入力方向を求める
@@ -470,7 +470,6 @@ namespace
 				SetMode(MODE_STATE::MOVE);
 				unrivaled = false;
 			}
-			break;
 		}
 
 	}
@@ -493,7 +492,6 @@ namespace
 
 		case 1:
 			Damage();
-			break;
 		}
 	}
 
@@ -556,10 +554,9 @@ namespace
 
 		case MODE_STATE::HYPERARTS:
 			isEnd = HyperArts();
-			if (canHyper) gameManager->SetTimeStop(1);
 			canHyper = isEnd;
 			if (!isEnd)	SetAttackParam(attackKind);
-			if (!isEnd)	SetAttackParam(attackKind);
+			if ( !isEnd )	SetAttackParam( attackKind );
 			break;
 		}
 
@@ -811,7 +808,7 @@ namespace
 		*/
 
 		//	走る
-		//AutoRun();
+		AutoRun();
 		
 		//	壁を感知したらジャンプ
 		if ( checkWall )
@@ -895,7 +892,7 @@ namespace
 	void	BaseChara::AutoAngleAdjust( float speed, Vector3 target )
 	{
 		//	カメラの前方方向を求める
-		Vector3	vEye(m_Camera->GetTarget() - m_Camera->GetPos());
+		Vector3	vEye(mainView->GetTarget() - mainView->GetPos());
 		float	cameraAngle = atan2f(vEye.x, vEye.z);
 
 		Vector3	vec = target - pos;

@@ -1,7 +1,11 @@
 
 #include	"iextreme.h"
 #include	"system/Framework.h"
+#include	<iostream>
+#include	<fstream>
+#include	<string>
 #include	"GlobalFunction.h"
+#include	"textLoader.h"
 #include	"Random.h"
 #include	"Collision.h"
 #include	"UI.h"
@@ -10,7 +14,6 @@
 #include	"CoinManager.h"
 #include	"sceneResult.h"
 #include	"CharacterManager.h"
-#include	"Camera.h"
 #include	"GameManager.h"
 
 //*******************************************************************************
@@ -52,11 +55,14 @@
 		}
 		playerNum = 0;
 		stageType = 0;
-		timer = TIMELIMIT;
 		mode = 0;
 		donketsuBoostState = false;
 		lastBonus = rand() % 4;
-		timeStop = 0;
+		
+		//	ゲームデータテキストを読み込む
+		LoadTextData();
+		timer = timelimit;
+
 		return	true;
 	}
 
@@ -75,8 +81,6 @@
 	{
 		//	タイマー更新
 		timer--;
-
-		if (timeStop > 0) timeStop--;
 
 		//	残り時間３０秒でどんけつ演出へ
 		if ( timer == 30 * SECOND )
@@ -170,6 +174,34 @@
 		worst = Min;
 	}
 
+	//	テキスト読み込み
+	void	GameManager::LoadTextData( void )
+	{
+		//	文字列を保存するバッファ,変数を用意
+		char	buffer[256];
+		int		minute = 0;		//	分
+		int		second = 0;		//	秒
+
+		//	ファイルを開く
+		std::ifstream	ifs( "GameData.txt" );
+
+		//	最初はコメントなので読み飛ばす, 値は適当
+		ifs.getline( buffer, 50 );
+
+		//	読み込んだ値を変数へ代入
+		ifs >> minute;
+
+		//	コメントを読み飛ばす
+		ifs >> buffer;
+		ifs.getline( buffer, 50 );
+
+		//	読み込んだ値を変数へ代入
+		ifs >> second;
+
+		//	合計値をタイムリミット変数へ代入
+		timelimit = minute * MINUTE + second * SECOND;
+	}
+
 //-------------------------------------------------------------------------
 //	情報取得
 //-------------------------------------------------------------------------
@@ -243,13 +275,6 @@
 		return	out;
 	}
 
-	//画面一時停止残り秒数取得
-	int		GameManager::GetTimeStop(void)
-	{
-		int out = this->timeStop;
-		return out;
-	}
-
 	//	実体取得
 	GameManager*	GameManager::GetInstance( void )
 	{
@@ -295,17 +320,5 @@
 	void	GameManager::SetNewsFlag( const bool& flag )
 	{
 		newsflag = flag;
-	}
-
-	// カメラの振動地設定
-	void	GameManager::SetShakeCamera(float wide, int timer)
-	{
-		if (m_Camera) m_Camera->ShakeSet(wide, timer);
-	}
-
-	//画面一時停止時間設定
-	void	GameManager::SetTimeStop(int time)
-	{
-		this->timeStop = time * SECOND;
 	}
 

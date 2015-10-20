@@ -38,14 +38,7 @@
 		moveState = false;
 		target = nextTarget = TITLE_MOVE_INFO::target[TITLE_TARGET::PLAYERNUMBER];
 		speed = 0.005f;
-
-		//振動関連
-		adjust = Vector3(0.0f, 0.0f, 0.0f);
-		shakeflag = false;
-		shakeTimer = 0;
-		wide = 0;
-
-		Set( pos + adjust, target + adjust );
+		Set( pos, target );
 	}
 
 	//	デストラクタ
@@ -152,7 +145,7 @@
 	//	固定カメラ
 	void	Camera::ModeFix( Vector3 target )
 	{
-		Set( pos + adjust, target + adjust);
+		Set( pos, target );
 	}
 
 	//	追いかけカメラ
@@ -170,10 +163,8 @@
 		////	回転補間
 		//Slerp( this->target, 0.1f );
 
-		//振動情報設定
-		Shake();
 		//	情報設定
-		Set( q->position + adjust, this->target + adjust );
+		Set( q->position, this->target );
 
 	}
 
@@ -182,13 +173,13 @@
 	{
 		Slerp( target, 0.1f );
 
-		Set( pos + adjust, this->target + adjust);
+		Set( pos, this->target );
 	}
 
 	//	リザルト用カメラ
 	void	Camera::ModeResult( void )
 	{
-		Set(Vector3(0.0f, 5.0f, 13.0f) + adjust, Vector3(0.0f, 5.0f, -30.0f) + adjust);
+		Set(Vector3(0.0f, 5.0f, 13.0f), Vector3(0.0f, 5.0f, -30.0f));
 	}
 
 	//	タイトル用カメラ
@@ -214,7 +205,7 @@
 		Slerp( nextTarget, 0.1f );
 
 		//	情報更新
-		Set( pos + adjust, this->target + adjust);
+		Set( pos, this->target );
 	}
 
 	//	個々監視カメラ
@@ -251,7 +242,7 @@
 		if ( shakeflag ) 	return;
 		srand( 0 );
 		shakeflag = true;
-		this->wide = wide / ( float )timer;
+		this->wide = wide / ( float )shakeTimer;
 		this->shakeTimer = timer;
 	}
 

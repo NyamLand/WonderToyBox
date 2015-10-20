@@ -83,7 +83,6 @@
 			//	各キャラクター更新
 			character[i]->Update();
 			canHyper = GetCanHyper( i );
-			SetRank(i, gameManager->GetRank(i));		//　順位更新
 		}
 
 		//	当たり判定
@@ -185,11 +184,6 @@
 		//	当たっていたら
 		if ( isHit )
 		{
-			if (bc1->GetMode() == MODE_STATE::HYPERARTS)
-			{
-				gameManager->SetTimeStop(10);
-				gameManager->SetShakeCamera(1.0f, 30.0f);
-			}
 			if ( bc2->GetUnrivaled() )	return;
 			bc2->SetUnrivaled( true );
 			//	エフェクトだす
@@ -243,10 +237,7 @@
 		//	当たっていたら
 		if ( isHit )
 		{
-			if (bc1->GetMode() == MODE_STATE::HYPERARTS)
-			{
-				gameManager->SetShakeCamera(1.0f, 30.0f);
-			}
+			if (bc1->GetMode() == MODE_STATE::HYPERARTS){};
 			//	無敵状態取得・設定
 			if ( bc2->GetUnrivaled() )	return;
 			bc2->SetUnrivaled( true );
@@ -405,12 +396,6 @@
 	void		CharacterManager::SetPassColor( int player, Vector3 color )
 	{
 		character[player]->SetPassColor( color );
-	}
-
-	//	順位設定
-	void		CharacterManager::SetRank( int player, int rank )
-	{
-		character[player]->SetRank(rank);
 	}
 
 	//	パラメータ情報設定

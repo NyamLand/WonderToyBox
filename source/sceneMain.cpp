@@ -287,10 +287,7 @@
 		gameManager->Update();
 
 		//	全体更新
-		if (gameManager->GetTimeStop() == 0)
-		{
-			AllUpdate();
-		}
+		AllUpdate();
 	}
 
 	//	どんけつ更新
