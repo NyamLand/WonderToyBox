@@ -112,9 +112,10 @@ using namespace std;
 		DrawString( "ロード中", 200, 300 );
 
 		//	pressSpace描画
-		RenderImage(load_anykey, 0, 0, 256, 128, IMAGE_MODE::FLASH);
-		RenderImage(load_anykey, 0, 0, 256, 128, IMAGE_MODE::WAVE);
-
+		if (threadState){
+			RenderImage(load_anykey, 0, 0, 256, 128, IMAGE_MODE::FLASH);
+			RenderImage(load_anykey, 0, 0, 256, 128, IMAGE_MODE::WAVE);
+		}
 
 
 		//デバック用
