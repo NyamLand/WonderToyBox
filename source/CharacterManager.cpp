@@ -83,6 +83,7 @@
 			//	各キャラクター更新
 			character[i]->Update();
 			canHyper = GetCanHyper( i );
+			SetRank(i, gameManager->GetRank(i));		//　順位更新
 		}
 
 		//	当たり判定
@@ -404,6 +405,12 @@
 	void		CharacterManager::SetPassColor( int player, Vector3 color )
 	{
 		character[player]->SetPassColor( color );
+	}
+
+	//	順位設定
+	void		CharacterManager::SetRank( int player, int rank )
+	{
+		character[player]->SetRank(rank);
 	}
 
 	//	パラメータ情報設定

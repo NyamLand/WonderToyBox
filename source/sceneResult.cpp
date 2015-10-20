@@ -48,7 +48,7 @@ namespace
 	//	デストラクタ
 	sceneResult::~sceneResult( void )
 	{
-		SafeDelete( m_Camera );
+		SafeDelete( mainView );
 		SafeDelete( back );
 		SafeDelete( Sback );
 		SafeDelete( Smenu );
@@ -60,7 +60,7 @@ namespace
 	bool	sceneResult::Initialize( void )
 	{
 		//	カメラ設定
-		m_Camera = new Camera();
+		mainView = new Camera();
 
 		//	画像初期化
 		back = new iex2DObj( "DATA/Result/result-back.png");
@@ -173,7 +173,7 @@ namespace
 	void	sceneResult::ResultUpdate( void )
 	{
 		//	カメラ更新
-		m_Camera->Update( VIEW_MODE::RESULT, Vector3( 0.0f, 0.0f, 0.0f ) );
+		mainView->Update( VIEW_MODE::RESULT, Vector3( 0.0f, 0.0f, 0.0f ) );
 
 		//	プレイヤー更新
 		characterManager->Update();
@@ -211,8 +211,8 @@ namespace
 	//	描画
 	void	sceneResult::Render( void ) 
 	{
-		m_Camera->Activate();
-		m_Camera->Clear();
+		mainView->Activate();
+		mainView->Clear();
 
 		iexSystem::GetDevice()->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
 		back->Render(0, 0, 1280, 720, 0, 0, 1280, 720);
