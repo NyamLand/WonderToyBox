@@ -84,6 +84,7 @@
 			//	各キャラクター更新
 			character[i]->Update();
 			canHyper = GetCanHyper( i );
+			SetRank(i, gameManager->GetRank(i));
 		}
 
 		//	当たり判定
@@ -439,6 +440,12 @@
 	void		CharacterManager::SetParameterInfo( int player, int parameterInfo )
 	{
 		character[player]->SetParameterState( parameterInfo );
+	}
+
+	//    順位設定
+	void        CharacterManager::SetRank(int player, int rank)
+	{
+		character[player]->SetRank(rank);
 	}
 
 	//ノックバック情報設定

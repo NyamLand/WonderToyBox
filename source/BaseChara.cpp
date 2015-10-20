@@ -68,7 +68,7 @@ namespace
 		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ),	//	Vector3
 		angle(0.0f), scale(0.0f), speed(0.0f),	totalSpeed(0.0f), drag(0.0f), force( 0.0f ), moveVec( 0.0f ),	//	float
 		unrivaled(false), isGround(false), boosting(false), isPlayer(false), jumpState(false), checkWall(false),//	bool
-		mode(0), playerNum(0), power(0), totalPower(0), leanFrame(0), jumpStep(0),rank(0)		//	int
+		mode(0), playerNum(0), power(0), totalPower(0), leanFrame(0), jumpStep(0),damageStep(0),rank(0)		//	int
 	{
 	
 	}
@@ -80,14 +80,14 @@ namespace
 	}
 
 	//	初期化
-	bool	BaseChara::Initialize( int playerNum, iex3DObj* org, Vector3 pos, bool isPlayer )
+	bool	BaseChara::Initialize( int playerNum, Vector3 pos, bool isPlayer )
 	{
 		//	プレイヤーならコントローラ登録
 		this->isPlayer = isPlayer;
 		if ( this->isPlayer )		this->input = ::input[playerNum];
 
 		//	パラメータ初期化
-		Initialize( playerNum, org, pos );
+		Initialize( playerNum, pos );
 
 		SetMotion( MOTION_NUM::POSTURE );
 		obj->SetPos( pos );
@@ -100,11 +100,10 @@ namespace
 	}
 
 	//	初期化
-	bool	BaseChara::Initialize( int playerNum, iex3DObj* org, Vector3 pos )
+	bool	BaseChara::Initialize( int playerNum, Vector3 pos )
 	{
 		//	モデル設定
 		obj = nullptr;
-		if ( obj == nullptr )	obj = org;
 		
 		//	プレイヤー番号登録
 		this->playerNum = playerNum;
@@ -129,7 +128,8 @@ namespace
 			//	ノックバック情報初期化
 			{
 				knockBackInfo.type = 0;
-				knockBackInfo.vec = Vector3( 0.0f, 0.0f, 0.0f );
+				knockBackInfo.vec = Vector3(0.0f, 0.0f, 0.0f);
+				knockBackInfo.isUp = false;
 		}
 
 			//	ダメージ時色情報初期化
@@ -328,27 +328,13 @@ namespace
 			Guard();
 			break;
 
-		case MODE_STATE::DAMAGE_STRENGTH:
-			KnockBackStrength();
-			SetDamageColor( damageColor.catchColor );
-			break;
-
-		case MODE_STATE::DAMAGE_MIDDLE:
-			KnockBackMiddle();
-			SetDamageColor( damageColor.catchColor );
-			break;
-
-		case MODE_STATE::DAMAGE_WEAK:
-			KnockBackWeak();
-			SetDamageColor( damageColor.catchColor );
+		case MODE_STATE::DAMAGE:
+		case MODE_STATE::DAMAGE_FLYUP:
+			AddKnockBackForce(force);
 			break;
 
 		case MODE_STATE::DAMAGE_LEANBACKWARD:
 			KnockBackLeanBackWard();
-			break;
-
-		case MODE_STATE::DAMAGE:
-			Damage();
 			break;
 		}
 	}
@@ -414,7 +400,7 @@ namespace
 		float	axisY = -input->Get( KEY_AXISY ) * 0.001f;
 
 		//	カメラの前方方向を求める
-		Vector3	vEye( m_Camera->GetTarget() - m_Camera->GetPos() );
+		Vector3	vEye( mainView->GetTarget() - mainView->GetPos() );
 		float	cameraAngle = atan2f( vEye.x, vEye.z );
 
 		//	入力方向を求める
@@ -458,44 +444,57 @@ namespace
 	}
 
 	//	ノックバック
-	void	BaseChara::KnockBack( void )
+	void	BaseChara::KnockBack(void)
 	{
-		unrivaled = true;
-		SetDrag( 0.9f );
 
-		SetMotion( MOTION_NUM::POSTURE );
-		if ( move.Length() <= 0.001f )
+		SetMotion(MOTION_NUM::POSTURE);
+		switch (mode)
 		{
-			SetMode( MODE_STATE::MOVE );
-			unrivaled = false;
+		case MODE_STATE::DAMAGE:
+			unrivaled = true;
+			SetDrag(0.9f);
+			if (move.Length() <= 0.001f)
+			{
+				damageStep = 0;
+				SetMode(MODE_STATE::MOVE);
+				unrivaled = false;
+			}
+			break;
+
+		case MODE_STATE::DAMAGE_FLYUP:
+			unrivaled = true;
+			SetDrag(1.0f);
+			if (isGround)
+			{
+				move = Vector3(0.0f, 0.0f, 0.0f);
+				damageStep = 0;
+				SetMode(MODE_STATE::MOVE);
+				unrivaled = false;
+			}
+			break;
 		}
+
 	}
 
-	//	ノックバック	強
-	void	BaseChara::KnockBackStrength( void )
+	void	BaseChara::AddKnockBackForce(float force)
 	{
-		float	force = 3.0f;
+		if (mode == MODE_STATE::DAMAGE_FLYUP) force /= 4;
+		switch (damageStep)
+		{
+		case 0:
+			SetDamageColor(damageColor.catchColor);
+			move = knockBackInfo.vec * force;
 
-		move = knockBackInfo.vec * force;
-		SetMode( MODE_STATE::DAMAGE );
-	}
+			if (mode == MODE_STATE::DAMAGE) move.y = 0;
+			if (mode == MODE_STATE::DAMAGE_FLYUP) move.y = force / 2;
 
-	//	ノックバック　中
-	void	BaseChara::KnockBackMiddle( void )
-	{
-		float force = 2.0f;
+			damageStep++;
+			break;
 
-		move = knockBackInfo.vec * force;
-		SetMode( MODE_STATE::DAMAGE );
-	}
-
-	//	ノックバック　弱
-	void	BaseChara::KnockBackWeak( void )
-	{
-		float force = 1.0f;
-
-		move = knockBackInfo.vec * force;
-		SetMode( MODE_STATE::DAMAGE );
+		case 1:
+			Damage();
+			break;
+		}
 	}
 
 	//	ノックバック	仰け反りのみ
@@ -940,7 +939,7 @@ namespace
 	void	BaseChara::AutoAngleAdjust( float speed, Vector3 target )
 	{
 		//	カメラの前方方向を求める
-		Vector3	vEye(m_Camera->GetTarget() - m_Camera->GetPos());
+		Vector3	vEye( mainView->GetTarget() - mainView->GetPos() );
 		float	cameraAngle = atan2f(vEye.x, vEye.z);
 
 		Vector3	vec = target - pos;
@@ -1303,6 +1302,10 @@ namespace
 		return	knockBackInfo.type;
 	}
 
+	int			BaseChara::GetKnockBackIsUp(void)const
+	{
+		return knockBackInfo.isUp;
+	}
 	//　順位取得
 	int			BaseChara::GetRank( void )const
 	{
@@ -1354,6 +1357,8 @@ namespace
 			this->mode = mode;
 		}
 	}
+
+	//	AIモード設定
 	void	BaseChara::SetAIMode(int mode)
 	{
 		if (GetAIMode() != mode)
@@ -1450,4 +1455,10 @@ namespace
 	{
 		parameterState.state = true;
 		parameterState.timer = time;
+	}
+
+
+	void BaseChara::SetForce(float force)
+	{
+		this->force = force;
 	}

@@ -41,10 +41,8 @@ namespace
 			JUMP,
 			GUARD,
 			DAMAGE,
-			DAMAGE_STRENGTH,
-			DAMAGE_MIDDLE,
-			DAMAGE_WEAK,
-			DAMAGE_LEANBACKWARD,
+			DAMAGE_FLYUP,
+			DAMAGE_LEANBACKWARD
 		};
 	}
 
@@ -156,6 +154,7 @@ protected:
 	{
 		Vector3	vec;
 		int			type;
+		bool	isUp;
 	};
 	
 	//	パラメータ情報
@@ -220,6 +219,7 @@ protected:
 	int				totalPower;
 	int				leanFrame;		//	仰け反り時間
 	int				jumpStep;			//	ジャンプ動作
+	int				damageStep;
 	int				rank;
 
 	//	各情報構造体
@@ -251,8 +251,8 @@ public:
 	//	初期化・解放
 	BaseChara( void );
 	~BaseChara( void );
-	virtual	bool	Initialize( int playerNum, iex3DObj* org, Vector3 pos, bool isPlayer );
-	virtual	bool	Initialize( int playerNum, iex3DObj* org, Vector3 pos );
+	virtual	bool	Initialize( int playerNum, Vector3 pos, bool isPlayer );
+	virtual	bool	Initialize( int playerNum, Vector3 pos );
 	void	Release( void );
 
 	//	更新・描画
@@ -274,10 +274,8 @@ public:
 	void	Jump( void );
 	void	Guard( void );
 	void	Damage( void );
-	void	KnockBack( void );
-	void	KnockBackStrength( void );
-	void	KnockBackMiddle( void );
-	void	KnockBackWeak( void );
+	void	KnockBack(void);
+	void	AddKnockBackForce(float force);
 	void	KnockBackLeanBackWard( void );
 	void	FallCheck( void );
 	void	ParameterAdjust( void );
@@ -323,6 +321,7 @@ public:
 	void	SetParameterState( int parameterState );
 	void	SetRank( int rank );
 	void	SetParameterState( PARAMETER_INFO& paramterState, int time );
+	void SetForce(float force);
 
 	//	情報取得
 	Matrix	GetMatrix( void )const;
@@ -352,7 +351,8 @@ public:
 	int		GetAIMode( void )const;
 	int		GetPlayerNum( void )const;
 	int		GetAttackParam( void )const;
-	int		GetKnockBackType( void )const;
+	int		GetKnockBackType(void)const;
+	int		GetKnockBackIsUp(void)const;
 	int		GetLeanFrame( void )const;
 	int		GetRank( void )const;
 };
