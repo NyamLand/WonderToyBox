@@ -63,6 +63,9 @@ public:
 	int			GetAttackParam( int player )const;
 	int			GetPlayerNum( int playerNum )const;
 	int			GetPower( int playerNum )const;
+	int			GetRank( int player )const;
+	int			GetMode( int player )const;
+	int			GetAIMode(int player)const;
 	static	CharacterManager*	GetInstance();
 
 	//	î•ñİ’è
@@ -71,6 +74,7 @@ public:
 	void		SetScale( int player, float scale );
 	void		SetKnockBackVec( int player, Vector3 vec );
 	void		SetMode( int player, int mode );
+	void		SetAIMode( int player, int mode );
 	void		SetBoosting( int player, bool boosting );
 	void		SetLeanFrame( int player, int leanframe );
 	void		SetPassColor( int player, Vector3 color );
