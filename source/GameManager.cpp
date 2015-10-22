@@ -276,7 +276,7 @@
 	}
 
 	//@‡ˆÊXV
-	int        GameManager::GetRank(int player)
+	int        GameManager::GetRank( int player )
 	{
 		int num_coin[PLAYER_MAX], temp_coin[PLAYER_MAX];
 		for (int i = 0; i < PLAYER_MAX; i++)
