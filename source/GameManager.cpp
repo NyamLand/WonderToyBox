@@ -14,6 +14,7 @@
 #include	"CoinManager.h"
 #include	"sceneResult.h"
 #include	"CharacterManager.h"
+#include	"Camera.h"
 #include	"GameManager.h"
 
 //*******************************************************************************
@@ -58,7 +59,7 @@
 		mode = 0;
 		donketsuBoostState = false;
 		lastBonus = rand() % PLAYER_MAX;
-		
+		timeStop = 0;
 		//	ゲームデータテキストを読み込む
 		LoadTextData();
 		timer = timelimit;
@@ -81,6 +82,8 @@
 	{
 		//	タイマー更新
 		timer--;
+
+		if (timeStop > 0) timeStop--;
 
 		//	残り時間３０秒でどんけつ演出へ
 		if ( timer == 30 * SECOND )
@@ -275,6 +278,13 @@
 		return	out;
 	}
 
+	//画面一時停止残り秒数取得
+	int        GameManager::GetTimeStop(void)
+	{
+		int out = this->timeStop;
+		return out;
+	}
+
 	//　順位更新
 	int        GameManager::GetRank(int player)
 	{
@@ -357,4 +367,16 @@
 	void	GameManager::SetNewsFlag( const bool& flag )
 	{
 		newsflag = flag;
+	}
+
+	// カメラの振動地設定
+	void	GameManager::SetShakeCamera(float wide, int timer)
+	{
+		if (mainView) mainView->ShakeSet(wide, timer);
+	}
+
+	//画面一時停止時間設定
+	void	GameManager::SetTimeStop(int time)
+	{
+		this->timeStop = time * SECOND;
 	}
