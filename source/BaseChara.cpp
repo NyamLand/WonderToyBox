@@ -550,13 +550,13 @@ namespace
 
 		case MODE_STATE::POWERARTS:
 			isEnd = PowerArts();
-			if (canHyper) gameManager->SetTimeStop(1);
 			if (!isEnd)	SetAttackParam(attackKind);
 			if ( !isEnd )	SetAttackParam( attackKind );
 			break;
 
 		case MODE_STATE::HYPERARTS:
 			isEnd = HyperArts();
+			if (canHyper) gameManager->SetTimeStop(30);
 			canHyper = isEnd;
 			if (!isEnd)	SetAttackParam(attackKind);
 			if ( !isEnd )	SetAttackParam( attackKind );

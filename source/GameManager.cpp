@@ -81,9 +81,9 @@
 	void	GameManager::Update( void )
 	{
 		//	ƒ^ƒCƒ}[XV
-		timer--;
-
 		if (timeStop > 0) timeStop--;
+		else timer--;
+
 
 		//	Žc‚èŽžŠÔ‚R‚O•b‚Å‚Ç‚ñ‚¯‚Â‰‰o‚Ö
 		if ( timer == 30 * SECOND )
@@ -378,5 +378,5 @@
 	//‰æ–ÊˆêŽž’âŽ~ŽžŠÔÝ’è
 	void	GameManager::SetTimeStop(int time)
 	{
-		this->timeStop = time * SECOND;
+		this->timeStop = time;
 	}

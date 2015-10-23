@@ -251,7 +251,7 @@
 		if ( shakeflag ) 	return;
 		srand( 0 );
 		shakeflag = true;
-		this->wide = wide / ( float )shakeTimer;
+		this->wide = wide / ( float )timer;
 		this->shakeTimer = timer;
 	}
 
