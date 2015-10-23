@@ -35,6 +35,7 @@ public:
 	//	初期化・解放
 	Squirrel( void );
 	~Squirrel( void );
+	bool	Initialize( int playerNum, Vector3 pos )override;
 
 	//	更新・描画
 	void	Render( iexShader* shader = nullptr, LPSTR technique = nullptr )override;

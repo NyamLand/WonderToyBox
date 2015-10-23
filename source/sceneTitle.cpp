@@ -13,6 +13,7 @@
 #include	"CharacterManager.h"
 #include	"UI.h"
 #include	"sceneMain.h"
+#include	"sceneMenu.h"
 #include	"sceneLoad.h"
 
 #include	"sceneTitle.h"
@@ -55,7 +56,7 @@ namespace
 	//	デストラクタ
 	sceneTitle::~sceneTitle( void )
 	{
-		SafeDelete( m_Camera );
+		SafeDelete( mainView );
 		SafeDelete( titleInfo.curtainL.obj );
 		SafeDelete( titleInfo.curtainR.obj );
 		SafeDelete( titleInfo.titleImage.obj );
@@ -77,7 +78,7 @@ namespace
 		iexLight::DirLight( shader3D, 0, &dir, 0.8f, 0.8f, 0.8f );
 
 		//	カメラ設定
-		m_Camera = new Camera();
+		mainView = new Camera();
 
 		//	マネージャー初期化
 		gameManager->Initialize();
@@ -215,7 +216,7 @@ namespace
 
 		case TITLE_MODE::MOVE_MAIN:
 			ui->Update( mode );
-			m_Camera->Update( VIEW_MODE::TITLE );
+			mainView->Update( VIEW_MODE::TITLE );
 			if ( screen->GetScreenState() )
 			{
 				MainFrame->ChangeScene( new sceneLoad( new sceneMain() ) );
@@ -236,8 +237,8 @@ namespace
 	void	sceneTitle::Render( void )
 	{
 		//	画面クリア
-		m_Camera->Activate();
-		m_Camera->Clear();
+		mainView->Activate();
+		mainView->Clear();
 
 		//	ステージ描画
 		stage->Render();
@@ -282,12 +283,12 @@ namespace
 		screen->Render();
 
 		//	デバッグ
-		m_Camera->Render();
+		mainView->Render();
 
 
 
 		//char	str[256];
-		Matrix	mat = m_Camera->GetMatrix();
+		Matrix	mat = mainView->GetMatrix();
 		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
 		front.Normalize();
 		//sprintf_s( str, "t.x = %f\nt.y = %f\nt.z = %f\n", eff_pos.x, eff_pos.y, eff_pos.z );
@@ -315,7 +316,7 @@ namespace
 			{
 			case 0:
 				//	カメラ更新
-				m_Camera->Update( VIEW_MODE::SETUP );
+				mainView->Update( VIEW_MODE::SETUP );
 
 				//	点滅更新
 				FlashingUpdate( titleInfo.pressSpace, D3DX_PI / 180 * 4.0f );
@@ -338,7 +339,7 @@ namespace
 
 			case 1:
 				//	カメラ更新
-				m_Camera->Update( VIEW_MODE::TITLE );
+				mainView->Update( VIEW_MODE::TITLE );
 
 				//	波紋更新
 				WaveUpdate( titleInfo.pressSpace );
@@ -405,20 +406,20 @@ namespace
 		void	sceneTitle::MenuUpdate( void )
 		{
 			//	移動先をかえる
-			if ( m_Camera->GetMoveState() )	//	移動が終了してたら
+			if ( mainView->GetMoveState() )	//	移動が終了してたら
 			{
 				//	C,Vキーで選択
 				if ( KEY( KEY_LEFT ) == 3 )
 				{
 					menuInfo.menu_num--;
 					if ( menuInfo.menu_num < 0 )		menuInfo.menu_num = TITLE_TARGET::CREDIT;
-					m_Camera->SetNextPoint( menuInfo.menu_num, 0.01f );
+					mainView->SetNextPoint( menuInfo.menu_num, 0.01f );
 				}
 				if ( KEY( KEY_RIGHT ) == 3 )
 				{
 					menuInfo.menu_num++;
 					if ( menuInfo.menu_num > TITLE_TARGET::CREDIT )	menuInfo.menu_num = 0;
-					m_Camera->SetNextPoint( menuInfo.menu_num, 0.01f );
+					mainView->SetNextPoint( menuInfo.menu_num, 0.01f );
 				}
 
 				//	決定
@@ -439,12 +440,12 @@ namespace
 						break;
 					}	
 					sound->PlaySE( SE::DECIDE_SE );
-					m_Camera->SetNextPoint( menuInfo.menu_num, 0.01f );
+					mainView->SetNextPoint( menuInfo.menu_num, 0.01f );
 				}
 			}
 
 			//	カメラ更新
-			m_Camera->Update( VIEW_MODE::TITLE );
+			mainView->Update( VIEW_MODE::TITLE );
 
 
 			//	UI更新
@@ -508,8 +509,16 @@ namespace
 				break;
 
 			case SELECT_MODE::CHARACTER:
-				SelectCharacterUpdate();
-				ui->Update( TITLE_MODE::SELECT_CHARACTER );
+				ui->Update( TITLE_MODE::MOVE_MAIN );
+				mainView->Update( VIEW_MODE::TITLE );
+				if ( screen->GetScreenState() )
+				{
+					MainFrame->ChangeScene( new sceneMenu() );
+					return;
+				}
+				break;
+				//SelectCharacterUpdate();
+				//ui->Update( TITLE_MODE::SELECT_CHARACTER );
 				break;
 
 			case SELECT_MODE::STAGE:
@@ -519,7 +528,7 @@ namespace
 			}
 
 			//	カメラ更新
-			m_Camera->Update( VIEW_MODE::TITLE );
+			mainView->Update( VIEW_MODE::TITLE );
 		}
 
 		//	描画
@@ -549,7 +558,7 @@ namespace
 		void	sceneTitle::SelectPlayerNumUpdate( void )
 		{
 			//	移動中は選択不可
-			if( !m_Camera->GetMoveState() )	return;
+			if( !mainView->GetMoveState() )	return;
 
 			//	選択
 			if ( KEY( KEY_RIGHT ) == 3 )		setInfo.playerNum++;
@@ -563,8 +572,10 @@ namespace
 			if ( KEY( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )
 			{
 				selectInfo.mode = SELECT_MODE::CHARACTER;
-				m_Camera->SetNextPoint( TITLE_TARGET::SELECTCHARACTER, 0.01f );
+				mainView->SetNextPoint( TITLE_TARGET::SELECTCHARACTER, 0.005f );
+				gameManager->SetPlayerNum( setInfo.playerNum );
 				sound->PlaySE( SE::DECIDE_SE );
+				screen->SetScreenMode( SCREEN_MODE::WHITE_OUT, 0.5f );
 				return;
 			}
 
@@ -572,7 +583,7 @@ namespace
 			if ( KEY( KEY_B ) == 3 )
 			{
 				mode = TITLE_MODE::MENU;
-				m_Camera->SetNextPoint( TITLE_TARGET::PLAYERNUMBER, 0.01f );
+				mainView->SetNextPoint( TITLE_TARGET::PLAYERNUMBER, 0.01f );
 			}
 		}
 		
@@ -594,7 +605,7 @@ namespace
 		//	更新
 		void	sceneTitle::SelectCharacterUpdate( void )
 		{
-			if ( !m_Camera->GetMoveState() )	return;
+			if ( !mainView->GetMoveState() )	return;
 			switch ( selectInfo.select_mode )
 			{
 			case 0:
@@ -608,7 +619,7 @@ namespace
 			case 2:
 				selectInfo.mode = SELECT_MODE::STAGE;
 				selectInfo.select_mode = 0;
-				m_Camera->SetNextPoint( TITLE_TARGET::SELECTSTAGE, 0.01f );
+				mainView->SetNextPoint( TITLE_TARGET::SELECTSTAGE, 0.01f );
 				break;
 			}
 		}
@@ -779,7 +790,7 @@ namespace
 		void	sceneTitle::SelectStageUpdate( void )
 		{
 			//	移動中は選択不可
-			if ( !m_Camera->GetMoveState() )	return;
+			if ( !mainView->GetMoveState() )	return;
 
 			//	選択
 			if ( KEY( KEY_RIGHT ) == 3 ) 	setInfo.stageType++;
@@ -794,7 +805,7 @@ namespace
 			{
 				mode = TITLE_MODE::SELECT_CHECK;
 				sound->PlaySE( SE::DECIDE_SE );
-				m_Camera->SetNextPoint( TITLE_TARGET::CHECK, 0.01f );
+				mainView->SetNextPoint( TITLE_TARGET::CHECK, 0.01f );
 				return;
 			}
 
@@ -802,7 +813,7 @@ namespace
 			if ( KEY( KEY_B ) == 3 )
 			{
 				selectInfo.mode = TITLE_TARGET::SELECTCHARACTER;
-				m_Camera->SetNextPoint( selectInfo.mode, 0.01f );
+				mainView->SetNextPoint( selectInfo.mode, 0.01f );
 			}
 		}
 
@@ -824,9 +835,9 @@ namespace
 		//	更新
 		void	sceneTitle::SelectCheckUpdate( void )
 		{
-			m_Camera->Update( VIEW_MODE::TITLE );
+			mainView->Update( VIEW_MODE::TITLE );
 			ui->Update( mode );
-			if ( !m_Camera->GetMoveState() )	return;
+			if ( !mainView->GetMoveState() )	return;
 			if ( KEY( KEY_RIGHT ) == 3 )		setInfo.ready = !setInfo.ready;
 			if ( KEY( KEY_LEFT ) == 3 )		setInfo.ready = !setInfo.ready;
 			if ( KEY( KEY_B ) == 3 )		mode = TITLE_MODE::SELECT_PLAYERNUM;
@@ -841,7 +852,7 @@ namespace
 					sound->PlaySE( SE::DECIDE_SE );
 					screen->SetScreenMode( SCREEN_MODE::WHITE_OUT, 0.5f );
 					mode = TITLE_MODE::MOVE_MAIN;
-					m_Camera->SetNextPoint( TITLE_TARGET::MOVE_MAIN, 0.003f );
+					mainView->SetNextPoint( TITLE_TARGET::MOVE_MAIN, 0.003f );
 				}
 				else	mode = TITLE_MODE::SELECT_PLAYERNUM;
 			}
@@ -883,14 +894,14 @@ namespace
 		//	更新
 		void	sceneTitle::OptionUpdate( void )
 		{
-			m_Camera->Update( VIEW_MODE::TITLE );
+			mainView->Update( VIEW_MODE::TITLE );
 			ui->Update( mode );
-			if ( !m_Camera->GetMoveState() )	return;
+			if ( !mainView->GetMoveState() )	return;
 			if ( KEY( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )
 			{
 				mode = TITLE_MODE::MENU;
 				sound->PlaySE( SE::DECIDE_SE );
-				m_Camera->SetNextPoint( TITLE_TARGET::PLAYERNUMBER, 0.01f );
+				mainView->SetNextPoint( TITLE_TARGET::PLAYERNUMBER, 0.01f );
 			}
 		}
 
@@ -909,13 +920,13 @@ namespace
 		void	sceneTitle::CreditUpdate( void )
 		{
 			ui->Update( mode );
-			m_Camera->Update( VIEW_MODE::TITLE );
-			if ( !m_Camera->GetMoveState() )	return;
+			mainView->Update( VIEW_MODE::TITLE );
+			if ( !mainView->GetMoveState() )	return;
 			if ( KEY( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )
 			{
 				mode = TITLE_MODE::MENU;
 				sound->PlaySE( SE::DECIDE_SE );
-				m_Camera->SetNextPoint( TITLE_TARGET::PLAYERNUMBER, 0.01f );
+				mainView->SetNextPoint( TITLE_TARGET::PLAYERNUMBER, 0.01f );
 			}
 		}
 

@@ -19,8 +19,9 @@
 //	初期化・解放
 //-------------------------------------------------------------------------------------
 
+
 	//	コンストラクタ
-	CharacterManager::CharacterManager( void ) : loadflag( false )
+	CharacterManager::CharacterManager( void )
 	{
 
 	}
@@ -34,8 +35,6 @@
 	//	初期化
 	bool	CharacterManager::Initialize( int playerNum, int type, Vector3 pos, bool isPlayer )
 	{
-		if ( !loadflag )	Load();
-
 		switch ( type )
 		{
 		case CHARACTER_TYPE::PRINCESS:
@@ -54,35 +53,23 @@
 			break;
 
 		case CHARACTER_TYPE::TIGER:
-			if (isPlayer)		character[playerNum] = new Tiger();
+			if ( isPlayer )		character[playerNum] = new Tiger();
 			else					character[playerNum] = new Tiger_CPU();
 			break;
-
-		default:
-			return	false;
 		}
 
 		//	初期設定
-		character[playerNum]->Initialize( playerNum, org[type]->Clone(), pos, isPlayer );
+		character[playerNum]->Initialize( playerNum, pos, isPlayer );
 		return	true;
 	}
 
 	//	解放
 	void	CharacterManager::Release( void )
 	{
-		for ( int i = 0; i < PLAYER_MAX; i++ )	SafeDelete( character[i] );
-		for ( int i = 0; i < OBJ_MAX; i++ )		SafeDelete( org[i] );
-		loadflag = false;
-	}
-
-	//	読み込み
-	void	CharacterManager::Load( void )
-	{
-		loadflag = true;
-		org[CHARACTER_TYPE::PRINCESS] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
-		org[CHARACTER_TYPE::KNIGHT] = new iex3DObj( "DATA/CHR/Knight/Knight_Dammy.IEM" );
-		org[CHARACTER_TYPE::SQUIRREL] = new iex3DObj( "DATA/CHR/SQUIRREL/SQUIRREL.IEM" );
-		org[CHARACTER_TYPE::TIGER] = new iex3DObj( "DATA/CHR/ECCMAN/ECCMAN.IEM" );
+		for ( int i = 0; i < PLAYER_MAX; i++ )
+		{
+			SafeDelete( character[i] );
+		}
 	}
 
 //-------------------------------------------------------------------------------------
@@ -97,6 +84,7 @@
 			//	各キャラクター更新
 			character[i]->Update();
 			canHyper = GetCanHyper( i );
+			SetRank(i, gameManager->GetRank(i));
 		}
 
 		//	当たり判定
@@ -109,9 +97,25 @@
 	//	描画
 	void	CharacterManager::Render( iexShader* shader, LPSTR technique )
 	{
+		DrawString("rank", 1020, 30);
+		DrawString("AImode", 1060, 30);
+
+		DrawString("Aimode一覧", 1130, 30);
+		DrawString("０：ATTACK", 1120, 50);
+		DrawString("１：RUN（コイン）",	1120, 70);
+		DrawString("２：GETAWAY（逃げる）", 1120, 90);
+		DrawString("３：GUARD", 1120, 110);
+		DrawString("４：JUMP", 1120, 130);
+		DrawString("５：WAIT", 1120, 150);
+		
+		char str[256];
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			character[i]->Render( shader, technique );
+			
+			//　デバッグ文字
+			sprintf_s(str, "%dＰ：%d    %d", i + 1, GetRank(i), GetAIMode(i));
+			DrawString(str, 1000, 50 + i * 20);
 		}
 	}
 
@@ -353,6 +357,22 @@
 		return	character[player]->GetPower();
 	}
 
+	//　順位取得
+	int			CharacterManager::GetRank( int player )const
+	{
+		return character[player]->GetRank();
+	}
+
+	//　モード取得
+	int			CharacterManager::GetMode( int player )const
+	{
+		return character[player]->GetMode();
+	}
+	int			CharacterManager::GetAIMode(int player)const
+	{
+		return character[player]->GetAIMode();
+	}
+
 	//	実体取得
 	CharacterManager*	CharacterManager::GetInstance( void )
 	{
@@ -393,6 +413,10 @@
 	{
 		character[player]->SetMode( mode );
 	}
+	void		CharacterManager::SetAIMode( int player, int mode )
+	{
+		character[player]->SetAIMode(mode);
+	}
 
 	//	ブースト状態取得
 	void		CharacterManager::SetBoosting( int player, bool boosting )
@@ -416,6 +440,12 @@
 	void		CharacterManager::SetParameterInfo( int player, int parameterInfo )
 	{
 		character[player]->SetParameterState( parameterInfo );
+	}
+
+	//    順位設定
+	void        CharacterManager::SetRank(int player, int rank)
+	{
+		character[player]->SetRank(rank);
 	}
 
 	//ノックバック情報設定

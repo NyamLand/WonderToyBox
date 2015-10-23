@@ -63,6 +63,20 @@
 
 	}
 
+	//	初期化
+	bool	Tiger::Initialize( int playerNum, Vector3 pos )
+	{
+		//	親の初期化
+		BaseChara::Initialize( playerNum, pos );
+
+		//	モデル読み込み
+		if ( obj == nullptr )
+			obj = new iex3DObj( "DATA/CHR/ECCMAN/ECCMAN.IEM" );
+
+		if ( obj == nullptr )	return	false;
+		return	true;
+	}
+
 //-----------------------------------------------------------------------------------
 //	更新・描画
 //-----------------------------------------------------------------------------------

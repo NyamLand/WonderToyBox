@@ -8,6 +8,7 @@
 //
 //****************************************************************************************
 
+//	param
 namespace
 {
 	namespace VIEW_MODE
@@ -20,6 +21,7 @@ namespace
 			CHASE,		//	※このモードの場合はSetTargetでtargetに値を与える必要があります。
 			RESULT,
 			TITLE,
+			INDIVIDUAL,
 		};
 	}
 
@@ -65,23 +67,17 @@ namespace
 		};
 	}
 }
+
+//	クラス前方宣言
 class Rubber;
+
+//	class
 class Camera : public iexView
 {
 private:
 	//	定数
 	static	const		int		MAX = 15;		//	カメラからターゲットの距離の最大
 	static	const		int		MIN = 8;		//								最少
-
-private:
-	struct Spring
-	{
-		Vector3	desirePos;
-		float		streach;	//	カメラの伸び
-		float		mass;
-		Vector3	acceleration;	//	加速度
-		//力 = -バネの強さ × バネの伸び - カメラに対する、空気の粘っこさ × カメラの速度;
-	};
 
 private:
 	Vector3	playerPos[4];
@@ -94,8 +90,9 @@ private:
 	float		speed;
 	float		t;
 	bool		moveState;
-	Rubber*		q;
 	
+	//	ゴムパラメータ
+	Rubber*		q;
 	
 	//	振動用パラメータ
 	Vector3 adjust;
@@ -115,12 +112,15 @@ public:
 	void	Update( int viewmode, Vector3 target = Vector3( 0.0f, 0.0f, 0.0f ) );
 	void	Render( void );
 
-	//	動作関数
+	//	各モード動作
 	void	ModeFix( Vector3 target );
 	void	ModeSlerp( Vector3 target );
+	void	ModeIndividualSurveillance( Vector3 target );
 	void	ModeChase( void );
 	void	ModeResult( void );
 	void	ModeTitle();
+
+	//	動作関数
 	void	Slerp( Vector3 target, float speed ) ;
 	void	Shake( void );
 	void	ShakeSet( float wide, int timer );
@@ -160,19 +160,20 @@ private:
 
 public:
 	//	コンストラクタ・デストラクタ
-	Rubber();
-	~Rubber();
+	Rubber( void );
+	~Rubber( void );
 
 	//	更新
-	void	Update();
-	void Integrate(float dt);
+	void	Update( void );
+	void	Integrate( float dt );
 
 	//	情報設定・情報取得
-	void AddForce( const Vector3 &force ){	resultant += force;	}
-	const Vector3 &GetAcceleration() const{	return acceleration; }
+	void	AddForce( const Vector3 &force ){	resultant += force;	}
+	const	Vector3 &GetAcceleration() const{	return acceleration; }
 };
 
-extern	Camera*		m_Camera;
+//	メインカメラ
+extern	Camera*		mainView;
 
 //****************************************************************************************
 #endif // !__CAMERA_H__

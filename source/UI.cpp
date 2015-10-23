@@ -39,12 +39,12 @@
 			enum
 			{
 				IN_START_POS_X = 1980,
-				IN_START_POS_Y = 300,
+				IN_START_POS_Y = -100,
 				IN_END_POS_X = 640,
-				IN_END_POS_Y = 550,
+				IN_END_POS_Y = 150,
 				OUT_START_POS_X = 640,
 				OUT_END_POS_X = -700,
-				OUT_END_POS_Y = 400,
+				OUT_END_POS_Y = 0,
 				ROLL_POINT_ADJUST_X = 200,
 			};
 		}

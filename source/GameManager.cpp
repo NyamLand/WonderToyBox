@@ -48,7 +48,7 @@
 	//	初期化
 	bool	GameManager::Initialize( void )
 	{
-		for ( int i = 0; i < 4; i++ )
+		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			charatype[i] = 0;
 			coinNum[i] = 0;
@@ -57,7 +57,8 @@
 		stageType = 0;
 		mode = 0;
 		donketsuBoostState = false;
-		lastBonus = rand() % 4;
+		lastBonus = rand() % PLAYER_MAX;
+		stageScale = 0.0f;
 		
 		//	ゲームデータテキストを読み込む
 		LoadTextData();
@@ -162,7 +163,7 @@
 
 		int work(coinNum[0]);
 		int Min(0);
-		for (int i = 1; i < 4; i++)
+		for (int i = 1; i < PLAYER_MAX; i++)
 		{
 			if (coinNum[i] < work)
 			{
@@ -200,6 +201,13 @@
 
 		//	合計値をタイムリミット変数へ代入
 		timelimit = minute * MINUTE + second * SECOND;
+
+		//	コメントを読み飛ばす
+		ifs >> buffer;
+		ifs.getline( buffer, 50 );
+
+		//	ステージのスケールをよみこんで変数へ代入
+		ifs >> stageScale;
 	}
 
 //-------------------------------------------------------------------------
@@ -275,6 +283,49 @@
 		return	out;
 	}
 
+	//　順位更新
+	int        GameManager::GetRank( int player )
+	{
+		int num_coin[PLAYER_MAX], temp_coin[PLAYER_MAX];
+		for (int i = 0; i < PLAYER_MAX; i++)
+		{
+			num_coin[i] = temp_coin[i] = GetCoinNum(i);
+		}
+
+		for (int i = 0, temp; i < PLAYER_MAX - 1; i++)
+		{
+			for (int j = PLAYER_MAX - 1; j > i; j--)
+			{
+				if (temp_coin[j - 1] > temp_coin[j])
+				{
+					temp = temp_coin[j];
+					temp_coin[j] = temp_coin[j - 1];
+					temp_coin[j - 1] = temp;
+				}
+			}
+		}
+
+		for (int i = 0; i < PLAYER_MAX; i++)
+		{
+			for (int j = 0; j < PLAYER_MAX; j++)
+			{
+				if (num_coin[player] == temp_coin[j])
+				{
+					return PLAYER_MAX - j;
+				}
+			}
+		}
+
+		return	0;
+	}
+
+	//	ステージスケール取得
+	float		GameManager::GetStageScale( void )const 
+	{
+		return	stageScale;
+	}
+
+
 	//	実体取得
 	GameManager*	GameManager::GetInstance( void )
 	{
@@ -321,4 +372,3 @@
 	{
 		newsflag = flag;
 	}
-

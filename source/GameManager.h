@@ -78,6 +78,7 @@ private:
 	int		worst;
 	int		lastBonus;
 	bool	newsflag;
+	float	stageScale;
 
 public:
 	Vector3	InitPos[4];
@@ -114,6 +115,8 @@ public:
 	bool	GetNewsFlag( void );
 	int		GetWorst( void );
 	int		GetMode( void );
+	int		GetRank(int player);
+	float	GetStageScale( void )const;
 	static	GameManager*	GetInstance( void );
 
 	//	î•ñİ’è

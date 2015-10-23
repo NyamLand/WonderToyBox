@@ -28,20 +28,16 @@ private:
 
 private:
 	BaseChara*	character[CHARACTER_MAX];
-	iex3DObj*		org[OBJ_MAX];
 	bool	canHyper;		//	ハイパーアーツ同時発動制限用
-	bool	loadflag;
+
 private:
 	CharacterManager( void );
 	~CharacterManager( void );
-public:
-
 
 public:
 	//	初期化・解放
 	bool	Initialize( int playerNum, int type, Vector3 pos, bool isPlayer = true );
 	void	Release( void );
-	void	Load( void );
 
 	//	更新・描画
 	void	Update( void );
@@ -67,6 +63,9 @@ public:
 	int			GetAttackParam( int player )const;
 	int			GetPlayerNum( int playerNum )const;
 	int			GetPower( int playerNum )const;
+	int			GetRank( int player )const;
+	int			GetMode( int player )const;
+	int			GetAIMode(int player)const;
 	static	CharacterManager*	GetInstance();
 
 	//	情報設定
@@ -75,10 +74,12 @@ public:
 	void		SetScale( int player, float scale );
 	void		SetKnockBackVec( int player, Vector3 vec );
 	void		SetMode( int player, int mode );
+	void		SetAIMode( int player, int mode );
 	void		SetBoosting( int player, bool boosting );
 	void		SetLeanFrame( int player, int leanframe );
 	void		SetPassColor( int player, Vector3 color );
 	void		SetParameterInfo( int player, int parameterInfo );
+	void		SetRank(int player, int rank);
 	void		SetKnockBackParam(BaseChara* bc1, BaseChara* bc2);
 };
 

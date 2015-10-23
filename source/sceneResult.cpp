@@ -48,7 +48,7 @@ namespace
 	//	デストラクタ
 	sceneResult::~sceneResult( void )
 	{
-		SafeDelete( m_Camera );
+		SafeDelete( mainView );
 		SafeDelete( back );
 		SafeDelete( Sback );
 		SafeDelete( Smenu );
@@ -60,7 +60,7 @@ namespace
 	bool	sceneResult::Initialize( void )
 	{
 		//	カメラ設定
-		m_Camera = new Camera();
+		mainView = new Camera();
 
 		//	画像初期化
 		back = new iex2DObj( "DATA/Result/result-back.png");
@@ -87,9 +87,6 @@ namespace
 		Modeflg = false;
 		bonusflg = false;
 		addCoinflg	= false;
-		/*C_Rflg = false;
-		B_Rflg = false;
-		T_Rflg = false;*/
 
 		//	乱数初期化
 		Random::Initialize();
@@ -125,11 +122,15 @@ namespace
 				totalNumber[i].H_flg = false;
 			}
 
-			rank[i] = 0;
+			//	ランキング用構造体
+			{
+				rank[i].rank = 0;
+				rank[i].rankflg = false;
+			}
 			
 			//	リザルト情報初期化
 			coinNum[i] = gameManager->GetCoinNum(i);
-			lastBonusNum[i] = i*100;
+			lastBonusNum[i] = 0;
 			totalCoinNum[i] = coinNum[i] + lastBonusNum[i];
 			resultInfo[i].p_Coin = gameManager->GetCoinNum( i );
 			resultInfo[i].p_num = i;
@@ -173,7 +174,7 @@ namespace
 	void	sceneResult::ResultUpdate( void )
 	{
 		//	カメラ更新
-		m_Camera->Update( VIEW_MODE::RESULT, Vector3( 0.0f, 0.0f, 0.0f ) );
+		mainView->Update( VIEW_MODE::RESULT, Vector3( 0.0f, 0.0f, 0.0f ) );
 
 		//	プレイヤー更新
 		characterManager->Update();
@@ -181,7 +182,6 @@ namespace
 		//	演出
 		Production();
 		if ( Modeflg )mode = MOVE_MODE::SELECT_MODE;
-		//	タイトルへ
 	}
 
 	//セレクト時の更新
@@ -191,28 +191,21 @@ namespace
 		if ( Sy > 0 ){
 			Sy = 0;
 		}
-		if (KEY_Get(KEY_DOWN) == 3){
-			StringPos_Y++;
-			if (StringPos_Y > 2)StringPos_Y = 0;
-		}
 
-		if (KEY_Get(KEY_UP) == 3){
-			StringPos_Y--;
-			if (StringPos_Y < 0)StringPos_Y = 2;
-		}
+		if (StringPos_Y == 2){ 
+			if (KEY_Get(KEY_SPACE) == 3 || KEY_Get(KEY_A) == 3){
 
-		if (StringPos_Y == 2 && (KEY_Get(KEY_SPACE) == 3 || KEY_Get(KEY_A) == 3))
-		{
-			MainFrame->ChangeScene(new sceneTitle);
-			return;
-		}
+					MainFrame->ChangeScene(new sceneTitle);
+					return;
+				}
+			}
 	}
 
 	//	描画
 	void	sceneResult::Render( void ) 
 	{
-		m_Camera->Activate();
-		m_Camera->Clear();
+		mainView->Activate();
+		mainView->Clear();
 
 		iexSystem::GetDevice()->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
 		back->Render(0, 0, 1280, 720, 0, 0, 1280, 720);
@@ -220,16 +213,6 @@ namespace
 
 		characterManager->Render( shader3D, "toon" );
 
-		//	デバッグ文字描画
-		DrawString( "[sceneResult]", 50, 50 );
-		DrawString( "すぺーすでタイトルへ", 300, 400, 0xFFFFFF00 );
-		DrawString( GameInfo::LastBonus[lastBonus], 300, 150 );
-
-		for ( int i = 0; i < 4; i++ )
-		{
-			sprintf_s( str, "%d位 : player%d　%d枚", i + 1, resultInfo[i].p_num + 1, resultInfo[i].p_addCoin );
-			DrawString( str, 550, 250 + i * 30, 0xFFFFFFFF );
-		}
 
 
 		result->Render(510, -10, 256, 128, 0, 0, 512, 256);	//	リザルト描画
@@ -251,56 +234,61 @@ namespace
 			
 			//	取得コイン枚数の描画
 			{
-				if (number[i].H_flg){
-					r_number->Render((int)stringPos.x - 40 * 2, (int)stringPos.y, 64, 64, number[i].hundred * 64, 0, 64, 64);	//	コイン三桁目
-					r_number->Render((int)stringPos.x - 40 * 1, (int)stringPos.y, 64, 64, number[i].ten * 64, 0, 64, 64);		//	コイン二桁目
-					r_number->Render((int)stringPos.x - 40 * 0, (int)stringPos.y, 64, 64, number[i].one * 64, 0, 64, 64);		//	コイン一桁目
-				}
-				else{
-					r_number->Render((int)stringPos.x - 40 * 2, (int)stringPos.y, 64, 64, number[i].ten * 64, 0, 64, 64);		//	コイン二桁目
-					r_number->Render((int)stringPos.x - 40 * 1, (int)stringPos.y, 64, 64, number[i].one * 64, 0, 64, 64);		//	コイン一桁目
-				}
+				ResultRender(number[i], stringPos);
 			}
 
 			//	ボーナスコイン枚数の描画
 			{
-				if (bonusflg){
-					if (BonusNumber[i].H_flg){
-						r_number->Render((int)bonusPos.x - 40 * 2, (int)bonusPos.y, 64, 64, BonusNumber[i].hundred * 64, 0, 64, 64);	//	コイン三桁目
-						r_number->Render((int)bonusPos.x - 40 * 1, (int)bonusPos.y, 64, 64, BonusNumber[i].ten * 64, 0, 64, 64);		//	コイン二桁目
-						r_number->Render((int)bonusPos.x - 40 * 0, (int)bonusPos.y, 64, 64, BonusNumber[i].one * 64, 0, 64, 64);		//	コイン一桁目
-					}
-					else{
-						r_number->Render((int)bonusPos.x - 40 * 2, (int)bonusPos.y, 64, 64, BonusNumber[i].ten * 64, 0, 64, 64);		//	コイン二桁目
-						r_number->Render((int)bonusPos.x - 40 * 1, (int)bonusPos.y, 64, 64, BonusNumber[i].one * 64, 0, 64, 64);		//	コイン一桁目
-					}
+				if(bonusflg){
+					ResultRender(BonusNumber[i], bonusPos);
 				}
 			}
 
 			//	合算値のコイン枚数の描画
 			{
 				if (addCoinflg){
-					if (totalNumber[i].H_flg){
-						r_number->Render((int)addcoinPos.x - 40 * 2, (int)addcoinPos.y, 64, 64, totalNumber[i].hundred * 64, 0, 64, 64);	//	コイン三桁目
-						r_number->Render((int)addcoinPos.x - 40 * 1, (int)addcoinPos.y, 64, 64, totalNumber[i].ten * 64, 0, 64, 64);		//	コイン二桁目
-						r_number->Render((int)addcoinPos.x - 40 * 0, (int)addcoinPos.y, 64, 64, totalNumber[i].one * 64, 0, 64, 64);		//	コイン一桁目
-					}
-					else{
-						r_number->Render((int)addcoinPos.x - 40 * 2, (int)addcoinPos.y, 64, 64, totalNumber[i].ten * 64, 0, 64, 64);		//	コイン二桁目
-						r_number->Render((int)addcoinPos.x - 40 * 1, (int)addcoinPos.y, 64, 64, totalNumber[i].one * 64, 0, 64, 64);		//	コイン一桁目
-					}
-
+					ResultRender(totalNumber[i], addcoinPos);
 				}
 			}
 
 			//	順位の描画
-				r_number->Render((int)rankingPos.x - 40 * 2, (int)rankingPos.y, 128, 64, rank[i] * 128, 128, 128, 64);	
+			{
+				if (rank[i].rankflg){
+					r_number->Render((int)rankingPos.x - 40 * 2, (int)rankingPos.y, 128, 64, rank[i].rank * 128, 128, 128, 64);
+				}
+			}
+		//	デバッグ文字描画
+		/*DrawString( "[sceneResult]", 50, 50 );
+		DrawString( "すぺーすでタイトルへ", 300, 400, 0xFFFFFF00 );
+		DrawString( GameInfo::LastBonus[lastBonus], 300, 150 );
+
+		for ( int i = 0; i < 4; i++ )
+		{
+			sprintf_s( str, "%d位 : player%d　%d枚", i + 1, resultInfo[i].p_num + 1, resultInfo[i].p_addCoin );
+			DrawString( str, 550, 250 + i * 30, 0xFFFFFFFF );
+		}*/
 			}
 		
 
 		if ( mode == MOVE_MODE::SELECT_MODE ){
 			SelectRender();
 		}
+	}
+
+	//	リザルト描画
+	void	sceneResult::ResultRender(NUMBER& number, Vector3 Pos)
+	{
+		if (number.H_flg){
+			r_number->Render((int)Pos.x - 40 * 2, (int)Pos.y, 64, 64, number.hundred * 64, 0, 64, 64);	//	コイン三桁目
+			r_number->Render((int)Pos.x - 40 * 1, (int)Pos.y, 64, 64, number.ten * 64, 0, 64, 64);		//	コイン二桁目
+			r_number->Render((int)Pos.x - 40 * 0, (int)Pos.y, 64, 64, number.one * 64, 0, 64, 64);		//	コイン一桁目
+		}
+		else{
+
+			r_number->Render((int)Pos.x - 40 * 2, (int)Pos.y, 64, 64, number.ten * 64, 0, 64, 64);		//	コイン二桁目
+			r_number->Render((int)Pos.x - 40 * 1, (int)Pos.y, 64, 64, number.one * 64, 0, 64, 64);		//	コイン一桁目
+		}
+
 	}
 
 	//セレクト画面描画
@@ -398,7 +386,7 @@ namespace
 
 		case 5://ボーナス演出->後で作る
 			waitTimer++;
-			if ( waitTimer > 30 ){
+			if (waitTimer > 30){
 				waitTimer = 0;
 				step++;
 			}
@@ -414,24 +402,57 @@ namespace
 
 
 			waitTimer++;
-			if ( waitTimer > 30 ){
+			if (waitTimer > 30){
 				waitTimer = 0;
 				step++;
 			}
 			break;
 
 		case 7://	コイン合算値を描画
-			for ( int i = 0; i < 4; i++)
+			for (int i = 0; i < 4; i++)
 			{
-				ProductionCoinHandOff( totalNumber[i], totalCoinNum[i] );
+				ProductionCoinHandOff(totalNumber[i], totalCoinNum[i]);
 			}
 
 			addCoinflg = true;
 
-			if (KEY_Get(KEY_A) == 3||KEY_Get(KEY_SPACE))step++;
+			waitTimer++;
+			if (waitTimer > 60){
+				waitTimer = 0;
+				step++;
+			}
 			break;
-		case 8:	//
+		case 8:	//	ビリから順に描画
+			RankRender(3);
+			waitTimer++;
+			if (waitTimer > 30){
+				waitTimer = 0;
+				step++;
+			}
+			break;
+		case 9:
+			RankRender(2);
+			waitTimer++;
+			if (waitTimer > 30){
+				waitTimer = 0;
+				step++;
+			}
+			break;
+		case 10:
+			RankRender(1);
+			waitTimer++;
+			if (waitTimer > 30){
+				waitTimer = 0;
+				step++;
+			}
+			break;
+		case 11:
+			RankRender(0);
+			if (KEY_Get(KEY_A) == 3 || KEY_Get(KEY_SPACE))step++;
+			break;
+		case 12:
 			Modeflg = true;
+
 			break;
 		}
 
@@ -481,8 +502,19 @@ namespace
 			{
 				if ( i == resultInfo[n].p_num )
 				{
-					rank[i] = n;
+					rank[i].rank = n;
 				}
+			}
+		}
+	}
+
+	void	sceneResult::RankRender(int ranking)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			if (rank[i].rank == ranking)
+			if (rank[i].rankflg == false){
+				rank[i].rankflg = true;
 			}
 		}
 	}
