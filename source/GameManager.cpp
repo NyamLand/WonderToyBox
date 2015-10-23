@@ -109,7 +109,11 @@
 		if ( timer == 42 * SECOND )	ui->SetAlertFlag( true );
 		if ( timer == 40 * SECOND )	eventManager->SetEvent( Random::GetInt( 0, EVENT_MODE::NONE - 1 ) );
 
+		//	hurry up演出設定
 
+
+
+		//	ゲーム中
 		if ( timer != 0 )
 		{
 			//	３秒ごとにアイテムを３割の確率ででランダムに配置
@@ -161,11 +165,11 @@
 		//　プレイヤー同士のコイン数を比較して
 		//　コイン数が最小のプレイヤーの番号を返す（はず）
 
-		int work(coinNum[0]);
-		int Min(0);
-		for (int i = 1; i < PLAYER_MAX; i++)
+		int work( coinNum[0] );
+		int Min( 0 );
+		for (int i = 1; i < PLAYER_MAX; i++ )
 		{
-			if (coinNum[i] < work)
+			if ( coinNum[i] < work )
 			{
 				work = coinNum[i];
 				Min = i;
@@ -284,7 +288,7 @@
 	}
 
 	//　順位更新
-	int        GameManager::GetRank( int player )
+	int		GameManager::GetRank( int player )
 	{
 		int num_coin[PLAYER_MAX], temp_coin[PLAYER_MAX];
 		for (int i = 0; i < PLAYER_MAX; i++)
@@ -320,7 +324,7 @@
 	}
 
 	//	ステージスケール取得
-	float		GameManager::GetStageScale( void )const 
+	float	GameManager::GetStageScale( void )const 
 	{
 		return	stageScale;
 	}

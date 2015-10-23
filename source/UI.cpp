@@ -526,6 +526,15 @@
 		ImageInitialize( alertImage, 640, 360, 200, 200, 0, 0, 256, 256 );
 		alertImage.renderflag = true;
 	}
+
+	//	HurryUp演出初期化
+	void	UI::HurryUpInitialize( void )
+	{
+		hurryInfo.alpha = 0.0f;
+		hurryInfo.flag = false;
+		hurryInfo.param = 0.0f;
+		hurryInfo.timer = 0;
+	}
 	
 //------------------------------------------------------------------------------
 //	メイン動作更新
@@ -716,6 +725,16 @@
 		}
 	}
 
+	//	HurryUp演出
+	void	UI::HurryUpdate( void )
+	{
+		hurryInfo.param += D3DX_PI / 30.0f;
+		hurryInfo.alpha = 0.1f + 0.1f * sinf( hurryInfo.param );
+
+		hurryInfo.timer++;
+		if ( hurryInfo.timer % 15 == 0 )	alertImage.renderflag = !alertImage.renderflag;
+	}
+
 //------------------------------------------------------------------------------
 //	メイン描画
 //------------------------------------------------------------------------------
@@ -888,6 +907,12 @@
 	void	UI::SetAlertFlag( bool flag )
 	{
 		alertInfo.flag = flag;
+	}
+
+	//	HurryUpフラグ設定
+	void	UI::SetHurryFlag( bool flag )
+	{
+		hurryInfo.flag = flag;
 	}
 
 	//	飛び入り設定
