@@ -58,6 +58,7 @@
 		mode = 0;
 		donketsuBoostState = false;
 		lastBonus = rand() % PLAYER_MAX;
+		stageScale = 0.0f;
 		
 		//	ゲームデータテキストを読み込む
 		LoadTextData();
@@ -200,6 +201,13 @@
 
 		//	合計値をタイムリミット変数へ代入
 		timelimit = minute * MINUTE + second * SECOND;
+
+		//	コメントを読み飛ばす
+		ifs >> buffer;
+		ifs.getline( buffer, 50 );
+
+		//	ステージのスケールをよみこんで変数へ代入
+		ifs >> stageScale;
 	}
 
 //-------------------------------------------------------------------------
@@ -309,6 +317,12 @@
 		}
 
 		return	0;
+	}
+
+	//	ステージスケール取得
+	float		GameManager::GetStageScale( void )const 
+	{
+		return	stageScale;
 	}
 
 
