@@ -23,6 +23,7 @@ private:
 	int		playerNum;
 	int		stageType;
 	int		gameStartCoinNum;
+	float	stageScale;
 
 private:
 	//	オブジェクト

@@ -556,6 +556,7 @@ namespace
 
 		case MODE_STATE::HYPERARTS:
 			isEnd = HyperArts();
+			if (canHyper) gameManager->SetTimeStop(30);
 			canHyper = isEnd;
 			if (!isEnd)	SetAttackParam(attackKind);
 			if ( !isEnd )	SetAttackParam( attackKind );
@@ -690,7 +691,7 @@ namespace
 	void	BaseChara::ParameterAdjust( void )
 	{
 		if ( attackUp.state )	totalPower = power + plusStatusInfo.power;
-		if (speedUp.state)	totalSpeed = plusStatusInfo.speed;
+		if ( speedUp.state )	totalSpeed = plusStatusInfo.speed;
 	}
 
 //-------------------------------------------------------------------------------------
@@ -710,6 +711,8 @@ namespace
 
 		//	アイテム・マグネット
 		ItemMagnet();
+
+		//	どんケツ
 	}
 
 	//	攻撃力Upアイテム効果動作

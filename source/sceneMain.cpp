@@ -34,7 +34,7 @@
 //*****************************************************************************************************************************
 
 	//	コンストラクタ
-	sceneMain::sceneMain( void ) : m_Stage( NULL ), playerNum( 0 ), stageType( 0 )
+	sceneMain::sceneMain(void) : m_Stage(NULL), playerNum(0), stageType(0), stageScale( 1.0f )
 	{
 		
 	}
@@ -165,6 +165,8 @@
 	//	ステージ初期化
 	void	sceneMain::StageInitialize( void )
 	{
+		//stageScale = gameManager->GetStageScale();
+
 		switch ( gameManager->GetStageType() )
 		{
 		case 0:	//	机ステージ
@@ -175,6 +177,7 @@
 		case 1:	//	森ステージ
 			m_CollisionStage = new iexMesh( "DATA/BG/Forest/Collision/collision_forest.IMO" );
 			m_Stage = new iexMesh( "DATA/BG/Forest/model/forest.IMO" );
+			m_Stage->SetScale( 1.0f );
 			break;
 		}
 		
@@ -214,6 +217,12 @@
 
 		//	UI
 		ui->Update( gameManager->GetMode() );
+
+		//	デバッグ用
+		if (KEY(KEY_UP) == 1)	stageScale += 0.1f;
+		if (KEY(KEY_DOWN) == 1)stageScale -= 0.1f;
+		//m_Stage->SetScale( stageScale );
+		//m_Stage->Update();
 
 		//	デバッグモード切り替え
 		if ( KEY( KEY_ENTER ) == 3 )		debug = !debug;
@@ -287,7 +296,7 @@
 		gameManager->Update();
 
 		//	全体更新
-		AllUpdate();
+		if(gameManager->GetTimeStop() <= 0) AllUpdate();
 	}
 
 	//	どんけつ更新
@@ -392,6 +401,10 @@
 		//UI
 		ui->Render( gameManager->GetMode() );
 
+		//	デバッグ用
+		char	str[256];
+		sprintf_s( str, "stageScale = %f", stageScale );
+		DrawString( str, 50, 400, 0xFFFFFF00 );
 		//playerWipe[0]->Render( 0, 0, 512, 256, 0, 0, 1280, 720 );
 	}
 
