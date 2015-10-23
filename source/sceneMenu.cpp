@@ -429,7 +429,7 @@ namespace
 		//	森モデル初期化
 		forestStage->SetPos( 5.0f, 3.0f, 0.0f );
 		forestStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
-		forestStage->SetScale( 0.2f );
+		forestStage->SetScale( 0.04f );
 		forestStage->Update();
 
 		//	パラメータ初期化

@@ -34,8 +34,8 @@
 	//	コンストラクタ
 	GameManager::GameManager( void )
 	{
-		InitPos[0] = Vector3( -10.0f, 10.0f, 0.0f );
-		InitPos[1] = Vector3( 10.0f, 10.0f, 0.0f );
+		InitPos[0] = Vector3( -10.0f, 10.0f, 5.0f );
+		InitPos[1] = Vector3( 10.0f, 10.0f, 5.0f );
 		InitPos[2] = Vector3( -10.0f, 10.0f, -15.0f );
 		InitPos[3] = Vector3( 10.0f, 10.0f, -15.0f );
 	}
