@@ -73,6 +73,10 @@
 		if ( obj == nullptr )
 			obj = new iex3DObj( "DATA/CHR/ECCMAN/ECCMAN.IEM" );
 
+		//	ƒXƒP[ƒ‹Ý’è
+		obj->SetScale( 0.02f );
+		obj->Update();
+
 		if ( obj == nullptr )	return	false;
 		return	true;
 	}

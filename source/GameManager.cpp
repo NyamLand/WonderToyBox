@@ -14,6 +14,7 @@
 #include	"CoinManager.h"
 #include	"sceneResult.h"
 #include	"CharacterManager.h"
+#include	"Camera.h"
 #include	"GameManager.h"
 
 //*******************************************************************************
@@ -33,8 +34,8 @@
 	//	コンストラクタ
 	GameManager::GameManager( void )
 	{
-		InitPos[0] = Vector3( -10.0f, 10.0f, 0.0f );
-		InitPos[1] = Vector3( 10.0f, 10.0f, 0.0f );
+		InitPos[0] = Vector3( -10.0f, 10.0f, 10.0f );
+		InitPos[1] = Vector3( 10.0f, 10.0f, 10.0f );
 		InitPos[2] = Vector3( -10.0f, 10.0f, -15.0f );
 		InitPos[3] = Vector3( 10.0f, 10.0f, -15.0f );
 	}
@@ -58,8 +59,7 @@
 		mode = 0;
 		donketsuBoostState = false;
 		lastBonus = rand() % PLAYER_MAX;
-		stageScale = 0.0f;
-		
+		timeStop = 0;
 		//	ゲームデータテキストを読み込む
 		LoadTextData();
 		timer = timelimit;
@@ -81,7 +81,9 @@
 	void	GameManager::Update( void )
 	{
 		//	タイマー更新
-		timer--;
+		if (timeStop > 0) timeStop--;
+		else timer--;
+
 
 		//	残り時間３０秒でどんけつ演出へ
 		if ( timer == 30 * SECOND )
@@ -109,11 +111,7 @@
 		if ( timer == 42 * SECOND )	ui->SetAlertFlag( true );
 		if ( timer == 40 * SECOND )	eventManager->SetEvent( Random::GetInt( 0, EVENT_MODE::NONE - 1 ) );
 
-		//	hurry up演出設定
 
-
-
-		//	ゲーム中
 		if ( timer != 0 )
 		{
 			//	３秒ごとにアイテムを３割の確率ででランダムに配置
@@ -165,11 +163,11 @@
 		//　プレイヤー同士のコイン数を比較して
 		//　コイン数が最小のプレイヤーの番号を返す（はず）
 
-		int work( coinNum[0] );
-		int Min( 0 );
-		for (int i = 1; i < PLAYER_MAX; i++ )
+		int work(coinNum[0]);
+		int Min(0);
+		for (int i = 1; i < PLAYER_MAX; i++)
 		{
-			if ( coinNum[i] < work )
+			if (coinNum[i] < work)
 			{
 				work = coinNum[i];
 				Min = i;
@@ -205,13 +203,6 @@
 
 		//	合計値をタイムリミット変数へ代入
 		timelimit = minute * MINUTE + second * SECOND;
-
-		//	コメントを読み飛ばす
-		ifs >> buffer;
-		ifs.getline( buffer, 50 );
-
-		//	ステージのスケールをよみこんで変数へ代入
-		ifs >> stageScale;
 	}
 
 //-------------------------------------------------------------------------
@@ -287,6 +278,13 @@
 		return	out;
 	}
 
+	//画面一時停止残り秒数取得
+	int		GameManager::GetTimeStop( void )
+	{
+		int out = this->timeStop;
+		return out;
+	}
+
 	//　順位更新
 	int		GameManager::GetRank( int player )
 	{
@@ -322,13 +320,6 @@
 
 		return	0;
 	}
-
-	//	ステージスケール取得
-	float	GameManager::GetStageScale( void )const 
-	{
-		return	stageScale;
-	}
-
 
 	//	実体取得
 	GameManager*	GameManager::GetInstance( void )
@@ -375,4 +366,16 @@
 	void	GameManager::SetNewsFlag( const bool& flag )
 	{
 		newsflag = flag;
+	}
+
+	// カメラの振動地設定
+	void	GameManager::SetShakeCamera( float wide, int timer )
+	{
+		if ( mainView ) mainView->ShakeSet( wide, timer );
+	}
+
+	//画面一時停止時間設定
+	void	GameManager::SetTimeStop( int time )
+	{
+		this->timeStop = time;
 	}

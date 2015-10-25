@@ -128,7 +128,7 @@ namespace
 			//	ノックバック情報初期化
 			{
 				knockBackInfo.type = 0;
-				knockBackInfo.vec = Vector3(0.0f, 0.0f, 0.0f);
+				knockBackInfo.vec = Vector3( 0.0f, 0.0f, 0.0f );
 				knockBackInfo.isUp = false;
 		}
 
@@ -552,6 +552,7 @@ namespace
 
 		case MODE_STATE::HYPERARTS:
 			isEnd = HyperArts();
+			if (canHyper) gameManager->SetTimeStop(30);
 			canHyper = isEnd;
 			if ( !isEnd )	SetAttackParam( attackKind );
 			break;
@@ -707,6 +708,8 @@ namespace
 
 		//	アイテム・マグネット
 		ItemMagnet();
+
+		//	どんケツ
 	}
 
 	//	攻撃力Upアイテム効果動作
