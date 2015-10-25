@@ -34,8 +34,8 @@
 	//	コンストラクタ
 	GameManager::GameManager( void )
 	{
-		InitPos[0] = Vector3( -10.0f, 10.0f, 5.0f );
-		InitPos[1] = Vector3( 10.0f, 10.0f, 5.0f );
+		InitPos[0] = Vector3( -10.0f, 10.0f, 10.0f );
+		InitPos[1] = Vector3( 10.0f, 10.0f, 10.0f );
 		InitPos[2] = Vector3( -10.0f, 10.0f, -15.0f );
 		InitPos[3] = Vector3( 10.0f, 10.0f, -15.0f );
 	}
@@ -279,14 +279,14 @@
 	}
 
 	//画面一時停止残り秒数取得
-	int        GameManager::GetTimeStop(void)
+	int		GameManager::GetTimeStop( void )
 	{
 		int out = this->timeStop;
 		return out;
 	}
 
 	//　順位更新
-	int        GameManager::GetRank(int player)
+	int		GameManager::GetRank( int player )
 	{
 		int num_coin[PLAYER_MAX], temp_coin[PLAYER_MAX];
 		for (int i = 0; i < PLAYER_MAX; i++)
@@ -320,7 +320,6 @@
 
 		return	0;
 	}
-
 
 	//	実体取得
 	GameManager*	GameManager::GetInstance( void )
@@ -370,13 +369,13 @@
 	}
 
 	// カメラの振動地設定
-	void	GameManager::SetShakeCamera(float wide, int timer)
+	void	GameManager::SetShakeCamera( float wide, int timer )
 	{
-		if (mainView) mainView->ShakeSet(wide, timer);
+		if ( mainView ) mainView->ShakeSet( wide, timer );
 	}
 
 	//画面一時停止時間設定
-	void	GameManager::SetTimeStop(int time)
+	void	GameManager::SetTimeStop( int time )
 	{
 		this->timeStop = time;
 	}

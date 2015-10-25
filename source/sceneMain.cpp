@@ -177,7 +177,6 @@
 		case 1:	//	森ステージ
 			m_CollisionStage = new iexMesh( "DATA/BG/Forest/Collision/collision_forest.IMO" );
 			m_Stage = new iexMesh( "DATA/BG/Forest/model/forest.IMO" );
-			m_Stage->SetScale( 1.0f );
 			break;
 		}
 		

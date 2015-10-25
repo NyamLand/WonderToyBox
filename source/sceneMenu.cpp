@@ -550,7 +550,7 @@ namespace
 			deskStage->Update();
 			forestStage->SetPos( 0.0f, 5.0f, 0.0f );
 			forestStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
-			forestStage->SetScale( 0.18f );
+			forestStage->SetScale( 0.03f );
 			forestStage->Update();
 		}
 	}
@@ -692,6 +692,7 @@ namespace
 	//	モード切り替え
 	void	sceneMenu::SetMode( int mode )
 	{
+		//	初期化する
 		switch ( mode )
 		{
 		case MENU_MODE::SELECT_PLAYERNUM:
@@ -700,25 +701,22 @@ namespace
 
 		case MENU_MODE::SELECT_CHARACTER:
 			SelectCharacterInitialize();
-			//SelectCharacterUpdate();
 			break;
 
 		case MENU_MODE::SELECT_STAGE:
 			SelectStageInitialize();
-			//SelectStageUpdate();
 			break;
 
 		case MENU_MODE::SELECT_CHECK:
 			SelectCheckInitialize();
-			//SelectCheckUpdate();
 			break;
 
 		case MENU_MODE::MOVE_MAIN:
 			MoveMainInitialize();
-			//MoveMainUpdate();
 			break;
 		}
 
+		//	モード切替
 		this->mode = mode;
 	}
 
