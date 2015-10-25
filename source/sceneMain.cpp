@@ -370,7 +370,7 @@
 		mainView->Clear();
 
 		//	影
-		RenderShadowBuffer();
+		//RenderShadowBuffer();
 
 		//	オブジェクト描画
 		if ( characterManager->GetParameterState( 0, PARAMETER_STATE::SLIP ) )

@@ -37,6 +37,7 @@
 	Coin::~Coin( void )
 	{
 		SafeDelete( obj );
+		SafeDelete( shadow.obj );
 	}
 
 	//	‰Šú‰»
@@ -51,6 +52,17 @@
 		activate = false;
 		state = false;
 		getAwayflag = false;
+
+		//	‰e\‘¢‘Ì‰Šú‰»
+		{
+			shadow.obj = new iex2DObj( "DATA/Effect/shadow.png" );
+			shadow.pos = pos;
+			shadow.scale = 1.0f;
+			SetVertex( shadow.v[0], shadow.pos.x - shadow.scale / 2, shadow.pos.y, shadow.pos.z + shadow.scale / 2, 0.0f, 0.0f, 0xFFFFFFFF );
+			SetVertex( shadow.v[1], shadow.pos.x + shadow.scale / 2, shadow.pos.y, shadow.pos.z + shadow.scale / 2, 1.0f, 0.0f, 0xFFFFFFFF );
+			SetVertex( shadow.v[2], shadow.pos.x - shadow.scale / 2, shadow.pos.y, shadow.pos.z - shadow.scale / 2, 0.0f, 1.0f, 0xFFFFFFFF );
+			SetVertex( shadow.v[3], shadow.pos.x + shadow.scale / 2, shadow.pos.y, shadow.pos.z - shadow.scale / 2, 1.0f, 1.0f, 0xFFFFFFFF );
+		}
 
 		return	true;
 	}
@@ -78,6 +90,9 @@
 		//	ˆÚ“®’l‰ÁŽZ
 		pos += move;
 
+		//	‰eÀ•WÝ’è
+		shadow.pos = pos;
+
 		//	‹[Ž—Šµ«
 		move.x *= 0.9f;
 		move.z *= 0.9f;
@@ -87,6 +102,10 @@
 		PlayerCollisionCheck();
 
 		//	î•ñXV
+		SetVertex( shadow.v[0], shadow.pos.x - shadow.scale / 2, shadow.pos.y, shadow.pos.z + shadow.scale / 2, 0.0f, 0.0f, 0xFFFFFFFF);
+		SetVertex( shadow.v[1], shadow.pos.x + shadow.scale / 2, shadow.pos.y, shadow.pos.z + shadow.scale / 2, 1.0f, 0.0f, 0xFFFFFFFF);
+		SetVertex( shadow.v[2], shadow.pos.x - shadow.scale / 2, shadow.pos.y, shadow.pos.z - shadow.scale / 2, 0.0f, 1.0f, 0xFFFFFFFF);
+		SetVertex( shadow.v[3], shadow.pos.x + shadow.scale / 2, shadow.pos.y, shadow.pos.z - shadow.scale / 2, 1.0f, 1.0f, 0xFFFFFFFF);
 		obj->SetAngle( angle );
 		obj->SetPos( pos );
 		obj->SetScale( scale );
@@ -106,6 +125,10 @@
 	//	ƒVƒF[ƒ_[•t‚«•`‰æ
 	void	Coin::Render( iexShader* shader, LPSTR technique )
 	{
+		//	‰e•`‰æ
+		iexPolygon::Render3D( shadow.v, 2, shadow.obj, shader3D, "alpha" );
+
+		//	ƒ‚ƒfƒ‹•`‰æ
 		obj->Render( shader, technique );
 	}
 
@@ -118,7 +141,7 @@
 	{
 		if ( pos.y >= 15.0f )		return;
 		float work = Collision::GetHeight( pos );
-
+		shadow.pos.y = work + 0.1f;
 		if ( pos.y <= work )
 		{
 			pos.y = work;

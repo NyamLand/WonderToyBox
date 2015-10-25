@@ -181,7 +181,7 @@
 			c->poligon[1].x = POS[0]	+ c->c_pos.x;
 			c->poligon[1].y = POS[2]	+ c->c_pos.y;
 			c->poligon[1].z = POS[0]	+ c->c_pos.z;
-			c->poligon[1].tu = 1.0;
+			c->poligon[1].tu = 1.0f;
 			c->poligon[1].tv = 0.0f;
 			c->poligon[1].color = 0xFFFFFFFF;
 

@@ -8,6 +8,9 @@
 //
 //*****************************************************************************
 
+//	include
+#include	<memory>
+
 //	data
 namespace
 {
@@ -25,6 +28,15 @@ namespace
 class Coin
 {
 protected:
+	struct SHADOW_INFO
+	{
+		iex2DObj*	obj;
+		Vector3		pos;
+		LVERTEX	v[4];
+		float			scale;
+	};
+
+protected:
 	iexMesh*	obj;
 	Vector3		pos;
 	Vector3		move;
@@ -34,6 +46,9 @@ protected:
 	bool			activate;
 	bool			getAwayflag;
 	int				judgeTimer;	//	”»’è—LŒøŠÔ
+
+	//	‰e\‘¢‘Ì
+	SHADOW_INFO	shadow;
 
 public:
 	//	‰Šú‰»E‰ğ•ú
