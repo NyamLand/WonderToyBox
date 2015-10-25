@@ -55,10 +55,10 @@
 	{
 		aura = new iexMesh("DATA\\Effect\\aura.IMO");
 
-		circle_pic[0] = new iex2DObj("DATA/Effect/PL1-2.png");
-		circle_pic[1] = new iex2DObj("DATA/Effect/PL2-2.png");
-		circle_pic[2] = new iex2DObj("DATA/Effect/PL3-2.png");
-		circle_pic[3] = new iex2DObj("DATA/Effect/PL4-2.png");
+		circle_pic[0] = new iex2DObj("DATA/Effect/PL1.png");
+		circle_pic[1] = new iex2DObj("DATA/Effect/PL2.png");
+		circle_pic[2] = new iex2DObj("DATA/Effect/PL3.png");
+		circle_pic[3] = new iex2DObj("DATA/Effect/PL4.png");
 
 		pow_up.obj = new iex2DObj("DATA/Effect/ol-r.png");
 		ImageInitialize(pow_up, 0, 0, 90, 90, 0, 0, 0, 0);
@@ -146,7 +146,7 @@
 	{
 		if(isAura)	aura->Render(shader3D,"effect_add");
 		for (int i = 0; i < 4; i++){
-			iexPolygon::Render3D(circle_out[i].poligon, 2, circle_pic[i], RS_ADD);
+			iexPolygon::Render3D(circle_out[i].poligon, 2, circle_pic[i], shader3D, "alpha" );
 		}
 
 		for (int i = 0; i < 4; i++){
