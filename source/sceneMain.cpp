@@ -165,7 +165,7 @@
 	//	ステージ初期化
 	void	sceneMain::StageInitialize( void )
 	{
-		//stageScale = gameManager->GetStageScale();
+		stageScale = gameManager->GetStageScale();
 
 		switch ( gameManager->GetStageType() )
 		{
@@ -177,6 +177,7 @@
 		case 1:	//	森ステージ
 			m_CollisionStage = new iexMesh( "DATA/BG/Forest/Collision/collision_forest.IMO" );
 			m_Stage = new iexMesh( "DATA/BG/Forest/model/forest.IMO" );
+			m_Stage->SetScale( stageScale );
 			break;
 		}
 		
@@ -216,12 +217,6 @@
 
 		//	UI
 		ui->Update( gameManager->GetMode() );
-
-		//	デバッグ用
-		if (KEY(KEY_UP) == 1)	stageScale += 0.1f;
-		if (KEY(KEY_DOWN) == 1)stageScale -= 0.1f;
-		//m_Stage->SetScale( stageScale );
-		//m_Stage->Update();
 
 		//	デバッグモード切り替え
 		if ( KEY( KEY_ENTER ) == 3 )		debug = !debug;
@@ -295,7 +290,7 @@
 		gameManager->Update();
 
 		//	全体更新
-		if(gameManager->GetTimeStop() <= 0) AllUpdate();
+		AllUpdate();
 	}
 
 	//	どんけつ更新
