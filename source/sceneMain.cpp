@@ -218,12 +218,6 @@
 		//	UI
 		ui->Update( gameManager->GetMode() );
 
-		//	デバッグ用
-		if (KEY(KEY_UP) == 1)	stageScale += 0.1f;
-		if (KEY(KEY_DOWN) == 1)stageScale -= 0.1f;
-		m_Stage->SetScale( stageScale );
-		m_Stage->Update();
-
 		//	デバッグモード切り替え
 		if ( KEY( KEY_ENTER ) == 3 )		debug = !debug;
 
