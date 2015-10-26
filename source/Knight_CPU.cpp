@@ -19,12 +19,7 @@
 	//	コンストラクタ
 	Knight_CPU::Knight_CPU( void ) : Knight()
 	{
-		//	パラメータ初期化
-		//lance_r = 0.0f;
-		power = 5;
-		speed = 0.2f;
-		scale = 0.02f;
-		isGround = true;
+
 	}
 
 	//	デストラクタ

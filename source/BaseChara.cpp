@@ -128,7 +128,7 @@ namespace
 			//	ノックバック情報初期化
 			{
 				knockBackInfo.type = 0;
-				knockBackInfo.vec = Vector3(0.0f, 0.0f, 0.0f);
+				knockBackInfo.vec = Vector3( 0.0f, 0.0f, 0.0f );
 				knockBackInfo.isUp = false;
 		}
 

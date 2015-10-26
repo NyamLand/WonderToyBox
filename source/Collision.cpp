@@ -63,7 +63,6 @@ iexMesh*	Collision::obj = NULL;
 
 	}
 
-
 	//　ステージ高さ取得（判定距離指定）
 	float	Collision::GetHeight( const Vector3	pos, float dist )
 	{
@@ -155,7 +154,7 @@ iexMesh*	Collision::obj = NULL;
 
 		if ( obj->RayPick( &out, &p, &vec, &dist ) != -1 )
 		{
-			if ( pos.y < out.y )
+			if ( pos.y <= out.y )
 			{
 				pos.y = out.y;
 				p_move.y = 0.0f;
