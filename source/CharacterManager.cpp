@@ -130,7 +130,7 @@
 		{
 			//	(決定された)ビリが誰かを取得・どんけつモードセット
 			int worst = gameManager->GetWorst();
-			SetBoosting( worst, true );
+			SetParameterInfo(worst, PARAMETER_STATE::BOOST);
 
 			//	ビリがなんのキャラかを識別してそれぞれに合ったステータス上昇
 			RaiseStatus( worst, gameManager->GetCharacterType( worst ) );
@@ -419,10 +419,10 @@
 	}
 
 	//	ブースト状態取得
-	void		CharacterManager::SetBoosting( int player, bool boosting )
+	/*void		CharacterManager::SetBoosting( int player, bool boosting )
 	{
 		character[player]->SetBoosting( boosting );
-	}
+	}*/
 
 	//	仰け反り時間取得
 	void		CharacterManager::SetLeanFrame( int player, int leanframe )

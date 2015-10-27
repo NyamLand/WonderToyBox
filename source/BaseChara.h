@@ -119,7 +119,7 @@ private:
 	enum MOTION_DATA
 	{
 		STAND,					//	立ち
-		RUN,						//	走り
+		RUN,					//	走り
 		ATTACK1,				//	攻撃１段階目
 		POSTURE,				//	構え
 		JUMP,					//	ジャンプ
@@ -174,6 +174,7 @@ protected:
 		int		count_wait;		//　待機時間（１秒未満）
 		int		count_run;		//	歩く時間（２～４秒）
 		int		count_runaway;	//　逃げ時間
+		int		count_attack;	//　攻撃時間（キャラに依存）
 		int		count_guard;	
 	};
 
@@ -209,7 +210,7 @@ protected:
 	bool			unrivaled;
 	bool			isGround;
 	bool			canHyper;
-	bool			boosting;
+	//bool			boosting;	//　→ PARAMETER_INFO型の boost
 	bool			isPlayer;
 	bool			jumpState;
 	bool			checkWall;
@@ -285,6 +286,7 @@ public:
 	void	AttackUp( void );
 	void	EventSlip( void );
 	void	ItemMagnet( void );
+	void	BoostUp( void );
 
 	//	子クラスで実装
 	virtual	bool	QuickArts( void ) = 0;
@@ -300,6 +302,7 @@ public:
 	void	AutoRun();						//　コインを取りに行く
 	void	AutoAngleAdjust(float speed, Vector3 target);
 	//void	AutoAngleAdjust(const Vector3& direction, float speed);
+	void	AutoAttack();
 	void	RunAway();
 	void	AutoGuard();
 	void	AutoWait();
@@ -315,13 +318,13 @@ public:
 	void	SetDamageColor( Vector3 color );
 	void	SetPassColor( Vector3 color );
 	void	SetLeanFrame( int frame );
-	void	SetBoosting( bool boosting );
+	//void	SetBoosting( bool boosting );	//　
 	void	SetKnockBackVec( Vector3 vec );
 	void	SetUnrivaled( bool state );
 	void	SetParameterState( int parameterState );
 	void	SetRank( int rank );
 	void	SetParameterState( PARAMETER_INFO& paramterState, int time );
-	void SetForce(float force);
+	void	SetForce(float force);
 
 	//	情報取得
 	Matrix	GetMatrix( void )const;

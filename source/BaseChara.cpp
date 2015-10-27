@@ -67,7 +67,7 @@ namespace
 	BaseChara::BaseChara( void ) : obj( nullptr ), input( nullptr ),		//	pointer
 		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ),	//	Vector3
 		angle(0.0f), scale(0.0f), speed(0.0f),	totalSpeed(0.0f), drag(0.0f), force( 0.0f ), moveVec( 0.0f ),	//	float
-		unrivaled(false), isGround(false), boosting(false), isPlayer(false), jumpState(false), checkWall(false),//	bool
+		unrivaled(false), isGround(false), isPlayer(false), jumpState(false), checkWall(false),//	bool
 		mode(0), playerNum(0), power(0), totalPower(0), leanFrame(0), jumpStep(0),damageStep(0),rank(0)		//	int
 	{
 	
@@ -150,6 +150,7 @@ namespace
 				aiInfo.count_wait		= 30;
 				aiInfo.count_run		= 3 * SECOND;
 				aiInfo.count_runaway	= 3 * SECOND;
+				aiInfo.count_attack		= 1 * SECOND;
 				aiInfo.count_guard		= 1 * SECOND;
 			}
 
@@ -228,6 +229,8 @@ namespace
 
 		//	落下チェック
 		FallCheck();
+
+
 
 		//	情報更新
 		obj->Animation();
@@ -578,7 +581,7 @@ namespace
 	//	ジャンプ
 	void	BaseChara::Jump( void )
 	{
-		static	float toY = 10.0f;
+		static	float toY = 11.0f;
 		switch ( jumpStep )
 		{
 		case 0:
@@ -710,6 +713,8 @@ namespace
 
 		//	アイテム・マグネット
 		ItemMagnet();
+
+
 	}
 
 	//	攻撃力Upアイテム効果動作
@@ -763,6 +768,14 @@ namespace
 	}
 
 	//	どんけつブースト
+	void	BaseChara::BoostUp( void )
+	{
+		/*if (boost.state)
+		{
+			power = totalPower;
+			speed = totalSpeed;
+		}*/
+	}
 
 	//	暴走状態
 
@@ -803,6 +816,7 @@ namespace
 		switch (aiInfo.mode)
 		{
 		case AI_MODE_STATE::ATTACK:
+			AutoAttack();
 			break;
 
 		case AI_MODE_STATE::RUN:		//　コインを取りに行く
@@ -827,12 +841,12 @@ namespace
 		//--------------------------------------------
 
 		/*
-		・コインがある時はコインを取りに行く。（1,2歩歩く→ちょっと止まる）、（コイン取る→次を探す）
-		　→ 確率で適当に攻撃出す（キャラによって挙動を変える）
-		 ・段差を見分けてジャンプも出来るようにしたい。
-		 ・コインがない時は１位もしくは距離が近い相手を攻撃。
-		 ・誰かが近くで攻撃行為をしていたら確率でガード。
-		 ・もしどんけつになったら８割ぐらいの確率でハイパーアーツを使う。
+			・コインがある時はコインを取りに行く。（1,2歩歩く→ちょっと止まる）、（コイン取る→次を探す）
+			　→ 確率で適当に攻撃出す（キャラによって挙動を変える）
+			・段差を見分けてジャンプも出来るようにしたい。
+			・コインがない時は１位もしくは距離が近い相手を攻撃。
+			・誰かが近くで攻撃行為をしていたら確率でガード。
+			・もしどんけつになったら８割ぐらいの確率でハイパーアーツを使う。
 		*/
 
 		//　フィールドにコインが○○枚以上　→　コイン優先
@@ -851,20 +865,20 @@ namespace
 		{
 			//　順位別にそれぞれ確率で行動分岐
 			static int randi;
-			if(!aiInfo.act_flag) randi = Random::GetInt(0, 12);
+			if(!aiInfo.act_flag) randi = Random::GetInt(0, 11);
 			switch (rank)
 			{
 			case 1:
 				// 逃げる：ガード（８：２）
 				if		(randi < 8)			aiInfo.mode = AI_MODE_STATE::RUNAWAY;
-				else if (randi > 12 - 2)	aiInfo.mode = AI_MODE_STATE::GUARD;
+				else if (randi > 11 - 2)	aiInfo.mode = AI_MODE_STATE::GUARD;
 				else						aiInfo.mode = AI_MODE_STATE::WAIT;
 				break;
 
 			case 2:
 				//　攻撃：逃げる：コイン（５：３：２）
 				if		(randi < 4)					aiInfo.mode = AI_MODE_STATE::ATTACK;
-				else if (randi > 12 - 3)			aiInfo.mode = AI_MODE_STATE::RUNAWAY;
+				else if (randi > 11 - 3)			aiInfo.mode = AI_MODE_STATE::RUNAWAY;
 				else if (randi == 4 || randi == 5)	aiInfo.mode = AI_MODE_STATE::RUN;
 				else								aiInfo.mode = AI_MODE_STATE::WAIT;
 				break;
@@ -872,14 +886,14 @@ namespace
 			case 3:
 				//　攻撃：コイン（６：４）
 				if		(randi < 6)			aiInfo.mode = AI_MODE_STATE::ATTACK;
-				else if (randi > 12 - 4)	aiInfo.mode = AI_MODE_STATE::RUN;
+				else if (randi > 11 - 4)	aiInfo.mode = AI_MODE_STATE::RUN;
 				else						aiInfo.mode = AI_MODE_STATE::WAIT;
 				break;
 
 			case 4:
 				//　攻撃：コイン（８：２）
 				if		(randi < 8)			aiInfo.mode = AI_MODE_STATE::ATTACK;
-				else if (randi > 12 - 2)	aiInfo.mode = AI_MODE_STATE::RUN;
+				else if (randi > 11 - 2)	aiInfo.mode = AI_MODE_STATE::RUN;
 				else						aiInfo.mode = AI_MODE_STATE::WAIT;
 				break;
 			}
@@ -934,7 +948,6 @@ namespace
 		}
 	}
 	
-
 	//	向き調整
 	void	BaseChara::AutoAngleAdjust( float speed, Vector3 target )
 	{
@@ -954,6 +967,24 @@ namespace
 
 		//	親に投げる
 		AngleAdjust(Vector3(sinf(targetAngle), 0.0f, cosf(targetAngle)), speed);
+	}
+
+	void	BaseChara::AutoAttack()
+	{
+		/*
+			キャラによって 「攻撃条件」「攻撃時間」を変える　※オーバーライド
+			（主に１位に近づいてパワーアーツかクイックアーツ？）
+		*/
+
+		aiInfo.act_flag = true;
+
+		if (aiInfo.count_attack <= 0)
+		{
+			aiInfo.count_attack = 1 * SECOND;
+			aiInfo.act_flag = false;
+			SetMode(MODE_STATE::MOVE);
+		}
+		else aiInfo.count_attack--;
 	}
 
 	//　逃げる
@@ -1392,10 +1423,10 @@ namespace
 	}
 
 	//	ブースト状態設定
-	void	BaseChara::SetBoosting( bool boosting )
+	/*void	BaseChara::SetBoosting( bool boosting )
 	{
 		this->boosting = boosting;
-	}
+	}*/
 
 	//	ノックバック方向設定
 	void	BaseChara::SetKnockBackVec( Vector3 vec )
@@ -1415,7 +1446,7 @@ namespace
 		switch ( parameterState )
 		{
 		case PARAMETER_STATE::SLIP:
-			SetParameterState( slip, 10 * SECOND );
+			SetParameterState( slip, 11 * SECOND );
 			break;
 
 		case PARAMETER_STATE::BOOST:
@@ -1423,15 +1454,15 @@ namespace
 			break;
 
 		case PARAMETER_STATE::OUTRAGE:
-			SetParameterState(outrage, 10 * SECOND);
+			SetParameterState(outrage, 11 * SECOND);
 			break;
 
 		case PARAMETER_STATE::ATTACKUP:
-			SetParameterState(attackUp, 10 * SECOND);
+			SetParameterState(attackUp, 11 * SECOND);
 			break;
 
 		case PARAMETER_STATE::SPEEDUP:
-			SetParameterState(speedUp, 10 * SECOND);
+			SetParameterState(speedUp, 11 * SECOND);
 			break;
 
 		case PARAMETER_STATE::BOMB:
@@ -1439,7 +1470,7 @@ namespace
 			break;
 
 		case PARAMETER_STATE::JUMP:
-			SetParameterState(jump, 10 * SECOND);
+			SetParameterState(jump, 11 * SECOND);
 			break;
 		}
 	}

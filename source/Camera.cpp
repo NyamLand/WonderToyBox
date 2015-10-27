@@ -32,11 +32,11 @@
 		q->mass = 1.0f;
 		target = Vector3( 0.0f, 0.6f, 0.8f ); 
 		orientation = D3DXQUATERNION( 0, 0, 0, 1 );
-		nextPoint = TITLE_MOVE_INFO::pos[TITLE_TARGET::PLAYERNUMBER];
+		nextPoint = TITLE_MOVE_INFO::pos[TITLE_TARGET::PLAY];
 		startPos = pos;
 		t = 0.0f;
 		moveState = false;
-		target = nextTarget = TITLE_MOVE_INFO::target[TITLE_TARGET::PLAYERNUMBER];
+		target = nextTarget = TITLE_MOVE_INFO::target[TITLE_TARGET::PLAY];
 		speed = 0.005f;
 		Set( pos, target );
 	}

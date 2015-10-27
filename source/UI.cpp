@@ -922,20 +922,8 @@
 			SetImageSrcPos( 0, 256 );
 			break;
 
-		case TITLE_MODE::SELECT_PLAYERNUM:
+		case TITLE_MODE::PLAY:
 			SetImageSrcPos( 0, 384 );
-			break;
-
-		case TITLE_MODE::SELECT_CHARACTER:
-			SetImageSrcPos( 0, 512 );
-			break;
-
-		case	TITLE_MODE::SELECT_STAGE:
-			SetImageSrcPos( 0, 640 );
-			break;
-
-		case TITLE_MODE::SELECT_CHECK:
-			SetImageSrcPos( 0, 768 );
 			break;
 
 		case TITLE_MODE::MOVE_MAIN:
