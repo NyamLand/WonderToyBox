@@ -187,9 +187,8 @@ namespace
 			Sy = 0;
 		}
 
-
-		if ( KEY( KEY_UP ) == 3)	StringPos_Y--;
-		if ( KEY( KEY_DOWN ) == 3 )	StringPos_Y++;
+		if ( input[0]->Get( KEY_UP ) == 3)		StringPos_Y--;
+		if ( input[0]->Get( KEY_DOWN ) == 3 )	StringPos_Y++;
 		if ( StringPos_Y >= 3 )	StringPos_Y = 0;
 		if ( StringPos_Y < 0 )		StringPos_Y = 2;
 
@@ -208,7 +207,7 @@ namespace
 				break;
 
 			case 2:
-				MainFrame->ChangeScene( new sceneTitle );
+				MainFrame->ChangeScene( new sceneTitle() );
 				return;
 				break;
 			}
