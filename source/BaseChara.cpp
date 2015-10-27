@@ -112,6 +112,8 @@ namespace
 		mode = MODE_STATE::WAIT;
 		this->pos = pos;
 		angle = 0.0f;
+		totalPower = power;
+		totalSpeed = speed;
 
 		//	構造体初期化
 		{
@@ -164,6 +166,10 @@ namespace
 			{
 				plusStatusInfo.power = 1;
 				plusStatusInfo.speed = 0.1f;
+				
+				/* 仮 */
+				plusStatusInfo.boostPower = 2;
+				plusStatusInfo.boostSpeed = 0.2f;
 			}
 		}
 
@@ -693,7 +699,16 @@ namespace
 	void	BaseChara::ParameterAdjust( void )
 	{
 		if ( attackUp.state )	totalPower = power + plusStatusInfo.power;
-		if (speedUp.state)	totalSpeed = plusStatusInfo.speed;
+		if ( speedUp.state )	totalSpeed = speed + plusStatusInfo.speed;
+		
+		//　ブースト中
+		if (boost.state)
+		{
+			totalPower = power + plusStatusInfo.boostPower;
+			totalSpeed = speed + plusStatusInfo.boostSpeed;
+			if (attackUp.state)	totalPower += plusStatusInfo.power;
+			if (speedUp.state)	totalSpeed += plusStatusInfo.speed;
+		}
 	}
 
 //-------------------------------------------------------------------------------------
@@ -865,36 +880,37 @@ namespace
 		{
 			//　順位別にそれぞれ確率で行動分岐
 			static int randi;
-			if(!aiInfo.act_flag) randi = Random::GetInt(0, 11);
+			const int randi_MAX = 11;
+			if (!aiInfo.act_flag) randi = Random::GetInt(0, randi_MAX);
 			switch (rank)
 			{
 			case 1:
 				// 逃げる：ガード（８：２）
-				if		(randi < 8)			aiInfo.mode = AI_MODE_STATE::RUNAWAY;
-				else if (randi > 11 - 2)	aiInfo.mode = AI_MODE_STATE::GUARD;
-				else						aiInfo.mode = AI_MODE_STATE::WAIT;
+				if		(randi < 8)				aiInfo.mode = AI_MODE_STATE::RUNAWAY;
+				else if (randi > randi_MAX - 2)	aiInfo.mode = AI_MODE_STATE::GUARD;
+				else							aiInfo.mode = AI_MODE_STATE::WAIT;
 				break;
 
 			case 2:
 				//　攻撃：逃げる：コイン（５：３：２）
 				if		(randi < 4)					aiInfo.mode = AI_MODE_STATE::ATTACK;
-				else if (randi > 11 - 3)			aiInfo.mode = AI_MODE_STATE::RUNAWAY;
+				else if (randi > randi_MAX - 3)		aiInfo.mode = AI_MODE_STATE::RUNAWAY;
 				else if (randi == 4 || randi == 5)	aiInfo.mode = AI_MODE_STATE::RUN;
 				else								aiInfo.mode = AI_MODE_STATE::WAIT;
 				break;
 
 			case 3:
 				//　攻撃：コイン（６：４）
-				if		(randi < 6)			aiInfo.mode = AI_MODE_STATE::ATTACK;
-				else if (randi > 11 - 4)	aiInfo.mode = AI_MODE_STATE::RUN;
-				else						aiInfo.mode = AI_MODE_STATE::WAIT;
+				if		(randi < 6)				aiInfo.mode = AI_MODE_STATE::ATTACK;
+				else if (randi > randi_MAX - 4)	aiInfo.mode = AI_MODE_STATE::RUN;
+				else							aiInfo.mode = AI_MODE_STATE::WAIT;
 				break;
 
 			case 4:
 				//　攻撃：コイン（８：２）
-				if		(randi < 8)			aiInfo.mode = AI_MODE_STATE::ATTACK;
-				else if (randi > 11 - 2)	aiInfo.mode = AI_MODE_STATE::RUN;
-				else						aiInfo.mode = AI_MODE_STATE::WAIT;
+				if		(randi < 8)				aiInfo.mode = AI_MODE_STATE::ATTACK;
+				else if (randi > randi_MAX - 2)	aiInfo.mode = AI_MODE_STATE::RUN;
+				else							aiInfo.mode = AI_MODE_STATE::WAIT;
 				break;
 			}
 		}
@@ -1028,12 +1044,12 @@ namespace
 		//　移動
 		if (!slip.state)
 		{
-			move.x = sinf(moveVec) * speed;
-			move.z = cosf(moveVec) * speed;
+			move.x = sinf(moveVec) * totalSpeed;
+			move.z = cosf(moveVec) * totalSpeed;
 		}
 		else
 		{
-			if (move.Length() < speed)
+			if (move.Length() < totalSpeed)
 			{
 				move.x += sinf(moveVec) * slipInfo.speed;
 				move.z += cosf(moveVec) * slipInfo.speed;
@@ -1246,6 +1262,15 @@ namespace
 	int			BaseChara::GetPower( void )const
 	{
 		return	power;
+	}
+	int			BaseChara::GetTotalPower( void )const
+	{
+		return	totalPower;
+	}
+
+	float		BaseChara::GetTotalSpeed( void )const
+	{
+		return	totalSpeed;
 	}
 
 	//	無敵状態取得
