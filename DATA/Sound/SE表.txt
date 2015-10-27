@@ -1,0 +1,7 @@
+attack-h	→ハイパーヒット時
+attack-p	→パワーヒット時
+attack-q	→クイックヒット時
+coin		→コイン獲得
+decide		→決定
+item-get	→アイテム獲得
+event		→イベント発生
