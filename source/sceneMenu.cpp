@@ -231,7 +231,7 @@ namespace
 		if ( playerNumSelectInfo.t >= 1.0f )
 		{
 			//	‘I‘ğ
-			if ( input[0]->Get( KEY_UP ) == 1 )
+			if ( input[0]->Get( KEY_DOWN ) == 1 )
 			{
 				//	Œ³‚ÌÀ•W‚ğ•Û‘¶
 				playerNumSelectInfo.saveY =  128 * playerNumSelectInfo.num;
@@ -247,7 +247,7 @@ namespace
 				}
 			}
 
-			if ( input[0]->Get( KEY_DOWN ) == 1 )
+			if ( input[0]->Get( KEY_UP ) == 1 )
 			{
 				//	Œ³‚ÌÀ•W‚ğ•Û‘¶
 				playerNumSelectInfo.saveY = 128 * playerNumSelectInfo.num;

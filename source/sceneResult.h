@@ -7,6 +7,7 @@
 //	sceneResultクラス
 //
 //*******************************************************************************
+
 class sceneResult : public	Scene
 {
 private:
@@ -36,6 +37,7 @@ private:
 		int		rank;
 		bool	rankflg;		//	順位用フラグ
 	};
+
 private:
 	RESULT_INFO	resultInfo[4];
 	NUMBER		number[4];
@@ -65,7 +67,6 @@ private:
 	bool	bonusflg;		//	ボーナス値用フラグ
 	bool	addCoinflg;		//	コイン合算値用フラグ
 
-
 	//	画像データ関係
 	iex2DObj*	back;		//	背景
 	iex2DObj*	r_number;	//	コインの枚数
@@ -87,7 +88,7 @@ public:
 	void	ResultUpdate( void );
 	void	SelectUpdata( void );
 
-	void	ResultRender(NUMBER& number, Vector3 Pos);
+	void	ResultRender( NUMBER& number, Vector3 Pos );
 	void	RankRender(int ranking);
 	void	SelectRender( void );
 	
@@ -99,7 +100,7 @@ public:
 	void	SetRank( void );
 	void	Production( void );						//リザルトの演出用関数
 	void	ProductionRotation( int playerNum );	//コイン枚数回転関数
-	void	ProductionCoinHandOff(NUMBER& number, int coinNum);	//コイン枚数引き渡し
+	void	ProductionCoinHandOff( NUMBER& number, int coinNum );	//コイン枚数引き渡し
 };
 //*******************************************************************************
 #endif // !__SCENERESULT_H__

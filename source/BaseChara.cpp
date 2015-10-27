@@ -236,8 +236,6 @@ namespace
 		//	落下チェック
 		FallCheck();
 
-
-
 		//	情報更新
 		obj->Animation();
 		obj->SetPos( pos );
@@ -386,17 +384,22 @@ namespace
 		//	壁判定
 		checkWall = Collision::CheckWall( pos, move );
 
+		static	int fallTimer = 0;
+
 		//　床判定
 		if ( Collision::CheckDown( pos, move ) )
 		{
 			isGround = true;
 			jumpState = true;
+			fallTimer = 0;
 		}
 		else
 		{
-			jumpState = false;
+			fallTimer++;
 			isGround = false;
-		}	
+		}
+
+		if ( fallTimer >= 5 )	jumpState = false;
 	}
 
 	//	角度調整

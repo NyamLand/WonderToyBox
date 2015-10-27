@@ -9,6 +9,7 @@
 #include	"Camera.h"
 #include	"CharacterManager.h"
 #include	"sceneTitle.h"
+#include	"sceneMenu.h"
 #include	"sceneMain.h"
 
 #include	"sceneResult.h"
@@ -163,11 +164,11 @@ namespace
 		case MOVE_MODE::RESULT_MODE:
 			ResultUpdate();
 			break;
+
 		case MOVE_MODE::SELECT_MODE:
 			SelectUpdata();
 			break;
 		}
-		
 	}
 
 	//リザルト時の更新
@@ -192,13 +193,32 @@ namespace
 			Sy = 0;
 		}
 
-		if (StringPos_Y == 2){ 
-			if (KEY_Get(KEY_SPACE) == 3 || KEY_Get(KEY_A) == 3){
 
-					MainFrame->ChangeScene(new sceneTitle);
-					return;
-				}
+		if ( KEY( KEY_UP ) == 3)	StringPos_Y--;
+		if ( KEY( KEY_DOWN ) == 3 )	StringPos_Y++;
+		if ( StringPos_Y >= 3 )	StringPos_Y = 0;
+		if ( StringPos_Y < 0 )		StringPos_Y = 2;
+
+		if ( KEY_Get( KEY_SPACE ) == 3 || KEY_Get( KEY_A ) == 3 )
+		{
+			switch ( StringPos_Y )
+			{
+			case 0:
+				MainFrame->ChangeScene( new sceneMain() );
+				return;
+				break;
+
+			case 1:
+				MainFrame->ChangeScene( new sceneMenu() );
+				return;
+				break;
+
+			case 2:
+				MainFrame->ChangeScene( new sceneTitle );
+				return;
+				break;
 			}
+		}
 	}
 
 	//	描画
@@ -276,7 +296,7 @@ namespace
 	}
 
 	//	リザルト描画
-	void	sceneResult::ResultRender(NUMBER& number, Vector3 Pos)
+	void	sceneResult::ResultRender( NUMBER& number, Vector3 Pos )
 	{
 		if (number.H_flg){
 			r_number->Render((int)Pos.x - 40 * 2, (int)Pos.y, 64, 64, number.hundred * 64, 0, 64, 64);	//	コイン三桁目
