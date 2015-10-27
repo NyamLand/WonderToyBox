@@ -26,8 +26,8 @@
 //	グローバル
 //----------------------------------------------------------------------------
 
-#define	MIN_INPUT_STATE	300	//	スティック判定最小値
-#define	MIN_SLIP_LENGTH	0.01f	//	滑り長さ最小値
+#define	MIN_INPUT_STATE	300		//	スティック判定有効最小値
+#define	MIN_SLIP_LENGTH	0.01f		//	滑り長さ最小値
 #define	SLIP_TIMER_MAX		300	
 namespace
 {
@@ -203,10 +203,6 @@ namespace
 	//	更新
 	void	BaseChara::Update( void )
 	{
-		if ( unrivaled == false )
-		{
-			int a = 0;
-		}
 		//	モード管理
 		ModeManagement();
 
@@ -355,7 +351,7 @@ namespace
 	}
 
 	//	移動値加算
-	void	BaseChara::AddMove()
+	void	BaseChara::AddMove( void )
 	{
 		pos += move;
 	}
@@ -390,7 +386,7 @@ namespace
 		}	
 	}
 
-	//	角度調整
+	//	スティックの倒れた方向を取得し、カメラ向いてる方向にあわせてプレイヤーの向きを調整する
 	void	BaseChara::AngleAdjust( float speed )
 	{
 		if ( !( input->Get( KEY_AXISX ) || input->Get( KEY_AXISY ) ) )	return;
@@ -413,7 +409,7 @@ namespace
 		AngleAdjust( Vector3( sinf( targetAngle ), 0.0f, cosf( targetAngle ) ), speed );
 	}
 
-	//	角度調整
+	//	ターゲットの方向に向ける処理、角度がπ以上にならないように調整
 	void	BaseChara::AngleAdjust( const Vector3& direction, float speed )
 	{
 		//	現在の向きと目標の向きの差を求める
@@ -443,12 +439,13 @@ namespace
 		if ( GetAngle() <= -1.0f * D3DX_PI )	angle += 2.0f * D3DX_PI;
 	}
 
-	//	ノックバック
-	void	BaseChara::KnockBack(void)
+	//	ノックバックのタイプに応じて処理を分ける
+	void	BaseChara::KnockBack( void )
 	{
+		//	モーション設定
+		SetMotion( MOTION_NUM::POSTURE );
 
-		SetMotion(MOTION_NUM::POSTURE);
-		switch (mode)
+		switch ( mode )
 		{
 		case MODE_STATE::DAMAGE:
 			unrivaled = true;
@@ -476,10 +473,11 @@ namespace
 
 	}
 
-	void	BaseChara::AddKnockBackForce(float force)
+	//	ノックバック方向の力を加える
+	void	BaseChara::AddKnockBackForce( float force )
 	{
-		if (mode == MODE_STATE::DAMAGE_FLYUP) force /= 4;
-		switch (damageStep)
+		if ( mode == MODE_STATE::DAMAGE_FLYUP ) force /= 4;
+		switch ( damageStep )
 		{
 		case 0:
 			SetDamageColor(damageColor.catchColor);
@@ -515,14 +513,14 @@ namespace
 		}
 	}
 
-	//	待機
+	//	待機モーションをセット、摩擦適用
 	void	BaseChara::Wait( void )
 	{
 		SetMotion( MOTION_NUM::POSTURE );
 		SetDrag( 0.8f );
 	}
 
-	//	動作
+	//	動作(プレイヤーかAIで処理を分ける)
 	void	BaseChara::Move( void )
 	{
 		//	プレイヤーかそうでないかで処理を分ける
@@ -533,7 +531,7 @@ namespace
 		}
 	}
 
-	//	攻撃
+	//	攻撃動作管理、攻撃の当たり判定形状、ノックバックの種類を設定
 	void	BaseChara::Attack( int attackKind )
 	{
 		SetMotion( MOTION_NUM::ATTACK1 );
@@ -544,26 +542,23 @@ namespace
 		{
 		case	MODE_STATE::QUICKARTS:
 			isEnd = QuickArts();
-			if (!isEnd)	SetAttackParam(attackKind);
 			if ( !isEnd )	SetAttackParam( attackKind );
 			break;
 
 		case MODE_STATE::POWERARTS:
 			isEnd = PowerArts();
-			if (!isEnd)	SetAttackParam(attackKind);
 			if ( !isEnd )	SetAttackParam( attackKind );
-			break;
+			break; 
 
 		case MODE_STATE::HYPERARTS:
 			isEnd = HyperArts();
 			if (canHyper) gameManager->SetTimeStop(30);
 			canHyper = isEnd;
-			if (!isEnd)	SetAttackParam(attackKind);
 			if ( !isEnd )	SetAttackParam( attackKind );
 			break;
 		}
 
-		//	モーション終了時に
+		//	モーション終了時に攻撃情報初期化
 		if ( isEnd )
 		{
 			mode = MODE_STATE::MOVE;
@@ -576,7 +571,7 @@ namespace
 		}
 	}
 
-	//	ジャンプ
+	//	ジャンプ(プレイヤー、AI両対応)
 	void	BaseChara::Jump( void )
 	{
 		static	float toY = 10.0f;
@@ -612,22 +607,24 @@ namespace
 			{
 				jumpStep = 0;
 				jumpState = true;
-				toY = 0;
+				toY = 0.0f;
 				SetMode( MODE_STATE::MOVE );
 			}
 			break;
 		}
-
 	}
 
-	//	ガード
+	//	ガード(プレイヤー用)
 	void	BaseChara::Guard( void )
 	{
-		move.x = move.z = 0.0f;
+		//	モーション設定
 		SetMotion( MOTION_NUM::GUARD );
+
+		//	無敵化
 		unrivaled = true;
-		SetMotion( MOTION_NUM::GUARD );
-		if ( input->Get( KEY_B7 ) == 2 )
+
+		//	ボタンをはなすと解除（ 移動モードへ ）
+		if ( input->Get( KEY_B6 ) == 2 )
 		{
 			SetMode( MODE_STATE::MOVE );
 			unrivaled = false;
@@ -640,7 +637,7 @@ namespace
 		KnockBack();
 	}
 
-	//	走る
+	//	走る(プレイヤー用)
 	void	BaseChara::Run( void )
 	{
 		//	左スティックの入力チェック
@@ -674,7 +671,7 @@ namespace
 		}
 	}
 
-	//	落下チェック
+	//	ステージからの落下を確認し、スタート位置に戻す
 	void	BaseChara::FallCheck( void )
 	{
 		if ( pos.y < -3.0f )
@@ -687,7 +684,7 @@ namespace
 		}
 	} 
 
-	//	パラメータ調整
+	//	アイテム、イベント、どんけつなどのパラメータの変化を適用、調整
 	void	BaseChara::ParameterAdjust( void )
 	{
 		if ( attackUp.state )	totalPower = power + plusStatusInfo.power;
@@ -698,7 +695,7 @@ namespace
 //	パラメータ情報動作関数
 //-------------------------------------------------------------------------------------
 
-	//	ステート管理
+	//	イベント、アイテム、どんけつなどのパラメータの変化、動作を管理、更新
 	void	BaseChara::ParameterInfoUpdate( void )
 	{
 		//--------各イベント・アイテム効果処理を書く--------//
@@ -796,14 +793,14 @@ namespace
 		{
 			if ( jumpState )		mode = MODE_STATE::JUMP;
 		}
+
 		if ( input->Get( KEY_B6 ) == 3 )	mode = MODE_STATE::GUARD;
-		//if ( input->Get( KEY_B10 ) == 3 )	mode = MODE_STATE::DAMAGE_STRENGTH;
 	}
 
 	//	AI操作
 	void	BaseChara::ControlAI( void )
 	{
-		switch (aiInfo.mode)
+		switch ( aiInfo.mode )
 		{
 		case AI_MODE_STATE::ATTACK:
 			break;
@@ -901,9 +898,9 @@ namespace
 //----------------------------------------------------------------------------
 	
 	//　コインを取りに行く
-	void	BaseChara::AutoRun(void)
+	void	BaseChara::AutoRun( void )
 	{
-		Vector3		target = Vector3(0, 0, 0);
+		Vector3		target = Vector3( 0, 0, 0 );
 		static	float adjustSpeed = 0.2f;
 		bool			existence = false;
 		enum
@@ -913,10 +910,10 @@ namespace
 		};
 
 		//　targetに向けて1～3歩歩く
-		existence = m_CoinManager->GetMinPos(target, pos);
+		existence = m_CoinManager->GetMinPos( target, pos );
 
 		//	対象が存在していたら対象に向かって走る
-		if (existence)
+		if ( existence )
 		{
 			particle->BlueFlame(target, 1.0f);
 			SetMotion(MOTION_NUM::RUN);
@@ -937,13 +934,12 @@ namespace
 		}
 	}
 	
-
-	//	向き調整
+	//	向き調整(AI用)
 	void	BaseChara::AutoAngleAdjust( float speed, Vector3 target )
 	{
 		//	カメラの前方方向を求める
 		Vector3	vEye( mainView->GetTarget() - mainView->GetPos() );
-		float	cameraAngle = atan2f(vEye.x, vEye.z);
+		float	cameraAngle = atan2f( vEye.x, vEye.z );
 
 		Vector3	vec = target - pos;
 		vec.Normalize();
@@ -956,19 +952,19 @@ namespace
 		float	targetAngle = cameraAngle + inputAngle;
 
 		//	親に投げる
-		AngleAdjust(Vector3(sinf(targetAngle), 0.0f, cosf(targetAngle)), speed);
+		AngleAdjust( Vector3( sinf( targetAngle ), 0.0f, cosf( targetAngle ) ), speed );
 	}
 
 	//　逃げる
-	void	BaseChara::RunAway()
+	void	BaseChara::RunAway( void )
 	{
-		SetMotion(MOTION_NUM::RUN);
+		SetMotion( MOTION_NUM::RUN );
 
 		aiInfo.act_flag = true;
 
-		Vector3 vec_add(0, 0, 0);
-		Vector3 target(0, 0, 0);
-		for (int i = 0; i < PLAYER_MAX; i++)
+		Vector3 vec_add( 0, 0, 0 );
+		Vector3 target( 0, 0, 0 );
+		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			Vector3 vec[4];
 
@@ -976,14 +972,14 @@ namespace
 			int	p_num = characterManager->GetPlayerNum( i );
 
 			//	自分と同じ番号だったらスキップ
-			if (GetPlayerNum() == p_num)
+			if ( GetPlayerNum() == p_num )
 			{
-				vec[p_num] = Vector3(0, 0, 0);
+				vec[p_num] = Vector3( 0, 0, 0 );
 				continue;
 			}
 			
 			//	以下は自分VS相手の処理
-			vec[i] = characterManager->GetPos(characterManager->GetPlayerNum(i)) - pos;
+			vec[i] = characterManager->GetPos( characterManager->GetPlayerNum( i ) ) - pos;
 
 			//　相手３人へのベクトルを合算
 			vec_add += vec[i];
@@ -995,64 +991,64 @@ namespace
 
 		//　角度調整
 		static	float	adjustSpeed = 0.2f;
-		AutoAngleAdjust(adjustSpeed, target);
+		AutoAngleAdjust( adjustSpeed, target );
 
 		//　移動
-		if (!slip.state)
+		if ( !slip.state )
 		{
-			move.x = sinf(moveVec) * speed;
-			move.z = cosf(moveVec) * speed;
+			move.x = sinf( moveVec ) * speed;
+			move.z = cosf( moveVec ) * speed;
 		}
 		else
 		{
-			if (move.Length() < speed)
+			if ( move.Length() < speed )
 			{
-				move.x += sinf(moveVec) * slipInfo.speed;
-				move.z += cosf(moveVec) * slipInfo.speed;
+				move.x += sinf( moveVec ) * slipInfo.speed;
+				move.z += cosf( moveVec ) * slipInfo.speed;
 			}
 		}
 
 		//　行動続行是非
-		if (aiInfo.count_runaway <= 0)
+		if ( aiInfo.count_runaway <= 0 )
 		{
 			aiInfo.count_runaway = 3 * SECOND;
 			aiInfo.act_flag = false;
-			SetMode(MODE_STATE::MOVE);
+			SetMode( MODE_STATE::MOVE );
 		}
 		else aiInfo.count_runaway--;
 	}
 
 	//　オートガード(引数：フレーム数)
-	void	BaseChara::AutoGuard()
+	void	BaseChara::AutoGuard( void )
 	{
-		SetMotion(MOTION_NUM::GUARD);
+		SetMotion( MOTION_NUM::GUARD );
 		move.x = move.z = 0.0f;
 		unrivaled = true;
 		aiInfo.act_flag = true;
 		
-		if (aiInfo.count_guard <= 0)
+		if ( aiInfo.count_guard <= 0 )
 		{
 			unrivaled = false;
 			aiInfo.count_guard = 1 * SECOND;
 			aiInfo.act_flag = false;
-			SetMode(MODE_STATE::MOVE);
+			SetMode( MODE_STATE::MOVE );
 		}
 		else aiInfo.count_guard--;
 	}
 
 	//　立ち止まり
-	void	BaseChara::AutoWait()
+	void	BaseChara::AutoWait( void )
 	{
-		SetMotion(MOTION_NUM::STAND);
-		SetDrag(0.8f);
+		SetMotion( MOTION_NUM::STAND );
+		SetDrag( 0.8f );
 		move.x = move.z = 0.0f;
 		aiInfo.act_flag = true;
 
-		if (aiInfo.count_wait <= 0)
+		if ( aiInfo.count_wait <= 0 )
 		{
 			aiInfo.count_wait = 45;
 			aiInfo.act_flag = false;
-			SetMode(MODE_STATE::MOVE);
+			SetMode( MODE_STATE::MOVE );
 		}
 		else aiInfo.count_wait--;
 	}

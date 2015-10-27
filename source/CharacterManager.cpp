@@ -204,7 +204,7 @@
 		{
 			if (bc1->GetMode() == MODE_STATE::HYPERARTS)
 			{
-				gameManager->SetShakeCamera(1.0f, 30.0f);
+				gameManager->SetShakeCamera( 1.0f, 30 );
 			}
 			if ( bc2->GetUnrivaled() )	return;
 			bc2->SetUnrivaled( true );
@@ -261,7 +261,7 @@
 		{
 			if (bc1->GetMode() == MODE_STATE::HYPERARTS)
 			{
-				gameManager->SetShakeCamera(1.0f, 30.0f);
+				gameManager->SetShakeCamera( 1.0f, 30 );
 			}
 			if (bc1->GetMode() == MODE_STATE::HYPERARTS){};
 			//	–³“Gó‘ÔŽæ“¾EÝ’è
