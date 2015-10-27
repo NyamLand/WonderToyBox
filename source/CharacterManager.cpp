@@ -97,25 +97,50 @@
 	//	描画
 	void	CharacterManager::Render( iexShader* shader, LPSTR technique )
 	{
-		DrawString("rank", 1020, 30);
-		DrawString("AImode", 1060, 30);
-
-		DrawString("Aimode一覧", 1130, 30);
-		DrawString("０：ATTACK", 1120, 50);
-		DrawString("１：RUN（コイン）",	1120, 70);
-		DrawString("２：GETAWAY（逃げる）", 1120, 90);
-		DrawString("３：GUARD", 1120, 110);
-		DrawString("４：JUMP", 1120, 130);
-		DrawString("５：WAIT", 1120, 150);
-		
-		char str[256];
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
-			character[i]->Render( shader, technique );
-			
-			//　デバッグ文字
-			sprintf_s(str, "%dＰ：%d    %d", i + 1, GetRank(i), GetAIMode(i));
-			DrawString(str, 1000, 50 + i * 20);
+			character[i]->Render( shader, technique );	
+		}
+
+		//　デバッグ表示
+		DrawDebug();
+	}
+
+	//　デバッグ
+	void	CharacterManager::DrawDebug()
+	{
+		if (debug)
+		{
+			char str[256];
+
+			//--------------------------------------------
+			//　表題
+			//--------------------------------------------
+			//　AI一覧表
+			DrawString("rank", 1020, 30);
+			DrawString("AImode", 1060, 30);
+			DrawString("Aimode一覧", 1130, 30);
+			DrawString("０：ATTACK", 1120, 50);
+			DrawString("１：RUN（コイン）", 1120, 70);
+			DrawString("２：GETAWAY（逃げる）", 1120, 90);
+			DrawString("３：GUARD", 1120, 110);
+			DrawString("４：JUMP", 1120, 130);
+			DrawString("５：WAIT", 1120, 150);
+			//	power・speed
+			DrawString("tPower    tSpeed", 50, 50);
+
+			//--------------------------------------------
+			//　４人分のパラメータ
+			//--------------------------------------------
+			for (int i = 0; i < PLAYER_MAX; i++)
+			{
+				//　AImode・rank
+				sprintf_s(str, "%dＰ：%d    %d", i + 1, GetRank(i), GetAIMode(i));
+				DrawString(str, 1000, 50 + i * 20);
+				//　totalPower・totalSpeed
+				sprintf_s(str, "%dＰ：%d    %f", i + 1, GetTotalPower(i), GetTotalSpeed(i));
+				DrawString(str, 600, 70 + i * 20);
+			}
 		}
 	}
 
@@ -355,6 +380,17 @@
 	int			CharacterManager::GetPower( int player )const
 	{
 		return	character[player]->GetPower();
+	}
+
+	int			CharacterManager::GetTotalPower( int player )const
+	{
+		return	character[player]->GetTotalPower();
+	}
+
+	//　スピード取得
+	float		CharacterManager::GetTotalSpeed( int player )const
+	{
+		return	character[player]->GetTotalSpeed();
 	}
 
 	//　順位取得

@@ -190,6 +190,8 @@ protected:
 	{
 		int		power;
 		float	speed;
+		int		boostPower;		//　→子クラスで各々の値を初期化して
+		float	boostSpeed;		//　→子クラスで各々の値を初期化して
 	};
 
 protected:
@@ -346,10 +348,13 @@ public:
 	float	GetScale( void )const;
 	float	GetAttack_R( void )const;
 	float	GetAttack_T( void )const;
+	//float	GetSpeed( void )const;
+	float	GetTotalSpeed( void )const;
 	bool	GetUnrivaled( void )const;
 	bool	GetCanHyper( void )const;
 	bool	GetParameterState( int type )const;
 	int		GetPower( void )const;
+	int		GetTotalPower( void )const;
 	int		GetMode( void )const;
 	int		GetAIMode( void )const;
 	int		GetPlayerNum( void )const;

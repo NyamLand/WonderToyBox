@@ -42,6 +42,7 @@ public:
 	//	XVE•`‰æ
 	void	Update( void );
 	void	Render( iexShader* shader = nullptr, LPSTR technique = nullptr );
+	void	DrawDebug();
 
 	//	“®ìŠÖ”
 	void	DonketsuBoost();
@@ -57,12 +58,14 @@ public:
 	Vector3	GetPos( int player )const;
 	Vector3	GetDamageColor( int player )const;
 	float		GetAngle( int player )const;
+	float		GetTotalSpeed( int player )const;
 	bool		GetUnrivaled( int player )const;
 	bool		GetCanHyper( int player )const;
 	bool		GetParameterState( int player, int type )const;
 	int			GetAttackParam( int player )const;
 	int			GetPlayerNum( int playerNum )const;
 	int			GetPower( int playerNum )const;
+	int			GetTotalPower( int player )const;
 	int			GetRank( int player )const;
 	int			GetMode( int player )const;
 	int			GetAIMode(int player)const;

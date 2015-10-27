@@ -84,10 +84,10 @@
 		stringPos.y -= 170.0f;
 		sprintf_s( str, "Ç»\nÇ¢\nÇ∆\nÅ´" );
 		DrawString( str, ( int )stringPos.x, ( int )stringPos.y );
-		sprintf_s( str, "x = %f\ny = %f\nz = %f\n", pos.x, pos.y, pos.z );
-		DrawString( str, 20, 300 );
-		sprintf_s( str, "isGround = %d", isGround );
-		DrawString( str, 20, 500 );
+		//sprintf_s( str, "x = %f\ny = %f\nz = %f\n", pos.x, pos.y, pos.z );
+		//DrawString( str, 20, 300 );
+		//sprintf_s( str, "isGround = %d", isGround );
+		//DrawString( str, 20, 500 );
 	}
 
 //-----------------------------------------------------------------------------------
