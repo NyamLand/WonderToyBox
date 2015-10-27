@@ -78,7 +78,7 @@ private:
 	int		worst;
 	int		lastBonus;
 	bool	newsflag;    
-	int        timeStop;    //画面一時停止用
+	int    timeStop;    //画面一時停止用
 
 public:
 	Vector3	InitPos[4];
@@ -90,7 +90,7 @@ public:
 	~GameManager( void );
 	bool	Initialize( void );
 	void	Release( void );
-	void	InitImage( void );
+	void	RetryInitialize( void );
 
 	//	更新
 	void	Update( void );

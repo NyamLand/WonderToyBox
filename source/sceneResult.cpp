@@ -197,6 +197,9 @@ namespace
 			switch ( StringPos_Y )
 			{
 			case 0:
+				//	ƒQ[ƒ€î•ñ‰Šú‰»
+				gameManager->RetryInitialize();
+
 				MainFrame->ChangeScene( new sceneMain() );
 				return;
 				break;

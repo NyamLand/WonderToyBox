@@ -60,6 +60,7 @@
 		donketsuBoostState = false;
 		lastBonus = rand() % PLAYER_MAX;
 		timeStop = 0;
+
 		//	ゲームデータテキストを読み込む
 		LoadTextData();
 		timer = timelimit;
@@ -71,6 +72,24 @@
 	void	GameManager::Release( void )
 	{
 
+	}
+
+	//	リトライ用初期化
+	void	GameManager::RetryInitialize( void )
+	{
+		for ( int i = 0; i < PLAYER_MAX; i++ )
+		{
+			coinNum[i] = 0;
+		}
+
+		mode = 0;
+		donketsuBoostState = false;
+		lastBonus = rand() % PLAYER_MAX;
+		timeStop = 0;
+
+		//	ゲームデータテキストを読み込む
+		LoadTextData();
+		timer = timelimit;
 	}
 
 //-------------------------------------------------------------------------
