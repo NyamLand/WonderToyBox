@@ -23,13 +23,28 @@ private:
 		int		p_addCoin;
 	};
 
-	struct NUMBER
+
+	//	数字情報
+	struct NUMBER_INFO
 	{
 		int		hundred;		//コイン三桁目
 		int		ten;			//コイン二桁目
 		int		one;			//コイン一桁目
 		bool	H_flg;			//百の位レンダー用フラグ
 	};
+
+
+	//	数字描画情報
+	struct NUMBER_DRAW_INFO
+	{
+		NUMBER_INFO	numInfo;		//	数字情報
+		POINT		hundredPos;		//	百の位の座標
+		POINT		tenPos;			//	十の位の座標
+		POINT		onePos;			//	一の位の座標
+		POINT		center;			//	中心座標（十の位の座標）
+		float		length;			//	中心からの距離
+	};
+
 
 	struct RANK
 	{
@@ -38,9 +53,8 @@ private:
 	};
 private:
 	RESULT_INFO	resultInfo[4];
-	NUMBER		number[4];
-	NUMBER		BonusNumber[4];
-	NUMBER		totalNumber[4];
+	NUMBER_INFO	number[4];
+	NUMBER_INFO	BonusNumber[4];
 	RANK		rank[4];
 
 	//	ソート用
@@ -87,7 +101,7 @@ public:
 	void	ResultUpdate( void );
 	void	SelectUpdata( void );
 
-	void	ResultRender(NUMBER& number, Vector3 Pos);
+	void	ResultRender(NUMBER_INFO& number, Vector3 Pos);
 	void	RankRender(int ranking);
 	void	SelectRender( void );
 	
@@ -99,7 +113,7 @@ public:
 	void	SetRank( void );
 	void	Production( void );						//リザルトの演出用関数
 	void	ProductionRotation( int playerNum );	//コイン枚数回転関数
-	void	ProductionCoinHandOff(NUMBER& number, int coinNum);	//コイン枚数引き渡し
+	void	ProductionCoinHandOff(NUMBER_INFO& number, int coinNum);	//コイン枚数引き渡し
 };
 //*******************************************************************************
 #endif // !__SCENERESULT_H__

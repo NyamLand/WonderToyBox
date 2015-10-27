@@ -114,13 +114,7 @@ namespace
 				BonusNumber[i].H_flg = false;
 
 			}
-			//	合計数値構造体
-			{
-				totalNumber[i].hundred = 0;
-				totalNumber[i].ten = 0;
-				totalNumber[i].one = 0;
-				totalNumber[i].H_flg = false;
-			}
+			
 
 			//	ランキング用構造体
 			{
@@ -220,15 +214,12 @@ namespace
 		for (int i = 0; i < 4; i++){
 			Vector3 stringPos;
 			Vector3	bonusPos;
-			Vector3 addcoinPos;
 			Vector3 rankingPos;
 			WorldToClient( characterManager->GetPos(i), stringPos, matView* matProjection );
 			WorldToClient( characterManager->GetPos(i), bonusPos, matView* matProjection);
-			WorldToClient( characterManager->GetPos(i), addcoinPos, matView* matProjection );
 			WorldToClient( characterManager->GetPos(i), rankingPos, matView* matProjection );
 			stringPos.y = 100;
 			bonusPos.y = 170;
-			addcoinPos.y = 250;
 			rankingPos.y = 350;
 			
 			
@@ -241,13 +232,6 @@ namespace
 			{
 				if(bonusflg){
 					ResultRender(BonusNumber[i], bonusPos);
-				}
-			}
-
-			//	合算値のコイン枚数の描画
-			{
-				if (addCoinflg){
-					ResultRender(totalNumber[i], addcoinPos);
 				}
 			}
 
@@ -276,7 +260,7 @@ namespace
 	}
 
 	//	リザルト描画
-	void	sceneResult::ResultRender(NUMBER& number, Vector3 Pos)
+	void	sceneResult::ResultRender(NUMBER_INFO& number, Vector3 Pos)
 	{
 		if (number.H_flg){
 			r_number->Render((int)Pos.x - 40 * 2, (int)Pos.y, 64, 64, number.hundred * 64, 0, 64, 64);	//	コイン三桁目
@@ -409,12 +393,7 @@ namespace
 			break;
 
 		case 7://	コイン合算値を描画
-			for (int i = 0; i < 4; i++)
-			{
-				ProductionCoinHandOff(totalNumber[i], totalCoinNum[i]);
-			}
 
-			addCoinflg = true;
 
 			waitTimer++;
 			if (waitTimer > 60){
@@ -482,7 +461,7 @@ namespace
 	}
 
 	//	リザルトの値渡し
-	void	sceneResult::ProductionCoinHandOff(NUMBER& number,int coinNum)
+	void	sceneResult::ProductionCoinHandOff(NUMBER_INFO& number,int coinNum)
 	{
 		number.hundred = coinNum / 100 % 10;
 		if (number.hundred > 0){
@@ -490,7 +469,6 @@ namespace
 		}
 		number.ten = coinNum / 10 % 10;
 		number.one = coinNum % 10;
-
 	}
 
 	//	ランク設定
