@@ -102,11 +102,8 @@ public:
 	void	ResultUpdate( void );
 	void	SelectUpdata( void );
 
-<<<<<<< HEAD
-	void	ResultRender( NUMBER& number, Vector3 Pos );
-=======
 	void	ResultRender(NUMBER_INFO& number, Vector3 Pos);
->>>>>>> bfd12055bae7a1a10526d4843f4ff459913684ef
+
 	void	RankRender(int ranking);
 	void	SelectRender( void );
 	
@@ -118,11 +115,8 @@ public:
 	void	SetRank( void );
 	void	Production( void );						//リザルトの演出用関数
 	void	ProductionRotation( int playerNum );	//コイン枚数回転関数
-<<<<<<< HEAD
-	void	ProductionCoinHandOff( NUMBER& number, int coinNum );	//コイン枚数引き渡し
-=======
 	void	ProductionCoinHandOff(NUMBER_INFO& number, int coinNum);	//コイン枚数引き渡し
->>>>>>> bfd12055bae7a1a10526d4843f4ff459913684ef
+
 };
 //*******************************************************************************
 #endif // !__SCENERESULT_H__

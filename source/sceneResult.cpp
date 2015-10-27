@@ -282,11 +282,7 @@ namespace
 	}
 
 	//	リザルト描画
-<<<<<<< HEAD
-	void	sceneResult::ResultRender( NUMBER& number, Vector3 Pos )
-=======
 	void	sceneResult::ResultRender(NUMBER_INFO& number, Vector3 Pos)
->>>>>>> bfd12055bae7a1a10526d4843f4ff459913684ef
 	{
 		if (number.H_flg){
 			r_number->Render((int)Pos.x - 40 * 2, (int)Pos.y, 64, 64, number.hundred * 64, 0, 64, 64);	//	コイン三桁目
