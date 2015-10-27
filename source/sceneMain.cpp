@@ -165,8 +165,6 @@
 	//	ステージ初期化
 	void	sceneMain::StageInitialize( void )
 	{
-		stageScale = gameManager->GetStageScale();
-
 		switch ( gameManager->GetStageType() )
 		{
 		case 0:	//	机ステージ
@@ -218,12 +216,6 @@
 		//	UI
 		ui->Update( gameManager->GetMode() );
 
-		//	デバッグ用
-		if (KEY(KEY_UP) == 1)	stageScale += 0.1f;
-		if (KEY(KEY_DOWN) == 1)stageScale -= 0.1f;
-		m_Stage->SetScale( stageScale );
-		m_Stage->Update();
-
 		//	デバッグモード切り替え
 		if ( KEY( KEY_ENTER ) == 3 )		debug = !debug;
 
@@ -247,18 +239,7 @@
 
 		case GAME_MODE::TIMEUP:
 			FinishUpdate();
-
 			break;
-		}
-
-		if (KEY(KEY_D) == 1)
-		{
-			//particle->Hit(Vector3(0, 10.0f, 0), 20, 0.5f);
-			//particle->Smoke(Vector3(0, 10.0f, 0), 20, 0.5f);
-		//	particle->Aura(Vector3(0, 10.0f, 0), 3, 0.5f);
-			//particle->Arrow(Vector3(0, 15.0f, 0), 6, 0.5f, 100);
-
-
 		}
 
 		if ( ui->GetChangeFlag() )
@@ -365,18 +346,12 @@
 	//	描画
 	void	sceneMain::Render( void )
 	{
-		//	レンダーターゲットの復元
-		//playerWipe[0]->RenderTarget();
-		//iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );
-
 		//	画面クリア
-		//mainView->SetViewport( 0, 0, 1280, 720 );
-		//mainView->SetProjection( 0.8f, 0.1f, 300.0f, 1280.0f / 720.0f );
 		mainView->Activate();
 		mainView->Clear();
 
 		//	影
-		RenderShadowBuffer();
+		//RenderShadowBuffer();
 
 		//	オブジェクト描画
 		if ( characterManager->GetParameterState( 0, PARAMETER_STATE::SLIP ) )
@@ -400,12 +375,6 @@
 
 		//UI
 		ui->Render( gameManager->GetMode() );
-
-		//	デバッグ用
-		char	str[256];
-		sprintf_s( str, "stageScale = %f", stageScale );
-		DrawString( str, 50, 400, 0xFFFFFF00 );
-		//playerWipe[0]->Render( 0, 0, 512, 256, 0, 0, 1280, 720 );
 	}
 
 	//	HDR描画

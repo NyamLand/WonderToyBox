@@ -67,7 +67,7 @@ namespace
 	BaseChara::BaseChara( void ) : obj( nullptr ), input( nullptr ),		//	pointer
 		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ),	//	Vector3
 		angle(0.0f), scale(0.0f), speed(0.0f),	totalSpeed(0.0f), drag(0.0f), force( 0.0f ), moveVec( 0.0f ),	//	float
-		unrivaled(false), isGround(false), boosting(false), isPlayer(false), jumpState(false), checkWall(false),//	bool
+		unrivaled(false), isGround(false), isPlayer(false), jumpState(false), checkWall(false),//	bool
 		mode(0), playerNum(0), power(0), totalPower(0), leanFrame(0), jumpStep(0),damageStep(0),rank(0)		//	int
 	{
 	
@@ -112,6 +112,8 @@ namespace
 		mode = MODE_STATE::WAIT;
 		this->pos = pos;
 		angle = 0.0f;
+		totalPower = power;
+		totalSpeed = speed;
 
 		//	構造体初期化
 		{
@@ -150,6 +152,7 @@ namespace
 				aiInfo.count_wait		= 30;
 				aiInfo.count_run		= 3 * SECOND;
 				aiInfo.count_runaway	= 3 * SECOND;
+				aiInfo.count_attack		= 1 * SECOND;
 				aiInfo.count_guard		= 1 * SECOND;
 			}
 
@@ -163,6 +166,10 @@ namespace
 			{
 				plusStatusInfo.power = 1;
 				plusStatusInfo.speed = 0.1f;
+				
+				/* 仮 */
+				plusStatusInfo.boostPower = 2;
+				plusStatusInfo.boostSpeed = 0.2f;
 			}
 		}
 
@@ -377,17 +384,22 @@ namespace
 		//	壁判定
 		checkWall = Collision::CheckWall( pos, move );
 
+		static	int fallTimer = 0;
+
 		//　床判定
 		if ( Collision::CheckDown( pos, move ) )
 		{
 			isGround = true;
 			jumpState = true;
+			fallTimer = 0;
 		}
 		else
 		{
-			jumpState = false;
+			fallTimer++;
 			isGround = false;
-		}	
+		}
+
+		if ( fallTimer >= 5 )	jumpState = false;
 	}
 
 	//	角度調整
@@ -578,7 +590,7 @@ namespace
 	//	ジャンプ
 	void	BaseChara::Jump( void )
 	{
-		static	float toY = 10.0f;
+		static	float toY = 11.0f;
 		switch ( jumpStep )
 		{
 		case 0:
@@ -690,7 +702,16 @@ namespace
 	void	BaseChara::ParameterAdjust( void )
 	{
 		if ( attackUp.state )	totalPower = power + plusStatusInfo.power;
-		if (speedUp.state)	totalSpeed = plusStatusInfo.speed;
+		if ( speedUp.state )	totalSpeed = speed + plusStatusInfo.speed;
+		
+		//　ブースト中
+		if (boost.state)
+		{
+			totalPower = power + plusStatusInfo.boostPower;
+			totalSpeed = speed + plusStatusInfo.boostSpeed;
+			if (attackUp.state)	totalPower += plusStatusInfo.power;
+			if (speedUp.state)	totalSpeed += plusStatusInfo.speed;
+		}
 	}
 
 //-------------------------------------------------------------------------------------
@@ -710,6 +731,8 @@ namespace
 
 		//	アイテム・マグネット
 		ItemMagnet();
+
+
 	}
 
 	//	攻撃力Upアイテム効果動作
@@ -763,6 +786,14 @@ namespace
 	}
 
 	//	どんけつブースト
+	void	BaseChara::BoostUp( void )
+	{
+		/*if (boost.state)
+		{
+			power = totalPower;
+			speed = totalSpeed;
+		}*/
+	}
 
 	//	暴走状態
 
@@ -803,6 +834,7 @@ namespace
 		switch (aiInfo.mode)
 		{
 		case AI_MODE_STATE::ATTACK:
+			AutoAttack();
 			break;
 
 		case AI_MODE_STATE::RUN:		//　コインを取りに行く
@@ -827,12 +859,12 @@ namespace
 		//--------------------------------------------
 
 		/*
-		・コインがある時はコインを取りに行く。（1,2歩歩く→ちょっと止まる）、（コイン取る→次を探す）
-		　→ 確率で適当に攻撃出す（キャラによって挙動を変える）
-		 ・段差を見分けてジャンプも出来るようにしたい。
-		 ・コインがない時は１位もしくは距離が近い相手を攻撃。
-		 ・誰かが近くで攻撃行為をしていたら確率でガード。
-		 ・もしどんけつになったら８割ぐらいの確率でハイパーアーツを使う。
+			・コインがある時はコインを取りに行く。（1,2歩歩く→ちょっと止まる）、（コイン取る→次を探す）
+			　→ 確率で適当に攻撃出す（キャラによって挙動を変える）
+			・段差を見分けてジャンプも出来るようにしたい。
+			・コインがない時は１位もしくは距離が近い相手を攻撃。
+			・誰かが近くで攻撃行為をしていたら確率でガード。
+			・もしどんけつになったら８割ぐらいの確率でハイパーアーツを使う。
 		*/
 
 		//　フィールドにコインが○○枚以上　→　コイン優先
@@ -851,36 +883,37 @@ namespace
 		{
 			//　順位別にそれぞれ確率で行動分岐
 			static int randi;
-			if(!aiInfo.act_flag) randi = Random::GetInt(0, 12);
+			const int randi_MAX = 11;
+			if (!aiInfo.act_flag) randi = Random::GetInt(0, randi_MAX);
 			switch (rank)
 			{
 			case 1:
 				// 逃げる：ガード（８：２）
-				if		(randi < 8)			aiInfo.mode = AI_MODE_STATE::RUNAWAY;
-				else if (randi > 12 - 2)	aiInfo.mode = AI_MODE_STATE::GUARD;
-				else						aiInfo.mode = AI_MODE_STATE::WAIT;
+				if		(randi < 8)				aiInfo.mode = AI_MODE_STATE::RUNAWAY;
+				else if (randi > randi_MAX - 2)	aiInfo.mode = AI_MODE_STATE::GUARD;
+				else							aiInfo.mode = AI_MODE_STATE::WAIT;
 				break;
 
 			case 2:
 				//　攻撃：逃げる：コイン（５：３：２）
 				if		(randi < 4)					aiInfo.mode = AI_MODE_STATE::ATTACK;
-				else if (randi > 12 - 3)			aiInfo.mode = AI_MODE_STATE::RUNAWAY;
+				else if (randi > randi_MAX - 3)		aiInfo.mode = AI_MODE_STATE::RUNAWAY;
 				else if (randi == 4 || randi == 5)	aiInfo.mode = AI_MODE_STATE::RUN;
 				else								aiInfo.mode = AI_MODE_STATE::WAIT;
 				break;
 
 			case 3:
 				//　攻撃：コイン（６：４）
-				if		(randi < 6)			aiInfo.mode = AI_MODE_STATE::ATTACK;
-				else if (randi > 12 - 4)	aiInfo.mode = AI_MODE_STATE::RUN;
-				else						aiInfo.mode = AI_MODE_STATE::WAIT;
+				if		(randi < 6)				aiInfo.mode = AI_MODE_STATE::ATTACK;
+				else if (randi > randi_MAX - 4)	aiInfo.mode = AI_MODE_STATE::RUN;
+				else							aiInfo.mode = AI_MODE_STATE::WAIT;
 				break;
 
 			case 4:
 				//　攻撃：コイン（８：２）
-				if		(randi < 8)			aiInfo.mode = AI_MODE_STATE::ATTACK;
-				else if (randi > 12 - 2)	aiInfo.mode = AI_MODE_STATE::RUN;
-				else						aiInfo.mode = AI_MODE_STATE::WAIT;
+				if		(randi < 8)				aiInfo.mode = AI_MODE_STATE::ATTACK;
+				else if (randi > randi_MAX - 2)	aiInfo.mode = AI_MODE_STATE::RUN;
+				else							aiInfo.mode = AI_MODE_STATE::WAIT;
 				break;
 			}
 		}
@@ -934,7 +967,6 @@ namespace
 		}
 	}
 	
-
 	//	向き調整
 	void	BaseChara::AutoAngleAdjust( float speed, Vector3 target )
 	{
@@ -954,6 +986,24 @@ namespace
 
 		//	親に投げる
 		AngleAdjust(Vector3(sinf(targetAngle), 0.0f, cosf(targetAngle)), speed);
+	}
+
+	void	BaseChara::AutoAttack()
+	{
+		/*
+			キャラによって 「攻撃条件」「攻撃時間」を変える　※オーバーライド
+			（主に１位に近づいてパワーアーツかクイックアーツ？）
+		*/
+
+		aiInfo.act_flag = true;
+
+		if (aiInfo.count_attack <= 0)
+		{
+			aiInfo.count_attack = 1 * SECOND;
+			aiInfo.act_flag = false;
+			SetMode(MODE_STATE::MOVE);
+		}
+		else aiInfo.count_attack--;
 	}
 
 	//　逃げる
@@ -997,12 +1047,12 @@ namespace
 		//　移動
 		if (!slip.state)
 		{
-			move.x = sinf(moveVec) * speed;
-			move.z = cosf(moveVec) * speed;
+			move.x = sinf(moveVec) * totalSpeed;
+			move.z = cosf(moveVec) * totalSpeed;
 		}
 		else
 		{
-			if (move.Length() < speed)
+			if (move.Length() < totalSpeed)
 			{
 				move.x += sinf(moveVec) * slipInfo.speed;
 				move.z += cosf(moveVec) * slipInfo.speed;
@@ -1216,6 +1266,15 @@ namespace
 	{
 		return	power;
 	}
+	int			BaseChara::GetTotalPower( void )const
+	{
+		return	totalPower;
+	}
+
+	float		BaseChara::GetTotalSpeed( void )const
+	{
+		return	totalSpeed;
+	}
 
 	//	無敵状態取得
 	bool		BaseChara::GetUnrivaled( void )const
@@ -1392,10 +1451,10 @@ namespace
 	}
 
 	//	ブースト状態設定
-	void	BaseChara::SetBoosting( bool boosting )
+	/*void	BaseChara::SetBoosting( bool boosting )
 	{
 		this->boosting = boosting;
-	}
+	}*/
 
 	//	ノックバック方向設定
 	void	BaseChara::SetKnockBackVec( Vector3 vec )
@@ -1415,7 +1474,7 @@ namespace
 		switch ( parameterState )
 		{
 		case PARAMETER_STATE::SLIP:
-			SetParameterState( slip, 10 * SECOND );
+			SetParameterState( slip, 11 * SECOND );
 			break;
 
 		case PARAMETER_STATE::BOOST:
@@ -1423,15 +1482,15 @@ namespace
 			break;
 
 		case PARAMETER_STATE::OUTRAGE:
-			SetParameterState(outrage, 10 * SECOND);
+			SetParameterState(outrage, 11 * SECOND);
 			break;
 
 		case PARAMETER_STATE::ATTACKUP:
-			SetParameterState(attackUp, 10 * SECOND);
+			SetParameterState(attackUp, 11 * SECOND);
 			break;
 
 		case PARAMETER_STATE::SPEEDUP:
-			SetParameterState(speedUp, 10 * SECOND);
+			SetParameterState(speedUp, 11 * SECOND);
 			break;
 
 		case PARAMETER_STATE::BOMB:
@@ -1439,7 +1498,7 @@ namespace
 			break;
 
 		case PARAMETER_STATE::JUMP:
-			SetParameterState(jump, 10 * SECOND);
+			SetParameterState(jump, 11 * SECOND);
 			break;
 		}
 	}

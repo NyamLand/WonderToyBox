@@ -231,7 +231,7 @@ namespace
 		if ( playerNumSelectInfo.t >= 1.0f )
 		{
 			//	選択
-			if ( input[0]->Get( KEY_UP ) == 1 )
+			if ( input[0]->Get( KEY_DOWN ) == 1 )
 			{
 				//	元の座標を保存
 				playerNumSelectInfo.saveY =  128 * playerNumSelectInfo.num;
@@ -247,7 +247,7 @@ namespace
 				}
 			}
 
-			if ( input[0]->Get( KEY_DOWN ) == 1 )
+			if ( input[0]->Get( KEY_UP ) == 1 )
 			{
 				//	元の座標を保存
 				playerNumSelectInfo.saveY = 128 * playerNumSelectInfo.num;
@@ -429,7 +429,7 @@ namespace
 		//	森モデル初期化
 		forestStage->SetPos( 5.0f, 3.0f, 0.0f );
 		forestStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
-		forestStage->SetScale( 0.2f );
+		forestStage->SetScale( 0.04f );
 		forestStage->Update();
 
 		//	パラメータ初期化
@@ -550,7 +550,7 @@ namespace
 			deskStage->Update();
 			forestStage->SetPos( 0.0f, 5.0f, 0.0f );
 			forestStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
-			forestStage->SetScale( 0.18f );
+			forestStage->SetScale( 0.03f );
 			forestStage->Update();
 		}
 	}
@@ -692,6 +692,7 @@ namespace
 	//	モード切り替え
 	void	sceneMenu::SetMode( int mode )
 	{
+		//	初期化する
 		switch ( mode )
 		{
 		case MENU_MODE::SELECT_PLAYERNUM:
@@ -700,25 +701,22 @@ namespace
 
 		case MENU_MODE::SELECT_CHARACTER:
 			SelectCharacterInitialize();
-			//SelectCharacterUpdate();
 			break;
 
 		case MENU_MODE::SELECT_STAGE:
 			SelectStageInitialize();
-			//SelectStageUpdate();
 			break;
 
 		case MENU_MODE::SELECT_CHECK:
 			SelectCheckInitialize();
-			//SelectCheckUpdate();
 			break;
 
 		case MENU_MODE::MOVE_MAIN:
 			MoveMainInitialize();
-			//MoveMainUpdate();
 			break;
 		}
 
+		//	モード切替
 		this->mode = mode;
 	}
 

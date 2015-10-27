@@ -9,6 +9,7 @@
 #include	"Camera.h"
 #include	"CharacterManager.h"
 #include	"sceneTitle.h"
+#include	"sceneMenu.h"
 #include	"sceneMain.h"
 
 #include	"sceneResult.h"
@@ -114,7 +115,13 @@ namespace
 				BonusNumber[i].H_flg = false;
 
 			}
-			
+			//	合計数値構造体
+			{
+				totalNumber[i].hundred = 0;
+				totalNumber[i].ten = 0;
+				totalNumber[i].one = 0;
+				totalNumber[i].H_flg = false;
+			}
 
 			//	ランキング用構造体
 			{
@@ -157,11 +164,11 @@ namespace
 		case MOVE_MODE::RESULT_MODE:
 			ResultUpdate();
 			break;
+
 		case MOVE_MODE::SELECT_MODE:
 			SelectUpdata();
 			break;
 		}
-		
 	}
 
 	//リザルト時の更新
@@ -186,13 +193,32 @@ namespace
 			Sy = 0;
 		}
 
-		if (StringPos_Y == 2){ 
-			if (KEY_Get(KEY_SPACE) == 3 || KEY_Get(KEY_A) == 3){
 
-					MainFrame->ChangeScene(new sceneTitle);
-					return;
-				}
+		if ( KEY( KEY_UP ) == 3)	StringPos_Y--;
+		if ( KEY( KEY_DOWN ) == 3 )	StringPos_Y++;
+		if ( StringPos_Y >= 3 )	StringPos_Y = 0;
+		if ( StringPos_Y < 0 )		StringPos_Y = 2;
+
+		if ( KEY_Get( KEY_SPACE ) == 3 || KEY_Get( KEY_A ) == 3 )
+		{
+			switch ( StringPos_Y )
+			{
+			case 0:
+				MainFrame->ChangeScene( new sceneMain() );
+				return;
+				break;
+
+			case 1:
+				MainFrame->ChangeScene( new sceneMenu() );
+				return;
+				break;
+
+			case 2:
+				MainFrame->ChangeScene( new sceneTitle );
+				return;
+				break;
 			}
+		}
 	}
 
 	//	描画
@@ -214,12 +240,15 @@ namespace
 		for (int i = 0; i < 4; i++){
 			Vector3 stringPos;
 			Vector3	bonusPos;
+			Vector3 addcoinPos;
 			Vector3 rankingPos;
 			WorldToClient( characterManager->GetPos(i), stringPos, matView* matProjection );
 			WorldToClient( characterManager->GetPos(i), bonusPos, matView* matProjection);
+			WorldToClient( characterManager->GetPos(i), addcoinPos, matView* matProjection );
 			WorldToClient( characterManager->GetPos(i), rankingPos, matView* matProjection );
 			stringPos.y = 100;
 			bonusPos.y = 170;
+			addcoinPos.y = 250;
 			rankingPos.y = 350;
 			
 			
@@ -232,6 +261,13 @@ namespace
 			{
 				if(bonusflg){
 					ResultRender(BonusNumber[i], bonusPos);
+				}
+			}
+
+			//	合算値のコイン枚数の描画
+			{
+				if (addCoinflg){
+					ResultRender(totalNumber[i], addcoinPos);
 				}
 			}
 
@@ -260,7 +296,7 @@ namespace
 	}
 
 	//	リザルト描画
-	void	sceneResult::ResultRender(NUMBER_INFO& number, Vector3 Pos)
+	void	sceneResult::ResultRender( NUMBER& number, Vector3 Pos )
 	{
 		if (number.H_flg){
 			r_number->Render((int)Pos.x - 40 * 2, (int)Pos.y, 64, 64, number.hundred * 64, 0, 64, 64);	//	コイン三桁目
@@ -393,7 +429,12 @@ namespace
 			break;
 
 		case 7://	コイン合算値を描画
+			for (int i = 0; i < 4; i++)
+			{
+				ProductionCoinHandOff(totalNumber[i], totalCoinNum[i]);
+			}
 
+			addCoinflg = true;
 
 			waitTimer++;
 			if (waitTimer > 60){
@@ -461,7 +502,7 @@ namespace
 	}
 
 	//	リザルトの値渡し
-	void	sceneResult::ProductionCoinHandOff(NUMBER_INFO& number,int coinNum)
+	void	sceneResult::ProductionCoinHandOff(NUMBER& number,int coinNum)
 	{
 		number.hundred = coinNum / 100 % 10;
 		if (number.hundred > 0){
@@ -469,6 +510,7 @@ namespace
 		}
 		number.ten = coinNum / 10 % 10;
 		number.one = coinNum % 10;
+
 	}
 
 	//	ランク設定
