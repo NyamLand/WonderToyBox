@@ -57,9 +57,9 @@ public:
 	virtual	bool	Initialize( void );
 
 	//	XVE•`‰æ
+	void	ShadowUpdate( void );
 	void	Update( void );
-	void	Render( void );
-	void	Render( iexShader* shader, LPSTR technique );
+	void	Render( iexShader* shader = nullptr, LPSTR technique = nullptr );
 
 	//	“®ìŠÖ”
 	void	StageCollisionCheck( void );

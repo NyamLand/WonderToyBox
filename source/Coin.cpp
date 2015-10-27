@@ -21,14 +21,15 @@
 //	グローバル
 //-------------------------------------------------------------------------------
 
-#define	GETAWAY_LENGTH	3.0f
+#define	GETAWAY_LENGTH		3.0f	//	逃げる判定距離
+#define	MAX_HEIGHT					50.0f	//	想定している高さ最大値
 
 //-------------------------------------------------------------------------------
 //	初期化・解放
 //-------------------------------------------------------------------------------
 
 	//	コンストラクタ
-	Coin::Coin( void ) : obj( NULL )
+	Coin::Coin( void ) : obj( nullptr )
 	{
 		
 	}
@@ -77,7 +78,7 @@
 		//	動作
 		Move();
 
-		//	逃げ
+		//	逃げる
 		if ( getAwayflag )	GetAway();
 
 		//	マグネット
@@ -100,36 +101,44 @@
 		//	当たり判定
 		StageCollisionCheck();
 		PlayerCollisionCheck();
+		
+		//	影情報更新
+		ShadowUpdate();
 
 		//	情報更新
-		SetVertex( shadow.v[0], shadow.pos.x - shadow.scale / 2, shadow.pos.y, shadow.pos.z + shadow.scale / 2, 0.0f, 0.0f, 0xFFFFFFFF);
-		SetVertex( shadow.v[1], shadow.pos.x + shadow.scale / 2, shadow.pos.y, shadow.pos.z + shadow.scale / 2, 1.0f, 0.0f, 0xFFFFFFFF);
-		SetVertex( shadow.v[2], shadow.pos.x - shadow.scale / 2, shadow.pos.y, shadow.pos.z - shadow.scale / 2, 0.0f, 1.0f, 0xFFFFFFFF);
-		SetVertex( shadow.v[3], shadow.pos.x + shadow.scale / 2, shadow.pos.y, shadow.pos.z - shadow.scale / 2, 1.0f, 1.0f, 0xFFFFFFFF);
 		obj->SetAngle( angle );
 		obj->SetPos( pos );
 		obj->SetScale( scale );
 		obj->Update();
 	}
 
-	//	描画
-	void	Coin::Render( void )
+	//	影情報更新
+	void	Coin::ShadowUpdate( void )
 	{
-		obj->Render();
+		//	スケール計算( 高さに応じて影のスケールを調整、影の大きさの最大値はモデルの大きさの2.5倍に設定 )
+		float	t = pos.y / MAX_HEIGHT;
+		static	float	maxScale = scale * 2.5f;
+		shadow.scale = maxScale - ( maxScale * t );
 
-		//	デバッグ用
-		//if ( !debug )	return;
-		//DrawSphere( Vector3( pos.x, pos.y + 0.5f, pos.z ), 0.5f, 0xFFFF0000 );
+		//	頂点セット
+		static	DWORD	vertexColor = 0xFFFFFFFF;
+		SetVertex( shadow.v[0], shadow.pos.x - shadow.scale / 2, shadow.pos.y, shadow.pos.z + shadow.scale / 2, 0.0f, 0.0f, vertexColor );
+		SetVertex( shadow.v[1], shadow.pos.x + shadow.scale / 2, shadow.pos.y, shadow.pos.z + shadow.scale / 2, 1.0f, 0.0f, vertexColor );
+		SetVertex( shadow.v[2], shadow.pos.x - shadow.scale / 2, shadow.pos.y, shadow.pos.z - shadow.scale / 2, 0.0f, 1.0f, vertexColor );
+		SetVertex( shadow.v[3], shadow.pos.x + shadow.scale / 2, shadow.pos.y, shadow.pos.z - shadow.scale / 2, 1.0f, 1.0f, vertexColor );
 	}
 
-	//	シェーダー付き描画
+	//	描画（ 引数のどちらか一方でも設定しなかったら通常描画 ）
 	void	Coin::Render( iexShader* shader, LPSTR technique )
 	{
 		//	影描画
 		iexPolygon::Render3D( shadow.v, 2, shadow.obj, shader3D, "alpha" );
 
 		//	モデル描画
-		obj->Render( shader, technique );
+		if ( shader == nullptr || technique == nullptr )
+			obj->Render();
+		else
+			obj->Render( shader, technique );
 	}
 
 //-------------------------------------------------------------------------------
@@ -139,7 +148,8 @@
 	//	ステージ当たり判定チェック
 	void	Coin::StageCollisionCheck( void )
 	{
-		if ( pos.y >= 15.0f )		return;
+		//	想定しているよりも高くとんでいたらスキップ
+		if ( pos.y >= MAX_HEIGHT )	return;
 		float work = Collision::GetHeight( pos );
 		shadow.pos.y = work + 0.1f;
 		if ( pos.y <= work )
@@ -180,14 +190,10 @@
 		static float rate = 0.4f;
 		Collision::GetReflect( pos, move, rate );
 
-		//	コイン逃走
-
 		//	落下したら再配置
 		if ( GetPos().y <= -3.0f )
 		{
-			std::uniform_real_distribution<float> posrand( -10.0f, 10.0f );
-			std::uniform_real_distribution<float> heightrand( 0.0f, 50.0f );
-			SetPos( Vector3( Random::GetFloat( -10.0f, 10.0f ), Random::GetFloat( 0.0f, 50.0f ), Random::GetFloat( -10.0f, 10.0f ) ) );
+			SetPos( Vector3( Random::GetFloat( -10.0f, 10.0f ), Random::GetFloat( 0.0f, MAX_HEIGHT ), Random::GetFloat( -10.0f, 10.0f ) ) );
 		}
 	}
 
@@ -196,8 +202,8 @@
 	{
 		state = false;
 		float	effectScale = 0.2f;
-		particle->Spark(pos, effectScale);
-		gameManager->AddCoin(Num);
+		particle->Spark( pos, effectScale );
+		gameManager->AddCoin( Num );
 		sound->PlaySE( SE::COIN_SE );
 	}
 

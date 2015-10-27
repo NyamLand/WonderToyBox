@@ -33,7 +33,7 @@
 //-------------------------------------------------------------------------
 
 	//	コンストラクタ
-	Effect::Effect(void) : aura(nullptr), isAura(false), _adjustV(0)
+	Effect::Effect( void ) : aura( nullptr ), isAura( false ), _adjustV( 0 )
 	{
 	
 	}
@@ -41,7 +41,7 @@
 	//	デストラクタ
 	Effect::~Effect( void )
 	{
-		SafeDelete(aura);
+		SafeDelete( aura );
 		SafeDelete( pow_up.obj );
 		
 		for ( int i = 0; i < 4; i++ )
