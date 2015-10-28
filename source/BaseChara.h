@@ -42,7 +42,7 @@ namespace
 			GUARD,
 			DAMAGE,
 			DAMAGE_FLYUP,
-			DAMAGE_LEANBACKWARD,
+			DAMAGE_LEANBACKWARD
 		};
 	}
 
@@ -119,7 +119,7 @@ private:
 	enum MOTION_DATA
 	{
 		STAND,					//	立ち
-		RUN,						//	走り
+		RUN,					//	走り
 		ATTACK1,				//	攻撃１段階目
 		POSTURE,				//	構え
 		JUMP,					//	ジャンプ
@@ -154,7 +154,7 @@ protected:
 	{
 		Vector3	vec;
 		int			type;
-		bool		isUp;
+		bool	isUp;
 	};
 	
 	//	パラメータ情報
@@ -169,9 +169,13 @@ protected:
 	{
 		int		mode;
 		int		param;
+		bool	act_flag;		//　行動中か（true：行動中）
 		int		step_autorun;
-		int		count_walk;		//	歩く時間（２～４秒）
 		int		count_wait;		//　待機時間（１秒未満）
+		int		count_run;		//	歩く時間（２～４秒）
+		int		count_runaway;	//　逃げ時間
+		int		count_attack;	//　攻撃時間（キャラに依存）
+		int		count_guard;	
 	};
 
 	//	slip情報
@@ -186,6 +190,8 @@ protected:
 	{
 		int		power;
 		float	speed;
+		int		boostPower;		//　→子クラスで各々の値を初期化して
+		float	boostSpeed;		//　→子クラスで各々の値を初期化して
 	};
 
 protected:
@@ -206,7 +212,7 @@ protected:
 	bool			unrivaled;
 	bool			isGround;
 	bool			canHyper;
-	bool			boosting;
+	//bool			boosting;	//　→ PARAMETER_INFO型の boost
 	bool			isPlayer;
 	bool			jumpState;
 	bool			checkWall;
@@ -216,7 +222,8 @@ protected:
 	int				totalPower;
 	int				leanFrame;		//	仰け反り時間
 	int				jumpStep;			//	ジャンプ動作
-	int				damageStep;	//仰け反り動作
+	int				damageStep;
+	int				rank;
 
 	//	各情報構造体
 	DAMAGECOLOR_INFO		damageColor;
@@ -270,8 +277,8 @@ public:
 	void	Jump( void );
 	void	Guard( void );
 	void	Damage( void );
-	void	KnockBack( void );
-	void	AddKnockBackForce( float force );
+	void	KnockBack(void);
+	void	AddKnockBackForce(float force);
 	void	KnockBackLeanBackWard( void );
 	void	FallCheck( void );
 	void	ParameterAdjust( void );
@@ -281,6 +288,7 @@ public:
 	void	AttackUp( void );
 	void	EventSlip( void );
 	void	ItemMagnet( void );
+	void	BoostUp( void );
 
 	//	子クラスで実装
 	virtual	bool	QuickArts( void ) = 0;
@@ -293,14 +301,17 @@ public:
 	virtual	void	Control( void );
 
 	//	AI動作関数
-	int 	SearchCoin();					//　コイン探す
-	bool	CheckSearchedCoin(int num);		//　見つけたコインが存在するか
 	void	AutoRun();						//　コインを取りに行く
 	void	AutoAngleAdjust(float speed, Vector3 target);
 	//void	AutoAngleAdjust(const Vector3& direction, float speed);
+	void	AutoAttack();
+	void	RunAway();
+	void	AutoGuard();
+	void	AutoWait();
 
 	//	情報設定
 	void	SetMode( int mode );
+	void	SetAIMode( int mode );
 	void	SetMove( Vector3 move );
 	void	SetPos( Vector3 pos );
 	void	SetAngle( float angle );
@@ -309,10 +320,11 @@ public:
 	void	SetDamageColor( Vector3 color );
 	void	SetPassColor( Vector3 color );
 	void	SetLeanFrame( int frame );
-	void	SetBoosting( bool boosting );
+	//void	SetBoosting( bool boosting );	//　
 	void	SetKnockBackVec( Vector3 vec );
 	void	SetUnrivaled( bool state );
 	void	SetParameterState( int parameterState );
+	void	SetRank( int rank );
 	void	SetParameterState( PARAMETER_INFO& paramterState, int time );
 	void	SetForce(float force);
 
@@ -332,18 +344,23 @@ public:
 	Vector3	GetBoneFront( int num )const;
 	Vector3	GetBoneRight( int num )const;
 	Vector3	GetBoneUp( int num )const;
-	float		GetAngle( void )const;
-	float		GetScale( void )const;
-	float		GetAttack_R( void )const;
-	float		GetAttack_T( void )const;
-	bool		GetUnrivaled( void )const;
-	bool		GetCanHyper( void )const;
-	bool		GetParameterState( int type )const;
-	int			GetPower( void )const;
-	int			GetMode( void )const;
-	int			GetPlayerNum( void )const;
-	int			GetAttackParam( void )const;
-	int			GetKnockBackType(void)const;
-	int			GetKnockBackIsUp(void)const;
-	int			GetLeanFrame( void )const;
+	float	GetAngle( void )const;
+	float	GetScale( void )const;
+	float	GetAttack_R( void )const;
+	float	GetAttack_T( void )const;
+	//float	GetSpeed( void )const;
+	float	GetTotalSpeed( void )const;
+	bool	GetUnrivaled( void )const;
+	bool	GetCanHyper( void )const;
+	bool	GetParameterState( int type )const;
+	int		GetPower( void )const;
+	int		GetTotalPower( void )const;
+	int		GetMode( void )const;
+	int		GetAIMode( void )const;
+	int		GetPlayerNum( void )const;
+	int		GetAttackParam( void )const;
+	int		GetKnockBackType(void)const;
+	int		GetKnockBackIsUp(void)const;
+	int		GetLeanFrame( void )const;
+	int		GetRank( void )const;
 };

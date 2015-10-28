@@ -19,6 +19,7 @@
 //	初期化・解放
 //-------------------------------------------------------------------------------------
 
+
 	//	コンストラクタ
 	CharacterManager::CharacterManager( void )
 	{
@@ -83,6 +84,7 @@
 			//	各キャラクター更新
 			character[i]->Update();
 			canHyper = GetCanHyper( i );
+			SetRank(i, gameManager->GetRank(i));
 		}
 
 		//	当たり判定
@@ -97,7 +99,48 @@
 	{
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
-			character[i]->Render( shader, technique );
+			character[i]->Render( shader, technique );	
+		}
+
+		//　デバッグ表示
+		DrawDebug();
+	}
+
+	//　デバッグ
+	void	CharacterManager::DrawDebug()
+	{
+		if (debug)
+		{
+			char str[256];
+
+			//--------------------------------------------
+			//　表題
+			//--------------------------------------------
+			//　AI一覧表
+			DrawString("rank", 1020, 30);
+			DrawString("AImode", 1060, 30);
+			DrawString("Aimode一覧", 1130, 30);
+			DrawString("０：ATTACK", 1120, 50);
+			DrawString("１：RUN（コイン）", 1120, 70);
+			DrawString("２：GETAWAY（逃げる）", 1120, 90);
+			DrawString("３：GUARD", 1120, 110);
+			DrawString("４：JUMP", 1120, 130);
+			DrawString("５：WAIT", 1120, 150);
+			//	power・speed
+			DrawString("tPower    tSpeed", 50, 50);
+
+			//--------------------------------------------
+			//　４人分のパラメータ
+			//--------------------------------------------
+			for (int i = 0; i < PLAYER_MAX; i++)
+			{
+				//　AImode・rank
+				sprintf_s(str, "%dＰ：%d    %d", i + 1, GetRank(i), GetAIMode(i));
+				DrawString(str, 1000, 50 + i * 20);
+				//　totalPower・totalSpeed
+				sprintf_s(str, "%dＰ：%d    %f", i + 1, GetTotalPower(i), GetTotalSpeed(i));
+				DrawString(str, 600, 70 + i * 20);
+			}
 		}
 	}
 
@@ -112,7 +155,7 @@
 		{
 			//	(決定された)ビリが誰かを取得・どんけつモードセット
 			int worst = gameManager->GetWorst();
-			SetBoosting( worst, true );
+			SetParameterInfo(worst, PARAMETER_STATE::BOOST);
 
 			//	ビリがなんのキャラかを識別してそれぞれに合ったステータス上昇
 			RaiseStatus( worst, gameManager->GetCharacterType( worst ) );
@@ -184,6 +227,10 @@
 		//	当たっていたら
 		if ( isHit )
 		{
+			if (bc1->GetMode() == MODE_STATE::HYPERARTS)
+			{
+				gameManager->SetShakeCamera( 1.0f, 30 );
+			}
 			if ( bc2->GetUnrivaled() )	return;
 			bc2->SetUnrivaled( true );
 			//	エフェクトだす
@@ -237,6 +284,10 @@
 		//	当たっていたら
 		if ( isHit )
 		{
+			if (bc1->GetMode() == MODE_STATE::HYPERARTS)
+			{
+				gameManager->SetShakeCamera( 1.0f, 30 );
+			}
 			if (bc1->GetMode() == MODE_STATE::HYPERARTS){};
 			//	無敵状態取得・設定
 			if ( bc2->GetUnrivaled() )	return;
@@ -339,6 +390,33 @@
 		return	character[player]->GetPower();
 	}
 
+	int			CharacterManager::GetTotalPower( int player )const
+	{
+		return	character[player]->GetTotalPower();
+	}
+
+	//　スピード取得
+	float		CharacterManager::GetTotalSpeed( int player )const
+	{
+		return	character[player]->GetTotalSpeed();
+	}
+
+	//　順位取得
+	int			CharacterManager::GetRank( int player )const
+	{
+		return character[player]->GetRank();
+	}
+
+	//　モード取得
+	int			CharacterManager::GetMode( int player )const
+	{
+		return character[player]->GetMode();
+	}
+	int			CharacterManager::GetAIMode(int player)const
+	{
+		return character[player]->GetAIMode();
+	}
+
 	//	実体取得
 	CharacterManager*	CharacterManager::GetInstance( void )
 	{
@@ -379,12 +457,16 @@
 	{
 		character[player]->SetMode( mode );
 	}
+	void		CharacterManager::SetAIMode( int player, int mode )
+	{
+		character[player]->SetAIMode(mode);
+	}
 
 	//	ブースト状態取得
-	void		CharacterManager::SetBoosting( int player, bool boosting )
+	/*void		CharacterManager::SetBoosting( int player, bool boosting )
 	{
 		character[player]->SetBoosting( boosting );
-	}
+	}*/
 
 	//	仰け反り時間取得
 	void		CharacterManager::SetLeanFrame( int player, int leanframe )
@@ -402,6 +484,12 @@
 	void		CharacterManager::SetParameterInfo( int player, int parameterInfo )
 	{
 		character[player]->SetParameterState( parameterInfo );
+	}
+
+	//    順位設定
+	void        CharacterManager::SetRank(int player, int rank)
+	{
+		character[player]->SetRank(rank);
 	}
 
 	//ノックバック情報設定

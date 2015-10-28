@@ -1411,25 +1411,27 @@
 				CullMode				=	CCW;
 				ZEnable					=	true;
 				ZWriteEnable			=	true;
+
 				VertexShader		=		compile vs_2_0	VS_Basic();
 				PixelShader		=		compile ps_2_0 PS_Basic();
 			}
 		}
 
-		//	â¡éZ
-		technique	add
+		//	í èÌ(ìßñæïîï™Ç≠ÇËî≤Ç´)
+		technique	alpha
 		{
 			pass	P0
 			{
-				AlphaBlendEnable	= true;
-				BlendOp				= Add;
-				SrcBlend			= SrcAlpha;
-				DestBlend			= One;
-				CullMode			= CCW;
-				ZEnable				= true;
-				ZWriteEnable		= true;
-				VertexShader	= compile vs_2_0	VS_Basic();
-				PixelShader		= compile ps_2_0 PS_Basic();
+				AlphaBlendEnable = true;
+				BlendOp = Add;
+				SrcBlend = SrcAlpha;
+				DestBlend = InvSrcAlpha;
+				CullMode = CCW;
+				ZEnable = true;
+				ZWriteEnable = false;
+
+				VertexShader = compile vs_2_0	VS_Basic();
+				PixelShader = compile ps_2_0 PS_Basic();
 			}
 		}
 

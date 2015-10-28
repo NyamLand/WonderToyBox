@@ -65,9 +65,9 @@ namespace
 	bool	sceneMenu::Initialize( void )
 	{
 		//	camera
-		m_Camera = new Camera();
-		m_Camera->SetProjection( D3DXToRadian( 10.0f ), 1.0f, 1000.0f );
-		m_Camera->Set( Vector3( 0.0f, 5.2f, -70.0f ), Vector3( 0.0, 5.2f, 0.0f ) );
+		mainView = new Camera();
+		mainView->SetProjection( D3DXToRadian( 10.0f ), 1.0f, 1000.0f );
+		mainView->Set( Vector3( 0.0f, 5.2f, -70.0f ), Vector3( 0.0, 5.2f, 0.0f ) );
 
 		//	random
 		Random::Initialize();
@@ -103,7 +103,7 @@ namespace
 		}
 
 		//	モード設定
-		SetMode( MENU_MODE::SELECT_PLAYERNUM );
+		SetMode( MENU_MODE::INIT );
 
 		//	全体更新
 		Update();
@@ -113,8 +113,9 @@ namespace
 	//	解放
 	void	sceneMenu::Release( void )
 	{
-		SafeDelete( m_Camera );
+		SafeDelete( mainView );
 		SafeDelete( textImage.obj );
+		Random::Release();
 
 		for ( int i = 0; i < 4; i++ )
 		{
@@ -134,7 +135,7 @@ namespace
 		case MENU_MODE::INIT:
 			if ( screen->GetScreenState() )
 			{
-				SetMode( MENU_MODE::SELECT_CHARACTER );
+				SetMode( MENU_MODE::SELECT_PLAYERNUM );
 			}
 			break;
 
@@ -171,8 +172,8 @@ namespace
 	void	sceneMenu::Render( void )
 	{
 		//	camera
-		m_Camera->Activate();
-		m_Camera->Clear();
+		mainView->Activate();
+		mainView->Clear();
 
 		//	背景( 一番後ろに表示 )
 		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
@@ -223,14 +224,14 @@ namespace
 	void	sceneMenu::SelectPlayerNumUpdate( void )
 	{
 		//	パラメータ加算
-		playerNumSelectInfo.t += 0.05f;
+		playerNumSelectInfo.t += 0.08f;
 		if ( playerNumSelectInfo.t >= 1.0f )	playerNumSelectInfo.t = 1.0f;	
 
 		//	移動が終わったら
 		if ( playerNumSelectInfo.t >= 1.0f )
 		{
 			//	選択
-			if ( input[0]->Get( KEY_UP ) == 1 )
+			if ( input[0]->Get( KEY_DOWN ) == 1 )
 			{
 				//	元の座標を保存
 				playerNumSelectInfo.saveY =  128 * playerNumSelectInfo.num;
@@ -246,7 +247,7 @@ namespace
 				}
 			}
 
-			if ( input[0]->Get( KEY_DOWN ) == 1 )
+			if ( input[0]->Get( KEY_UP ) == 1 )
 			{
 				//	元の座標を保存
 				playerNumSelectInfo.saveY = 128 * playerNumSelectInfo.num;
@@ -268,6 +269,11 @@ namespace
 				gameManager->SetPlayerNum( playerNumSelectInfo.num + 1 );
 				SetMode( MENU_MODE::SELECT_CHARACTER );
 			}
+		}
+
+		if ( input[0]->Get( KEY_B ) == 3 )
+		{
+			SetMode( MENU_MODE::MOVE_TITLE );
 		}
 
 		//	補間
@@ -358,7 +364,7 @@ namespace
 		{
 			if ( KEY( KEY_B ) == 3 )
 			{
-				SetMode( MENU_MODE::MOVE_TITLE );
+				SetMode( MENU_MODE::SELECT_PLAYERNUM );
 			}
 		}
 
@@ -428,7 +434,7 @@ namespace
 		//	森モデル初期化
 		forestStage->SetPos( 5.0f, 3.0f, 0.0f );
 		forestStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
-		forestStage->SetScale( 0.2f );
+		forestStage->SetScale( 0.04f );
 		forestStage->Update();
 
 		//	パラメータ初期化
@@ -549,7 +555,7 @@ namespace
 			deskStage->Update();
 			forestStage->SetPos( 0.0f, 5.0f, 0.0f );
 			forestStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
-			forestStage->SetScale( 0.18f );
+			forestStage->SetScale( 0.03f );
 			forestStage->Update();
 		}
 	}
@@ -691,6 +697,7 @@ namespace
 	//	モード切り替え
 	void	sceneMenu::SetMode( int mode )
 	{
+		//	初期化する
 		switch ( mode )
 		{
 		case MENU_MODE::SELECT_PLAYERNUM:
@@ -699,25 +706,22 @@ namespace
 
 		case MENU_MODE::SELECT_CHARACTER:
 			SelectCharacterInitialize();
-			//SelectCharacterUpdate();
 			break;
 
 		case MENU_MODE::SELECT_STAGE:
 			SelectStageInitialize();
-			//SelectStageUpdate();
 			break;
 
 		case MENU_MODE::SELECT_CHECK:
 			SelectCheckInitialize();
-			//SelectCheckUpdate();
 			break;
 
 		case MENU_MODE::MOVE_MAIN:
 			MoveMainInitialize();
-			//MoveMainUpdate();
 			break;
 		}
 
+		//	モード切替
 		this->mode = mode;
 	}
 

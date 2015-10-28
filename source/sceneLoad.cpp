@@ -51,7 +51,7 @@ using namespace std;
 		iexLight::SetFog( 800, 1000, 0 );
 
 		//	カメラ設定
-		m_Camera = new Camera();
+		mainView = new Camera();
 		load = new iex2DObj("DATA/Load/Lord-back.png");
 		load_anykey.obj = new iex2DObj("DATA/UI/pressspace.png");
 		ImageInitialize(load_anykey, 1100, 675, 256, 128, 0, 0, 256, 128);
@@ -106,8 +106,8 @@ using namespace std;
 	void	sceneLoad::Render( void )
 	{
 		//	画面クリア
-		m_Camera->Activate();
-		m_Camera->Clear();
+		mainView->Activate();
+		mainView->Clear();
 		load->Render(0, 0, 1280, 720, 0, 0, 1280, 720);
 		DrawString( "ロード中", 200, 300 );
 

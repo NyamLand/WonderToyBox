@@ -55,6 +55,10 @@
 		if( obj == nullptr )
 			obj = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
 
+		//	ƒXƒP[ƒ‹Ý’è
+		obj->SetScale( 0.02f );
+		obj->Update();
+
 		if ( obj == nullptr )	return	false;
 		return	true;
 	}

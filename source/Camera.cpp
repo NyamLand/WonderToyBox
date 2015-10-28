@@ -16,7 +16,7 @@
 //------------------------------------------------------------------------------------------
 
 	//	実体の宣言
-	Camera*	m_Camera;
+	Camera*	mainView;
 
 //------------------------------------------------------------------------------------------
 //	初期化・解放
@@ -32,13 +32,20 @@
 		q->mass = 1.0f;
 		target = Vector3( 0.0f, 0.6f, 0.8f ); 
 		orientation = D3DXQUATERNION( 0, 0, 0, 1 );
-		nextPoint = TITLE_MOVE_INFO::pos[TITLE_TARGET::PLAYERNUMBER];
+		nextPoint = TITLE_MOVE_INFO::pos[TITLE_TARGET::PLAY];
 		startPos = pos;
 		t = 0.0f;
 		moveState = false;
-		target = nextTarget = TITLE_MOVE_INFO::target[TITLE_TARGET::PLAYERNUMBER];
+		target = nextTarget = TITLE_MOVE_INFO::target[TITLE_TARGET::PLAY];
 		speed = 0.005f;
-		Set( pos, target );
+
+		//振動関連
+		adjust = Vector3(0.0f, 0.0f, 0.0f);
+		shakeflag = false;
+		shakeTimer = 0;
+		wide = 0;
+
+		Set(pos + adjust, target + adjust);
 	}
 
 	//	デストラクタ
@@ -79,14 +86,19 @@
 		case VIEW_MODE::TITLE:
 			ModeTitle();
 			break;
+
+		case VIEW_MODE::INDIVIDUAL:
+			ModeIndividualSurveillance( target );
+			break;
 		}
 
-		shader3D->SetValue("ViewPos", m_Camera->GetPos());
-		shader3D->SetValue("matView", m_Camera->GetMatrix());
+		shader3D->SetValue("ViewPos", mainView->GetPos());
+		shader3D->SetValue("matView", mainView->GetMatrix());
 		q->Update();
 	}
 
-	void	Camera::Render()
+	//	描画
+	void	Camera::Render( void )
 	{
 		char	str[256];
 		sprintf_s( str, "t.x = %f\nt.y = %f\nt.z = %f\n", target.x, target.y, target.z);
@@ -140,7 +152,7 @@
 	//	固定カメラ
 	void	Camera::ModeFix( Vector3 target )
 	{
-		Set( pos, target );
+		Set(pos + adjust, target + adjust);
 	}
 
 	//	追いかけカメラ
@@ -155,11 +167,13 @@
 		//	弾力性
 		SpringMove(pos);
 
-		//	回転補間
-	//	Slerp( this->target, 0.1f );
+		////	回転補間
+		//Slerp( this->target, 0.1f );
 
+		//振動情報設定
+		Shake();
 		//	情報設定
-		Set( q->position, this->target );
+		Set(q->position + adjust, this->target + adjust);
 
 	}
 
@@ -168,13 +182,13 @@
 	{
 		Slerp( target, 0.1f );
 
-		Set( pos, this->target );
+		Set(pos + adjust, this->target + adjust);
 	}
 
 	//	リザルト用カメラ
 	void	Camera::ModeResult( void )
 	{
-		Set(Vector3(0.0f, 5.0f, 13.0f), Vector3(0.0f, 5.0f, -30.0f));
+		Set(Vector3(0.0f, 5.0f, 13.0f) + adjust, Vector3(0.0f, 5.0f, -30.0f) + adjust);
 	}
 
 	//	タイトル用カメラ
@@ -200,6 +214,16 @@
 		Slerp( nextTarget, 0.1f );
 
 		//	情報更新
+		Set(pos + adjust, this->target + adjust);
+	}
+
+	//	個々監視カメラ
+	void	Camera::ModeIndividualSurveillance( Vector3 target )
+	{
+		Slerp( target, 0.1f );
+
+		pos = target - Vector3( 0.0f, 10.0f, -10.0f );
+
 		Set( pos, this->target );
 	}
 	
@@ -227,7 +251,7 @@
 		if ( shakeflag ) 	return;
 		srand( 0 );
 		shakeflag = true;
-		this->wide = wide / ( float )shakeTimer;
+		this->wide = wide / ( float )timer;
 		this->shakeTimer = timer;
 	}
 
@@ -253,7 +277,6 @@
 		q->Update();
 
 	}
-
 
 //------------------------------------------------------------------------------------------
 //	数値計算
@@ -356,7 +379,6 @@
 		nextTarget = TITLE_MOVE_INFO::target[num];
 	}
 
-
 //****************************************************************************************
 //
 //	Springクラス
@@ -373,14 +395,14 @@
 //------------------------------------------------------------------------------------------
 	
 	//	コンストラクタ
-	Rubber::Rubber() : mass( FLT_MAX ), position( 0, 0, 0 ), velocity( 0, 0, 0 ),
+	Rubber::Rubber( void ) : mass( FLT_MAX ), position( 0, 0, 0 ), velocity( 0, 0, 0 ),
 						acceleration( 0, 0, 0 ), resultant( 0, 0, 0 ), init_flag( true )
 	{
 
 	}
 
 	//	デストラクタ
-	Rubber::~Rubber()
+	Rubber::~Rubber( void )
 	{
 
 	}
@@ -390,7 +412,7 @@
 //------------------------------------------------------------------------------------------
 
 	//	更新
-	void	Rubber::Update()
+	void	Rubber::Update( void )
 	{
 		static DWORD last = timeGetTime();
 		DWORD elapse = timeGetTime() - last;
@@ -398,8 +420,9 @@
 		last += elapse;
 
 	}
+	
 	//	情報のすべてを更新
-	void	Rubber::Integrate(float dt)
+	void	Rubber::Integrate( float dt )
 	{
 		assert(mass > 0);
 

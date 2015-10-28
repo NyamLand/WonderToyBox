@@ -77,7 +77,8 @@ private:
 	bool	donketsuBoostState;
 	int		worst;
 	int		lastBonus;
-	bool	newsflag;
+	bool	newsflag;    
+	int    timeStop;    //‰æ–Êˆê’â~—p
 
 public:
 	Vector3	InitPos[4];
@@ -89,7 +90,7 @@ public:
 	~GameManager( void );
 	bool	Initialize( void );
 	void	Release( void );
-	void	InitImage( void );
+	void	RetryInitialize( void );
 
 	//	XV
 	void	Update( void );
@@ -114,6 +115,8 @@ public:
 	bool	GetNewsFlag( void );
 	int		GetWorst( void );
 	int		GetMode( void );
+	int		GetRank(int player);   
+	int        GetTimeStop(void);
 	static	GameManager*	GetInstance( void );
 
 	//	î•ñİ’è
@@ -124,6 +127,8 @@ public:
 	void	SetLastBonusNews( void );
 	void	SetMode( const int& modeNum );
 	void	SetNewsFlag( const bool& flag );
+	void    SetShakeCamera(float wide, int timer);
+	void    SetTimeStop(int time);
 };
 #define	gameManager ( GameManager::GetInstance() )
 

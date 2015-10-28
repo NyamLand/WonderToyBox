@@ -34,7 +34,7 @@
 //*****************************************************************************************************************************
 
 	//	コンストラクタ
-	sceneMain::sceneMain( void ) : m_Stage( NULL ), playerNum( 0 ), stageType( 0 )
+	sceneMain::sceneMain(void) : m_Stage(NULL), playerNum(0), stageType(0), stageScale( 1.0f )
 	{
 		
 	}
@@ -66,10 +66,18 @@
 		iexLight::DirLight( shader3D, 0, &dir, 1.5f, 1.5f, 1.5f );
 
 		//	カメラ設定
-		m_Camera = new Camera();
+		mainView = new Camera();
+		
+		for ( int i = 0; i < 4; i++ )
+		{
+			//	カメラ初期化
+			playerView[i] = make_unique<Camera>();
 
-		//	変数初期化
-		timer = 0;
+			//	ワイプ初期化
+			playerWipe[i] = make_unique<iex2DObj>( 1280, 720, IEX2D_RENDERTARGET );
+		}
+
+		//	gameManagerから情報取得
 		playerNum = gameManager->GetPlayerNum();
 		stageType = gameManager->GetStageType();
 		gameStartCoinNum = 0;
@@ -114,7 +122,7 @@
 		backBuffer->Release();
 		SafeDelete( ShadowTex );
 		SafeDelete( RefTex );
-		SafeDelete( m_Camera );
+		SafeDelete( mainView );
 		SafeDelete( m_CollisionStage );
 		SafeDelete( m_CoinManager );
 		SafeDelete( m_BulletManager );
@@ -167,6 +175,7 @@
 		case 1:	//	森ステージ
 			m_CollisionStage = new iexMesh( "DATA/BG/Forest/Collision/collision_forest.IMO" );
 			m_Stage = new iexMesh( "DATA/BG/Forest/model/forest.IMO" );
+			m_Stage->SetScale( stageScale );
 			break;
 		}
 		
@@ -201,8 +210,8 @@
 	void	sceneMain::Update( void )
 	{
 		//	カメラ更新
-		m_Camera->SetPlayerInfo( characterManager->GetPos(0), characterManager->GetPos(1), characterManager->GetPos(2), characterManager->GetPos(3) );
-		m_Camera->Update( VIEW_MODE::CHASE, Vector3( 0.0f, 2.0f, 0.0f ) );
+		mainView->SetPlayerInfo( characterManager->GetPos(0), characterManager->GetPos(1), characterManager->GetPos(2), characterManager->GetPos(3) );
+		mainView->Update( VIEW_MODE::CHASE, Vector3( 0.0f, 2.0f, 0.0f ) );
 
 		//	UI
 		ui->Update( gameManager->GetMode() );
@@ -230,18 +239,7 @@
 
 		case GAME_MODE::TIMEUP:
 			FinishUpdate();
-
 			break;
-		}
-
-		if (KEY(KEY_D) == 1)
-		{
-			//particle->Hit(Vector3(0, 10.0f, 0), 20, 0.5f);
-			//particle->Smoke(Vector3(0, 10.0f, 0), 20, 0.5f);
-		//	particle->Aura(Vector3(0, 10.0f, 0), 3, 0.5f);
-			//particle->Arrow(Vector3(0, 15.0f, 0), 6, 0.5f, 100);
-
-
 		}
 
 		if ( ui->GetChangeFlag() )
@@ -348,11 +346,12 @@
 	//	描画
 	void	sceneMain::Render( void )
 	{
-		m_Camera->Activate();
-		m_Camera->Clear();
+		//	画面クリア
+		mainView->Activate();
+		mainView->Clear();
 
 		//	影
-		RenderShadowBuffer();
+		//RenderShadowBuffer();
 
 		//	オブジェクト描画
 		if ( characterManager->GetParameterState( 0, PARAMETER_STATE::SLIP ) )
@@ -383,10 +382,10 @@
 	{
 		//	HDR用バッファへ切り替え
 		hdr->RenderTarget();
-		m_Camera->SetViewport( 0, 0, 512, 512 );
-		m_Camera->SetProjection( 0.8f, 0.1f, 300.0f, 1280.0f / 720.0f );
-		m_Camera->Activate();
-		m_Camera->Clear();
+		mainView->SetViewport( 0, 0, 512, 512 );
+		mainView->SetProjection( 0.8f, 0.1f, 300.0f, 1280.0f / 720.0f );
+		mainView->Activate();
+		mainView->Clear();
 
 		//	物体の描画
 		m_Stage->Render( shader3D, "specular" );
@@ -461,15 +460,58 @@
 	void	sceneMain::RenderRef( void )
 	{
 		RefTex->RenderTarget();
-		m_Camera->SetViewport();
+		mainView->SetViewport();
 
-		m_Camera->Activate();
-		m_Camera->Clear();
+		mainView->Activate();
+		mainView->Clear();
 
 		//	物体描画
 		m_Stage->Render( shader3D, "Refrect" );
 		characterManager->Render( shader3D, "Refrect" );
 		shader3D->SetValue( "RefMap", RefTex );
+
+		//	レンダーターゲットの復元
+		iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );
+	}
+
+	//	ワイプ描画
+	void	sceneMain::RenderWipe( void )
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			//	カメラ更新
+			playerView[i]->Update( VIEW_MODE::INDIVIDUAL, characterManager->GetPos( i ) );
+
+			//	レンダーターゲットを切り替え
+			playerWipe[i]->RenderTarget();
+
+			//	画面クリア
+			playerView[i]->Activate();
+			playerView[i]->Clear();
+
+			//	影
+			RenderShadowBuffer();
+
+			//	オブジェクト描画
+			if (characterManager->GetParameterState(0, PARAMETER_STATE::SLIP))
+			{
+				m_Stage->Render(shader3D, "full_s");
+			}
+			else
+			{
+				m_Stage->Render(shader3D, "full_s");
+			}
+			characterManager->Render(shader3D, "toon");
+			m_CoinManager->Render();
+			m_BulletManager->Render();
+			itemManager->Render();
+
+			//	パーティクル描画
+			particle->Render();
+
+			//　エフェクト描画
+			m_Effect->Render();
+		}
 
 		//	レンダーターゲットの復元
 		iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );

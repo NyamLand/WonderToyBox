@@ -14,6 +14,7 @@
 #include	"CoinManager.h"
 #include	"sceneResult.h"
 #include	"CharacterManager.h"
+#include	"Camera.h"
 #include	"GameManager.h"
 
 //*******************************************************************************
@@ -33,8 +34,8 @@
 	//	コンストラクタ
 	GameManager::GameManager( void )
 	{
-		InitPos[0] = Vector3( -10.0f, 10.0f, 0.0f );
-		InitPos[1] = Vector3( 10.0f, 10.0f, 0.0f );
+		InitPos[0] = Vector3( -10.0f, 10.0f, 10.0f );
+		InitPos[1] = Vector3( 10.0f, 10.0f, 10.0f );
 		InitPos[2] = Vector3( -10.0f, 10.0f, -15.0f );
 		InitPos[3] = Vector3( 10.0f, 10.0f, -15.0f );
 	}
@@ -48,7 +49,7 @@
 	//	初期化
 	bool	GameManager::Initialize( void )
 	{
-		for ( int i = 0; i < 4; i++ )
+		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			charatype[i] = 0;
 			coinNum[i] = 0;
@@ -57,8 +58,9 @@
 		stageType = 0;
 		mode = 0;
 		donketsuBoostState = false;
-		lastBonus = rand() % 4;
-		
+		lastBonus = rand() % PLAYER_MAX;
+		timeStop = 0;
+
 		//	ゲームデータテキストを読み込む
 		LoadTextData();
 		timer = timelimit;
@@ -72,6 +74,24 @@
 
 	}
 
+	//	リトライ用初期化
+	void	GameManager::RetryInitialize( void )
+	{
+		for ( int i = 0; i < PLAYER_MAX; i++ )
+		{
+			coinNum[i] = 0;
+		}
+
+		mode = 0;
+		donketsuBoostState = false;
+		lastBonus = rand() % PLAYER_MAX;
+		timeStop = 0;
+
+		//	ゲームデータテキストを読み込む
+		LoadTextData();
+		timer = timelimit;
+	}
+
 //-------------------------------------------------------------------------
 //	更新・描画
 //-------------------------------------------------------------------------
@@ -80,7 +100,9 @@
 	void	GameManager::Update( void )
 	{
 		//	タイマー更新
-		timer--;
+		if (timeStop > 0) timeStop--;
+		else timer--;
+
 
 		//	残り時間３０秒でどんけつ演出へ
 		if ( timer == 30 * SECOND )
@@ -162,7 +184,7 @@
 
 		int work(coinNum[0]);
 		int Min(0);
-		for (int i = 1; i < 4; i++)
+		for (int i = 1; i < PLAYER_MAX; i++)
 		{
 			if (coinNum[i] < work)
 			{
@@ -275,6 +297,49 @@
 		return	out;
 	}
 
+	//画面一時停止残り秒数取得
+	int		GameManager::GetTimeStop( void )
+	{
+		int out = this->timeStop;
+		return out;
+	}
+
+	//　順位更新
+	int		GameManager::GetRank( int player )
+	{
+		int num_coin[PLAYER_MAX], temp_coin[PLAYER_MAX];
+		for (int i = 0; i < PLAYER_MAX; i++)
+		{
+			num_coin[i] = temp_coin[i] = GetCoinNum(i);
+		}
+
+		for (int i = 0, temp; i < PLAYER_MAX - 1; i++)
+		{
+			for (int j = PLAYER_MAX - 1; j > i; j--)
+			{
+				if (temp_coin[j - 1] > temp_coin[j])
+				{
+					temp = temp_coin[j];
+					temp_coin[j] = temp_coin[j - 1];
+					temp_coin[j - 1] = temp;
+				}
+			}
+		}
+
+		for (int i = 0; i < PLAYER_MAX; i++)
+		{
+			for (int j = 0; j < PLAYER_MAX; j++)
+			{
+				if (num_coin[player] == temp_coin[j])
+				{
+					return PLAYER_MAX - j;
+				}
+			}
+		}
+
+		return	0;
+	}
+
 	//	実体取得
 	GameManager*	GameManager::GetInstance( void )
 	{
@@ -322,3 +387,14 @@
 		newsflag = flag;
 	}
 
+	// カメラの振動地設定
+	void	GameManager::SetShakeCamera( float wide, int timer )
+	{
+		if ( mainView ) mainView->ShakeSet( wide, timer );
+	}
+
+	//画面一時停止時間設定
+	void	GameManager::SetTimeStop( int time )
+	{
+		this->timeStop = time;
+	}

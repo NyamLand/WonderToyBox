@@ -33,7 +33,7 @@
 //-------------------------------------------------------------------------
 
 	//	コンストラクタ
-	Effect::Effect(void) : aura(nullptr), isAura(false), _adjustV(0)
+	Effect::Effect( void ) : aura( nullptr ), isAura( false ), _adjustV( 0 )
 	{
 	
 	}
@@ -41,7 +41,7 @@
 	//	デストラクタ
 	Effect::~Effect( void )
 	{
-		SafeDelete(aura);
+		SafeDelete( aura );
 		SafeDelete( pow_up.obj );
 		
 		for ( int i = 0; i < 4; i++ )
@@ -146,7 +146,7 @@
 	{
 		if(isAura)	aura->Render(shader3D,"effect_add");
 		for (int i = 0; i < 4; i++){
-			iexPolygon::Render3D(circle_out[i].poligon, 2, circle_pic[i], RS_COPY);
+			iexPolygon::Render3D(circle_out[i].poligon, 2, circle_pic[i], shader3D, "alpha" );
 		}
 
 		for (int i = 0; i < 4; i++){
@@ -181,7 +181,7 @@
 			c->poligon[1].x = POS[0]	+ c->c_pos.x;
 			c->poligon[1].y = POS[2]	+ c->c_pos.y;
 			c->poligon[1].z = POS[0]	+ c->c_pos.z;
-			c->poligon[1].tu = 1.0;
+			c->poligon[1].tu = 1.0f;
 			c->poligon[1].tv = 0.0f;
 			c->poligon[1].color = 0xFFFFFFFF;
 
