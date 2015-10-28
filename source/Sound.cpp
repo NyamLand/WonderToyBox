@@ -48,7 +48,9 @@
 		IEX_SetWAV( SE::POWER_SE, "DATA/Sound/attack-p.wav" );
 		IEX_SetWAV( SE::QUICK_SE, "DATA/Sound/attack-q.wav" );
 		IEX_SetWAV( SE::COIN_SE, "DATA/Sound/coin.wav" );
+		IEX_SetWAV( SE::ITEM_SE, "DATA/Sound/item-get.wav" );
 		IEX_SetWAV( SE::DECIDE_SE, "DATA/Sound/decide.wav" );
+		IEX_SetWAV(SE::EVENT_SE, "DATA/Sound/event.wav");
 		IEX_SetWAV( SE::NEWS_SE, "DATA/Sound/decision3.wav" );
 		isPlay = false;
 	}

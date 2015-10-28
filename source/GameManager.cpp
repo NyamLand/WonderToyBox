@@ -14,6 +14,7 @@
 #include	"CoinManager.h"
 #include	"sceneResult.h"
 #include	"CharacterManager.h"
+#include	"Sound.h"
 #include	"Camera.h"
 #include	"GameManager.h"
 
@@ -127,8 +128,11 @@
 		if ( timer == 1 * MINUTE )		newsflag = true;
 
 		//	ƒCƒxƒ“ƒgÝ’è
-		if ( timer == 42 * SECOND )	ui->SetAlertFlag( true );
-		if ( timer == 40 * SECOND )	eventManager->SetEvent( Random::GetInt( 0, EVENT_MODE::NONE - 1 ) );
+		if (timer == 42 * SECOND)	{
+			ui->SetAlertFlag(true);
+			sound->PlaySE(SE::EVENT_SE);
+		}
+		if (timer == 40 * SECOND) eventManager->SetEvent(Random::GetInt(0, EVENT_MODE::NONE - 1));
 
 
 		if ( timer != 0 )
