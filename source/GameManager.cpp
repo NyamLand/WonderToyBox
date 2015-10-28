@@ -14,6 +14,8 @@
 #include	"CoinManager.h"
 #include	"sceneResult.h"
 #include	"CharacterManager.h"
+#include	"Sound.h"
+#include	"Camera.h"
 #include	"GameManager.h"
 
 //*******************************************************************************
@@ -33,8 +35,8 @@
 	//	コンストラクタ
 	GameManager::GameManager( void )
 	{
-		InitPos[0] = Vector3( -10.0f, 10.0f, 0.0f );
-		InitPos[1] = Vector3( 10.0f, 10.0f, 0.0f );
+		InitPos[0] = Vector3( -10.0f, 10.0f, 10.0f );
+		InitPos[1] = Vector3( 10.0f, 10.0f, 10.0f );
 		InitPos[2] = Vector3( -10.0f, 10.0f, -15.0f );
 		InitPos[3] = Vector3( 10.0f, 10.0f, -15.0f );
 	}
@@ -58,8 +60,8 @@
 		mode = 0;
 		donketsuBoostState = false;
 		lastBonus = rand() % PLAYER_MAX;
-		stageScale = 0.0f;
-		
+		timeStop = 0;
+
 		//	ゲームデータテキストを読み込む
 		LoadTextData();
 		timer = timelimit;
@@ -73,6 +75,24 @@
 
 	}
 
+	//	リトライ用初期化
+	void	GameManager::RetryInitialize( void )
+	{
+		for ( int i = 0; i < PLAYER_MAX; i++ )
+		{
+			coinNum[i] = 0;
+		}
+
+		mode = 0;
+		donketsuBoostState = false;
+		lastBonus = rand() % PLAYER_MAX;
+		timeStop = 0;
+
+		//	ゲームデータテキストを読み込む
+		LoadTextData();
+		timer = timelimit;
+	}
+
 //-------------------------------------------------------------------------
 //	更新・描画
 //-------------------------------------------------------------------------
@@ -81,7 +101,9 @@
 	void	GameManager::Update( void )
 	{
 		//	タイマー更新
-		timer--;
+		if (timeStop > 0) timeStop--;
+		else timer--;
+
 
 		//	残り時間３０秒でどんけつ演出へ
 		if ( timer == 30 * SECOND )
@@ -106,8 +128,11 @@
 		if ( timer == 1 * MINUTE )		newsflag = true;
 
 		//	イベント設定
-		if ( timer == 42 * SECOND )	ui->SetAlertFlag( true );
-		if ( timer == 40 * SECOND )	eventManager->SetEvent( Random::GetInt( 0, EVENT_MODE::NONE - 1 ) );
+		if (timer == 42 * SECOND)	{
+			ui->SetAlertFlag(true);
+			sound->PlaySE(SE::EVENT_SE);
+		}
+		if (timer == 40 * SECOND) eventManager->SetEvent(Random::GetInt(0, EVENT_MODE::NONE - 1));
 
 
 		if ( timer != 0 )
@@ -201,13 +226,6 @@
 
 		//	合計値をタイムリミット変数へ代入
 		timelimit = minute * MINUTE + second * SECOND;
-
-		//	コメントを読み飛ばす
-		ifs >> buffer;
-		ifs.getline( buffer, 50 );
-
-		//	ステージのスケールをよみこんで変数へ代入
-		ifs >> stageScale;
 	}
 
 //-------------------------------------------------------------------------
@@ -283,8 +301,15 @@
 		return	out;
 	}
 
+	//画面一時停止残り秒数取得
+	int		GameManager::GetTimeStop( void )
+	{
+		int out = this->timeStop;
+		return out;
+	}
+
 	//　順位更新
-	int        GameManager::GetRank( int player )
+	int		GameManager::GetRank( int player )
 	{
 		int num_coin[PLAYER_MAX], temp_coin[PLAYER_MAX];
 		for (int i = 0; i < PLAYER_MAX; i++)
@@ -318,13 +343,6 @@
 
 		return	0;
 	}
-
-	//	ステージスケール取得
-	float		GameManager::GetStageScale( void )const 
-	{
-		return	stageScale;
-	}
-
 
 	//	実体取得
 	GameManager*	GameManager::GetInstance( void )
@@ -371,4 +389,16 @@
 	void	GameManager::SetNewsFlag( const bool& flag )
 	{
 		newsflag = flag;
+	}
+
+	// カメラの振動地設定
+	void	GameManager::SetShakeCamera( float wide, int timer )
+	{
+		if ( mainView ) mainView->ShakeSet( wide, timer );
+	}
+
+	//画面一時停止時間設定
+	void	GameManager::SetTimeStop( int time )
+	{
+		this->timeStop = time;
 	}

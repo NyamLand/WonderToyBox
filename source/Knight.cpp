@@ -58,6 +58,10 @@
 		if ( obj == nullptr )
 			obj = new iex3DObj( "DATA/CHR/Knight/Knight_Dammy.IEM" );
 
+		//	ÉXÉPÅ[Éãê›íË
+		obj->SetScale( 0.05f );
+		obj->Update();
+
 		if ( obj == nullptr )	return	false;
 		return	true;
 	}
@@ -84,10 +88,10 @@
 		stringPos.y -= 170.0f;
 		sprintf_s( str, "Ç»\nÇ¢\nÇ∆\nÅ´" );
 		DrawString( str, ( int )stringPos.x, ( int )stringPos.y );
-		sprintf_s( str, "x = %f\ny = %f\nz = %f\n", pos.x, pos.y, pos.z );
-		DrawString( str, 20, 300 );
-		sprintf_s( str, "isGround = %d", isGround );
-		DrawString( str, 20, 500 );
+		//sprintf_s( str, "x = %f\ny = %f\nz = %f\n", pos.x, pos.y, pos.z );
+		//DrawString( str, 20, 300 );
+		//sprintf_s( str, "isGround = %d", isGround );
+		//DrawString( str, 20, 500 );
 	}
 
 //-----------------------------------------------------------------------------------

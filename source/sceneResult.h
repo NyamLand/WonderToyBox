@@ -7,6 +7,7 @@
 //	sceneResultクラス
 //
 //*******************************************************************************
+
 class sceneResult : public	Scene
 {
 private:
@@ -23,7 +24,9 @@ private:
 		int		p_addCoin;
 	};
 
-	struct NUMBER
+
+	//	数字情報
+	struct NUMBER_INFO
 	{
 		int		hundred;		//コイン三桁目
 		int		ten;			//コイン二桁目
@@ -31,16 +34,29 @@ private:
 		bool	H_flg;			//百の位レンダー用フラグ
 	};
 
+
+	//	数字描画情報
+	struct NUMBER_DRAW_INFO
+	{
+		NUMBER_INFO	numInfo;		//	数字情報
+		POINT		hundredPos;		//	百の位の座標
+		POINT		tenPos;			//	十の位の座標
+		POINT		onePos;			//	一の位の座標
+		POINT		center;			//	中心座標（十の位の座標）
+		float		length;			//	中心からの距離
+	};
+
+
 	struct RANK
 	{
 		int		rank;
 		bool	rankflg;		//	順位用フラグ
 	};
+
 private:
 	RESULT_INFO	resultInfo[4];
-	NUMBER		number[4];
-	NUMBER		BonusNumber[4];
-	NUMBER		totalNumber[4];
+	NUMBER_INFO	number[4];
+	NUMBER_INFO	BonusNumber[4];
 	RANK		rank[4];
 
 	//	ソート用
@@ -65,7 +81,6 @@ private:
 	bool	bonusflg;		//	ボーナス値用フラグ
 	bool	addCoinflg;		//	コイン合算値用フラグ
 
-
 	//	画像データ関係
 	iex2DObj*	back;		//	背景
 	iex2DObj*	r_number;	//	コインの枚数
@@ -87,7 +102,8 @@ public:
 	void	ResultUpdate( void );
 	void	SelectUpdata( void );
 
-	void	ResultRender(NUMBER& number, Vector3 Pos);
+	void	ResultRender(NUMBER_INFO& number, Vector3 Pos);
+
 	void	RankRender(int ranking);
 	void	SelectRender( void );
 	
@@ -99,7 +115,8 @@ public:
 	void	SetRank( void );
 	void	Production( void );						//リザルトの演出用関数
 	void	ProductionRotation( int playerNum );	//コイン枚数回転関数
-	void	ProductionCoinHandOff(NUMBER& number, int coinNum);	//コイン枚数引き渡し
+	void	ProductionCoinHandOff(NUMBER_INFO& number, int coinNum);	//コイン枚数引き渡し
+
 };
 //*******************************************************************************
 #endif // !__SCENERESULT_H__

@@ -52,7 +52,7 @@ iexMesh*	Collision::obj = NULL;
 	float	Collision::GetHeight( const Vector3	pos )
 	{
 		Vector3	p_pos = Vector3( pos.x, pos.y + 3.0f, pos.z );
-		Vector3	vec = Vector3(0.0f, -1.0f, 0.0f);
+		Vector3	vec = Vector3( 0.0f, -1.0f, 0.0f );
 		Vector3	out;
 		float	dist = 1000.0f;
 
@@ -62,7 +62,6 @@ iexMesh*	Collision::obj = NULL;
 			return	out.y;
 
 	}
-
 
 	//　ステージ高さ取得（判定距離指定）
 	float	Collision::GetHeight( const Vector3	pos, float dist )
@@ -146,20 +145,21 @@ iexMesh*	Collision::obj = NULL;
 	}
 
 	//	地面との当たり判定
-	bool	Collision::CheckDown( Vector3& pos, Vector3& p_move )
+	bool	Collision::CheckDown( Vector3& pos, Vector3& p_move, Vector3& Out )
 	{
 		Vector3	p = pos + Vector3( 0.0f, 3.0f, 0.0f );
 		Vector3 vec = Vector3( 0.0f, -1.0f, 0.0f );
 		Vector3	out;
-		float	dist = 100.0f;
 
+		float	dist = 1000.0f;
 		if ( obj->RayPick( &out, &p, &vec, &dist ) != -1 )
 		{
+			Out = out;
+
 			if ( pos.y < out.y )
 			{
 				pos.y = out.y;
 				p_move.y = 0.0f;
-
 				return	true;
 			}
 		}

@@ -18,24 +18,10 @@ namespace
 		{
 			TITLE,
 			MENU,
-			SELECT_PLAYERNUM,
-			SELECT_CHARACTER,
-			SELECT_STAGE,
-			SELECT_CHECK,
+			PLAY,
 			OPTION,
 			CREDIT,
 			MOVE_MAIN,
-		};
-	}
-
-	//	メニューモード
-	namespace SELECT_MODE
-	{
-		enum
-		{
-			PLAYER_NUM,
-			CHARACTER,
-			STAGE,
 		};
 	}
 }
@@ -52,23 +38,6 @@ private:	//	構造体
 	{
 		LPSTR	name;		//	キャラクター名
 		bool	select;		//	選択されているか
-	};
-
-	//	選択情報
-	struct SetInfo
-	{
-		int		characterType[4];
-		int 	playerNum;		//　何人で遊ぶ？
-		int		stageType;		//　どのステージ？
-		bool	ready;			//	準備OKか？
-		int		step_cs;
-	};
-
-	//	プレイヤー選択情報
-	struct PlayerSelectInfo
-	{
-		int		num;
-		bool	isSelect;
 	};
 
 	//	カメラ用パラメータ構造体
@@ -111,7 +80,6 @@ private:	//	構造体
 		int		mode;
 		int		select_mode;
 		int		menu_num;
-		PlayerSelectInfo	playerselectInfo[4];
 	};
 
 private:
@@ -123,7 +91,6 @@ private:
 
 	//	ゲーム設定用パラメータ
 	CharacterInfo	characterInfo[CHARACTER_TYPE::MAX];
-	SetInfo		setInfo;
 	int				mode;
 
 	//	各モード用パラメータ
@@ -138,7 +105,6 @@ public:
 	bool	Initialize( void );
 	void	TitleInitialize( void );
 	void	MenuInitialize( void );
-	void	SelectInitialize( void );
 
 	//	更新・描画
 	void	Update( void );
@@ -155,29 +121,9 @@ public:
 	void	MenuUpdate( void );
 	void	MenuRender( void );
 
-	//	選択
-	void	SelectUpdate( void );
-	void	SelectRender( void );
-
-	//　人数選択
-	void	SelectPlayerNumUpdate( void );
-	void	SelectPlayerNumRender( void );
-
-	//　キャラ選択
-	void	SelectCharacterUpdate( void );
-	void	SelectCharacterRender( void );
-
-	//	キャラクター選択動作
-	void	SelectPlayer( void );
-	void	SelectCPU( void );
-	
-	//　ステージ選択
-	void	SelectStageUpdate( void );
-	void	SelectStageRender( void );
-	
-	//　最終確認
-	void	SelectCheckUpdate( void );
-	void	SelectCheckRender( void );
+	//　選択画面へ
+	void	MoveSelectUpdate( void );
+	void	MoveSelectRender( void );
 
 	//　オプション
 	void	OptionUpdate( void );

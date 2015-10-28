@@ -13,10 +13,12 @@
 #include	"Knight.h"
 #include	"Princess.h"
 #include	"Squirrel.h"
+#include	"Scavenger.h"
 #include	"Tiger_CPU.h"
 #include	"Knight_CPU.h"
 #include	"Princess_CPU.h"
 #include	"Squirrel_CPU.h"
+#include	"Scavenger_CPU.h"
 
 //	class
 class CharacterManager
@@ -42,6 +44,7 @@ public:
 	//	çXêVÅEï`âÊ
 	void	Update( void );
 	void	Render( iexShader* shader = nullptr, LPSTR technique = nullptr );
+	void	DrawDebug();
 
 	//	ìÆçÏä÷êî
 	void	DonketsuBoost();
@@ -57,12 +60,14 @@ public:
 	Vector3	GetPos( int player )const;
 	Vector3	GetDamageColor( int player )const;
 	float		GetAngle( int player )const;
+	float		GetTotalSpeed( int player )const;
 	bool		GetUnrivaled( int player )const;
 	bool		GetCanHyper( int player )const;
 	bool		GetParameterState( int player, int type )const;
 	int			GetAttackParam( int player )const;
 	int			GetPlayerNum( int playerNum )const;
 	int			GetPower( int playerNum )const;
+	int			GetTotalPower( int player )const;
 	int			GetRank( int player )const;
 	int			GetMode( int player )const;
 	int			GetAIMode(int player)const;
@@ -75,7 +80,7 @@ public:
 	void		SetKnockBackVec( int player, Vector3 vec );
 	void		SetMode( int player, int mode );
 	void		SetAIMode( int player, int mode );
-	void		SetBoosting( int player, bool boosting );
+	//void		SetBoosting( int player, bool boosting );
 	void		SetLeanFrame( int player, int leanframe );
 	void		SetPassColor( int player, Vector3 color );
 	void		SetParameterInfo( int player, int parameterInfo );

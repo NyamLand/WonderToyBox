@@ -176,6 +176,7 @@
 
 		//	構造体初期化
 		ImageInitialize( titleInfo.textImage, 1300, 750, 800, 100, TITLE_TEXT_SRCPOS_INFO::MENU_SRC_POS_X, TITLE_TEXT_SRCPOS_INFO::MENU_SRC_POS_Y, 1024, 128 );
+		titleInfo.textImage.renderflag = false;
 		
 		//	変数初期化
 		titleInfo.mode = 0;
@@ -189,7 +190,7 @@
 	//	メイン用初期化
 	void	UI::MainInitialize( void )
 	{
-		timer = new iex2DObj("DATA/BG/number.png");
+		timer.obj = new iex2DObj("DATA/BG/number.png");
 		coinbar = new iex2DObj("DATA/BG/coin_gage.png");
 		face = new iex2DObj("DATA/UI/chara_emotion.png");
 		countImage.obj = new iex2DObj("DATA/UI/bfUI.png");
@@ -226,7 +227,7 @@
 	//	メイン用初期化
 	void	UI::MainRelease( void )
 	{
-		SafeDelete( timer );
+		SafeDelete( timer.obj );
 		SafeDelete( coinbar );
 		SafeDelete( face );
 		SafeDelete( countImage.obj );
@@ -308,6 +309,7 @@
 			TimerUpdate();
 			NewsBarUpdate();
 			CoinBarUpdate();
+			LastProduction();
 
 			//　どんけつの顔は「怒」に。（時間管理してるとこで↓の処理書きたいけどこれから変更ありそうやからとりあえずここに書いてる許してニャンっ♪）
 			state_type[gameManager->GetWorst()] = FACE_INFO::Angry;
@@ -361,7 +363,8 @@
 			break;
 
 		case GAME_MODE::CLIMAX:
-			TimerRender();
+			//TimerRender();
+			LastProductionRender();
 			NewsBarRender();
 			CoinBarRender();
 
@@ -467,10 +470,9 @@
 	//	タイマー初期化
 	void	UI::TimerInitialize( void )
 	{
-		x = 200;
-		y = 0;
-		sx = 64;
-		sy = 64;
+
+		//	構造体初期化
+		ImageInitialize(timer, 512, 30, 64, 64, 64, 0, 64, 64);
 		for ( int i = 0; i < 2; i++ )
 		{
 			minute[i] = 0;
@@ -525,6 +527,15 @@
 		//	画像構造体初期化
 		ImageInitialize( alertImage, 640, 360, 200, 200, 0, 0, 256, 256 );
 		alertImage.renderflag = true;
+	}
+
+	//	HurryUp演出初期化
+	void	UI::HurryUpInitialize( void )
+	{
+		hurryInfo.alpha = 0.0f;
+		hurryInfo.flag = false;
+		hurryInfo.param = 0.0f;
+		hurryInfo.timer = 0;
 	}
 	
 //------------------------------------------------------------------------------
@@ -716,6 +727,22 @@
 		}
 	}
 
+	//	HurryUp演出
+	void	UI::HurryUpdate( void )
+	{
+		hurryInfo.param += D3DX_PI / 30.0f;
+		hurryInfo.alpha = 0.1f + 0.1f * sinf( hurryInfo.param );
+
+		hurryInfo.timer++;
+		if ( hurryInfo.timer % 15 == 0 )	alertImage.renderflag = !alertImage.renderflag;
+	}
+
+	//	時間警告演出
+	void	UI::LastProduction( void )
+	{
+		FlashingUpdate(timer, 0.5f);
+	}
+
 //------------------------------------------------------------------------------
 //	メイン描画
 //------------------------------------------------------------------------------
@@ -751,10 +778,11 @@
 	//	タイマー描画
 	void	UI::TimerRender( void )
 	{
-		timer->Render( x + 64 * 0, y, 64, 64, second * 64, 0, sx, sy );
-		timer->Render( x + 64 * 1, y, 64, 64, 10 * 64, 0, sx, sy );
-		timer->Render( x + 64 * 2, y, 64, 64, minute[0] * 64, 0, sx, sy );
-		timer->Render( x + 64 * 3, y, 64, 64, minute[1] * 64, 0, sx, sy );
+		
+		RenderImage( timer, timer.sx * second		, timer.sy, timer.sw, timer.sh, IMAGE_MODE::NORMAL, timer.x + timer.w * 0, timer.y );
+		RenderImage( timer, timer.sx * 10			, timer.sy, timer.sw, timer.sh, IMAGE_MODE::NORMAL, timer.x + timer.w * 1, timer.y  );
+		RenderImage( timer, timer.sx * minute[0]	, timer.sy, timer.sw, timer.sh, IMAGE_MODE::NORMAL, timer.x + timer.w * 2, timer.y  );
+		RenderImage( timer, timer.sx * minute[1]	, timer.sy, timer.sw, timer.sh, IMAGE_MODE::NORMAL, timer.x + timer.w * 3, timer.y  );
 
 	}
 
@@ -796,6 +824,22 @@
 
 		//	警告画像描画
 		RenderImage( alertImage, 0, 0, 256, 256, IMAGE_MODE::NORMAL );
+	}
+
+	//	時間警告描画
+	void	UI::LastProductionRender( void )
+	{
+		//	タイマー文字色を赤へ
+		timer.sy = 64;
+
+		RenderImage(timer, timer.sx * second	, timer.sy, timer.sw, timer.sh, IMAGE_MODE::FLASH, timer.x + timer.w * 0, timer.y);
+		RenderImage(timer, timer.sx * 10		, timer.sy, timer.sw, timer.sh, IMAGE_MODE::FLASH, timer.x + timer.w * 1, timer.y);
+		RenderImage(timer, timer.sx * minute[0]	, timer.sy, timer.sw, timer.sh, IMAGE_MODE::FLASH, timer.x + timer.w * 2, timer.y);
+		RenderImage(timer, timer.sx * minute[1]	, timer.sy, timer.sw, timer.sh, IMAGE_MODE::FLASH, timer.x + timer.w * 3, timer.y);
+
+		//	タイマー文字色を白へ
+		timer.sy = 0;
+
 	}
 
 //------------------------------------------------------------------------------
@@ -890,6 +934,12 @@
 		alertInfo.flag = flag;
 	}
 
+	//	HurryUpフラグ設定
+	void	UI::SetHurryFlag( bool flag )
+	{
+		hurryInfo.flag = flag;
+	}
+
 	//	飛び入り設定
 	void	UI::SetFlyingIn( int type )
 	{
@@ -922,20 +972,8 @@
 			SetImageSrcPos( 0, 256 );
 			break;
 
-		case TITLE_MODE::SELECT_PLAYERNUM:
+		case TITLE_MODE::PLAY:
 			SetImageSrcPos( 0, 384 );
-			break;
-
-		case TITLE_MODE::SELECT_CHARACTER:
-			SetImageSrcPos( 0, 512 );
-			break;
-
-		case	TITLE_MODE::SELECT_STAGE:
-			SetImageSrcPos( 0, 640 );
-			break;
-
-		case TITLE_MODE::SELECT_CHECK:
-			SetImageSrcPos( 0, 768 );
 			break;
 
 		case TITLE_MODE::MOVE_MAIN:

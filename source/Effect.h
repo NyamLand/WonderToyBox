@@ -17,6 +17,29 @@ private:
 		Vector3		c_pos;
 	}Circle;
 
+	struct EFF_VERTEX
+	{
+		LVERTEX	v[4];		//	ポリゴン
+		float			angle;	//	向き
+	};
+
+	//	シールド本体
+	struct SHIELD
+	{
+		EFF_VERTEX		v[4];			//	ポリゴン情報
+		Vector3				pos[4];		//	ポリゴン座標
+	};
+
+	//	シールド用情報
+	struct SHIELD_INFO
+	{
+		iex2DObj*	obj;
+		SHIELD	shield[4];
+		Vector3	pos[4];
+		float	scale;
+		float	r;
+		bool	state[4];
+	};
 private:
 	iexMesh*	aura;
 	bool		isAura;
@@ -31,21 +54,28 @@ private:
 	Vector3		pow_pos;
 	int			pow_time;
 
+	SHIELD_INFO	shieldInfo;
+	
 public:
 	//	初期化・解放
 	Effect( void );
 	~Effect( void );
-
 	void	Initialize();
+	void	ShieldInitialize( void );
 
 	//	更新・描画
 	void	Spin( void );
 	void	Update( void );
 	void	Render( void );
+	void	RenderShield( void );
 
-	//	情報更新
+	//	情報設定
 	void	PoligonSet( Circle* );
 	void	CirclePosSet( Circle*, int );
+	void	SetShield( int player, bool state );
+
+	//	動作関数
+	void	Shield( void );
 
 	//	情報変換
 	void	LVChange( LVERTEX& l,Vector3& p );

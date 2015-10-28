@@ -73,7 +73,8 @@ namespace
 	{
 		enum
 		{
-			KNIGHT,		//	騎士
+			//KNIGHT,		//	騎士
+			SCAVENGER,		//掃除屋
 			PRINCESS,	//	姫
 			SQUIRREL,	//	リス
 			TIGER,			//	トラ
@@ -103,7 +104,8 @@ namespace
 		//	キャラクター名文字列
 		const		LPSTR	characterName[CHARACTER_TYPE::MAX] =
 		{
-			"ナイト",
+			//"ナイト",
+			"掃除屋"
 			"プリンセス",
 			"リス",
 			"とら",
@@ -119,7 +121,7 @@ private:
 	enum MOTION_DATA
 	{
 		STAND,					//	立ち
-		RUN,						//	走り
+		RUN,					//	走り
 		ATTACK1,				//	攻撃１段階目
 		POSTURE,				//	構え
 		JUMP,					//	ジャンプ
@@ -174,6 +176,7 @@ protected:
 		int		count_wait;		//　待機時間（１秒未満）
 		int		count_run;		//	歩く時間（２～４秒）
 		int		count_runaway;	//　逃げ時間
+		int		count_attack;	//　攻撃時間（キャラに依存）
 		int		count_guard;	
 	};
 
@@ -189,6 +192,16 @@ protected:
 	{
 		int		power;
 		float	speed;
+		int		boostPower;		//　→子クラスで各々の値を初期化して
+		float	boostSpeed;		//　→子クラスで各々の値を初期化して
+	};
+
+	struct SHADOW_INFO
+	{
+		iex2DObj*	obj;
+		Vector3		pos;
+		LVERTEX	v[4];
+		float			scale;
 	};
 
 protected:
@@ -209,7 +222,7 @@ protected:
 	bool			unrivaled;
 	bool			isGround;
 	bool			canHyper;
-	bool			boosting;
+	//bool			boosting;	//　→ PARAMETER_INFO型の boost
 	bool			isPlayer;
 	bool			jumpState;
 	bool			checkWall;
@@ -229,6 +242,7 @@ protected:
 	AI_INFO						aiInfo;
 	SLIP_INFO						slipInfo;
 	PLUS_STATUS_INFO		plusStatusInfo;
+	SHADOW_INFO				shadow;
 
 	//	状態	
 	PARAMETER_INFO		slip;
@@ -253,6 +267,7 @@ public:
 	~BaseChara( void );
 	virtual	bool	Initialize( int playerNum, Vector3 pos, bool isPlayer );
 	virtual	bool	Initialize( int playerNum, Vector3 pos );
+	virtual	void	ShadowInitialize( void );
 	void	Release( void );
 
 	//	更新・描画
@@ -279,12 +294,14 @@ public:
 	void	KnockBackLeanBackWard( void );
 	void	FallCheck( void );
 	void	ParameterAdjust( void );
+	void	ShadowUpdate( void );
 
 	//	パラメータ状態動作
 	void	ParameterInfoUpdate( void );
 	void	AttackUp( void );
 	void	EventSlip( void );
 	void	ItemMagnet( void );
+	void	BoostUp( void );
 
 	//	子クラスで実装
 	virtual	bool	QuickArts( void ) = 0;
@@ -300,6 +317,7 @@ public:
 	void	AutoRun();						//　コインを取りに行く
 	void	AutoAngleAdjust(float speed, Vector3 target);
 	//void	AutoAngleAdjust(const Vector3& direction, float speed);
+	void	AutoAttack();
 	void	RunAway();
 	void	AutoGuard();
 	void	AutoWait();
@@ -315,13 +333,13 @@ public:
 	void	SetDamageColor( Vector3 color );
 	void	SetPassColor( Vector3 color );
 	void	SetLeanFrame( int frame );
-	void	SetBoosting( bool boosting );
+	//void	SetBoosting( bool boosting );	//　
 	void	SetKnockBackVec( Vector3 vec );
 	void	SetUnrivaled( bool state );
 	void	SetParameterState( int parameterState );
 	void	SetRank( int rank );
 	void	SetParameterState( PARAMETER_INFO& paramterState, int time );
-	void SetForce(float force);
+	void	SetForce(float force);
 
 	//	情報取得
 	Matrix	GetMatrix( void )const;
@@ -343,10 +361,13 @@ public:
 	float	GetScale( void )const;
 	float	GetAttack_R( void )const;
 	float	GetAttack_T( void )const;
+	//float	GetSpeed( void )const;
+	float	GetTotalSpeed( void )const;
 	bool	GetUnrivaled( void )const;
 	bool	GetCanHyper( void )const;
 	bool	GetParameterState( int type )const;
 	int		GetPower( void )const;
+	int		GetTotalPower( void )const;
 	int		GetMode( void )const;
 	int		GetAIMode( void )const;
 	int		GetPlayerNum( void )const;

@@ -76,6 +76,9 @@ namespace
 		screen->Initialize();
 		screen->SetScreenMode( SCREEN_MODE::WHITE_IN, 1.0f );
 
+		//	ゲームマネージャ初期化
+		gameManager->Initialize();
+
 		//	画像読み込み
 		back = make_unique<iex2DObj>( LPSTR( "DATA/UI/back.png" ) );
 		face = make_unique<iex2DObj>( LPSTR( "DATA/UI/chara_emotion.png" ) );
@@ -87,7 +90,8 @@ namespace
 		playerNum = make_unique<iex2DObj>( LPSTR( "DATA/UI/playerNum.png" ) );
 
 		//	モデル読み込み
-		org[CHARACTER_TYPE::KNIGHT] = new iex3DObj( "DATA/CHR/Knight/Knight_Dammy.IEM" );		//	騎士
+		//org[CHARACTER_TYPE::KNIGHT] = new iex3DObj( "DATA/CHR/Knight/Knight_Dammy.IEM" );		//	騎士
+		org[CHARACTER_TYPE::SCAVENGER] = new iex3DObj( "DATA/CHR/Knight/Knight_Dammy.IEM" );		//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );					//	姫
 		org[CHARACTER_TYPE::SQUIRREL] = new iex3DObj( "DATA/CHR/SQUIRREL/SQUIRREL.IEM" );		//	リス
 		org[CHARACTER_TYPE::TIGER] = new iex3DObj( "DATA/CHR/ECCMAN/ECCMAN.IEM" );				//	トラ
@@ -103,7 +107,7 @@ namespace
 		}
 
 		//	モード設定
-		SetMode( MENU_MODE::SELECT_PLAYERNUM );
+		SetMode( MENU_MODE::INIT );
 
 		//	全体更新
 		Update();
@@ -135,7 +139,7 @@ namespace
 		case MENU_MODE::INIT:
 			if ( screen->GetScreenState() )
 			{
-				SetMode( MENU_MODE::SELECT_CHARACTER );
+				SetMode( MENU_MODE::SELECT_PLAYERNUM );
 			}
 			break;
 
@@ -231,7 +235,7 @@ namespace
 		if ( playerNumSelectInfo.t >= 1.0f )
 		{
 			//	選択
-			if ( input[0]->Get( KEY_UP ) == 1 )
+			if ( input[0]->Get( KEY_DOWN ) == 1 )
 			{
 				//	元の座標を保存
 				playerNumSelectInfo.saveY =  128 * playerNumSelectInfo.num;
@@ -247,7 +251,7 @@ namespace
 				}
 			}
 
-			if ( input[0]->Get( KEY_DOWN ) == 1 )
+			if ( input[0]->Get( KEY_UP ) == 1 )
 			{
 				//	元の座標を保存
 				playerNumSelectInfo.saveY = 128 * playerNumSelectInfo.num;
@@ -269,6 +273,11 @@ namespace
 				gameManager->SetPlayerNum( playerNumSelectInfo.num + 1 );
 				SetMode( MENU_MODE::SELECT_CHARACTER );
 			}
+		}
+
+		if ( input[0]->Get( KEY_B ) == 3 )
+		{
+			SetMode( MENU_MODE::MOVE_TITLE );
 		}
 
 		//	補間
@@ -359,7 +368,7 @@ namespace
 		{
 			if ( KEY( KEY_B ) == 3 )
 			{
-				SetMode( MENU_MODE::MOVE_TITLE );
+				SetMode( MENU_MODE::SELECT_PLAYERNUM );
 			}
 		}
 
@@ -429,7 +438,7 @@ namespace
 		//	森モデル初期化
 		forestStage->SetPos( 5.0f, 3.0f, 0.0f );
 		forestStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
-		forestStage->SetScale( 0.2f );
+		forestStage->SetScale( 0.04f );
 		forestStage->Update();
 
 		//	パラメータ初期化
@@ -550,7 +559,7 @@ namespace
 			deskStage->Update();
 			forestStage->SetPos( 0.0f, 5.0f, 0.0f );
 			forestStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
-			forestStage->SetScale( 0.18f );
+			forestStage->SetScale( 0.03f );
 			forestStage->Update();
 		}
 	}
@@ -692,6 +701,7 @@ namespace
 	//	モード切り替え
 	void	sceneMenu::SetMode( int mode )
 	{
+		//	初期化する
 		switch ( mode )
 		{
 		case MENU_MODE::SELECT_PLAYERNUM:
@@ -700,25 +710,22 @@ namespace
 
 		case MENU_MODE::SELECT_CHARACTER:
 			SelectCharacterInitialize();
-			//SelectCharacterUpdate();
 			break;
 
 		case MENU_MODE::SELECT_STAGE:
 			SelectStageInitialize();
-			//SelectStageUpdate();
 			break;
 
 		case MENU_MODE::SELECT_CHECK:
 			SelectCheckInitialize();
-			//SelectCheckUpdate();
 			break;
 
 		case MENU_MODE::MOVE_MAIN:
 			MoveMainInitialize();
-			//MoveMainUpdate();
 			break;
 		}
 
+		//	モード切替
 		this->mode = mode;
 	}
 

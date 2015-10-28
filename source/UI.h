@@ -44,9 +44,17 @@ private:
 		int		savePos;
 	};
 
+	struct HURRY_INFO
+	{
+		bool	flag;
+		int		timer;
+		float	alpha;
+		float	param;
+	};
+
 private:
 	//	各画像
-	iex2DObj*	timer;
+	ImageObj	timer;
 	iex2DObj*	coinbar;
 	iex2DObj*	face;
 	ImageObj	countImage;
@@ -85,6 +93,9 @@ private:
 
 	//	タイトルパラメータ
 	TITLE_INFO	titleInfo;
+
+	//	HurryUpパラメータ
+	HURRY_INFO	hurryInfo;
 
 	//	パラメータ
 	int		scene;
@@ -133,6 +144,7 @@ public:
 	void	StartAndTimeUpInitialize( void );
 	void	DonketsuDirectionInitialize( void );
 	void	AlertInitialize( void );
+	void	HurryUpInitialize( void );
 
 	//	メイン動作更新
 	void	TimerUpdate( void );
@@ -142,6 +154,8 @@ public:
 	void	FinishUpdate( void );
 	void	DonketsuDirectionUpdate( void );
 	void	AlertUpdate( void );
+	void	HurryUpdate( void );
+	void	LastProduction( void );
 
 	//	メイン描画
 	void	TimerRender( void );
@@ -151,6 +165,7 @@ public:
 	void	FinishRender( void );
 	void	DonketsuDirectionRender( void );
 	void	AlertRender( void );
+	void	LastProductionRender( void );
 
 	//	メイン動作関数
 	void BarControl( void );
@@ -161,6 +176,7 @@ public:
 	//	情報設定
 	void	SetChangeFlag( const bool& flag );
 	void	SetAlertFlag( bool flag );
+	void	SetHurryFlag( bool flag );
 	void	SetFlyingIn( int type );
 	void	SetImageSrcPos( int mode );
 	void	SetImageSrcPos( int sx, int sy );

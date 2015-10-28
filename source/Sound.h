@@ -20,9 +20,11 @@ namespace
 			POWER_SE,
 			QUICK_SE,
 			COIN_SE,
+			ITEM_SE,
 			DECIDE_SE,
 			SELECT_SE,
 			CANCEL_SE,
+			EVENT_SE,
 			END,
 		};
 	}

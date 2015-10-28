@@ -4,11 +4,11 @@
 #include	"Collision.h"
 #include	"Particle.h"
 
-#include	"Squirrel_CPU.h"
+#include	"Scavenger_CPU.h"
 
 //*********************************************************************************
 //
-//	Squirrel_CPUクラス
+//	Scavenger_CPUクラス
 //
 //*********************************************************************************
 
@@ -16,24 +16,24 @@
 //	初期化・解放
 //-----------------------------------------------------------------------------
 
-	//	コンストラクタ
-	Squirrel_CPU::Squirrel_CPU( void ) : Squirrel()
-	{
+//	コンストラクタ
+Scavenger_CPU::Scavenger_CPU(void) : Scavenger()
+{
 
-	}
+}
 
-	//	デストラクタ
-	Squirrel_CPU::~Squirrel_CPU( void )
-	{
+//	デストラクタ
+Scavenger_CPU::~Scavenger_CPU(void)
+{
 
-	}
+}
 
 //-----------------------------------------------------------------------------
 //	動作関数
 //-----------------------------------------------------------------------------
 
-	//	AI動作
-	//void	Squirrel_CPU::ControlAI( void )
-	//{
-	//	particle->BlueFlame( GetPos(), 1.0f );
-	//}
+//	AI動作
+//void	Scavenger_CPU::ControlAI( void )
+//{
+//	particle->BlueFlame( GetPos(), 1.0f );
+//}

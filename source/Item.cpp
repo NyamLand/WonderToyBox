@@ -78,7 +78,7 @@
 		float	effectScale = 0.2f;
 		particle->Spark(pos, effectScale);
 	
-		sound->PlaySE( SE::COIN_SE );
+		sound->PlaySE( SE::ITEM_SE );
 	}
 
 //-------------------------------------------------------------------------------

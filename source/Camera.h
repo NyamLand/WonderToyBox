@@ -32,10 +32,7 @@ namespace
 		{
 			Vector3( 8.0f, height, 0.0f ),		//門番
 			Vector3( 45.0f, height, -14.0f ),	//	オプション
-			Vector3( -41.0f, height, -20.0f ),	//	クレジット
-			Vector3( -4.5f, height, 46.0f ),	//	キャラ選択
-			Vector3( 49.0f, height, 69.0f ),	//	ステージ選択
-			Vector3( 45.0f, height, 73.0f ),	//	確認
+			Vector3( -41.0f, height, -20.0f ),	//	クレジット		
 			Vector3( 46.0f, height, 200.0f ),	//	メインへ
 		};
 
@@ -45,9 +42,6 @@ namespace
 			Vector3( 8.0f, 3.0f, 13.0f ),
 			Vector3( 53.0f, 3.0f, -5.0f ),
 			Vector3( -50.0f, 3.0f, -14.0f ),
-			Vector3( -9.0f, 3.0f, 59.0f ),
-			Vector3( 52.0f, 3.0f, 60.0f ),
-			Vector3( 46.0f, 3.0f, 80.0f ),
 			Vector3( 46.0f, 4.0f, 200.0f ),
 		};
 	}
@@ -56,12 +50,9 @@ namespace
 	{
 		enum
 		{
-			PLAYERNUMBER,
+			PLAY,
 			OPTION,
 			CREDIT,
-			SELECTCHARACTER,
-			SELECTSTAGE,
-			CHECK,
 			MOVE_MAIN,
 			END,
 		};

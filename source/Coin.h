@@ -8,6 +8,9 @@
 //
 //*****************************************************************************
 
+//	include
+#include	<memory>
+
 //	data
 namespace
 {
@@ -25,6 +28,15 @@ namespace
 class Coin
 {
 protected:
+	struct SHADOW_INFO
+	{
+		iex2DObj*	obj;
+		Vector3		pos;
+		LVERTEX	v[4];
+		float			scale;
+	};
+
+protected:
 	iexMesh*	obj;
 	Vector3		pos;
 	Vector3		move;
@@ -35,6 +47,9 @@ protected:
 	bool			getAwayflag;
 	int				judgeTimer;	//	判定有効時間
 
+	//	影構造体
+	SHADOW_INFO	shadow;
+
 public:
 	//	初期化・解放
 	Coin( void );
@@ -42,9 +57,9 @@ public:
 	virtual	bool	Initialize( void );
 
 	//	更新・描画
+	void	ShadowUpdate( void );
 	void	Update( void );
-	void	Render( void );
-	void	Render( iexShader* shader, LPSTR technique );
+	void	Render( iexShader* shader = nullptr, LPSTR technique = nullptr );
 
 	//	動作関数
 	void	StageCollisionCheck( void );
@@ -55,7 +70,8 @@ public:
 	void	Magnet( void );
 
 	//	情報取得・設定
-	void	SetPos( const Vector3& pos );
+	void	SetPos(const Vector3& pos);
+	void	SetMove(const Vector3& move);
 	void	SetAngle( const float& angle );
 	void	SetScale( const float& angle );
 	void	SetGetAwayFlag( bool flag );

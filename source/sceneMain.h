@@ -24,6 +24,7 @@ private:
 	int		stageType;
 	int		gameStartCoinNum;
 	float	stageScale;
+	Vector3 dir;
 
 private:
 	//	オブジェクト
