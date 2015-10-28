@@ -50,9 +50,9 @@ namespace
 	sceneResult::~sceneResult( void )
 	{
 		SafeDelete( mainView );
-		SafeDelete(back.obj);
-		SafeDelete(Sback.obj);
-		SafeDelete(Smenu.obj);
+		SafeDelete( back );
+		SafeDelete( Sback );
+		SafeDelete( Smenu );
 		characterManager->Release();
 		Random::Release();
 	}
@@ -64,11 +64,11 @@ namespace
 		mainView = new Camera();
 
 		//	画像初期化
-		back.obj = new iex2DObj("DATA/Result/result-back.png");
-		r_number.obj = new iex2DObj("DATA/UI/number.png");
-		Sback.obj = new iex2DObj("DATA/Result/black.png");
-		Smenu.obj = new iex2DObj("DATA/Result/result-cho.png");
-		result.obj = new iex2DObj("DATA/UI/menu-head.png");
+		back = new iex2DObj( "DATA/Result/result-back.png");
+		r_number = new iex2DObj( "DATA/UI/number.png");
+		Sback = new iex2DObj("DATA/Result/black.png");
+		Smenu = new iex2DObj("DATA/Result/result-cho.png");
+		result = new iex2DObj("DATA/UI/menu-head.png");
 
 		//	コリジョン
 		collision = new iexMesh( "DATA/BG/CollisionGround.imo" );
@@ -115,7 +115,7 @@ namespace
 				BonusNumber[i].H_flg = false;
 
 			}
-		
+			
 
 			//	ランキング用構造体
 			{
@@ -135,20 +135,6 @@ namespace
 			int		characterType = gameManager->GetCharacterType( i );
 			Vector3	pos = Vector3( 6.0f - ( 4.0f  *  i ), 0.0f, 0.0f );
 			characterManager->Initialize( i, characterType, pos, true );
-
-			WorldToClient(characterManager->GetPos(i), stringPos[i], matView* matProjection);
-			WorldToClient(characterManager->GetPos(i), bonusPos[i], matView* matProjection);
-			WorldToClient(characterManager->GetPos(i), addcoinPos[i], matView* matProjection);
-			WorldToClient(characterManager->GetPos(i), rankingPos[i], matView* matProjection);
-
-
-			stringPos[i].y = 100;
-			bonusPos[i].y = 170;
-			addcoinPos[i].y = 250;
-			rankingPos[i].y = 350;
-
-			ImageInitialize(r_number, (int)rankingPos[i].x, (int)rankingPos[i].y, 128, 64, rank[i].rank * 128, 128, 128, 64);
-
 		}
 
 		//	ソート
@@ -201,9 +187,8 @@ namespace
 			Sy = 0;
 		}
 
-
-		if ( KEY( KEY_UP ) == 3)	StringPos_Y--;
-		if ( KEY( KEY_DOWN ) == 3 )	StringPos_Y++;
+		if ( input[0]->Get( KEY_UP ) == 3)		StringPos_Y--;
+		if ( input[0]->Get( KEY_DOWN ) == 3 )	StringPos_Y++;
 		if ( StringPos_Y >= 3 )	StringPos_Y = 0;
 		if ( StringPos_Y < 0 )		StringPos_Y = 2;
 
@@ -212,6 +197,9 @@ namespace
 			switch ( StringPos_Y )
 			{
 			case 0:
+				//	ゲーム情報初期化
+				gameManager->RetryInitialize();
+
 				MainFrame->ChangeScene( new sceneMain() );
 				return;
 				break;
@@ -222,7 +210,7 @@ namespace
 				break;
 
 			case 2:
-				MainFrame->ChangeScene( new sceneTitle );
+				MainFrame->ChangeScene( new sceneTitle() );
 				return;
 				break;
 			}
@@ -236,36 +224,41 @@ namespace
 		mainView->Clear();
 
 		iexSystem::GetDevice()->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
-		back.obj->Render(0, 0, 1280, 720, 0, 0, 1280, 720);
+		back->Render(0, 0, 1280, 720, 0, 0, 1280, 720);
 		iexSystem::GetDevice()->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
 
 		characterManager->Render( shader3D, "toon" );
 
-
-
-		result.obj->Render(510, -10, 256, 128, 0, 0, 512, 256);	//	リザルト描画
+		result->Render(510, -10, 256, 128, 0, 0, 512, 256);	//	リザルト描画
 
 		for (int i = 0; i < 4; i++){
-			
+			Vector3 stringPos;
+			Vector3	bonusPos;
+			Vector3 rankingPos;
+			WorldToClient( characterManager->GetPos(i), stringPos, matView* matProjection );
+			WorldToClient( characterManager->GetPos(i), bonusPos, matView* matProjection);
+			WorldToClient( characterManager->GetPos(i), rankingPos, matView* matProjection );
+			stringPos.y = 100;
+			bonusPos.y = 170;
+			rankingPos.y = 350;
 			
 			
 			//	取得コイン枚数の描画
 			{
-				ResultRender(number[i], stringPos[i]);
+				ResultRender(number[i], stringPos);
 			}
 
 			//	ボーナスコイン枚数の描画
 			{
 				if(bonusflg){
-					ResultRender(BonusNumber[i], bonusPos[i]);
+					ResultRender(BonusNumber[i], bonusPos);
 				}
 			}
 
-		
 			//	順位の描画
 			{
 				if (rank[i].rankflg){
-					RenderImage(r_number, rank[i].rank * 128, 128, 128, 64, IMAGE_MODE::NORMAL);
+					r_number->Render((int)rankingPos.x - 40 * 2, (int)rankingPos.y, 128, 64, rank[i].rank * 128, 128, 128, 64);
 				}
 			}
 		//	デバッグ文字描画
@@ -287,17 +280,17 @@ namespace
 	}
 
 	//	リザルト描画
-	void	sceneResult::ResultRender( NUMBER_INFO& number, Vector3 Pos )
+	void	sceneResult::ResultRender(NUMBER_INFO& number, Vector3 Pos)
 	{
 		if (number.H_flg){
-			r_number.obj->Render((int)Pos.x - 40 * 2, (int)Pos.y, 64, 64, number.hundred * 64, 0, 64, 64);	//	コイン三桁目
-			r_number.obj->Render((int)Pos.x - 40 * 1, (int)Pos.y, 64, 64, number.ten * 64, 0, 64, 64);		//	コイン二桁目
-			r_number.obj->Render((int)Pos.x - 40 * 0, (int)Pos.y, 64, 64, number.one * 64, 0, 64, 64);		//	コイン一桁目
+			r_number->Render((int)Pos.x - 40 * 2, (int)Pos.y, 64, 64, number.hundred * 64, 0, 64, 64);	//	コイン三桁目
+			r_number->Render((int)Pos.x - 40 * 1, (int)Pos.y, 64, 64, number.ten * 64, 0, 64, 64);		//	コイン二桁目
+			r_number->Render((int)Pos.x - 40 * 0, (int)Pos.y, 64, 64, number.one * 64, 0, 64, 64);		//	コイン一桁目
 		}
 		else{
 
-			r_number.obj->Render((int)Pos.x - 40 * 2, (int)Pos.y, 64, 64, number.ten * 64, 0, 64, 64);		//	コイン二桁目
-			r_number.obj->Render((int)Pos.x - 40 * 1, (int)Pos.y, 64, 64, number.one * 64, 0, 64, 64);		//	コイン一桁目
+			r_number->Render((int)Pos.x - 40 * 2, (int)Pos.y, 64, 64, number.ten * 64, 0, 64, 64);		//	コイン二桁目
+			r_number->Render((int)Pos.x - 40 * 1, (int)Pos.y, 64, 64, number.one * 64, 0, 64, 64);		//	コイン一桁目
 		}
 
 	}
@@ -305,14 +298,14 @@ namespace
 	//セレクト画面描画
 	void	sceneResult::SelectRender( void )
 	{
-		Sback.obj->Render(0, Sy, 1280, 720, 0, 0, 64, 64);
+		Sback->Render(0, Sy, 1280, 720, 0, 0, 64, 64);
 		if (Sy >= 0)
 		{
 			for (int i = 0; i < 3; i++){
-				Smenu.obj->Render(400, 200 + i * 128, 512, 128, 0, i * 128, 512, 128);
+				Smenu->Render(400, 200 + i * 128, 512, 128, 0, i * 128, 512, 128);
 
 			}
-			Smenu.obj->Render(400, 200 + StringPos_Y * 128, 512, 128, 512, StringPos_Y * 128, 512, 128);
+			Smenu->Render(400, 200 + StringPos_Y * 128, 512, 128, 512, StringPos_Y * 128, 512, 128);
 			
 			
 		}
@@ -420,7 +413,7 @@ namespace
 			break;
 
 		case 7://	コイン合算値を描画
-			
+
 
 			waitTimer++;
 			if (waitTimer > 60){
@@ -496,7 +489,6 @@ namespace
 		}
 		number.ten = coinNum / 10 % 10;
 		number.one = coinNum % 10;
-
 	}
 
 	//	ランク設定

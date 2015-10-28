@@ -811,6 +811,7 @@ namespace
 	//	コントローラ操作
 	void	BaseChara::Control( void )
 	{
+		//	スティックで移動
 		Run();
 
 		if ( input->Get( KEY_D ) == 3 )		mode = MODE_STATE::QUICKARTS;
@@ -824,8 +825,11 @@ namespace
 		{
 			if ( jumpState )		mode = MODE_STATE::JUMP;
 		}
-		if ( input->Get( KEY_B6 ) == 3 )	mode = MODE_STATE::GUARD;
-		//if ( input->Get( KEY_B10 ) == 3 )	mode = MODE_STATE::DAMAGE_STRENGTH;
+		
+		if ( input->Get( KEY_B6 ) == 3 )
+		{
+			mode = MODE_STATE::GUARD;
+		}
 	}
 
 	//	AI操作

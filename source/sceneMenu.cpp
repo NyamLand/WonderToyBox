@@ -103,7 +103,7 @@ namespace
 		}
 
 		//	モード設定
-		SetMode( MENU_MODE::SELECT_PLAYERNUM );
+		SetMode( MENU_MODE::INIT );
 
 		//	全体更新
 		Update();
@@ -135,7 +135,7 @@ namespace
 		case MENU_MODE::INIT:
 			if ( screen->GetScreenState() )
 			{
-				SetMode( MENU_MODE::SELECT_CHARACTER );
+				SetMode( MENU_MODE::SELECT_PLAYERNUM );
 			}
 			break;
 
@@ -271,6 +271,11 @@ namespace
 			}
 		}
 
+		if ( input[0]->Get( KEY_B ) == 3 )
+		{
+			SetMode( MENU_MODE::MOVE_TITLE );
+		}
+
 		//	補間
 		CubicFunctionInterpolation( playerNumSelectInfo.sy, playerNumSelectInfo.saveY, 128 * playerNumSelectInfo.num, playerNumSelectInfo.t );
 	}
@@ -359,7 +364,7 @@ namespace
 		{
 			if ( KEY( KEY_B ) == 3 )
 			{
-				SetMode( MENU_MODE::MOVE_TITLE );
+				SetMode( MENU_MODE::SELECT_PLAYERNUM );
 			}
 		}
 
