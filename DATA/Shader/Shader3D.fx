@@ -1416,6 +1416,23 @@
 			}
 		}
 
+		//	加算
+		technique	add
+		{
+			pass	P0
+			{
+				AlphaBlendEnable	= true;
+				BlendOp				= Add;
+				SrcBlend			= SrcAlpha;
+				DestBlend			= One;
+				CullMode			= CCW;
+				ZEnable				= true;
+				ZWriteEnable		= true;
+				VertexShader	= compile vs_2_0	VS_Basic();
+				PixelShader		= compile ps_2_0 PS_Basic();
+			}
+		}
+
 	//-----------------------------------------------------------------------------------
 	//	半球ライティング＋フォグ+スペキュラ
 	//-----------------------------------------------------------------------------------
