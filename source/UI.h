@@ -54,7 +54,7 @@ private:
 
 private:
 	//	Še‰æ‘œ
-	iex2DObj*	timer;
+	ImageObj	timer;
 	iex2DObj*	coinbar;
 	iex2DObj*	face;
 	ImageObj	countImage;
@@ -155,6 +155,7 @@ public:
 	void	DonketsuDirectionUpdate( void );
 	void	AlertUpdate( void );
 	void	HurryUpdate( void );
+	void	LastProduction( void );
 
 	//	ƒƒCƒ“•`‰æ
 	void	TimerRender( void );
@@ -164,6 +165,7 @@ public:
 	void	FinishRender( void );
 	void	DonketsuDirectionRender( void );
 	void	AlertRender( void );
+	void	LastProductionRender( void );
 
 	//	ƒƒCƒ““®ìŠÖ”
 	void BarControl( void );

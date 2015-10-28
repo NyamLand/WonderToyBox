@@ -123,7 +123,7 @@
 		image.alpha = 1.0f;
 		image.angle = 0.0f;
 		image.p = GetPoint( image.x, image.y );
-		image.renderflag = false;
+		image.renderflag = true;
 
 		//	wave用パラメータ
 		image.waveAlpha = 1.0f;
@@ -138,7 +138,7 @@
 		image.flashingRenderflag = true;
 	}
 	
-	//	画像
+	//	画像(位置はイメージの値)
 	void	RenderImage( ImageObj image, int sx, int sy, int sw, int sh, int mode )
 	{
 		int		width = image.w;
@@ -171,6 +171,43 @@
 		case IMAGE_MODE::FLASH:
 			if ( image.flashingRenderflag )
 				image.obj->Render( posx, posy, width, height, sx, sy, sw, sh, RS_COPY, GetColor( 1.0f, 1.0f, 1.0f, image.flashingAlpha ) );
+			break;
+		}
+	}
+
+	//	画像(位置をイメージとは違う引数の値を与える)
+	void	RenderImage(ImageObj image, int sx, int sy, int sw, int sh, int mode, int x, int y)
+	{
+		int		width = image.w;
+		int		height = image.h;
+		int		posx = x - width / 2;
+		int		posy = y - height / 2;
+
+		switch (mode)
+		{
+		case IMAGE_MODE::NORMAL:
+			if (image.renderflag)
+				image.obj->Render(posx, posy, width, height, sx, sy, sw, sh);
+			break;
+
+		case IMAGE_MODE::ADOPTPARAM:
+			if (image.renderflag)
+				image.obj->Render(posx, posy, width, height, sx, sy, sw, sh, image.p, image.angle, RS_COPY, GetColor(1.0f, 1.0f, 1.0f, image.alpha));
+			break;
+
+		case IMAGE_MODE::WAVE:
+			width = image.w + image.plusScaleX;
+			height = image.h + image.plusScaleY;
+			posx = x - width / 2;
+			posy = y - height / 2;
+
+			if (image.waverenderflag)
+				image.obj->Render(posx, posy, width, height, sx, sy, sw, sh, RS_COPY, GetColor(1.0f, 1.0f, 1.0f, image.waveAlpha));
+			break;
+
+		case IMAGE_MODE::FLASH:
+			if (image.flashingRenderflag)
+				image.obj->Render(posx, posy, width, height, sx, sy, sw, sh, RS_COPY, GetColor(1.0f, 1.0f, 1.0f, image.flashingAlpha));
 			break;
 		}
 	}

@@ -129,6 +129,8 @@
 	//	‰æ‘œ‘€ì
 	void	ImageInitialize( ImageObj& image, int x, int y, int w, int h, int sx, int sy, int sw, int sh );
 	void	RenderImage( ImageObj image, int sx, int sy, int sw, int sh, int mode );
+	void	RenderImage( ImageObj image, int sx, int sy, int sw, int sh, int mode, int x, int y );
+
 	void	SetWave( ImageObj& image, float speed );
 	void	WaveUpdate( ImageObj& image, int max_scale = 140, float max_alpha = 1.0f );
 	void	FlashingUpdate( ImageObj& image, float speed = -1.0f );
