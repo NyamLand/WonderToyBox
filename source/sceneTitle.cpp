@@ -383,7 +383,7 @@ namespace
 						{
 							mainView->SetNextPoint(TITLE_TARGET::MOVE_MAIN, 0.005f);
 							//sound->PlaySE(SE::DECIDE_SE);
-							screen->SetScreenMode(SCREEN_MODE::WHITE_OUT, 0.5f);
+							screen->SetScreenMode(SCREEN_MODE::WIPE_OUT, 1.0f);
 						}
 						break;
 
