@@ -176,6 +176,7 @@
 
 		//	\‘¢‘Ì‰Šú‰»
 		ImageInitialize( titleInfo.textImage, 1300, 750, 800, 100, TITLE_TEXT_SRCPOS_INFO::MENU_SRC_POS_X, TITLE_TEXT_SRCPOS_INFO::MENU_SRC_POS_Y, 1024, 128 );
+		titleInfo.textImage.renderflag = false;
 		
 		//	•Ï”‰Šú‰»
 		titleInfo.mode = 0;

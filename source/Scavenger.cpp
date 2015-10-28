@@ -111,7 +111,7 @@ bool	Scavenger::QuickArts(void)
 		float cVecLength = toCoinVec.Length();
 		float dot = Vector3Dot(p_front, toCoinVec) / (pVecLength * cVecLength);
 		dot = acos(dot);
-		dot = dot * 180.0 / PI;
+		dot = dot * 180.0f / PI;
 
 		if (coin[i].GetState() == true)
 		{
@@ -119,13 +119,13 @@ bool	Scavenger::QuickArts(void)
 			float length = vec.Length();
 			
 			vec.Normalize();
-			if (dot < 45 && length < absorb_length)
+			if ( dot < 45 && length < absorb_length )
 			{
-				coin[i].SetMove(-vec * 0.2f);
+				coin[i].SetMove( -vec * 0.2f );
 			}
 		}
 	}
-	if (input->Get(KEY_D) == 2)
+	if ( input->Get( KEY_D ) == 2 )
 	{
 		absorb_length = DEFAULT_ABSORB_LENGTH;
 		return true;
@@ -153,7 +153,7 @@ bool	Scavenger::PowerArts(void)
 		float cVecLength = toCoinVec.Length();
 		float dot = Vector3Dot(p_front, toCoinVec) / (pVecLength * cVecLength);
 		dot = acos(dot);
-		dot = dot * 180.0 / PI;
+		dot = dot * 180.0f / PI;
 
 		if (coin[i].GetState() == true)
 		{
