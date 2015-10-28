@@ -488,6 +488,7 @@ namespace
 
 	}
 
+	//	ノックバック与力
 	void	BaseChara::AddKnockBackForce(float force)
 	{
 		if (mode == MODE_STATE::DAMAGE_FLYUP) force /= 4;
@@ -632,12 +633,14 @@ namespace
 	void	BaseChara::Guard( void )
 	{
 		move.x = move.z = 0.0f;
-		SetMotion( MOTION_NUM::GUARD );
 		unrivaled = true;
 		SetMotion( MOTION_NUM::GUARD );
-		if ( input->Get( KEY_B7 ) == 2 )
+
+		//	ボタンをはなすと戻る
+		if ( input->Get( KEY_B6 ) == 2 )
 		{
 			SetMode( MODE_STATE::MOVE );
+			m_Effect->SetShield( GetPlayerNum(), false );
 			unrivaled = false;
 		}
 	}
@@ -825,6 +828,7 @@ namespace
 		
 		if ( input->Get( KEY_B6 ) == 3 )
 		{
+			m_Effect->SetShield( GetPlayerNum(), true );
 			mode = MODE_STATE::GUARD;
 		}
 	}

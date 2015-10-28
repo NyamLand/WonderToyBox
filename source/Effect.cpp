@@ -43,6 +43,7 @@
 	{
 		SafeDelete( aura );
 		SafeDelete( pow_up.obj );
+		SafeDelete( shieldInfo.obj );
 		
 		for ( int i = 0; i < 4; i++ )
 		{
@@ -60,7 +61,8 @@
 		circle_pic[2] = new iex2DObj("DATA/Effect/PL3.png");
 		circle_pic[3] = new iex2DObj("DATA/Effect/PL4.png");
 
-		pow_up.obj = new iex2DObj("DATA/Effect/ol-r.png");
+		pow_up.obj = new iex2DObj( "DATA/Effect/ol-r.png" );
+		shieldInfo.obj = new iex2DObj( "DATA/Effect/Guard-ef.png" );
 		ImageInitialize(pow_up, 0, 0, 90, 90, 0, 0, 0, 0);
 
 		for (int i = 0; i < 4; i++){
@@ -77,21 +79,28 @@
 		pow_pos = Vector3(0, 0, 0);
 		pow_time = 0;
 		
-
+		//	シールド初期化
 		ShieldInitialize();
 	}
 
 	//	シールド初期化
 	void	Effect::ShieldInitialize( void )
 	{
-		for ( int i = 0; i < 4; i++ )
+		for ( int n = 0; n < 4; n++ )
 		{
-			shield.v[i].angle = ( PI / 2 ) * i;
-			shield.pos[i] = Vector3( 0.0f, 0.0f, 0.0f );
+			//	状態初期化
+			shieldInfo.state[n] = false;
+
+			for ( int i = 0; i < 4; i++ )
+			{
+				//	角度、座標初期化
+				shieldInfo.shield[n].v[i].angle = ( D3DX_PI / 2 ) * i;
+				shieldInfo.shield[n].pos[i] = Vector3( 0.0f, 0.0f, 0.0f );
+			}
 		}
 
-		shield.scale = 2.0f;
-		shield.r = 2.0f;
+		shieldInfo.scale = 4.0f;
+		shieldInfo.r = 2.0f;
 	}
 
 //-------------------------------------------------------------------------
@@ -119,10 +128,10 @@
 
 		//	情報更新
 		for (int i = 0; i < 4; i++){
-			PoligonSet(&circle[i]);
-			PoligonSet(&circle_out[i]);
-			CirclePosSet(&circle[i], i);
-			CirclePosSet(&circle_out[i], i);
+			PoligonSet( &circle[i] );
+			PoligonSet( &circle_out[i] );
+			CirclePosSet( &circle[i], i );
+			CirclePosSet( &circle_out[i], i );
 		}
 		//	回転
 		Spin();
@@ -130,14 +139,15 @@
 
 		//	パワー更新
 		pow_time++;
-		if (pow_up.waveState == false){
-			SetWave(pow_up, 2.0f);
+		if ( pow_up.waveState == false ){
+			SetWave( pow_up, 2.0f );
 		}
-		WaveUpdate(pow_up, 30, 0.3f);
+		WaveUpdate( pow_up, 30, 0.3f );
 		//particle->Arrow_DOWN(circle_out[1].c_pos, 1.5f);
 		//particle->Arrow_UP(circle_out[0].c_pos, 1.5f);
 
-		Shield( characterManager->GetPos( 0 ) );
+		//	シールド更新
+		Shield();
 
 
 	}
@@ -165,14 +175,9 @@
 		}
 
 		//	シールド描画
-		for ( int i = 0; i < 4; i++ )
-		{
-			iexSystem::Device->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
-			iexPolygon::Render3D( shield.v[i].v, 2, circle_pic[0], RS_COPY );
-			iexSystem::Device->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
-		}
+		RenderShield();
 
-		for (int i = 0; i < 4; i++){
+		for ( int i = 0; i < 4; i++ ){
 			//	プレイヤーのポジションより2つ高い位置を取る
 			WorldToClient(circle_out[i].c_pos + Vector3(0, 2.0f, 0), pow_pos, matView* matProjection);
 			pow_up.x = (int)pow_pos.x;	pow_up.y = (int)pow_pos.y;
@@ -185,7 +190,23 @@
 		}
 	}
 
-
+	//	シールド描画
+	void	Effect::RenderShield( void )
+	{
+		//	シールド描画
+		for ( int i = 0; i < 4; i++ )
+		{
+			if ( shieldInfo.state[i] )
+			{
+				for ( int n = 0; n < 4; n++ )
+				{
+					iexSystem::Device->SetRenderState( D3DRS_CULLMODE, D3DCULL_NONE );
+					iexPolygon::Render3D( shieldInfo.shield[i].v[n].v, 2, shieldInfo.obj, RS_COPY );
+					iexSystem::Device->SetRenderState( D3DRS_CULLMODE, D3DCULL_CCW );
+				}
+			}
+		}
+	}
 
 //-------------------------------------------------------------------------
 //	情報設定
@@ -245,34 +266,47 @@
 //-------------------------------------------------------------------------
 
 	//	シールド
-	void	Effect::Shield( const Vector3& pos )
+	void	Effect::Shield( void )
 	{
-		shield.r = 2.0f;
-		shield.scale = 2.0f;
-
-		//	ポリゴン4枚分更新
-		for ( int i = 0; i < 4; i++ )
+		//	プレイヤー４人分
+		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
-			//	各ポリゴン座標設定
-			shield.pos[i] = Vector3( pos.x + shield.r * sinf( shield.v[i].angle ), pos.y + 2.0f, pos.z + shield.r * cosf( shield.v[i].angle ) );
+			//	ガード中じゃなかったらとばす
+			if ( !shieldInfo.state[i] )	continue;
 
-			//	回転
-			shield.v[i].angle += 0.01f;
+			//	座標設定
+			shieldInfo.pos[i] = characterManager->GetPos( i );
 
-			//	4頂点更新
-			for ( int n = 0; n < 4; n++ )
+			//	ポリゴン4枚分更新
+			for ( int p = 0; p < 4; p++ )
 			{
-				//	テクスチャUV設定
-				float tu = static_cast<float>( n % 2 );
-				float tv = static_cast<float>( n / 2 );
+				//	各ポリゴン座標設定
+				shieldInfo.shield[i].pos[p] = Vector3( shieldInfo.pos[i].x + shieldInfo.r * sinf( shieldInfo.shield[i].v[p].angle ), shieldInfo.pos[i].y + 2.0f, shieldInfo.pos[i].z + shieldInfo.r * cosf( shieldInfo.shield[i].v[p].angle ) );
 
-				//	頂点座標セット
-				float x = shield.pos[i].x - ( -1.0f * tu ) * ( shield.scale / 2.0f ) * cosf( shield.v[i].angle );
-				float	y = shield.pos[i].y + cosf( D3DX_PI * tv ) * shield.scale;
-				float	z = shield.pos[i].z + ( shield.scale / 2.0f ) * (  ( -1.0f * tu )* sinf( shield.v[i].angle ) );
+				//	回転
+				shieldInfo.shield[i].v[p].angle += 0.01f;
 
-				//	頂点をセット
-				SetVertex( shield.v[i].v[n], x, y, z, tu, tv, 0xFFFFFFFF );
+				//	4頂点更新
+				for ( int n = 0; n < 4; n++ )
+				{
+					//	テクスチャUV設定
+					float tu = static_cast<float>( n % 2 );
+					float tv = static_cast<float>( n / 2 );
+
+					//	頂点座標セット
+					float x = shieldInfo.shield[i].pos[p].x - ( -1.0f * tu ) * ( shieldInfo.scale / 2.0f ) * cosf( shieldInfo.shield[i].v[p].angle );
+					float	y = shieldInfo.shield[i].pos[p].y + cosf( D3DX_PI * tv ) * shieldInfo.scale / 2;
+					float	z = shieldInfo.shield[i].pos[p].z - ( -1.0f * tu ) * ( shieldInfo.scale / 2.0f ) * -sinf( shieldInfo.shield[i].v[p].angle );
+
+					//	頂点をセット
+					SetVertex( shieldInfo.shield[i].v[p].v[n], x, y, z, tu, tv, 0xFFFFFFFF );
+				}
 			}
 		}
+	}
+
+	//	シールド情報設定
+	void	Effect::SetShield( int player, bool state )
+	{
+		shieldInfo.state[player] = state;
 	}
