@@ -76,6 +76,9 @@ namespace
 		screen->Initialize();
 		screen->SetScreenMode( SCREEN_MODE::WHITE_IN, 1.0f );
 
+		//	ゲームマネージャ初期化
+		gameManager->Initialize();
+
 		//	画像読み込み
 		back = make_unique<iex2DObj>( LPSTR( "DATA/UI/back.png" ) );
 		face = make_unique<iex2DObj>( LPSTR( "DATA/UI/chara_emotion.png" ) );
