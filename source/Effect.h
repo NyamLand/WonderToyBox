@@ -17,11 +17,19 @@ private:
 		Vector3		c_pos;
 	}Circle;
 
+	struct EFF_VERTEX
+	{
+		LVERTEX	v[4];		//	ポリゴン
+		float			angle;	//	向き
+	};
+
 	struct SHIELD
 	{
-		LVERTEX	v[4];			//	ポリゴン情報
-		Vector3		pos[4];		//	ポリゴン座標
-		float			r;				//	半径
+		EFF_VERTEX		v[4];			//	ポリゴン情報
+		Vector3				pos[4];		//	ポリゴン座標
+		float					r;				//	半径
+		float					angle;		//	向き
+		float					scale;		//	スケール
 	};
 
 private:
