@@ -229,8 +229,6 @@ namespace
 
 		characterManager->Render( shader3D, "toon" );
 
-
-
 		result->Render(510, -10, 256, 128, 0, 0, 512, 256);	//	ƒŠƒUƒ‹ƒg•`‰æ
 
 		for (int i = 0; i < 4; i++){

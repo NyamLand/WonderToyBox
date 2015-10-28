@@ -271,6 +271,11 @@ namespace
 			}
 		}
 
+		if ( input[0]->Get( KEY_B ) == 3 )
+		{
+			SetMode( MENU_MODE::MOVE_TITLE );
+		}
+
 		//	ï‚ä‘
 		CubicFunctionInterpolation( playerNumSelectInfo.sy, playerNumSelectInfo.saveY, 128 * playerNumSelectInfo.num, playerNumSelectInfo.t );
 	}
@@ -359,7 +364,7 @@ namespace
 		{
 			if ( KEY( KEY_B ) == 3 )
 			{
-				SetMode( MENU_MODE::MOVE_TITLE );
+				SetMode( MENU_MODE::SELECT_PLAYERNUM );
 			}
 		}
 
