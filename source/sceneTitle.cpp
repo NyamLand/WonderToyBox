@@ -258,9 +258,9 @@ namespace
 		{
 			//	ƒpƒ‰ƒ[ƒ^
 			static	bool	changeflag = false;
-			static	float	speed = 0.5f;
 			static	bool	curtainStateL = false;
 			static	bool	curtainStateR = false;
+			static	float	speed = 0.5f;
 
 			switch ( titleInfo.step )
 			{

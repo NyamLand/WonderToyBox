@@ -108,19 +108,19 @@ using namespace std;
 		//	画面クリア
 		mainView->Activate();
 		mainView->Clear();
-		load->Render(0, 0, 1280, 720, 0, 0, 1280, 720);
+		load->Render( 0, 0, 1280, 720, 0, 0, 1280, 720 );
 		DrawString( "ロード中", 200, 300 );
 
 		//	pressSpace描画
-		if (threadState){
-			RenderImage(load_anykey, 0, 0, 256, 128, IMAGE_MODE::FLASH);
-			RenderImage(load_anykey, 0, 0, 256, 128, IMAGE_MODE::WAVE);
+		if ( threadState )
+		{
+			RenderImage( load_anykey, 0, 0, 256, 128, IMAGE_MODE::FLASH );
+			RenderImage( load_anykey, 0, 0, 256, 128, IMAGE_MODE::WAVE );
 		}
 
-
 		//デバック用
-		sprintf_s(stri, "%d\n%d", Xs, Ys);
-		DrawString(stri, 0, 250, 0xFFFFFFFF);
+		sprintf_s( stri, "%d\n%d", Xs, Ys );
+		DrawString( stri, 0, 250, 0xFFFFFFFF );
 	}
 
 //----------------------------------------------------------------------------------
