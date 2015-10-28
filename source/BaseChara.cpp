@@ -171,7 +171,12 @@ namespace
 				plusStatusInfo.boostPower = 2;
 				plusStatusInfo.boostSpeed = 0.2f;
 			}
+
+			
 		}
+
+		//	影初期化
+		ShadowInitialize();
 
 		if ( obj == nullptr )	return	false;
 		return	true;
@@ -181,6 +186,7 @@ namespace
 	void	BaseChara::Release( void )
 	{
 		SafeDelete( obj );
+		SafeDelete( shadow.obj );
 	}
 
 	//	パラメータ状態初期化
@@ -201,6 +207,21 @@ namespace
 	{
 		ps.state = false;
 		ps.timer = 0;
+	}
+
+	//	影情報初期化
+	void	BaseChara::ShadowInitialize( void )
+	{
+		//	影構造体初期化
+		{
+			shadow.obj = new iex2DObj( "DATA/Effect/shadow.png" );
+			shadow.pos = pos;
+			shadow.scale = 1.0f;
+			SetVertex( shadow.v[0], shadow.pos.x - shadow.scale / 2, shadow.pos.y, shadow.pos.z + shadow.scale / 2, 0.0f, 0.0f, 0xFFFFFFFF );
+			SetVertex( shadow.v[1], shadow.pos.x + shadow.scale / 2, shadow.pos.y, shadow.pos.z + shadow.scale / 2, 1.0f, 0.0f, 0xFFFFFFFF );
+			SetVertex( shadow.v[2], shadow.pos.x - shadow.scale / 2, shadow.pos.y, shadow.pos.z - shadow.scale / 2, 0.0f, 1.0f, 0xFFFFFFFF );
+			SetVertex( shadow.v[3], shadow.pos.x + shadow.scale / 2, shadow.pos.y, shadow.pos.z - shadow.scale / 2, 1.0f, 1.0f, 0xFFFFFFFF );
+		}
 	}
 
 //----------------------------------------------------------------------------
@@ -224,6 +245,9 @@ namespace
 		//	重力加算
 		move.y += GRAVITY;
 
+		//	影座標設定
+		shadow.pos = pos;
+
 		//	ステージ当たり判定
 		StageCollisionCheck();
 
@@ -235,6 +259,9 @@ namespace
 
 		//	落下チェック
 		FallCheck();
+
+		//	影更新
+		ShadowUpdate();
 
 		//	情報更新
 		obj->Animation();
@@ -253,7 +280,12 @@ namespace
 		}
 		else
 		{
+			//	ダメージ色調整
 			CalcColorParameter();
+			
+			//	影描画
+			iexPolygon::Render3D( shadow.v, 2, shadow.obj, shader3D, "alpha" );
+			
 			obj->Render( shader, technique );
 		}
 	}
@@ -302,8 +334,6 @@ namespace
 		case MOTION_NUM::ATTACK3:
 			obj->SetMotion( POSTURE );
 			break;
-
-
 		}
 	}
 
@@ -385,9 +415,10 @@ namespace
 		checkWall = Collision::CheckWall( pos, move );
 
 		static	int fallTimer = 0;
+		Vector3	height = Vector3( 0.0f, 0.0f, 0.0f );
 
 		//　床判定
-		if ( Collision::CheckDown( pos, move ) )
+		if ( Collision::CheckDown( pos, move, height ) )
 		{
 			isGround = true;
 			jumpState = true;
@@ -398,6 +429,9 @@ namespace
 			fallTimer++;
 			isGround = false;
 		}
+
+		//	影高さ設定
+		shadow.pos.y = height.y + 0.1f;
 
 		if ( fallTimer >= 5 )	jumpState = false;
 	}
@@ -712,6 +746,22 @@ namespace
 			if (attackUp.state)	totalPower += plusStatusInfo.power;
 			if (speedUp.state)	totalSpeed += plusStatusInfo.speed;
 		}
+	}
+
+	//	影更新
+	void	BaseChara::ShadowUpdate( void )
+	{
+		//	スケール計算( 高さに応じて影のスケールを調整、影の大きさの最大値はモデルの大きさの2.5倍に設定 )
+		float	t = pos.y / 50.0f;
+		static	float	maxScale = 2.5f;
+		shadow.scale = maxScale - ( maxScale * t );
+
+		//	頂点セット
+		static	DWORD	vertexColor = 0xFFFFFFFF;
+		SetVertex( shadow.v[0], shadow.pos.x - shadow.scale / 2, shadow.pos.y, shadow.pos.z + shadow.scale / 2, 0.0f, 0.0f, vertexColor );
+		SetVertex( shadow.v[1], shadow.pos.x + shadow.scale / 2, shadow.pos.y, shadow.pos.z + shadow.scale / 2, 1.0f, 0.0f, vertexColor );
+		SetVertex( shadow.v[2], shadow.pos.x - shadow.scale / 2, shadow.pos.y, shadow.pos.z - shadow.scale / 2, 0.0f, 1.0f, vertexColor );
+		SetVertex( shadow.v[3], shadow.pos.x + shadow.scale / 2, shadow.pos.y, shadow.pos.z - shadow.scale / 2, 1.0f, 1.0f, vertexColor );
 	}
 
 //-------------------------------------------------------------------------------------

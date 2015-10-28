@@ -34,7 +34,7 @@
 //*****************************************************************************************************************************
 
 	//	コンストラクタ
-	sceneMain::sceneMain(void) : m_Stage(NULL), playerNum(0), stageType(0), stageScale( 1.0f )
+	sceneMain::sceneMain( void ) : m_Stage( NULL ), playerNum(0), stageType(0), stageScale( 1.0f )
 	{
 		
 	}
@@ -63,7 +63,7 @@
 		//	ライト設定
 		Vector3 dir( 1.0f, -2.0f, -1.0f );
 		dir.Normalize();
-		iexLight::DirLight( shader3D, 0, &dir, 1.5f, 1.5f, 1.5f );
+		iexLight::DirLight( shader3D, 0, &dir, 0.5f, 0.5f, 0.5f );
 
 		//	カメラ設定
 		mainView = new Camera();
