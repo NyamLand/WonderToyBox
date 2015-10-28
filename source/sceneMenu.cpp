@@ -87,7 +87,8 @@ namespace
 		playerNum = make_unique<iex2DObj>( LPSTR( "DATA/UI/playerNum.png" ) );
 
 		//	ÉÇÉfÉãì«Ç›çûÇ›
-		org[CHARACTER_TYPE::KNIGHT] = new iex3DObj( "DATA/CHR/Knight/Knight_Dammy.IEM" );		//	ãRém
+		//org[CHARACTER_TYPE::KNIGHT] = new iex3DObj( "DATA/CHR/Knight/Knight_Dammy.IEM" );		//	ãRém
+		org[CHARACTER_TYPE::SCAVENGER] = new iex3DObj( "DATA/CHR/Knight/Knight_Dammy.IEM" );		//	ë|èúâÆ
 		org[CHARACTER_TYPE::PRINCESS] = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );					//	ïP
 		org[CHARACTER_TYPE::SQUIRREL] = new iex3DObj( "DATA/CHR/SQUIRREL/SQUIRREL.IEM" );		//	ÉäÉX
 		org[CHARACTER_TYPE::TIGER] = new iex3DObj( "DATA/CHR/ECCMAN/ECCMAN.IEM" );				//	ÉgÉâ

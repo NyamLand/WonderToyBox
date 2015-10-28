@@ -212,3 +212,8 @@
 	{
 		return	coin_num;
 	}
+
+	Coin*	CoinManager::GetCoin(void)const
+	{
+		return c_Coin;
+	}

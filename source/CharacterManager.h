@@ -13,10 +13,12 @@
 #include	"Knight.h"
 #include	"Princess.h"
 #include	"Squirrel.h"
+#include	"Scavenger.h"
 #include	"Tiger_CPU.h"
 #include	"Knight_CPU.h"
 #include	"Princess_CPU.h"
 #include	"Squirrel_CPU.h"
+#include	"Scavenger_CPU.h"
 
 //	class
 class CharacterManager

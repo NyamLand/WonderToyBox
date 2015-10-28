@@ -557,20 +557,17 @@ namespace
 		case	MODE_STATE::QUICKARTS:
 			isEnd = QuickArts();
 			if (!isEnd)	SetAttackParam(attackKind);
-			if ( !isEnd )	SetAttackParam( attackKind );
 			break;
 
 		case MODE_STATE::POWERARTS:
 			isEnd = PowerArts();
 			if (!isEnd)	SetAttackParam(attackKind);
-			if ( !isEnd )	SetAttackParam( attackKind );
 			break;
 
 		case MODE_STATE::HYPERARTS:
 			isEnd = HyperArts();
 			canHyper = isEnd;
 			if (!isEnd)	SetAttackParam(attackKind);
-			if ( !isEnd )	SetAttackParam( attackKind );
 			break;
 		}
 
@@ -835,28 +832,28 @@ namespace
 	//	AI操作
 	void	BaseChara::ControlAI( void )
 	{
-		switch (aiInfo.mode)
-		{
-		case AI_MODE_STATE::ATTACK:
-			AutoAttack();
-			break;
+		//switch (aiInfo.mode)
+		//{
+		//case AI_MODE_STATE::ATTACK:
+		//	AutoAttack();
+		//	break;
 
-		case AI_MODE_STATE::RUN:		//　コインを取りに行く
-			AutoRun();
-			break;
+		//case AI_MODE_STATE::RUN:		//　コインを取りに行く
+		//	AutoRun();
+		//	break;
 
-		case AI_MODE_STATE::RUNAWAY:
-			RunAway();
-			break;
+		//case AI_MODE_STATE::RUNAWAY:
+		//	RunAway();
+		//	break;
 
-		case AI_MODE_STATE::GUARD:
-			AutoGuard();
-			break;
+		//case AI_MODE_STATE::GUARD:
+		//	AutoGuard();
+		//	break;
 
-		case AI_MODE_STATE::WAIT:
-			AutoWait();
-			break;
-		}
+		//case AI_MODE_STATE::WAIT:
+		//	AutoWait();
+		//	break;
+		//}
 
 		//--------------------------------------------
 		//　ここでは各モードになるための条件を実装

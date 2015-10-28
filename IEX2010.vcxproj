@@ -129,6 +129,8 @@
     <ClCompile Include="source\Princess.cpp" />
     <ClCompile Include="source\Princess_CPU.cpp" />
     <ClCompile Include="source\Random.cpp" />
+    <ClCompile Include="source\Scavenger.cpp" />
+    <ClCompile Include="source\Scavenger_CPU.cpp" />
     <ClCompile Include="source\sceneLoad.cpp" />
     <ClCompile Include="source\sceneMain.cpp" />
     <ClCompile Include="source\sceneMenu.cpp" />
@@ -185,6 +187,8 @@
     <ClInclude Include="source\Princess.h" />
     <ClInclude Include="source\Princess_CPU.h" />
     <ClInclude Include="source\Random.h" />
+    <ClInclude Include="source\Scavenger.h" />
+    <ClInclude Include="source\Scavenger_CPU.h" />
     <ClInclude Include="source\sceneLoad.h" />
     <ClInclude Include="source\sceneMenu.h" />
     <ClInclude Include="source\sceneResult.h" />
