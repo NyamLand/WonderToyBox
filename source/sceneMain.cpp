@@ -61,7 +61,7 @@
 		RefTex = new iex2DObj( 1280, 720, IEX2D_RENDERTARGET );
 
 		//	ライト設定
-		Vector3 dir( 1.0f, -2.0f, -1.0f );
+		dir = Vector3( 1.0f, -2.0f, -1.0f );
 		dir.Normalize();
 		iexLight::DirLight( shader3D, 0, &dir, 0.5f, 0.5f, 0.5f );
 
@@ -170,11 +170,13 @@
 		case 0:	//	机ステージ
 			m_CollisionStage = new iexMesh( "DATA/back/Collision.IMO" );
 			m_Stage = new iexMesh( "DATA/back/stage.IMO" );
+			iexLight::DirLight( shader3D, 0, &dir, 1.5f, 1.5f, 1.5f );
 			break;
 
 		case 1:	//	森ステージ
 			m_CollisionStage = new iexMesh( "DATA/BG/Forest/Collision/collision_forest.IMO" );
 			m_Stage = new iexMesh( "DATA/BG/Forest/model/forest.IMO" );
+			iexLight::DirLight( shader3D, 0, &dir, 0.5f, 0.5f, 0.5f );
 			m_Stage->SetScale( stageScale );
 			break;
 		}
@@ -258,7 +260,16 @@
 		//	とりあえず仮
 		if ( gameStartCoinNum < GAME_START_COIN_NUM )
 		{
-			m_CoinManager->Set( Vector3( 0.0f, 5.0f, -25.0f ), Vector3( Random::GetFloat( -0.5f, 0.5f ), Random::GetFloat( 0.1f, 0.3f ), 1.0f ), Random::GetFloat( 2.0f, 3.5f ) );
+			switch ( gameManager->GetStageType() )
+			{
+			case 0:
+				m_CoinManager->Set( Vector3( 0.0f, 5.0f, -25.0f ), Vector3( Random::GetFloat( -0.5f, 0.5f ), Random::GetFloat( 0.1f, 0.3f ), 1.0f ), Random::GetFloat( 2.0f, 3.5f ) );
+				break;
+
+			case 1:
+				m_CoinManager->Set( Vector3( 0.0f, 7.0f, -25.0f ), Vector3( Random::GetFloat( -0.5f, 0.5f ), Random::GetFloat( 0.2f, 0.3f ), 1.0f ), Random::GetFloat( 1.0f, 5.5f ) );
+				break;
+			}
 			gameStartCoinNum++;
 		}
 
@@ -354,14 +365,7 @@
 		//RenderShadowBuffer();
 
 		//	オブジェクト描画
-		if ( characterManager->GetParameterState( 0, PARAMETER_STATE::SLIP ) )
-		{
-			m_Stage->Render( shader3D, "full_s" );
-		}
-		else
-		{
-			m_Stage->Render( shader3D, "full_s" );
-		}
+		m_Stage->Render( shader3D, "full_s" );
 		characterManager->Render( shader3D, "toon" );
 		m_CoinManager->Render();
 		m_BulletManager->Render();
@@ -444,9 +448,9 @@
 
 		//	描画
 		//m_Stage->Render( shader3D, "shadowBuf" );
-		characterManager->Render( shader3D, "ShadowBuf" );
-		m_CoinManager->Render( shader3D, "ShadowBuf" );
-		itemManager->Render( shader3D, "ShadowBuf" );
+		//characterManager->Render( shader3D, "ShadowBuf" );
+		//m_CoinManager->Render( shader3D, "ShadowBuf" );
+		//itemManager->Render( shader3D, "ShadowBuf" );
 
 		//	作ったシャドウテクスチャをシェーダーにセット
 		shader3D->SetValue( "ShadowMap", ShadowTex );
