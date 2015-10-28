@@ -73,7 +73,8 @@ namespace
 	{
 		enum
 		{
-			KNIGHT,		//	騎士
+			//KNIGHT,		//	騎士
+			SCAVENGER,		//掃除屋
 			PRINCESS,	//	姫
 			SQUIRREL,	//	リス
 			TIGER,			//	トラ
@@ -103,7 +104,8 @@ namespace
 		//	キャラクター名文字列
 		const		LPSTR	characterName[CHARACTER_TYPE::MAX] =
 		{
-			"ナイト",
+			//"ナイト",
+			"掃除屋"
 			"プリンセス",
 			"リス",
 			"とら",

@@ -133,6 +133,12 @@
     <Filter Include="ソース ファイル\Script">
       <UniqueIdentifier>{6dfcd678-2542-4f1b-be0c-8df2244cbbb4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Character\Scavenger">
+      <UniqueIdentifier>{f6a394bf-ca63-4e47-b44b-eae8ce1167d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Character\CPU\Scavenger">
+      <UniqueIdentifier>{8feb653d-2c22-40b1-bb1c-be5238976c9b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -297,6 +303,12 @@
     <ClCompile Include="source\Script.cpp">
       <Filter>ソース ファイル\Script</Filter>
     </ClCompile>
+    <ClCompile Include="source\Scavenger.cpp">
+      <Filter>ソース ファイル\Character\Scavenger</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Scavenger_CPU.cpp">
+      <Filter>ソース ファイル\Character\CPU\Scavenger</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -415,6 +427,12 @@
     </ClInclude>
     <ClInclude Include="source\Script.h">
       <Filter>ソース ファイル\Script</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Scavenger.h">
+      <Filter>ソース ファイル\Character\Scavenger</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Scavenger_CPU.h">
+      <Filter>ソース ファイル\Character\CPU\Scavenger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

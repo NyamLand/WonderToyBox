@@ -264,6 +264,11 @@
 		this->pos = pos; 
 	}
 
+	//ˆÚ“®—Êİ’è
+	void	Coin::SetMove(const Vector3& move)
+	{
+		this->move = move;
+	}
 	//	Œü‚«İ’è
 	void	Coin::SetAngle( const float& angle )
 	{

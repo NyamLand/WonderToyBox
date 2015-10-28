@@ -42,9 +42,14 @@
 			else					character[playerNum] = new Princess_CPU();
 			break;
 
-		case CHARACTER_TYPE::KNIGHT:
-			if ( isPlayer )		character[playerNum] = new Knight();
-			else					character[playerNum] = new Knight_CPU();
+		//case CHARACTER_TYPE::KNIGHT:
+		//	if ( isPlayer )		character[playerNum] = new Knight();
+		//	else					character[playerNum] = new Knight_CPU();
+		//	break;
+
+		case CHARACTER_TYPE::SCAVENGER:
+			if (isPlayer)		character[playerNum] = new Scavenger();
+			else					character[playerNum] = new Scavenger_CPU();
 			break;
 
 		case CHARACTER_TYPE::SQUIRREL:

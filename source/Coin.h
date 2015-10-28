@@ -70,7 +70,8 @@ public:
 	void	Magnet( void );
 
 	//	î•ñæ“¾Eİ’è
-	void	SetPos( const Vector3& pos );
+	void	SetPos(const Vector3& pos);
+	void	SetMove(const Vector3& move);
 	void	SetAngle( const float& angle );
 	void	SetScale( const float& angle );
 	void	SetGetAwayFlag( bool flag );
