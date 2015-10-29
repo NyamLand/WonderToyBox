@@ -2,6 +2,7 @@
 #include	"iextreme.h"
 #include	"GlobalFunction.h"
 #include	"Screen.h"
+#include	"system\System.h"
 
 //*******************************************************************************
 //
@@ -20,6 +21,11 @@
 			const Vector3 WHITE( 1.0f, 1.0f, 1.0f );
 			const Vector3 BLACK( 0.0f, 0.0f, 0.0f );
 		}
+		namespace Size
+		{
+			const int MAX = 255;
+			const int MIN = 0;
+		}
 	}
 
 //-----------------------------------------------------------------------------------
@@ -34,6 +40,10 @@
 		screenState = false;
 		alpha = 1.0f;
 		speed = 1.0f;
+		size = Size::MIN;
+
+		shader3D->SetValue("screen_width", static_cast<float>(iexSystem::ScreenWidth));
+		shader3D->SetValue("screen_height", static_cast<float>(iexSystem::ScreenHeight));
 
 		return	false;
 	}
@@ -64,6 +74,19 @@
 		case SCREEN_MODE::WHITE_OUT:
 			screenState = FadeOut();
 			break;
+
+		case SCREEN_MODE::WIPE_IN:
+			screenState = WipeIn();
+			break;
+
+		case SCREEN_MODE::WIPE_OUT:
+			screenState = WipeOut();
+			break;
+		}
+
+		if (mode == SCREEN_MODE::WIPE_IN ||
+			mode == SCREEN_MODE::WIPE_OUT){
+			shader->SetValue("effect_size", size);
 		}
 
 		return	screenState;
@@ -72,7 +95,15 @@
 	//	描画
 	void	Screen::Render( void )
 	{
-		iexPolygon::Rect( 0, 0, 1280, 720, RS_COPY, GetColor( color, alpha ) );
+		if ( mode == SCREEN_MODE::WIPE_IN ||
+			 mode == SCREEN_MODE::WIPE_OUT )
+		{
+			iexPolygon::Rect( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, shader3D, "WipeEffect", 0xFFFFFFFF );
+
+		}
+		else{
+			iexPolygon::Rect( 0, 0, 1280, 720, RS_COPY, GetColor( color, alpha ) );
+		}
 	}
 
 //-----------------------------------------------------------------------------------
@@ -107,6 +138,31 @@
 		return	false;
 	}
 
+	//	ワイプアウト
+	bool	Screen::WipeOut( void )
+	{
+		size -= (int)speed;
+		if (size < Size::MIN)
+		{
+			size = Size::MIN;
+			return true;
+		}
+		return false;
+	}
+
+	//	ワイプイン
+	bool	Screen::WipeIn(void)
+	{
+		size += (int)speed;
+		if (size > Size::MAX)
+		{
+			size = Size::MAX;
+			return true;
+		}
+		return false;
+	}
+
+
 //-----------------------------------------------------------------------------------
 //	情報設定
 //-----------------------------------------------------------------------------------
@@ -139,6 +195,19 @@
 			color = Color::WHITE;
 			alpha = 0.0f;
 			break;
+
+		case SCREEN_MODE::WIPE_OUT:
+			color = Color::BLACK;
+			alpha = 1.0f;
+			size = Size::MAX;
+			break;
+
+		case SCREEN_MODE::WIPE_IN:
+			color = Color::BLACK;
+			alpha = 1.0f;
+			size = Size::MIN;
+			break;
+
 		}
 	}
 

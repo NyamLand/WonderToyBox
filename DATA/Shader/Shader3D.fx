@@ -1826,3 +1826,34 @@
 				PixelShader = compile ps_3_0 PS_NoSkin();
 			}
 		}
+
+	//------------------------------------------------------
+	//	スクリーン用	
+	//------------------------------------------------------
+
+		float effect_size = 0.0f;
+		float screen_width = 1280.0f;
+		float screen_height = 720.0f;
+
+		float4 PS_WipeEffect(float2 ScreenPos : VPOS) : COLOR
+		{
+			float p1 = ScreenPos.x - screen_width  * 0.5f;
+			float p2 = ScreenPos.y - screen_height * 0.5f;
+
+			return (p1*p1 + p2*p2 >= effect_size*effect_size) ? float4(0.0f, 0.0f, 0.0f, 1.0f) : float4(0.0f, 0.0f, 0.0f, 0.0f);
+		}
+
+		technique WipeEffect
+		{
+			pass P0
+			{
+				AlphaBlendEnable = true;
+				BlendOp = Add;
+				SrcBlend = SrcAlpha;
+				DestBlend = InvSrcAlpha;
+				ZWriteEnable = true;
+
+				PixelShader = compile ps_3_0 PS_WipeEffect();
+			}
+		}
+
