@@ -85,25 +85,22 @@
 			break;
 		}
 
-		if (mode == SCREEN_MODE::WIPE_IN ||
-			mode == SCREEN_MODE::WIPE_OUT){
-			//shader->SetValue("effect_size", size);
-		}
-
 		return	screenState;
 	}
 
 	//	•`‰æ
 	void	Screen::Render( void )
 	{
-		if ( mode == SCREEN_MODE::WIPE_IN ||
-			 mode == SCREEN_MODE::WIPE_OUT )
+		switch ( mode )
 		{
+		case SCREEN_MODE::WIPE_IN:
+		case SCREEN_MODE::WIPE_OUT:
 			iexPolygon::Rect( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, shader3D, "WipeEffect", 0xFFFFFFFF );
+			break;
 
-		}
-		else{
+		default:
 			iexPolygon::Rect( 0, 0, 1280, 720, RS_COPY, GetColor( color, alpha ) );
+			break;
 		}
 	}
 
@@ -149,7 +146,7 @@
 		}
 
 		wipeSize -= D3DX_PI / 180.0f * speed;
-		shader->SetValue("effect_size", 1000.0f * wipeSize );
+		shader3D->SetValue( "effect_size", 1000.0f * wipeSize );
 		return false;
 	}
 
@@ -163,7 +160,7 @@
 		}
 
 		wipeSize += D3DX_PI / 180.0f * speed;
-		shader->SetValue( "effect_size", 1000.0f * wipeSize );
+		shader3D->SetValue( "effect_size", 1000.0f * wipeSize );
 		return false;
 	}
 
