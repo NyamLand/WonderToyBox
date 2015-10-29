@@ -33,6 +33,7 @@ private:
 	float		speed;
 	bool		screenState;
 	int			size;
+	float		wipeSize;
 	Vector3	color;
 
 public:

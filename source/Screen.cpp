@@ -41,9 +41,10 @@
 		alpha = 1.0f;
 		speed = 1.0f;
 		size = Size::MIN;
+		wipeSize = 1.0f;
 
-		shader3D->SetValue("screen_width", static_cast<float>(iexSystem::ScreenWidth));
-		shader3D->SetValue("screen_height", static_cast<float>(iexSystem::ScreenHeight));
+		shader3D->SetValue( "screen_width", static_cast<float>( iexSystem::ScreenWidth ) );
+		shader3D->SetValue( "screen_height", static_cast<float>( iexSystem::ScreenHeight ) );
 
 		return	false;
 	}
@@ -86,7 +87,7 @@
 
 		if (mode == SCREEN_MODE::WIPE_IN ||
 			mode == SCREEN_MODE::WIPE_OUT){
-			shader->SetValue("effect_size", size);
+			//shader->SetValue("effect_size", size);
 		}
 
 		return	screenState;
@@ -141,24 +142,28 @@
 	//	ワイプアウト
 	bool	Screen::WipeOut( void )
 	{
-		size -= (int)speed;
-		if (size < Size::MIN)
-		{
-			size = Size::MIN;
+		if ( wipeSize < 0.0f ){
+			wipeSize = 0.0f;
+			screenState = true;
 			return true;
 		}
+
+		wipeSize -= D3DX_PI / 180.0f * speed;
+		shader->SetValue("effect_size", 1000.0f * wipeSize );
 		return false;
 	}
 
 	//	ワイプイン
-	bool	Screen::WipeIn(void)
+	bool	Screen::WipeIn( void )
 	{
-		size += (int)speed;
-		if (size > Size::MAX)
-		{
-			size = Size::MAX;
+		if ( wipeSize >= 1.0f ){
+			wipeSize = 1.0f;
+			screenState = true;
 			return true;
 		}
+
+		wipeSize += D3DX_PI / 180.0f * speed;
+		shader->SetValue( "effect_size", 1000.0f * wipeSize );
 		return false;
 	}
 
@@ -199,13 +204,13 @@
 		case SCREEN_MODE::WIPE_OUT:
 			color = Color::BLACK;
 			alpha = 1.0f;
-			size = Size::MAX;
+			wipeSize = 1.0f;
 			break;
 
 		case SCREEN_MODE::WIPE_IN:
 			color = Color::BLACK;
 			alpha = 1.0f;
-			size = Size::MIN;
+			wipeSize = 0.0f;
 			break;
 
 		}
