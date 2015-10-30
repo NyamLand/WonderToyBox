@@ -42,6 +42,7 @@
 		Coin::Initialize();
 		type = 0;
 		scale = 1.0f;
+		time = 0;
 		return	true;
 	}
 
@@ -62,6 +63,11 @@
 
 		//	回転
 		angle += 0.05f;
+
+		//	タイマー加算
+		time++;
+
+		if ( time >= 7 * SECOND )	state = false;
 	}
 
 	//	ヒット時動作
