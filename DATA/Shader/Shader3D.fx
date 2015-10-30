@@ -1840,7 +1840,7 @@
 			float p1 = ScreenPos.x - screen_width  * 0.5f;
 			float p2 = ScreenPos.y - screen_height * 0.5f;
 
-			return (p1*p1 + p2*p2 >= effect_size*effect_size) ? float4(0.0f, 0.0f, 0.0f, 1.0f) : float4(0.0f, 0.0f, 0.0f, 0.0f);
+			return ( p1*p1 + p2*p2 >= effect_size*effect_size ) ? float4( 0.0f, 0.0f, 0.0f, 1.0f ) : float4( 0.0f, 0.0f, 0.0f, 0.0f );
 		}
 
 		technique WipeEffect
