@@ -196,6 +196,14 @@ protected:
 		float	boostSpeed;		//　→子クラスで各々の値を初期化して
 	};
 
+	struct SHADOW_INFO
+	{
+		iex2DObj*	obj;
+		Vector3		pos;
+		LVERTEX	v[4];
+		float			scale;
+	};
+
 protected:
 	iex3DObj*	obj;
 
@@ -234,6 +242,7 @@ protected:
 	AI_INFO						aiInfo;
 	SLIP_INFO						slipInfo;
 	PLUS_STATUS_INFO		plusStatusInfo;
+	SHADOW_INFO				shadow;
 
 	//	状態	
 	PARAMETER_INFO		slip;
@@ -258,6 +267,7 @@ public:
 	~BaseChara( void );
 	virtual	bool	Initialize( int playerNum, Vector3 pos, bool isPlayer );
 	virtual	bool	Initialize( int playerNum, Vector3 pos );
+	virtual	void	ShadowInitialize( void );
 	void	Release( void );
 
 	//	更新・描画
@@ -284,6 +294,7 @@ public:
 	void	KnockBackLeanBackWard( void );
 	void	FallCheck( void );
 	void	ParameterAdjust( void );
+	void	ShadowUpdate( void );
 
 	//	パラメータ状態動作
 	void	ParameterInfoUpdate( void );

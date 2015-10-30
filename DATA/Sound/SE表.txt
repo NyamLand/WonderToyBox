@@ -5,3 +5,7 @@ coin		→コイン獲得
 decide		→決定
 item-get	→アイテム獲得
 event		→イベント発生
+
+
+BattleBGM	→戦闘用BGM
+MenuBGM		→メニュー用BGM
