@@ -479,10 +479,10 @@ namespace
 	}
 
 	//	ƒŠƒUƒ‹ƒg‚Ì’l“n‚µ
-	void	sceneResult::ProductionCoinHandOff(NUMBER_INFO& number,int coinNum)
+	void	sceneResult::ProductionCoinHandOff( NUMBER_INFO& number,int coinNum )
 	{
 		number.hundred = coinNum / 100 % 10;
-		if (number.hundred > 0){
+		if ( number.hundred > 0 ){
 			number.H_flg = true;
 		}
 		number.ten = coinNum / 10 % 10;
