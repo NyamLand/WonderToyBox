@@ -51,10 +51,31 @@
 	{
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
-			charatype[i] = 0;
+			charatype[i] = 0;		
 			coinNum[i] = 0;
 		}
 		playerNum = 0;
+		stageType = 0;
+		mode = 0;
+		donketsuBoostState = false;
+		lastBonus = rand() % PLAYER_MAX;
+		timeStop = 0;
+		//	ゲームデータテキストを読み込む
+		LoadTextData();
+		timer = timelimit;
+
+		return	true;
+	}
+
+	//　（メインから始めるための）デバッグ用
+	bool	GameManager::InitializeDebug(void)
+	{
+		for (int i = 0; i < PLAYER_MAX; i++)
+		{
+			charatype[i] = i;
+			coinNum[i] = 0;
+		}
+		playerNum = 1;	//　操作する人数
 		stageType = 0;
 		mode = 0;
 		donketsuBoostState = false;

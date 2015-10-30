@@ -89,6 +89,7 @@ public:
 	GameManager( void );
 	~GameManager( void );
 	bool	Initialize( void );
+	bool	InitializeDebug( void );
 	void	Release( void );
 	void	InitImage( void );
 

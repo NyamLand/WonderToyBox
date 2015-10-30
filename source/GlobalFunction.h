@@ -84,6 +84,8 @@
 		float	flashingAlpha;
 		float	flashingRenderflag;
 		float	flashingParam;
+
+		//void	Render(int )
 	};
 
 //----------------------------------------------------------------------

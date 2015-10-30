@@ -458,7 +458,7 @@ namespace
 
 			if (screen->GetScreenState())
 			{
-				MainFrame->ChangeScene(new sceneLoad(new sceneMenu()));
+				MainFrame->ChangeScene(new sceneMenu());
 				return;
 			}
 		}

@@ -56,7 +56,7 @@ BOOL iexSystem::Initialize( HWND hWnd, BOOL bFullScreen, DWORD ScreenMode )
 	d3dpp.hDeviceWindow					= hWnd;
 
 	d3dpp.EnableAutoDepthStencil		= TRUE;
-	d3dpp.AutoDepthStencilFormat		= D3DFMT_D16;
+	d3dpp.AutoDepthStencilFormat		= D3DFMT_D24S8;
 
 //	d3dpp.PresentationInterval			= D3DPRESENT_INTERVAL_ONE;
 	d3dpp.PresentationInterval			= D3DPRESENT_INTERVAL_IMMEDIATE;

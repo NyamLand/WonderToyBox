@@ -44,6 +44,18 @@ private:
 		int		savePos;
 	};
 
+	struct DONKETSU_DIRECT_INFO
+	{
+		//　顔関連
+		ImageObj	face;
+		int		f;
+		int		roulette;
+		int		face_step;
+
+		//　その他
+		ImageObj	donke;//　「どんけつは～？」
+	};
+
 	struct HURRY_INFO
 	{
 		bool	flag;
@@ -56,7 +68,6 @@ private:
 	//	各画像
 	iex2DObj*	timer;
 	iex2DObj*	coinbar;
-	iex2DObj*	face;
 	ImageObj	countImage;
 	ImageObj	alertImage;
 
@@ -80,19 +91,20 @@ private:
 	int		state_x[4];
 	int		state_type[4];
 
+	//　キャラ情報
+	int		charatype[4];
+
 	//	ニュース
 	NewsBar	newsbar;
-	
-	//　プレイヤー（顔）
-	int		charatype[4];
-	int		f;
-	int		roulette;
 
 	//	警告パラメータ
 	ALERT_INFO	alertInfo;
 
 	//	タイトルパラメータ
 	TITLE_INFO	titleInfo;
+
+	//　どんけつ演出パラメータ
+	DONKETSU_DIRECT_INFO ddInfo;
 
 	//	HurryUpパラメータ
 	HURRY_INFO	hurryInfo;
@@ -121,6 +133,7 @@ public:
 	//	更新・描画
 	void	Update( const int& mode );
 	void	Render( const int& mode );
+	void	DrawDebug();
 
 	//	各シーン更新
 	void	TitleUpdate( int mode );
@@ -168,6 +181,8 @@ public:
 	//	メイン動作関数
 	void BarControl( void );
 	void StateImageControl( void );
+	void FaceRoulette( int face_wait );
+	void SetFaceRoulette(int face_wait);
 
 	//------------------------------情報取得・設定------------------------------------//
 
