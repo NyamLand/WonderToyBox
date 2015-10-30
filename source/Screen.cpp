@@ -98,7 +98,7 @@
 		if ( mode == SCREEN_MODE::WIPE_IN ||
 			 mode == SCREEN_MODE::WIPE_OUT )
 		{
-			iexPolygon::Rect( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, shader3D, "WipeEffect", 0xFFFFFFFF );
+			iexPolygon::Rect( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, shader3D, "WipeEffect",  GetColor( color, alpha ) );
 
 		}
 		else{
