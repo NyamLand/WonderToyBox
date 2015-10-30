@@ -35,8 +35,8 @@
 	//	コンストラクタ
 	GameManager::GameManager( void )
 	{
-		InitPos[0] = Vector3( -10.0f, 10.0f, 10.0f );
-		InitPos[1] = Vector3( 10.0f, 10.0f, 10.0f );
+		InitPos[0] = Vector3( -10.0f, 10.0f, 15.0f );
+		InitPos[1] = Vector3( 10.0f, 10.0f, 15.0f );
 		InitPos[2] = Vector3( -10.0f, 10.0f, -15.0f );
 		InitPos[3] = Vector3( 10.0f, 10.0f, -15.0f );
 	}
@@ -132,13 +132,12 @@
 			ui->SetAlertFlag(true);
 			sound->PlaySE(SE::EVENT_SE);
 		}
-		if (timer == 40 * SECOND) eventManager->SetEvent(Random::GetInt(0, EVENT_MODE::NONE - 1));
-
+		if ( timer == 40 * SECOND ) eventManager->SetEvent( EVENT_MODE::SLOPE_CAMERA/*Random::GetInt( 0, EVENT_MODE::NONE - 1 )*/ );
 
 		if ( timer != 0 )
 		{
-			//	３秒ごとにアイテムを３割の確率ででランダムに配置
-			if ( timer % ( 3* SECOND ) == 0 )
+			//	5秒ごとにアイテムを３割の確率ででランダムに配置
+			if ( timer % ( 5* SECOND ) == 0 )
 			{
 				if ( Random::PercentageRandom( 0.7f ) )
 				{

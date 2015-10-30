@@ -17,6 +17,8 @@ namespace
 			FADE_OUT,
 			WHITE_IN,
 			WHITE_OUT,
+			WIPE_IN,
+			WIPE_OUT,
 			END,
 		};
 	}
@@ -30,6 +32,8 @@ private:
 	float		alpha;
 	float		speed;
 	bool		screenState;
+	int			size;
+	float		wipeSize;
 	Vector3	color;
 
 public:
@@ -44,6 +48,8 @@ public:
 	//	“®ìŠÖ”
 	bool	FadeIn( void );
 	bool	FadeOut( void );
+	bool	WipeIn( void );
+	bool	WipeOut( void );
 
 	//	î•ñİ’è
 	void	SetScreenMode( int mode, float speed );

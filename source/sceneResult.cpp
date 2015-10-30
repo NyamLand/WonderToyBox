@@ -91,7 +91,7 @@ namespace
 
 		//	乱数初期化
 		Random::Initialize();
-
+		
 		//	ラストボーナス設定
 		SetLastBonus();
 
@@ -116,7 +116,6 @@ namespace
 
 			}
 			
-
 			//	ランキング用構造体
 			{
 				rank[i].rank = 0;
@@ -199,7 +198,6 @@ namespace
 			case 0:
 				//	ゲーム情報初期化
 				gameManager->RetryInitialize();
-
 				MainFrame->ChangeScene( new sceneMain() );
 				return;
 				break;
@@ -481,10 +479,10 @@ namespace
 	}
 
 	//	リザルトの値渡し
-	void	sceneResult::ProductionCoinHandOff(NUMBER_INFO& number,int coinNum)
+	void	sceneResult::ProductionCoinHandOff( NUMBER_INFO& number,int coinNum )
 	{
 		number.hundred = coinNum / 100 % 10;
-		if (number.hundred > 0){
+		if ( number.hundred > 0 ){
 			number.H_flg = true;
 		}
 		number.ten = coinNum / 10 % 10;

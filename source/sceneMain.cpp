@@ -379,6 +379,10 @@
 
 		//UI
 		ui->Render( gameManager->GetMode() );
+
+		char	str[256];
+		sprintf_s( str, "height = %f", characterManager->GetPos( 0 ).y );
+		DrawString( str, 300, 500, 0xFFFFFFFF );
 	}
 
 	//	HDR•`‰æ

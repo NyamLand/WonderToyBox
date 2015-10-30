@@ -34,6 +34,7 @@ class Item  :public Coin
 {
 private:
 	int		type;
+	int		time;
 
 public:
 	//	‰Šú‰»E‰ğ•ú
