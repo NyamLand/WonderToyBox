@@ -56,7 +56,11 @@ private:
 	//	Še‰æ‘œ
 	ImageObj	timer;
 	iex2DObj*	coinbar;
+	ImageObj	frame;
+	ImageObj	backgauge;
+	ImageObj	gauge;
 	iex2DObj*	face;
+	ImageObj	faceImage;
 	ImageObj	countImage;
 	ImageObj	alertImage;
 
