@@ -113,7 +113,32 @@
 		//	BGM再生
 		sound->PlayBGM( BGM::MAIN_BGM );
 
+		/*
+			メインから始めるために無理やり呼び出しています。
+			本チャンに戻す場合はWinMainのシーン読み込みをタイトルに戻して、
+			この↓の関数をコメントアウトしてください。
+		*/
+		InitializeDebug();
+
 		return true;
+	}
+
+	void	sceneMain::InitializeDebug(void)
+	{
+		gameManager->InitializeDebug();
+		gameStartCoinNum = 0;
+
+		//　ステージ
+		StageInitialize();
+
+		//　プレイヤー・CPU
+		PlayerInitialize();
+
+		m_BulletManager->Initialize();
+		itemManager->Initialize();
+		m_CoinManager->Initialize();
+		m_Effect->Initialize();
+		ui->Initialize(UI_MODE::MAIN);
 	}
 
 	//	デストラクタ
@@ -146,7 +171,7 @@
 	void    sceneMain::PlayerInitialize(void)
 	{
 		//　プレイヤー設定
-		for ( int i = 0; i < playerNum; i++ )
+		for ( int i = 0; i < gameManager->GetPlayerNum(); i++ )
 		{
 			int        characterType = gameManager->GetCharacterType( i );
 			Vector3    pos = gameManager->InitPos[i];
@@ -154,7 +179,7 @@
 		}
 
 		//　ＣＰＵ設定
-		for ( int i = playerNum; i < PLAYER_MAX; i++ )
+		for (int i = gameManager->GetPlayerNum(); i < PLAYER_MAX; i++)
 		{
 			int        characterType = gameManager->GetCharacterType( i );
 			Vector3    pos = gameManager->InitPos[i];

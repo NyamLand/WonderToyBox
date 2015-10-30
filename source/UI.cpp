@@ -162,6 +162,16 @@
 			ResultRender( mode );
 			break;
 		}
+		DrawDebug();
+	}
+
+	//　デバッグ表示
+	void	UI::DrawDebug()
+	{
+		if (debug)
+		{
+			
+		}
 	}
 
 //------------------------------------------------------------------------------
@@ -192,12 +202,13 @@
 	{
 		timer.obj = new iex2DObj("DATA/BG/number.png");
 		coinbar = new iex2DObj("DATA/BG/coin_gage.png");
-		face = new iex2DObj("DATA/UI/chara_emotion.png");
 		countImage.obj = new iex2DObj("DATA/UI/bfUI.png");
 		alertImage.obj = new iex2DObj("DATA/UI/alert.png");
 
 		//	共通変数初期化
 		changeflag = false;
+		for (int i = 0; i < PLAYER_MAX; i++)
+			charatype[i] = gameManager->GetCharacterType(i);
 
 		//	各UI情報初期化
 		CoinBarInitialize();
@@ -229,7 +240,7 @@
 	{
 		SafeDelete( timer.obj );
 		SafeDelete( coinbar );
-		SafeDelete( face );
+		SafeDelete( ddInfo.face.obj );
 		SafeDelete( countImage.obj );
 		SafeDelete( alertImage.obj );
 	}
@@ -507,13 +518,12 @@
 	//	どんけつ演出初期化
 	void	UI::DonketsuDirectionInitialize( void )
 	{
-		//　キャラ種類
-		for ( int i = 0; i < 4; i++ )
-		{
-			charatype[i] = gameManager->GetCharacterType( i );
-		}
-		roulette = 0;
-		f = 0;
+		//　構造体初期化
+		ddInfo.face.obj = new iex2DObj("DATA/UI/chara_emotion.png");
+		ImageInitialize(ddInfo.face, 1280 / 2, 720 / 2, 0, 0, FACE_INFO::Normal * 256, 0 * 256, 256, 256);
+		ddInfo.roulette = 0;
+		ddInfo.f = 0;
+		ddInfo.face_step = -1;
 	}
 
 	//	警告演出初期化
@@ -679,33 +689,24 @@
 	//	どんけつ決定演出
 	void	UI::DonketsuDirectionUpdate( void )
 	{
+		/*
+			・「どんけつは～？」を最初にバンッ!
+			・４人の顔を２回ずつぷわぷわっと風船が膨らむような感じに出す。ちょっと間をおいて９回目で決定
+			　決定時に顔のバックに強調エフェクト、背景を暖色系に。
+			・下方に○Ｐ！
+		*/
+
+		
 		//　演出用時間更新
-		static int wait( 5 * SECOND );
-		if ( wait <= 0 )
+		static int wait = 10 * SECOND;
+		if (wait <= 0)
 		{
-			//wait = 30;
-			wait = 5 * SECOND;
+			wait = 6 * SECOND;
 			changeflag = true;
 		}
 
 		//　顔ルーレット
-		int 	step;
-		if (wait <= 5 * SECOND)			step = 0;	//　イントロ
-		if (wait <= 4 * SECOND)			step = 1;	//　ルーレット
-		if (wait <= 2 * SECOND + 30)	step = 2;	//　決定
-
-		switch ( step )
-		{
-		case 0:
-			break;
-		case 1:
-			f = roulette % 4;
-			roulette++;
-			break;
-		case 2:
-			f = gameManager->GetWorst();
-			break;
-		}
+		FaceRoulette(wait);
 
 		wait--;
 	}
@@ -762,7 +763,7 @@
 			coinbar->Render(bar_x[i], bar_y[i], bar_sx[i], 32, 0, 32 * i, bar_sx[i], bar_sy[i]);
 
 			//顔
-			face->Render(state_x[i], 550, 32, 32, state_type[i] * 256, charatype[i] * 256, 256, 256);
+			ddInfo.face.obj->Render(state_x[i], 550, 32, 32, state_type[i] * 256, charatype[i] * 256, 256, 256);
 		}
 	}
 
@@ -807,13 +808,40 @@
 		iexPolygon::Rect( 0, 0, 1280, 720, RS_COPY, color );
 
 		//　顔ルーレット
-		face->Render( 480, 200, 320, 320, FACE_INFO::Normal * 256, charatype[f] * 256, 256, 256 );
+		/*switch (ddInfo.face_step)
+		{
+		case 0:
+			break;
+		
+		case 1:
+			face->Render(480, 200, 320, 320, FACE_INFO::Normal * 256, ddInfo.charatype[ddInfo.f] * 256, 256, 256);
+			break;
+		case 2:
+			face->Render(480, 200, 320, 320, FACE_INFO::Normal * 256, ddInfo.charatype[ddInfo.f] * 256, 256, 256);
+			break;
+		case 3:
+			face->Render(480, 200, 320, 320, FACE_INFO::Normal * 256, ddInfo.charatype[ddInfo.f] * 256, 256, 256);
+			break;
+		case 4:
+			face->Render(480, 200, 320, 320, FACE_INFO::Normal * 256, ddInfo.charatype[ddInfo.f] * 256, 256, 256);
+			break;
+		case 5:
+			break;
+		case 6:
+			break;
+		case 7:
+			break;
+		}*/
+		RenderImage(ddInfo.face, FACE_INFO::Normal * 256, charatype[ddInfo.f] * 256, 256, 256, IMAGE_MODE::NORMAL);
 
-		char	str[256];
-		int		worst = gameManager->GetWorst();
-		DrawString( "どんけつ演出", 200, 50 );
-		wsprintf( str, "ビリは p%d", worst + 1 );
-		DrawString( str, 200, 70 );
+		//　デバッグ
+		if (debug)
+		{
+			char	str[256];
+			int		worst = gameManager->GetWorst();
+			wsprintf(str, "ビリは p%d", worst + 1);
+			DrawString(str, 200, 70);
+		}
 	}
 
 	//	警告描画
@@ -915,6 +943,91 @@
 					}
 				}
 			}
+		}
+	}
+
+	void	UI::FaceRoulette( int face_wait )
+	{
+		const int LAST_TIMING = 2 * SECOND + 30;
+		const int INTERVAL = 10;
+		const int SPF = 320 / INTERVAL;	// SCALE PER FRAME(１フレームに拡大する分)
+
+		switch (face_wait)
+		{
+			//　イントロ　→　１Ｐ
+		case LAST_TIMING + INTERVAL * 13:
+		case LAST_TIMING + INTERVAL * 9:
+			ddInfo.face_step = 0;
+			ddInfo.face.w = ddInfo.face.h = 0;
+			ddInfo.f = characterManager->GetPlayerNum(0);
+			break;
+
+			//　１Ｐ　→　２Ｐ
+		case LAST_TIMING + INTERVAL * 12:
+		case LAST_TIMING + INTERVAL * 8:
+			ddInfo.face_step = 1;
+			ddInfo.face.w = ddInfo.face.h = 0;
+			ddInfo.f = characterManager->GetPlayerNum(1);
+			break;
+
+			//　２Ｐ　→　３Ｐ
+		case LAST_TIMING + INTERVAL * 11:
+		case LAST_TIMING + INTERVAL * 7:
+			ddInfo.face_step = 2;
+			ddInfo.face.w = ddInfo.face.h = 0;
+			ddInfo.f = characterManager->GetPlayerNum(2);
+			break;
+
+			//　３Ｐ　→　４Ｐ
+		case LAST_TIMING + INTERVAL * 10:
+		case LAST_TIMING + INTERVAL * 6:
+			ddInfo.face_step = 3;
+			ddInfo.face.w = ddInfo.face.h = 0;
+			ddInfo.f = characterManager->GetPlayerNum(3);
+			break;
+
+			//　４Ｐ　→　待ち
+		case LAST_TIMING + INTERVAL * 5:
+			ddInfo.face_step = 4;
+			ddInfo.face.w = ddInfo.face.h = 0;
+			ddInfo.f = -1;
+			break;
+
+
+			//　待ち　→　ビリ
+		case LAST_TIMING + INTERVAL * 1:
+			ddInfo.face_step = 5;
+			ddInfo.f = gameManager->GetWorst();
+			break;
+
+			//　ビリ　→　そのまま放置
+		case LAST_TIMING:
+			ddInfo.face_step = 6;
+			break;
+		}
+
+		//　演出
+		switch (ddInfo.face_step)
+		{
+		case 0:
+		case 1:
+		case 2:
+		case 3:
+		case 5:
+			ddInfo.face.renderflag = true;
+			ddInfo.face.w += SPF;
+			ddInfo.face.h += SPF;
+			break;
+
+			//　放置
+		case 6:
+			ddInfo.face.renderflag = true;
+			ddInfo.face.w = ddInfo.face.h = 320;
+			break;
+
+		default:
+			ddInfo.face.renderflag = false;
+			break;
 		}
 	}
 
