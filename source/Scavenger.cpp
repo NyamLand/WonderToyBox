@@ -37,7 +37,7 @@ Scavenger::Scavenger(void) : BaseChara()
 {
 	//	パラメータ初期化
 	speed = 0.25f;
-	scale = 0.02f;
+	scale = 0.05f;
 	diffence = -1;
 	stayTime = 0;
 	absorb_length = DEFAULT_ABSORB_LENGTH;
@@ -54,13 +54,17 @@ Scavenger::~Scavenger(void)
 bool	Scavenger::Initialize(int playerNum, Vector3 pos)
 {
 	//	親の初期化
-	BaseChara::Initialize(playerNum, pos);
+	BaseChara::Initialize( playerNum, pos );
 
 	//	モデル読み込み
-	if (obj == nullptr)
-		obj = new iex3DObj("DATA/CHR/Knight/Knight_Dammy.IEM");
+	if ( obj == nullptr )
+		obj = new iex3DObj( "DATA/CHR/Knight/Knight_Dammy.IEM" );
 
-	if (obj == nullptr)	return	false;
+	//	スケール設定
+	obj->SetScale( 0.05f );
+	obj->Update();
+
+	if ( obj == nullptr )	return	false;
 	return	true;
 }
 

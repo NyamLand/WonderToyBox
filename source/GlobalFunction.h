@@ -162,10 +162,9 @@
 	template<typename T, typename T2>
 	bool	Lerp( T& out, T2 p1, T2 p2, float t )
 	{
-		if ( t >= 1.0f )	return	true;
-
 		out = ( T )( p1 * ( 1 - t ) + p2 * t );
 
+		if ( t >= 1.0f )	return	true;
 		return	false;
 	}
 
@@ -176,10 +175,10 @@
 	template<typename T, typename T2>
 	bool	CubicFunctionInterpolation( T& out, T2 p1, T2 p2, float t )
 	{
-		if ( t >= 1.0f )	return	true;
 		float rate = t * t * ( 3.0f - 2.0f * t );   // 3ŸŠÖ”•âŠÔ’l‚É•ÏŠ·
-
 		out = ( T )( p1 * ( 1.0f - rate ) + p2 * rate );
+
+		if ( t >= 1.0f )	return	true;
 		return	false;
 	}
 

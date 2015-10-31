@@ -91,6 +91,7 @@ namespace
 
 		//	スクリーン初期化
 		screen->Initialize();
+		screen->SetScreenMode( SCREEN_MODE::FADE_IN, 1.0f );
 
 		//	UI初期化
 		ui = new UI();
@@ -231,18 +232,6 @@ namespace
 
 		//	スクリーン描画
 		screen->Render();
-
-		//	デバッグ
-		mainView->Render();
-
-
-
-		//char	str[256];
-		Matrix	mat = mainView->GetMatrix();
-		Vector3	front = Vector3( mat._31, mat._32, mat._33 );
-		front.Normalize();
-		//sprintf_s( str, "t.x = %f\nt.y = %f\nt.z = %f\n", eff_pos.x, eff_pos.y, eff_pos.z );
-		//DrawString( str, 50, 500 );
 	}
 
 //******************************************************************
@@ -265,6 +254,11 @@ namespace
 			switch ( titleInfo.step )
 			{
 			case 0:
+				//	フェード処理終了まで待つ
+				if ( screen->GetScreenState() )	titleInfo.step++;
+				break;
+
+			case 1:
 				//	カメラ更新
 				mainView->Update( VIEW_MODE::SETUP );
 
@@ -278,7 +272,7 @@ namespace
 					titleInfo.titleImage.renderflag = false;
 
 					//	画面制御
-					screen->SetScreenMode( SCREEN_MODE::WHITE_OUT, speed );
+					screen->SetScreenMode( SCREEN_MODE::WHITE_OUT, 1.0f );
 
 					//	pressspace波紋
 					static	float	wavespeed = 1.5f;
@@ -287,7 +281,7 @@ namespace
 				}
 				break;
 
-			case 1:
+			case 2:
 				//	カメラ更新
 				mainView->Update( VIEW_MODE::TITLE );
 
@@ -319,7 +313,7 @@ namespace
 				if ( curtainStateL && curtainStateR )	titleInfo.step++;
 				break;
 
-			case 2:
+			case 3:
 				changeflag = false;
 				curtainStateL = false;
 				curtainStateR = false;
@@ -383,7 +377,7 @@ namespace
 						{
 							mainView->SetNextPoint(TITLE_TARGET::MOVE_MAIN, 0.005f);
 							//sound->PlaySE(SE::DECIDE_SE);
-							screen->SetScreenMode( SCREEN_MODE::WIPE_OUT, 1.0f );
+							screen->SetScreenMode( SCREEN_MODE::WIPE_OUT, 1.5f );
 						}
 						break;
 
@@ -456,7 +450,10 @@ namespace
 			//	カメラ更新
 			mainView->Update(VIEW_MODE::TITLE);
 
-			if (screen->GetScreenState())
+			//	UI更新
+			ui->Update( TITLE_MODE::MOVE_MAIN );
+
+			if ( screen->GetScreenState() )
 			{
 				MainFrame->ChangeScene(new sceneMenu());
 				return;

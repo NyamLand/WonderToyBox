@@ -74,7 +74,7 @@ namespace
 
 		//	screen
 		screen->Initialize();
-		screen->SetScreenMode( SCREEN_MODE::WHITE_IN, 1.0f );
+		screen->SetScreenMode( SCREEN_MODE::WIPE_IN, 1.5f );
 
 		//	ゲームマネージャ初期化
 		gameManager->Initialize();
@@ -436,7 +436,7 @@ namespace
 		deskStage->Update();
 
 		//	森モデル初期化
-		forestStage->SetPos( 5.0f, 3.0f, 0.0f );
+		forestStage->SetPos( 5.0f, 4.0f, 0.0f );
 		forestStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 		forestStage->SetScale( 0.04f );
 		forestStage->Update();
@@ -557,7 +557,7 @@ namespace
 			deskStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 			deskStage->SetScale( 0.08f );
 			deskStage->Update();
-			forestStage->SetPos( 0.0f, 5.0f, 0.0f );
+			forestStage->SetPos( 0.0f, 6.0f, 0.0f );
 			forestStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 			forestStage->SetScale( 0.03f );
 			forestStage->Update();
@@ -649,7 +649,7 @@ namespace
 	//	メイン移動初期化
 	void	sceneMenu::MoveMainInitialize( void )
 	{
-		screen->SetScreenMode( SCREEN_MODE::WHITE_OUT, 1.0f );
+		screen->SetScreenMode( SCREEN_MODE::FADE_OUT, 1.5f );
 	}
 
 	//	メインへ
@@ -675,7 +675,7 @@ namespace
 	//	タイトル移動初期化
 	void	sceneMenu::MoveTitleInitialize( void )
 	{
-		screen->SetScreenMode( SCREEN_MODE::WHITE_OUT, 1.0f );
+		screen->SetScreenMode( SCREEN_MODE::FADE_OUT, 1.0f );
 	}
 
 	//	タイトルへ

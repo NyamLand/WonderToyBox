@@ -952,7 +952,7 @@
 		const int INTERVAL = 10;
 		const int SPF = 320 / INTERVAL;	// SCALE PER FRAME(１フレームに拡大する分)
 
-		switch (face_wait)
+		switch ( face_wait )
 		{
 			//　イントロ　→　１Ｐ
 		case LAST_TIMING + INTERVAL * 13:
