@@ -196,6 +196,7 @@
 			m_CollisionStage = new iexMesh( "DATA/back/Collision.IMO" );
 			m_Stage = new iexMesh( "DATA/back/stage.IMO" );
 			iexLight::DirLight( shader3D, 0, &dir, 1.5f, 1.5f, 1.5f );
+			m_Stage->SetScale( D3DX_PI );
 			break;
 
 		case 1:	//	森ステージ
