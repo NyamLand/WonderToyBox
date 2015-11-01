@@ -54,17 +54,18 @@ private:
 
 private:
 	//	各画像
-	ImageObj	timer;
+	iex2DObj*	playerNumber;
 	iex2DObj*	coinbar;
+	iex2DObj*	face;
+
+	ImageObj	timer;
 	ImageObj	frame;
 	ImageObj	backgauge;
 	ImageObj	gauge;
-	iex2DObj*	face;
 	ImageObj	faceImage;
 	ImageObj	countImage;
 	ImageObj	alertImage;
-	iex2DObj*	playerNumber;
-	ImageObj	pNumImage[PLAYER_MAX];
+	ImageObj	pNumImage[4];
 
 private:
 	//	システム

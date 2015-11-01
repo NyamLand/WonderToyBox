@@ -30,8 +30,19 @@ namespace
 	{
 		enum
 		{
-			RESULT_MODE,
-			SELECT_MODE
+			RESULT,
+			SELECT,
+		};
+	}
+
+	namespace MENU
+	{
+		enum
+		{
+			RESTART,						//	再戦
+			MOVE_MENU,					//	対戦設定へ	
+			MOVE_TITLE,					//	タイトルへ
+			END,								//	終端
 		};
 	}
 }
@@ -49,100 +60,194 @@ namespace
 	//	デストラクタ
 	sceneResult::~sceneResult( void )
 	{
-		SafeDelete( mainView );
-		SafeDelete( back );
-		SafeDelete( Sback );
-		SafeDelete( Smenu );
-		characterManager->Release();
-		Random::Release();
+		Release();
 	}
 
 	//	初期化
 	bool	sceneResult::Initialize( void )
 	{
+		//	乱数初期化
+		Random::Initialize();
+
 		//	カメラ設定
-		mainView = new Camera();
+		CameraInitialize();
 
-		//	画像初期化
-		back = new iex2DObj( "DATA/Result/result-back.png");
-		r_number = new iex2DObj( "DATA/UI/number.png");
-		Sback = new iex2DObj("DATA/Result/black.png");
-		Smenu = new iex2DObj("DATA/Result/result-cho.png");
-		result = new iex2DObj("DATA/UI/menu-head.png");
+		//	画像読み込み
+		back = make_unique<iex2DObj>( LPSTR( "DATA/UI/back.png" ) );
+		menuHead.obj = new iex2DObj( "DATA/UI/menu-head.png" );
+		originNumber = new iex2DObj( "DATA/UI/number.png" );
+		menuText = new iex2DObj( "DATA/Result/result-cho.png" );
 
-		//	コリジョン
-		collision = new iexMesh( "DATA/BG/CollisionGround.imo" );
-		Collision::Initiallize( collision );
-		
+		//	モデル読み込み
+		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Knight/Knight_Dammy.IEM" ) );	//	掃除屋
+		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Y2009/Y2009.IEM" ) );						//	姫
+		org[CHARACTER_TYPE::SQUIRREL] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/SQUIRREL/SQUIRREL.IEM" ) );			//	リス
+		org[CHARACTER_TYPE::TIGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/ECCMAN/ECCMAN.IEM" ) );					//	トラ
+
+		//	モデル初期化
+		ModelInitialize();
+
+		//	構造体初期化
+		ImageInitialize( menuHead, 640, 150, 370, 150, 0, 0, 512, 256 );
+		menuHead.angle = D3DXToRadian( 7.0f );
+
 		//	変数初期化
 		lastBonus = 0;
 		step = 0;
-		wait = 0;
-		resultcount = 0;
-		mode = MOVE_MODE::RESULT_MODE;
-		Sy = -720;
-		StringPos_Y = 0;
-		waitTimer = 0;
+		mode = MOVE_MODE::RESULT;
 
-		//フラグ全初期化
-		Modeflg = false;
-		bonusflg = false;
-		addCoinflg	= false;
-
-		//	乱数初期化
-		Random::Initialize();
-		
 		//	ラストボーナス設定
 		SetLastBonus();
 
-		for ( int i = 0; i < 4; i++ )
-		{
-			lastBonusNum[i] = 0;
+		//	結果用情報構造体初期化
+		ResultInfoInitialize();
 
-			//	数値構造体初期化
-			{
-				number[i].hundred = 0;
-				number[i].ten = 0;
-				number[i].one = 0;
-				number[i].H_flg = false;
-			}
+		//	数値構造体初期化
+		NumberImageInfoInitialize();
 
-			//	ボーナス数値構造体
-			{
-				BonusNumber[i].hundred = 0;
-				BonusNumber[i].ten = 0;
-				BonusNumber[i].one = 0;
-				BonusNumber[i].H_flg = false;
-
-			}
-			
-			//	ランキング用構造体
-			{
-				rank[i].rank = 0;
-				rank[i].rankflg = false;
-			}
-			
-			//	リザルト情報初期化
-			coinNum[i] = gameManager->GetCoinNum(i);
-			lastBonusNum[i] = 0;
-			totalCoinNum[i] = coinNum[i] + lastBonusNum[i];
-			resultInfo[i].p_Coin = gameManager->GetCoinNum( i );
-			resultInfo[i].p_num = i;
-			resultInfo[i].p_addCoin = coinNum[i]+lastBonusNum[i];
-
-			//	プレイヤー初期化
-			int		characterType = gameManager->GetCharacterType( i );
-			Vector3	pos = Vector3( 6.0f - ( 4.0f  *  i ), 0.0f, 0.0f );
-			characterManager->Initialize( i, characterType, pos, true );
-		}
-
-		//	ソート
-		BubbleSort();
+		//	ソートかける
+		Sort();
 
 		//	ランキング設定
 		SetRank();
+		
+		//	順位画像構造体初期化
+		RankImageInitialize();
 
+		//	ルーレット情報初期化
+		{
+			rouletteInfo.step = 0;
+			rouletteInfo.timer = 0;
+		}
+
+		//	メニュー情報初期化
+		{
+			menuInfo.select = MENU::RESTART;
+			menuInfo.screenH = 0;
+			menuInfo.alpha = 0.5f;
+			menuInfo.t = 0.0f;
+		}
+
+		//	メニュー画像構造体初期化
+		{
+			//	メニューの項目数まわす
+			for ( int i = 0; i < 3; i++ )
+			{
+				ImageInitialize( menuImage[i], 640, 200 + 200 * i, 700, 150, 0, 128 * i, 512, 128 );
+				menuImage[i].obj = menuText;
+				menuImage[i].renderflag = false;
+			}
+		}
+
+		//	ランク表示用構造体初期化
+		{
+			viewRankInOrder.timer = 0;
+			viewRankInOrder.step = 3;
+		}
 		return	true;
+	}
+
+	//	解放
+	void	sceneResult::Release( void )
+	{
+		SafeDelete( menuHead.obj );
+		SafeDelete( originNumber );
+		SafeDelete( menuText );
+		SafeDelete( mainView );
+		Random::Release();
+	}
+
+//----------------------------------------------------------------------------
+//	各種情報初期化
+//----------------------------------------------------------------------------
+
+	//	カメラ初期化
+	void	sceneResult::CameraInitialize( void )
+	{
+		mainView = new Camera();
+		mainView->SetProjection( D3DXToRadian( 10.0f ), 1.0f, 1000.0f );
+		mainView->Set( Vector3( 0.0f, 5.2f, -70.0f ), Vector3( 0.0f, 5.2f, 0.0f ) );
+		mainView->Activate();
+	}
+
+	//	モデル初期化
+	void	sceneResult::ModelInitialize( void )
+	{
+		for ( int i = 0; i < PLAYER_MAX; i++ )
+		{
+			//	モデル情報設定
+			obj[i] = org[gameManager->GetCharacterType( i )]->Clone();
+			obj[i]->SetAngle( D3DX_PI);
+			obj[i]->SetPos( -7.0f + ( 14.0f / 3.0f * i ), 0.0f, 0.0f );
+			obj[i]->SetScale( 0.02f );
+			obj[i]->Update();
+		}
+	}
+
+	//	結果用構造体関連初期化
+	void	sceneResult::ResultInfoInitialize( void )
+	{
+		for ( int i = 0; i < PLAYER_MAX; i++ )
+		{
+			//	ゲーム終了時のデータを格納( ここでボーナスも設定しておく )
+			originInfo[i].coin = gameManager->GetCoinNum( i );
+			originInfo[i].rank = i;
+			originInfo[i].bonus = 0;
+
+			//	ランキング計算用に総計データを格納( ボーナス数値が整い次第、元のコイン枚数にボーナスを足す、ランクはソートにかけるため適当に代入 )
+			sortInfo[i].coin = originInfo[i].coin;
+			sortInfo[i].rank = i;
+		}
+	}
+
+	//	数値構造体初期化
+	void	sceneResult::NumberImageInfoInitialize( void )
+	{	
+		Vector3	out;
+
+		for ( int i = 0; i < PLAYER_MAX; i++ )
+		{
+			//	クライアント座標に変換
+			WorldToClient( obj[i]->GetPos(), out, matView * matProjection );
+
+			//	中心座標・初期スケール設定
+			numberImageInfo[i].pos.x = static_cast<int>( out.x );
+			numberImageInfo[i].pos.y = 270;
+			numberImageInfo[i].scale = 80;
+
+			//	各位画像設定
+			numberImageInfo[i].one.obj = originNumber;
+			numberImageInfo[i].ten.obj = originNumber;
+			numberImageInfo[i].hundred.obj = originNumber;
+
+			//	数値画像構造体初期化
+			SetNumberImageInfo( i, originInfo[i].coin );
+		}
+	}
+
+	//	順位画像構造体初期化
+	void	sceneResult::RankImageInitialize( void )
+	{
+		for ( int i = 0; i < PLAYER_MAX; i++ )
+		{
+			Vector3	out;
+
+			//	クライアント座標に変換
+			WorldToClient( obj[i]->GetPos(), out, matView * matProjection );
+
+			//	構造体初期化
+			int 	x = static_cast<int>( out.x );
+			int		y = 400;
+			int		w = 150;
+			int		h = 90;
+			int		sx = originInfo[i].rank * 128;
+			int		sy = 128;
+			int		sw = 128;
+			int		sh = 64;
+			ImageInitialize( rankImage[i], x, y, w, h, sx, sy, sw, sh );
+			rankImage[i].obj = originNumber;
+			rankImage[i].renderflag = false;
+		}
 	}
 
 //----------------------------------------------------------------------------
@@ -154,64 +259,13 @@ namespace
 	{
 		switch ( mode )
 		{
-		case MOVE_MODE::RESULT_MODE:
+		case MOVE_MODE::RESULT:
 			ResultUpdate();
 			break;
 
-		case MOVE_MODE::SELECT_MODE:
-			SelectUpdata();
+		case MOVE_MODE::SELECT:
+			SelectUpdate();
 			break;
-		}
-	}
-
-	//リザルト時の更新
-	void	sceneResult::ResultUpdate( void )
-	{
-		//	カメラ更新
-		mainView->Update( VIEW_MODE::RESULT, Vector3( 0.0f, 0.0f, 0.0f ) );
-
-		//	プレイヤー更新
-		characterManager->Update();
-		
-		//	演出
-		Production();
-		if ( Modeflg )mode = MOVE_MODE::SELECT_MODE;
-	}
-
-	//セレクト時の更新
-	void	sceneResult::SelectUpdata( void )
-	{
-		Sy +=20;
-		if ( Sy > 0 ){
-			Sy = 0;
-		}
-
-		if ( input[0]->Get( KEY_UP ) == 3)		StringPos_Y--;
-		if ( input[0]->Get( KEY_DOWN ) == 3 )	StringPos_Y++;
-		if ( StringPos_Y >= 3 )	StringPos_Y = 0;
-		if ( StringPos_Y < 0 )		StringPos_Y = 2;
-
-		if ( KEY_Get( KEY_SPACE ) == 3 || KEY_Get( KEY_A ) == 3 )
-		{
-			switch ( StringPos_Y )
-			{
-			case 0:
-				//	ゲーム情報初期化
-				gameManager->RetryInitialize();
-				MainFrame->ChangeScene( new sceneMain() );
-				return;
-				break;
-
-			case 1:
-				MainFrame->ChangeScene( new sceneMenu() );
-				return;
-				break;
-
-			case 2:
-				MainFrame->ChangeScene( new sceneTitle() );
-				return;
-				break;
-			}
 		}
 	}
 
@@ -221,91 +275,217 @@ namespace
 		mainView->Activate();
 		mainView->Clear();
 
-		iexSystem::GetDevice()->SetRenderState(D3DRS_ZENABLE, D3DZB_FALSE);
-		back->Render(0, 0, 1280, 720, 0, 0, 1280, 720);
-		iexSystem::GetDevice()->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
+		//	背景描画
+		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
+		back->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 1280, 720 );
+		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
 
-		characterManager->Render( shader3D, "toon" );
+		//	リザルトシール描画
+		RenderImage( menuHead, menuHead.sx, menuHead.sy, menuHead.sw, menuHead.sh, IMAGE_MODE::ADOPTPARAM );
 
-		result->Render(510, -10, 256, 128, 0, 0, 512, 256);	//	リザルト描画
-
-		for (int i = 0; i < 4; i++){
-			Vector3 stringPos;
-			Vector3	bonusPos;
-			Vector3 rankingPos;
-			WorldToClient( characterManager->GetPos(i), stringPos, matView* matProjection );
-			WorldToClient( characterManager->GetPos(i), bonusPos, matView* matProjection);
-			WorldToClient( characterManager->GetPos(i), rankingPos, matView* matProjection );
-			stringPos.y = 100;
-			bonusPos.y = 170;
-			rankingPos.y = 350;
-			
-			
-			//	取得コイン枚数の描画
-			{
-				ResultRender(number[i], stringPos);
-			}
-
-			//	ボーナスコイン枚数の描画
-			{
-				if(bonusflg){
-					ResultRender(BonusNumber[i], bonusPos);
-				}
-			}
-
-			//	順位の描画
-			{
-				if (rank[i].rankflg){
-					r_number->Render((int)rankingPos.x - 40 * 2, (int)rankingPos.y, 128, 64, rank[i].rank * 128, 128, 128, 64);
-				}
-			}
-		//	デバッグ文字描画
-		/*DrawString( "[sceneResult]", 50, 50 );
-		DrawString( "すぺーすでタイトルへ", 300, 400, 0xFFFFFF00 );
-		DrawString( GameInfo::LastBonus[lastBonus], 300, 150 );
-
-		for ( int i = 0; i < 4; i++ )
+		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
-			sprintf_s( str, "%d位 : player%d　%d枚", i + 1, resultInfo[i].p_num + 1, resultInfo[i].p_addCoin );
-			DrawString( str, 550, 250 + i * 30, 0xFFFFFFFF );
-		}*/
-			}
-		
+			//	プレイヤー描画
+			obj[i]->Render( shader3D, "toon" );
+		}
 
-		if ( mode == MOVE_MODE::SELECT_MODE ){
-			SelectRender();
+		//	数値描画
+		NumberImageRender();
+
+		//	順位描画
+		RankRender();
+
+		//	メニュー用スクリーン描画
+		iexPolygon::Rect( 0, 0, iexSystem::ScreenWidth, menuInfo.screenH, RS_COPY, GetColor( 0.0f, 0.0f, 0.0f, menuInfo.alpha ) );
+
+		//	メニュー項目描画
+		SelectRender();
+	}
+
+	//	リザルト時の更新
+	void	sceneResult::ResultUpdate( void )
+	{
+		bool	isEnd = false;
+		bool	isFinViewRankInOrder = false;
+
+		switch ( step )
+		{
+		case 0:		//	ルーレット
+			isEnd = Roulette();
+
+			//	決定ボタンでスキップ
+			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+			{
+				for ( int i = 0; i < PLAYER_MAX; i++ )
+				{
+					SetNumberImageInfo( i, sortInfo[i].coin );
+					SetWave( rankImage[i], 1.5f );
+					rankImage[i].renderflag = true;
+				}
+				
+				step = 2;
+			}
+
+			//	回転が終了したら
+			if ( isEnd )		step++;
+			break;
+			
+		case 1:		//	順位描画
+			isFinViewRankInOrder = ViewRankInOrder();
+			isEnd = RankWave();
+
+			//	決定ボタンでスキップ
+			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+			{
+				for ( int i = 0; i < PLAYER_MAX; i++ )
+				{
+					SetNumberImageInfo( i, originInfo[i].coin );
+					SetWave( rankImage[i], 1.5f );
+					rankImage[i].renderflag = true;
+				}
+
+				step = 2;
+			}
+
+			//	波紋終了後に選択可
+			if ( isFinViewRankInOrder && isEnd )
+			{
+				if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+				{
+					step = 0;
+					mode = MOVE_MODE::SELECT;
+				}
+			}
+			break;
+
+		case 2:	//	順位描画(スキップ用)
+			for ( int i = 0; i < PLAYER_MAX; i++ )		isEnd = WaveUpdate( rankImage[i] );
+
+			//	波紋終了後に選択可
+			if ( isEnd )
+			{
+				if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+				{
+					step = 0;
+					mode = MOVE_MODE::SELECT;
+				}
+			}
+			break;
 		}
 	}
 
-	//	リザルト描画
-	void	sceneResult::ResultRender(NUMBER_INFO& number, Vector3 Pos)
+	//	セレクト時の更新
+	void	sceneResult::SelectUpdate( void )
 	{
-		if (number.H_flg){
-			r_number->Render((int)Pos.x - 40 * 2, (int)Pos.y, 64, 64, number.hundred * 64, 0, 64, 64);	//	コイン三桁目
-			r_number->Render((int)Pos.x - 40 * 1, (int)Pos.y, 64, 64, number.ten * 64, 0, 64, 64);		//	コイン二桁目
-			r_number->Render((int)Pos.x - 40 * 0, (int)Pos.y, 64, 64, number.one * 64, 0, 64, 64);		//	コイン一桁目
-		}
-		else{
+		bool	isEnd = false;
 
-			r_number->Render((int)Pos.x - 40 * 2, (int)Pos.y, 64, 64, number.ten * 64, 0, 64, 64);		//	コイン二桁目
-			r_number->Render((int)Pos.x - 40 * 1, (int)Pos.y, 64, 64, number.one * 64, 0, 64, 64);		//	コイン一桁目
-		}
+		switch ( step )
+		{
+		case 0:
+			menuInfo.t += 0.03f;
+			if ( menuInfo.t >= 1.0f )
+			{
+				menuInfo.t = 1.0f;
+				
+				//	メニュー項目描画
+				for ( int i = 0; i < 3; i++ )		menuImage[i].renderflag = true;
+			}
+			isEnd = Lerp( menuInfo.screenH, 0, static_cast<int>( iexSystem::ScreenHeight ), menuInfo.t );
 
+			if ( isEnd )step++;
+			break;
+
+		case 1:
+			//	上下で選択
+			if ( input[0]->Get( KEY_UP ) == 3 )		menuInfo.select--;
+			if ( input[0]->Get( KEY_DOWN ) == 3 )	menuInfo.select++;
+			if ( menuInfo.select < 0 )						menuInfo.select = MENU::END - 1;
+			if ( menuInfo.select >= MENU::END )		menuInfo.select = MENU::RESTART;
+			
+			//	読み込み位置変更
+			for ( int i = 0; i < 3; i++ )
+			{
+				if ( i == menuInfo.select )	menuImage[i].sx = 512;
+				else									menuImage[i].sx = 0;
+			}
+
+			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+			{
+				switch ( menuInfo.select )
+				{
+				case MENU::RESTART:
+					//	ゲーム情報初期化
+					gameManager->RetryInitialize();
+					MainFrame->ChangeScene( new sceneMain() );
+					return;
+					break;
+
+				case MENU::MOVE_MENU:
+					MainFrame->ChangeScene( new sceneMenu() );
+					return;
+					break;
+
+				case MENU::MOVE_TITLE:
+					MainFrame->ChangeScene( new sceneTitle() );
+					return;
+					break;
+				}
+			}
+			break;
+		}
 	}
 
 	//セレクト画面描画
 	void	sceneResult::SelectRender( void )
 	{
-		Sback->Render(0, Sy, 1280, 720, 0, 0, 64, 64);
-		if (Sy >= 0)
+		for ( int i = 0; i < 3; i++ )
 		{
-			for (int i = 0; i < 3; i++){
-				Smenu->Render(400, 200 + i * 128, 512, 128, 0, i * 128, 512, 128);
+			RenderImage( menuImage[i], menuImage[i].sx, menuImage[i].sy, menuImage[i].sw, menuImage[i].sh, IMAGE_MODE::NORMAL );
+		}
+	}
 
-			}
-			Smenu->Render(400, 200 + StringPos_Y * 128, 512, 128, 512, StringPos_Y * 128, 512, 128);
-			
-			
+	//	数値画像構造体描画
+	void	sceneResult::NumberImageRender( void )
+	{
+		for ( int i = 0; i < PLAYER_MAX; i++ )
+		{
+			//	１００の位描画
+			int		sx = numberImageInfo[i].hundred.sx;
+			int		sy = numberImageInfo[i].hundred.sy;
+			int		sw = numberImageInfo[i].hundred.sw;
+			int		sh = numberImageInfo[i].hundred.sh;
+
+			if ( numberImageInfo[i].hundredRenderFlag )
+				RenderImage( numberImageInfo[i].hundred, sx, sy, sw, sh, IMAGE_MODE::NORMAL );
+
+			//	１０の位描画
+			sx = numberImageInfo[i].ten.sx;
+			sy = numberImageInfo[i].ten.sy;
+			sw = numberImageInfo[i].ten.sw;
+			sh = numberImageInfo[i].ten.sh;
+			RenderImage( numberImageInfo[i].ten, sx, sy, sw, sh, IMAGE_MODE::NORMAL );
+
+			//	１の位描画
+			sx = numberImageInfo[i].one.sx;
+			sy = numberImageInfo[i].one.sy;
+			sw = numberImageInfo[i].one.sw;
+			sh = numberImageInfo[i].one.sh;
+			RenderImage( numberImageInfo[i].one, sx, sy, sw, sh, IMAGE_MODE::NORMAL );
+		}
+	}
+
+	//	ランク描画
+	void	sceneResult::RankRender( void )
+	{
+		//	ランク描画
+		for ( int i = 0; i < PLAYER_MAX; i++ )
+		{
+			int		sx = rankImage[i].sx;
+			int		sy = rankImage[i].sy;
+			int		sw = rankImage[i].sw;
+			int		sh = rankImage[i].sh;
+			RenderImage( rankImage[i], sx, sy, sw, sh, IMAGE_MODE::NORMAL );
+			RenderImage( rankImage[i], sx, sy, sw, sh, IMAGE_MODE::WAVE );
 		}
 	}
 
@@ -313,27 +493,28 @@ namespace
 //	動作関数
 //----------------------------------------------------------------------------
 
-	//	バブルソート
-	void	sceneResult::BubbleSort( void )
+	//	ソート
+	void	sceneResult::Sort( void )
 	{
-		RESULT_INFO		temp;
+		//	退避用
+		SORT_INFO temp;
 
-		for ( int i = 0; i < 4; ++i )
+		for ( int i = 0; i < PLAYER_MAX; ++i )
 		{
 			//	後ろから順番にチェックしていく
-			for ( int s =3; s > i; --s )
+			for ( int s = PLAYER_MAX - 1; s > i; --s )
 			{
 				//	一つ下の要素と比較
-				if ( resultInfo[s].p_addCoin >	resultInfo[s - 1].p_addCoin )
+				if ( sortInfo[s].coin >	sortInfo[s - 1].coin )
 				{
 					//	一時的に退避
-					temp = resultInfo[s - 1];
+					temp = sortInfo[s - 1];
 
 					//	交換
-					resultInfo[s - 1] = resultInfo[s];
+					sortInfo[s - 1] = sortInfo[s];
 
 					//	退避してたやつを戻す
-					resultInfo[s] = temp;
+					sortInfo[s] = temp;
 				}
 			}
 		}
@@ -352,165 +533,179 @@ namespace
 			//	違う結果が出るまでループ
 			while ( lastBonus == gameManager->GetLastBonus() )
 			{
-				lastBonus = rand() % 5;
+				lastBonus = Random::GetInt( 0, 4 );
 			}
 		}
 	}
 
-	//	リザルト演出
-	void	sceneResult::Production( void )
+	//	数値構造体に値をセットする
+	void	sceneResult::SetNumberInfo( NUMBER_INFO& number, int coin )
 	{
-		switch ( step )
-		{
-		case 0://	コイン枚数の回転
-			ProductionRotation( step );
-			break;
-
-		case 1://	1Pのコイン枚数決定とその他回転
-			ProductionCoinHandOff( number[step - 1],coinNum[step - 1] );
-			ProductionRotation( step );
-			break;
-
-		case 2://	2Pのコイン枚数決定とその他回転
-			ProductionCoinHandOff( number[step - 1], coinNum[step - 1] );
-			ProductionRotation( step );
-			break;
-
-		case 3://	3Pのコイン枚数決定とその他回転
-			ProductionCoinHandOff( number[step - 1], coinNum[step - 1] );
-			ProductionRotation( step );
-			break;
-		
-		case 4://	4Pのコイン枚数描画
-			ProductionCoinHandOff( number[step - 1], coinNum[step - 1] );
-			step++;
-			break;
-
-		case 5://ボーナス演出->後で作る
-			waitTimer++;
-			if (waitTimer > 30){
-				waitTimer = 0;
-				step++;
-			}
-			break;
-
-		case 6://ボーナス表示->後で作る
-			for (int i = 0; i < 4; i++)
-			{
-				ProductionCoinHandOff(BonusNumber[i], lastBonusNum[i]);
-			}
-
-			bonusflg = true;
-
-
-			waitTimer++;
-			if (waitTimer > 30){
-				waitTimer = 0;
-				step++;
-			}
-			break;
-
-		case 7://	コイン合算値を描画
-
-
-			waitTimer++;
-			if (waitTimer > 60){
-				waitTimer = 0;
-				step++;
-			}
-			break;
-		case 8:	//	ビリから順に描画
-			RankRender(3);
-			waitTimer++;
-			if (waitTimer > 30){
-				waitTimer = 0;
-				step++;
-			}
-			break;
-		case 9:
-			RankRender(2);
-			waitTimer++;
-			if (waitTimer > 30){
-				waitTimer = 0;
-				step++;
-			}
-			break;
-		case 10:
-			RankRender(1);
-			waitTimer++;
-			if (waitTimer > 30){
-				waitTimer = 0;
-				step++;
-			}
-			break;
-		case 11:
-			RankRender(0);
-			if (KEY_Get(KEY_A) == 3 || KEY_Get(KEY_SPACE))step++;
-			break;
-		case 12:
-			Modeflg = true;
-
-			break;
-		}
-
+		number.hundred = coin / 100 % 10;
+		number.ten = coin / 10 % 10;
+		number.one = coin % 10;
 	}
 
-	//	リザルト時の回転演出関数
-	void	sceneResult::ProductionRotation(int playerNum)
-	{
-		resultcount++;
-		for (int i = playerNum; i < 4; i++){
-
-			number[i].hundred++;
-			if (number[i].hundred >= 10)number[i].hundred = 0;
-			number[i].ten++;
-			if (number[i].ten >= 10)number[i].ten = 0;
-			number[i].one++;
-			if (number[i].one >= 10)number[i].one = 0;
-		}
-		if (resultcount > 60){
-			resultcount = 0;
-			step++;
-		}
-		if (KEY_Get(KEY_A) == 3){
-			resultcount = 0;
-			step++;
-		}
-	}
-
-	//	リザルトの値渡し
-	void	sceneResult::ProductionCoinHandOff( NUMBER_INFO& number,int coinNum )
-	{
-		number.hundred = coinNum / 100 % 10;
-		if ( number.hundred > 0 ){
-			number.H_flg = true;
-		}
-		number.ten = coinNum / 10 % 10;
-		number.one = coinNum % 10;
-	}
-
-	//	ランク設定
+	//	ソートかけた順位を元のデータに反映
 	void	sceneResult::SetRank( void )
 	{
-		for ( int i = 0; i < 4; i++ )
+		//	ソートの結果を反映
+		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
-			for ( int n = 0; n < 4; n++ )
+			for ( int n = 0; n < PLAYER_MAX; n++ )
 			{
-				if ( i == resultInfo[n].p_num )
+				if ( i == sortInfo[n].rank )
 				{
-					rank[i].rank = n;
+					originInfo[i].rank = n;
 				}
 			}
 		}
 	}
 
-	void	sceneResult::RankRender(int ranking)
+	//	数値にあわせて数値構造体情報を設定,１００以上かで配置も変更
+	void	sceneResult::SetNumberImageInfo( const int& player, const int& coin )
 	{
-		for (int i = 0; i < 4; i++)
+		//	桁数確認
+		if ( coin >= 100 )		numberImageInfo[player].hundredRenderFlag = true;
+		else							numberImageInfo[player].hundredRenderFlag = false;
+
+		//	数字構造体設定
+		SetNumberInfo( number[player], coin );
+
+		//	各位画像構造体初期化
+		int		x, y, w, h, sx, sy, sw, sh;
+		if ( numberImageInfo[player].hundredRenderFlag )
 		{
-			if (rank[i].rank == ranking)
-			if (rank[i].rankflg == false){
-				rank[i].rankflg = true;
+			//	１０の位設定
+			x = numberImageInfo[player].pos.x;
+			y = numberImageInfo[player].pos.y;
+			w = h = numberImageInfo[player].scale;
+			sx = number[player].ten * 64;
+			sy = 0;
+			sw = sh = 64;
+			ImageInitialize( numberImageInfo[player].ten, x, y, w, h, sx, sy, sw, sh );
+
+			//	１００の位設定
+			x = numberImageInfo[player].pos.x - static_cast<int>( numberImageInfo[player].ten.w / 1.5f );
+			sx = number[player].hundred * 64;
+			ImageInitialize( numberImageInfo[player].hundred, x, y, w, h, sx, sy, sw, sh );
+
+			//	１の位設定
+			x = numberImageInfo[player].pos.x + static_cast<int>( numberImageInfo[player].ten.w / 1.5f );
+			sx = number[player].one * 64;
+			ImageInitialize( numberImageInfo[player].one, x, y, w, h, sx, sy, sw, sh );
+		}
+		else
+		{
+			//	１０の位設定
+			w = h = numberImageInfo[player].scale;
+			x = numberImageInfo[player].pos.x - w / 3;
+			y = numberImageInfo[player].pos.y;
+			sx = number[player].ten * 64;
+			sy = 0;
+			sw = sh = 64;
+			ImageInitialize( numberImageInfo[player].ten, x, y, w, h, sx, sy, sw, sh );
+
+			//	１の位設定
+			x = numberImageInfo[player].pos.x + w / 3;
+			sx = number[player].one * 64;
+			ImageInitialize( numberImageInfo[player].one, x, y, w, h, sx, sy, sw, sh );
+		}
+	}
+
+	//	数値ルーレット(終了するとtrueをかえす)
+	bool	sceneResult::Roulette( void )
+	{
+		//	４人分確定してたらtrueをかえす
+		if ( rouletteInfo.step > PLAYER_MAX )
+		{
+			return	true;
+		}
+
+		rouletteInfo.timer++;
+
+		for ( int i = rouletteInfo.step; i < PLAYER_MAX; i++ )
+		{
+			//	適当な数値を入れる
+			SetNumberImageInfo( i, Random::GetInt( 100, 999 ) );
+		}
+
+		//	初回だけ回転時間ちょっと長く
+		if ( rouletteInfo.step == 0 )
+		{
+			if ( rouletteInfo.timer % 90 == 0 )
+			{
+				rouletteInfo.step++;
+				rouletteInfo.timer = 0;
 			}
 		}
+		else
+		{
+			if ( rouletteInfo.timer % 50 == 0 )
+			{
+				rouletteInfo.step++;
+				rouletteInfo.timer = 0;
+			}
+		}
+
+		//	数値決定
+		for ( int i = 0; i < PLAYER_MAX; i++ )
+		{
+			if ( i < rouletteInfo.step )
+			{
+				SetNumberImageInfo( i, originInfo[i].coin );
+			}
+		}
+
+		return	false;
+	}
+
+	//	順位を順番に表示
+	bool	sceneResult::ViewRankInOrder( void )
+	{	
+		//	４人分確定してたらtrueをかえす
+		if ( viewRankInOrder.step == -1 )
+		{
+			return	true;
+		}
+
+		viewRankInOrder.timer++;
+
+		if ( viewRankInOrder.timer % 30 == 0 )
+		{
+			//	ランク描画設定
+			for ( int i = 0; i < PLAYER_MAX; i++ )
+			{
+				if ( originInfo[i].rank == viewRankInOrder.step )
+				{
+					rankImage[i].renderflag = true;
+					SetWave( rankImage[i], 1.5f );
+				}
+			}
+
+			viewRankInOrder.step--;
+			viewRankInOrder.timer = 0;
+		}
+		
+
+		return	false;
+	}
+
+	//	順位の波紋の更新と終了チェック
+	bool	sceneResult::RankWave( void )
+	{
+		bool isEnd[4];
+
+		for ( int i = 0; i < PLAYER_MAX; i++ )
+		{
+			isEnd[i] = false;
+			isEnd[i] = WaveUpdate( rankImage[i] );
+		}
+
+		if ( isEnd[0] && isEnd[1] && isEnd[2] && isEnd[3] )
+		{
+			return	true;
+		}
+
+		return	false;
 	}

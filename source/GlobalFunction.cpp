@@ -225,7 +225,7 @@
 	}
 
 	//	”g–äXV
-	void	WaveUpdate( ImageObj& image, int max_scale, float max_alpha )
+	bool	WaveUpdate( ImageObj& image, int max_scale, float max_alpha )
 	{
 		if ( image.waveState )
 		{
@@ -243,7 +243,11 @@
 			Lerp( image.waveAlpha, max_alpha, 0.0f, image.t );
 			Lerp( image.plusScaleX, 0, max_scale, image.t );
 			Lerp( image.plusScaleY, 0, max_scale, image.t );
+
 		}
+
+		if ( image.t >= 1.0f )		return	true;
+		return	false;
 	}
 
 	//	“_–Åˆ—
