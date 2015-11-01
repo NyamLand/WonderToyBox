@@ -53,7 +53,8 @@ private:
 		int		face_step;
 
 		//　その他
-		ImageObj	donke;//　「どんけつは～？」
+		ImageObj	boooost;	//　顔以外の文字
+		ImageObj	P;
 	};
 
 	struct HURRY_INFO
@@ -184,7 +185,7 @@ public:
 	void BarControl( void );
 	void StateImageControl( void );
 	void FaceRoulette( int face_wait );
-	void SetFaceRoulette(int face_wait);
+	void VarietyControl(int wait);
 
 	//------------------------------情報取得・設定------------------------------------//
 

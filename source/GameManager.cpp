@@ -77,7 +77,7 @@
 			charatype[i] = i;
 			coinNum[i] = 0;
 		}
-		playerNum = 1;	//　操作する人数
+		playerNum = 3;	//　操作する人数
 		stageType = 1;
 		mode = 0;
 		donketsuBoostState = false;

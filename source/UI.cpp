@@ -235,17 +235,19 @@
 		SafeDelete( titleInfo.textImage.obj );
 	}
 
-	//	メイン用初期化
+	//	メイン用解放
 	void	UI::MainRelease( void )
 	{
 		SafeDelete( timer.obj );
 		SafeDelete( coinbar );
 		SafeDelete( ddInfo.face.obj );
+		SafeDelete( ddInfo.boooost.obj );
+		SafeDelete( ddInfo.P.obj );
 		SafeDelete( countImage.obj );
 		SafeDelete( alertImage.obj );
 	}
 
-	//	リザルト用初期化
+	//	リザルト用解放
 	void	UI::ResultRelease( void )
 	{
 
@@ -519,11 +521,22 @@
 	void	UI::DonketsuDirectionInitialize( void )
 	{
 		//　構造体初期化
+		
+		//　顔ルーレット関連
 		ddInfo.face.obj = new iex2DObj("DATA/UI/chara_emotion.png");
 		ImageInitialize(ddInfo.face, 1280 / 2, 720 / 2, 0, 0, FACE_INFO::Normal * 256, 0 * 256, 256, 256);
-		ddInfo.roulette = 0;
 		ddInfo.f = 0;
+		ddInfo.roulette = 0;
 		ddInfo.face_step = -1;
+
+		//　DonketsuBoooooooooooost!!!
+		ddInfo.boooost.obj = new iex2DObj("DATA/UI/DonketuUI.png");
+		ImageInitialize(ddInfo.boooost, 1280 / 4, 720 / 4, 600, 300, 0, 0, 512, 256);
+		
+		//　？P関連
+		ddInfo.P.obj = new iex2DObj("DATA/UI/DonketuUI.png");
+		ImageInitialize(ddInfo.P, 1000, 550, 400, 350, 0, 256, 128, 128);
+		ddInfo.P.renderflag = false;
 	}
 
 	//	警告演出初期化
@@ -696,17 +709,19 @@
 			・下方に○Ｐ！
 		*/
 
-		
 		//　演出用時間更新
-		static int wait = 10 * SECOND;
+		static int wait = 7 * SECOND;
 		if (wait <= 0)
 		{
-			wait = 6 * SECOND;
+			wait = 7 * SECOND;
 			changeflag = true;
 		}
 
 		//　顔ルーレット
 		FaceRoulette(wait);
+
+		//　「DonketsuBoooooooooooost!!!」と「？P」
+		VarietyControl( wait );
 
 		wait--;
 	}
@@ -808,31 +823,13 @@
 		iexPolygon::Rect( 0, 0, 1280, 720, RS_COPY, color );
 
 		//　顔ルーレット
-		/*switch (ddInfo.face_step)
-		{
-		case 0:
-			break;
-		
-		case 1:
-			face->Render(480, 200, 320, 320, FACE_INFO::Normal * 256, ddInfo.charatype[ddInfo.f] * 256, 256, 256);
-			break;
-		case 2:
-			face->Render(480, 200, 320, 320, FACE_INFO::Normal * 256, ddInfo.charatype[ddInfo.f] * 256, 256, 256);
-			break;
-		case 3:
-			face->Render(480, 200, 320, 320, FACE_INFO::Normal * 256, ddInfo.charatype[ddInfo.f] * 256, 256, 256);
-			break;
-		case 4:
-			face->Render(480, 200, 320, 320, FACE_INFO::Normal * 256, ddInfo.charatype[ddInfo.f] * 256, 256, 256);
-			break;
-		case 5:
-			break;
-		case 6:
-			break;
-		case 7:
-			break;
-		}*/
 		RenderImage(ddInfo.face, FACE_INFO::Normal * 256, charatype[ddInfo.f] * 256, 256, 256, IMAGE_MODE::NORMAL);
+
+		//　DonketsuBoooooooooooost!!!
+		RenderImage(ddInfo.boooost, 0, 0, 512, 256, IMAGE_MODE::NORMAL);
+
+		//　？P
+		RenderImage(ddInfo.P, gameManager->GetWorst()*128, 256, 128, 128, IMAGE_MODE::NORMAL);
 
 		//　デバッグ
 		if (debug)
@@ -946,6 +943,7 @@
 		}
 	}
 
+	//　どんけつ演出の顔
 	void	UI::FaceRoulette( int face_wait )
 	{
 		const int LAST_TIMING = 2 * SECOND + 30;
@@ -986,9 +984,15 @@
 			ddInfo.f = characterManager->GetPlayerNum(3);
 			break;
 
-			//　４Ｐ　→　待ち
+			//　４Ｐ　→　しぼみ始める
 		case LAST_TIMING + INTERVAL * 5:
 			ddInfo.face_step = 4;
+			ddInfo.face.w = ddInfo.face.h = 320;
+			break;
+
+			//　しぼみきる　→　待ち
+		case LAST_TIMING + INTERVAL * 4:
+			ddInfo.face_step = 5;
 			ddInfo.face.w = ddInfo.face.h = 0;
 			ddInfo.f = -1;
 			break;
@@ -996,39 +1000,64 @@
 
 			//　待ち　→　ビリ
 		case LAST_TIMING + INTERVAL * 1:
-			ddInfo.face_step = 5;
+			ddInfo.face_step = 6;
 			ddInfo.f = gameManager->GetWorst();
 			break;
 
 			//　ビリ　→　そのまま放置
 		case LAST_TIMING:
-			ddInfo.face_step = 6;
+			ddInfo.face_step = 7;
 			break;
 		}
 
 		//　演出
 		switch (ddInfo.face_step)
 		{
+			//　１～４Ｐ拡大
 		case 0:
 		case 1:
 		case 2:
 		case 3:
-		case 5:
 			ddInfo.face.renderflag = true;
 			ddInfo.face.w += SPF;
 			ddInfo.face.h += SPF;
 			break;
 
-			//　放置
+			//　８人目の縮小
+		case 4:
+			ddInfo.face.renderflag = true;
+			ddInfo.face.w -= SPF;
+			ddInfo.face.h -= SPF;
+			break;
+		
+			//　ビリ拡大（大きめに）
 		case 6:
 			ddInfo.face.renderflag = true;
-			ddInfo.face.w = ddInfo.face.h = 320;
+			ddInfo.face.w += 500/INTERVAL;
+			ddInfo.face.h += 500/INTERVAL;
+			break;
+
+			//　放置
+		case 7:
+			ddInfo.face.renderflag = true;
+			ddInfo.face.w = ddInfo.face.h = 500;
 			break;
 
 		default:
 			ddInfo.face.renderflag = false;
 			break;
 		}
+	}
+
+	//　どんけつ演出の顔以外
+	void	UI::VarietyControl( int wait )
+	{
+		//　DonketsuBoooooooooooost!!!
+		
+
+		//　？P
+		if (wait == 150) ddInfo.P.renderflag = true;
+
 	}
 
 //------------------------------------------------------------------------------
