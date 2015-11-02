@@ -209,7 +209,7 @@
 		}
 		
 		//	Œ©‚½–Úƒ‚ƒfƒ‹‚ð‚P‚W‚O‹‰ñ“]‚µ‚Äî•ñXV
-		m_Stage->SetAngle( D3DX_PI );
+		//m_Stage->SetAngle( D3DX_PI );
 		m_Stage->Update();
 
 		//	“–‚½‚è”»’è—pƒ‚ƒfƒ‹“o˜^

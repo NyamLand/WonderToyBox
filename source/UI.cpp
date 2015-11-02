@@ -202,6 +202,11 @@
 	{
 		timer.obj = new iex2DObj("DATA/BG/number.png");
 		coinbar = new iex2DObj("DATA/BG/coin_gage.png");
+		gauge.obj = coinbar;
+		backgauge.obj = coinbar;
+		frame.obj = coinbar;
+		face = new iex2DObj("DATA/UI/chara_emotion.png");
+		faceImage.obj = face;
 		countImage.obj = new iex2DObj("DATA/UI/bfUI.png");
 		alertImage.obj = new iex2DObj("DATA/UI/alert.png");
 
@@ -243,6 +248,7 @@
 		SafeDelete( ddInfo.face.obj );
 		SafeDelete( ddInfo.DB.obj );
 		SafeDelete( ddInfo.P.obj );
+		SafeDelete( face );
 		SafeDelete( countImage.obj );
 		SafeDelete( alertImage.obj );
 	}
@@ -466,16 +472,18 @@
 	//	コインバー初期化
 	void	UI::CoinBarInitialize( void )
 	{
-		frame_x = ( 1280 / 2 ) - ( 512 / 2 );
-		frame_y = 600;
-		frame_sx = 512;
-		frame_sy = 64;
-		for ( int i = 0; i < NUM_BAR; i++ )
+		ImageInitialize(frame, (1280 / 2), iexSystem::ScreenHeight - 50, iexSystem::ScreenWidth - 300, 80, 0, 32 * 5, 512, 64);
+		ImageInitialize(gauge, frame.x, frame.y, 0, 32, 0, 32, 0, 32);
+		ImageInitialize(backgauge, frame.x, frame.y, frame.w - (frame.w / 10), frame.h - (frame.h / 2), 0, 32 * 4, 480, 32);
+		ImageInitialize(faceImage, 0, frame.y - (frame.h / 2), 32, 32, 256, 256, 256, 256);
+		//frame_x = ( 1280 / 2 ) - ( 512 / 2 );
+		//frame_y = 600;
+		//frame_sx = 512;
+		//frame_sy = 64;
+		for (int i = 0; i < NUM_BAR; i++)
 		{
-			bar_x[i] = frame_x + 16;
-			bar_y[i] = frame_y + 16;
-			bar_sx[i] = 480;
-			bar_sy[i] = 32;
+			bar_x[i] = frame.x;
+			bar_sx[i] = backgauge.sx;
 			state_x[i] = 0;
 		}
 	}
@@ -773,18 +781,24 @@
 	void	UI::CoinBarRender( void )
 	{
 		//フレーム
-		coinbar->Render(frame_x, frame_y, 512, 64, 0, 32 * 5, frame_sx, frame_sy);
+		RenderImage(frame, frame.sx, frame.sy, frame.sw, frame.sh, IMAGE_MODE::NORMAL);
+		//coinbar->Render(frame_x, frame_y, 512, 64, 0, 32 * 5, frame_sx, frame_sy);
 
 		//灰色のバー
-		coinbar->Render(bar_x[0], bar_y[0], 480, 32, 0, 32 * 4, 480, 32);
+		//	RenderImage(backgauge, backgauge.sx, backgauge.sy, backgauge.sw, backgauge.sh, IMAGE_MODE::NORMAL);
+		//coinbar->Render(bar_x[0], bar_y[0], 480, 32, 0, 32 * 4, 480, 32);
 
 		for (int i = 0; i < PLAYER_MAX; i++)
 		{
 			//色のバー
-			coinbar->Render(bar_x[i], bar_y[i], bar_sx[i], 32, 0, 32 * i, bar_sx[i], bar_sy[i]);
-
+			gauge.w = bar_sx[i];	gauge.sw = bar_sx[i];
+			//	（左上位置 - ゲージ幅の半分）で中心、ゲージを右向きへ増やすため
+			RenderImage(gauge, gauge.sx, gauge.sy * i, gauge.sw, gauge.sh, IMAGE_MODE::NORMAL, bar_x[i] - (backgauge.w / 2) + (gauge.sw / 2), gauge.y);
+			//	coinbar->Render(bar_x[i], bar_y[i], bar_sx[i], 32, 0, 32 * i, bar_sx[i], bar_sy[i]);
+			//																										
 			//顔
-			ddInfo.face.obj->Render(state_x[i], 550, 32, 32, state_type[i] * 256, charatype[i] * 256, 256, 256);
+			RenderImage(faceImage, faceImage.sx * state_type[i], faceImage.sy * charatype[i], faceImage.sw, faceImage.sh, IMAGE_MODE::NORMAL, state_x[i] - (backgauge.w / 2), faceImage.y);
+			//face->Render(state_x[i], 550, 32, 32, state_type[i] * 256, charatype[i] * 256, 256, 256);
 		}
 	}
 
@@ -887,10 +901,10 @@
 		bar_x[3] = bar_x[2] + bar_sx[2];
 
 		int num_coin[4];
-		for ( int i = 0; i < 4; i++ )
+		for (int i = 0; i < 4; i++)
 		{
-			num_coin[i] = gameManager->GetCoinNum( i );
-			bar_sx[i] = 480 * num_coin[i] / MAX_COIN;
+			num_coin[i] = gameManager->GetCoinNum(i);
+			bar_sx[i] = backgauge.w * num_coin[i] / MAX_COIN;
 		}
 	}
 
@@ -898,10 +912,10 @@
 	void	UI::StateImageControl( void )
 	{
 		//画像の描画場所 = 各色の先頭　+　各色の中心　-　画像サイズの半分
-		state_x[0] = (bar_x[0] + (bar_x[1] - bar_x[0]) / 2) - 16;
-		state_x[1] = (bar_x[1] + (bar_x[2] - bar_x[1]) / 2) - 16;
-		state_x[2] = (bar_x[2] + (bar_x[3] - bar_x[2]) / 2) - 16;
-		state_x[3] = (bar_x[3] + (bar_x[3] + bar_sx[3] - bar_x[3]) / 2) - 16;
+		state_x[0] = (bar_x[0] + (bar_x[1] - bar_x[0]) / 2);
+		state_x[1] = (bar_x[1] + (bar_x[2] - bar_x[1]) / 2);
+		state_x[2] = (bar_x[2] + (bar_x[3] - bar_x[2]) / 2);
+		state_x[3] = (bar_x[3] + (bar_x[3] + bar_sx[3] - bar_x[3]) / 2);
 
 
 		int num_coin[4], temp_coin[4];
@@ -923,13 +937,13 @@
 			}
 		}
 
-		for ( int i = 0; i < 4; i++ )
+		for (int i = 0; i < 4; i++)
 		{
-			for ( int j = 0; j < 4; j++ )
+			for (int j = 0; j < 4; j++)
 			{
-				if ( num_coin[i] == temp_coin[j] )
+				if (num_coin[i] == temp_coin[j])
 				{
-					switch ( j )
+					switch (j)
 					{
 					case 0:
 						state_type[i] = FACE_INFO::Sad;
