@@ -8,6 +8,8 @@
 //
 //*********************************************************************************
 
+#include	"GameManager.h"
+
 namespace
 {
 	namespace UI_MODE
@@ -19,7 +21,18 @@ namespace
 			RESULT,
 		};
 	}
+
+	namespace DD_TIMING
+	{
+		const int WAIT_MAX		= 5 * SECOND + 30;
+		const int DB_LOCK		= 5 * SECOND;
+		const int FACE_START	= 4 * SECOND + 40;
+		const int FACE_LOCK		= 2 * SECOND + 30;
+		const int P_START		= 1 * SECOND + 50;
+		const int P_LOCK		= 20;
+	}
 }
+
 
 //	UIクラス
 class UI
@@ -44,6 +57,25 @@ private:
 		int		savePos;
 	};
 
+	struct DONKETSU_DIRECT_INFO
+	{
+		const int WAIT_MAX = 5 * SECOND + 30;
+
+		//　顔関連
+		ImageObj	face;
+		int		f;
+		int		roulette;
+		int		face_step;
+
+		//　DonketsuBoooooost!!!
+		ImageObj	DB;
+		int			DB_step;
+
+		//　？P
+		ImageObj	P;
+		int			P_step;
+	};
+
 	struct HURRY_INFO
 	{
 		bool	flag;
@@ -54,18 +86,10 @@ private:
 
 private:
 	//	各画像
-	iex2DObj*	playerNumber;
-	iex2DObj*	coinbar;
-	iex2DObj*	face;
-
 	ImageObj	timer;
-	ImageObj	frame;
-	ImageObj	backgauge;
-	ImageObj	gauge;
-	ImageObj	faceImage;
+	iex2DObj*	coinbar;
 	ImageObj	countImage;
 	ImageObj	alertImage;
-	ImageObj	pNumImage[4];
 
 private:
 	//	システム
@@ -87,19 +111,20 @@ private:
 	int		state_x[4];
 	int		state_type[4];
 
+	//　キャラ情報
+	int		charatype[4];
+
 	//	ニュース
 	NewsBar	newsbar;
-	
-	//　プレイヤー（顔）
-	int		charatype[4];
-	int		f;
-	int		roulette;
 
 	//	警告パラメータ
 	ALERT_INFO	alertInfo;
 
 	//	タイトルパラメータ
 	TITLE_INFO	titleInfo;
+
+	//　どんけつ演出パラメータ
+	DONKETSU_DIRECT_INFO ddInfo;
 
 	//	HurryUpパラメータ
 	HURRY_INFO	hurryInfo;
@@ -128,6 +153,7 @@ public:
 	//	更新・描画
 	void	Update( const int& mode );
 	void	Render( const int& mode );
+	void	DrawDebug();
 
 	//	各シーン更新
 	void	TitleUpdate( int mode );
@@ -152,7 +178,6 @@ public:
 	void	DonketsuDirectionInitialize( void );
 	void	AlertInitialize( void );
 	void	HurryUpInitialize( void );
-	void	PlayerNumberInitialize( void );
 
 	//	メイン動作更新
 	void	TimerUpdate( void );
@@ -164,7 +189,6 @@ public:
 	void	AlertUpdate( void );
 	void	HurryUpdate( void );
 	void	LastProduction( void );
-	void	PlayerNumberUpdate( void );
 
 	//	メイン描画
 	void	TimerRender( void );
@@ -175,11 +199,13 @@ public:
 	void	DonketsuDirectionRender( void );
 	void	AlertRender( void );
 	void	LastProductionRender( void );
-	void	PlayerNumberRender( void );
 
 	//	メイン動作関数
 	void BarControl( void );
 	void StateImageControl( void );
+	void FaceRoulette( int face_wait );
+	void DB_Direction( int wait );
+	void P_Direction( int wait );
 
 	//------------------------------情報取得・設定------------------------------------//
 
