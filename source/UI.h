@@ -54,15 +54,18 @@ private:
 
 private:
 	//	各画像
-	ImageObj	timer;
+	iex2DObj*	playerNumber;
 	iex2DObj*	coinbar;
+	iex2DObj*	face;
+
+	ImageObj	timer;
 	ImageObj	frame;
 	ImageObj	backgauge;
 	ImageObj	gauge;
-	iex2DObj*	face;
 	ImageObj	faceImage;
 	ImageObj	countImage;
 	ImageObj	alertImage;
+	ImageObj	pNumImage[4];
 
 private:
 	//	システム
@@ -149,6 +152,7 @@ public:
 	void	DonketsuDirectionInitialize( void );
 	void	AlertInitialize( void );
 	void	HurryUpInitialize( void );
+	void	PlayerNumberInitialize( void );
 
 	//	メイン動作更新
 	void	TimerUpdate( void );
@@ -160,6 +164,7 @@ public:
 	void	AlertUpdate( void );
 	void	HurryUpdate( void );
 	void	LastProduction( void );
+	void	PlayerNumberUpdate( void );
 
 	//	メイン描画
 	void	TimerRender( void );
@@ -170,6 +175,7 @@ public:
 	void	DonketsuDirectionRender( void );
 	void	AlertRender( void );
 	void	LastProductionRender( void );
+	void	PlayerNumberRender( void );
 
 	//	メイン動作関数
 	void BarControl( void );

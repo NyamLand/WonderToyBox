@@ -8,23 +8,14 @@
 //
 //*******************************************************************************
 
+//	include
+#include	<memory>
+using namespace std;
+
+//	class
 class sceneResult : public	Scene
 {
 private:
-	struct ORIGIN_INFO
-	{
-		int		coinNum[4];
-		int		rank[4];
-	};
-
-	struct RESULT_INFO
-	{
-		int		p_Coin;
-		int		p_num;
-		int		p_addCoin;
-	};
-
-
 	//	数字情報
 	struct NUMBER_INFO
 	{
@@ -34,89 +25,125 @@ private:
 		bool	H_flg;			//百の位レンダー用フラグ
 	};
 
-
-	//	数字描画情報
-	struct NUMBER_DRAW_INFO
+	//	並べかえる情報
+	struct SORT_INFO
 	{
-		NUMBER_INFO	numInfo;		//	数字情報
-		POINT		hundredPos;		//	百の位の座標
-		POINT		tenPos;			//	十の位の座標
-		POINT		onePos;			//	一の位の座標
-		POINT		center;			//	中心座標（十の位の座標）
-		float		length;			//	中心からの距離
+		int		coin;
+		int		rank;
 	};
 
-
-	struct RANK
+	//	元のデータ
+	struct ORIGINAL_INFO
 	{
-		int		rank;
-		bool	rankflg;		//	順位用フラグ
+		int		coin;			//	ゲーム終了時のコイン枚数
+		int		rank;			//	ゲーム終了時の順位
+		int		bonus;		//	ボーナス
+	};
+
+	//	ラストボーナスデータ
+	struct LASTBONUS_INFO
+	{
+		int		bonus[4];
+	};
+
+	//	コイン枚数構造体
+	struct NUMBERIMAGE_INFO
+	{
+		int			scale;
+		POINT	pos;
+		ImageObj		hundred;		//	コイン三桁目
+		ImageObj		ten;				//	コイン二桁目
+		ImageObj		one;				//	コイン一桁目
+		bool	hundredRenderFlag;	//	百の位レンダー用フラグ
+	};
+
+	//	ルーレット構造体
+	struct ROULETTE_INFO
+	{
+		int		step;
+		int		timer;
+	};
+
+	//	メニュー構造体
+	struct MENU_INFO
+	{
+		int		select;
+		int		screenH;
+		float	alpha;
+		float	t;
+	};
+
+	//	ランク表示用構造体
+	struct VIEW_RANK_INORDER
+	{
+		int		timer;
+		int		step;
 	};
 
 private:
-	RESULT_INFO	resultInfo[4];
-	NUMBER_INFO	number[4];
-	NUMBER_INFO	BonusNumber[4];
-	RANK		rank[4];
+	SORT_INFO				sortInfo[4];
+	ORIGINAL_INFO			originInfo[4];
+	NUMBER_INFO			number[4];
+	NUMBERIMAGE_INFO	numberImageInfo[4];
+	ROULETTE_INFO		rouletteInfo;
+	MENU_INFO				menuInfo;
+	VIEW_RANK_INORDER	viewRankInOrder;
 
-	//	ソート用
-	char	str[256];
+	//	モデル・画像
+	unique_ptr<iex2DObj>	back;
+	unique_ptr<iex3DObj>	org[4];
+	iex3DObj*	obj[4];
+	iex2DObj*	originNumber;
+	iex2DObj*	menuText;
+	ImageObj	menuHead;
+	ImageObj	originCoinImage[4];
+	ImageObj	rankImage[4];
+	ImageObj	menuImage[3];
 
-	//	パラメータ
-	int		coinNum[4];
-	int		totalCoinNum[4];
-	int		playerNum[4];
-	int		lastBonus;
-	int		lastBonusNum[4];
+	//	変数
+	int		mode;
 	int		step;
-	int		wait;
-	int		resultcount;	//	演出用カウント
-	int		waitTimer;		//	待機用タイマー
-	int		mode;			//	モード分け用変数
-	int		Sy;				//	セレクト画面ポジション
-	int		StringPos_Y;	//	セレクト画面の文字ポジション
-	
-	//	フラグ関係
-	bool	Modeflg;		//	モード用フラグ
-	bool	bonusflg;		//	ボーナス値用フラグ
-	bool	addCoinflg;		//	コイン合算値用フラグ
-
-	//	画像データ関係
-	iex2DObj*	back;		//	背景
-	iex2DObj*	r_number;	//	コインの枚数
-	iex2DObj*	Sback;		//	セレクト時の背景
-	iex2DObj*	Smenu;		//	セレクト時のメニュー
-	iex2DObj*	result;		//	リザルト
-	iexMesh*	collision;
+	int		lastBonus;
 
 public:
 	//	初期化・解放
 	sceneResult( void );
 	~sceneResult( void );
 	bool	Initialize( void );
+	void	Release( void );
 
-	//	更新・描画
+	//	各種情報初期化
+	void	CameraInitialize( void );
+	void	ModelInitialize( void );
+	void	ResultInfoInitialize( void );
+	void	NumberImageInfoInitialize( void );
+	void	RankImageInitialize( void );
+
+	//	全体更新・描画
 	void	Update( void );
 	void	Render( void );
 
+	//	各モード更新
 	void	ResultUpdate( void );
-	void	SelectUpdata( void );
+	void	SelectUpdate( void );
 
-	void	ResultRender(NUMBER_INFO& number, Vector3 Pos);
-
-	void	RankRender(int ranking);
+	//	各画像描画
 	void	SelectRender( void );
+	void	NumberImageRender( void );
+	void	RankRender( void );
 	
 	//	動作関数
-	void	BubbleSort( void );
 	void	SetLastBonus( void );
+	void	Sort( void );
+	bool	Roulette( void );
+	bool	ViewRankInOrder( void );
+	bool	RankWave( void );
 
-	//	演出用関数
+	//	情報設定
 	void	SetRank( void );
-	void	Production( void );						//リザルトの演出用関数
-	void	ProductionRotation( int playerNum );	//コイン枚数回転関数
-	void	ProductionCoinHandOff(NUMBER_INFO& number, int coinNum);	//コイン枚数引き渡し
-
+	void	SetNumberImageInfo( const int& player, const int& coin );
+	void	SetNumberInfo( NUMBER_INFO& number, int coin );	//	コイン枚数引き渡し
 };
+
 //*******************************************************************************
 #endif // !__SCENERESULT_H__

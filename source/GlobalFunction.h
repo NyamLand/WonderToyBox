@@ -84,6 +84,8 @@
 		float	flashingAlpha;
 		float	flashingRenderflag;
 		float	flashingParam;
+
+		//void	Render(int )
 	};
 
 //----------------------------------------------------------------------
@@ -132,7 +134,7 @@
 	void	RenderImage( ImageObj image, int sx, int sy, int sw, int sh, int mode, int x, int y );
 
 	void	SetWave( ImageObj& image, float speed );
-	void	WaveUpdate( ImageObj& image, int max_scale = 140, float max_alpha = 1.0f );
+	bool	WaveUpdate( ImageObj& image, int max_scale = 140, float max_alpha = 1.0f );
 	void	FlashingUpdate( ImageObj& image, float speed = -1.0f );
 
 //----------------------------------------------------------------------
@@ -160,10 +162,9 @@
 	template<typename T, typename T2>
 	bool	Lerp( T& out, T2 p1, T2 p2, float t )
 	{
-		if ( t >= 1.0f )	return	true;
-
 		out = ( T )( p1 * ( 1 - t ) + p2 * t );
 
+		if ( t >= 1.0f )	return	true;
 		return	false;
 	}
 
@@ -174,10 +175,10 @@
 	template<typename T, typename T2>
 	bool	CubicFunctionInterpolation( T& out, T2 p1, T2 p2, float t )
 	{
-		if ( t >= 1.0f )	return	true;
 		float rate = t * t * ( 3.0f - 2.0f * t );   // 3ŽŸŠÖ”•âŠÔ’l‚É•ÏŠ·
-
 		out = ( T )( p1 * ( 1.0f - rate ) + p2 * rate );
+
+		if ( t >= 1.0f )	return	true;
 		return	false;
 	}
 

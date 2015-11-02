@@ -353,6 +353,24 @@
 		return	character[player]->GetDamageColor();
 	}
 
+	//	‘O•ûŽæ“¾
+	Vector3	CharacterManager::GetFront( int player )const
+	{
+		return	character[player]->GetFront();
+	}
+
+	//	ã•ûŽæ“¾
+	Vector3	CharacterManager::GetUp( int player )const
+	{
+		return	character[player]->GetUp();
+	}
+
+	//	‰E•ûŽæ“¾
+	Vector3	CharacterManager::GetRight( int player )const
+	{
+		return	character[player]->GetRight();
+	}
+
 	//	Œü‚«Žæ“¾
 	float		CharacterManager::GetAngle( int player )const
 	{

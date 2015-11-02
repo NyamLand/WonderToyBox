@@ -199,6 +199,8 @@
 		faceImage.obj = face;
 		countImage.obj = new iex2DObj("DATA/UI/bfUI.png");
 		alertImage.obj = new iex2DObj("DATA/UI/alert.png");
+		playerNumber = new iex2DObj( "DATA/UI/cursor.png" );
+
 
 		//	共通変数初期化
 		changeflag = false;
@@ -210,6 +212,7 @@
 		NewsBarInitialize();
 		DonketsuDirectionInitialize();
 		AlertInitialize();
+		PlayerNumberInitialize();
 	}
 
 	//	リザルト用初期化
@@ -236,6 +239,7 @@
 		SafeDelete( face );
 		SafeDelete( countImage.obj );
 		SafeDelete( alertImage.obj );
+		SafeDelete( playerNumber );
 	}
 
 	//	リザルト用初期化
@@ -296,20 +300,24 @@
 		switch ( mode )
 		{
 		case GAME_MODE::GAMESTART:
+			PlayerNumberUpdate();
 			StartUpdate();
 			break;
 
 		case GAME_MODE::MAINGAME:
+			PlayerNumberUpdate();
 			TimerUpdate();
 			NewsBarUpdate();
 			CoinBarUpdate();
 			break;
 
 		case GAME_MODE::DONKETSU_DIRECTION:
+			PlayerNumberUpdate();
 			DonketsuDirectionUpdate();
 			break;
 
 		case GAME_MODE::CLIMAX:
+			PlayerNumberUpdate();
 			TimerUpdate();
 			NewsBarUpdate();
 			CoinBarUpdate();
@@ -320,6 +328,7 @@
 			break;
 
 		case GAME_MODE::TIMEUP:
+			PlayerNumberUpdate();
 			FinishUpdate();
 			break;
 		}
@@ -347,6 +356,9 @@
 	//	メイン描画
 	void	UI::MainRender( int mode )
 	{
+		//	プレイヤー番号描画
+		PlayerNumberRender();
+
 		switch ( mode )
 		{
 		case GAME_MODE::GAMESTART:
@@ -367,10 +379,9 @@
 			break;
 
 		case GAME_MODE::CLIMAX:
-			//TimerRender();
 			LastProductionRender();
 			NewsBarRender();
-			CoinBarRender();
+			//CoinBarRender();
 
 			break;
 
@@ -461,10 +472,7 @@
 		ImageInitialize(gauge, frame.x, frame.y, 0, 32, 0, 32, 0, 32);
 		ImageInitialize(backgauge, frame.x, frame.y, frame.w - (frame.w / 10), frame.h - (frame.h / 2), 0, 32 * 4, 480, 32);
 		ImageInitialize(faceImage, 0, frame.y - (frame.h / 2), 32, 32, 256, 256, 256, 256);
-		//frame_x = ( 1280 / 2 ) - ( 512 / 2 );
-		//frame_y = 600;
-		//frame_sx = 512;
-		//frame_sy = 64;
+
 		for ( int i = 0; i < NUM_BAR; i++ )
 		{
 			bar_x[i] = frame.x;
@@ -542,6 +550,16 @@
 		hurryInfo.flag = false;
 		hurryInfo.param = 0.0f;
 		hurryInfo.timer = 0;
+	}
+
+	//	プレイヤー番号画像初期化
+	void	UI::PlayerNumberInitialize( void )
+	{
+		for ( int i = 0; i < PLAYER_MAX; i++ )
+		{
+			pNumImage[i].obj = playerNumber;
+			ImageInitialize( pNumImage[i], 0, 0, 50, 50, ( i % 2 ) * 128, ( i / 2 ) * 128, 128, 128 );
+		}
 	}
 	
 //------------------------------------------------------------------------------
@@ -749,6 +767,31 @@
 		FlashingUpdate(timer, 0.5f);
 	}
 
+	//	プレイヤー番号位置決定
+	void	UI::PlayerNumberUpdate( void )
+	{
+		//	変数初期化
+		Vector3	imagePos = Vector3( 0.0f, 0.0f, 0.0f );
+		Vector3	p_pos = Vector3( 0.0f, 0.0f, 0.0f );
+		Vector3	up = Vector3( 0.0f, 0.0f, 0.0f );
+		Vector3	out = Vector3( 0.0f, 0.0f, 0.0f );
+
+		for ( int i = 0; i < PLAYER_MAX; i++ )
+		{
+			//	画像を表示する場所を設定
+			up = characterManager->GetUp( i );
+			p_pos = characterManager->GetPos( i );
+			imagePos = p_pos + up * 7.0f;
+
+			//	クライアント座標に変換
+			WorldToClient( imagePos, out, matView* matProjection );
+
+			//	構造体に情報設定
+			pNumImage[i].x = static_cast<int>( out.x );
+			pNumImage[i].y = static_cast<int>( out.y );
+		}
+	}
+
 //------------------------------------------------------------------------------
 //	メイン描画
 //------------------------------------------------------------------------------
@@ -852,6 +895,15 @@
 		//	タイマー文字色を白へ
 		timer.sy = 0;
 
+	}
+
+	//	プレイヤー番号描画
+	void	UI::PlayerNumberRender( void )
+	{
+		for ( int i = 0; i < PLAYER_MAX; i++ )
+		{
+			RenderImage( pNumImage[i], pNumImage[i].sx, pNumImage[i].sy, pNumImage[i].sw, pNumImage[i].sh, IMAGE_MODE::NORMAL );
+		}
 	}
 
 //------------------------------------------------------------------------------

@@ -42,6 +42,7 @@
 		speed = 1.0f;
 		size = Size::MIN;
 		wipeSize = 1.0f;
+		param = 0.0f;
 
 		shader3D->SetValue( "screen_width", static_cast<float>( iexSystem::ScreenWidth ) );
 		shader3D->SetValue( "screen_height", static_cast<float>( iexSystem::ScreenHeight ) );
@@ -111,59 +112,80 @@
 	//	フェードイン
 	bool	Screen::FadeIn( void )
 	{
-		alpha -= D3DX_PI / 180.0f * speed;
-		
-		if ( alpha <= 0.0f ){
-			alpha = 0.0f;
+		//	パラメータ更新
+		param += 0.01f * speed;
+		if ( param >= 1.0f )		param = 1.0f;
+
+		//	補間
+		bool isEnd = CubicFunctionInterpolation( alpha, 1.0f, 0.0f, param );
+	
+		//	終了処理
+		if ( isEnd )
+		{
 			screenState = true;
 			return true;
 		}
-		
 		return	false;
 	}
 
 	//	フェードアウト
 	bool	Screen::FadeOut( void )
 	{
-		if ( alpha >= 1.0f ){
-			alpha = 1.0f;
+		//	パラメータ更新
+		param += 0.01f * speed;
+		if ( param >= 1.0f )	param = 1.0f;
+
+		//	補間
+		bool isEnd = CubicFunctionInterpolation( alpha, 0.0f, 1.0f, param );
+
+		//	終了処理
+		if ( isEnd )
+		{
 			screenState = true;
 			return true;
 		}
-
-		alpha += D3DX_PI / 180.0f * speed;
-
 		return	false;
 	}
 
 	//	ワイプアウト
 	bool	Screen::WipeOut( void )
 	{
-		if ( wipeSize < 0.0f ){
-			wipeSize = 0.0f;
+		//	パラメータ更新
+		param += 0.01f * speed;
+		if ( param >= 1.0f )	param = 1.0f;
+
+		//	補間
+		bool isEnd = CubicFunctionInterpolation( wipeSize, 1.0f, 0.0f, param );
+		shader3D->SetValue( "effect_size", 1000.0f * wipeSize );
+
+		//	終了処理
+		if ( isEnd )
+		{
 			screenState = true;
 			return true;
 		}
-
-		wipeSize -= D3DX_PI / 180.0f * speed;
-		shader3D->SetValue( "effect_size", 1000.0f * wipeSize );
-		return false;
+		return	false;
 	}
 
 	//	ワイプイン
 	bool	Screen::WipeIn( void )
 	{
-		if ( wipeSize >= 1.0f ){
-			wipeSize = 1.0f;
+		//	パラメータ更新
+		param += 0.01f * speed;
+		if ( param >= 1.0f )	param = 1.0f;
+
+		//	補間
+		bool isEnd = CubicFunctionInterpolation( wipeSize, 0.0f, 1.0f, param );
+		shader3D->SetValue( "effect_size", 1000.0f * wipeSize );
+
+		//	終了処理
+		if ( isEnd )
+		{
 			screenState = true;
 			return true;
 		}
-
-		wipeSize += D3DX_PI / 180.0f * speed;
-		shader3D->SetValue( "effect_size", 1000.0f * wipeSize );
-		return false;
+		return	false;
 	}
-
 
 //-----------------------------------------------------------------------------------
 //	情報設定
@@ -175,41 +197,22 @@
 		this->mode = mode;
 		this->speed = speed;
 		this->screenState = false;
-
+		param = 0.0f;
 		switch ( this->mode )
 		{
 		case SCREEN_MODE::FADE_IN:
-			color = Color::BLACK;
-			alpha = 1.0f;
-			break;
-
 		case SCREEN_MODE::FADE_OUT:
 			color = Color::BLACK;
-			alpha = 0.0f;
 			break;
 
 		case SCREEN_MODE::WHITE_IN:
-			color = Color::WHITE;
-			alpha = 1.0f;
-			break;
-
 		case SCREEN_MODE::WHITE_OUT:
 			color = Color::WHITE;
-			alpha = 0.0f;
 			break;
 
 		case SCREEN_MODE::WIPE_OUT:
-			color = Color::BLACK;
-			alpha = 1.0f;
-			wipeSize = 1.0f;
-			break;
-
 		case SCREEN_MODE::WIPE_IN:
-			color = Color::BLACK;
-			alpha = 1.0f;
-			wipeSize = 0.0f;
 			break;
-
 		}
 	}
 

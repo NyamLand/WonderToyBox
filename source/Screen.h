@@ -35,6 +35,7 @@ private:
 	int			size;
 	float		wipeSize;
 	Vector3	color;
+	float		param;
 
 public:
 	//	‰Šú‰»E‰ğ•ú

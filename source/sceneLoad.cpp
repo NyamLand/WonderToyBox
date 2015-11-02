@@ -39,8 +39,7 @@ using namespace std;
 	sceneLoad::~sceneLoad( void )
 	{
 		SafeDelete( load );
-		SafeDelete(load_anykey.obj);
-		
+		SafeDelete( load_anykey.obj );	
 	}
 
 	//	初期化
@@ -52,9 +51,9 @@ using namespace std;
 
 		//	カメラ設定
 		mainView = new Camera();
-		load = new iex2DObj("DATA/Load/Lord-back.png");
-		load_anykey.obj = new iex2DObj("DATA/UI/pressspace.png");
-		ImageInitialize(load_anykey, 1100, 675, 256, 128, 0, 0, 256, 128);
+		load = new iex2DObj( "DATA/Load/Lord-back.png" );
+		load_anykey.obj = new iex2DObj( "DATA/UI/pressspace.png" );
+		ImageInitialize( load_anykey, 1100, 675, 256, 128, 0, 0, 256, 128 );
 		//	別スレッド作成
 		_beginthread( Thread, 0, ( void* )newScene );
 		
@@ -67,40 +66,23 @@ using namespace std;
 	
 	//	更新
 	void	sceneLoad::Update( void )
-		{
+	{
 
 		//	点滅更新
-		FlashingUpdate(load_anykey, D3DX_PI / 180 * 4.0f);
+		FlashingUpdate( load_anykey, D3DX_PI / 180 * 4.0f );
 
-			//	シーン切り換え
-			if ( threadState ){
-				if (KEY_Get(KEY_SPACE) == 3 || KEY(KEY_A) == 3){
+		//	シーン切り換え
+		if ( threadState ){
+			if ( KEY_Get( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 ){
 
-					//	pressspace波紋
-					static	float	wavespeed = 1.5f;
-					SetWave(load_anykey, wavespeed);
-					MainFrame->ChangeScene(newScene, false);
-					return;
-				}
-			}
-
-			//デバッグ用
-			if (KEY_Get(KEY_RIGHT) == 1){
-				Xs += 10;
-			}
-			if (KEY_Get(KEY_LEFT) == 1){
-				Xs -= 10;
-			}
-			if (KEY_Get(KEY_DOWN) == 1){
-				Ys += 10;
-
-			}
-
-			if (KEY_Get(KEY_UP) == 1){
-				Ys -= 10;
-
+				//	pressspace波紋
+				static	float	wavespeed = 1.5f;
+				SetWave( load_anykey, wavespeed );
+				MainFrame->ChangeScene( newScene, false );
+				return;
 			}
 		}
+	}
 
 	//	描画
 	void	sceneLoad::Render( void )
@@ -108,8 +90,9 @@ using namespace std;
 		//	画面クリア
 		mainView->Activate();
 		mainView->Clear();
+
+		//	背景描画
 		load->Render( 0, 0, 1280, 720, 0, 0, 1280, 720 );
-		DrawString( "ロード中", 200, 300 );
 
 		//	pressSpace描画
 		if ( threadState )
@@ -117,10 +100,6 @@ using namespace std;
 			RenderImage( load_anykey, 0, 0, 256, 128, IMAGE_MODE::FLASH );
 			RenderImage( load_anykey, 0, 0, 256, 128, IMAGE_MODE::WAVE );
 		}
-
-		//デバック用
-		sprintf_s( stri, "%d\n%d", Xs, Ys );
-		DrawString( stri, 0, 250, 0xFFFFFFFF );
 	}
 
 //----------------------------------------------------------------------------------

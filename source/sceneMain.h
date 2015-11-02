@@ -6,6 +6,7 @@
 
 //	include
 #include	<memory>
+#include	"Camera.h"
 
 //	class
 class	sceneMain : public Scene
@@ -60,6 +61,7 @@ public:
 	sceneMain( void );
 	~sceneMain( void );
 	bool Initialize( void );
+	void	InitializeDebug(void);
 	void	PlayerInitialize( void );
 	void	StageInitialize( void );
 	void	DifferedInitialize( void );

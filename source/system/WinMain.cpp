@@ -3,7 +3,8 @@
 #include	"GlobalFunction.h"
 #include	"CharacterManager.h"
 
-#include	"sceneTitle.h"
+#include	"../sceneTitle.h"
+#include	"../sceneMain.h"
 
 //*****************************************************************************************************************************
 //
@@ -35,6 +36,7 @@ BOOL	InitApp( HWND hWnd )
 	MainFrame = new Framework();
 	//	‰ŠúƒV[ƒ““o˜^
 	MainFrame->ChangeScene( new sceneTitle() );
+	//MainFrame->ChangeScene( new sceneMain() );
 
 	return TRUE;
 }

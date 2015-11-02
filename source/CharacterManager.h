@@ -59,6 +59,9 @@ public:
 	Matrix	GetMatrix( int player )const;
 	Vector3	GetPos( int player )const;
 	Vector3	GetDamageColor( int player )const;
+	Vector3	GetFront( int player )const;
+	Vector3	GetRight( int player )const;
+	Vector3	GetUp( int player )const;
 	float		GetAngle( int player )const;
 	float		GetTotalSpeed( int player )const;
 	bool		GetUnrivaled( int player )const;
