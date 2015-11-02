@@ -53,7 +53,7 @@
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			charatype[i] = 0;
-			coinNum[i] = 0;
+			coinNum[i] = 50;
 		}
 		playerNum = 0;
 		stageType = 0;
