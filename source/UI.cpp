@@ -241,7 +241,7 @@
 		SafeDelete( timer.obj );
 		SafeDelete( coinbar );
 		SafeDelete( ddInfo.face.obj );
-		SafeDelete( ddInfo.boooost.obj );
+		SafeDelete( ddInfo.DB.obj );
 		SafeDelete( ddInfo.P.obj );
 		SafeDelete( countImage.obj );
 		SafeDelete( alertImage.obj );
@@ -530,13 +530,15 @@
 		ddInfo.face_step = -1;
 
 		//　DonketsuBoooooooooooost!!!
-		ddInfo.boooost.obj = new iex2DObj("DATA/UI/DonketuUI.png");
-		ImageInitialize(ddInfo.boooost, 1280 / 4, 720 / 4, 600, 300, 0, 0, 512, 256);
-		
+		ddInfo.DB.obj = new iex2DObj("DATA/UI/DonketuUI.png");
+		ImageInitialize(ddInfo.DB, 1200, -100, 0, 0, 0, 0, 512, 256);
+		ddInfo.DB_step = -1;
+
 		//　？P関連
 		ddInfo.P.obj = new iex2DObj("DATA/UI/DonketuUI.png");
-		ImageInitialize(ddInfo.P, 1000, 550, 400, 350, 0, 256, 128, 128);
+		ImageInitialize(ddInfo.P, 1000, 550, 0, 0, 0, 256, 128, 128);
 		ddInfo.P.renderflag = false;
+		ddInfo.P_step = -1;
 	}
 
 	//	警告演出初期化
@@ -710,19 +712,23 @@
 		*/
 
 		//　演出用時間更新
-		static int wait = 7 * SECOND;
+		static int wait = DD_TIMING::WAIT_MAX;
 		if (wait <= 0)
 		{
-			wait = 7 * SECOND;
+			wait = 5 * SECOND + 30;
 			changeflag = true;
 		}
 
+		//　「DonketsuBoooooooooooost!!!」
+		DB_Direction(wait);
+		
 		//　顔ルーレット
 		FaceRoulette(wait);
 
-		//　「DonketsuBoooooooooooost!!!」と「？P」
-		VarietyControl( wait );
+		//　「？P」
+		P_Direction(wait);
 
+		//　更新
 		wait--;
 	}
 
@@ -824,10 +830,10 @@
 
 		//　顔ルーレット
 		RenderImage(ddInfo.face, FACE_INFO::Normal * 256, charatype[ddInfo.f] * 256, 256, 256, IMAGE_MODE::NORMAL);
-
+		
 		//　DonketsuBoooooooooooost!!!
-		RenderImage(ddInfo.boooost, 0, 0, 512, 256, IMAGE_MODE::NORMAL);
-
+		RenderImage(ddInfo.DB, 0, 0, 512, 256, IMAGE_MODE::ADOPTPARAM );
+	
 		//　？P
 		RenderImage(ddInfo.P, gameManager->GetWorst()*128, 256, 128, 128, IMAGE_MODE::NORMAL);
 
@@ -943,55 +949,107 @@
 		}
 	}
 
+
+	//　DonketsuBoooooooooooost!!!の演出
+	void	UI::DB_Direction( int wait )
+	{
+		const int POS_X = 1280 / 4;		//　固定位置
+		const int POS_Y = 720 / 4;		//　固定位置
+		const int TRANS_X = (POS_X - 1200) / 30;	//　TPF
+		const int TRANS_Y = (POS_Y - -100) / 30;	//　TPF
+		const int SIZE_X = 600;
+		const int SIZE_Y = 300;
+		const int SCALING_X = SIZE_X / 30;
+		const int SCALING_Y = SIZE_Y / 30;
+		const float ROT = 30 * 0.0175f;	//　回転量
+		
+		//　タイミングによる設定
+		switch (wait)
+		{
+			//　演出スタート
+		case DD_TIMING::WAIT_MAX:
+			ddInfo.DB_step = 0;
+			break;
+
+			//　固定
+		case DD_TIMING::DB_LOCK:
+			ddInfo.DB_step = 1;
+			break;
+		}
+
+		//　演出部
+		switch (ddInfo.DB_step)
+		{
+			//　移動・回転
+		case 0:
+			ddInfo.DB.x += TRANS_X;
+			ddInfo.DB.y += TRANS_Y;
+			ddInfo.DB.p.x = ddInfo.DB.x;
+			ddInfo.DB.p.y = ddInfo.DB.y;
+			ddInfo.DB.w += SCALING_X;
+			ddInfo.DB.h += SCALING_Y;
+			ddInfo.DB.angle += ROT;
+			break;
+
+			//　固定
+		case 1:
+			ddInfo.DB.x = POS_X;
+			ddInfo.DB.y = POS_Y;
+			ddInfo.DB.w = SIZE_X;
+			ddInfo.DB.h = SIZE_Y;
+			ddInfo.DB.angle = 0;
+			break;
+		}
+	}
+
 	//　どんけつ演出の顔
 	void	UI::FaceRoulette( int face_wait )
 	{
-		const int LAST_TIMING = 2 * SECOND + 30;
 		const int INTERVAL = 10;
 		const int SPF = 320 / INTERVAL;	// SCALE PER FRAME(１フレームに拡大する分)
 
 		switch (face_wait)
 		{
 			//　イントロ　→　１Ｐ
-		case LAST_TIMING + INTERVAL * 13:
-		case LAST_TIMING + INTERVAL * 9:
+		case DD_TIMING::FACE_LOCK + INTERVAL * 13:
+		case DD_TIMING::FACE_LOCK + INTERVAL * 9:
 			ddInfo.face_step = 0;
 			ddInfo.face.w = ddInfo.face.h = 0;
 			ddInfo.f = characterManager->GetPlayerNum(0);
 			break;
 
 			//　１Ｐ　→　２Ｐ
-		case LAST_TIMING + INTERVAL * 12:
-		case LAST_TIMING + INTERVAL * 8:
+		case DD_TIMING::FACE_LOCK + INTERVAL * 12:
+		case DD_TIMING::FACE_LOCK + INTERVAL * 8:
 			ddInfo.face_step = 1;
 			ddInfo.face.w = ddInfo.face.h = 0;
 			ddInfo.f = characterManager->GetPlayerNum(1);
 			break;
 
 			//　２Ｐ　→　３Ｐ
-		case LAST_TIMING + INTERVAL * 11:
-		case LAST_TIMING + INTERVAL * 7:
+		case DD_TIMING::FACE_LOCK + INTERVAL * 11:
+		case DD_TIMING::FACE_LOCK + INTERVAL * 7:
 			ddInfo.face_step = 2;
 			ddInfo.face.w = ddInfo.face.h = 0;
 			ddInfo.f = characterManager->GetPlayerNum(2);
 			break;
 
 			//　３Ｐ　→　４Ｐ
-		case LAST_TIMING + INTERVAL * 10:
-		case LAST_TIMING + INTERVAL * 6:
+		case DD_TIMING::FACE_LOCK + INTERVAL * 10:
+		case DD_TIMING::FACE_LOCK + INTERVAL * 6:
 			ddInfo.face_step = 3;
 			ddInfo.face.w = ddInfo.face.h = 0;
 			ddInfo.f = characterManager->GetPlayerNum(3);
 			break;
 
 			//　４Ｐ　→　しぼみ始める
-		case LAST_TIMING + INTERVAL * 5:
+		case DD_TIMING::FACE_LOCK + INTERVAL * 5:
 			ddInfo.face_step = 4;
 			ddInfo.face.w = ddInfo.face.h = 320;
 			break;
 
 			//　しぼみきる　→　待ち
-		case LAST_TIMING + INTERVAL * 4:
+		case DD_TIMING::FACE_LOCK + INTERVAL * 4:
 			ddInfo.face_step = 5;
 			ddInfo.face.w = ddInfo.face.h = 0;
 			ddInfo.f = -1;
@@ -999,13 +1057,13 @@
 
 
 			//　待ち　→　ビリ
-		case LAST_TIMING + INTERVAL * 1:
+		case DD_TIMING::FACE_LOCK + INTERVAL * 1:
 			ddInfo.face_step = 6;
 			ddInfo.f = gameManager->GetWorst();
 			break;
 
 			//　ビリ　→　そのまま放置
-		case LAST_TIMING:
+		case DD_TIMING::FACE_LOCK:
 			ddInfo.face_step = 7;
 			break;
 		}
@@ -1048,16 +1106,81 @@
 			break;
 		}
 	}
-
-	//　どんけつ演出の顔以外
-	void	UI::VarietyControl( int wait )
+	
+	//　「？Ｐ」の演出
+	void	UI::P_Direction( int wait )
 	{
-		//　DonketsuBoooooooooooost!!!
+		const int INTERVAL = 5;
+		const int SIZE_X = 400;
+		const int SIZE_Y = 350;
+		const int SCALING = 200;
+		const int SPF = SCALING / INTERVAL;
 		
+		//　タイミングによる設定
+		switch (wait)
+		{
+			//　出現
+		case DD_TIMING::P_START:
+			ddInfo.P.renderflag = true;
+			ddInfo.P_step = 0;
+			break;
+		case DD_TIMING::P_START - 5:
+			ddInfo.P_step = 3;
+			break;
 
-		//　？P
-		if (wait == 150) ddInfo.P.renderflag = true;
+			//　拡大スタート
+		case DD_TIMING::P_LOCK + INTERVAL * 6:
+		case DD_TIMING::P_LOCK + INTERVAL * 4:
+		case DD_TIMING::P_LOCK + INTERVAL * 2:
+			ddInfo.P.w = SIZE_X;
+			ddInfo.P.h = SIZE_Y;
+			ddInfo.P_step = 1;
+			break;
 
+			//　縮小スタート
+		case DD_TIMING::P_LOCK + INTERVAL * 5:
+		case DD_TIMING::P_LOCK + INTERVAL * 3:
+		case DD_TIMING::P_LOCK + INTERVAL * 1:
+			ddInfo.P.w = SIZE_X + SCALING;
+			ddInfo.P.h = SIZE_Y + SCALING;
+			ddInfo.P_step = 2;
+			break;
+	
+			//　固定
+		case DD_TIMING::P_LOCK:
+			ddInfo.P.w = SIZE_X;
+			ddInfo.P.h = SIZE_Y;
+			ddInfo.P_step = 3;
+			break; 
+		}
+
+		//　演出部
+		switch (ddInfo.P_step)
+		{
+			//　出現
+		case 0:
+			ddInfo.P.w += SIZE_X / 10;
+			ddInfo.P.h += SIZE_Y / 10;
+			break;
+
+			//　拡大
+		case 1:
+			ddInfo.P.w += SPF;
+			ddInfo.P.h += SPF;
+			break;
+
+			//　縮小
+		case 2:
+			ddInfo.P.w -= SPF;
+			ddInfo.P.h -= SPF;
+			break;
+
+			//　固定
+		case 3:
+			ddInfo.P.w = SIZE_X;
+			ddInfo.P.h = SIZE_Y;
+			break;
+		}
 	}
 
 //------------------------------------------------------------------------------

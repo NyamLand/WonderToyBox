@@ -8,6 +8,8 @@
 //
 //*********************************************************************************
 
+#include	"GameManager.h"
+
 namespace
 {
 	namespace UI_MODE
@@ -19,7 +21,18 @@ namespace
 			RESULT,
 		};
 	}
+
+	namespace DD_TIMING
+	{
+		const int WAIT_MAX		= 5 * SECOND + 30;
+		const int DB_LOCK		= 5 * SECOND;
+		const int FACE_START	= 4 * SECOND + 40;
+		const int FACE_LOCK		= 2 * SECOND + 30;
+		const int P_START		= 1 * SECOND + 50;
+		const int P_LOCK		= 20;
+	}
 }
+
 
 //	UIクラス
 class UI
@@ -46,15 +59,21 @@ private:
 
 	struct DONKETSU_DIRECT_INFO
 	{
+		const int WAIT_MAX = 5 * SECOND + 30;
+
 		//　顔関連
 		ImageObj	face;
 		int		f;
 		int		roulette;
 		int		face_step;
 
-		//　その他
-		ImageObj	boooost;	//　顔以外の文字
+		//　DonketsuBoooooost!!!
+		ImageObj	DB;
+		int			DB_step;
+
+		//　？P
 		ImageObj	P;
+		int			P_step;
 	};
 
 	struct HURRY_INFO
@@ -185,7 +204,8 @@ public:
 	void BarControl( void );
 	void StateImageControl( void );
 	void FaceRoulette( int face_wait );
-	void VarietyControl(int wait);
+	void DB_Direction( int wait );
+	void P_Direction( int wait );
 
 	//------------------------------情報取得・設定------------------------------------//
 
