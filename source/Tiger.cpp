@@ -15,7 +15,7 @@
 //	グローバル
 //-----------------------------------------------------------------------------------
 
-	namespace TigerData
+	namespace 
 	{
 		//	定数
 		enum MotionNum
@@ -112,6 +112,8 @@
 	//	クイックアーツ
 	bool	Tiger::QuickArts( void )
 	{		
+		power = QUICK;
+
 		//相手を仰け反らせる時間(適当)
 		leanFrame = 20;
 		//	情報取得
@@ -180,6 +182,8 @@
 	//	パワーアーツ
 	bool	Tiger::PowerArts( void )
 	{
+		power = POWER;
+
 		//	無敵
 		unrivaled = true;
 
@@ -218,6 +222,8 @@
 	//	ハイパーアーツ
 	bool	Tiger::HyperArts( void )
 	{
+		power = HYPER;
+
 		leanFrame = 60;
 		//	情報取得
 		static	int		timer = 0;
