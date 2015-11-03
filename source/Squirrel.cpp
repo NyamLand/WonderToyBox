@@ -21,7 +21,7 @@
 //	グローバル
 //-----------------------------------------------------------------------------------
 
-	namespace SquirrelData
+	namespace
 	{
 		//	定数
 		enum MotionNum
@@ -115,6 +115,8 @@
 	//	クイックアーツ
 	bool	Squirrel::QuickArts( void )
 	{
+		power = QUICK;
+
 		static int time = 0;
 		SetMove( Vector3( 0.0f, move.y, 0.0f ) );
 		
@@ -141,6 +143,8 @@
 	//	パワーアーツ
 	bool	Squirrel::PowerArts( void )
 	{
+		power = POWER;
+
 		static int time = 0;
 
 		//	行列から情報取得
@@ -180,6 +184,8 @@
 	//	ハイパーアーツ
 	bool	Squirrel::HyperArts( void )
 	{
+		power = HYPER;
+
 		static int step = 0;		//	回数
 		static int time = 0;
 	

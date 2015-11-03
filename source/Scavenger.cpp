@@ -101,6 +101,8 @@ void	Scavenger::Render(iexShader* shader, LPSTR technique)
 //	クイックアーツ
 bool	Scavenger::QuickArts(void)
 {
+	power = QUICK;
+
 	//無敵判定を切らないとそもそもコインを集められないので無敵切ってます。
 	//問題なら言ってください
 	unrivaled = false;
@@ -142,6 +144,8 @@ bool	Scavenger::QuickArts(void)
 //	パワーアーツ
 bool	Scavenger::PowerArts(void)
 {	
+	power = POWER;
+
 	//無敵判定を切らないとそもそもコインを集められないので無敵切ってます。
 	//問題なら言ってください
 	unrivaled = false;
@@ -193,6 +197,8 @@ bool	Scavenger::PowerArts(void)
 //	ハイパーアーツ
 bool	Scavenger::HyperArts(void)
 {
+	power = HYPER;
+
 	//無敵判定を切らないとそもそもコインを集められないので無敵切ってます。
 	//問題なら言ってください
 	unrivaled = false;
