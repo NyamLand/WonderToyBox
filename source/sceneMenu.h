@@ -58,7 +58,7 @@ private:
 	unique_ptr<iexMesh>	deskStage;
 	unique_ptr<iexMesh>	forestStage;	
 	unique_ptr<iex2DObj>	playerNum;
-	iex3DObj*						org[4];
+	unique_ptr<iex3DObj>	org[4];
 	iex3DObj*						obj[4];
 	ImageObj						textImage;
 
