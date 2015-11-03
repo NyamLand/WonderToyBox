@@ -735,6 +735,9 @@ namespace
 	//	ƒpƒ‰ƒ[ƒ^’²®
 	void	BaseChara::ParameterAdjust( void )
 	{
+		totalPower = power;
+		totalSpeed = speed;
+
 		if ( attackUp.state )	totalPower = power + plusStatusInfo.power;
 		if ( speedUp.state )	totalSpeed = speed + plusStatusInfo.speed;
 		

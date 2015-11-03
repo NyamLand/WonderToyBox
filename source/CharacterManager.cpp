@@ -257,15 +257,19 @@
 			vec.Normalize();
 
 			//	プレイヤー番号取得とばらまきパワー設定
-			float	power = 0.2f;
+			//float	power = 0.2f;
+			float	power = bc1->GetTotalPower()*0.1f;
+			int		dropCoin = bc1->GetTotalPower();
 			int		bc2_Num = bc2->GetPlayerNum();
 			int		bc2_coinNum = gameManager->GetCoinNum( bc2_Num );
 
-			//	コインがあればばらまき
-			if ( bc2_coinNum > 0 )
+			//	攻撃側のtotalPower枚のコインをばらまき
+			for (int i = 0; i < dropCoin; i++)
 			{
-				m_CoinManager->Set( bc2_top, vec, power );
-				gameManager->SubCoin( bc2_Num );
+				if (bc2_coinNum <= 0) break;
+				m_CoinManager->Set(bc2_top, vec, power);
+				gameManager->SubCoin(bc2_Num);
+
 			}
 		}
 	}
@@ -318,15 +322,19 @@
 			vec.Normalize();
 
 			//	プレイヤー番号取得とばらまきパワー設定
-			float	power = 0.15f;
+			//float	power = 0.15f;
+			float	power = bc1->GetTotalPower()*0.1f;
+			int		dropCoin = bc1->GetTotalPower();
 			int		bc2_Num = bc2->GetPlayerNum();
-			int		bc2_coinNum = gameManager->GetCoinNum( bc2_Num );
+			int		bc2_coinNum = gameManager->GetCoinNum(bc2_Num);
 
-			//	コインがあればばらまき
-			if ( bc2_coinNum > 0 )
+			//	攻撃側のtotalPower枚のコインをばらまき
+			for (int i = 0; i < dropCoin; i++)
 			{
-				m_CoinManager->Set( bc2_top, vec, power );
-				gameManager->SubCoin( bc2_Num );
+				if (bc2_coinNum <= 0) break;
+				m_CoinManager->Set(bc2_top, vec, power);
+				gameManager->SubCoin(bc2_Num);
+
 			}
 		}
 	}

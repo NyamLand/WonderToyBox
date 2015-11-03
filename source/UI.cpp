@@ -540,6 +540,7 @@
 		//　DonketsuBoooooooooooost!!!
 		ddInfo.DB.obj = new iex2DObj("DATA/UI/DonketuUI.png");
 		ImageInitialize(ddInfo.DB, 1200, -100, 0, 0, 0, 0, 512, 256);
+		ddInfo.DB.angle = 0;
 		ddInfo.DB_step = -1;
 
 		//　？P関連
