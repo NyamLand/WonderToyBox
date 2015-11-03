@@ -72,13 +72,15 @@
 	//　（メインから始めるための）デバッグ用
 	bool	GameManager::InitializeDebug(void)
 	{
-		for (int i = 0; i < PLAYER_MAX; i++)
+		charatype[0] = 1;
+
+		for (int i = 1; i < PLAYER_MAX; i++)
 		{
 			charatype[i] = i;
 			coinNum[i] = 0;
 		}
-		playerNum = 3;	//　操作する人数
-		stageType = 1;
+		playerNum = 1;	//　操作する人数
+		stageType = 0;
 		mode = 0;
 		donketsuBoostState = false;
 		lastBonus = rand() % PLAYER_MAX;

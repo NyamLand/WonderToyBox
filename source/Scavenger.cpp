@@ -36,6 +36,7 @@ namespace
 Scavenger::Scavenger(void) : BaseChara()
 {
 	//	ƒpƒ‰ƒ[ƒ^‰Šú‰»
+	power = 3;	/*‰¼*/
 	speed = 0.25f;
 	scale = 0.05f;
 	diffence = -1;
