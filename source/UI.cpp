@@ -209,8 +209,9 @@
 		faceImage.obj = face;
 		countImage.obj = new iex2DObj("DATA/UI/bfUI.png");
 		alertImage.obj = new iex2DObj("DATA/UI/alert.png");
+		playerNumber = new iex2DObj( "DATA/UI/cursor.png" );
 
-		//	共通変数初期化
+		//	共通変数初期化 
 		changeflag = false;
 		for (int i = 0; i < PLAYER_MAX; i++)
 			charatype[i] = gameManager->GetCharacterType(i);
@@ -222,6 +223,7 @@
 		NewsBarInitialize();
 		DonketsuDirectionInitialize();
 		AlertInitialize();
+		PlayerNumberInitialize();
 	}
 
 	//	リザルト用初期化
@@ -251,6 +253,7 @@
 		SafeDelete( face );
 		SafeDelete( countImage.obj );
 		SafeDelete( alertImage.obj );
+		SafeDelete( playerNumber );
 	}
 
 	//	リザルト用解放
@@ -308,6 +311,8 @@
 	//	メイン更新
 	void	UI::MainUpdate( int mode )
 	{
+		PlayerNumberUpdate();
+
 		switch ( mode )
 		{
 		case GAME_MODE::GAMESTART:
@@ -362,6 +367,8 @@
 	//	メイン描画
 	void	UI::MainRender( int mode )
 	{
+		PlayerNumberRender();
+
 		switch ( mode )
 		{
 		case GAME_MODE::GAMESTART:
@@ -571,6 +578,16 @@
 		hurryInfo.param = 0.0f;
 		hurryInfo.timer = 0;
 	}
+
+	//	プレイヤー番号画像初期化
+	void	UI::PlayerNumberInitialize( void )
+	{
+		for ( int i = 0; i < PLAYER_MAX; i++ )
+		{
+			pNumImage[i].obj = playerNumber;
+			ImageInitialize( pNumImage[i], 0, 0, 50, 50, ( i % 2 ) * 128, ( i / 2 ) * 128, 128, 128 );
+		}
+	}
 	
 //------------------------------------------------------------------------------
 //	メイン動作更新
@@ -774,6 +791,31 @@
 		FlashingUpdate(timer, 0.5f);
 	}
 
+	//	プレイヤー番号位置決定
+	void	UI::PlayerNumberUpdate( void )
+	{
+		//	変数初期化
+		Vector3 imagePos = Vector3( 0.0f, 0.0f, 0.0f );
+		Vector3	p_pos = Vector3( 0.0f, 0.0f, 0.0f );
+		Vector3	up = Vector3( 0.0f, 0.0f, 0.0f );
+		Vector3	out = Vector3( 0.0f, 0.0f, 0.0f );
+
+		for ( int i = 0; i < PLAYER_MAX; i++ )
+		{
+			//	画像を表示する場所を設定
+			up = characterManager->GetUp( i );
+			p_pos = characterManager->GetPos( i );
+			imagePos = p_pos + up * 7.0f;
+
+			//	クライアント座標に変換
+			WorldToClient( imagePos, out, matView * matProjection );
+
+			//	構造体に情報設定
+			pNumImage[i].x = static_cast<int>( out.x );
+			pNumImage[i].y = static_cast<int>( out.y );
+		}
+	}
+
 //------------------------------------------------------------------------------
 //	メイン描画
 //------------------------------------------------------------------------------
@@ -886,6 +928,15 @@
 		//	タイマー文字色を白へ
 		timer.sy = 0;
 
+	}
+
+	//	プレイヤー番号描画
+	void	UI::PlayerNumberRender( void )
+	{
+		for ( int i = 0; i < PLAYER_MAX; i++ )
+		{
+			RenderImage( pNumImage[i], pNumImage[i].sx, pNumImage[i].sy, pNumImage[i].sw, pNumImage[i].sh, IMAGE_MODE::NORMAL );
+		}
 	}
 
 //------------------------------------------------------------------------------
