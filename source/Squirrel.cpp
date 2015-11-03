@@ -245,11 +245,11 @@
 			break;
 
 		case MOTION_NUM::JUMP:
-			obj->SetMotion(MOTION_DATA::POSTURE);
+			obj->SetMotion(MOTION_DATA::JUMP);
 			break;
 
 		case MOTION_NUM::GUARD:
-			obj->SetMotion(MOTION_DATA::POSTURE);
+			obj->SetMotion(MOTION_DATA::GUARD);
 			break;
 
 		case MOTION_NUM::LANDING:
@@ -257,19 +257,19 @@
 			break;
 
 		case MOTION_NUM::RUN:
-			obj->SetMotion(MOTION_DATA::POSTURE);
+			obj->SetMotion(MOTION_DATA::RUN);
 			break;
 
 		case MOTION_NUM::ATTACK1:
-			obj->SetMotion(MOTION_DATA::POSTURE);
+			obj->SetMotion(MOTION_DATA::ATTACK1);
 			break;
 
 		case MOTION_NUM::ATTACK2:
-			obj->SetMotion(MOTION_DATA::POSTURE);
+			obj->SetMotion(MOTION_DATA::ATTACK2);
 			break;
 
 		case MOTION_NUM::ATTACK3:
-			obj->SetMotion(MOTION_DATA::POSTURE);
+			obj->SetMotion(MOTION_DATA::ATTACK3);
 			break;
 		}
 	}
