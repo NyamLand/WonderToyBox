@@ -7,11 +7,13 @@
 //	Bulletクラス
 //
 //*****************************************************************************
-class Bullet
+
+
+class BaseBullet
 {
-private:
+protected:
 	int				limitTimer;
-private:
+protected:
 	iexMesh*	obj;
 	Vector3		pos;
 	Vector3		move;
@@ -22,22 +24,22 @@ private:
 	int				judgeTimer;	//	判定有効時間
 	int				number;		//	番号割り当て用
 	int				leanpower; //	仰け反り時間用
+	int				playerNum;	//何番目のプレイヤーの弾か
 
 public:
 	//	初期化・解放
-	Bullet(void);
-	~Bullet(void);
-	bool	Initialize(void);
+	BaseBullet(void);
+	~BaseBullet(void);
+	virtual bool	Initialize(void) = 0;
 
 	//	更新・描画
-	void	Update(void);
+	virtual void	Update(void) = 0;
 	void	Render(void);
 	void	Render(iexShader* shader, LPSTR technique);
 
 	//	動作関数
-	void	StageCollisionCheck(void);
-	void	PlayerCollisionCheck(void);
-	void	Move(void);
+	bool	StageCollisionCheck(void);
+	bool	PlayerCollisionCheck(void);
 
 	//	情報取得・設定
 	void	SetPos(Vector3 pos);
@@ -46,7 +48,7 @@ public:
 	Vector3	GetPos(void);
 	float		GetAngle(void);
 
-private:
+protected:
 	friend	class BulletManager;
 };
 

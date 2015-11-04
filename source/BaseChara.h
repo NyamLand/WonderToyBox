@@ -76,7 +76,8 @@ namespace
 			//KNIGHT,		//	騎士
 			SCAVENGER,		//掃除屋
 			PRINCESS,	//	姫
-			SQUIRREL,	//	リス
+			//SQUIRREL,	//	リス
+			THIEF,		//　怪盗
 			TIGER,			//	トラ
 			MAX,
 		};

@@ -4,7 +4,7 @@
 #include	"iextreme.h"
 #include	"GlobalFunction.h"
 #include	"Collision.h"
-#include	"Bullet.h"
+#include	"BaseBullet.h"
 #include	"BulletManager.h"
 #include	"Coin.h"
 #include	"CoinManager.h"
@@ -125,9 +125,9 @@
 		//	î•ñİ’è
 		Vector3	vec = front * 5.0f;
 		static float bulletSpeed = 0.5f;
+		int playerNum = GetPlayerNum();
 
-		int leanpower = 0;
-		if ( time == 0 )m_BulletManager->Set( p_pos, vec, bulletSpeed ,leanpower);
+		if (time == 0)m_BulletManager->Set(BULLET_MODEL::SQUIRREL, new Squirrel_Bullet01, p_pos, vec, bulletSpeed, playerNum);
 		time++;
 
 		if ( time >= 60 )
@@ -164,7 +164,7 @@
 		{
 			for ( int i = 0; i < 3; i++ )
 			{
-				m_BulletManager->Set( p_pos, vec[i], bulletSpeed ,leanpower);
+				//m_BulletManager->Set(BULLET_MODEL::SQUIRREL, new Squirrel_Bullet01, p_pos, vec[i], bulletSpeed, leanpower);
 			}
 		}
 		time++;
@@ -212,7 +212,7 @@
 
 		case 1:
 			angleParam += 0.1f;
-			if ( time % 16 == 0 ) m_BulletManager->Set( p_pos, vec, bulletScale, bulletSpeed );
+			//if (time % 16 == 0) m_BulletManager->Set(BULLET_MODEL::SQUIRREL, new Squirrel_Bullet01, p_pos, vec /*bulletScale, bulletSpeed*/);
 			time++;
 			if ( time > 16 * 4 - 1 ) step++;
 			break;

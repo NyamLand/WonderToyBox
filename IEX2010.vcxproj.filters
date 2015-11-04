@@ -139,6 +139,21 @@
     <Filter Include="ソース ファイル\Character\CPU\Scavenger">
       <UniqueIdentifier>{8feb653d-2c22-40b1-bb1c-be5238976c9b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Character\Thief">
+      <UniqueIdentifier>{8f81f0ce-e179-48f2-986f-fe64c1e4ac4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Character\CPU\Thief">
+      <UniqueIdentifier>{427c6a28-7841-4208-9da3-965abba35071}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Bullet\BaseBullet">
+      <UniqueIdentifier>{9a57d1f2-4a39-47a5-9e36-e21adc8ecc1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Bullet\Thief_Bullet01">
+      <UniqueIdentifier>{ee7b2aaf-435b-4d08-907f-3748bc6e4569}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Bullet\Squirrel_Bullet01">
+      <UniqueIdentifier>{cfe93910-f10e-4d77-a324-314de6511f75}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -231,9 +246,6 @@
     <ClCompile Include="source\GameManager.cpp">
       <Filter>ソース ファイル\GameManager</Filter>
     </ClCompile>
-    <ClCompile Include="source\Bullet.cpp">
-      <Filter>ソース ファイル\Bullet</Filter>
-    </ClCompile>
     <ClCompile Include="source\BulletManager.cpp">
       <Filter>ソース ファイル\BulletManager</Filter>
     </ClCompile>
@@ -309,6 +321,21 @@
     <ClCompile Include="source\Scavenger_CPU.cpp">
       <Filter>ソース ファイル\Character\CPU\Scavenger</Filter>
     </ClCompile>
+    <ClCompile Include="source\Thief.cpp">
+      <Filter>ソース ファイル\Character\Thief</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Thief_CPU.cpp">
+      <Filter>ソース ファイル\Character\CPU\Thief</Filter>
+    </ClCompile>
+    <ClCompile Include="source\BaseBullet.cpp">
+      <Filter>ソース ファイル\Bullet\BaseBullet</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Thief_Bullet01.cpp">
+      <Filter>ソース ファイル\Bullet\Thief_Bullet01</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Squirrel_Bullet01.cpp">
+      <Filter>ソース ファイル\Bullet\Squirrel_Bullet01</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -355,9 +382,6 @@
     </ClInclude>
     <ClInclude Include="source\GameManager.h">
       <Filter>ソース ファイル\GameManager</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Bullet.h">
-      <Filter>ソース ファイル\Bullet</Filter>
     </ClInclude>
     <ClInclude Include="source\BulletManager.h">
       <Filter>ソース ファイル\BulletManager</Filter>
@@ -433,6 +457,21 @@
     </ClInclude>
     <ClInclude Include="source\Scavenger_CPU.h">
       <Filter>ソース ファイル\Character\CPU\Scavenger</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Thief.h">
+      <Filter>ソース ファイル\Character\Thief</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Thief_CPU.h">
+      <Filter>ソース ファイル\Character\CPU\Thief</Filter>
+    </ClInclude>
+    <ClInclude Include="source\BaseBullet.h">
+      <Filter>ソース ファイル\Bullet\BaseBullet</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Thief_Bullet01.h">
+      <Filter>ソース ファイル\Bullet\Thief_Bullet01</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Squirrel_Bullet01.h">
+      <Filter>ソース ファイル\Bullet\Squirrel_Bullet01</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
