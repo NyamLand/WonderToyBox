@@ -3,7 +3,6 @@
 #include	"system/System.h"
 #include	<random>
 #include	"GlobalFunction.h"
-#include	"Bullet.h"
 
 #include	"BulletManager.h"
 
@@ -20,12 +19,6 @@
 	//	実体
 	BulletManager*	m_BulletManager;
 
-	namespace
-	{
-		//	定数
-		const int BULLET_MAX = 201;		//	弾最大数
-		const int LIMIT = ( const int )( 60 * 1.5f );
-	}
 
 //---------------------------------------------------------------------------------
 //	初期化・解放
@@ -34,7 +27,8 @@
 	//	コンストラクタ
 	BulletManager::BulletManager( void )
 	{
-
+		ZeroMemory(org, sizeof(org));
+		ZeroMemory(c_Bullet, sizeof(c_Bullet));
 	}
 
 	//	デストラクタ
@@ -46,14 +40,13 @@
 	//	初期化
 	bool	BulletManager::Initialize( void )
 	{
-		org = new iexMesh( "DATA/BG/Bullet/bulletEx.imo" );
-		c_Bullet = new Bullet[BULLET_MAX];
+		org[0] = new iexMesh("DATA/BG/Bullet/bulletEx.imo");
+		org[1] = new iexMesh("DATA/BG/Bullet/bulletEx.imo");
+		org[2] = new iexMesh("DATA/BG/Bullet/bulletEx.imo");
 		bullet_num = 0;
 
 		for ( int i = 0; i < BULLET_MAX; i++ )
 		{
-			c_Bullet[i].Initialize();
-			c_Bullet[i].state = false;
 		}
 
 		if ( org != NULL ) 	return	false;
@@ -72,14 +65,20 @@
 
 		for ( int i = 0; i < BULLET_MAX; i++ )
 		{
-			if ( !c_Bullet[i].state )	continue;
+			if ( c_Bullet[i] == NULL )	continue;
 			bullet_num++;
 
-			if ( c_Bullet[i].limitTimer > LIMIT ) c_Bullet[i].state = false;
+			if ( c_Bullet[i]->limitTimer > LIMIT ) c_Bullet[i]->state = false;
 
 			//	位置調整
 			//DistCheck(i);
-			c_Bullet[i].Update();
+			c_Bullet[i]->Update();
+
+			if (c_Bullet[i]->state == false)
+			{
+				delete c_Bullet[i];
+				c_Bullet[i] = NULL;
+			}
 		}
 	}
 
@@ -88,8 +87,8 @@
 	{
 		for ( int i = 0; i < BULLET_MAX; i++ )
 		{
-			if ( !c_Bullet[i].state )	continue;
-			c_Bullet[i].Render();
+			if (c_Bullet[i] == NULL)	continue;
+			c_Bullet[i]->Render();
 		}
 
 		char	str[256];
@@ -102,8 +101,8 @@
 	{
 		for ( int i = 0; i < BULLET_MAX; i++ )
 		{
-			if ( !c_Bullet[i].state )	continue;
-			c_Bullet[i].Render( shader, technique );
+			if (c_Bullet[i] == NULL)	continue;
+			c_Bullet[i]->Render( shader, technique );
 		}
 	}
 
@@ -111,67 +110,67 @@
 //	動作関数
 //---------------------------------------------------------------------------------
 
+
+
 	//	生成
-	void	BulletManager::Set( Vector3 pos, Vector3 vec, float speed )
+	void	BulletManager::Set(int type, BaseBullet* obj, Vector3 pos, Vector3 vec, float speed, int playerNum)
 	{
 		for ( int i = 0; i < BULLET_MAX; i++ )
 		{
-			if ( c_Bullet[i].state )	continue;
+			if (c_Bullet[i] != NULL)	continue;
 
-			c_Bullet[i].judgeTimer = 10;
-			c_Bullet[i].limitTimer = 0;
-			c_Bullet[i].activate = false;
-			c_Bullet[i].state = true;
-			c_Bullet[i].obj = org->Clone();
-			c_Bullet[i].pos = pos;
+			c_Bullet[i] = obj;
+			c_Bullet[i]->obj = org[type]->Clone();
+			c_Bullet[i]->pos = pos;
 			Vector3	v = vec;
 			v.Normalize();
-			c_Bullet[i].move = v * speed;
-			c_Bullet[i].scale = 0.05f;
+			c_Bullet[i]->move = v * speed;
+			c_Bullet[i]->playerNum = playerNum;
+			c_Bullet[i]->Initialize();
 			break;
 		}
 	}
 
-	void	BulletManager::Set( Vector3 pos, Vector3 vec, const float& scale, float speed )
-	{
-		for ( int i = 0; i < BULLET_MAX; i++ )
-		{
-			if ( c_Bullet[i].state )	continue;
+	//void	BulletManager::Set(int type, BaseBullet* obj, Vector3 pos, Vector3 vec, const float& scale, float speed)
+	//{
+	//	for ( int i = 0; i < BULLET_MAX; i++ )
+	//	{
+	//		if (c_Bullet[i] != NULL)	continue;
 
-			c_Bullet[i].judgeTimer = 10;
-			c_Bullet[i].limitTimer = 0;
-			c_Bullet[i].activate = false;
-			c_Bullet[i].state = true;
-			c_Bullet[i].obj = org->Clone();
-			c_Bullet[i].pos = pos;
-			Vector3	v = vec;
-			v.Normalize();
-			c_Bullet[i].move = v * speed;
-			c_Bullet[i].scale = scale;
-			break;
-		}
-	}
+	//		c_Bullet[i] = obj;
+	//		c_Bullet[i]->obj = org[type]->Clone();
+	//		c_Bullet[i]->judgeTimer = 10;
+	//		c_Bullet[i]->limitTimer = 0;
+	//		c_Bullet[i]->activate = false;
+	//		c_Bullet[i]->state = true;
+	//		c_Bullet[i]->pos = pos;
+	//		Vector3	v = vec;
+	//		v.Normalize();
+	//		c_Bullet[i]->move = v * speed;	
+	//		break;
+	//	}
+	//}
 
 
-	void	BulletManager::Set(Vector3 pos, const Vector3 vec, float speed, int leanpower)
-	{
-		for (int i = 0; i < BULLET_MAX; i++)
-		{
-			if (c_Bullet[i].state)	continue;
-
-			c_Bullet[i].judgeTimer = 10;
-			c_Bullet[i].limitTimer = 0;
-			c_Bullet[i].activate = false;
-			c_Bullet[i].state = true;
-			c_Bullet[i].obj = org->Clone();
-			c_Bullet[i].pos = pos;
-			Vector3	v = vec;
-			v.Normalize();
-			c_Bullet[i].move = v * speed;
-			c_Bullet[i].leanpower = leanpower;
-			break;
-		}
-	}
+	//void	BulletManager::Set(int type, BaseBullet* obj, Vector3 pos, const Vector3 vec, float speed, int leanpower)
+	//{
+	//	for (int i = 0; i < BULLET_MAX; i++)
+	//	{
+	//		if (c_Bullet[i]!= NULL)	continue;
+	//		c_Bullet[i] = obj;
+	//		c_Bullet[i]->obj = org[type]->Clone();
+	//		c_Bullet[i]->judgeTimer = 10;
+	//		c_Bullet[i]->limitTimer = 0;
+	//		c_Bullet[i]->activate = false;
+	//		c_Bullet[i]->state = true;
+	//		c_Bullet[i]->pos = pos;
+	//		Vector3	v = vec;
+	//		v.Normalize();
+	//		c_Bullet[i]->move = v * speed;
+	//		c_Bullet[i]->scale = 0.05f;
+	//		break;
+	//	}
+	//}
 
 	//	位置調整
 	void	BulletManager::DistCheck( int n )
@@ -183,8 +182,8 @@
 			if ( i == n ) continue;
 
 			//	自分→相手へのベクトル
-			Vector3	bullet_pos1 = c_Bullet[n].GetPos();
-			Vector3	bullet_pos2 = c_Bullet[i].GetPos();
+			Vector3	bullet_pos1 = c_Bullet[n]->GetPos();
+			Vector3	bullet_pos2 = c_Bullet[i]->GetPos();
 			Vector3	vec = bullet_pos2 - bullet_pos1;
 
 
@@ -202,7 +201,7 @@
 				bullet_pos1 = bullet_pos1 - vec * 0.5f;
 
 				//	位置情報設定
-				c_Bullet[n].SetPos( bullet_pos1 );
+				c_Bullet[n]->SetPos( bullet_pos1 );
 			}
 
 		}

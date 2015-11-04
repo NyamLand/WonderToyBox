@@ -52,9 +52,14 @@
 			else					character[playerNum] = new Scavenger_CPU();
 			break;
 
-		case CHARACTER_TYPE::SQUIRREL:
-			if ( isPlayer )		character[playerNum] = new Squirrel();
-			else					character[playerNum] = new Squirrel_CPU();
+		//case CHARACTER_TYPE::SQUIRREL:
+		//	if ( isPlayer )		character[playerNum] = new Squirrel();
+		//	else					character[playerNum] = new Squirrel_CPU();
+		//	break;
+
+		case CHARACTER_TYPE::THIEF:
+			if (isPlayer)		character[playerNum] = new Thief();
+			else					character[playerNum] = new Thief_CPU();
 			break;
 
 		case CHARACTER_TYPE::TIGER:

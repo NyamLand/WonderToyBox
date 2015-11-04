@@ -13,7 +13,7 @@
 #include	"EventManager.h"
 #include	"CoinManager.h"
 #include	"ItemManager.h"
-#include	"Bullet.h"
+#include	"BaseBullet.h"
 #include	"BulletManager.h"
 #include	"sceneResult.h"
 #include	"UI.h"

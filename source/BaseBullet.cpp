@@ -9,7 +9,7 @@
 #include	"Particle.h"
 #include	"CoinManager.h"
 
-#include	"Bullet.h"
+#include	"BaseBullet.h"
 
 //******************************************************************************
 //
@@ -26,69 +26,50 @@
 //-------------------------------------------------------------------------------
 
 	//	コンストラクタ
-	Bullet::Bullet( void ) : obj( NULL )
+	BaseBullet::BaseBullet(void) : obj(NULL)
 	{
 
 	}
 
 	//	デストラクタ
-	Bullet::~Bullet( void )
+	BaseBullet::~BaseBullet(void)
 	{
 		SafeDelete( obj );
 	}
 
 	//	初期化
-	bool	Bullet::Initialize( void )
-	{
-		obj = NULL;
-		angle = 0.0f;
-		pos = Vector3( 0.0f, 0.0f, 0.0f );
-		move = Vector3( 0.0f, 0.0f, 0.0f );
-		scale = 0.05f;
-		judgeTimer = 0;
-		limitTimer = 0;
-		activate = false;
-		state = false;
-		number = 0;
-		leanpower = 0;
+	//bool	BaseBullet::Initialize(void)
+	//{
+	//	obj = NULL;
+	//	angle = 0.0f;
+	//	pos = Vector3( 0.0f, 0.0f, 0.0f );
+	//	move = Vector3( 0.0f, 0.0f, 0.0f );
+	//	scale = 0.05f;
+	//	judgeTimer = 0;
+	//	limitTimer = 0;
+	//	activate = false;
+	//	state = false;
+	//	number = 0;
+	//	leanpower = 0;
 
-		return	true;
-	}
+	//	return	true;
+	//}
 
 //-------------------------------------------------------------------------------
 //	更新・描画
 //-------------------------------------------------------------------------------
 
-	//	更新
-	void	Bullet::Update( void )
-	{
-		//	動作
-		Move();
 
-		if ( judgeTimer > 0 )	judgeTimer--;
-		else							activate = true;
-
-		limitTimer++;
-
-		pos += move;
-		StageCollisionCheck();
-		PlayerCollisionCheck();
-
-		obj->SetAngle( angle );
-		obj->SetPos( pos );
-		obj->SetScale( scale );
-		obj->Update();
-	}
 
 	//	描画
-	void	Bullet::Render( void )
+	void	BaseBullet::Render(void)
 	{
 		obj->Render();
 		DrawSphere( Vector3( pos.x, pos.y + 0.5f, pos.z ), scale * 5, 0xFFFF0000 );
 	}
 
 	//	シェーダー付き描画
-	void	Bullet::Render( iexShader* shader, LPSTR technique )
+	void	BaseBullet::Render(iexShader* shader, LPSTR technique)
 	{
 		obj->Render( shader, technique );
 	}
@@ -98,7 +79,7 @@
 //-------------------------------------------------------------------------------
 
 	//	ステージ当たり判定チェック
-	void	Bullet::StageCollisionCheck( void )
+	bool	BaseBullet::StageCollisionCheck(void)
 	{
 		float work = Collision::GetHeight( pos );
 
@@ -106,11 +87,13 @@
 		{
 			pos.y = work;
 			move.y = 0;
+			return true;
 		}
+	return false;
 	}
 
 	//	プレイヤーとのあたりチェック
-	void	Bullet::PlayerCollisionCheck( void )
+	bool	BaseBullet::PlayerCollisionCheck(void)
 	{
 		for ( int i = 0; i < 4; i++ )
 		{
@@ -162,16 +145,10 @@
 					m_CoinManager->Set( p_pos_top, vec, power );
 					gameManager->SubCoin( p2_Num );
 				}
+				return true;
 			}
 		}
-	}
-
-	//	動作
-	void	Bullet::Move( void )
-	{
-		// 反射( ステージ )	
-		static float rate = 0.4f;
-		Collision::GetReflect( pos, move, rate );
+	return false;
 	}
 
 //-------------------------------------------------------------------------------
@@ -179,10 +156,10 @@
 //-------------------------------------------------------------------------------
 
 	//	設定
-	void	Bullet::SetPos( Vector3 pos ){ this->pos = pos; }
-	void	Bullet::SetAngle( float angle ){ this->angle = angle; }
-	void	Bullet::SetScale( float scale ){ this->scale = scale; }
+	void	BaseBullet::SetPos(Vector3 pos){ this->pos = pos; }
+	void	BaseBullet::SetAngle(float angle){ this->angle = angle; }
+	void	BaseBullet::SetScale(float scale){ this->scale = scale; }
 
 	//	取得
-	Vector3	Bullet::GetPos( void ){ return	this->pos; }
-	float		Bullet::GetAngle( void ){ return	this->angle; }
+	Vector3	BaseBullet::GetPos(void){ return	this->pos; }
+	float		BaseBullet::GetAngle(void){ return	this->angle; }
