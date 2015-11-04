@@ -308,31 +308,31 @@ namespace
 			break;
 
 		case MOTION_NUM::JUMP:
-			obj->SetMotion( POSTURE );
+			obj->SetMotion( JUMP );
 			break;
 
 		case MOTION_NUM::GUARD:
-			obj->SetMotion( POSTURE );
+			obj->SetMotion( GUARD );
 			break;
 
 		case MOTION_NUM::LANDING:
-			obj->SetMotion( POSTURE );
+			obj->SetMotion( LANDING );
 			break;
 
 		case MOTION_NUM::RUN:
-			obj->SetMotion( POSTURE );
+			obj->SetMotion( RUN );
 			break;
 
 		case MOTION_NUM::ATTACK1:
-			obj->SetMotion( POSTURE );
+			obj->SetMotion( ATTACK1 );
 			break;
 
 		case MOTION_NUM::ATTACK2:
-			obj->SetMotion( POSTURE );
+			obj->SetMotion( ATTACK2 );
 			break;
 
 		case MOTION_NUM::ATTACK3:
-			obj->SetMotion( POSTURE );
+			obj->SetMotion( ATTACK3 );
 			break;
 		}
 	}
@@ -735,6 +735,9 @@ namespace
 	//	ƒpƒ‰ƒ[ƒ^’²®
 	void	BaseChara::ParameterAdjust( void )
 	{
+		totalPower = power;
+		totalSpeed = speed;
+
 		if ( attackUp.state )	totalPower = power + plusStatusInfo.power;
 		if ( speedUp.state )	totalSpeed = speed + plusStatusInfo.speed;
 		

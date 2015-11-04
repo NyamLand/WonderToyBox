@@ -36,6 +36,7 @@ namespace
 Scavenger::Scavenger(void) : BaseChara()
 {
 	//	パラメータ初期化
+	power = 3;	/*仮*/
 	speed = 0.25f;
 	scale = 0.05f;
 	diffence = -1;
@@ -100,6 +101,8 @@ void	Scavenger::Render(iexShader* shader, LPSTR technique)
 //	クイックアーツ
 bool	Scavenger::QuickArts(void)
 {
+	power = QUICK;
+
 	//無敵判定を切らないとそもそもコインを集められないので無敵切ってます。
 	//問題なら言ってください
 	unrivaled = false;
@@ -141,6 +144,8 @@ bool	Scavenger::QuickArts(void)
 //	パワーアーツ
 bool	Scavenger::PowerArts(void)
 {	
+	power = POWER;
+
 	//無敵判定を切らないとそもそもコインを集められないので無敵切ってます。
 	//問題なら言ってください
 	unrivaled = false;
@@ -192,6 +197,8 @@ bool	Scavenger::PowerArts(void)
 //	ハイパーアーツ
 bool	Scavenger::HyperArts(void)
 {
+	power = HYPER;
+
 	//無敵判定を切らないとそもそもコインを集められないので無敵切ってます。
 	//問題なら言ってください
 	unrivaled = false;
@@ -236,15 +243,15 @@ void	Scavenger::MotionManagement(int motion)
 		break;
 
 	case MOTION_NUM::JUMP:
-		obj->SetMotion(MOTION_DATA::POSTURE);
+		obj->SetMotion( MOTION_DATA::JUMP );
 		break;
 
 	case MOTION_NUM::GUARD:
-		obj->SetMotion(MOTION_DATA::POSTURE);
+		obj->SetMotion( MOTION_DATA::GUARD );
 		break;
 
 	case MOTION_NUM::LANDING:
-		obj->SetMotion(MOTION_DATA::POSTURE);
+		obj->SetMotion( MOTION_DATA::STAND );
 		break;
 
 	case MOTION_NUM::RUN:
@@ -256,11 +263,11 @@ void	Scavenger::MotionManagement(int motion)
 		break;
 
 	case MOTION_NUM::ATTACK2:
-		obj->SetMotion(MOTION_DATA::POSTURE);
+		obj->SetMotion( MOTION_DATA::RUN );
 		break;
 
 	case MOTION_NUM::ATTACK3:
-		obj->SetMotion(MOTION_DATA::POSTURE);
+		obj->SetMotion( MOTION_DATA::ATTACK3 );
 		break;
 	}
 }

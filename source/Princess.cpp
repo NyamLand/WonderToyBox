@@ -33,6 +33,7 @@
 	Princess::Princess( void ) : BaseChara()
 	{
 		//	パラメータ初期化
+		power = 2;/*仮*/
 		speed = 0.25f;
 		scale = 0.02f;
 		diffence = -1;
@@ -95,6 +96,8 @@
 	//	クイックアーツ
 	bool	Princess::QuickArts( void )
 	{
+		power = QUICK;
+
 		//相手を仰け反らせる時間(適当)
 		leanFrame = 20;
 		//	行列から前方取得
@@ -124,6 +127,7 @@
 	//	パワーアーツ
 	bool	Princess::PowerArts( void )
 	{
+		power = POWER;
 		Vector3	p_pos = GetPos();
 		attackInfo.pos = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
 		SetMove( Vector3( 0.0f, 0.0f, 0.0f ) );
@@ -145,6 +149,8 @@
 	//	ハイパーアーツ
 	bool	Princess::HyperArts( void )
 	{
+		power = HYPER;
+
 		static	int		num = 0;	//	回数
 		SetMove( Vector3( 0.0f, 0.0f ,0.0f ) );
 		Vector3	p_pos = GetPos();
@@ -185,35 +191,35 @@
 			break;
 
 		case MOTION_NUM::POSTURE:
-			obj->SetMotion(MOTION_DATA::POSTURE);
+			obj->SetMotion( MOTION_DATA::POSTURE );
 			break;
 
 		case MOTION_NUM::JUMP:
-			obj->SetMotion(MOTION_DATA::POSTURE);
+			obj->SetMotion( MOTION_DATA::JUMP );
 			break;
 
 		case MOTION_NUM::GUARD:
-			obj->SetMotion(MOTION_DATA::POSTURE);
+			obj->SetMotion( MOTION_DATA::GUARD );
 			break;
 
 		case MOTION_NUM::LANDING:
-			obj->SetMotion(MOTION_DATA::POSTURE);
+			obj->SetMotion( MOTION_DATA::POSTURE );
 			break;
 
 		case MOTION_NUM::RUN:
-			obj->SetMotion(MOTION_DATA::POSTURE);
+			obj->SetMotion( MOTION_DATA::RUN );
 			break;
 
 		case MOTION_NUM::ATTACK1:
-			obj->SetMotion(MOTION_DATA::POSTURE);
+			obj->SetMotion( MOTION_DATA::ATTACK1 );
 			break;
 
 		case MOTION_NUM::ATTACK2:
-			obj->SetMotion(MOTION_DATA::POSTURE);
+			obj->SetMotion( MOTION_DATA::ATTACK2 );
 			break;
 
 		case MOTION_NUM::ATTACK3:
-			obj->SetMotion(MOTION_DATA::POSTURE);
+			obj->SetMotion( MOTION_DATA::ATTACK3 );
 			break;
 		}
 	}

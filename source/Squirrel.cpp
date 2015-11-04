@@ -21,7 +21,7 @@
 //	グローバル
 //-----------------------------------------------------------------------------------
 
-	namespace SquirrelData
+	namespace
 	{
 		//	定数
 		enum MotionNum
@@ -115,6 +115,8 @@
 	//	クイックアーツ
 	bool	Squirrel::QuickArts( void )
 	{
+		power = QUICK;
+
 		static int time = 0;
 		SetMove( Vector3( 0.0f, move.y, 0.0f ) );
 		
@@ -141,6 +143,8 @@
 	//	パワーアーツ
 	bool	Squirrel::PowerArts( void )
 	{
+		power = POWER;
+
 		static int time = 0;
 
 		//	行列から情報取得
@@ -180,6 +184,8 @@
 	//	ハイパーアーツ
 	bool	Squirrel::HyperArts( void )
 	{
+		power = HYPER;
+
 		static int step = 0;		//	回数
 		static int time = 0;
 	
@@ -245,11 +251,11 @@
 			break;
 
 		case MOTION_NUM::JUMP:
-			obj->SetMotion(MOTION_DATA::POSTURE);
+			obj->SetMotion(MOTION_DATA::JUMP);
 			break;
 
 		case MOTION_NUM::GUARD:
-			obj->SetMotion(MOTION_DATA::POSTURE);
+			obj->SetMotion(MOTION_DATA::GUARD);
 			break;
 
 		case MOTION_NUM::LANDING:
@@ -257,19 +263,19 @@
 			break;
 
 		case MOTION_NUM::RUN:
-			obj->SetMotion(MOTION_DATA::POSTURE);
+			obj->SetMotion(MOTION_DATA::RUN);
 			break;
 
 		case MOTION_NUM::ATTACK1:
-			obj->SetMotion(MOTION_DATA::POSTURE);
+			obj->SetMotion(MOTION_DATA::ATTACK1);
 			break;
 
 		case MOTION_NUM::ATTACK2:
-			obj->SetMotion(MOTION_DATA::POSTURE);
+			obj->SetMotion(MOTION_DATA::ATTACK2);
 			break;
 
 		case MOTION_NUM::ATTACK3:
-			obj->SetMotion(MOTION_DATA::POSTURE);
+			obj->SetMotion(MOTION_DATA::ATTACK3);
 			break;
 		}
 	}
