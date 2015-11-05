@@ -23,6 +23,7 @@
 
 #define	GETAWAY_LENGTH		3.0f	//	逃げる判定距離
 #define	MAX_HEIGHT					50.0f	//	想定している高さ最大値
+//#define	MAX_SHADOW_SIZE		1.5f	//	影最大サイズ
 
 //-------------------------------------------------------------------------------
 //	初期化・解放
@@ -48,7 +49,7 @@
 		angle = 0.0f;
 		pos = Vector3( 0.0f, 0.0f, 0.0f );
 		move = Vector3( 0.0f, 0.0f, 0.0f );
-		scale = 0.5f;
+		scale = 1.0f;
 		judgeTimer = 0;
 		activate = false;
 		state = false;
@@ -117,7 +118,7 @@
 	{
 		//	スケール計算( 高さに応じて影のスケールを調整、影の大きさの最大値はモデルの大きさの2.5倍に設定 )
 		float	t = pos.y / MAX_HEIGHT;
-		static	float	maxScale = scale * 2.5f;
+		static	float	maxScale = scale * 1.2f;
 		shadow.scale = maxScale - ( maxScale * t );
 
 		//	頂点セット

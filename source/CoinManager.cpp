@@ -12,6 +12,9 @@
 //
 //******************************************************************************
 
+//	íËêî
+#define	COIN_SIZE	2.0f
+
 //---------------------------------------------------------------------------------
 //	ÉOÉçÅ[ÉoÉãïœêî
 //---------------------------------------------------------------------------------
@@ -39,7 +42,7 @@
 	bool	CoinManager::Initialize( void )
 	{
 		org = nullptr;
-		org = new iexMesh( "DATA/Object/coin.imo" );
+		org = new iexMesh( "DATA/Object/coin01.imo" );
 		c_Coin = new Coin[ COIN_MAX ];
 		coin_num = 0;
 
@@ -119,7 +122,7 @@
 			Vector3	v						=		vec;
 			v.Normalize();
 			c_Coin[i].move				=		v * speed;
-			c_Coin[i].scale				=		0.5f;
+			c_Coin[i].scale				=		COIN_SIZE;
 			c_Coin[i].state				=		true;
 			break;
 		}
