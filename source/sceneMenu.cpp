@@ -28,22 +28,22 @@
 //	グローバル
 //-------------------------------------------------------------------------------
 
-namespace
-{
-	namespace MENU_MODE
+	namespace
 	{
-		enum
+		namespace MENU_MODE
 		{
-			INIT,
-			SELECT_PLAYERNUM,
-			SELECT_CHARACTER,
-			SELECT_STAGE,
-			SELECT_CHECK,
-			MOVE_MAIN,
-			MOVE_TITLE,
-		};
+			enum
+			{
+				INIT,
+				SELECT_PLAYERNUM,
+				SELECT_CHARACTER,
+				SELECT_STAGE,
+				SELECT_CHECK,
+				MOVE_MAIN,
+				MOVE_TITLE,
+			};
+		}
 	}
-}
 
 //-------------------------------------------------------------------------------
 //	初期化・解放
@@ -104,12 +104,12 @@ namespace
 
 		org[CHARACTER_TYPE::SCAVENGER]->SetAngle( D3DX_PI );	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->SetAngle( D3DX_PI );	//	姫
-		org[CHARACTER_TYPE::THIEF]->SetAngle(D3DX_PI);	//	リス
+		org[CHARACTER_TYPE::THIEF]->SetAngle( D3DX_PI );	//	リス
 		org[CHARACTER_TYPE::TIGER]->SetAngle( D3DX_PI );			//	トラ
 
 		org[CHARACTER_TYPE::SCAVENGER]->SetMotion( 2 );	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->SetMotion( 1 );		//	姫
-		org[CHARACTER_TYPE::THIEF]->SetMotion(0);		//	リス
+		org[CHARACTER_TYPE::THIEF]->SetMotion( 0 );		//	リス
 		org[CHARACTER_TYPE::TIGER]->SetMotion( 0 );			//	トラ
 
 		org[CHARACTER_TYPE::SCAVENGER]->Update();	//	掃除屋
@@ -315,21 +315,17 @@ namespace
 	//	キャラクター選択初期化
 	void	sceneMenu::SelectCharacterInitialize( void )
 	{
-		//	プレイヤーにもたせる、初期化
-		for ( int i = 0; i < 4; i++ )
+		//	モデル、選択情報初期化
+		FOR( 0, PLAYER_MAX )
 		{
-			obj[i] = org[i]->Clone();
-			//obj[i]->SetAngle( D3DX_PI );
-			obj[i]->SetPos( -7.0f + ( 14.0f / 3.0f * i ), 0.0f, 0.0f );
-			//obj[i]->SetScale( 0.02f );
-			obj[i]->Update();
-		}
+			//	モデル登録、初期化
+			obj[value] = org[value]->Clone();
+			obj[value]->SetPos( -7.0f + ( 14.0f / 3.0f * value ), 0.0f, 0.0f );
+			obj[value]->Update();
 
-		//	選択情報初期化
-		for ( int i = 0; i < 4; i++ )
-		{
-			characterSelectInfo.character[i] = i;
-			characterSelectInfo.select[i] = false;
+			//	選択情報初期化
+			characterSelectInfo.character[value] = value;
+			characterSelectInfo.select[value] = false;
 		}
 
 		//	変数初期化
@@ -346,41 +342,42 @@ namespace
 	//	キャラクター選択
 	void	sceneMenu::SelectCharacterUpdate( void )
 	{
-		for ( int i = 0; i < characterSelectInfo.playerNum; i++ )
+		//	各プレイヤー動作
+		FOR( 0, characterSelectInfo.playerNum )
 		{
 			//	キャンセル
-			if ( input[i]->Get( KEY_B ) == 3 )		characterSelectInfo.select[i] = false;
+			if ( input[value]->Get( KEY_B ) == 3 )		characterSelectInfo.select[value] = false;
 
 			//	選択済みだったらキャンセルのみ受付け
-			if ( characterSelectInfo.select[i] )	continue;
+			if ( characterSelectInfo.select[value] )	continue;
 
 			//	カーソル移動
-			if ( input[i]->Get( KEY_RIGHT ) == 3 )	characterSelectInfo.character[i]++;
-			if ( input[i]->Get( KEY_LEFT ) == 3 )		characterSelectInfo.character[i]--;
+			if ( input[value]->Get( KEY_RIGHT ) == 3 )	characterSelectInfo.character[value]++;
+			if ( input[value]->Get( KEY_LEFT ) == 3 )		characterSelectInfo.character[value]--;
 
 			//	上限・下限設定
-			if ( characterSelectInfo.character[i] < 0 )	characterSelectInfo.character[i] = CHARACTER_TYPE::MAX - 1;
-			if ( characterSelectInfo.character[i] >= CHARACTER_TYPE::MAX )	characterSelectInfo.character[i] = 0;
+			if ( characterSelectInfo.character[value] < 0 )	characterSelectInfo.character[value] = CHARACTER_TYPE::MAX - 1;
+			if ( characterSelectInfo.character[value] >= CHARACTER_TYPE::MAX )	characterSelectInfo.character[value] = 0;
 
 			//	決定
-			if ( input[i]->Get( KEY_SPACE ) == 3 || input[i]->Get( KEY_A ) == 3 )
+			if ( input[value]->Get( KEY_SPACE ) == 3 || input[value]->Get( KEY_A ) == 3 )
 			{
-				gameManager->SetCharacterType( i, characterSelectInfo.character[i] );
-				characterSelectInfo.select[i] = true;
+				gameManager->SetCharacterType( value, characterSelectInfo.character[value] );
+				characterSelectInfo.select[value] = true;
 			}
 
 			//	モデル差し替え
-			obj[i] = org[characterSelectInfo.character[i]]->Clone();
+			obj[value] = org[characterSelectInfo.character[value]]->Clone();
 		}
 
-		//	選択チェック
+		//	選択済み人数をカウント
 		int		selectCheck = 0;
-		for ( int i = 0; i < gameManager->GetPlayerNum(); i++ )
+		FOR( 0, gameManager->GetPlayerNum() )
 		{
-			if ( characterSelectInfo.select[i] )	selectCheck++;
+			if ( characterSelectInfo.select[value] )	selectCheck++;
 		}
 
-		//	全員未選択
+		//	全員未選択時にキャンセルボタンを押すとプレイ人数選択へ移行
 		if ( selectCheck == 0 )
 		{
 			if ( KEY( KEY_B ) == 3 )
@@ -393,25 +390,25 @@ namespace
 		if ( selectCheck >= gameManager->GetPlayerNum() )
 		{
 			//	コンピュータ分を適当に設定
-			for ( int i = gameManager->GetPlayerNum(); i < 4; i++ )
+			FOR( gameManager->GetPlayerNum(), PLAYER_MAX )
 			{
-				characterSelectInfo.character[i] = Random::GetInt( 0, CHARACTER_TYPE::MAX - 1 );
-				gameManager->SetCharacterType( i, characterSelectInfo.character[i] );
+				characterSelectInfo.character[value] = Random::GetInt( 0, CHARACTER_TYPE::MAX - 1 );
+				gameManager->SetCharacterType( value, characterSelectInfo.character[value] );
 			
 				//	モデル差し替え
-				obj[i] = org[characterSelectInfo.character[i]]->Clone();
+				obj[value] = org[characterSelectInfo.character[value]]->Clone();
 			}
+
+			//	ステージ選択へ
 			SetMode( MENU_MODE::SELECT_STAGE );
 		}
 
 		//	モデルデータ更新
-		for ( int i = 0; i < 4; i++ )
+		FOR( 0, PLAYER_MAX )
 		{
-			obj[i]->Animation();
-			//obj[i]->SetAngle( D3DX_PI );
-			//obj[i]->SetScale( 0.02f );
-			obj[i]->SetPos( -7.0f + ( 14.0f / 3.0f * i ), 0.0f, 0.0f );
-			obj[i]->Update();
+			obj[value]->Animation();
+			obj[value]->SetPos( -7.0f + ( 14.0f / 3.0f * value ), 0.0f, 0.0f );
+			obj[value]->Update();
 		}
 	}
 
@@ -419,20 +416,20 @@ namespace
 	void	sceneMenu::SelectCharacterRender( void )
 	{
 		//	モデル・顔・カーソル描画
-		for ( int i = 0; i < 4; i++ )
+		FOR( 0, PLAYER_MAX )
 		{
 			//	モデル描画
-			obj[i]->Render( shader3D, "toon" );
+			obj[value]->Render( shader3D, "toon" );
 			
 			//	顔描画
-			int	 x = 230 + ( 670 / 3 * i );
+			int	 x = 230 + ( 670 / 3 * value );
 			Vector3	color = Vector3( 1.0f, 1.0f, 1.0f );
-			face->Render( x, 280, 150, 150, 0, 256 * i, 256, 256, GetColor( color ) );
+			face->Render( x, 280, 150, 150, 0, 256 * value, 256, 256, GetColor( color ) );
 
 			//	カーソル描画
-			x = 230 + ( 670 / 3 * characterSelectInfo.character[i] );
-			if ( !characterSelectInfo.select[i] )
-				cursor->Render( x + 35 * i, 250, 50, 50, 128 * ( i % 2 ), 128 * ( i / 2 ), 128, 128 );
+			x = 230 + ( 670 / 3 * characterSelectInfo.character[value] );
+			if ( !characterSelectInfo.select[value] )
+				cursor->Render( x + 35 * value, 250, 50, 50, 128 * ( value % 2 ), 128 * ( value / 2 ), 128, 128 );
 		}
 
 		//	テキスト画像
@@ -474,6 +471,7 @@ namespace
 		//	ステージ回転
 		stageSelectInfo.angle += 0.01f;
 
+		//	ステージの向きを設定(選択中回転)
 		switch ( stageSelectInfo.stage )
 		{
 		case 0:
@@ -488,21 +486,23 @@ namespace
 		}
 
 		//	左右で選択
-		if ( KEY( KEY_RIGHT ) == 3 )
 		{
-			stageSelectInfo.angle = D3DX_PI;
-			stageSelectInfo.stage++;
-		}
+			if ( KEY( KEY_RIGHT ) == 3 )
+			{
+				stageSelectInfo.angle = D3DX_PI;
+				stageSelectInfo.stage++;
+			}
 
-		if ( KEY( KEY_LEFT ) == 3 )
-		{
-			stageSelectInfo.angle = D3DX_PI;
-			stageSelectInfo.stage--;
-		}
+			if ( KEY( KEY_LEFT ) == 3 )
+			{
+				stageSelectInfo.angle = D3DX_PI;
+				stageSelectInfo.stage--;
+			}
 
-		//	上限・下限設定
-		if ( stageSelectInfo.stage >= 2 )	stageSelectInfo.stage = 0;
-		if ( stageSelectInfo.stage < 0 )		stageSelectInfo.stage = 1;
+			//	上限・下限設定
+			if ( stageSelectInfo.stage >= 2 )	stageSelectInfo.stage = 0;
+			if ( stageSelectInfo.stage < 0 )		stageSelectInfo.stage = 1;
+		}
 
 		//	決定
 		if ( KEY( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )
@@ -532,7 +532,7 @@ namespace
 	//	ステージ選択描画
 	void	sceneMenu::SelectStageRender( void )
 	{
-		//	テキスト画像
+		//	テキスト画像描画(背面に描画)
 		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
 		RenderImage( textImage, 0, 256, 512, 256, IMAGE_MODE::ADOPTPARAM );
 		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
@@ -551,15 +551,15 @@ namespace
 	//	最終確認初期化
 	void	sceneMenu::SelectCheckInitialize( void )
 	{
+		//	キャラ別モーション設定
 		org[CHARACTER_TYPE::PRINCESS]->SetMotion( 2 );
-		//	プレイヤーにもたせる、初期化
-		for ( int i = 0; i < 4; i++ )
+		
+		//	各プレイヤーモデル初期化
+		FOR( 0, PLAYER_MAX )
 		{
-			obj[i] = org[gameManager->GetCharacterType( i )]->Clone();
-			//obj[i]->SetAngle( D3DX_PI );
-			obj[i]->SetPos( -7.0f + ( 14.0f / 3.0f * i ), 0.0f, 0.0f );
-			//obj[i]->SetScale( 0.02f );
-			obj[i]->Update();
+			obj[value] = org[gameManager->GetCharacterType( value )]->Clone();
+			obj[value]->SetPos( -7.0f + ( 14.0f / 3.0f * value ), 0.0f, 0.0f );
+			obj[value]->Update();
 		}
 
 		//	構造体初期化
@@ -569,7 +569,7 @@ namespace
 			checkSelectInfo.step = 0;
 		}
 
-		//	ステージ座標設定
+		//	ステージ座標、向き設定
 		{
 			deskStage->SetPos( 0.0f, 5.0f, 0.0f );
 			deskStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
@@ -585,7 +585,7 @@ namespace
 	//	最終確認
 	void	sceneMenu::SelectCheckUpdate( void )
 	{
-		//	決定
+		//	決定（はい：メインへ、いいえ：キャラ選択へ）
 		if ( input[0]->Get( KEY_A ) == 3 || input[0]->Get( KEY_SPACE ) == 3 )
 		{
 			if ( !checkSelectInfo.check )	checkSelectInfo.check = true;
@@ -602,7 +602,7 @@ namespace
 			}
 		}
 
-		//	選択
+		//	選択中動作(カーソル移動, キャンセル)
 		if ( checkSelectInfo.check )
 		{
 			if ( input[0]->Get( KEY_RIGHT ) == 3 || input[0]->Get( KEY_LEFT ) == 3 )
@@ -618,7 +618,7 @@ namespace
 		}
 		else
 		{
-			//	キャンセル
+			//	キャンセルでステージ選択へ
 			if ( input[0]->Get( KEY_B ) == 3 )
 			{
 				SetMode( MENU_MODE::SELECT_STAGE );
@@ -626,10 +626,10 @@ namespace
 		}
 
 		//	モデル更新
-		for ( int i = 0; i < 4; i++ )
+		FOR( 0, PLAYER_MAX )
 		{
-			obj[i]->Animation();
-			obj[i]->Update();
+			obj[value]->Animation();
+			obj[value]->Update();
 		}
 	}
 
@@ -644,9 +644,9 @@ namespace
 		}
 
 		//	プレイヤー描画
-		for ( int i = 0; i < 4; i++ )
+		FOR( 0, PLAYER_MAX )
 		{
-			obj[i]->Render( shader3D, "toon" );
+			obj[value]->Render( shader3D, "toon" );
 		}
 
 		//	テキスト画像描画

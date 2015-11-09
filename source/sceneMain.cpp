@@ -123,7 +123,7 @@
 		return true;
 	}
 
-	void	sceneMain::InitializeDebug(void)
+	void	sceneMain::InitializeDebug( void )
 	{
 		gameManager->InitializeDebug();
 		gameStartCoinNum = 0;
@@ -139,7 +139,7 @@
 		itemManager->Initialize();
 		m_CoinManager->Initialize();
 		m_Effect->Initialize();
-		ui->Initialize(UI_MODE::MAIN);
+		ui->Initialize( UI_MODE::MAIN );
 	}
 
 	//	デストラクタ
@@ -303,7 +303,7 @@
 		if ( ui->GetChangeFlag() ) 
 		{
 			gameManager->SetMode( GAME_MODE::MAINGAME );
-			for ( int i = 0; i < 4; i++ )		characterManager->SetMode( i, MODE_STATE::MOVE );
+			FOR( 0, PLAYER_MAX )	characterManager->SetMode( value, MODE_STATE::MOVE );
 			ui->SetChangeFlag( false );
 		}
 	}

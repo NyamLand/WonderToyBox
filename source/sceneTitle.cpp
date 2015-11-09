@@ -396,7 +396,6 @@ namespace
 			//	カメラ更新
 			mainView->Update( VIEW_MODE::TITLE );
 
-
 			//	UI更新
 			switch ( menuInfo.menu_num )
 			{

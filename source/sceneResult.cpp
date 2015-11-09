@@ -24,28 +24,28 @@
 //	グローバル
 //----------------------------------------------------------------------------
 
-namespace
-{
-	namespace MOVE_MODE
+	namespace
 	{
-		enum
+		namespace MOVE_MODE
 		{
-			RESULT,
-			SELECT,
-		};
-	}
+			enum
+			{
+				RESULT,
+				SELECT,
+			};
+		}
 
-	namespace MENU
-	{
-		enum
+		namespace MENU
 		{
-			RESTART,						//	再戦
-			MOVE_MENU,					//	対戦設定へ	
-			MOVE_TITLE,					//	タイトルへ
-			END,								//	終端
-		};
+			enum
+			{
+				RESTART,						//	再戦
+				MOVE_MENU,					//	対戦設定へ	
+				MOVE_TITLE,					//	タイトルへ
+				END,								//	終端
+			};
+		}
 	}
-}
 
 //----------------------------------------------------------------------------
 //	初期化・解放
@@ -81,24 +81,24 @@ namespace
 		//	モデル読み込み
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Knight/Knight_Dammy.IEM" ) );	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Y2009/Y2009.IEM" ) );						//	姫
-		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/SQUIRREL/SQUIRREL.IEM" ) );			//	リス
+		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/SQUIRREL/SQUIRREL.IEM" ) );				//	リス
 		org[CHARACTER_TYPE::TIGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/ECCMAN/ECCMAN.IEM" ) );					//	トラ
 
 		//	オリジナルモデル情報初期化
-		org[CHARACTER_TYPE::SCAVENGER]->SetScale(0.05f);	//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS]->SetScale(0.02f);		//	姫
-		org[CHARACTER_TYPE::THIEF]->SetScale(0.04f);		//	リス
-		org[CHARACTER_TYPE::TIGER]->SetScale(0.02f);			//	トラ
+		org[CHARACTER_TYPE::SCAVENGER]->SetScale( 0.05f );		//	掃除屋
+		org[CHARACTER_TYPE::PRINCESS]->SetScale( 0.02f );			//	姫
+		org[CHARACTER_TYPE::THIEF]->SetScale( 0.04f );				//	リス
+		org[CHARACTER_TYPE::TIGER]->SetScale( 0.02f );				//	トラ
 
-		org[CHARACTER_TYPE::SCAVENGER]->SetAngle(D3DX_PI);	//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS]->SetAngle(D3DX_PI);	//	姫
-		org[CHARACTER_TYPE::THIEF]->SetAngle(D3DX_PI);	//	リス
-		org[CHARACTER_TYPE::TIGER]->SetAngle(D3DX_PI);			//	トラ
+		org[CHARACTER_TYPE::SCAVENGER]->SetAngle( D3DX_PI );	//	掃除屋
+		org[CHARACTER_TYPE::PRINCESS]->SetAngle( D3DX_PI );	//	姫
+		org[CHARACTER_TYPE::THIEF]->SetAngle( D3DX_PI );			//	シーフ
+		org[CHARACTER_TYPE::TIGER]->SetAngle( D3DX_PI );			//	トラ
 
-		org[CHARACTER_TYPE::SCAVENGER]->SetMotion(2);	//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS]->SetMotion(1);		//	姫
-		org[CHARACTER_TYPE::THIEF]->SetMotion(0);		//	リス
-		org[CHARACTER_TYPE::TIGER]->SetMotion(0);			//	トラ
+		org[CHARACTER_TYPE::SCAVENGER]->SetMotion( 2 );	//	掃除屋
+		org[CHARACTER_TYPE::PRINCESS]->SetMotion( 1 );		//	姫
+		org[CHARACTER_TYPE::THIEF]->SetMotion( 0 );	 		//	シーフ
+		org[CHARACTER_TYPE::TIGER]->SetMotion( 0 );			//	トラ
 
 		org[CHARACTER_TYPE::SCAVENGER]->Update();	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->Update();		//	姫
@@ -111,11 +111,20 @@ namespace
 		//	構造体初期化
 		ImageInitialize( menuHead, 640, 150, 370, 150, 0, 0, 512, 256 );
 		menuHead.angle = D3DXToRadian( 7.0f );
+		
+		//	数値構造体初期化
+		FOR( 0, PLAYER_MAX )
+		{
+			number[value].hundred = 0;
+			number[value].ten = 0;
+			number[value].one = 0;
+		}
 
 		//	変数初期化
 		lastBonus = 0;
 		step = 0;
 		mode = MOVE_MODE::RESULT;
+		changeScene = false;
 
 		//	ラストボーナス設定
 		SetLastBonus();
@@ -198,9 +207,7 @@ namespace
 		{
 			//	モデル情報設定
 			obj[i] = org[gameManager->GetCharacterType( i )]->Clone();
-			//obj[i]->SetAngle( D3DX_PI);
 			obj[i]->SetPos( -7.0f + ( 14.0f / 3.0f * i ), 0.0f, 0.0f );
-			//obj[i]->SetScale( 0.02f );
 			obj[i]->Update();
 		}
 	}
@@ -278,6 +285,12 @@ namespace
 	//	更新
 	void	sceneResult::Update( void ) 
 	{
+		//	各モデル更新
+		FOR( 0, PLAYER_MAX )
+		{
+			obj[value]->Update();
+		}
+
 		switch ( mode )
 		{
 		case MOVE_MODE::RESULT:
@@ -289,11 +302,8 @@ namespace
 			break;
 		}
 
-		for ( int i = 0; i < 4; i++ )
-		{
-			//obj[i]->Animation();
-			obj[i]->Update();
-		}
+		//	シーン移動管理
+		MoveScene();
 	}
 
 	//	描画
@@ -310,10 +320,11 @@ namespace
 		//	リザルトシール描画
 		RenderImage( menuHead, menuHead.sx, menuHead.sy, menuHead.sw, menuHead.sh, IMAGE_MODE::ADOPTPARAM );
 
-		for ( int i = 0; i < PLAYER_MAX; i++ )
+		//	プレイヤー描画
+		FOR( 0, PLAYER_MAX )
 		{
 			//	プレイヤー描画
-			obj[i]->Render( shader3D, "toon" );
+			obj[value]->Render( shader3D, "toon" );
 		}
 
 		//	数値描画
@@ -345,7 +356,7 @@ namespace
 			{
 				for ( int i = 0; i < PLAYER_MAX; i++ )
 				{
-					SetNumberImageInfo( i, sortInfo[i].coin );
+					SetNumberImageInfo( i, originInfo[i].coin );
 					SetWave( rankImage[i], 1.5f );
 					rankImage[i].renderflag = true;
 				}
@@ -436,27 +447,10 @@ namespace
 				else									menuImage[i].sx = 0;
 			}
 
+			//	決定
 			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
 			{
-				switch ( menuInfo.select )
-				{
-				case MENU::RESTART:
-					//	ゲーム情報初期化
-					gameManager->RetryInitialize();
-					MainFrame->ChangeScene( new sceneMain() );
-					return;
-					break;
-
-				case MENU::MOVE_MENU:
-					MainFrame->ChangeScene( new sceneMenu() );
-					return;
-					break;
-
-				case MENU::MOVE_TITLE:
-					MainFrame->ChangeScene( new sceneTitle() );
-					return;
-					break;
-				}
+				changeScene = true;
 			}
 			break;
 		}
@@ -640,7 +634,7 @@ namespace
 		}
 	}
 
-	//	数値ルーレット(終了するとtrueをかえす)
+	//	数値ルーレット( 終了するとtrueをかえす )
 	bool	sceneResult::Roulette( void )
 	{
 		//	４人分確定してたらtrueをかえす
@@ -735,4 +729,30 @@ namespace
 		}
 
 		return	false;
+	}
+
+	//	シーン移動フラグが立ったら選択中の項目に合ったシーンに移動する（ この関数は絶対に更新の最後に呼ぶ ）
+	void	sceneResult::MoveScene( void )
+	{
+		if ( !changeScene )	return;
+
+		switch ( menuInfo.select )
+		{
+		case MENU::RESTART:
+			//	ゲーム情報初期化
+			gameManager->RetryInitialize();
+			MainFrame->ChangeScene( new sceneMain() );
+			return;
+			break;
+
+		case MENU::MOVE_MENU:
+			MainFrame->ChangeScene( new sceneMenu() );
+			return;
+			break;
+
+		case MENU::MOVE_TITLE:
+			MainFrame->ChangeScene( new sceneTitle() );
+			return;
+			break;
+		}
 	}

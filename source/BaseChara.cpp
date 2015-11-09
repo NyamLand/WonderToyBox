@@ -29,6 +29,7 @@
 #define	MIN_INPUT_STATE	300	//	スティック判定最小値
 #define	MIN_SLIP_LENGTH	0.01f	//	滑り長さ最小値
 #define	SLIP_TIMER_MAX		300	
+
 namespace
 {
 	namespace AI_MODE_STATE
@@ -200,6 +201,7 @@ namespace
 		ParameterInfoInitialize( bomb );
 		ParameterInfoInitialize( jump );
 		ParameterInfoInitialize( magnet );
+		ParameterInfoInitialize( confusion );
 	}
 
 	//	パラメータ状態初期化
@@ -231,10 +233,6 @@ namespace
 	//	更新
 	void	BaseChara::Update( void )
 	{
-		if ( unrivaled == false )
-		{
-			int a = 0;
-		}
 		//	モード管理
 		ModeManagement();
 
@@ -392,7 +390,7 @@ namespace
 	}
 
 	//	移動値加算
-	void	BaseChara::AddMove()
+	void	BaseChara::AddMove( void )
 	{
 		pos += move;
 	}
@@ -464,7 +462,14 @@ namespace
 	{
 		//	現在の向きと目標の向きの差を求める
 		float	targetAngle( atan2f( direction.x, direction.z ) );
+		
+		//	混乱状態の時操作を逆にしてみる
+		if ( confusion.state ) 	targetAngle = -targetAngle;
+
+		//	移動する方向をセット
 		moveVec = targetAngle;
+
+		//	角度差を求める
 		float	dAngle( targetAngle - GetAngle() );
 
 		//	差の正規化
@@ -490,7 +495,7 @@ namespace
 	}
 
 	//	ノックバック
-	void	BaseChara::KnockBack(void)
+	void	BaseChara::KnockBack( void )
 	{
 
 		SetMotion(MOTION_NUM::POSTURE);
@@ -523,7 +528,7 @@ namespace
 	}
 
 	//	ノックバック与力
-	void	BaseChara::AddKnockBackForce(float force)
+	void	BaseChara::AddKnockBackForce( float force )
 	{
 		if (mode == MODE_STATE::DAMAGE_FLYUP) force /= 4;
 		switch (damageStep)
@@ -724,9 +729,14 @@ namespace
 	{
 		if ( pos.y < -3.0f )
 		{
-			for ( int i = 0; i < 3; i++ )
+			//	コインを３枚減らす
+			FOR( 0, 3 )
 			{
-				gameManager->SubCoin( this->playerNum );
+				int		coinNum = gameManager->GetCoinNum( playerNum );
+				if ( coinNum > 0 )
+				{
+					gameManager->SubCoin( this->playerNum );
+				}
 			}
 			pos = gameManager->InitPos[this->playerNum];
 		}
@@ -785,6 +795,8 @@ namespace
 		//	アイテム・マグネット
 		ItemMagnet();
 
+		//	混乱
+		Confusion();
 
 	}
 
@@ -855,6 +867,22 @@ namespace
 	//	ジャンプアイテム効果動作
 
 	//	爆発アイテム効果動作
+
+	//	混乱
+	void	BaseChara::Confusion( void )
+	{
+		if ( !confusion.state )	return;
+
+		//	タイマー減算
+		confusion.timer--;
+
+		//	時間が来たら効果取り消し
+		if ( confusion.timer <= 0 )
+		{
+			confusion.timer = 0;
+			confusion.state = false;
+		}
+	}
 
 
 //----------------------------------------------------------------------------
@@ -989,9 +1017,9 @@ namespace
 //----------------------------------------------------------------------------
 	
 	//　コインを取りに行く
-	void	BaseChara::AutoRun(void)
+	void	BaseChara::AutoRun( void )
 	{
-		Vector3		target = Vector3(0, 0, 0);
+		Vector3		target = Vector3( 0.0f, 0.0f, 0.0f );
 		static	float adjustSpeed = 0.2f;
 		bool			existence = false;
 		enum
@@ -1046,7 +1074,7 @@ namespace
 		AngleAdjust(Vector3(sinf(targetAngle), 0.0f, cosf(targetAngle)), speed);
 	}
 
-	void	BaseChara::AutoAttack()
+	void	BaseChara::AutoAttack( void )
 	{
 		/*
 			キャラによって 「攻撃条件」「攻撃時間」を変える　※オーバーライド
@@ -1065,14 +1093,14 @@ namespace
 	}
 
 	//　逃げる
-	void	BaseChara::RunAway()
+	void	BaseChara::RunAway( void )
 	{
-		SetMotion(MOTION_NUM::RUN);
+		SetMotion( MOTION_NUM::RUN );
 
 		aiInfo.act_flag = true;
 
-		Vector3 vec_add(0, 0, 0);
-		Vector3 target(0, 0, 0);
+		Vector3 vec_add( ZERO_VECTOR3 );
+		Vector3 target( ZERO_VECTOR3 );
 		for (int i = 0; i < PLAYER_MAX; i++)
 		{
 			Vector3 vec[4];
@@ -1081,14 +1109,14 @@ namespace
 			int	p_num = characterManager->GetPlayerNum( i );
 
 			//	自分と同じ番号だったらスキップ
-			if (GetPlayerNum() == p_num)
+			if ( GetPlayerNum() == p_num )
 			{
-				vec[p_num] = Vector3(0, 0, 0);
+				vec[p_num] = Vector3( ZERO_VECTOR3 );
 				continue;
 			}
 			
 			//	以下は自分VS相手の処理
-			vec[i] = characterManager->GetPos(characterManager->GetPlayerNum(i)) - pos;
+			vec[i] = characterManager->GetPos( characterManager->GetPlayerNum( i ) ) - pos;
 
 			//　相手３人へのベクトルを合算
 			vec_add += vec[i];
@@ -1100,20 +1128,20 @@ namespace
 
 		//　角度調整
 		static	float	adjustSpeed = 0.2f;
-		AutoAngleAdjust(adjustSpeed, target);
+		AutoAngleAdjust( adjustSpeed, target );
 
 		//　移動
-		if (!slip.state)
+		if ( !slip.state )
 		{
-			move.x = sinf(moveVec) * totalSpeed;
-			move.z = cosf(moveVec) * totalSpeed;
+			move.x = sinf( moveVec ) * totalSpeed;
+			move.z = cosf( moveVec ) * totalSpeed;
 		}
 		else
 		{
-			if (move.Length() < totalSpeed)
+			if ( move.Length() < totalSpeed )
 			{
-				move.x += sinf(moveVec) * slipInfo.speed;
-				move.z += cosf(moveVec) * slipInfo.speed;
+				move.x += sinf( moveVec ) * slipInfo.speed;
+				move.z += cosf( moveVec ) * slipInfo.speed;
 			}
 		}
 
@@ -1536,27 +1564,31 @@ namespace
 			break;
 
 		case PARAMETER_STATE::BOOST:
-			SetParameterState(boost, 30 * SECOND);
+			SetParameterState( boost, 30 * SECOND );
 			break;
 
 		case PARAMETER_STATE::OUTRAGE:
-			SetParameterState(outrage, 11 * SECOND);
+			SetParameterState( outrage, 11 * SECOND );
 			break;
 
 		case PARAMETER_STATE::ATTACKUP:
-			SetParameterState(attackUp, 11 * SECOND);
+			SetParameterState( attackUp, 11 * SECOND );
 			break;
 
 		case PARAMETER_STATE::SPEEDUP:
-			SetParameterState(speedUp, 11 * SECOND);
+			SetParameterState( speedUp, 11 * SECOND );
 			break;
 
 		case PARAMETER_STATE::BOMB:
-			SetParameterState(speedUp, 5 * SECOND);
+			SetParameterState( speedUp, 5 * SECOND );
 			break;
 
 		case PARAMETER_STATE::JUMP:
-			SetParameterState(jump, 11 * SECOND);
+			SetParameterState( jump, 11 * SECOND );
+			break;
+
+		case PARAMETER_STATE::CONFUSION:
+			SetParameterState( confusion, 3 * SECOND );
 			break;
 		}
 	}

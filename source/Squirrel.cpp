@@ -290,17 +290,17 @@
 		switch ( attackKind )
 		{
 		case MODE_STATE::QUICKARTS:
-			attackInfo.type = COLLISION_TYPE::SPHEREVSCAPSULE;
+			attackInfo.type = Collision::SPHEREVSCAPSULE;
 			knockBackInfo.type = KNOCKBACK_TYPE::WEAK;
 			break;
 
 		case MODE_STATE::POWERARTS:
-			attackInfo.type = COLLISION_TYPE::SPHEREVSCAPSULE;
+			attackInfo.type = Collision::SPHEREVSCAPSULE;
 			knockBackInfo.type = KNOCKBACK_TYPE::MIDDLE;
 			break;
 
 		case MODE_STATE::HYPERARTS:
-			attackInfo.type =	COLLISION_TYPE::SPHEREVSCYRINDER;
+			attackInfo.type =	Collision::SPHEREVSCYRINDER;
 			knockBackInfo.type = KNOCKBACK_TYPE::STRENGTH;
 			break;
 		}

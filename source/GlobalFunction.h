@@ -9,14 +9,11 @@
 //******************************************************************************
 
 //----------------------------------------------------------------------
-//	ïœêî
-//----------------------------------------------------------------------
-	
-	extern	bool					debug;
-
-//----------------------------------------------------------------------
 //	íËêî
 //----------------------------------------------------------------------
+
+	#define	ZERO_VECTOR3		Vector3( 0.0f, 0.0f, 0.0f )
+	#define	FOR( minValue, maxValue )	for( auto value = minValue; value < maxValue; value++ )
 
 	namespace IMAGE_MODE
 	{
@@ -31,6 +28,12 @@
 	}
 
 //----------------------------------------------------------------------
+//	ïœêî
+//----------------------------------------------------------------------
+	
+	extern	bool					debug;
+
+//----------------------------------------------------------------------
 //	ç\ë¢ëÃ
 //----------------------------------------------------------------------
 
@@ -38,9 +41,9 @@
 	struct _VB
 	{
 		LPDIRECT3DVERTEXBUFFER9	p;
-		_VB(LPDIRECT3DDEVICE9 d3dd, UINT length) : p(0){ d3dd->CreateVertexBuffer(length, 0, D3DFVF_XYZ, D3DPOOL_SYSTEMMEM, &p, NULL); }
-		virtual	~_VB(void) { if (p)	p->Release(); }
-		operator LPDIRECT3DVERTEXBUFFER9(void){ return p; }
+		_VB( LPDIRECT3DDEVICE9 d3dd, UINT length ) : p( 0 ){ d3dd->CreateVertexBuffer( length, 0, D3DFVF_XYZ, D3DPOOL_SYSTEMMEM, &p, NULL ); }
+		virtual	~_VB(void) { if ( p )	p->Release(); }
+		operator LPDIRECT3DVERTEXBUFFER9( void ){ return p; }
 		LPDIRECT3DVERTEXBUFFER9		operator -> (){ return p; }
 	};
 

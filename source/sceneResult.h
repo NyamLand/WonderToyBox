@@ -104,6 +104,7 @@ private:
 	int		mode;
 	int		step;
 	int		lastBonus;
+	bool	changeScene;
 
 public:
 	//	‰Šú‰»E‰ğ•ú
@@ -138,6 +139,7 @@ public:
 	bool	Roulette( void );
 	bool	ViewRankInOrder( void );
 	bool	RankWave( void );
+	void	MoveScene( void );
 
 	//	î•ñİ’è
 	void	SetRank( void );

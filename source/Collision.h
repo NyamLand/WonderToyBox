@@ -13,6 +13,16 @@ private:
 	static	iexMesh*	obj;
 
 public:
+	enum
+	{
+		SPHEREVSCAPSULE = 1,	//	球VSカプセル
+		SPHEREVSSPHERE,			//	球VS球
+		CAPSULEVSCAPSULE,			//	カプセルVSカプセル
+		SPHEREVSCYRINDER,			//	球VS円柱（円柱の回転なし）
+		SPHEREVSPOINT,				//	球VS点
+	};
+	
+public:
 	//	初期化・解放
 	Collision( void );
 	~Collision( void );

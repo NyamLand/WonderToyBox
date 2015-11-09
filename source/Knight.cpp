@@ -300,20 +300,20 @@
 		{
 		case MODE_STATE::QUICKARTS:
 			knockBackInfo.isUp = false;
-			attackInfo.type = COLLISION_TYPE::CAPSULEVSCAPSULE;
+			attackInfo.type = Collision::CAPSULEVSCAPSULE;
 			if (attackInfo.t < 0.6f) knockBackInfo.type = KNOCKBACK_TYPE::LEANBACKWARD;	//2HitÇ‹Ç≈ÇÕã¬ÇØîΩÇËÇÃÇ›
 			if (attackInfo.t >= 0.6f && attackInfo.t < 0.8f ) knockBackInfo.type = KNOCKBACK_TYPE::WEAK;		//3hitñ⁄Ç©ÇÁÇÕêÅÇ´îÚÇŒÇµÇ†ÇË
 			break;
 
 		case MODE_STATE::POWERARTS:
 			knockBackInfo.isUp = false;
-			attackInfo.type = COLLISION_TYPE::CAPSULEVSCAPSULE;
+			attackInfo.type = Collision::CAPSULEVSCAPSULE;
 			knockBackInfo.type = KNOCKBACK_TYPE::STRENGTH;
 			break;
 
 		case MODE_STATE::HYPERARTS:
 			knockBackInfo.isUp = true;
-			attackInfo.type = COLLISION_TYPE::CAPSULEVSCAPSULE;
+			attackInfo.type = Collision::CAPSULEVSCAPSULE;
 			if (attackInfo.t != 0) knockBackInfo.type = KNOCKBACK_TYPE::STRENGTH;	//2HitÇ‹Ç≈ÇÕêÅÇ´îÚÇŒÇµÇ†ÇË
 			if (attackInfo.t == 0 && lance_r < 360 * 4) knockBackInfo.type = KNOCKBACK_TYPE::LEANBACKWARD;		//3~6hitñ⁄Ç©ÇÁÇÕêÅÇ´îÚÇŒÇµÇ†ÇË
 			if (attackInfo.t == 0 && lance_r >= 360 * 4) knockBackInfo.type = KNOCKBACK_TYPE::STRENGTH;		//6hitñ⁄Ç©ÇÁÇÕêÅÇ´îÚÇŒÇµÇ†ÇË

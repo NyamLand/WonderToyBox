@@ -283,20 +283,20 @@ void	Scavenger::SetAttackParam(int attackKind)
 	{
 	case MODE_STATE::QUICKARTS:
 		knockBackInfo.isUp = false;
-		attackInfo.type = COLLISION_TYPE::SPHEREVSCAPSULE;
+		attackInfo.type = Collision::SPHEREVSCAPSULE;
 		if (attackInfo.t < 0.6) knockBackInfo.type = KNOCKBACK_TYPE::LEANBACKWARD;	//2HitÇ‹Ç≈ÇÕã¬ÇØîΩÇËÇÃÇ›
 		if (attackInfo.t >= 0.6) knockBackInfo.type = KNOCKBACK_TYPE::WEAK;		//3hitñ⁄Ç©ÇÁÇÕêÅÇ´îÚÇŒÇµÇ†ÇË
 		break;
 
 	case MODE_STATE::POWERARTS:
 		knockBackInfo.isUp = true;
-		attackInfo.type = COLLISION_TYPE::SPHEREVSCAPSULE;
+		attackInfo.type = Collision::SPHEREVSCAPSULE;
 		knockBackInfo.type = KNOCKBACK_TYPE::MIDDLE;
 		break;
 
 	case MODE_STATE::HYPERARTS:
 		knockBackInfo.isUp = false;
-		attackInfo.type = COLLISION_TYPE::SPHEREVSCYRINDER;
+		attackInfo.type = Collision::SPHEREVSCYRINDER;
 		knockBackInfo.type = KNOCKBACK_TYPE::STRENGTH;
 		break;
 	}

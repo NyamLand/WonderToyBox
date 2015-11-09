@@ -345,7 +345,7 @@
 		switch ( attackKind )
 		{
 		case MODE_STATE::QUICKARTS:
-			attackInfo.type = COLLISION_TYPE::SPHEREVSCAPSULE;
+			attackInfo.type = Collision::SPHEREVSCAPSULE;
 			if (attackCount < 4)
 			{
 				knockBackInfo.isUp = false;
@@ -366,7 +366,7 @@
 
 		case MODE_STATE::HYPERARTS:
 			knockBackInfo.isUp = false;
-			attackInfo.type = COLLISION_TYPE::SPHEREVSCYRINDER;
+			attackInfo.type = Collision::SPHEREVSCYRINDER;
 			if (attackCount < 20) knockBackInfo.type = KNOCKBACK_TYPE::LEANBACKWARD;
 			if (attackCount >= 20) knockBackInfo.type = KNOCKBACK_TYPE::STRENGTH;
 			

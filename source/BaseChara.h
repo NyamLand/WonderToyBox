@@ -25,6 +25,7 @@ namespace
 			SPEEDUP,
 			BOMB,
 			JUMP,
+			CONFUSION,
 		};
 	}
 
@@ -43,18 +44,6 @@ namespace
 			DAMAGE,
 			DAMAGE_FLYUP,
 			DAMAGE_LEANBACKWARD
-		};
-	}
-
-	namespace COLLISION_TYPE
-	{
-		enum
-		{
-			SPHEREVSCAPSULE = 1,	//	球VSカプセル
-			SPHEREVSSPHERE,			//	球VS球
-			CAPSULEVSCAPSULE,			//	カプセルVSカプセル
-			SPHEREVSCYRINDER,			//	球VS円柱（円柱の回転なし）
-			SPHEREVSPOINT,				//	球VS点
 		};
 	}
 
@@ -254,6 +243,7 @@ protected:
 	PARAMETER_INFO		magnet;
 	PARAMETER_INFO		bomb;
 	PARAMETER_INFO		jump;
+	PARAMETER_INFO		confusion;
 
 private:
 	virtual	void	MotionManagement( int motion );
@@ -303,6 +293,7 @@ public:
 	void	EventSlip( void );
 	void	ItemMagnet( void );
 	void	BoostUp( void );
+	void	Confusion( void );
 
 	//	子クラスで実装
 	virtual	bool	QuickArts( void ) = 0;

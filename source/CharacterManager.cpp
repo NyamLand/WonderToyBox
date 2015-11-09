@@ -199,21 +199,21 @@
 				//	ƒ^ƒCƒv•Ê“–‚½‚è”»’è
 				switch ( attackParam )
 				{
-				case COLLISION_TYPE::SPHEREVSCAPSULE:
+				case Collision::SPHEREVSCAPSULE:
 					HitCheckSphereVSCapsule( character[i], character[n] );
 					break;
 
-				case COLLISION_TYPE::CAPSULEVSCAPSULE:
+				case Collision::CAPSULEVSCAPSULE:
 					HitCheckCapsuleVSCapsule( character[i], character[n] );
 					break;
 
-				case COLLISION_TYPE::SPHEREVSCYRINDER:
+				case Collision::SPHEREVSCYRINDER:
 					break;
 
-				case COLLISION_TYPE::SPHEREVSPOINT:
+				case Collision::SPHEREVSPOINT:
 					break;
 
-				case COLLISION_TYPE::SPHEREVSSPHERE:
+				case Collision::SPHEREVSSPHERE:
 					break;
 				}
 			}
