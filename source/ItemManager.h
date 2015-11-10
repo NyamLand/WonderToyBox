@@ -31,10 +31,7 @@ public:
 
 	//	更新・描画
 	void	Update( void );
-	void	Render( void );
-	
-	//	シェーダー付き描画
-	void	Render( iexShader* shader, LPSTR technique );
+	void	Render( iexShader* shader = nullptr, LPSTR technique = nullptr );
 
 	//	動作関数
 	void	Append( const Vector3& pos, const int& type );

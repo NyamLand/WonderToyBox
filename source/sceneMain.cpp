@@ -169,7 +169,7 @@
 	}
 
 	//	プレイヤー初期化
-	void    sceneMain::PlayerInitialize(void)
+	void    sceneMain::PlayerInitialize( void )
 	{
 		//　プレイヤー設定
 		for ( int i = 0; i < gameManager->GetPlayerNum(); i++ )
@@ -239,7 +239,7 @@
 	void	sceneMain::Update( void )
 	{
 		//	カメラ更新
-		mainView->SetPlayerInfo( characterManager->GetPos(0), characterManager->GetPos(1), characterManager->GetPos(2), characterManager->GetPos(3) );
+		mainView->SetPlayerInfo( characterManager->GetPos( 0 ), characterManager->GetPos( 1 ), characterManager->GetPos( 2 ), characterManager->GetPos( 3 ) );
 		mainView->Update( VIEW_MODE::CHASE, Vector3( 0.0f, 2.0f, 0.0f ) );
 
 		//	UI
@@ -287,16 +287,32 @@
 		//	とりあえず仮
 		if ( gameStartCoinNum < GAME_START_COIN_NUM )
 		{
+			//	コイン生成用パラメータ
+			Vector3	pos		=		Vector3( 0.0f, 0.0f, 0.0f );
+			Vector3	vec		=		Vector3( 0.0f, 0.0f, 1.0f );
+			float		power	=		0.0f;
+
 			switch ( gameManager->GetStageType() )
 			{
 			case 0:
-				m_CoinManager->Set( Vector3( 0.0f, 5.0f, -25.0f ), Vector3( Random::GetFloat( -0.5f, 0.5f ), Random::GetFloat( 0.1f, 0.3f ), 1.0f ), Random::GetFloat( 2.0f, 3.5f ) );
+				pos = Vector3( 0.0f, 5.0f, -25.0f );
+				power = Random::GetFloat( 2.0f, 3.5f );
+				vec.x = Random::GetFloat( -0.5f, 0.5f );
+				vec.y = Random::GetFloat( 0.1f, 0.15f );
 				break;
 
 			case 1:
-				m_CoinManager->Set( Vector3( 0.0f, 7.0f, -25.0f ), Vector3( Random::GetFloat( -0.5f, 0.5f ), Random::GetFloat( 0.2f, 0.3f ), 1.0f ), Random::GetFloat( 1.0f, 5.5f ) );
+				pos = Vector3( 0.0f, 7.0f, -25.0f );
+				power = Random::GetFloat( 1.0f, 5.5f );
+				vec.x = Random::GetFloat( -0.5f, 0.5f );
+				vec.y = Random::GetFloat( 0.2f, 0.2f );
 				break;
 			}
+			
+			//	コインを生成
+			m_CoinManager->Set( pos, vec, power );
+
+			//	コインカウント加算
 			gameStartCoinNum++;
 		}
 
@@ -388,9 +404,6 @@
 		mainView->Activate();
 		mainView->Clear();
 
-		//	影
-		//RenderShadowBuffer();
-
 		//	オブジェクト描画
 		m_Stage->Render( shader3D, "full_s" );
 		characterManager->Render( shader3D, "toon" );
@@ -406,10 +419,6 @@
 
 		//UI
 		ui->Render( gameManager->GetMode() );
-
-		char	str[256];
-		sprintf_s( str, "height = %f", characterManager->GetPos( 0 ).y );
-		//DrawString( str, 300, 500, 0xFFFFFFFF );
 	}
 
 	//	HDR描画

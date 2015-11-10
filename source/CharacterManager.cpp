@@ -165,7 +165,7 @@
 		{
 			//	(決定された)ビリが誰かを取得・どんけつモードセット
 			int worst = gameManager->GetWorst();
-			SetParameterInfo(worst, PARAMETER_STATE::BOOST);
+			SetParameterInfo( worst, PARAMETER_STATE::BOOST );
 
 			//	ビリがなんのキャラかを識別してそれぞれに合ったステータス上昇
 			RaiseStatus( worst, gameManager->GetCharacterType( worst ) );
@@ -303,6 +303,7 @@
 				gameManager->SetShakeCamera( 1.0f, 30 );
 			}
 			if (bc1->GetMode() == MODE_STATE::HYPERARTS){};
+			
 			//	無敵状態取得・設定
 			if ( bc2->GetUnrivaled() )	return;
 			bc2->SetUnrivaled( true );
@@ -337,8 +338,8 @@
 			for (int i = 0; i < dropCoin; i++)
 			{
 				if (bc2_coinNum <= 0) break;
-				m_CoinManager->Set(bc2_top, vec, power);
-				gameManager->SubCoin(bc2_Num);
+				m_CoinManager->Set( bc2_top, vec, power );
+				gameManager->SubCoin( bc2_Num );
 
 			}
 		}
@@ -426,6 +427,7 @@
 		return	character[player]->GetPower();
 	}
 
+	//	攻撃力合計取得
 	int			CharacterManager::GetTotalPower( int player )const
 	{
 		return	character[player]->GetTotalPower();
@@ -448,7 +450,9 @@
 	{
 		return character[player]->GetMode();
 	}
-	int			CharacterManager::GetAIMode(int player)const
+	
+	//	AI用モード取得
+	int			CharacterManager::GetAIMode( int player )const
 	{
 		return character[player]->GetAIMode();
 	}
@@ -493,6 +497,8 @@
 	{
 		character[player]->SetMode( mode );
 	}
+
+	//	AI用モード設定
 	void		CharacterManager::SetAIMode( int player, int mode )
 	{
 		character[player]->SetAIMode(mode);
@@ -529,7 +535,7 @@
 	}
 
 	//ノックバック情報設定
-	void		CharacterManager::SetKnockBackParam(BaseChara* bc1, BaseChara* bc2)
+	void		CharacterManager::SetKnockBackParam( BaseChara* bc1, BaseChara* bc2)
 	{
 		switch (bc1->GetKnockBackType())
 		{

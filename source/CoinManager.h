@@ -10,6 +10,7 @@
 
 //	include
 #include	"Coin.h"
+#include	<memory>
 #include	<list>
 
 using namespace std;
@@ -24,7 +25,7 @@ protected:
 	static const int COIN_MAX = 201;		//	コイン最大数
 
 	//	オブジェクト
-	iexMesh*	org;			//	オリジナルモデル
+	unique_ptr<iexMesh>	org;			//	オリジナルモデル
 	list<Coin*>	coinList;
 	Coin*		c_Coin;
 
@@ -39,8 +40,7 @@ public:
 
 	//	更新・描画
 	void	Update( void );
-	void	Render( void );
-	void	Render( iexShader* shader, LPSTR technique );
+	void	Render( iexShader* shader = nullptr, LPSTR technique = nullptr );
 
 	//	動作関数
 	void	Set( const Vector3& pos, const Vector3& vec, const float& speed );

@@ -96,8 +96,8 @@
 		shadow.pos = pos;
 
 		//	‹[—Šµ«
-		move.x *= 0.9f;
-		move.z *= 0.9f;
+		move.x *= 0.97f;
+		move.z *= 0.97f;
 
 		//	“–‚½‚è”»’è
 		StageCollisionCheck();

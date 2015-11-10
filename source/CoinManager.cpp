@@ -41,15 +41,17 @@
 	//	初期化
 	bool	CoinManager::Initialize( void )
 	{
+		//	モデル読み込み
 		org = nullptr;
-		org = new iexMesh( "DATA/Object/coin01.imo" );
+		org = make_unique<iexMesh>( LPSTR( "DATA/Object/coin01.imo" ) );
+
+		//	コイン初期化
 		c_Coin = new Coin[ COIN_MAX ];
 		coin_num = 0;
-
-		for ( int i = 0; i < COIN_MAX; i++ )
+		FOR( 0, COIN_MAX )
 		{
-			c_Coin[i].Initialize();
-			c_Coin[i].state = false;
+			c_Coin[value].Initialize();
+			c_Coin[value].state = false;
 		}
 
 		if ( org != nullptr ) 	return	false;
@@ -66,41 +68,40 @@
 		//	枚数カウント初期化
 		coin_num = 0;
 
-		for ( int i = 0; i < COIN_MAX; i++ )
+		//	全コイン更新
+		FOR( 0, COIN_MAX )
 		{
-			if ( !c_Coin[i].state )	continue;
+			if ( !c_Coin[value].state )	continue;
+			
+			//	枚数カウント
 			coin_num++;
 			
 			//	位置調整
-			DistCheck( i );
-			c_Coin[i].Update();
+			DistCheck( value );
+
+			//	情報更新
+			c_Coin[value].Update();
 		}
 	}
 
 	//	描画
-	void	CoinManager::Render( void )
-	{
-		for ( int i = 0; i < COIN_MAX; i++ )
-		{
-			if ( !c_Coin[i].state )	continue;
-			c_Coin[i].Render();
-		}
-
-		//	デバッグ用
-		if ( !debug )	return;	
-
-		char	str[256];
-		sprintf_s( str, "coin_num = %d", coin_num );
-		DrawString( str, 20, 100 );
-	}
-
-	//	シェーダー付き描画
 	void	CoinManager::Render( iexShader* shader, LPSTR technique )
 	{
-		for ( int i = 0; i < COIN_MAX; i++ )
+		//	存在している全コイン描画
+		FOR( 0, COIN_MAX )
 		{
-			if ( !c_Coin[i].state )	continue;
-			c_Coin[i].Render( shader, technique );
+			//	存在してなかったらスキップ
+			if ( !c_Coin[value].state )	continue;
+
+			//	コイン描画
+			if ( shader == nullptr || technique == nullptr )
+			{
+				c_Coin[value].Render();
+			}
+			else
+			{
+				c_Coin[value].Render( shader, technique );
+			}
 		}
 	}
 
@@ -216,7 +217,7 @@
 		return	coin_num;
 	}
 
-	Coin*	CoinManager::GetCoin(void)const
+	Coin*	CoinManager::GetCoin( void )const
 	{
 		return c_Coin;
 	}
