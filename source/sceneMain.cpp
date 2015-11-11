@@ -13,7 +13,6 @@
 #include	"EventManager.h"
 #include	"CoinManager.h"
 #include	"ItemManager.h"
-#include	"Bullet.h"
 #include	"BulletManager.h"
 #include	"sceneResult.h"
 #include	"UI.h"
@@ -72,6 +71,7 @@
 		{
 			//	カメラ初期化
 			playerView[i] = make_unique<Camera>();
+			playerView[i]->SetPos(Vector3(0.0f, 20.0f, -10.0f));
 
 			//	ワイプ初期化
 			playerWipe[i] = make_unique<iex2DObj>( 1280, 720, IEX2D_RENDERTARGET );
@@ -386,13 +386,16 @@
 	{
 		for (int i = 0; i < 4; i++)
 		{
+			//	カメラ更新
+			playerView[i]->Update(VIEW_MODE::INDIVIDUAL, characterManager->GetPos(i));
+			playerView[i]->SetPos(characterManager->GetPos(i) + Vector3(0.0f, 20.0f, -10.0f));
 
-			//	レンダーターゲットを切り替え(メインスクリーン番号とかぶらないように+1)
+			//	レンダーターゲットを切り替え
 			playerWipe[i]->RenderTarget(0);
 
 			//	画面クリア
-			mainView->Activate();
-			mainView->Clear();
+			playerView[i]->Activate();
+			playerView[i]->Clear();
 
 			//	影
 			//RenderShadowBuffer();
@@ -410,8 +413,8 @@
 			//　エフェクト描画
 			m_Effect->Render();
 
-			//UI
-			ui->Render(gameManager->GetMode());
+			////UI
+			//ui->Render(gameManager->GetMode());
 									
 		}
 		//iexSystem::GetDevice()->SetRenderTarget(0, backBuffer);

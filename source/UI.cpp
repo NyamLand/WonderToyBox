@@ -480,8 +480,8 @@
 	void	UI::CoinBarInitialize( void )
 	{
 		ImageInitialize(frame, (1280 / 2), iexSystem::ScreenHeight - 50, iexSystem::ScreenWidth - 300, 80, 0, 32 * 5, 512, 64);
-		ImageInitialize(gauge, frame.x, frame.y, 0, 32, 0, 32, 0, 32);
 		ImageInitialize(backgauge, frame.x, frame.y, frame.w - (frame.w / 10), frame.h - (frame.h / 2), 0, 32 * 4, 480, 32);
+		ImageInitialize(gauge, frame.x, frame.y, 0, backgauge.h, 0, 32, 0, 32);
 		ImageInitialize(faceImage, 0, frame.y - (frame.h / 2), 32, 32, 256, 256, 256, 256);
 		//frame_x = ( 1280 / 2 ) - ( 512 / 2 );
 		//frame_y = 600;
@@ -828,7 +828,7 @@
 		//coinbar->Render(frame_x, frame_y, 512, 64, 0, 32 * 5, frame_sx, frame_sy);
 
 		//ŠDF‚Ìƒo[
-		//	RenderImage(backgauge, backgauge.sx, backgauge.sy, backgauge.sw, backgauge.sh, IMAGE_MODE::NORMAL);
+			RenderImage(backgauge, backgauge.sx, backgauge.sy, backgauge.sw, backgauge.sh, IMAGE_MODE::NORMAL);
 		//coinbar->Render(bar_x[0], bar_y[0], 480, 32, 0, 32 * 4, 480, 32);
 
 		for (int i = 0; i < PLAYER_MAX; i++)
