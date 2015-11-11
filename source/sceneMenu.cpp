@@ -336,6 +336,7 @@
 
 		//	‰æ‘œˆÊ’u‰Šú‰»
 		ImageInitialize( textImage, 640, 150, 370, 150, 512, 0, 512, 256 );
+		textImage.angle = D3DXToRadian( 5.0f );
 		textImage.renderflag = true;
 	}
 
