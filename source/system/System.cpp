@@ -31,8 +31,8 @@ void	SYSTEM_Initialize( void )
 	//KEY_PadAsign( iexInput::xbox360 );	// XBOX360 Controller
 
 	//	シェーダー読み込み
-	shader = new iexShader("DATA\\SHADER\\3DEx.fx");
-	shader2D = new iexShader("DATA\\SHADER\\2D.fx");
+	shader = new iexShader( "DATA\\SHADER\\3DEx.fx" );
+	shader2D = new iexShader( "DATA/Shader/Shader2D.fx" );
 	shader3D = new iexShader( "DATA/SHADER/shader3D.fx" );
 	shaderD = new iexShader( "DATA/SHADER/Differed.fx" );
 	//	パーティクルシステム初期化

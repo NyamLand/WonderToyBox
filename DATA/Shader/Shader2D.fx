@@ -36,7 +36,7 @@
 	//	２D用頂点フォーマット
 	struct VS_2D
 	{
-		float4	Pos		:	POSITION;
+		float4	Pos		:	POSITION0;
 		float4	Color		:	COLOR0;
 		float2	Tex		:	TEXCOORD0;
 	};
@@ -151,6 +151,54 @@
 
 //************************************************************************
 //
+//	ワイプ用エフェクト
+//
+//************************************************************************
+
+	//--------------------------------------------------------------------------------
+	//	パラメータ
+	//--------------------------------------------------------------------------------
+		float		wipe_size = 100.0f;
+		float		frame_size = 10.0f;
+		float		picture_width = 250.0f;
+		float		picture_height = 250.0f;
+		float3	frame_color = float3( 0.0f, 0.0f, 1.0f );
+
+	//--------------------------------------------------------------------------------
+	//	ピクセルシェーダー
+	//--------------------------------------------------------------------------------
+
+		//	ピクセルシェーダー
+		float4	PS_Wipe( VS_2D In, float2 pPos : VPOS ) : COLOR
+		{
+			float4	OUT;
+
+			//	ピクセル色決定
+			OUT = In.Color * tex2D( DecaleSamp, In.Tex );
+
+			//	ピクセルの中心からの位置を計算
+			float p1 = pPos.x - picture_width * 0.5f;
+			float p2 = pPos.y - picture_height * 0.5f;
+
+			//	フレームのサイズを含むサイズを設定
+			float	renderSize = ( wipe_size + frame_size ) * ( wipe_size + frame_size );
+			float	wipeSize = p1 * p1 + p2 * p2;
+
+			//	設定したサイズ以内は表示、外は透明にする
+			if ( wipeSize >= renderSize )		OUT.a = 0.0f;
+			else	OUT.a = 1.0f;
+
+			//	フレーム分を省いたサイズを設定
+			renderSize = wipe_size * wipe_size;
+
+			//	フレーム部分を設定した色にかえる
+			if ( wipeSize >= renderSize )		OUT.rgb = frame_color;
+
+			return	OUT;
+		}
+
+//************************************************************************
+//
 //	テクニック
 //
 //************************************************************************
@@ -249,5 +297,25 @@
 				ZEnable					=		false;
 
 				PixelShader = compile ps_2_0 PS_Focus();
+			}
+		}
+
+		//--------------------------------------------------------------------------------
+		//	ワイプ処理
+		//--------------------------------------------------------------------------------
+
+		//	ワイプエフェクト
+		technique WipeEffect
+		{
+			pass P0
+			{
+				AlphaBlendEnable = true;
+				BlendOp = Add;
+				SrcBlend = SrcAlpha;
+				DestBlend = InvSrcAlpha;
+				ZWriteEnable = true;
+
+				VertexShader = compile		vs_3_0 VS_Basic();
+				PixelShader = compile		ps_3_0 PS_Wipe();
 			}
 		}

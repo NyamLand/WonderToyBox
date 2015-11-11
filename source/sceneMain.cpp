@@ -13,7 +13,7 @@
 #include	"EventManager.h"
 #include	"CoinManager.h"
 #include	"ItemManager.h"
-#include	"Bullet.h"
+
 #include	"BulletManager.h"
 #include	"sceneResult.h"
 #include	"UI.h"
@@ -443,10 +443,13 @@
 		iexSystem::GetDevice()->SetRenderTarget(0, backBuffer);
 
 		m_screen->Render(0, 0, 1280, 720, 0, 0, 1280, 720);
-		playerWipe[0]->Render(0,	0, 250, 250, 0, 0, 1280, 720);
-		playerWipe[1]->Render(250,	0, 250, 250, 0, 0, 1280, 720);
-		playerWipe[2]->Render(500,	0, 250, 250, 0, 0, 1280, 720);
-		playerWipe[3]->Render(750,	0, 250, 250, 0, 0, 1280, 720);
+		//shader2D->SetValue( "wipe_size", 10.0f );
+		//shader2D->SetValue( "picture_width", 250.0f );
+		//shader2D->SetValue( "picture_height", 250.0f );
+		playerWipe[0]->Render( 0,	0, 250, 250, 0, 0, 1280, 720, shader2D, "WipeEffect" );
+		playerWipe[1]->Render( 250, 0, 250, 250, 0, 0, 1280, 720, shader3D, "copy" );
+		playerWipe[2]->Render( 500, 0, 250, 250, 0, 0, 1280, 720, shader3D, "copy" );
+		playerWipe[3]->Render( 750, 0, 250, 250, 0, 0, 1280, 720, shader3D, "copy" );
 		char	str[256];
 		sprintf_s( str, "height = %f", characterManager->GetPos( 0 ).y );
 		DrawString( str, 300, 500, 0xFFFFFFFF );
@@ -568,15 +571,15 @@
 			RenderShadowBuffer();
 
 			//	オブジェクト描画
-			if (characterManager->GetParameterState(0, PARAMETER_STATE::SLIP))
+			if ( characterManager->GetParameterState( 0, PARAMETER_STATE::SLIP ) )
 			{
 				m_Stage->Render(shader3D, "full_s");
 			}
 			else
 			{
-				m_Stage->Render(shader3D, "full_s");
+				m_Stage->Render( shader3D, "full_s" );
 			}
-			characterManager->Render(shader3D, "toon");
+			characterManager->Render( shader3D, "toon" );
 			m_CoinManager->Render();
 			m_BulletManager->Render();
 			itemManager->Render();

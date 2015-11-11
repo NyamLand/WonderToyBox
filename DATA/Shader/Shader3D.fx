@@ -1835,7 +1835,7 @@
 		float screen_width = 1280.0f;
 		float screen_height = 720.0f;
 
-		float4 PS_WipeEffect(float2 ScreenPos : VPOS) : COLOR
+		float4 PS_WipeEffect( float2 ScreenPos : VPOS ) : COLOR
 		{
 			float p1 = ScreenPos.x - screen_width  * 0.5f;
 			float p2 = ScreenPos.y - screen_height * 0.5f;
@@ -1856,4 +1856,3 @@
 				PixelShader = compile ps_3_0 PS_WipeEffect();
 			}
 		}
-
