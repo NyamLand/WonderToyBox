@@ -13,7 +13,7 @@
 #include	"EventManager.h"
 #include	"CoinManager.h"
 #include	"ItemManager.h"
-#include	"BaseBullet.h"
+#include	"Bullet.h"
 #include	"BulletManager.h"
 #include	"sceneResult.h"
 #include	"UI.h"
@@ -76,6 +76,7 @@
 			//	ワイプ初期化
 			playerWipe[i] = make_unique<iex2DObj>( 1280, 720, IEX2D_RENDERTARGET );
 		}
+		m_screen = make_unique<iex2DObj>(1280, 720, IEX2D_RENDERTARGET);
 
 		//	gameManagerから情報取得
 		playerNum = gameManager->GetPlayerNum();
@@ -123,7 +124,7 @@
 		return true;
 	}
 
-	void	sceneMain::InitializeDebug( void )
+	void	sceneMain::InitializeDebug(void)
 	{
 		gameManager->InitializeDebug();
 		gameStartCoinNum = 0;
@@ -134,12 +135,11 @@
 		//　プレイヤー・CPU
 		PlayerInitialize();
 
-		particle->Initialize();
 		m_BulletManager->Initialize();
 		itemManager->Initialize();
 		m_CoinManager->Initialize();
 		m_Effect->Initialize();
-		ui->Initialize( UI_MODE::MAIN );
+		ui->Initialize(UI_MODE::MAIN);
 	}
 
 	//	デストラクタ
@@ -169,7 +169,7 @@
 	}
 
 	//	プレイヤー初期化
-	void    sceneMain::PlayerInitialize( void )
+	void    sceneMain::PlayerInitialize(void)
 	{
 		//　プレイヤー設定
 		for ( int i = 0; i < gameManager->GetPlayerNum(); i++ )
@@ -239,7 +239,7 @@
 	void	sceneMain::Update( void )
 	{
 		//	カメラ更新
-		mainView->SetPlayerInfo( characterManager->GetPos( 0 ), characterManager->GetPos( 1 ), characterManager->GetPos( 2 ), characterManager->GetPos( 3 ) );
+		mainView->SetPlayerInfo( characterManager->GetPos(0), characterManager->GetPos(1), characterManager->GetPos(2), characterManager->GetPos(3) );
 		mainView->Update( VIEW_MODE::CHASE, Vector3( 0.0f, 2.0f, 0.0f ) );
 
 		//	UI
@@ -287,39 +287,23 @@
 		//	とりあえず仮
 		if ( gameStartCoinNum < GAME_START_COIN_NUM )
 		{
-			//	コイン生成用パラメータ
-			Vector3	pos		=		Vector3( 0.0f, 0.0f, 0.0f );
-			Vector3	vec		=		Vector3( 0.0f, 0.0f, 1.0f );
-			float		power	=		0.0f;
-
 			switch ( gameManager->GetStageType() )
 			{
 			case 0:
-				pos = Vector3( 0.0f, 5.0f, -25.0f );
-				power = Random::GetFloat( 2.0f, 3.5f );
-				vec.x = Random::GetFloat( -0.5f, 0.5f );
-				vec.y = Random::GetFloat( 0.1f, 0.15f );
+				m_CoinManager->Set( Vector3( 0.0f, 5.0f, -25.0f ), Vector3( Random::GetFloat( -0.5f, 0.5f ), Random::GetFloat( 0.1f, 0.3f ), 1.0f ), Random::GetFloat( 2.0f, 3.5f ) );
 				break;
 
 			case 1:
-				pos = Vector3( 0.0f, 7.0f, -25.0f );
-				power = Random::GetFloat( 1.0f, 5.5f );
-				vec.x = Random::GetFloat( -0.5f, 0.5f );
-				vec.y = Random::GetFloat( 0.2f, 0.2f );
+				m_CoinManager->Set( Vector3( 0.0f, 7.0f, -25.0f ), Vector3( Random::GetFloat( -0.5f, 0.5f ), Random::GetFloat( 0.2f, 0.3f ), 1.0f ), Random::GetFloat( 1.0f, 5.5f ) );
 				break;
 			}
-			
-			//	コインを生成
-			m_CoinManager->Set( pos, vec, power );
-
-			//	コインカウント加算
 			gameStartCoinNum++;
 		}
 
 		if ( ui->GetChangeFlag() ) 
 		{
 			gameManager->SetMode( GAME_MODE::MAINGAME );
-			FOR( 0, PLAYER_MAX )	characterManager->SetMode( value, MODE_STATE::MOVE );
+			for ( int i = 0; i < 4; i++ )		characterManager->SetMode( i, MODE_STATE::MOVE );
 			ui->SetChangeFlag( false );
 		}
 	}
@@ -400,17 +384,52 @@
 	//	描画
 	void	sceneMain::Render( void )
 	{
+		for (int i = 0; i < 4; i++)
+		{
+
+			//	レンダーターゲットを切り替え(メインスクリーン番号とかぶらないように+1)
+			playerWipe[i]->RenderTarget(0);
+
+			//	画面クリア
+			mainView->Activate();
+			mainView->Clear();
+
+			//	影
+			//RenderShadowBuffer();
+
+			//	オブジェクト描画
+			m_Stage->Render(shader3D, "full_s");
+			characterManager->Render(shader3D, "toon");
+			m_CoinManager->Render();
+			m_BulletManager->Render();
+			itemManager->Render();
+
+			//	パーティクル描画
+			particle->Render();
+
+			//　エフェクト描画
+			m_Effect->Render();
+
+			//UI
+			ui->Render(gameManager->GetMode());
+									
+		}
+		//iexSystem::GetDevice()->SetRenderTarget(0, backBuffer);
+
+		
+
+		m_screen->RenderTarget();
 		//	画面クリア
 		mainView->Activate();
 		mainView->Clear();
 
 		//	オブジェクト描画
-		m_Stage->Render( shader3D, "full_s" );
-		characterManager->Render( shader3D, "toon" );
-		m_CoinManager->Render( shader3D, "full" );
+		m_Stage->Render(shader3D, "full_s");
+		characterManager->Render(shader3D, "toon");
+		m_CoinManager->Render();
 		m_BulletManager->Render();
 		itemManager->Render();
-		
+
 		//	パーティクル描画
 		particle->Render();
 
@@ -418,7 +437,19 @@
 		m_Effect->Render();
 
 		//UI
-		ui->Render( gameManager->GetMode() );
+		ui->Render(gameManager->GetMode());
+
+		//	フレームバッファへ切り替え
+		iexSystem::GetDevice()->SetRenderTarget(0, backBuffer);
+
+		m_screen->Render(0, 0, 1280, 720, 0, 0, 1280, 720);
+		playerWipe[0]->Render(0,	0, 250, 250, 0, 0, 1280, 720);
+		playerWipe[1]->Render(250,	0, 250, 250, 0, 0, 1280, 720);
+		playerWipe[2]->Render(500,	0, 250, 250, 0, 0, 1280, 720);
+		playerWipe[3]->Render(750,	0, 250, 250, 0, 0, 1280, 720);
+		char	str[256];
+		sprintf_s( str, "height = %f", characterManager->GetPos( 0 ).y );
+		DrawString( str, 300, 500, 0xFFFFFFFF );
 	}
 
 	//	HDR描画

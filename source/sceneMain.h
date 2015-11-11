@@ -47,6 +47,7 @@ private:
 
 	//	レンダーターゲット
 	unique_ptr<iex2DObj>	playerWipe[4];
+	unique_ptr<iex2DObj>	m_screen;
 
 	//	ディファード用
 	//iex2DObj*	diffuse;
