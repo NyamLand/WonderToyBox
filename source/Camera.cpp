@@ -222,7 +222,6 @@
 	{
 		Slerp( target, 0.1f );
 
-		pos = target - Vector3( 0.0f, 10.0f, -10.0f );
 
 		Set( pos, this->target );
 	}

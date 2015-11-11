@@ -13,7 +13,6 @@
 #include	"EventManager.h"
 #include	"CoinManager.h"
 #include	"ItemManager.h"
-
 #include	"BulletManager.h"
 #include	"sceneResult.h"
 #include	"UI.h"
@@ -72,6 +71,7 @@
 		{
 			//	カメラ初期化
 			playerView[i] = make_unique<Camera>();
+			playerView[i]->SetPos(Vector3(0.0f, 20.0f, -10.0f));
 
 			//	ワイプ初期化
 			playerWipe[i] = make_unique<iex2DObj>( 1280, 720, IEX2D_RENDERTARGET );
@@ -386,13 +386,16 @@
 	{
 		for (int i = 0; i < 4; i++)
 		{
+			//	カメラ更新
+			playerView[i]->Update(VIEW_MODE::INDIVIDUAL, characterManager->GetPos(i));
+			playerView[i]->SetPos(characterManager->GetPos(i) + Vector3(0.0f, 20.0f, -10.0f));
 
-			//	レンダーターゲットを切り替え(メインスクリーン番号とかぶらないように+1)
+			//	レンダーターゲットを切り替え
 			playerWipe[i]->RenderTarget(0);
 
 			//	画面クリア
-			mainView->Activate();
-			mainView->Clear();
+			playerView[i]->Activate();
+			playerView[i]->Clear();
 
 			//	影
 			//RenderShadowBuffer();
@@ -410,8 +413,8 @@
 			//　エフェクト描画
 			m_Effect->Render();
 
-			//UI
-			ui->Render(gameManager->GetMode());
+			////UI
+			//ui->Render(gameManager->GetMode());
 									
 		}
 		//iexSystem::GetDevice()->SetRenderTarget(0, backBuffer);
@@ -443,13 +446,10 @@
 		iexSystem::GetDevice()->SetRenderTarget(0, backBuffer);
 
 		m_screen->Render(0, 0, 1280, 720, 0, 0, 1280, 720);
-		//shader2D->SetValue( "wipe_size", 10.0f );
-		//shader2D->SetValue( "picture_width", 250.0f );
-		//shader2D->SetValue( "picture_height", 250.0f );
-		playerWipe[0]->Render( 0,	0, 250, 250, 0, 0, 1280, 720, shader2D, "WipeEffect" );
-		playerWipe[1]->Render( 250, 0, 250, 250, 0, 0, 1280, 720, shader3D, "copy" );
-		playerWipe[2]->Render( 500, 0, 250, 250, 0, 0, 1280, 720, shader3D, "copy" );
-		playerWipe[3]->Render( 750, 0, 250, 250, 0, 0, 1280, 720, shader3D, "copy" );
+		playerWipe[0]->Render(0,	0, 250, 250, 0, 0, 1280, 720);
+		playerWipe[1]->Render(250,	0, 250, 250, 0, 0, 1280, 720);
+		playerWipe[2]->Render(500,	0, 250, 250, 0, 0, 1280, 720);
+		playerWipe[3]->Render(750,	0, 250, 250, 0, 0, 1280, 720);
 		char	str[256];
 		sprintf_s( str, "height = %f", characterManager->GetPos( 0 ).y );
 		DrawString( str, 300, 500, 0xFFFFFFFF );
@@ -571,15 +571,15 @@
 			RenderShadowBuffer();
 
 			//	オブジェクト描画
-			if ( characterManager->GetParameterState( 0, PARAMETER_STATE::SLIP ) )
+			if (characterManager->GetParameterState(0, PARAMETER_STATE::SLIP))
 			{
 				m_Stage->Render(shader3D, "full_s");
 			}
 			else
 			{
-				m_Stage->Render( shader3D, "full_s" );
+				m_Stage->Render(shader3D, "full_s");
 			}
-			characterManager->Render( shader3D, "toon" );
+			characterManager->Render(shader3D, "toon");
 			m_CoinManager->Render();
 			m_BulletManager->Render();
 			itemManager->Render();
