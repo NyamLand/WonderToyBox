@@ -76,6 +76,7 @@
 			//	ワイプ初期化
 			playerWipe[i] = make_unique<iex2DObj>( 1280, 720, IEX2D_RENDERTARGET );
 		}
+		m_screen = make_unique<iex2DObj>(1280, 720, IEX2D_RENDERTARGET);
 
 		//	gameManagerから情報取得
 		playerNum = gameManager->GetPlayerNum();
@@ -383,20 +384,52 @@
 	//	描画
 	void	sceneMain::Render( void )
 	{
+		for (int i = 0; i < 4; i++)
+		{
+
+			//	レンダーターゲットを切り替え(メインスクリーン番号とかぶらないように+1)
+			playerWipe[i]->RenderTarget(0);
+
+			//	画面クリア
+			mainView->Activate();
+			mainView->Clear();
+
+			//	影
+			//RenderShadowBuffer();
+
+			//	オブジェクト描画
+			m_Stage->Render(shader3D, "full_s");
+			characterManager->Render(shader3D, "toon");
+			m_CoinManager->Render();
+			m_BulletManager->Render();
+			itemManager->Render();
+
+			//	パーティクル描画
+			particle->Render();
+
+			//　エフェクト描画
+			m_Effect->Render();
+
+			//UI
+			ui->Render(gameManager->GetMode());
+									
+		}
+		//iexSystem::GetDevice()->SetRenderTarget(0, backBuffer);
+
+		
+
+		m_screen->RenderTarget();
 		//	画面クリア
 		mainView->Activate();
 		mainView->Clear();
 
-		//	影
-		//RenderShadowBuffer();
-
 		//	オブジェクト描画
-		m_Stage->Render( shader3D, "full_s" );
-		characterManager->Render( shader3D, "toon" );
+		m_Stage->Render(shader3D, "full_s");
+		characterManager->Render(shader3D, "toon");
 		m_CoinManager->Render();
 		m_BulletManager->Render();
 		itemManager->Render();
-		
+
 		//	パーティクル描画
 		particle->Render();
 
@@ -404,8 +437,16 @@
 		m_Effect->Render();
 
 		//UI
-		ui->Render( gameManager->GetMode() );
+		ui->Render(gameManager->GetMode());
 
+		//	フレームバッファへ切り替え
+		iexSystem::GetDevice()->SetRenderTarget(0, backBuffer);
+
+		m_screen->Render(0, 0, 1280, 720, 0, 0, 1280, 720);
+		playerWipe[0]->Render(0,	0, 250, 250, 0, 0, 1280, 720);
+		playerWipe[1]->Render(250,	0, 250, 250, 0, 0, 1280, 720);
+		playerWipe[2]->Render(500,	0, 250, 250, 0, 0, 1280, 720);
+		playerWipe[3]->Render(750,	0, 250, 250, 0, 0, 1280, 720);
 		char	str[256];
 		sprintf_s( str, "height = %f", characterManager->GetPos( 0 ).y );
 		DrawString( str, 300, 500, 0xFFFFFFFF );

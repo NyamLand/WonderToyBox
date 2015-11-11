@@ -18,7 +18,7 @@ namespace
 			SETUP,
 			FIX,
 			SLERP,
-			CHASE,		//	※このモードの場合はSetTargetでtargetに値を与える必要があります。
+			CHASE,		//	※このモードの場合はSetPlayerInfoで先にPlayer情報を入れなければいけない
 			RESULT,
 			TITLE,
 			INDIVIDUAL,
