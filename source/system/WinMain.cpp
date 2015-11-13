@@ -15,7 +15,7 @@
 char*	AppTitle = "IEX2010";
 
 BOOL	bFullScreen = FALSE;
-DWORD	ScreenMode  = SCREEN720p;
+DWORD	ScreenMode = SCREEN1664;//SCREEN720p;
 
 Framework*	MainFrame = NULL;
 

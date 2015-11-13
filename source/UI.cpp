@@ -20,6 +20,12 @@
 
 	namespace
 	{
+		namespace SCREEN_SIZE
+		{
+			const int WIDTH = iexSystem::ScreenWidth;
+			const int HEIGHT = iexSystem::ScreenHeight;
+		}
+
 		//    顔情報
 		namespace FACE_INFO
 		{
@@ -36,17 +42,14 @@
 		//	タイトルテキスト座標情報
 		namespace TITLE_TEXT_POS_INFO
 		{
-			enum
-			{
-				IN_START_POS_X = 1980,
-				IN_START_POS_Y = -100,
-				IN_END_POS_X = 640,
-				IN_END_POS_Y = 150,
-				OUT_START_POS_X = 640,
-				OUT_END_POS_X = -700,
-				OUT_END_POS_Y = 0,
-				ROLL_POINT_ADJUST_X = 200,
-			};
+			 int IN_START_POS_X = static_cast<int>( iexSystem::ScreenWidth * 1.5f );
+			 int IN_START_POS_Y = static_cast<int>( iexSystem::ScreenHeight * -0.13f );
+			 int IN_END_POS_X = static_cast<int>( iexSystem::ScreenWidth / 2 );
+			 int IN_END_POS_Y = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
+			 int OUT_START_POS_X = static_cast<int>( iexSystem::ScreenWidth / 2 );
+			 int OUT_END_POS_X = static_cast<int>( iexSystem::ScreenWidth * -0.55f );
+			 int OUT_END_POS_Y = static_cast<int>( iexSystem::ScreenHeight * 0 );
+			 int ROLL_POINT_ADJUST_X = 200;
 		}
 
 		//	タイトルテキスト読み込み座標情報

@@ -387,7 +387,7 @@
 		for (int i = 0; i < 4; i++)
 		{
 			//	カメラ更新
-			playerView[i]->Update(VIEW_MODE::INDIVIDUAL, characterManager->GetPos(i));
+			playerView[i]->Update( VIEW_MODE::INDIVIDUAL, characterManager->GetPos(i));
 			playerView[i]->SetPos(characterManager->GetPos(i) + Vector3(0.0f, 20.0f, -10.0f));
 
 			//	レンダーターゲットを切り替え
@@ -396,9 +396,6 @@
 			//	画面クリア
 			playerView[i]->Activate();
 			playerView[i]->Clear();
-
-			//	影
-			//RenderShadowBuffer();
 
 			//	オブジェクト描画
 			m_Stage->Render(shader3D, "full_s");
@@ -411,15 +408,8 @@
 			particle->Render();
 
 			//　エフェクト描画
-			m_Effect->Render();
-
-			////UI
-			//ui->Render(gameManager->GetMode());
-									
+			m_Effect->Render();			
 		}
-		//iexSystem::GetDevice()->SetRenderTarget(0, backBuffer);
-
-		
 
 		m_screen->RenderTarget();
 		//	画面クリア
@@ -429,7 +419,7 @@
 		//	オブジェクト描画
 		m_Stage->Render(shader3D, "full_s");
 		characterManager->Render(shader3D, "toon");
-		m_CoinManager->Render();
+		m_CoinManager->Render( shader3D, "full" );
 		m_BulletManager->Render();
 		itemManager->Render();
 
@@ -440,19 +430,16 @@
 		m_Effect->Render();
 
 		//UI
-		ui->Render(gameManager->GetMode());
+		ui->Render( gameManager->GetMode() );
 
 		//	フレームバッファへ切り替え
-		iexSystem::GetDevice()->SetRenderTarget(0, backBuffer);
+		iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );
 
-		m_screen->Render(0, 0, 1280, 720, 0, 0, 1280, 720);
-		playerWipe[0]->Render(0,	0, 250, 250, 0, 0, 1280, 720, shader2D, "WipeEffect" );
-		playerWipe[1]->Render(250,	0, 250, 250, 0, 0, 1280, 720);
-		playerWipe[2]->Render(500,	0, 250, 250, 0, 0, 1280, 720);
-		playerWipe[3]->Render(750,	0, 250, 250, 0, 0, 1280, 720);
-		char	str[256];
-		sprintf_s( str, "height = %f", characterManager->GetPos( 0 ).y );
-		DrawString( str, 300, 500, 0xFFFFFFFF );
+		m_screen->Render( 0, 0, 1280, 720, 0, 0, 1280, 720 );
+		playerWipe[0]->Render( 0, 0, 250, 250, 0, 0, 1280, 720, shader2D, "WipeEffect" );
+		playerWipe[1]->Render( 250, 0, 250, 250, 0, 0, 1280, 720 );
+		playerWipe[2]->Render( 500, 0, 250, 250, 0, 0, 1280, 720 );
+		playerWipe[3]->Render( 750, 0, 250, 250, 0, 0, 1280, 720 );
 	}
 
 	//	HDR描画
