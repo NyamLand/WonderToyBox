@@ -69,6 +69,7 @@ class iexShader;
 #define	SCREEN640	0
 #define	SCREEN800	1
 #define	SCREEN1024	2
+#define	SCREEN1664	3
 
 #define	SCREEN720p	11
 #define	SCREEN800p	12

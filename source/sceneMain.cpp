@@ -419,7 +419,7 @@
 		//	オブジェクト描画
 		m_Stage->Render(shader3D, "full_s");
 		characterManager->Render(shader3D, "toon");
-		m_CoinManager->Render();
+		m_CoinManager->Render( shader3D, "full" );
 		m_BulletManager->Render();
 		itemManager->Render();
 

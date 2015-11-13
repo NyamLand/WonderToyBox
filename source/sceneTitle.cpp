@@ -120,8 +120,8 @@ namespace
 		titleInfo.pressSpace.obj = new iex2DObj( "DATA/UI/pressspace.png" );
 
 		//	画像構造体初期化
-		ImageInitialize( titleInfo.pressSpace, 640, 560, 300, 100, 0, 0, 256, 128 );
-		ImageInitialize( titleInfo.titleImage, 640, 300, 500, 500, 0, 0, 512, 512 );
+		ImageInitialize(titleInfo.pressSpace, iexSystem::ScreenWidth / 2, static_cast<int>( iexSystem::ScreenHeight * 0.82f ), static_cast<int>( iexSystem::ScreenWidth * 0.2f ), static_cast<int>( iexSystem::ScreenHeight * 0.15f ), 0, 0, 256, 128 );
+		ImageInitialize(titleInfo.titleImage, iexSystem::ScreenWidth / 2, static_cast<int>( iexSystem::ScreenHeight * 0.42f ), static_cast<int>( iexSystem::ScreenWidth * 0.4f ), static_cast<int>( iexSystem::ScreenHeight * 0.7f ), 0, 0, 512, 512 );
 
 		//	カーテン用構造体初期化
 		{
@@ -131,13 +131,13 @@ namespace
 
 			//	頂点設定
 			SetVertex( titleInfo.curtainL.tlv[0], 0, 0, 0, 0, 0, 0xFFFFFFFF );
-			SetVertex( titleInfo.curtainL.tlv[1], 640, 0, 0, 1, 0, 0xFFFFFFFF );
-			SetVertex( titleInfo.curtainL.tlv[2], 0, 720, 0, 0, 1, 0xFFFFFFFF );
-			SetVertex( titleInfo.curtainL.tlv[3], 640, 720, 0, 1, 1, 0xFFFFFFFF );
-			SetVertex( titleInfo.curtainR.tlv[0], 640, 0, 0, 0, 0, 0xFFFFFFFF );
-			SetVertex( titleInfo.curtainR.tlv[1], 1280, 0, 0, 1, 0, 0xFFFFFFFF );
-			SetVertex( titleInfo.curtainR.tlv[2], 640, 720, 0, 0, 1, 0xFFFFFFFF );
-			SetVertex( titleInfo.curtainR.tlv[3], 1280, 720, 0, 1, 1, 0xFFFFFFFF );
+			SetVertex( titleInfo.curtainL.tlv[1], static_cast<float>( iexSystem::ScreenWidth / 2 ), 0, 0, 1, 0, 0xFFFFFFFF );
+			SetVertex( titleInfo.curtainL.tlv[2], 0, static_cast<float>( iexSystem::ScreenHeight ), 0, 0, 1, 0xFFFFFFFF );
+			SetVertex( titleInfo.curtainL.tlv[3], static_cast<float>( iexSystem::ScreenWidth / 2 ), static_cast<float>( iexSystem::ScreenHeight ), 0, 1, 1, 0xFFFFFFFF );
+			SetVertex( titleInfo.curtainR.tlv[0], static_cast<float>( iexSystem::ScreenWidth / 2 ), 0, 0, 0, 0, 0xFFFFFFFF );
+			SetVertex( titleInfo.curtainR.tlv[1], static_cast<float>( iexSystem::ScreenWidth ), 0, 0, 1, 0, 0xFFFFFFFF );
+			SetVertex( titleInfo.curtainR.tlv[2], static_cast<float>( iexSystem::ScreenWidth / 2 ), static_cast<float>( iexSystem::ScreenHeight ), 0, 0, 1, 0xFFFFFFFF );
+			SetVertex( titleInfo.curtainR.tlv[3], static_cast<float>( iexSystem::ScreenWidth ), static_cast<float>( iexSystem::ScreenHeight ), 0, 1, 1, 0xFFFFFFFF );
 		}
 
 		//	変数初期化
@@ -300,14 +300,14 @@ namespace
 				if ( titleInfo.curtainR.t >= 1.0f )	titleInfo.curtainR.t = 1.0f;
 
 				//	各頂点移動
-				curtainStateL = Lerp( titleInfo.curtainL.tlv[0].sx,    0, -640, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, titleInfo.curtainL.t ) );
-				curtainStateL = Lerp( titleInfo.curtainL.tlv[1].sx,  640,    0, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, titleInfo.curtainL.t ) );
-				curtainStateL = Lerp( titleInfo.curtainL.tlv[2].sx,    0, -640, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, titleInfo.curtainL.t ) );
-				curtainStateL = Lerp( titleInfo.curtainL.tlv[3].sx,  640,    0, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, titleInfo.curtainL.t ) );
-				curtainStateR = Lerp( titleInfo.curtainR.tlv[0].sx,  640, 1280, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, titleInfo.curtainL.t ) );
-				curtainStateR = Lerp( titleInfo.curtainR.tlv[1].sx, 1280, 1920, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, titleInfo.curtainL.t ) );
-				curtainStateR = Lerp( titleInfo.curtainR.tlv[2].sx,  640, 1280, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, titleInfo.curtainL.t ) );
-				curtainStateR = Lerp( titleInfo.curtainR.tlv[3].sx, 1280, 1920, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, titleInfo.curtainL.t ) );
+				curtainStateL = Lerp( titleInfo.curtainL.tlv[0].sx, 0, -( static_cast<int>( iexSystem::ScreenWidth / 2 ) ), GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, titleInfo.curtainL.t ) );
+				curtainStateL = Lerp( titleInfo.curtainL.tlv[1].sx, static_cast<int>( iexSystem::ScreenWidth / 2 ), 0, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, titleInfo.curtainL.t ) );
+				curtainStateL = Lerp( titleInfo.curtainL.tlv[2].sx, 0, -( static_cast<int>( iexSystem::ScreenWidth / 2 ) ), GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, titleInfo.curtainL.t ) );
+				curtainStateL = Lerp( titleInfo.curtainL.tlv[3].sx, static_cast<int>( iexSystem::ScreenWidth / 2 ), 0, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, titleInfo.curtainL.t ) );
+				curtainStateR = Lerp( titleInfo.curtainR.tlv[0].sx, static_cast<int>( iexSystem::ScreenWidth / 2 ), static_cast<int>( iexSystem::ScreenWidth ), GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, titleInfo.curtainL.t ) );
+				curtainStateR = Lerp( titleInfo.curtainR.tlv[1].sx, static_cast<int>( iexSystem::ScreenWidth ), static_cast<int>( iexSystem::ScreenWidth * 1.5f ), GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, titleInfo.curtainL.t ) );
+				curtainStateR = Lerp( titleInfo.curtainR.tlv[2].sx, static_cast<int>( iexSystem::ScreenWidth / 2 ), static_cast<int>( iexSystem::ScreenWidth ), GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, titleInfo.curtainL.t ) );
+				curtainStateR = Lerp( titleInfo.curtainR.tlv[3].sx, static_cast<int>( iexSystem::ScreenWidth ), static_cast<int>( iexSystem::ScreenWidth * 1.5f ), GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, titleInfo.curtainL.t ) );
 
 				//	動作済みで次のステップへ
 				if ( curtainStateL && curtainStateR )	titleInfo.step++;
@@ -328,7 +328,7 @@ namespace
 		void	sceneTitle::TitleRender( void )
 		{
 			//	背景描画
-			iexPolygon::Rect( 0, 0, 1280, 720, RS_COPY, 0xFFFFFFFF );
+			iexPolygon::Rect(0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight , RS_COPY, 0xFFFFFFFF);
 
 			//	幕描画
 			iexPolygon::Render2D( titleInfo.curtainL.tlv, 2, titleInfo.curtainL.obj, RS_COPY );
