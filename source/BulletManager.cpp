@@ -42,7 +42,7 @@
 	{
 		org[0] = new iexMesh("DATA/BG/Bullet/bulletEx.imo");
 		org[1] = new iexMesh("DATA/BG/Bullet/bulletEx.imo");
-		org[2] = new iexMesh("DATA/BG/Bullet/bulletEx.imo");
+		org[2] = new iexMesh("DATA/BG/Bullet/bullet02.imo");
 		bullet_num = 0;
 
 		for ( int i = 0; i < BULLET_MAX; i++ )
@@ -68,7 +68,7 @@
 			if ( c_Bullet[i] == NULL )	continue;
 			bullet_num++;
 
-			if ( c_Bullet[i]->limitTimer > LIMIT ) c_Bullet[i]->state = false;
+			if ( c_Bullet[i]->limitTimer < 0 ) c_Bullet[i]->state = false;
 
 			//	à íuí≤êÆ
 			//DistCheck(i);

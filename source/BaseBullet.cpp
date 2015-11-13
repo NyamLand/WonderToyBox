@@ -26,9 +26,13 @@
 //-------------------------------------------------------------------------------
 
 	//	コンストラクタ
-	BaseBullet::BaseBullet(void) : obj(NULL)
+BaseBullet::BaseBullet(void) :
+obj(NULL),
+pos(0, 0, 0), move(0, 0, 0),
+limitTimer(0), judgeTimer(0), number(0), leanpower(0), playerNum(0), time(0), step(0),
+scale(0), angle(0),
+state(false), activate(false)
 	{
-
 	}
 
 	//	デストラクタ

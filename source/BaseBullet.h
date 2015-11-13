@@ -25,6 +25,8 @@ protected:
 	int				number;		//	番号割り当て用
 	int				leanpower; //	仰け反り時間用
 	int				playerNum;	//何番目のプレイヤーの弾か
+	int time;	//生成されてからの時間
+	int step;
 
 public:
 	//	初期化・解放

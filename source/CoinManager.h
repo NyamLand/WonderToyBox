@@ -47,7 +47,8 @@ public:
 	void	DistCheck( int n );
 
 	//	î•ñİ’è
-	void	SetCoinGetAwayFlag( bool flag );
+	void	SetCoinGetAwayFlag(bool flag);
+	void	SetState(bool state);
 	
 	//	î•ñæ“¾
 	bool	GetMinPos( Vector3& out, const Vector3& pos );

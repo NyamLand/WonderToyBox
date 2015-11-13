@@ -7,35 +7,35 @@
 #include	"CharacterManager.h"
 #include	"Particle.h"
 #include	"CoinManager.h"
+#include	"CharacterManager.h"
 #include	"BaseBullet.h"
 #include	"Thief_Bullet01.h"
 
 Thief_Bullet01::Thief_Bullet01()
 {
-	time = 0;
-	step = 0;
 }
-
 
 bool Thief_Bullet01::Initialize()
 {
 	judgeTimer = 10;
-	limitTimer = 0;
+	limitTimer = 1.5 * SECOND;
 	activate = false;
 	state = true;
 	scale = 0.05f;
 	leanpower = 0;
 	return true;
 }
+
 void	Thief_Bullet01::Update(void)
 {
 	//	“®ì
 	Move();
+	pos += move;
 
 	if (judgeTimer > 0)	judgeTimer--;
 	else							activate = true;
 
-	limitTimer++;
+	limitTimer--;
 
 	if (StageCollisionCheck()) state = false;
 	PlayerCollisionCheck();
@@ -50,7 +50,6 @@ void	Thief_Bullet01::Update(void)
 void	Thief_Bullet01::Move(void)
 {
 	Stalk();
-	pos += move;
 }
 
 void Thief_Bullet01::Stalk()
@@ -84,6 +83,4 @@ void Thief_Bullet01::Stalk()
 	case 2:
 		move += ToPlayerVec * 0.01f;
 	}
-
-
 }
