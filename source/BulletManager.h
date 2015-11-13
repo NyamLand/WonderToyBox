@@ -5,6 +5,7 @@
 #include	"BaseBullet.h"
 #include	"Squirrel_Bullet01.h"
 #include	"Thief_Bullet01.h"
+#include	"Thief_Bullet02.h"
 //******************************************************************************
 //
 //	BulletManagerÉNÉâÉX
@@ -15,8 +16,8 @@ namespace BULLET_MODEL
 	enum
 	{
 		SQUIRREL = 0,
-		THIEF_01,
-		THIEF_02
+		THIEF_01 = 1,
+		THIEF_02 = 2
 	};
 }
 
@@ -26,7 +27,6 @@ public:
 	//	íËêî
 	static const int BULLET_MAX = 201;		//	íeç≈ëÂêî
 	static const int BULLET_KIND_MAX = 10;
-	const int LIMIT = (const int)(60 * 1.5f);
 private:
 
 

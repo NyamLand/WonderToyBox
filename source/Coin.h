@@ -74,7 +74,8 @@ public:
 	void	SetMove(const Vector3& move);
 	void	SetAngle( const float& angle );
 	void	SetScale( const float& angle );
-	void	SetGetAwayFlag( bool flag );
+	void	SetGetAwayFlag(bool flag);
+	void	SetState(bool state);
 	Vector3	GetPos( void );
 	float		GetAngle( void );
 	bool		GetState( void );

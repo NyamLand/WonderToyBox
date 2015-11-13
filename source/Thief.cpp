@@ -125,7 +125,7 @@ bool	Thief::QuickArts(void)
 	}
 	time++;
 
-	if (time >= 60)
+	if (time >= 1 * SECOND)
 	{
 		time = 0;
 		return true;
@@ -136,51 +136,32 @@ bool	Thief::QuickArts(void)
 //	パワーアーツ
 bool	Thief::PowerArts(void)
 {
-	//無敵判定を切らないとそもそもコインを集められないので無敵切ってます。
-	//問題なら言ってください
-	unrivaled = false;
-	absorb_length = 5.0f;
-	Vector3 p_front = Vector3(sinf(this->angle), 0, cosf(this->angle));
-	p_front.Normalize();
-	float speed = 0.5f;
+	static int time = 0;
 
-	Coin* coin = m_CoinManager->GetCoin();
-	for (int i = 0; i < 200; i++)
+	//	行列から情報取得
+	Vector3	front = GetFront();
+	Vector3	p_pos = GetPos();
+	SetMove(Vector3(0.0f, move.y, 0.0f));
+
+	//	情報設定
+	p_pos.y += 1.0f;
+	Vector3	vec = front * 1.0f;
+
+	static float	 bulletSpeed = 0.5f;
+	int leanpower = 30;
+	int playerNum = GetPlayerNum();
+
+	if (time == 0)
 	{
-		Vector3 toCoinVec = coin[i].GetPos() - this->pos;
-		float pVecLength = p_front.Length();
-		float cVecLength = toCoinVec.Length();
-		float dot = Vector3Dot(p_front, toCoinVec) / (pVecLength * cVecLength);
-		dot = acos(dot);
-		dot = dot * 180.0f / PI;
+		m_BulletManager->Set(BULLET_MODEL::THIEF_02, new Thief_Bullet02, p_pos, vec, bulletSpeed, playerNum);
+	}
+		time++;
 
-		if (coin[i].GetState() == true)
+		if (time >= 1 * SECOND)
 		{
-			Vector3 vec = coin[i].GetPos() - this->pos;
-			float length = vec.Length();
-
-			vec.Normalize();
-			if (dot < 90 && length < absorb_length && stayTime == 0)
-			{
-				coin[i].SetMove(-vec * 2.0f);
-			}
+			time = 0;
+			return true;
 		}
-	}
-	if (attackInfo.t < 1.0f) move = p_front * speed;
-
-	//	パラメータ加算
-	attackInfo.t += 0.03f;
-
-	if (attackInfo.t >= 1.0f)
-	{
-		stayTime++;
-	}
-
-	if (stayTime >= 2 * SECOND)
-	{
-		stayTime = 0;
-		return	true;
-	}
 	return	false;
 }
 
