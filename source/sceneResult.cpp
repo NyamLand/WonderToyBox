@@ -109,7 +109,11 @@
 		ModelInitialize();
 
 		//	構造体初期化
-		ImageInitialize( menuHead, 640, 150, 370, 150, 0, 0, 512, 256 );
+		int x = static_cast<int>( iexSystem::ScreenWidth / 2 );
+		int y = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
+		int w = static_cast<int>( iexSystem::ScreenWidth * 0.29f );
+		int h = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
+		ImageInitialize( menuHead, x, y, w, h, 0, 0, 512, 256 );
 		menuHead.angle = D3DXToRadian( 7.0f );
 		
 		//	数値構造体初期化
@@ -163,7 +167,11 @@
 			//	メニューの項目数まわす
 			for ( int i = 0; i < 3; i++ )
 			{
-				ImageInitialize( menuImage[i], 640, 200 + 200 * i, 700, 150, 0, 128 * i, 512, 128 );
+				x = static_cast<int>( iexSystem::ScreenWidth / 2 );
+				y = static_cast<int>( iexSystem::ScreenHeight * 0.28f );
+				w = static_cast<int>( iexSystem::ScreenWidth * 0.55f );
+				h = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
+				ImageInitialize( menuImage[i], x, y + y * i, w, h, 0, 128 * i, 512, 128 );
 				menuImage[i].obj = menuText;
 				menuImage[i].renderflag = false;
 			}
@@ -240,8 +248,8 @@
 
 			//	中心座標・初期スケール設定
 			numberImageInfo[i].pos.x = static_cast<int>( out.x );
-			numberImageInfo[i].pos.y = 270;
-			numberImageInfo[i].scale = 80;
+			numberImageInfo[i].pos.y = static_cast<int>( iexSystem::ScreenHeight * 0.38f );
+			numberImageInfo[i].scale = 100;
 
 			//	各位画像設定
 			numberImageInfo[i].one.obj = originNumber;
@@ -265,9 +273,10 @@
 
 			//	構造体初期化
 			int 	x = static_cast<int>( out.x );
-			int		y = 400;
-			int		w = 150;
-			int		h = 90;
+			int		y = static_cast<int>( iexSystem::ScreenHeight * 0.55f );
+			int		w = static_cast<int>( iexSystem::ScreenWidth * 0.12f );
+			int		h = static_cast<int>( iexSystem::ScreenHeight * 0.13f );
+
 			int		sx = originInfo[i].rank * 128;
 			int		sy = 128;
 			int		sw = 128;

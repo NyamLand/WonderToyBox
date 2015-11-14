@@ -20,9 +20,7 @@ using namespace std;
 	
 	//	static宣言
 	bool	sceneLoad::threadState;
-	//デバック用
-	int	Xs = 400;
-	int Ys = 200;
+
 //----------------------------------------------------------------------------------
 //	初期化・解放	
 //----------------------------------------------------------------------------------
@@ -53,7 +51,11 @@ using namespace std;
 		mainView = new Camera();
 		load = new iex2DObj( "DATA/Load/Lord-back.png" );
 		load_anykey.obj = new iex2DObj( "DATA/UI/pressspace.png" );
-		ImageInitialize( load_anykey, 1100, 675, 256, 128, 0, 0, 256, 128 );
+		int x = static_cast<int>( iexSystem::ScreenWidth * 0.86f );
+		int y = static_cast<int>( iexSystem::ScreenHeight * 0.93f );
+		int w = static_cast<int>( iexSystem::ScreenWidth * 0.2f );
+		int h = static_cast<int>( iexSystem::ScreenHeight * 0.18f );
+		ImageInitialize( load_anykey, x, y, w, h, 0, 0, 256, 128 );
 		//	別スレッド作成
 		_beginthread( Thread, 0, ( void* )newScene );
 		
@@ -92,7 +94,7 @@ using namespace std;
 		mainView->Clear();
 
 		//	背景描画
-		load->Render( 0, 0, 1280, 720, 0, 0, 1280, 720 );
+		load->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 1280, 720 );
 
 		//	pressSpace描画
 		if ( threadState )

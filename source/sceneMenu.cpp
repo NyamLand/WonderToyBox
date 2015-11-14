@@ -81,13 +81,13 @@
 
 		//	画像読み込み
 		back = make_unique<iex2DObj>( LPSTR( "DATA/UI/back.png" ) );
-		face = make_unique<iex2DObj>( LPSTR( "DATA/UI/chara_emotion.png" ) );
-		cursor = make_unique<iex2DObj>( LPSTR( "DATA/UI/cursor.png" ) );
 		frame = make_unique<iex2DObj>( LPSTR( "DATA/UI/frame.png" ) );
 		checkBack = make_unique<iex2DObj>( LPSTR( "DATA/UI/selectCheck_Back.png" ) );
 		checkCursor = make_unique<iex2DObj>( LPSTR( "DATA/UI/selectCheck_Cursor.png" ) );
 		playerNumText = make_unique<iex2DObj>( LPSTR( "DATA/UI/playerNum_Text.png" ) );
 		playerNum = make_unique<iex2DObj>( LPSTR( "DATA/UI/playerNum.png" ) );
+		face = new iex2DObj( "DATA/UI/chara_emotion.png" );
+		cursor = new iex2DObj( "DATA/UI/cursor.png" );
 
 		//	モデル読み込み
 		//org[CHARACTER_TYPE::KNIGHT] = new iex3DObj( "DATA/CHR/Knight/Knight_Dammy.IEM" );		//	騎士
@@ -123,7 +123,11 @@
 		//	画像構造体初期化
 		{
 			textImage.obj = new iex2DObj( "DATA/UI/menu-head.png" );
-			ImageInitialize( textImage, 640, 150, 370, 150, 512, 0, 512, 256 );
+			int x = static_cast<int>( iexSystem::ScreenWidth / 2 );
+			int y = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
+			int w = static_cast<int>( iexSystem::ScreenWidth * 0.29f );
+			int h = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
+			ImageInitialize( textImage, x, y, w, h, 512, 0, 512, 256 );
 			textImage.angle = D3DXToRadian( 5.0f );
 			textImage.renderflag = true;
 		}
@@ -141,6 +145,8 @@
 	{
 		SafeDelete( mainView );
 		SafeDelete( textImage.obj );
+		SafeDelete( face );
+		SafeDelete( cursor );
 		Random::Release();
 	}
 
@@ -198,7 +204,7 @@
 
 		//	背景( 一番後ろに表示 )
 		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
-		back->Render( 0, 0, 1280, 720, 0, 0, 1280, 720 );
+		back->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 1280, 720 );
 		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
 
 		switch ( mode )
@@ -304,8 +310,17 @@
 	//	描画
 	void	sceneMenu::SelectPlayerNumRender( void )
 	{
-		playerNum->Render( 360, 290, 100, 110, 0, playerNumSelectInfo.sy, 128, 128 );
-		playerNumText->Render( 450, 300, 500, 100, 0, 0, 512, 128 );
+		int x = static_cast<int>( iexSystem::ScreenWidth * 0.28f );
+		int y = static_cast<int>( iexSystem::ScreenHeight * 0.4f );
+		int w = static_cast<int>( iexSystem::ScreenWidth * 0.08f );
+		int h = static_cast<int>( iexSystem::ScreenHeight * 0.15f );
+		playerNum->Render( x, y, w, h, 0, playerNumSelectInfo.sy, 128, 128 );
+
+		x = static_cast<int>( iexSystem::ScreenWidth * 0.35f );
+		y = static_cast<int>( iexSystem::ScreenHeight * 0.41f );
+		w = static_cast<int>( iexSystem::ScreenWidth * 0.39f );
+		h = static_cast<int>( iexSystem::ScreenHeight * 0.138f );
+		playerNumText->Render( x, y, w, h, 0, 0, 512, 128 );
 	}
 
 //-------------------------------------------------------------------------------
@@ -326,6 +341,15 @@
 			//	選択情報初期化
 			characterSelectInfo.character[value] = value;
 			characterSelectInfo.select[value] = false;
+			int w = static_cast<int>( iexSystem::ScreenWidth * 0.04f );
+			int h = static_cast<int>( iexSystem::ScreenHeight * 0.07f );
+			ImageInitialize( cursorImage[value], 0, 0, w, h, 0, 0, 0, 0 );
+			cursorImage[value].obj = cursor;
+
+			if ( value >= gameManager->GetPlayerNum() )
+			{
+				cursorImage[value].renderflag = false;
+			}
 		}
 
 		//	変数初期化
@@ -335,9 +359,20 @@
 		characterSelectInfo.playerNum = gameManager->GetPlayerNum();
 
 		//	画像位置初期化
-		ImageInitialize( textImage, 640, 150, 370, 150, 512, 0, 512, 256 );
 		textImage.angle = D3DXToRadian( 5.0f );
 		textImage.renderflag = true;
+
+		//	顔画像初期化
+		FOR( 0, CHARACTER_TYPE::MAX )
+		{
+			int left = static_cast<int>( iexSystem::ScreenWidth / 5 );
+			int x = left + left * value;
+			int y = static_cast<int>( iexSystem::ScreenHeight * 0.45f );
+			int w = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
+			int h = static_cast<int>( iexSystem::ScreenHeight * 0.155f );
+			ImageInitialize( faceImage[value], x, y, w, h, 0, 256 * value, 256, 256 );
+			faceImage[value].obj = face;
+		}
 	}
 
 	//	キャラクター選択
@@ -416,25 +451,29 @@
 	//	キャラクター選択描画
 	void	sceneMenu::SelectCharacterRender( void )
 	{
+		//	テキスト画像
+		RenderImage( textImage, 512, 0, 512, 256, IMAGE_MODE::ADOPTPARAM );
+
 		//	モデル・顔・カーソル描画
 		FOR( 0, PLAYER_MAX )
 		{
 			//	モデル描画
 			obj[value]->Render( shader3D, "toon" );
-			
+		}
+		
+		FOR( 0, CHARACTER_TYPE::MAX )
+		{
 			//	顔描画
-			int	 x = 230 + ( 670 / 3 * value );
-			Vector3	color = Vector3( 1.0f, 1.0f, 1.0f );
-			face->Render( x, 280, 150, 150, 0, 256 * value, 256, 256, GetColor( color ) );
-
+			RenderImage( faceImage[value], 0, 256 * value, 256, 256, IMAGE_MODE::NORMAL );
+		}
 			//	カーソル描画
-			x = 230 + ( 670 / 3 * characterSelectInfo.character[value] );
-			if ( !characterSelectInfo.select[value] )
-				cursor->Render( x + 35 * value, 250, 50, 50, 128 * ( value % 2 ), 128 * ( value / 2 ), 128, 128 );
+		FOR( 0, PLAYER_MAX )
+		{
+			cursorImage[value].x = faceImage[characterSelectInfo.character[value]].x;
+			cursorImage[value].y = faceImage[characterSelectInfo.character[value]].y - faceImage[characterSelectInfo.character[value]].h / 2;
+			RenderImage( cursorImage[value], 128 * ( value % 2 ), 128 * ( value / 2 ), 128, 128, IMAGE_MODE::NORMAL );
 		}
 
-		//	テキスト画像
-		RenderImage( textImage, 512, 0, 512, 256, IMAGE_MODE::ADOPTPARAM );
 	}
 
 //-------------------------------------------------------------------------------
@@ -459,11 +498,6 @@
 		//	パラメータ初期化
 		stageSelectInfo.angle = D3DX_PI;
 		stageSelectInfo.stage = 0;
-
-		//	画像位置初期化
-		ImageInitialize( textImage, 640, 150, 370, 150, 0, 256, 512, 256 );
-		textImage.angle = D3DXToRadian( 5.0f );
-		textImage.renderflag = true;
 	}
 
 	//	ステージ選択
@@ -540,9 +574,6 @@
 
 		deskStage->Render();
 		forestStage->Render();
-
-		//	テキスト画像
-		RenderImage( textImage, 0, 256, 512, 256, IMAGE_MODE::ADOPTPARAM );
 	}
 
 //-------------------------------------------------------------------------------
@@ -572,11 +603,11 @@
 
 		//	ステージ座標、向き設定
 		{
-			deskStage->SetPos( 0.0f, 5.0f, 0.0f );
+			deskStage->SetPos( 0.0f, 5.0f, 5.0f );
 			deskStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 			deskStage->SetScale( 0.08f );
 			deskStage->Update();
-			forestStage->SetPos( 0.0f, 6.0f, 0.0f );
+			forestStage->SetPos( 0.0f, 6.0f, 5.0f );
 			forestStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 			forestStage->SetScale( 0.03f );
 			forestStage->Update();
@@ -656,8 +687,17 @@
 		//	チェック項目描画
 		if ( checkSelectInfo.check )
 		{
-			checkBack->Render( 390, 120, 500, 500, 0, 0, 512, 512 );
-			checkCursor->Render( 440, 450, 400, 100, 0, checkSelectInfo.select * 128, 512, 128 );
+			int x = static_cast<int>( iexSystem::ScreenWidth * 0.3f );
+			int y = static_cast<int>( iexSystem::ScreenHeight * 0.17f );
+			int w = static_cast<int>( iexSystem::ScreenWidth *  0.39f );
+			int h = static_cast<int>( iexSystem::ScreenHeight * 0.7f );
+			checkBack->Render( x, y, w, h, 0, 0, 512, 512 );
+
+			x = static_cast<int>( iexSystem::ScreenWidth * 0.34f );
+			y = static_cast<int>( iexSystem::ScreenHeight * 0.62f );
+			w = static_cast<int>( iexSystem::ScreenWidth *  0.31f );
+			h = static_cast<int>( iexSystem::ScreenHeight * 0.13f );
+			checkCursor->Render( x, y, w, h, 0, checkSelectInfo.select * 128, 512, 128 );
 		}
 	}
 

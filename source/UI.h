@@ -84,6 +84,18 @@ private:
 		float	param;
 	};
 
+	struct AIRPLANE_INFO
+	{
+		int IN_START_POS_X;
+		int IN_START_POS_Y;
+		int IN_END_POS_X;
+		int IN_END_POS_Y;
+		int OUT_START_POS_X;
+		int OUT_END_POS_X;
+		int OUT_END_POS_Y;
+		int ROLL_POINT_ADJUST_X;
+	};
+
 private:
 	//	各画像
 	ImageObj	timer;
@@ -136,6 +148,9 @@ private:
 	//	HurryUpパラメータ
 	HURRY_INFO	hurryInfo;
 
+	//	飛行機パラメータ
+	AIRPLANE_INFO		airPlaneInfo;
+
 	//	パラメータ
 	int		scene;
 	
@@ -173,6 +188,7 @@ public:
 	void	ResultRender( int mode );
 
 	//------------------------------タイトル処理------------------------------------//
+	void	AirPlaneInitialize( void );
 	bool	FlyingIn( void );
 	bool	FlyingOut( int startPos );
 

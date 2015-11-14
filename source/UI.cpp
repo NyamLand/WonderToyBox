@@ -40,17 +40,7 @@
 		}
 
 		//	タイトルテキスト座標情報
-		namespace TITLE_TEXT_POS_INFO
-		{
-			 int IN_START_POS_X = static_cast<int>( iexSystem::ScreenWidth * 1.5f );
-			 int IN_START_POS_Y = static_cast<int>( iexSystem::ScreenHeight * -0.13f );
-			 int IN_END_POS_X = static_cast<int>( iexSystem::ScreenWidth / 2 );
-			 int IN_END_POS_Y = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
-			 int OUT_START_POS_X = static_cast<int>( iexSystem::ScreenWidth / 2 );
-			 int OUT_END_POS_X = static_cast<int>( iexSystem::ScreenWidth * -0.55f );
-			 int OUT_END_POS_Y = static_cast<int>( iexSystem::ScreenHeight * 0 );
-			 int ROLL_POINT_ADJUST_X = 200;
-		}
+
 
 		//	タイトルテキスト読み込み座標情報
 		namespace TITLE_TEXT_SRCPOS_INFO
@@ -188,7 +178,11 @@
 		titleInfo.textImage.obj = new iex2DObj( "DATA/UI/menu-int.png" );
 
 		//	構造体初期化
-		ImageInitialize( titleInfo.textImage, 1300, 750, 800, 100, TITLE_TEXT_SRCPOS_INFO::MENU_SRC_POS_X, TITLE_TEXT_SRCPOS_INFO::MENU_SRC_POS_Y, 1024, 128 );
+		int x = static_cast<int>( iexSystem::ScreenWidth * 1.01f );
+		int y = static_cast<int>( iexSystem::ScreenHeight * 1.04f );
+		int w = static_cast<int>( iexSystem::ScreenWidth * 0.6f );
+		int h = static_cast<int>( iexSystem::ScreenHeight * 0.14f );
+		ImageInitialize( titleInfo.textImage, x, y, w, h, TITLE_TEXT_SRCPOS_INFO::MENU_SRC_POS_X, TITLE_TEXT_SRCPOS_INFO::MENU_SRC_POS_Y, 1024, 128 );
 		titleInfo.textImage.renderflag = false;
 		
 		//	変数初期化
@@ -291,8 +285,8 @@
 
 		case 1:
 			//	ふわふわさせる
-			titleInfo.textImage.y = TITLE_TEXT_POS_INFO::IN_END_POS_Y + static_cast<int>( 10.0f * sinf( titleInfo.t ) );
-			titleInfo.textImage.p = GetPoint( titleInfo.textImage.x - TITLE_TEXT_POS_INFO::ROLL_POINT_ADJUST_X, titleInfo.textImage.y  );
+			titleInfo.textImage.y = airPlaneInfo.IN_END_POS_Y + static_cast<int>( 10.0f * sinf( titleInfo.t ) );
+			titleInfo.textImage.p = GetPoint( titleInfo.textImage.x - airPlaneInfo.ROLL_POINT_ADJUST_X, titleInfo.textImage.y  );
 			titleInfo.textImage.angle = 0.0f + ( D3DX_PI / 180.0f * -1.0f ) * cosf( titleInfo.t );
 			titleInfo.t += D3DX_PI / 180.0f * 1.0f;
 
@@ -417,6 +411,19 @@
 //	タイトル動作初期化
 //------------------------------------------------------------------------------
 
+	//	飛行機初期化
+	void	UI::AirPlaneInitialize( void )
+	{
+		airPlaneInfo.IN_START_POS_X = static_cast<int>(iexSystem::ScreenWidth * 1.5f);
+		airPlaneInfo.IN_START_POS_Y = static_cast<int>(iexSystem::ScreenHeight * -0.13f);
+		airPlaneInfo.IN_END_POS_X = static_cast<int>(iexSystem::ScreenWidth / 2);
+		airPlaneInfo.IN_END_POS_Y = static_cast<int>(iexSystem::ScreenHeight * 0.2f);
+		airPlaneInfo.OUT_START_POS_X = static_cast<int>(iexSystem::ScreenWidth / 2);
+		airPlaneInfo.OUT_END_POS_X = static_cast<int>(iexSystem::ScreenWidth * -0.55f);
+		airPlaneInfo.OUT_END_POS_Y = static_cast<int>(iexSystem::ScreenHeight * 0);
+		airPlaneInfo.ROLL_POINT_ADJUST_X = 200;
+	}
+
 	//	飛んでくる
 	bool	UI::FlyingIn( void )
 	{
@@ -430,16 +437,16 @@
 		titleInfo.param = GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv5, titleInfo.textImage.t );
 
 		//	上移動
-		Lerp( titleInfo.textImage.y, TITLE_TEXT_POS_INFO::IN_START_POS_Y, TITLE_TEXT_POS_INFO::IN_END_POS_Y, titleInfo.param );
+		Lerp( titleInfo.textImage.y, airPlaneInfo.IN_START_POS_Y, airPlaneInfo.IN_END_POS_Y, titleInfo.param );
 
 		//	パラメータ調整
 		titleInfo.param = GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, titleInfo.textImage.t );
 
 		//	左移動
-		Lerp(titleInfo.textImage.x, TITLE_TEXT_POS_INFO::IN_START_POS_X, TITLE_TEXT_POS_INFO::IN_END_POS_X, titleInfo.param);
+		Lerp(titleInfo.textImage.x, airPlaneInfo.IN_START_POS_X, airPlaneInfo.IN_END_POS_X, titleInfo.param);
 
 		//	回転
-		titleInfo.textImage.p = GetPoint( titleInfo.textImage.x - TITLE_TEXT_POS_INFO::ROLL_POINT_ADJUST_X, titleInfo.textImage.y );
+		titleInfo.textImage.p = GetPoint( titleInfo.textImage.x - airPlaneInfo.ROLL_POINT_ADJUST_X, titleInfo.textImage.y );
 		titleInfo.textImage.angle = 0.0f + ( D3DX_PI / 180.0f * -1.0f ) * sinf( D3DX_PI  / 2 * titleInfo.textImage.t );
 
 		if ( titleInfo.textImage.t >= 1.0f )	return	true;
@@ -459,16 +466,16 @@
 		titleInfo.param = GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv5, titleInfo.textImage.t );
 
 		//	上移動
-		Lerp( titleInfo.textImage.y, startPos, ( int )TITLE_TEXT_POS_INFO::OUT_END_POS_Y, titleInfo.param );
+		Lerp( titleInfo.textImage.y, startPos, ( int )airPlaneInfo.OUT_END_POS_Y, titleInfo.param );
 
 		//	パラメータ調整
 		titleInfo.param = GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv3, titleInfo.textImage.t );
 
 		//	左移動
-		Lerp( titleInfo.textImage.x, TITLE_TEXT_POS_INFO::OUT_START_POS_X, TITLE_TEXT_POS_INFO::OUT_END_POS_X, titleInfo.param );
+		Lerp( titleInfo.textImage.x, airPlaneInfo.OUT_START_POS_X, airPlaneInfo.OUT_END_POS_X, titleInfo.param );
 
 		//	回転
-		titleInfo.textImage.p = GetPoint( titleInfo.textImage.x - TITLE_TEXT_POS_INFO::ROLL_POINT_ADJUST_X, titleInfo.textImage.y );
+		titleInfo.textImage.p = GetPoint( titleInfo.textImage.x - airPlaneInfo.ROLL_POINT_ADJUST_X, titleInfo.textImage.y );
 		titleInfo.textImage.angle = 0.0f + ( D3DX_PI / 180.0f * - 1.0f ) * sinf( D3DX_PI / 2 * titleInfo.textImage.t );
 
 		if ( titleInfo.textImage.t >= 1.0f )	return	true;
@@ -482,14 +489,17 @@
 	//	コインバー初期化
 	void	UI::CoinBarInitialize( void )
 	{
-		ImageInitialize(frame, (1280 / 2), iexSystem::ScreenHeight - 50, iexSystem::ScreenWidth - 300, 80, 0, 32 * 5, 512, 64);
-		ImageInitialize(backgauge, frame.x, frame.y, frame.w - (frame.w / 10), frame.h - (frame.h / 2), 0, 32 * 4, 480, 32);
-		ImageInitialize(gauge, frame.x, frame.y, 0, backgauge.h, 0, 32, 0, 32);
-		ImageInitialize(faceImage, 0, frame.y - (frame.h / 2), 32, 32, 256, 256, 256, 256);
-		//frame_x = ( 1280 / 2 ) - ( 512 / 2 );
-		//frame_y = 600;
-		//frame_sx = 512;
-		//frame_sy = 64;
+		int x = static_cast<int>( iexSystem::ScreenWidth / 2 );
+		int y = static_cast<int>( iexSystem::ScreenHeight * 0.93f );
+		int w = static_cast<int>( iexSystem::ScreenWidth * 0.77f );
+		int h = static_cast<int>( iexSystem::ScreenHeight * 0.11f );
+		ImageInitialize( frame, x, y, w, h, 0, 32 * 5, 512, 64);
+		ImageInitialize( backgauge, frame.x, frame.y, frame.w - (frame.w / 10), frame.h - (frame.h / 2), 0, 32 * 4, 480, 32);
+		ImageInitialize( gauge, frame.x, frame.y, 0, backgauge.h, 0, 32, 0, 32);
+		w = static_cast<int>( iexSystem::ScreenWidth * 0.025f );
+		h = static_cast<int>( iexSystem::ScreenHeight * 0.04f );
+		ImageInitialize(faceImage, 0, frame.y - (frame.h / 2), w, h, 256, 256, 256, 256);
+
 		for (int i = 0; i < NUM_BAR; i++)
 		{
 			bar_x[i] = frame.x;
@@ -503,7 +513,11 @@
 	{
 
 		//	構造体初期化
-		ImageInitialize(timer, 512, 30, 64, 64, 64, 0, 64, 64);
+		int x = static_cast<int>( iexSystem::ScreenWidth * ( 512 / 1280 ) );
+		int y = static_cast<int>( iexSystem::ScreenHeight * ( 30 / 720 ) );
+		int w = static_cast<int>( iexSystem::ScreenWidth * ( 64 / 1280 ) );
+		int h = static_cast<int>( iexSystem::ScreenHeight * ( 64 / 720 ) );
+		ImageInitialize(timer, x, y, w, h, 64, 0, 64, 64);
 		for ( int i = 0; i < 2; i++ )
 		{
 			minute[i] = 0;
@@ -515,21 +529,25 @@
 	{
 		//	ニュースバー初期化
 		newsbar.renderflag = false;
-		newsbar.left = 1280;
+		newsbar.left = iexSystem::ScreenWidth;
 		newsbar.top = 0;
-		newsbar.right = 1280;
-		newsbar.bottom = 50;
+		newsbar.right = iexSystem::ScreenWidth;
+		newsbar.bottom = static_cast<int>( iexSystem::ScreenHeight * ( 50 / 720 ) );
 		newsbar.text = GameInfo::NewsText[ gameManager->GetLastBonus() ];
 		newsbar.alpha = 0.5f;
 		newsbar.color = Vector3( 0.3f, 0.3f, 0.3f );
 		newsbar.step = 0;
-		newsbar.textleft = 1500;
+		newsbar.textleft = static_cast<int>( iexSystem::ScreenWidth * ( 1500 / 1280 ) );
 	}
 
 	//	カウントダウン・スタート・終了演出
 	void	UI::StartAndTimeUpInitialize( void )
 	{
-		ImageInitialize( countImage, 640, 360, 350, 350, 0, 0, 256, 256 );
+		int x = static_cast<int>( iexSystem::ScreenWidth / 2 );
+		int y = static_cast<int>( iexSystem::ScreenHeight / 2 );
+		int w = static_cast<int>( iexSystem::ScreenWidth * 0.27f );
+		int h = static_cast<int>( iexSystem::ScreenHeight * 0.49f );
+		ImageInitialize( countImage, x, y, w, h, 0, 0, 256, 256 );
 		countImage.renderflag = true;
 		count = 0;
 		waitTimer = 0;
@@ -542,20 +560,26 @@
 		
 		//　顔ルーレット関連
 		ddInfo.face.obj = new iex2DObj("DATA/UI/chara_emotion.png");
-		ImageInitialize(ddInfo.face, 1280 / 2, 720 / 2, 0, 0, FACE_INFO::Normal * 256, 0 * 256, 256, 256);
+		int x = static_cast<int>( iexSystem::ScreenWidth / 2 );
+		int y = static_cast<int>( iexSystem::ScreenHeight /2 );
+		ImageInitialize(ddInfo.face, x, y, 0, 0, FACE_INFO::Normal * 256, 0 * 256, 256, 256);
 		ddInfo.f = 0;
 		ddInfo.roulette = 0;
 		ddInfo.face_step = -1;
 
 		//　DonketsuBoooooooooooost!!!
 		ddInfo.DB.obj = new iex2DObj("DATA/UI/DonketuUI.png");
-		ImageInitialize(ddInfo.DB, 1200, -100, 0, 0, 0, 0, 512, 256);
+		x = static_cast<int>( iexSystem::ScreenWidth * 0.94f );
+		y = static_cast<int>( iexSystem::ScreenHeight * -0.14f );
+		ImageInitialize(ddInfo.DB, x, y, 0, 0, 0, 0, 512, 256);
 		ddInfo.DB.angle = 0;
 		ddInfo.DB_step = -1;
 
 		//　？P関連
+		x = static_cast<int>( iexSystem::ScreenWidth * 0.78f );
+		y = static_cast<int>( iexSystem::ScreenHeight * 0.76f );
 		ddInfo.P.obj = new iex2DObj("DATA/UI/DonketuUI.png");
-		ImageInitialize(ddInfo.P, 1000, 550, 0, 0, 0, 256, 128, 128);
+		ImageInitialize(ddInfo.P, x, y, 0, 0, 0, 256, 128, 128);
 		ddInfo.P.renderflag = false;
 		ddInfo.P_step = -1;
 	}
@@ -569,7 +593,11 @@
 		alertInfo.param = 0.0f;
 
 		//	画像構造体初期化
-		ImageInitialize( alertImage, 640, 360, 200, 200, 0, 0, 256, 256 );
+		int x = static_cast<int>( iexSystem::ScreenWidth / 2 );
+		int y = static_cast<int>( iexSystem::ScreenHeight / 2 );
+		int w = static_cast<int>( iexSystem::ScreenWidth * 0.15f );
+		int h = static_cast<int>( iexSystem::ScreenHeight * 0.27f );
+		ImageInitialize( alertImage, x, y, w, h, 0, 0, 256, 256 );
 		alertImage.renderflag = true;
 	}
 
@@ -588,7 +616,9 @@
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			pNumImage[i].obj = playerNumber;
-			ImageInitialize( pNumImage[i], 0, 0, 50, 50, ( i % 2 ) * 128, ( i / 2 ) * 128, 128, 128 );
+			int w = static_cast<int>( iexSystem::ScreenWidth * 0.04f );
+			int h = static_cast<int>( iexSystem::ScreenHeight * 0.07f );
+			ImageInitialize( pNumImage[i], 0, 0, w, h, ( i % 2 ) * 128, ( i / 2 ) * 128, 128, 128 );
 		}
 	}
 	
@@ -617,7 +647,7 @@
 		{
 		case 0:
 			//	バー出現
-			newsbar.left -= 30;
+			newsbar.left -= static_cast<int>( iexSystem::ScreenWidth * 0.02f );
 			if ( newsbar.left <= 0 )
 			{
 				newsbar.left = 0;
@@ -628,16 +658,16 @@
 		case 1:
 			//	テキスト出現
 			newsbar.textleft--;
-			if ( newsbar.textleft <= -320 )
+			if ( newsbar.textleft <= static_cast<int>( iexSystem::ScreenWidth * -0.23f ) )
 			{
-				newsbar.textleft = 1500;
+				newsbar.textleft = static_cast<int>( iexSystem::ScreenWidth * 1.17f );
 				newsbar.step++;
 			}
 			break;
 
 		case 2:
 			//	バー退避
-			newsbar.right -= 30;
+			newsbar.right -= static_cast<int>( iexSystem::ScreenWidth * 0.02f );
 			if ( newsbar.right <= 0 )
 			{
 				newsbar.right = 0;
@@ -648,9 +678,9 @@
 		case 3:
 			//	初期化
 			gameManager->SetNewsFlag( false );
-			newsbar.left = 1280;
-			newsbar.right = 1280;
-			newsbar.textleft = 1500;
+			newsbar.left = iexSystem::ScreenWidth;
+			newsbar.right = iexSystem::ScreenWidth;
+			newsbar.textleft = static_cast<int>( iexSystem::ScreenWidth * 1.17f );
 			newsbar.step = 0;
 			break;
 		}
@@ -696,8 +726,8 @@
 				countImage.sy = 0;
 				countImage.sw = 512;
 				countImage.sh = 512;
-				countImage.w = 750;
-				countImage.h = 750;
+				countImage.w = static_cast<int>( iexSystem::ScreenWidth * 0.59f );
+				countImage.h = static_cast<int>( iexSystem::ScreenHeight * 1.04f );
 				SetWave( countImage, 1.5f );
 				break;
 
@@ -705,8 +735,8 @@
 				waitTimer = 2 * SECOND;
 				
 				//	画像読み込み位置・サイズ設定			
-				countImage.w = 600;
-				countImage.h = 370;
+				countImage.w = static_cast<int>( iexSystem::ScreenWidth * 0.47f );
+				countImage.h = static_cast<int>( iexSystem::ScreenHeight * 0.51f );
 				countImage.sx = 0;
 				countImage.sy = 512;
 				countImage.sw = 1024;
@@ -828,23 +858,20 @@
 	{
 		//フレーム
 		RenderImage(frame, frame.sx, frame.sy, frame.sw, frame.sh, IMAGE_MODE::NORMAL);
-		//coinbar->Render(frame_x, frame_y, 512, 64, 0, 32 * 5, frame_sx, frame_sy);
 
 		//灰色のバー
-			RenderImage(backgauge, backgauge.sx, backgauge.sy, backgauge.sw, backgauge.sh, IMAGE_MODE::NORMAL);
-		//coinbar->Render(bar_x[0], bar_y[0], 480, 32, 0, 32 * 4, 480, 32);
+		RenderImage(backgauge, backgauge.sx, backgauge.sy, backgauge.sw, backgauge.sh, IMAGE_MODE::NORMAL);
 
 		for (int i = 0; i < PLAYER_MAX; i++)
 		{
 			//色のバー
 			gauge.w = bar_sx[i];	gauge.sw = bar_sx[i];
+
 			//	（左上位置 - ゲージ幅の半分）で中心、ゲージを右向きへ増やすため
 			RenderImage(gauge, gauge.sx, gauge.sy * i, gauge.sw, gauge.sh, IMAGE_MODE::NORMAL, bar_x[i] - (backgauge.w / 2) + (gauge.sw / 2), gauge.y);
-			//	coinbar->Render(bar_x[i], bar_y[i], bar_sx[i], 32, 0, 32 * i, bar_sx[i], bar_sy[i]);
-			//																										
+																					
 			//顔
 			RenderImage(faceImage, faceImage.sx * state_type[i], faceImage.sy * charatype[i], faceImage.sw, faceImage.sh, IMAGE_MODE::NORMAL, state_x[i] - (backgauge.w / 2), faceImage.y);
-			//face->Render(state_x[i], 550, 32, 32, state_type[i] * 256, charatype[i] * 256, 256, 256);
 		}
 	}
 
@@ -854,7 +881,7 @@
 		if( !gameManager->GetNewsFlag() )	return;
 		
 		iexPolygon::Rect( newsbar.left, newsbar.top, newsbar.right - newsbar.left, newsbar.bottom - newsbar.top, RS_COPY, GetColor( newsbar.color, newsbar.alpha ) );
-		IEX_DrawText( newsbar.text, newsbar.textleft, newsbar.top + 10, 500, 200, 0xFFFFFFFF );
+		IEX_DrawText( newsbar.text, newsbar.textleft, newsbar.top + static_cast<int>( iexSystem::ScreenHeight * 0.013f ), 500, 200, 0xFFFFFFFF );
 	}
 
 	//	タイマー描画
@@ -886,7 +913,7 @@
 	{
 		//　グレーバック
 		DWORD	color = 0xD0000000;
-		iexPolygon::Rect( 0, 0, 1280, 720, RS_COPY, color );
+		iexPolygon::Rect( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, RS_COPY, color );
 
 		//　顔ルーレット
 		RenderImage(ddInfo.face, FACE_INFO::Normal * 256, charatype[ddInfo.f] * 256, 256, 256, IMAGE_MODE::NORMAL);
@@ -911,7 +938,7 @@
 	void	UI::AlertRender( void )
 	{
 		//	赤フィルター描画
-		iexPolygon::Rect( 0, 0, 1280, 720, RS_COPY, GetColor( 1.0f, 0.0f, 0.0f, alertInfo.alpha ) );
+		iexPolygon::Rect( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, RS_COPY, GetColor( 1.0f, 0.0f, 0.0f, alertInfo.alpha ) );
 
 		//	警告画像描画
 		RenderImage( alertImage, 0, 0, 256, 256, IMAGE_MODE::NORMAL );
@@ -1018,16 +1045,15 @@
 		}
 	}
 
-
 	//　DonketsuBoooooooooooost!!!の演出
 	void	UI::DB_Direction( int wait )
 	{
-		const int POS_X = 1280 / 4;		//　固定位置
-		const int POS_Y = 720 / 4;		//　固定位置
-		const int TRANS_X = (POS_X - 1200) / 30;	//　TPF
-		const int TRANS_Y = (POS_Y - -100) / 30;	//　TPF
-		const int SIZE_X = 600;
-		const int SIZE_Y = 300;
+		const int POS_X = iexSystem::ScreenWidth / 4;		//　固定位置
+		const int POS_Y = iexSystem::ScreenHeight / 4;		//　固定位置
+		const int TRANS_X = (POS_X - static_cast<int>( iexSystem::ScreenWidth * 0.94f ) ) / 30;	//　TPF
+		const int TRANS_Y = (POS_Y - static_cast<int>( iexSystem::ScreenHeight * -0.14f ) ) / 30;	//　TPF
+		const int SIZE_X = static_cast<int>( iexSystem::ScreenWidth * 0.47f );
+		const int SIZE_Y = static_cast<int>( iexSystem::ScreenHeight * 0.41f );
 		const int SCALING_X = SIZE_X / 30;
 		const int SCALING_Y = SIZE_Y / 30;
 		const float ROT = 30 * 0.0175f;	//　回転量
@@ -1114,7 +1140,8 @@
 			//　４Ｐ　→　しぼみ始める
 		case DD_TIMING::FACE_LOCK + INTERVAL * 5:
 			ddInfo.face_step = 4;
-			ddInfo.face.w = ddInfo.face.h = 320;
+			ddInfo.face.w = static_cast<int>( iexSystem::ScreenWidth * 0.25f );
+			ddInfo.face.h = static_cast<int>( iexSystem::ScreenHeight * 0.44f );
 			break;
 
 			//　しぼみきる　→　待ち
@@ -1160,14 +1187,15 @@
 			//　ビリ拡大（大きめに）
 		case 6:
 			ddInfo.face.renderflag = true;
-			ddInfo.face.w += 500/INTERVAL;
-			ddInfo.face.h += 500/INTERVAL;
+			ddInfo.face.w += static_cast<int>( iexSystem::ScreenWidth * 0.39f ) / INTERVAL;
+			ddInfo.face.h += static_cast<int>( iexSystem::ScreenHeight * 0.69f ) / INTERVAL;
 			break;
 
 			//　放置
 		case 7:
 			ddInfo.face.renderflag = true;
-			ddInfo.face.w = ddInfo.face.h = 500;
+			ddInfo.face.w = static_cast<int>( iexSystem::ScreenWidth * 0.39f );
+			ddInfo.face.h = static_cast<int>( iexSystem::ScreenHeight * 0.69f );
 			break;
 
 		default:
@@ -1180,8 +1208,8 @@
 	void	UI::P_Direction( int wait )
 	{
 		const int INTERVAL = 5;
-		const int SIZE_X = 400;
-		const int SIZE_Y = 350;
+		const int SIZE_X = static_cast<int>( iexSystem::ScreenWidth * 0.31f );
+		const int SIZE_Y = static_cast<int>( iexSystem::ScreenHeight * 0.49f );
 		const int SCALING = 200;
 		const int SPF = SCALING / INTERVAL;
 		

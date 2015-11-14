@@ -74,9 +74,9 @@
 			playerView[i]->SetPos(Vector3(0.0f, 20.0f, -10.0f));
 
 			//	ワイプ初期化
-			playerWipe[i] = make_unique<iex2DObj>( 1280, 720, IEX2D_RENDERTARGET );
+			playerWipe[i] = make_unique<iex2DObj>( iexSystem::ScreenWidth, iexSystem::ScreenHeight, IEX2D_RENDERTARGET );
 		}
-		m_screen = make_unique<iex2DObj>(1280, 720, IEX2D_RENDERTARGET);
+		m_screen = make_unique<iex2DObj>( iexSystem::ScreenWidth, iexSystem::ScreenHeight, IEX2D_RENDERTARGET);
 
 		//	gameManagerから情報取得
 		playerNum = gameManager->GetPlayerNum();
@@ -435,11 +435,11 @@
 		//	フレームバッファへ切り替え
 		iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );
 
-		m_screen->Render( 0, 0, 1280, 720, 0, 0, 1280, 720 );
-		playerWipe[0]->Render( 0, 0, 250, 250, 0, 0, 1280, 720, shader2D, "WipeEffect" );
-		playerWipe[1]->Render( 250, 0, 250, 250, 0, 0, 1280, 720 );
-		playerWipe[2]->Render( 500, 0, 250, 250, 0, 0, 1280, 720 );
-		playerWipe[3]->Render( 750, 0, 250, 250, 0, 0, 1280, 720 );
+		m_screen->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight );
+		playerWipe[0]->Render( 0, 0, 250, 250, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, shader2D, "WipeEffect" );
+		playerWipe[1]->Render( 250, 0, 250, 250, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight );
+		playerWipe[2]->Render( 500, 0, 250, 250, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight );
+		playerWipe[3]->Render( 750, 0, 250, 250, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight );
 	}
 
 	//	HDR描画

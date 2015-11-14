@@ -9,6 +9,7 @@
 
 //	include
 #include	<memory>
+#include	"BaseChara.h"
 using namespace std;
 
 //	class
@@ -49,8 +50,6 @@ private:
 private:	
 	//	画像・モデル
 	unique_ptr<iex2DObj>	back;
-	unique_ptr<iex2DObj>	face;
-	unique_ptr<iex2DObj>	cursor;
 	unique_ptr<iex2DObj>	frame;
 	unique_ptr<iex2DObj>	checkBack;
 	unique_ptr<iex2DObj>	checkCursor;
@@ -60,7 +59,11 @@ private:
 	unique_ptr<iex2DObj>	playerNum;
 	unique_ptr<iex3DObj>	org[4];
 	iex3DObj*						obj[4];
+	iex2DObj*						face;
+	iex2DObj*						cursor;
 	ImageObj						textImage;
+	ImageObj						faceImage[CHARACTER_TYPE::MAX];
+	ImageObj						cursorImage[4];
 
 	//	各モード情報
 	PlayerNumSelectInfo		playerNumSelectInfo;
