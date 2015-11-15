@@ -160,8 +160,10 @@
 	//--------------------------------------------------------------------------------
 		float		wipe_size = 100.0f;
 		float		frame_size = 10.0f;
-		float		picture_width = 250.0f;
-		float		picture_height = 250.0f;
+		int			center_posX = 0;
+		int			center_posY = 0;
+		int			picture_width = 0;
+		int			picture_height = 0;
 		float3	frame_color = float3( 0.0f, 0.0f, 1.0f );
 
 	//--------------------------------------------------------------------------------
@@ -177,8 +179,8 @@
 			OUT = In.Color * tex2D( DecaleSamp, In.Tex );
 
 			//	ピクセルの中心からの位置を計算
-			float p1 = pPos.x - picture_width * 0.5f;
-			float p2 = pPos.y - picture_height * 0.5f;
+			float p1 = pPos.x - ( center_posX + ( picture_width * 0.5f ) );
+			float p2 = pPos.y - ( center_posY + ( picture_height * 0.5f ) );
 
 			//	フレームのサイズを含むサイズを設定
 			float	renderSize = ( wipe_size + frame_size ) * ( wipe_size + frame_size );
