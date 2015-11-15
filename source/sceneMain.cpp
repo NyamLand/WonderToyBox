@@ -550,12 +550,18 @@
 			int y = 125;
 			int w = 250;
 			int h = 250;
+			float	wipe_size = 100.0f;
+			float	frame_size = 10.0f;
+			Vector3	frame_color = Vector3( 0.0f, 1.0f, 0.0f );
 
 			//	シェーダーへセット
 			shader2D->SetValue( "center_posX", x );
 			shader2D->SetValue( "center_posY", y );
 			shader2D->SetValue( "picture_width", w );
 			shader2D->SetValue( "picture_height", h );
+			shader2D->SetValue( "wipe_size", wipe_size );
+			shader2D->SetValue( "frame_size", frame_size );
+			shader2D->SetValue( "frame_color", frame_color );
 
 			//	ワイプ描画
 			playerWipe[value]->Render( x, y, w, h, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, shader2D, "WipeEffect" );
