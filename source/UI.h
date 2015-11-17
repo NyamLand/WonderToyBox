@@ -96,6 +96,15 @@ private:
 		int ROLL_POINT_ADJUST_X;
 	};
 
+	//	コインバー情報
+	struct COINBAR_INFO
+	{
+		float	param[4];
+		float	sub[4];
+		float	scale[4];
+		int		coinNum[4];
+	};
+
 private:
 	//	各画像
 	ImageObj	timer;
@@ -150,6 +159,9 @@ private:
 
 	//	飛行機パラメータ
 	AIRPLANE_INFO		airPlaneInfo;
+
+	//	コインバー情報
+	COINBAR_INFO	coinBarInfo;
 
 	//	パラメータ
 	int		scene;
@@ -233,6 +245,9 @@ public:
 	void DB_Direction( int wait );
 	void P_Direction( int wait );
 
+	//	テスト用
+	void	BarControl2( void );
+	void	BarRender( void );
 	//------------------------------情報取得・設定------------------------------------//
 
 	//	情報設定
