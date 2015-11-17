@@ -50,9 +50,6 @@ private:
 	struct OptionInfo
 	{
 		bool	itemflg;
-		int		minute;
-		int		second;
-		int		coinMAX;
 	};
 private:	
 	//	‰æ‘œEƒ‚ƒfƒ‹
