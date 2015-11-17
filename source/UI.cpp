@@ -990,6 +990,54 @@
 		}
 	}
 
+	//	バー動作２
+	void		UI::BarControl2( void )
+	{
+		//	プレイヤー情報登録
+		FOR( 0, PLAYER_MAX )
+		{
+			coinBarInfo.coinNum[value] = gameManager->GetCoinNum( value );
+			coinBarInfo.param[value] = 1.0f;
+		}
+
+		float		sub[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+		float		average = 0;
+		static const int MAX_COIN = 201;
+
+		//	コイン差を調べる
+		for ( int i = 0; i < PLAYER_MAX; i++ )
+		{
+			for ( int n = 0; n < PLAYER_MAX; n++ )
+			{
+				//	コイン差で割合をだす
+				if ( i == n ) continue;
+
+				if ( coinBarInfo.coinNum[n] == 0 )	sub[n] = 1.0f;
+				else sub[n] = coinBarInfo.coinNum[i] / coinBarInfo.coinNum[n];
+			}
+
+			//	平均を求める
+			average = ( sub[0] + sub[1] + sub[2] + sub[3] ) / PLAYER_MAX;
+			average /= PLAYER_MAX - 1;
+			coinBarInfo.param[i] = average;
+		}
+
+		int		originWidth = backgauge.w / PLAYER_MAX;
+		FOR( 0, PLAYER_MAX )
+		{
+			bar_sx[value] = originWidth * coinBarInfo.param[value];
+		}
+
+		bar_x[1] = bar_x[0] + bar_sx[0];
+		bar_x[2] = bar_x[1] + bar_sx[1];
+		bar_x[3] = bar_x[2] + bar_sx[2];
+	}
+
+	//	バー描画
+	void		UI::BarRender( void )
+	{
+	}
+
 	//	顔動作
 	void	UI::StateImageControl( void )
 	{
