@@ -720,15 +720,22 @@
 	{
 
 		//Å@ç\ë¢ëÃèâä˙âª
-		optionInfo.coinMAX = 0;
 		optionInfo.itemflg = false;
+		/*optionInfo.coinMAX = 0;
 		optionInfo.minute = 0;
-		optionInfo.second = 0;
+		optionInfo.second = 0;*/
 	}
 
 	void	sceneMenu::OptionUpdate( void )
 	{
-
+		if (KEY_Get(KEY_SPACE) == 3){
+			if (optionInfo.itemflg == false){
+				optionInfo.itemflg = true;
+			}
+			else{
+				optionInfo.itemflg = false;
+			}
+		}
 	}
 
 	void	sceneMenu::OptionRender( void )
