@@ -513,11 +513,11 @@
 	{
 
 		//	ç\ë¢ëÃèâä˙âª
-		int x = static_cast<int>( iexSystem::ScreenWidth * ( 512 / 1280 ) );
-		int y = static_cast<int>( iexSystem::ScreenHeight * ( 30 / 720 ) );
-		int w = static_cast<int>( iexSystem::ScreenWidth * ( 64 / 1280 ) );
-		int h = static_cast<int>( iexSystem::ScreenHeight * ( 64 / 720 ) );
-		ImageInitialize(timer, x, y, w, h, 64, 0, 64, 64);
+		int x = static_cast<int>( iexSystem::ScreenWidth * 0.4f );
+		int y = static_cast<int>( iexSystem::ScreenHeight * 0.1f );
+		int w = static_cast<int>( iexSystem::ScreenWidth * 0.05f );
+		int h = static_cast<int>( iexSystem::ScreenHeight * 0.09f );
+		ImageInitialize( timer, x, y, w, h, 64, 0, 64, 64 );
 		for ( int i = 0; i < 2; i++ )
 		{
 			minute[i] = 0;
