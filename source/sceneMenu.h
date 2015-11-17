@@ -46,6 +46,13 @@ private:
 		int		step;
 	};
 
+	struct OptionInfo
+	{
+		bool	itemflg;
+		int		minute;
+		int		second;
+		int		coinMAX;
+	};
 private:	
 	//	画像・モデル
 	unique_ptr<iex2DObj>	back;
@@ -67,6 +74,7 @@ private:
 	CharacterSelectInfo		characterSelectInfo;
 	StageSelectInfo				stageSelectInfo;
 	CheckSelectInfo				checkSelectInfo;
+	OptionInfo						 optionInfo;
 
 	//	共通変数
 	int		mode;
@@ -112,6 +120,12 @@ public:
 	void	MoveTitleUpdate( void );
 	void	MoveTitleRender( void );
 
+	//	オプション関数
+	void	OptionInitialize( void );
+	void	OptionUpdate( void );
+	void	OptionRender( void );
+
 	//	情報設定
 	void	SetMode( int mode );
+
 };
