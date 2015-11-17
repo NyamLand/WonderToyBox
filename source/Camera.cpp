@@ -95,6 +95,7 @@
 		shader3D->SetValue("ViewPos", mainView->GetPos());
 		shader3D->SetValue("matView", mainView->GetMatrix());
 		q->Update();
+		CheckViewAngle();
 	}
 
 	//	描画
@@ -103,6 +104,12 @@
 		char	str[256];
 		sprintf_s( str, "t.x = %f\nt.y = %f\nt.z = %f\n", target.x, target.y, target.z);
 		DrawString(str, 50, 500);
+
+		char	str2[256];
+		for (int i = 0; i < PLAYER_NUM; i++){
+			sprintf_s(str2, "angle %d = %f", i, testbox[i]);
+			DrawString(str2, 600, 400 + 30 * i, 0xFFFFFFFF);
+		}
 	}
 
 //------------------------------------------------------------------------------------------
@@ -286,9 +293,9 @@
 	{
 		Vector3	out = Vector3( 0.0f, 0.0f, 0.0f );
 
-		for ( int i = 0; i < 4; i++ )	out += playerPos[i];
+		for ( int i = 0; i < PLAYER_NUM; i++ )	out += playerPos[i];
 
-		out /= 4;
+		out /= PLAYER_NUM;
 
 		return	out;
 	}
@@ -296,23 +303,24 @@
 	//	最大距離算出
 	float	Camera::CalcMaxDist( void )
 	{
-		float	len[4];
-		Vector3 pos[4];
+		float	len[PLAYER_NUM];
+		Vector3 pos[PLAYER_NUM];
 		float	temp;
-		for ( int i = 0; i < 4; i++ )
+		for ( int i = 0; i < PLAYER_NUM; i++ )
 		{
-			pos[i] = playerPos[i];
+			pos[i] = CheckPosLength(playerPos[i]);
+
 		}
 
 		//	それぞれのposからターゲットまでの距離をとる
-		for ( int i = 0; i < 4; i++ )
+		for (int i = 0; i < PLAYER_NUM; i++)
 		{
 			pos[i] = this->target - pos[i];
 			len[i] = pos[i].Length();
 		}
 
 		//	ソート
-		for (int i = 0; i < 4; ++i)
+		for (int i = 0; i < PLAYER_NUM; ++i)
 		{
 			//	後ろから順番にチェックしていく
 			for (int s = 3; s > i; --s)
@@ -335,8 +343,8 @@
 		float	out = 0.0f;
 		//	カメラからターゲットまでの長さ調整
 		out = len[0];
-		if ( out < ( float )MIN ) out = ( float )MIN;
-		if ( out >( float )MAX ) out = ( float )MAX;
+		//if ( out < ( float )MIN ) out = ( float )MIN;
+		//if ( out >( float )MAX ) out = ( float )MAX;
 
 		return	out;
 	}
@@ -348,6 +356,54 @@
 		vec = Vector3( 0.0f, 40.0f, -50.0f ) - Vector3( 0.0f, 2.0f, 0.0f );
 		vec.Normalize();
 		this->pos = this->target + vec *length *3;
+	}
+
+	//	Lengthの上限下限管理関数
+	Vector3	Camera::CheckPosLength( Vector3 position )
+	{
+		//	positionからターゲットへのベクトル
+		Vector3		work = target - position;
+		float		len = work.Length();
+
+		//		最少
+		if ( len < ( float )MIN )	len = ( float )MIN;
+		//		最大
+		if ( len >( float )MAX )	len = ( float )MAX;
+		//	単位ベクトル化
+		work.Normalize();
+
+		//	ターゲットから単位ベクトルの逆方向にlen分のposを返す
+		return  target  + ( -work * len);
+	}
+
+	//	視野角の計算
+	void	Camera::CheckViewAngle( void )
+	{
+		//	カメラからターゲットへのベクトル
+		Vector3 c_t = target - ( q->position + adjust );
+		Vector3 c_p[PLAYER_NUM];
+
+
+		float ct_len = c_t.Length();
+		float cp_len[PLAYER_NUM];
+		float work; 
+
+
+		for (int i = 0; i < PLAYER_NUM; i++)
+		{
+			//	カメラから各プレイヤーへのベクトル
+			c_p[i] = playerPos[i] - ( q->position + adjust );
+			cp_len[i] = c_p[i].Length();
+
+			//	内積とベクトル長さを使ってcosθを求める
+			work = Vector3Dot(c_t, c_p[i]) / (ct_len * cp_len[i]);
+
+			//	角度を求める
+			playerAngle[i] = acosf( work );
+
+			testbox[i] = playerAngle[i] * 180.0f / PI;
+
+		}
 	}
 
 //------------------------------------------------------------------------------------------

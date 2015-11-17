@@ -446,13 +446,14 @@
 		iexSystem::GetDevice()->SetRenderTarget(0, backBuffer);
 
 		m_screen->Render(0, 0, 1280, 720, 0, 0, 1280, 720);
-		playerWipe[0]->Render(0,	0, 250, 250, 0, 0, 1280, 720, shader2D, "WipeEffect" );
-		playerWipe[1]->Render(250,	0, 250, 250, 0, 0, 1280, 720);
-		playerWipe[2]->Render(500,	0, 250, 250, 0, 0, 1280, 720);
-		playerWipe[3]->Render(750,	0, 250, 250, 0, 0, 1280, 720);
+		playerWipe[0]->Render(0								,	0								, 250, 250, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, shader2D, "WipeEffect" );
+		playerWipe[1]->Render(iexSystem::ScreenWidth - 250	,	0								, 250, 250, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, shader2D, "WipeEffect" );
+		playerWipe[2]->Render(0								,	iexSystem::ScreenHeight - 250	, 250, 250, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, shader2D, "WipeEffect" );
+		playerWipe[3]->Render(iexSystem::ScreenWidth - 250	,	iexSystem::ScreenHeight - 250	, 250, 250, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, shader2D, "WipeEffect" );
 		char	str[256];
 		sprintf_s( str, "height = %f", characterManager->GetPos( 0 ).y );
 		DrawString( str, 300, 500, 0xFFFFFFFF );
+		mainView->Render();
 	}
 
 	//	HDR•`‰æ

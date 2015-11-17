@@ -479,7 +479,7 @@
 	//	コインバー初期化
 	void	UI::CoinBarInitialize( void )
 	{
-		ImageInitialize(frame, (1280 / 2), iexSystem::ScreenHeight - 50, iexSystem::ScreenWidth - 300, 80, 0, 32 * 5, 512, 64);
+		ImageInitialize(frame, (iexSystem::ScreenWidth / 2), iexSystem::ScreenHeight - 50, iexSystem::ScreenWidth - 300, 80, 0, 32 * 5, 512, 64);
 		ImageInitialize(backgauge, frame.x, frame.y, frame.w - (frame.w / 10), frame.h - (frame.h / 2), 0, 32 * 4, 480, 32);
 		ImageInitialize(gauge, frame.x, frame.y, 0, backgauge.h, 0, 32, 0, 32);
 		ImageInitialize(faceImage, 0, frame.y - (frame.h / 2), 32, 32, 256, 256, 256, 256);
