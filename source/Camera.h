@@ -83,8 +83,6 @@ private:
 	float		t;
 	float		playerAngle[PLAYER_NUM];
 	bool		moveState;
-
-	float		testbox[PLAYER_NUM];
 	
 	//	ゴムパラメータ
 	Rubber*		q;
@@ -127,6 +125,7 @@ public:
 	Vector3	GetTarget( void ){ return target; }
 	Matrix	GetMatrix( void ){ return matView; }
 	bool	GetMoveState( void )const{ return moveState; }
+	float	GetPlayerAngle( int p_num ){ return playerAngle[p_num]; }
 	
 	//	数値計算
 	void	CalcCameraPos( void );

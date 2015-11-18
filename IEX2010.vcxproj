@@ -169,6 +169,7 @@
     <ClCompile Include="source\Tiger.cpp" />
     <ClCompile Include="source\Tiger_CPU.cpp" />
     <ClCompile Include="source\UI.cpp" />
+    <ClCompile Include="source\Wipe.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\BaseChara.h" />
@@ -217,6 +218,7 @@
     <ClInclude Include="source\Tiger.h" />
     <ClInclude Include="source\Tiger_CPU.h" />
     <ClInclude Include="source\UI.h" />
+    <ClInclude Include="source\Wipe.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DATA\Shader\2D.fx" />
