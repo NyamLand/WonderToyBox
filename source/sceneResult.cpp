@@ -370,14 +370,17 @@
 					rankImage[i].renderflag = true;
 				}
 				
-				step = 2;
+				step = 3;
 			}
 
 			//	回転が終了したら
 			if ( isEnd )		step++;
 			break;
+
+		case 1:
+			break;
 			
-		case 1:		//	順位描画
+		case 2:		//	順位描画
 			isFinViewRankInOrder = ViewRankInOrder();
 			isEnd = RankWave();
 
@@ -391,7 +394,7 @@
 					rankImage[i].renderflag = true;
 				}
 
-				step = 2;
+				step = 3;
 			}
 
 			//	波紋終了後に選択可
@@ -405,7 +408,7 @@
 			}
 			break;
 
-		case 2:	//	順位描画(スキップ用)
+		case 3:	//	順位描画(スキップ用)
 			for ( int i = 0; i < PLAYER_MAX; i++ )		isEnd = WaveUpdate( rankImage[i] );
 
 			//	波紋終了後に選択可

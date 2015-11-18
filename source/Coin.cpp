@@ -140,6 +140,8 @@
 			obj->Render();
 		else
 			obj->Render( shader, technique );
+
+		DrawSphere(pos, 2.0f, 0xFFFFFF00);
 	}
 
 //-------------------------------------------------------------------------------
@@ -151,13 +153,13 @@
 	{
 		//	想定しているよりも高くとんでいたらスキップ
 		if ( pos.y >= MAX_HEIGHT )	return;
-		float work = Collision::GetHeight( pos );
-		shadow.pos.y = work + 0.1f;
-		if ( pos.y <= work )
-		{
-			pos.y = work;
-			move.y = 0;
-		}
+		//float work = Collision::GetHeight( pos );
+		//shadow.pos.y = work + 0.1f;
+		//if ( pos.y <= work )
+		//{
+		//	pos.y = work;
+		//	move.y = 0;
+		//}
 	}
 
 	//	プレイヤーとのあたりチェック

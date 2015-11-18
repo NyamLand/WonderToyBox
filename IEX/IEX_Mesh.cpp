@@ -282,8 +282,8 @@ int	iexMesh::RayPick( Vector3* out, Vector3* pos, Vector3* vec, float *Dist )
 		v3.x = pVertices[c];	v3.y = pVertices[c+1];	v3.z = pVertices[c+2];
 		
 		//	距離判定
-		//Vector3	ss = (v1 + v2 + v3) / 3.0f - p;
-		//if( ss.LengthSq() > dist ) continue;
+		Vector3	ss = ( v1 + v2 + v3 ) / 3.0f - p;
+		if( ss.LengthSq() > dist ) continue;
 		l1.x = v2.x - v1.x;
 		l1.y = v2.y - v1.y;
 		l1.z = v2.z - v1.z;
@@ -293,9 +293,11 @@ int	iexMesh::RayPick( Vector3* out, Vector3* pos, Vector3* vec, float *Dist )
 		
 		//	外積による法線算出		
 		Vector3Cross( n, l1, l2 );
+
 		//	内積の結果がプラスならば裏向き
 		float dot = Vector3Dot( vv, n );
 		if( dot >= 0 ) continue;
+		
 		//	交点算出
 		p1.x = v1.x - p.x;
 		p1.y = v1.y - p.y;
@@ -306,6 +308,7 @@ int	iexMesh::RayPick( Vector3* out, Vector3* pos, Vector3* vec, float *Dist )
 		cp.x = vv.x*t + p.x;
 		cp.y = vv.y*t + p.y;
 		cp.z = vv.z*t + p.z;
+		
 		//	内点判定
 		p1.x = v1.x - cp.x;
 		p1.y = v1.y - cp.y;

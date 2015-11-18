@@ -284,21 +284,25 @@
 		//	ëSëÃçXêV
 		AllUpdate();
 
-		//	Ç∆ÇËÇ†Ç¶Ç∏âº
-		if ( gameStartCoinNum < GAME_START_COIN_NUM )
+		////	Ç∆ÇËÇ†Ç¶Ç∏âº
+		FOR( 0, GAME_START_COIN_NUM )
 		{
-			switch ( gameManager->GetStageType() )
-			{
-			case 0:
 				m_CoinManager->Set( Vector3( 0.0f, 5.0f, -25.0f ), Vector3( Random::GetFloat( -0.5f, 0.5f ), Random::GetFloat( 0.1f, 0.3f ), 1.0f ), Random::GetFloat( 2.0f, 3.5f ) );
-				break;
 
-			case 1:
-				m_CoinManager->Set( Vector3( 0.0f, 7.0f, -25.0f ), Vector3( Random::GetFloat( -0.5f, 0.5f ), Random::GetFloat( 0.2f, 0.3f ), 1.0f ), Random::GetFloat( 1.0f, 5.5f ) );
-				break;
-			}
-			gameStartCoinNum++;
 		}
+		//if ( gameStartCoinNum < GAME_START_COIN_NUM )
+		//{
+		//	switch ( gameManager->GetStageType() )
+		//	{
+		//	case 0:
+		//		break;
+
+		//	case 1:
+		//		m_CoinManager->Set( Vector3( 0.0f, 7.0f, -25.0f ), Vector3( Random::GetFloat( -0.5f, 0.5f ), Random::GetFloat( 0.2f, 0.3f ), 1.0f ), Random::GetFloat( 1.0f, 5.5f ) );
+		//		break;
+		//	}
+		//	gameStartCoinNum++;
+		//}
 
 		if ( ui->GetChangeFlag() ) 
 		{
