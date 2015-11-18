@@ -19,6 +19,7 @@ private:
 	static	const		int		TIMELIMIT = 10 * SECOND;		//	秒数×秒
 	static	const		int		GAME_START_COIN_NUM = 100;	//	百枚
 
+
 	//	変数
 	int		timer;
 	int		playerNum;
@@ -31,11 +32,7 @@ private:
 	//	オブジェクト
 	iexMesh*	m_CollisionStage;
 	iexMesh*	m_Stage;
-
-	//	カメラ・パラメータ
-	unique_ptr<Camera>	playerView[4];
-	Vector3		ViewPos;
-
+	
 	//	テクスチャ
 	iex2DObj*	ShadowTex;
 	iex2DObj*	RefTex;
@@ -46,8 +43,8 @@ private:
 	Surface*	ShadowZ;
 
 	//	レンダーターゲット
-	unique_ptr<iex2DObj>	playerWipe[4];
 	unique_ptr<iex2DObj>	m_screen;
+
 
 	//	ディファード用
 	//iex2DObj*	diffuse;
@@ -82,7 +79,6 @@ public:
 	void	RenderDiffered( void );
 	void	RenderRef( void );
 	void	RenderHDR( void );
-	void	RenderWipe( void );
 
 	//	動作関数
 	void	PointLight( const Vector3& pos, const Vector3& color, float range );
