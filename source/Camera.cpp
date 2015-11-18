@@ -345,7 +345,7 @@
 	void	Camera::CalcCameraPos( void ) 
 	{
 		Vector3 vec;
-		vec = Vector3( 0.0f, 40.0f, -50.0f ) - Vector3( 0.0f, 2.0f, 0.0f );
+		vec = Vector3( 0.0f, 35.0f, -50.0f ) - Vector3( 0.0f, 2.0f, 0.0f );
 		vec.Normalize();
 		this->pos = this->target + vec *length *3;
 	}
