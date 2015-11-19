@@ -16,23 +16,17 @@
 //*****************************************************************************************************************************
 
 	//	コンストラクタ
-	PlayerWipe::PlayerWipe(void) : ASPECT( 0 )
+	PlayerWipe::PlayerWipe( void )
 	{
-	
+		WIPE_LEFT	= ( float )SPACE;
+		WIPE_RIGHT	= ( float )iexSystem::ScreenWidth - WIPE_WIDTH - SPACE;
+		WIPE_UP		= ( float )SPACE;
+		WIPE_DOWN	= ( float )iexSystem::ScreenHeight - WIPE_HEIGHT - SPACE;
 	}
 	
 	//	初期化
 	bool	PlayerWipe::Initialize( void )
 	{
-		//***********************
-		//	定義
-		//***********************
-
-		//	カメラの視野角
-		ASPECT = D3DX_PI / 4.0f;
-
-		//***********************
-
 		//	レンダーターゲット用
 		FOR(0, PLAYER_MAX)
 		{
@@ -43,7 +37,18 @@
 			//	変数初期化
 			wipe[value]			= make_unique<iex2DObj>( iexSystem::ScreenWidth, iexSystem::ScreenHeight, IEX2D_RENDERTARGET );
 			color[value]		= Vector3( 0.0f, 1.0f, 0.0f );
+			pos[value]			= Vector3( 0.0f, 0.0f, 0.0f );
+			arrow_pos[value]	= Vector3( 0.0f, 0.0f, 0.0f );
+			arrow_angle[value]	= 0.0f;
 		}
+
+		//	画像セット
+		arrow.obj = new iex2DObj("DATA/Effect/Particle.png");
+		ImageInitialize(arrow, 0, 0, SPACE, SPACE, 128 * 3, 0, 128, 128);
+
+		//	ワイプ情報セット
+		Set();
+
 		return true;
 	}
 
@@ -69,49 +74,45 @@
 			playerView[value]->Update(VIEW_MODE::INDIVIDUAL, characterManager->GetPos(value));
 			playerView[value]->SetPos(characterManager->GetPos(value) + Vector3(0.0f, 20.0f, -10.0f));
 		}
-		//	ワイプ情報セット
-		Set();
+		
 	}
 
 	//	ワイプポジション、カラーを設定
 	void	PlayerWipe::Set( void )
 	{
 		//	P1
-		pos[0].x = 0;
-		pos[0].y = 0;
+		pos[0].x = WIPE_LEFT;
+		pos[0].y = WIPE_UP;
 		color[0] = Vector3(1.0f, 0.0f, 0.0f);
 
 		//	P2
-		pos[1].x = iexSystem::ScreenWidth - WIPE_WIDTH;
-		pos[1].y = 0;
+		pos[1].x = WIPE_RIGHT;
+		pos[1].y = WIPE_UP;
 		color[1] = Vector3(0.0f, 0.0f, 1.0f);
 
 
 		//	P3
-		pos[2].x = 0;
-		pos[2].y = iexSystem::ScreenHeight - WIPE_HEIGHT;
+		pos[2].x = WIPE_LEFT;
+		pos[2].y = WIPE_DOWN;
 		color[2] = Vector3(1.0f, 1.0f, 0.0f);
 	
 		//	P4
-		pos[3].x = iexSystem::ScreenWidth - WIPE_WIDTH;
-		pos[3].y = iexSystem::ScreenHeight - WIPE_HEIGHT;
+		pos[3].x = WIPE_RIGHT;
+		pos[3].y = WIPE_DOWN;
 		color[3] = Vector3(0.0f, 1.0f, 0.0f);
 		
 	}
 
 	//	ワイプ描画判定
-	void	PlayerWipe::Check( float angle, int num )
+	void	PlayerWipe::Check( int num )
 	{
 		FOR(0, PLAYER_MAX)
 		{
 			//	視野角内にそのプレイヤーがいるか
 			Vector3	stringPos;
-			WorldToClient(characterManager->GetPos(num), stringPos, matView* matProjection);
-
-			if (stringPos.x < 0	||
-				stringPos.x > iexSystem::ScreenWidth ||
-				stringPos.y < 0 ||
-				stringPos.y > iexSystem::ScreenHeight)
+			
+			//	画面外判定
+			if (!WorldToClient(characterManager->GetPos(num), stringPos, matView* matProjection))
 			{
 				check[num] = true;
 			}
@@ -121,6 +122,79 @@
 				check[num] = false;
 			}
 		}
+	}
+
+	//	プレイヤーの方向へ矢印
+	void	PlayerWipe::Arrow( int num, Vector3 target )
+	{
+		Vector3	stringPos;
+		WorldToClient(characterManager->GetPos(num), stringPos, matView* matProjection);
+	
+		Vector3 targetPos;
+		WorldToClient(target, targetPos, matView* matProjection);
+
+		//	ワイプ中心
+		Vector3 center;
+		center.x = pos[num].x + WIPE_WIDTH / 2;
+		center.y = pos[num].y + WIPE_HEIGHT / 2;
+		
+		//	ワイプからプレイヤーへの法線（クライアントポジション）
+		Vector3 normal = stringPos - center;
+		float angle = atan2f(normal.y, normal.x);
+
+		//	ワイプ中心から矢印中心までの半径
+		float r = (( float )arrow.w / 2) + (WIPE_WIDTH / 2);
+
+		//	
+		arrow_pos[num].x = center.x + (cosf(angle) * r);
+		arrow_pos[num].y = center.y + (sinf(angle) * r);
+
+
+		//	ワイプからプレイヤーへの角度
+		arrow_angle[num] = angle;
+
+
+	}
+
+	//	ワイプの移動
+	void	PlayerWipe::Move( int num, Vector3 target )
+	{
+		Vector3	stringPos;
+		WorldToClient(characterManager->GetPos(num), stringPos, matView* matProjection);
+		//Vector3 targetPos;
+		//WorldToClient(target, targetPos, matView* matProjection);
+
+
+		//	中心から左
+		if (stringPos.x < iexSystem::ScreenWidth / 2)
+		{
+			pos[num].x = WIPE_LEFT;
+		}
+		//	中心から右
+		else
+		{
+			pos[num].x = WIPE_RIGHT;
+		}
+
+		//	高さを計算
+		Vector3 v1, v2;
+		Vector3 start = Vector3(pos[num].x, WIPE_UP, 0);
+		Vector3 end = start;
+		end.y = WIPE_DOWN;
+		v1 = stringPos - start;
+		v2 = end  - start;
+		v2.Normalize();
+
+		float dot = Vector3Dot(v1, v2);
+		if (dot < 0) dot = -dot;
+
+		pos[num] = start + (v2 * dot);
+
+		if (pos[num].y > WIPE_DOWN)	pos[num].y = WIPE_DOWN;
+		if (pos[num].y < WIPE_UP)	pos[num].y = WIPE_UP;
+
+
+
 	}
 
 //*****************************************************************************************************************************
@@ -151,7 +225,9 @@
 
 			//	ワイプ描画
 			if (check[value]){
-				wipe[value]->Render(pos[value].x, pos[value].y, w, h, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, shader2D, "WipeEffect");
+				wipe[value]->Render(( int )pos[value].x, ( int )pos[value].y, w, h, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, shader2D, "WipeEffect");
+				arrow.angle = arrow_angle[value] + PI /2;		arrow.p = ::GetPoint(( int )arrow_pos[value].x, ( int )arrow_pos[value].y);
+				RenderImage(arrow, arrow.sx, arrow.sy, arrow.sw, arrow.sh, IMAGE_MODE::ADOPTPARAM, ( int )arrow_pos[value].x, ( int )arrow_pos[value].y);
 			}
 		}
 	}
