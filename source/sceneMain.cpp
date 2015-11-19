@@ -300,7 +300,6 @@
 				m_CoinManager->Set( Vector3( 0.0f, 7.0f, -25.0f ), Vector3( Random::GetFloat( -0.5f, 0.5f ), Random::GetFloat( 0.2f, 0.3f ), 1.0f ), Random::GetFloat( 1.0f, 5.5f ) );
 				break;
 			}
-			gameStartCoinNum++;
 		}
 
 		if ( ui->GetChangeFlag() ) 

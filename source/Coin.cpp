@@ -96,8 +96,8 @@
 		shadow.pos = pos;
 
 		//	擬似慣性
-		move.x *= 0.97f;
-		move.z *= 0.97f;
+		//move.x *= 0.97f;
+		//move.z *= 0.97f;
 
 		//	当たり判定
 		StageCollisionCheck();
@@ -150,14 +150,18 @@
 	void	Coin::StageCollisionCheck( void )
 	{
 		//	想定しているよりも高くとんでいたらスキップ
-		if ( pos.y >= MAX_HEIGHT )	return;
-		float work = Collision::GetHeight( pos );
-		shadow.pos.y = work + 0.1f;
-		if ( pos.y <= work )
-		{
-			pos.y = work;
-			move.y = 0;
-		}
+		if ( pos.y >= 5.0f )	return;
+
+		//if ( move.Length() >= 0.02f )
+		//{
+		//	float work = Collision::GetHeight( pos );
+		//	shadow.pos.y = work + 0.1f;
+		//	if ( pos.y <= work )
+		//	{
+		//		pos.y = work;
+		//		move.y = 0;
+		//	}
+		//}
 	}
 
 	//	プレイヤーとのあたりチェック
@@ -189,12 +193,15 @@
 
 		// 反射( ステージ )	
 		static float rate = 0.4f;
+		static float moveMin = 0.00001f;
+		bool flag = true;
+
 		Collision::GetReflect( pos, move, rate );
 
 		//	落下したら再配置
 		if ( GetPos().y <= -3.0f )
 		{
-			SetPos( Vector3( Random::GetFloat( -10.0f, 10.0f ), Random::GetFloat( 0.0f, MAX_HEIGHT ), Random::GetFloat( -10.0f, 10.0f ) ) );
+			//SetPos( Vector3( Random::GetFloat( -10.0f, 10.0f ), Random::GetFloat( 0.0f, MAX_HEIGHT ), Random::GetFloat( -10.0f, 10.0f ) ) );
 		}
 	}
 

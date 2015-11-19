@@ -39,6 +39,7 @@ public:
 	static	bool	DistCheck( const Vector3 p1, const Vector3 p2, float dist );
 	static	bool	GetReflect( Vector3& pos, Vector3& vec, float rate );
 	static	bool	GetReflect( iexMesh* org, Vector3& pos, Vector3& vec, float rate );
+	static	bool	GetReflectFloor( const float& height, Vector3& pos, Vector3& vec, float rate );
 
 	//	çﬁéøîªíË
 	static	int		GetMaterial(const Vector3& pos);

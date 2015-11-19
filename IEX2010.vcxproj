@@ -110,6 +110,7 @@
   <ItemGroup>
     <ClCompile Include="source\BaseChara.cpp" />
     <ClCompile Include="source\BaseBullet.cpp" />
+    <ClCompile Include="source\Physics.cpp" />
     <ClCompile Include="source\Squirrel_Bullet01.cpp" />
     <ClCompile Include="source\Thief_Bullet01.cpp" />
     <ClCompile Include="source\BulletManager.cpp" />
@@ -174,6 +175,7 @@
   <ItemGroup>
     <ClInclude Include="source\BaseChara.h" />
     <ClInclude Include="source\BaseBullet.h" />
+    <ClInclude Include="source\Physics.h" />
     <ClInclude Include="source\Squirrel_Bullet01.h" />
     <ClInclude Include="source\Thief_Bullet01.h" />
     <ClInclude Include="source\BulletManager.h" />
