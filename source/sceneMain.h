@@ -17,7 +17,7 @@ private:
 	static	const		int		SECOND = 60;			//	１秒
 	static	const		int		MINUTE = 60 * 60;	//	１分
 	static	const		int		TIMELIMIT = 10 * SECOND;		//	秒数×秒
-	static	const		int		GAME_START_COIN_NUM = 200;	//	百枚
+	static	const		int		GAME_START_COIN_NUM = 100;	//	百枚
 
 	//	変数
 	int		timer;
@@ -29,8 +29,7 @@ private:
 
 private:
 	//	オブジェクト
-	iexMesh*	m_CollisionStage;
-	iexMesh*	m_Stage;
+	
 
 	//	カメラ・パラメータ
 	unique_ptr<Camera>	playerView[4];
@@ -64,7 +63,6 @@ public:
 	bool Initialize( void );
 	void	InitializeDebug(void);
 	void	PlayerInitialize( void );
-	void	StageInitialize( void );
 	void	DifferedInitialize( void );
 
 	//	更新

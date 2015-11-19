@@ -17,6 +17,7 @@
 #include	"sceneResult.h"
 #include	"UI.h"
 #include	"Effect.h"
+#include	"StageManager.h"
 
 #include	"sceneMain.h"
 
@@ -33,7 +34,7 @@
 //*****************************************************************************************************************************
 
 	//	コンストラクタ
-	sceneMain::sceneMain( void ) : m_Stage( NULL ), playerNum(0), stageType(0), stageScale( 1.0f )
+	sceneMain::sceneMain( void ) : playerNum(0), stageType(0)
 	{
 		
 	}
@@ -84,7 +85,7 @@
 		gameStartCoinNum = 0;
 
 		//	ステージ
-		StageInitialize();
+		stageManager->Initialize(dir);
 
 		//	プレイヤー
 		PlayerInitialize();
@@ -119,7 +120,7 @@
 			本チャンに戻す場合はWinMainのシーン読み込みをタイトルに戻して、
 			この↓の関数をコメントアウトしてください。
 		*/
-		//InitializeDebug();
+		InitializeDebug();
 
 		return true;
 	}
@@ -130,7 +131,7 @@
 		gameStartCoinNum = 0;
 
 		//　ステージ
-		StageInitialize();
+		stageManager->Initialize(dir);
 
 		//　プレイヤー・CPU
 		PlayerInitialize();
@@ -149,7 +150,6 @@
 		SafeDelete( ShadowTex );
 		SafeDelete( RefTex );
 		SafeDelete( mainView );
-		SafeDelete( m_CollisionStage );
 		SafeDelete( m_CoinManager );
 		SafeDelete( m_BulletManager );
 		SafeDelete( ui );
@@ -162,6 +162,7 @@
 		//SafeDelete( light_s );
 
 		Random::Release();
+		stageManager->Release();
 		particle->Release();
 		itemManager->Release();
 		characterManager->Release();
@@ -186,34 +187,6 @@
 			Vector3    pos = gameManager->InitPos[i];
 			characterManager->Initialize( i, characterType, pos, false );
 		}
-	}
-
-	//	ステージ初期化
-	void	sceneMain::StageInitialize( void )
-	{
-		switch ( gameManager->GetStageType() )
-		{
-		case 0:	//	机ステージ
-			m_CollisionStage = new iexMesh( "DATA/back/Collision.IMO" );
-			m_Stage = new iexMesh( "DATA/back/stage.IMO" );
-			iexLight::DirLight( shader3D, 0, &dir, 1.5f, 1.5f, 1.5f );
-			m_Stage->SetAngle( D3DX_PI );
-			break;
-
-		case 1:	//	森ステージ
-			m_CollisionStage = new iexMesh( "DATA/BG/Forest/Collision/collision_forest.IMO" );
-			m_Stage = new iexMesh( "DATA/BG/Forest/model/forest.IMO" );
-			iexLight::DirLight( shader3D, 0, &dir, 0.5f, 0.5f, 0.5f );
-			m_Stage->SetScale( stageScale );
-			break;
-		}
-		
-		//	見た目モデルを１８０°回転して情報更新
-		//m_Stage->SetAngle( D3DX_PI );
-		m_Stage->Update();
-
-		//	当たり判定用モデル登録
-		Collision::Initiallize( m_CollisionStage );
 	}
 
 	//	ディファード初期化
@@ -284,25 +257,21 @@
 		//	全体更新
 		AllUpdate();
 
-		////	とりあえず仮
-		FOR( 0, GAME_START_COIN_NUM )
+		//	とりあえず仮
+		if ( gameStartCoinNum < GAME_START_COIN_NUM )
 		{
+			switch ( gameManager->GetStageType() )
+			{
+			case 0:
 				m_CoinManager->Set( Vector3( 0.0f, 5.0f, -25.0f ), Vector3( Random::GetFloat( -0.5f, 0.5f ), Random::GetFloat( 0.1f, 0.3f ), 1.0f ), Random::GetFloat( 2.0f, 3.5f ) );
+				break;
 
+			case 1:
+				m_CoinManager->Set( Vector3( 0.0f, 7.0f, -25.0f ), Vector3( Random::GetFloat( -0.5f, 0.5f ), Random::GetFloat( 0.2f, 0.3f ), 1.0f ), Random::GetFloat( 1.0f, 5.5f ) );
+				break;
+			}
+			gameStartCoinNum++;
 		}
-		//if ( gameStartCoinNum < GAME_START_COIN_NUM )
-		//{
-		//	switch ( gameManager->GetStageType() )
-		//	{
-		//	case 0:
-		//		break;
-
-		//	case 1:
-		//		m_CoinManager->Set( Vector3( 0.0f, 7.0f, -25.0f ), Vector3( Random::GetFloat( -0.5f, 0.5f ), Random::GetFloat( 0.2f, 0.3f ), 1.0f ), Random::GetFloat( 1.0f, 5.5f ) );
-		//		break;
-		//	}
-		//	gameStartCoinNum++;
-		//}
 
 		if ( ui->GetChangeFlag() ) 
 		{
@@ -402,7 +371,7 @@
 			playerView[i]->Clear();
 
 			//	オブジェクト描画
-			m_Stage->Render(shader3D, "full_s");
+ 			stageManager->Render(shader3D, "full_s");
 			characterManager->Render(shader3D, "toon");
 			m_CoinManager->Render();
 			m_BulletManager->Render();
@@ -421,7 +390,7 @@
 		mainView->Clear();
 
 		//	オブジェクト描画
-		m_Stage->Render(shader3D, "full_s");
+		stageManager->Render(shader3D, "full_s");
 		characterManager->Render(shader3D, "toon");
 		m_CoinManager->Render( shader3D, "full" );
 		m_BulletManager->Render();
@@ -458,7 +427,7 @@
 		mainView->Clear();
 
 		//	物体の描画
-		m_Stage->Render( shader3D, "specular" );
+		stageManager->Render(shader3D, "specular");
 		m_CoinManager->Render( shader3D, "specular" );
 		characterManager->Render( shader3D, "specular" );
 		itemManager->Render( shader3D, "specular" );
@@ -536,7 +505,7 @@
 		mainView->Clear();
 
 		//	物体描画
-		m_Stage->Render( shader3D, "Refrect" );
+		stageManager->Render(shader3D, "Refrect");
 		characterManager->Render( shader3D, "Refrect" );
 		shader3D->SetValue( "RefMap", RefTex );
 
