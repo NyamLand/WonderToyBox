@@ -532,12 +532,12 @@
 		newsbar.left = iexSystem::ScreenWidth;
 		newsbar.top = 0;
 		newsbar.right = iexSystem::ScreenWidth;
-		newsbar.bottom = static_cast<int>( iexSystem::ScreenHeight * ( 50 / 720 ) );
+		newsbar.bottom = static_cast<int>( iexSystem::ScreenHeight * ( 0.07f ) );
 		newsbar.text = GameInfo::NewsText[ gameManager->GetLastBonus() ];
 		newsbar.alpha = 0.5f;
 		newsbar.color = Vector3( 0.3f, 0.3f, 0.3f );
 		newsbar.step = 0;
-		newsbar.textleft = static_cast<int>( iexSystem::ScreenWidth * ( 1500 / 1280 ) );
+		newsbar.textleft = static_cast<int>( iexSystem::ScreenWidth * ( 1.17f ) );
 	}
 
 	//	カウントダウン・スタート・終了演出
@@ -868,7 +868,7 @@
 			gauge.w = bar_sx[i];	gauge.sw = bar_sx[i];
 
 			//	（左上位置 - ゲージ幅の半分）で中心、ゲージを右向きへ増やすため
-			RenderImage(gauge, gauge.sx, gauge.sy * i, gauge.sw, gauge.sh, IMAGE_MODE::NORMAL, bar_x[i] - (backgauge.w / 2) + (gauge.sw / 2), gauge.y);
+			RenderImage(gauge, gauge.sx, gauge.sy * i, gauge.sw, gauge.sh, IMAGE_MODE::NORMAL, bar_x[i] - (backgauge.w * 0.5f) + (gauge.sw * 0.5f ), gauge.y);
 																					
 			//顔
 			RenderImage(faceImage, faceImage.sx * state_type[i], faceImage.sy * charatype[i], faceImage.sw, faceImage.sh, IMAGE_MODE::NORMAL, state_x[i] - (backgauge.w / 2), faceImage.y);

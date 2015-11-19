@@ -45,7 +45,7 @@ private:
 	Surface*	ShadowZ;
 
 	//	レンダーターゲット
-	unique_ptr<iex2DObj>	playerWipe[4];
+	//unique_ptr<iex2DObj>	playerWipe[4];
 	unique_ptr<iex2DObj>	m_screen;
 
 	//	ディファード用
