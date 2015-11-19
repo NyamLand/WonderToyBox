@@ -17,7 +17,7 @@
 #include	"sceneResult.h"
 #include	"UI.h"
 #include	"Effect.h"
-#include	"Wipe.h"
+#include	"StageManager.h"
 
 #include	"sceneMain.h"
 
@@ -34,7 +34,7 @@
 //*****************************************************************************************************************************
 
 	//	コンストラクタ
-	sceneMain::sceneMain( void ) : m_Stage( NULL ), playerNum(0), stageType(0), stageScale( 1.0f )
+	sceneMain::sceneMain( void ) : playerNum(0), stageType(0)
 	{
 		
 	}
@@ -67,12 +67,17 @@
 
 		//	カメラ設定
 		mainView = new Camera();
+		
+		for ( int i = 0; i < 4; i++ )
+		{
+			//	カメラ初期化
+			playerView[i] = make_unique<Camera>();
+			playerView[i]->SetPos(Vector3(0.0f, 20.0f, -10.0f));
 
-		//	プレイヤーワイプ
-		playerWipe->Initialize();
-
-		//	レンダーターゲットスクリーン
-		m_screen = make_unique<iex2DObj>( iexSystem::ScreenWidth, iexSystem::ScreenHeight, IEX2D_RENDERTARGET);
+			//	ワイプ初期化
+			playerWipe[i] = make_unique<iex2DObj>( 1280, 720, IEX2D_RENDERTARGET );
+		}
+		m_screen = make_unique<iex2DObj>(1280, 720, IEX2D_RENDERTARGET);
 
 		//	gameManagerから情報取得
 		playerNum = gameManager->GetPlayerNum();
@@ -80,7 +85,7 @@
 		gameStartCoinNum = 0;
 
 		//	ステージ
-		StageInitialize();
+		stageManager->Initialize(dir);
 
 		//	プレイヤー
 		PlayerInitialize();
@@ -115,7 +120,7 @@
 			本チャンに戻す場合はWinMainのシーン読み込みをタイトルに戻して、
 			この↓の関数をコメントアウトしてください。
 		*/
-		//InitializeDebug();
+		InitializeDebug();
 
 		return true;
 	}
@@ -126,7 +131,7 @@
 		gameStartCoinNum = 0;
 
 		//　ステージ
-		StageInitialize();
+		stageManager->Initialize(dir);
 
 		//　プレイヤー・CPU
 		PlayerInitialize();
@@ -145,7 +150,6 @@
 		SafeDelete( ShadowTex );
 		SafeDelete( RefTex );
 		SafeDelete( mainView );
-		SafeDelete( m_CollisionStage );
 		SafeDelete( m_CoinManager );
 		SafeDelete( m_BulletManager );
 		SafeDelete( ui );
@@ -158,6 +162,7 @@
 		//SafeDelete( light_s );
 
 		Random::Release();
+		stageManager->Release();
 		particle->Release();
 		itemManager->Release();
 		characterManager->Release();
@@ -182,34 +187,6 @@
 			Vector3    pos = gameManager->InitPos[i];
 			characterManager->Initialize( i, characterType, pos, false );
 		}
-	}
-
-	//	ステージ初期化
-	void	sceneMain::StageInitialize( void )
-	{
-		switch ( gameManager->GetStageType() )
-		{
-		case 0:	//	机ステージ
-			m_CollisionStage = new iexMesh( "DATA/back/Collision.IMO" );
-			m_Stage = new iexMesh( "DATA/back/stage.IMO" );
-			iexLight::DirLight( shader3D, 0, &dir, 1.5f, 1.5f, 1.5f );
-			m_Stage->SetAngle( D3DX_PI );
-			break;
-
-		case 1:	//	森ステージ
-			m_CollisionStage = new iexMesh( "DATA/BG/Forest/Collision/collision_forest.IMO" );
-			m_Stage = new iexMesh( "DATA/BG/Forest/model/forest.IMO" );
-			iexLight::DirLight( shader3D, 0, &dir, 0.5f, 0.5f, 0.5f );
-			m_Stage->SetScale( stageScale );
-			break;
-		}
-		
-		//	見た目モデルを１８０°回転して情報更新
-		//m_Stage->SetAngle( D3DX_PI );
-		m_Stage->Update();
-
-		//	当たり判定用モデル登録
-		Collision::Initiallize( m_CollisionStage );
 	}
 
 	//	ディファード初期化
@@ -240,13 +217,6 @@
 
 		//	UI
 		ui->Update( gameManager->GetMode() );
-
-		//	Playerワイプ更新
-		playerWipe->Update();
-		FOR(0, PLAYER_MAX)
-		{
-			playerWipe->Check( mainView->GetPlayerAngle(value), value );
-		}
 
 		//	デバッグモード切り替え
 		if ( KEY( KEY_ENTER ) == 3 )		debug = !debug;
@@ -300,6 +270,7 @@
 				m_CoinManager->Set( Vector3( 0.0f, 7.0f, -25.0f ), Vector3( Random::GetFloat( -0.5f, 0.5f ), Random::GetFloat( 0.2f, 0.3f ), 1.0f ), Random::GetFloat( 1.0f, 5.5f ) );
 				break;
 			}
+			gameStartCoinNum++;
 		}
 
 		if ( ui->GetChangeFlag() ) 
@@ -386,33 +357,26 @@
 	//	描画
 	void	sceneMain::Render( void )
 	{
-		//	プレイヤーの数　+　スクリーン
-		FOR(0, PLAYER_MAX + 1){
-		//************************************************************
-		//		レンダーターゲット処理
-		//************************************************************
-			//		スクリーン
-			if (value >= PLAYER_MAX)
-			{
-				m_screen->RenderTarget();
-				//	画面クリア
-				mainView->Activate();
-				mainView->Clear();
-			}
-			//		プレイヤー個人ワイプ
-			else
-			{
-				playerWipe->RenderTarget( value );
-			}
+		for (int i = 0; i < 4; i++)
+		{
+			//	カメラ更新
+			playerView[i]->Update(VIEW_MODE::INDIVIDUAL, characterManager->GetPos(i));
+			playerView[i]->SetPos(characterManager->GetPos(i) + Vector3(0.0f, 20.0f, -10.0f));
 
-		//************************************************************
-		//	メイン描画
-		//************************************************************
+			//	レンダーターゲットを切り替え
+			playerWipe[i]->RenderTarget(0);
+
+			//	画面クリア
+			playerView[i]->Activate();
+			playerView[i]->Clear();
+
+			//	影
+			//RenderShadowBuffer();
 
 			//	オブジェクト描画
-			m_Stage->Render(shader3D, "full_s");
+ 			stageManager->Render(shader3D, "full_s");
 			characterManager->Render(shader3D, "toon");
-			m_CoinManager->Render(shader3D, "full");
+			m_CoinManager->Render();
 			m_BulletManager->Render();
 			itemManager->Render();
 
@@ -422,19 +386,46 @@
 			//　エフェクト描画
 			m_Effect->Render();
 
+			////UI
+			//ui->Render(gameManager->GetMode());
+									
 		}
-		//-------------------
-		//	スクリーンへ描画
-		//-------------------
-		//UI	
+		//iexSystem::GetDevice()->SetRenderTarget(0, backBuffer);
+
+		
+
+		m_screen->RenderTarget();
+		//	画面クリア
+		mainView->Activate();
+		mainView->Clear();
+
+		//	オブジェクト描画
+		stageManager->Render(shader3D, "full_s");
+		characterManager->Render(shader3D, "toon");
+		m_CoinManager->Render();
+		m_BulletManager->Render();
+		itemManager->Render();
+
+		//	パーティクル描画
+		particle->Render();
+
+		//　エフェクト描画
+		m_Effect->Render();
+
+		//UI
 		ui->Render(gameManager->GetMode());
 
-
 		//	フレームバッファへ切り替え
-		iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );
+		iexSystem::GetDevice()->SetRenderTarget(0, backBuffer);
 
-		m_screen->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight );
-		playerWipe->Render();
+		m_screen->Render(0, 0, 1280, 720, 0, 0, 1280, 720);
+		playerWipe[0]->Render(0,	0, 250, 250, 0, 0, 1280, 720, shader2D, "WipeEffect" );
+		playerWipe[1]->Render(250,	0, 250, 250, 0, 0, 1280, 720);
+		playerWipe[2]->Render(500,	0, 250, 250, 0, 0, 1280, 720);
+		playerWipe[3]->Render(750,	0, 250, 250, 0, 0, 1280, 720);
+		char	str[256];
+		sprintf_s( str, "height = %f", characterManager->GetPos( 0 ).y );
+		DrawString( str, 300, 500, 0xFFFFFFFF );
 	}
 
 	//	HDR描画
@@ -448,7 +439,7 @@
 		mainView->Clear();
 
 		//	物体の描画
-		m_Stage->Render( shader3D, "specular" );
+		stageManager->Render(shader3D, "specular");
 		m_CoinManager->Render( shader3D, "specular" );
 		characterManager->Render( shader3D, "specular" );
 		itemManager->Render( shader3D, "specular" );
@@ -526,9 +517,52 @@
 		mainView->Clear();
 
 		//	物体描画
-		m_Stage->Render( shader3D, "Refrect" );
+		stageManager->Render(shader3D, "Refrect");
 		characterManager->Render( shader3D, "Refrect" );
 		shader3D->SetValue( "RefMap", RefTex );
+
+		//	レンダーターゲットの復元
+		iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );
+	}
+
+	//	ワイプ描画
+	void	sceneMain::RenderWipe( void )
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			//	カメラ更新
+			playerView[i]->Update( VIEW_MODE::INDIVIDUAL, characterManager->GetPos( i ) );
+
+			//	レンダーターゲットを切り替え
+			playerWipe[i]->RenderTarget();
+
+			//	画面クリア
+			playerView[i]->Activate();
+			playerView[i]->Clear();
+
+			//	影
+			RenderShadowBuffer();
+
+			//	オブジェクト描画
+			if (characterManager->GetParameterState(0, PARAMETER_STATE::SLIP))
+			{
+				stageManager->Render(shader3D, "full_s");
+			}
+			else
+			{
+				stageManager->Render(shader3D, "full_s");
+			}
+			characterManager->Render(shader3D, "toon");
+			m_CoinManager->Render();
+			m_BulletManager->Render();
+			itemManager->Render();
+
+			//	パーティクル描画
+			particle->Render();
+
+			//　エフェクト描画
+			m_Effect->Render();
+		}
 
 		//	レンダーターゲットの復元
 		iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );
