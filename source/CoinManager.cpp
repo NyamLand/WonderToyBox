@@ -127,6 +127,7 @@
 			c_Coin[i].state				=		true;
 			break;
 		}
+
 	}
 
 	//	И╩ТuТ▓Ро

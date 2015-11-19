@@ -111,6 +111,7 @@
     <ClCompile Include="source\BaseChara.cpp" />
     <ClCompile Include="source\BaseBullet.cpp" />
     <ClCompile Include="source\Squirrel_Bullet01.cpp" />
+    <ClCompile Include="source\StageManager.cpp" />
     <ClCompile Include="source\Thief_Bullet01.cpp" />
     <ClCompile Include="source\BulletManager.cpp" />
     <ClCompile Include="source\Camera.cpp" />
@@ -173,6 +174,7 @@
     <ClInclude Include="source\BaseChara.h" />
     <ClInclude Include="source\BaseBullet.h" />
     <ClInclude Include="source\Squirrel_Bullet01.h" />
+    <ClInclude Include="source\StageManager.h" />
     <ClInclude Include="source\Thief_Bullet01.h" />
     <ClInclude Include="source\BulletManager.h" />
     <ClInclude Include="source\Camera.h" />

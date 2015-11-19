@@ -154,6 +154,9 @@
     <Filter Include="ソース ファイル\Bullet\Squirrel_Bullet01">
       <UniqueIdentifier>{cfe93910-f10e-4d77-a324-314de6511f75}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\StageManager">
+      <UniqueIdentifier>{8ed026fe-458c-4da9-812b-91367850d576}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -336,6 +339,9 @@
     <ClCompile Include="source\Squirrel_Bullet01.cpp">
       <Filter>ソース ファイル\Bullet\Squirrel_Bullet01</Filter>
     </ClCompile>
+    <ClCompile Include="source\StageManager.cpp">
+      <Filter>ソース ファイル\StageManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -472,6 +478,9 @@
     </ClInclude>
     <ClInclude Include="source\Squirrel_Bullet01.h">
       <Filter>ソース ファイル\Bullet\Squirrel_Bullet01</Filter>
+    </ClInclude>
+    <ClInclude Include="source\StageManager.h">
+      <Filter>ソース ファイル\StageManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

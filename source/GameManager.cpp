@@ -155,7 +155,7 @@
 			ui->SetAlertFlag(true);
 			sound->PlaySE(SE::EVENT_SE);
 		}
-		if ( timer == 40 * SECOND ) eventManager->SetEvent( EVENT_MODE::SLOPE_CAMERA/*Random::GetInt( 0, EVENT_MODE::NONE - 1 )*/ );
+		if (timer == 40 * SECOND) eventManager->SetEvent(EVENT_MODE::JAM_SLOPE_CAMERA/*Random::GetInt( 0, EVENT_MODE::NONE - 1 )*/);
 
 		if ( timer != 0 )
 		{

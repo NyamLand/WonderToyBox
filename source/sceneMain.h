@@ -29,8 +29,7 @@ private:
 
 private:
 	//	オブジェクト
-	iexMesh*	m_CollisionStage;
-	iexMesh*	m_Stage;
+	
 
 	//	カメラ・パラメータ
 	unique_ptr<Camera>	playerView[4];
@@ -64,7 +63,6 @@ public:
 	bool Initialize( void );
 	void	InitializeDebug(void);
 	void	PlayerInitialize( void );
-	void	StageInitialize( void );
 	void	DifferedInitialize( void );
 
 	//	更新
