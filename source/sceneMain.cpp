@@ -18,6 +18,7 @@
 #include	"UI.h"
 #include	"Effect.h"
 #include	"StageManager.h"
+#include	"Wipe.h"
 
 #include	"sceneMain.h"
 
@@ -67,16 +68,11 @@
 
 		//	カメラ設定
 		mainView = new Camera();
-		
-		for ( int i = 0; i < 4; i++ )
-		{
-			//	カメラ初期化
-			playerView[i] = make_unique<Camera>();
-			playerView[i]->SetPos(Vector3(0.0f, 20.0f, -10.0f));
 
-			//	ワイプ初期化
-			playerWipe[i] = make_unique<iex2DObj>( iexSystem::ScreenWidth, iexSystem::ScreenHeight, IEX2D_RENDERTARGET );
-		}
+		//	プレイヤーワイプ
+		playerWipe->Initialize();
+
+		//	レンダーターゲットスクリーン
 		m_screen = make_unique<iex2DObj>( iexSystem::ScreenWidth, iexSystem::ScreenHeight, IEX2D_RENDERTARGET);
 
 		//	gameManagerから情報取得
@@ -218,6 +214,18 @@
 		//	UI
 		ui->Update( gameManager->GetMode() );
 
+		//	Playerワイプ更新
+		playerWipe->Update();
+		FOR(0, PLAYER_MAX)
+		{
+			playerWipe->Check( value );
+			playerWipe->Arrow( value, mainView->GetTarget() );
+			playerWipe->Move( value, mainView->GetTarget() );
+			Vector3 test = characterManager->GetPos(0) - mainView->GetTarget();
+			
+			printf(" %f\n", test.Length());
+		}
+
 		//	デバッグモード切り替え
 		if ( KEY( KEY_ENTER ) == 3 )		debug = !debug;
 
@@ -357,23 +365,33 @@
 	//	描画
 	void	sceneMain::Render( void )
 	{
-		for (int i = 0; i < 4; i++)
-		{
-			//	カメラ更新
-			playerView[i]->Update( VIEW_MODE::INDIVIDUAL, characterManager->GetPos(i));
-			playerView[i]->SetPos(characterManager->GetPos(i) + Vector3(0.0f, 20.0f, -10.0f));
+		//	プレイヤーの数　+　スクリーン
+		FOR(0, PLAYER_MAX + 1){
+		//************************************************************
+		//		レンダーターゲット処理
+		//************************************************************
+			//		スクリーン
+			if (value >= PLAYER_MAX)
+			{
+				m_screen->RenderTarget();
+				//	画面クリア
+				mainView->Activate();
+				mainView->Clear();
+			}
+			//		プレイヤー個人ワイプ
+			else
+			{
+				playerWipe->RenderTarget( value );
+			}
 
-			//	レンダーターゲットを切り替え
-			playerWipe[i]->RenderTarget(0);
-
-			//	画面クリア
-			playerView[i]->Activate();
-			playerView[i]->Clear();
+		//************************************************************
+		//	メイン描画
+		//************************************************************
 
 			//	オブジェクト描画
  			stageManager->Render(shader3D, "full_s");
 			characterManager->Render(shader3D, "toon");
-			m_CoinManager->Render();
+			m_CoinManager->Render(shader3D, "full");
 			m_BulletManager->Render();
 			itemManager->Render();
 
@@ -381,39 +399,21 @@
 			particle->Render();
 
 			//　エフェクト描画
-			m_Effect->Render();			
+			m_Effect->Render();
+
 		}
+		//-------------------
+		//	スクリーンへ描画
+		//-------------------
+		//UI	
+		ui->Render(gameManager->GetMode());
 
-		m_screen->RenderTarget();
-		//	画面クリア
-		mainView->Activate();
-		mainView->Clear();
-
-		//	オブジェクト描画
-		stageManager->Render(shader3D, "full_s");
-		characterManager->Render(shader3D, "toon");
-		m_CoinManager->Render( shader3D, "full" );
-		m_BulletManager->Render();
-		itemManager->Render();
-
-		//	パーティクル描画
-		particle->Render();
-
-		//　エフェクト描画
-		m_Effect->Render();
-
-		//UI
-		ui->Render( gameManager->GetMode() );
 
 		//	フレームバッファへ切り替え
 		iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );
 
 		m_screen->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight );
-		RenderWipe();
-		//playerWipe[0]->Render( 0, 0, 250, 250, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, shader2D, "WipeEffect" );
-		//playerWipe[1]->Render( 250, 0, 250, 250, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight );
-		//playerWipe[2]->Render( 500, 0, 250, 250, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight );
-		//playerWipe[3]->Render( 750, 0, 250, 250, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight );
+		playerWipe->Render();
 	}
 
 	//	HDR描画
@@ -511,32 +511,4 @@
 
 		//	レンダーターゲットの復元
 		iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );
-	}
-
-	//	ワイプ描画
-	void	sceneMain::RenderWipe( void )
-	{
-		FOR( 0, PLAYER_MAX )
-		{
-			//	座標・スケール設定
-			int x = 250 * value;
-			int y = 125;
-			int w = 250;
-			int h = 250;
-			float	wipe_size = 100.0f;
-			float	frame_size = 10.0f;
-			Vector3	frame_color = Vector3( 0.0f, 1.0f, 0.0f );
-
-			//	シェーダーへセット
-			shader2D->SetValue( "center_posX", x );
-			shader2D->SetValue( "center_posY", y );
-			shader2D->SetValue( "picture_width", w );
-			shader2D->SetValue( "picture_height", h );
-			shader2D->SetValue( "wipe_size", wipe_size );
-			shader2D->SetValue( "frame_size", frame_size );
-			shader2D->SetValue( "frame_color", frame_color );
-
-			//	ワイプ描画
-			playerWipe[value]->Render( x, y, w, h, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, shader2D, "WipeEffect" );
-		}
 	}
