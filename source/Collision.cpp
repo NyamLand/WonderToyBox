@@ -257,6 +257,38 @@ iexMesh*	Collision::obj = NULL;
 		return false;
 	}
 
+	bool	Collision::GetReflectFloor( const float& height, Vector3& pos, Vector3& vec, float rate )
+	{
+		Vector3 p = pos;
+		Vector3 v = vec;
+		Vector3 n = Vector3( 0.0f, 1.0f, 0.0f );
+		Vector3 out;
+		float dist = 50.0f;
+
+		float length = height - pos.y;
+  		if ( length > 5.0f )	return false;
+
+		// 移動量の長さ
+		float vec_len = vec.Length();
+
+		if ( vec_len > length )
+		{
+			// 法線正規化
+			n.Normalize();
+
+			// 入射ベクトルを法線に射影
+			float dot = Vector3Dot( -vec, n );
+			// 入射ベクトルと反射ベクトルの
+			// 合成ベクトルから
+			// 入射ベクトルを引く。
+			vec = n*2.0f*dot - ( -vec );
+			// 反射率の計算
+			vec *= rate;
+			return true;
+		}
+		return false;
+	}
+
 //--------------------------------------------------------------------------------------------
 //	材質判定
 //--------------------------------------------------------------------------------------------

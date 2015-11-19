@@ -67,8 +67,8 @@ class Camera : public iexView
 {
 private:
 	//	定数
-	static	const		int		MAX = 15;		//	カメラからターゲットの距離の最大
-	static	const		int		MIN = 7;		//								最少
+	static	const		int		MAX = 10;		//	カメラからターゲットの距離の最大
+	static	const		int		MIN = 4;		//								最少
 	static	const		int		PLAYER_NUM = 4;	//	プレイヤーの数
 
 private:
@@ -83,8 +83,6 @@ private:
 	float		t;
 	float		playerAngle[PLAYER_NUM];
 	bool		moveState;
-
-	float		testbox[PLAYER_NUM];
 	
 	//	ゴムパラメータ
 	Rubber*		q;
@@ -127,6 +125,7 @@ public:
 	Vector3	GetTarget( void ){ return target; }
 	Matrix	GetMatrix( void ){ return matView; }
 	bool	GetMoveState( void )const{ return moveState; }
+	float	GetPlayerAngle( int p_num ){ return playerAngle[p_num]; }
 	
 	//	数値計算
 	void	CalcCameraPos( void );

@@ -157,6 +157,12 @@
     <Filter Include="ソース ファイル\Bullet\Thief_Bullet02">
       <UniqueIdentifier>{7aedcfe2-da85-44df-b7e3-b4f3dabe3ae4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Wipe">
+      <UniqueIdentifier>{4bec3303-9519-46b1-af8e-9608029b5bca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Physics">
+      <UniqueIdentifier>{51e0dfbe-f700-4457-82af-f67b81cfb94d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -342,6 +348,12 @@
     <ClCompile Include="source\Thief_Bullet02.cpp">
       <Filter>ソース ファイル\Bullet\Thief_Bullet02</Filter>
     </ClCompile>
+    <ClCompile Include="source\Wipe.cpp">
+      <Filter>ソース ファイル\Wipe</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Physics.cpp">
+      <Filter>ソース ファイル\Physics</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -481,6 +493,12 @@
     </ClInclude>
     <ClInclude Include="source\Thief_Bullet02.h">
       <Filter>ソース ファイル\Bullet\Thief_Bullet02</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Wipe.h">
+      <Filter>ソース ファイル\Wipe</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Physics.h">
+      <Filter>ソース ファイル\Physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

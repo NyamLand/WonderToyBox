@@ -101,15 +101,7 @@
 	//	•`‰æ
 	void	Camera::Render( void )
 	{
-		char	str[256];
-		sprintf_s( str, "t.x = %f\nt.y = %f\nt.z = %f\n", target.x, target.y, target.z);
-		DrawString(str, 50, 500);
 
-		char	str2[256];
-		for (int i = 0; i < PLAYER_NUM; i++){
-			sprintf_s(str2, "angle %d = %f", i, testbox[i]);
-			DrawString(str2, 600, 400 + 30 * i, 0xFFFFFFFF);
-		}
 	}
 
 //------------------------------------------------------------------------------------------
@@ -353,7 +345,7 @@
 	void	Camera::CalcCameraPos( void ) 
 	{
 		Vector3 vec;
-		vec = Vector3( 0.0f, 40.0f, -50.0f ) - Vector3( 0.0f, 2.0f, 0.0f );
+		vec = Vector3( 0.0f, 35.0f, -50.0f ) - Vector3( 0.0f, 2.0f, 0.0f );
 		vec.Normalize();
 		this->pos = this->target + vec *length *3;
 	}
@@ -401,7 +393,7 @@
 			//	Šp“x‚ğ‹‚ß‚é
 			playerAngle[i] = acosf( work );
 
-			testbox[i] = playerAngle[i] * 180.0f / PI;
+			//playerAngle[i] = playerAngle[i] * 180.0f / PI;
 
 		}
 	}

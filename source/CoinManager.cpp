@@ -103,6 +103,12 @@
 				c_Coin[value].Render( shader, technique );
 			}
 		}
+		static Vector3 val( 0.0f, 0.0f, 0.0f );
+		Vector3 currentPos = c_Coin[0].pos;
+		Vector3 sub = val - currentPos;
+		float length = 0.0f;
+		printf( "moveX = %f, moveY = %f, moveZ = %f, length = %f\n", abs( sub.x ), abs( sub.y ), abs( sub.z ), length ); 
+		val = currentPos;
 	}
 
 //---------------------------------------------------------------------------------
