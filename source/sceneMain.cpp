@@ -245,7 +245,12 @@
 		playerWipe->Update();
 		FOR(0, PLAYER_MAX)
 		{
-			playerWipe->Check( mainView->GetPlayerAngle(value), value );
+			playerWipe->Check( value );
+			playerWipe->Arrow( value, mainView->GetTarget() );
+			playerWipe->Move( value, mainView->GetTarget() );
+			Vector3 test = characterManager->GetPos(0) - mainView->GetTarget();
+			
+			printf(" %f\n", test.Length());
 		}
 
 		//	デバッグモード切り替え

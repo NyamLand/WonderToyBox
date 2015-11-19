@@ -1013,7 +1013,7 @@
 				if ( i == n ) continue;
 
 				if ( coinBarInfo.coinNum[n] == 0 )	sub[n] = 1.0f;
-				else sub[n] = coinBarInfo.coinNum[i] / coinBarInfo.coinNum[n];
+				else sub[n] = ( float )( coinBarInfo.coinNum[i] / coinBarInfo.coinNum[n] );
 			}
 
 			//	ïΩãœÇãÅÇﬂÇÈ
@@ -1025,7 +1025,7 @@
 		int		originWidth = backgauge.w / PLAYER_MAX;
 		FOR( 0, PLAYER_MAX )
 		{
-			bar_sx[value] = originWidth * coinBarInfo.param[value];
+			bar_sx[value] = originWidth * ( int )coinBarInfo.param[value];
 		}
 
 		bar_x[1] = bar_x[0] + bar_sx[0];
