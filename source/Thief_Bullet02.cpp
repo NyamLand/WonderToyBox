@@ -81,32 +81,27 @@ void Thief_Bullet02::CollectCoin()
 {
 	float length = 1.5f;
 
-	Coin* coin = m_CoinManager->GetCoin();
-	for (int i = 0; i < 200; i++)
+	list<Coin*>	coinList = coinManager->GetList();
+	FOR_LIST( coinList.begin(), coinList.end() )
 	{
-		if (coin[i].GetState() == true)
+		bool state = ( *it )->GetState();
+		if ( state )
 		{
-			Vector3 vec = coin[i].GetPos() - this->pos;
+			Vector3 vec = ( *it )->GetPos() - this->pos;
 			float lengthBvsC = vec.Length();	//バレットとコインの距離
 			vec.Normalize();
-			if (lengthBvsC < length)
+			if ( lengthBvsC < length )
 			{
-				coin[i].SetMove(-vec * 2.0f);
+				( *it )->SetMove( -vec * 2.0f );
 			}
 
 			//コインとの距離が近くなればコインを回収
-			if (lengthBvsC < 1.0f)
+			if ( lengthBvsC < 1.0f )
 			{
-				coin[i].SetState(false);
+				( *it )->SetState( false );
 				holdCoinNum++;
 			}
 		}
-		//if (stayTime > 2 * SECOND)
-		//{
-		//	stayTime = 0;
-		//	absorb_length = DEFAULT_ABSORB_LENGTH;
-		//	return true;
-		//}
 	}
 }
 

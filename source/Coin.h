@@ -47,6 +47,13 @@ protected:
 	bool			getAwayflag;
 	int				judgeTimer;	//	”»’è—LŒøŠÔ
 
+	//	physics_parameter
+	float	mass;
+	Vector3	position;
+	Vector3	velocity;
+	Vector3	acceleration;
+	Vector3	resultant;
+
 	//	‰e\‘¢‘Ì
 	SHADOW_INFO	shadow;
 

@@ -32,7 +32,7 @@
 	//	コンストラクタ
 	Coin::Coin( void ) : obj( nullptr )
 	{
-		
+			shadow.obj = new iex2DObj( "DATA/Effect/shadow.png" );	
 	}
 
 	//	デストラクタ
@@ -57,7 +57,6 @@
 
 		//	影構造体初期化
 		{
-			shadow.obj = new iex2DObj( "DATA/Effect/shadow.png" );
 			shadow.pos = pos;
 			shadow.scale = 1.0f;
 			SetVertex( shadow.v[0], shadow.pos.x - shadow.scale / 2, shadow.pos.y, shadow.pos.z + shadow.scale / 2, 0.0f, 0.0f, 0xFFFFFFFF );

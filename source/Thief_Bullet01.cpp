@@ -18,7 +18,7 @@ Thief_Bullet01::Thief_Bullet01()
 bool Thief_Bullet01::Initialize()
 {
 	judgeTimer = 10;
-	limitTimer = 1.5 * SECOND;
+	limitTimer = static_cast<int>( 1.5f * SECOND );
 	activate = false;
 	state = true;
 	scale = 0.05f;

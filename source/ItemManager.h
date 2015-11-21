@@ -24,8 +24,6 @@ private:
 
 public:
 	//	‰Šú‰»E‰ğ•ú
-	ItemManager( void );
-	~ItemManager( void );
 	bool	Initialize( void );
 	void	Release( void );
 

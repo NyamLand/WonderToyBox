@@ -110,28 +110,31 @@ bool	Scavenger::QuickArts(void)
 	if (absorb_length < 15.0f) absorb_length += 0.1f;		//吸い込む範囲を徐々に拡大
 	Vector3 p_front = Vector3(sinf(this->angle), 0, cosf(this->angle));
 
-	Coin* coin = m_CoinManager->GetCoin();
-	for (int i = 0; i < 200; i++)
+	//	コイン情報取得
+	list<Coin*>	coinList = coinManager->GetList();
+	FOR_LIST( coinList.begin(), coinList.end() )
 	{
-		Vector3 toCoinVec = coin[i].GetPos() - this->pos;
-		float pVecLength = p_front.Length();	
-		float cVecLength = toCoinVec.Length();
-		float dot = Vector3Dot(p_front, toCoinVec) / (pVecLength * cVecLength);
-		dot = acos(dot);
-		dot = dot * 180.0f / PI;
-
-		if (coin[i].GetState() == true)
+		bool	state = ( *it )->GetState();
+		if ( state )
 		{
-			Vector3 vec = coin[i].GetPos() - this->pos;
+			Vector3 toCoinVec = ( *it )->GetPos() - this->pos;
+			float pVecLength = p_front.Length();
+			float cVecLength = toCoinVec.Length();
+			float dot = Vector3Dot( p_front, toCoinVec ) / ( pVecLength * cVecLength );
+			dot = acos( dot );
+			dot = dot * 180.0f / D3DX_PI;
+
+			Vector3 vec = ( *it )->GetPos() - this->pos;
 			float length = vec.Length();
-			
+
 			vec.Normalize();
-			if ( dot < 45 && length < absorb_length )
+			if ( dot < 45.0f && length < absorb_length ) 
 			{
-				coin[i].SetMove( -vec * 0.2f );
+				( *it )->SetMove( -vec * 0.2f );
 			}
 		}
 	}
+
 	if ( input->Get( KEY_D ) == 2 )
 	{
 		absorb_length = DEFAULT_ABSORB_LENGTH;
@@ -142,7 +145,7 @@ bool	Scavenger::QuickArts(void)
 }
 
 //	パワーアーツ
-bool	Scavenger::PowerArts(void)
+bool	Scavenger::PowerArts( void )
 {	
 	power = POWER;
 
@@ -154,28 +157,30 @@ bool	Scavenger::PowerArts(void)
 	p_front.Normalize();
 	float speed = 0.5f;
 
-	Coin* coin = m_CoinManager->GetCoin();
-	for (int i = 0; i < 200; i++)
+	list<Coin*>	coinList = coinManager->GetList();
+	FOR_LIST( coinList.begin(), coinList.end() )
 	{
-		Vector3 toCoinVec = coin[i].GetPos() - this->pos;
-		float pVecLength = p_front.Length();
-		float cVecLength = toCoinVec.Length();
-		float dot = Vector3Dot(p_front, toCoinVec) / (pVecLength * cVecLength);
-		dot = acos(dot);
-		dot = dot * 180.0f / PI;
-
-		if (coin[i].GetState() == true)
+		bool	state = ( *it )->GetState();
+		if ( state )
 		{
-			Vector3 vec = coin[i].GetPos() - this->pos;
+			Vector3 toCoinVec = ( *it )->GetPos() - this->pos;
+			float pVecLength = p_front.Length();
+			float cVecLength = toCoinVec.Length();
+			float dot = Vector3Dot( p_front, toCoinVec ) / ( pVecLength * cVecLength );
+			dot = acosf( dot );
+			dot = dot * 180.0f / D3DX_PI;
+
+			Vector3 vec = ( *it )->GetPos() - this->pos;
 			float length = vec.Length();
 
 			vec.Normalize();
-			if (dot < 90 && length < absorb_length && stayTime == 0)
+			if ( dot < 90.0f && length < absorb_length && stayTime == 0 )
 			{
-				coin[i].SetMove(-vec * 2.0f);
+				( *it )->SetMove( -vec * 2.0f );
 			}
 		}
 	}
+
 	if (attackInfo.t < 1.0f) move = p_front * speed;
 
 	//	パラメータ加算
@@ -195,7 +200,7 @@ bool	Scavenger::PowerArts(void)
 }
 
 //	ハイパーアーツ
-bool	Scavenger::HyperArts(void)
+bool	Scavenger::HyperArts( void )
 {
 	power = HYPER;
 
@@ -205,20 +210,23 @@ bool	Scavenger::HyperArts(void)
 	absorb_length = 10.0f;
 	stayTime++;
 
-	Coin* coin = m_CoinManager->GetCoin();
-	for (int i = 0; i < 200; i++)
+	list<Coin*>	coinList = coinManager->GetList();
+	FOR_LIST( coinList.begin(), coinList.end() )
 	{
-		if (coin[i].GetState() == true)
+		bool	state = ( *it )->GetState();
+		if ( state )
 		{
-			Vector3 vec = coin[i].GetPos() - this->pos;
+			Vector3 vec = ( *it )->GetPos() - this->pos;
 			vec.Normalize();
 			float length = vec.Length();
-			if (length < absorb_length)
+			if ( length < absorb_length )
 			{
-				coin[i].SetMove(-vec * 1.0f);
+				( *it )->SetMove( -vec * 1.0f );
 			}
 		}
+
 	}
+
 	if (stayTime > 2 * SECOND)
 	{
 		stayTime = 0;

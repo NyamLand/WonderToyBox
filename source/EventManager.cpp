@@ -232,7 +232,7 @@
 		{
 		case 0:
 			//	ƒRƒCƒ“‚Ì“®ìØ‚è‘Ö‚¦
-			m_CoinManager->SetCoinGetAwayFlag( true );
+			coinManager->SetCoinGetAwayFlag( true );
 			event_Jam_CoinGetAway.step++;
 			break;
 
@@ -246,7 +246,7 @@
 			break;
 
 		case 2:
-			m_CoinManager->SetCoinGetAwayFlag( false );
+			coinManager->SetCoinGetAwayFlag( false );
 			event_Jam_CoinGetAway.step = 0;
 			event_Jam_CoinGetAway.eventflag = false;
 			eventflag = EVENT_MODE::JAM_NONE;

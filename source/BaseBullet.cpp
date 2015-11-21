@@ -26,12 +26,12 @@
 //-------------------------------------------------------------------------------
 
 	//	コンストラクタ
-BaseBullet::BaseBullet(void) :
-obj(NULL),
-pos(0, 0, 0), move(0, 0, 0),
-limitTimer(0), judgeTimer(0), number(0), leanpower(0), playerNum(0), time(0), step(0),
-scale(0), angle(0),
-state(false), activate(false)
+	BaseBullet::BaseBullet(void) :
+	obj(NULL),
+	pos(0, 0, 0), move(0, 0, 0),
+	limitTimer(0), judgeTimer(0), number(0), leanpower(0), playerNum(0), time(0), step(0),
+	scale(0), angle(0),
+	state(false), activate(false)
 	{
 	}
 
@@ -73,7 +73,7 @@ state(false), activate(false)
 	}
 
 	//	シェーダー付き描画
-	void	BaseBullet::Render(iexShader* shader, LPSTR technique)
+	void	BaseBullet::Render( iexShader* shader, LPSTR technique )
 	{
 		obj->Render( shader, technique );
 	}
@@ -97,7 +97,7 @@ state(false), activate(false)
 	}
 
 	//	プレイヤーとのあたりチェック
-	bool	BaseBullet::PlayerCollisionCheck(void)
+	bool	BaseBullet::PlayerCollisionCheck( void )
 	{
 		for ( int i = 0; i < 4; i++ )
 		{
@@ -105,7 +105,7 @@ state(false), activate(false)
 			if ( characterManager->GetUnrivaled( i ) )	continue;
 			
 			//	プレイヤー情報設定
-			Vector3	p_pos_bottom = characterManager->GetPos(i);
+			Vector3	p_pos_bottom = characterManager->GetPos( i );
 			Vector3	p_pos_top = Vector3( p_pos_bottom.x, p_pos_bottom.y + 3.0f, p_pos_bottom.z );
 			float		p_r = 1.0f;
 			
@@ -146,7 +146,7 @@ state(false), activate(false)
 				//	コインがあればばらまき
 				if ( p2_coinNum > 0 )
 				{
-					m_CoinManager->Set( p_pos_top, vec, power );
+					coinManager->Append( p_pos_top, vec, power );
 					gameManager->SubCoin( p2_Num );
 				}
 				return true;

@@ -120,12 +120,12 @@ bool	Thief::QuickArts(void)
 	{
 		for (int i = 0; i < 3; i++)
 		{
-			m_BulletManager->Set(BULLET_MODEL::THIEF_01 , new Thief_Bullet01, p_pos, vec[i], bulletSpeed, playerNum);
+			m_BulletManager->Set( BULLET_MODEL::THIEF_01 , new Thief_Bullet01, p_pos, vec[i], bulletSpeed, playerNum );
 		}
 	}
 	time++;
 
-	if (time >= 1 * SECOND)
+	if ( time >= 1 * SECOND )
 	{
 		time = 0;
 		return true;
@@ -174,20 +174,22 @@ bool	Thief::HyperArts(void)
 	absorb_length = 10.0f;
 	stayTime++;
 
-	Coin* coin = m_CoinManager->GetCoin();
-	for (int i = 0; i < 200; i++)
+	list<Coin*>	coinList = coinManager->GetList();
+	FOR_LIST( coinList.begin(), coinList.end() )
 	{
-		if (coin[i].GetState() == true)
+		bool state = ( *it )->GetState();
+		if ( state )
 		{
-			Vector3 vec = coin[i].GetPos() - this->pos;
+			Vector3 vec = ( *it )->GetPos() - this->pos;
 			vec.Normalize();
 			float length = vec.Length();
-			if (length < absorb_length)
+			if ( length < absorb_length )
 			{
-				coin[i].SetMove(-vec * 1.0f);
+				( *it )->SetMove( -vec * 1.0f );
 			}
 		}
 	}
+
 	if (stayTime > 2 * SECOND)
 	{
 		stayTime = 0;

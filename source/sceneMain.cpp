@@ -87,8 +87,7 @@
 		PlayerInitialize();
 		
 		//	コイン
-		m_CoinManager = new CoinManager();
-		m_CoinManager->Initialize();
+		coinManager->Initialize();
 
 		//	バレット
 		m_BulletManager = new BulletManager();
@@ -134,7 +133,7 @@
 
 		m_BulletManager->Initialize();
 		itemManager->Initialize();
-		m_CoinManager->Initialize();
+		coinManager->Initialize();
 		m_Effect->Initialize();
 		ui->Initialize(UI_MODE::MAIN);
 	}
@@ -142,27 +141,20 @@
 	//	デストラクタ
 	sceneMain::~sceneMain( void )
 	{
-		backBuffer->Release();
 		SafeDelete( ShadowTex );
 		SafeDelete( RefTex );
 		SafeDelete( mainView );
-		SafeDelete( m_CoinManager );
 		SafeDelete( m_BulletManager );
 		SafeDelete( ui );
 
-		//SafeDelete( diffuse );
-		//SafeDelete( specular );
-		//SafeDelete( depth );
-		//SafeDelete( normal );
-		//SafeDelete( light );
-		//SafeDelete( light_s );
-
+		backBuffer->Release();
 		Random::Release();
 		stageManager->Release();
 		particle->Release();
 		itemManager->Release();
 		characterManager->Release();
 		sound->AllStop();
+		coinManager->Release();
 	}
 
 	//	プレイヤー初期化
@@ -271,11 +263,11 @@
 			switch ( gameManager->GetStageType() )
 			{
 			case 0:
-				m_CoinManager->Set( Vector3( 0.0f, 5.0f, -25.0f ), Vector3( Random::GetFloat( -0.5f, 0.5f ), Random::GetFloat( 0.1f, 0.3f ), 1.0f ), Random::GetFloat( 2.0f, 3.5f ) );
+				coinManager->Append( Vector3( 0.0f, 5.0f, -25.0f ), Vector3( Random::GetFloat( -0.5f, 0.5f ), Random::GetFloat( 0.1f, 0.3f ), 1.0f ), Random::GetFloat( 2.0f, 3.5f ) );
 				break;
 
 			case 1:
-				m_CoinManager->Set( Vector3( 0.0f, 7.0f, -25.0f ), Vector3( Random::GetFloat( -0.5f, 0.5f ), Random::GetFloat( 0.2f, 0.3f ), 1.0f ), Random::GetFloat( 1.0f, 5.5f ) );
+				coinManager->Append( Vector3( 0.0f, 7.0f, -25.0f ), Vector3( Random::GetFloat( -0.5f, 0.5f ), Random::GetFloat( 0.2f, 0.3f ), 1.0f ), Random::GetFloat( 1.0f, 5.5f ) );
 				break;
 			}
 			gameStartCoinNum++;
@@ -346,7 +338,7 @@
 		eventManager->Update();
 
 		//	コイン更新
-		m_CoinManager->Update();
+		coinManager->Update();
 
 		//	リス　バレット更新
 		m_BulletManager->Update();
@@ -391,7 +383,7 @@
 			//	オブジェクト描画
  			stageManager->Render(shader3D, "full_s");
 			characterManager->Render(shader3D, "toon");
-			m_CoinManager->Render(shader3D, "full");
+			coinManager->Render(shader3D, "full");
 			m_BulletManager->Render();
 			itemManager->Render();
 
@@ -428,7 +420,7 @@
 
 		//	物体の描画
 		stageManager->Render(shader3D, "specular");
-		m_CoinManager->Render( shader3D, "specular" );
+		coinManager->Render( shader3D, "specular" );
 		characterManager->Render( shader3D, "specular" );
 		itemManager->Render( shader3D, "specular" );
 
@@ -484,7 +476,7 @@
 		//	描画
 		//m_Stage->Render( shader3D, "shadowBuf" );
 		//characterManager->Render( shader3D, "ShadowBuf" );
-		//m_CoinManager->Render( shader3D, "ShadowBuf" );
+		//coinManager->Render( shader3D, "ShadowBuf" );
 		//itemManager->Render( shader3D, "ShadowBuf" );
 
 		//	作ったシャドウテクスチャをシェーダーにセット

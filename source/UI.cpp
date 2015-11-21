@@ -543,8 +543,8 @@
 	//	カウントダウン・スタート・終了演出
 	void	UI::StartAndTimeUpInitialize( void )
 	{
-		int x = static_cast<int>( iexSystem::ScreenWidth / 2 );
-		int y = static_cast<int>( iexSystem::ScreenHeight / 2 );
+		int x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
+		int y = static_cast<int>( iexSystem::ScreenHeight * 0.5f );
 		int w = static_cast<int>( iexSystem::ScreenWidth * 0.27f );
 		int h = static_cast<int>( iexSystem::ScreenHeight * 0.49f );
 		ImageInitialize( countImage, x, y, w, h, 0, 0, 256, 256 );
@@ -560,8 +560,8 @@
 		
 		//　顔ルーレット関連
 		ddInfo.face.obj = new iex2DObj("DATA/UI/chara_emotion.png");
-		int x = static_cast<int>( iexSystem::ScreenWidth / 2 );
-		int y = static_cast<int>( iexSystem::ScreenHeight /2 );
+		int x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
+		int y = static_cast<int>( iexSystem::ScreenHeight * 0.5f );
 		ImageInitialize(ddInfo.face, x, y, 0, 0, FACE_INFO::Normal * 256, 0 * 256, 256, 256);
 		ddInfo.f = 0;
 		ddInfo.roulette = 0;
@@ -593,8 +593,8 @@
 		alertInfo.param = 0.0f;
 
 		//	画像構造体初期化
-		int x = static_cast<int>( iexSystem::ScreenWidth / 2 );
-		int y = static_cast<int>( iexSystem::ScreenHeight / 2 );
+		int x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
+		int y = static_cast<int>( iexSystem::ScreenHeight * 0.5f );
 		int w = static_cast<int>( iexSystem::ScreenWidth * 0.15f );
 		int h = static_cast<int>( iexSystem::ScreenHeight * 0.27f );
 		ImageInitialize( alertImage, x, y, w, h, 0, 0, 256, 256 );
@@ -868,7 +868,7 @@
 			gauge.w = bar_sx[i];	gauge.sw = bar_sx[i];
 
 			//	（左上位置 - ゲージ幅の半分）で中心、ゲージを右向きへ増やすため
-			RenderImage(gauge, gauge.sx, gauge.sy * i, gauge.sw, gauge.sh, IMAGE_MODE::NORMAL, bar_x[i] - (backgauge.w * 0.5f) + (gauge.sw * 0.5f ), gauge.y);
+			RenderImage( gauge, gauge.sx, gauge.sy * i, gauge.sw, gauge.sh, IMAGE_MODE::NORMAL, static_cast<int>( bar_x[i] - (backgauge.w * 0.5f) + (gauge.sw * 0.5f ) ), gauge.y );
 																					
 			//顔
 			RenderImage(faceImage, faceImage.sx * state_type[i], faceImage.sy * charatype[i], faceImage.sw, faceImage.sh, IMAGE_MODE::NORMAL, state_x[i] - (backgauge.w / 2), faceImage.y);

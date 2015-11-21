@@ -13,7 +13,8 @@
 //----------------------------------------------------------------------
 
 	#define	ZERO_VECTOR3		Vector3( 0.0f, 0.0f, 0.0f )
-	#define	FOR( minValue, maxValue )	for( auto value = minValue; value < maxValue; value++ )
+	#define	FOR( minValue, maxValue )	for( int value = minValue; value < maxValue; value++ )
+	#define	FOR_LIST( minValue, maxValue )	for( auto it = minValue; it != maxValue; it++ )
 
 	namespace IMAGE_MODE
 	{

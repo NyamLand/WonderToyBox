@@ -14,18 +14,6 @@
 //	初期化・解放
 //------------------------------------------------------------------------------------
 
-	//	コンストラクタ
-	ItemManager::ItemManager( void )
-	{
-	
-	}
-
-	//	デストラクタ
-	ItemManager::~ItemManager( void )
-	{
-
-	}
-
 	//	初期化
 	bool	ItemManager::Initialize( void )
 	{
@@ -105,7 +93,7 @@
 //------------------------------------------------------------------------------------
 
 	//	実体取得
-	ItemManager*	ItemManager::GetInstance()
+	ItemManager*	ItemManager::GetInstance( void )
 	{
 		static	ItemManager	out;
 		return	&out;

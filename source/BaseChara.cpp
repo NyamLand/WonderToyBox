@@ -954,7 +954,7 @@ namespace
 		*/
 
 		//　フィールドにコインが○○枚以上　→　コイン優先
-		if (m_CoinManager->GetFreeCoinNum() > 50)
+		if (coinManager->GetFreeCoinNum() > 50)
 		{
 			aiInfo.mode = AI_MODE_STATE::RUN;
 		}
@@ -1029,7 +1029,7 @@ namespace
 		};
 
 		//　targetに向けて1～3歩歩く
-		existence = m_CoinManager->GetMinPos(target, pos);
+		existence = coinManager->GetMinPos(target, pos);
 
 		//	対象が存在していたら対象に向かって走る
 		if (existence)
