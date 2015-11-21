@@ -112,7 +112,8 @@ bool	Thief::QuickArts(void)
 		up * 5.0f,
 		up * 5.0f + right * -3.0f
 	};
-	static float	 bulletSpeed = 0.5f;
+	p_pos.y += 3.0f;
+	float	 bulletSpeed = 0.5f;
 	int leanpower = 30;
 	int playerNum = GetPlayerNum();
 
@@ -125,6 +126,7 @@ bool	Thief::QuickArts(void)
 	}
 	time++;
 
+	//一秒間硬直
 	if (time >= 1 * SECOND)
 	{
 		time = 0;
@@ -147,7 +149,7 @@ bool	Thief::PowerArts(void)
 	p_pos.y += 1.0f;
 	Vector3	vec = front * 1.0f;
 
-	static float	 bulletSpeed = 0.5f;
+	float	 bulletSpeed = 0.8f;
 	int leanpower = 30;
 	int playerNum = GetPlayerNum();
 
@@ -168,35 +170,53 @@ bool	Thief::PowerArts(void)
 //	ハイパーアーツ
 bool	Thief::HyperArts(void)
 {
-	//無敵判定を切らないとそもそもコインを集められないので無敵切ってます。
-	//問題なら言ってください
-	unrivaled = false;
-	absorb_length = 10.0f;
-	stayTime++;
+	power = HYPER;
 
-	Coin* coin = m_CoinManager->GetCoin();
-	for (int i = 0; i < 200; i++)
+	static int time = 0;
+
+	//	行列から情報取得
+	Vector3	front = GetFront();
+	Vector3	right = GetRight();
+	Vector3	p_pos = GetPos();
+	SetMove(Vector3(0.0f, move.y, 0.0f));
+
+	//	情報設定
+	Vector3	vec[5] =
 	{
-		if (coin[i].GetState() == true)
+		front * 5.0f + right * 8.0f,
+		front * 5.0f + right * 3.0f,
+		front * 5.0f,
+		front * 5.0f + right * -3.0f,
+		front * 5.0f + right * -8.0f
+	};
+	Vector3 b_angle[5] =
+	{
+		{ 0, angle + GetAngle(vec[0], front), 0 },
+		{ 0, angle + GetAngle(vec[1], front), 0 },
+		{ 0, angle, 0 },
+		{ 0, angle - GetAngle(vec[3], front), 0 },
+		{ 0, angle - GetAngle(vec[4], front), 0 }
+	};
+	float	 bulletSpeed = 0.5f;
+	int playerNum = GetPlayerNum();
+
+	if (time == 0)
+	{
+		for (int i = 0; i < 5; i++)
 		{
-			Vector3 vec = coin[i].GetPos() - this->pos;
-			vec.Normalize();
-			float length = vec.Length();
-			if (length < absorb_length)
-			{
-				coin[i].SetMove(-vec * 1.0f);
-			}
+			m_BulletManager->Set(BULLET_MODEL::THIEF_03, new Thief_Bullet03, p_pos, vec[i], b_angle[i],  bulletSpeed, playerNum);
 		}
 	}
-	if (stayTime > 2 * SECOND)
+	time++;
+
+	if (time >= 150)
 	{
-		stayTime = 0;
-		absorb_length = DEFAULT_ABSORB_LENGTH;
+		time = 0;
 		return true;
 	}
-
 	return	false;
 }
+
 
 //	モーション管理
 void	Thief::MotionManagement(int motion)

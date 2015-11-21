@@ -8,10 +8,12 @@
 //	Thief_Bullet02ƒNƒ‰ƒX
 //
 //*****************************************************************************
+
+
+
 class Thief_Bullet02 : public BaseBullet
 {
 private:
-	int time;
 	int holdCoinNum;
 	float range;	//‘¬“x‚ÌŒ¸Š—¦
 

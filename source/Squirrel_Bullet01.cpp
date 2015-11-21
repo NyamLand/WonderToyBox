@@ -17,11 +17,12 @@ Squirrel_Bullet01::Squirrel_Bullet01()
 
 bool Squirrel_Bullet01::Initialize()
 {
-	judgeTimer = 10;
+	judgeTimer = 10; 
+	radius = 10.0f;
 	limitTimer = 0;
 	activate = false;
 	state = true;
-	scale = 0.05f;
+	scale = Vector3(0.05f,0.05f,0.05f);
 	leanpower = 0;
 	return true;
 }
@@ -48,8 +49,8 @@ void	Squirrel_Bullet01::Update(void)
 
 void	Squirrel_Bullet01::Move(void)
 {
-	pos += move;
 	// 反射( ステージ )	
 	static float rate = 0.4f;
 	Collision::GetReflect(pos, move, rate);
+	pos += move;
 }

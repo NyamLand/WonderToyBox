@@ -6,6 +6,8 @@
 #include	"Squirrel_Bullet01.h"
 #include	"Thief_Bullet01.h"
 #include	"Thief_Bullet02.h"
+#include	"Thief_Bullet03.h"
+#include	"Thief_Bullet04.h"
 //******************************************************************************
 //
 //	BulletManagerÉNÉâÉX
@@ -17,7 +19,9 @@ namespace BULLET_MODEL
 	{
 		SQUIRREL = 0,
 		THIEF_01 = 1,
-		THIEF_02 = 2
+		THIEF_02 = 2,
+		THIEF_03 = 3,
+		THIEF_04 = 4
 	};
 }
 
@@ -50,7 +54,8 @@ public:
 	void	Render(iexShader* shader, LPSTR technique);
 
 	//	ìÆçÏä÷êî
-	void	Set(int type, BaseBullet* obj, Vector3 pos, const Vector3 vec, float speed,int playerNum);
+	void	Set(int type, BaseBullet* obj, Vector3 pos, const Vector3 vec, float speed, int playerNum);
+	void	Set(int type, BaseBullet* obj, Vector3 pos, const Vector3 vec, const Vector3 angle, float speed, int playerNum);
 	//void	Set(int type, BaseBullet* obj, Vector3 pos, const Vector3 vec, const float& scale, float speed);
 	//void	Set(int type, BaseBullet* obj, Vector3 pos, const Vector3 vec, float speed, int leanpower);
 	void	DistCheck(int n);
