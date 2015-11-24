@@ -22,7 +22,7 @@ private:
 
 protected:
 	//	定数
-	static const int COIN_MAX = 201;		//	コイン最大数
+	//static const int COIN_MAX = 201;		//	コイン最大数
 
 	//	オブジェクト
 	unique_ptr<iexMesh>	org;			//	オリジナルモデル
@@ -31,7 +31,7 @@ protected:
 
 	//	変数
 	int				coin_num;	//	コイン枚数
-
+	int				COIN_NUM;
 public:
 	//	初期化・解放
 	CoinManager( void );

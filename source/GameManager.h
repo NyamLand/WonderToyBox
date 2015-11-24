@@ -64,6 +64,12 @@ namespace
 class GameManager
 {
 private:
+	//オプション情報
+	int		coinmax;
+	int		timerminutes;
+	int		timersecond;
+	bool	itemflg;
+
 	//	ゲーム設定用
 	int		playerNum;
 	int		charatype[4];
@@ -117,7 +123,11 @@ public:
 	int		GetWorst( void );
 	int		GetMode( void );
 	int		GetRank(int player);   
-	int        GetTimeStop(void);
+	int     GetTimeStop(void);
+	int		GetTimeMinutes(void)const;
+	int		GetTimeSecond(void)const;
+	int		GetCoinMax(void)const;
+	bool	GetItemFlg(void)const;
 	static	GameManager*	GetInstance( void );
 
 	//	情報設定
@@ -130,6 +140,10 @@ public:
 	void	SetNewsFlag( const bool& flag );
 	void    SetShakeCamera(float wide, int timer);
 	void    SetTimeStop(int time);
+	void	SetTimeMinutes(int timeminutes);
+	void	SetTimeSecond(int timesecond);
+	void	SetCoinMax(int coinmax);
+	void	SetItemFlg(bool itemflg);
 };
 #define	gameManager ( GameManager::GetInstance() )
 

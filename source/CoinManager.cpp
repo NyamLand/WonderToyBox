@@ -3,7 +3,7 @@
 #include	"system/System.h"
 #include	"Random.h"
 #include	"GlobalFunction.h"
-
+#include	"GameManager.h"
 #include	"CoinManager.h"
 
 //******************************************************************************
@@ -46,9 +46,10 @@
 		org = make_unique<iexMesh>( LPSTR( "DATA/Object/coin01.imo" ) );
 
 		//	コイン初期化
-		c_Coin = new Coin[ COIN_MAX ];
+		COIN_NUM = gameManager->GetCoinMax();
+		c_Coin = new Coin[ COIN_NUM ];
 		coin_num = 0;
-		FOR( 0, COIN_MAX )
+		FOR( 0, COIN_NUM )
 		{
 			c_Coin[value].Initialize();
 			c_Coin[value].state = false;
@@ -69,7 +70,7 @@
 		coin_num = 0;
 
 		//	全コイン更新
-		FOR( 0, COIN_MAX )
+		FOR( 0, COIN_NUM )
 		{
 			if ( !c_Coin[value].state )	continue;
 			
@@ -88,7 +89,7 @@
 	void	CoinManager::Render( iexShader* shader, LPSTR technique )
 	{
 		//	存在している全コイン描画
-		FOR( 0, COIN_MAX )
+		FOR( 0, COIN_NUM )
 		{
 			//	存在してなかったらスキップ
 			if ( !c_Coin[value].state )	continue;
@@ -112,7 +113,7 @@
 	//	生成
 	void	CoinManager::Set( const Vector3& pos, const Vector3& vec, const float& speed )
 	{
-		for ( int i = 0; i < COIN_MAX; i++ )
+		for ( int i = 0; i < COIN_NUM; i++ )
 		{
 			if ( c_Coin[i].state )	continue;
 
@@ -133,7 +134,7 @@
 	void	CoinManager::DistCheck( int n )
 	{
 		//	コイン同士の位置チェック		
-		for ( int i = 0; i < COIN_MAX; i++ )
+		for ( int i = 0; i < COIN_NUM; i++ )
 		{
 			//	自分vs自分は除外		
 			if ( i == n ) continue;
@@ -170,7 +171,7 @@
 	//	コインのモード設定
 	void	CoinManager::SetCoinGetAwayFlag( bool flag )
 	{
-		for ( int i = 0; i < COIN_MAX; i++ )
+		for ( int i = 0; i < COIN_NUM; i++ )
 		{
 			c_Coin[i].SetGetAwayFlag( flag );
 		}
@@ -179,7 +180,7 @@
 
 	void	CoinManager::SetState(bool state)
 	{
-		for (int i = 0; i < COIN_MAX; i++)
+		for (int i = 0; i < COIN_NUM; i++)
 		{
 			c_Coin[i].SetState(state);
 		}
@@ -195,7 +196,7 @@
 		float		dist = 1000.0f;
 
 		//	コイン全部をチェック
-		for ( int i = 0; i < COIN_MAX; i++ )
+		for ( int i = 0; i < COIN_NUM; i++ )
 		{
 			//	存在チェック
 			if ( !c_Coin[i].state )	continue;
