@@ -85,7 +85,7 @@ void	Thief_Bullet01::Move(void)
 		break;
 	}
 
-	if (StageCollisionCheck() || Collision::CheckWall(pos, move))	move = Vector3(0, 0, 0);	//ï«Ç™ínñ Ç…êGÇÍÇÈÇ∆í‚é~
+	if (StageCollisionCheck() || Collision::CheckWall(pos, move))	move = Vector3(0, 0, 0);	//ï«Ç©ínñ Ç…êGÇÍÇÈÇ∆í‚é~
 	pos += move;
 }
 
@@ -192,5 +192,6 @@ void Thief_Bullet01::Stalk()
 	}
 	ToPlayerVec.Normalize();
 
-	move += ToPlayerVec * 0.02f;
+	move.x += ToPlayerVec.x * 0.02f;
+	move.z += ToPlayerVec.z * 0.02f;
 }

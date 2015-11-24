@@ -15,8 +15,10 @@
 class Thief_Bullet04 : public BaseBullet
 {
 private:
+	int		holdCoinNum;
 	float	growSpeed;	//アームの伸び縮みする速さ
 	bool	checkMax, checkMin;	//アームが最大まで伸びたか、最小まで縮んだか
+	bool	isPlayerCheck[4];	//ｎ番目のプレイヤーに触れたかどうか
 
 public:
 	//	初期化・解放
