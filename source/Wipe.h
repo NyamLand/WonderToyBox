@@ -19,6 +19,7 @@ private:
 						float	WIPE_LEFT;
 						float	WIPE_UP;
 						float	WIPE_DOWN;
+						float	LEN_MAX;
 
 private:
 	//	ŒÂlƒJƒƒ‰
@@ -50,6 +51,7 @@ public:
 	void	Check( int num );
 	void	Arrow( int num, Vector3 target );
 	void	Move( int num, Vector3 target );
+	Vector3	LengthChecker( int num, Vector3 target );
 
 	//	•`‰æ
 	void	Render( void );
