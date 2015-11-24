@@ -127,6 +127,9 @@
 	//	ワールド座標からクライエント座標への変換
 	bool	WorldToClient( const Vector3& pos, Vector3& out, const Matrix& mat );
 
+	//	クライアント座標からワールド座標への変換
+	void	ClientToWorld( const Vector3& screenPos, Vector3& out );
+
 	//	デバッグ文字描画
 	void	DrawString( LPSTR string, int x, int y, DWORD color = 0xFFFFFFFF );
 	void	DrawString( LPSTR string, int x, int y, float r, float g, float b );

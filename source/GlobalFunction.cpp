@@ -81,6 +81,22 @@
 		return true;
 	}
 
+	//	クライアント座標からワールド座標へ
+	void	ClientToWorld( const Vector3& screenPos, Vector3& out )
+	{
+		D3DXVECTOR3	d3dxScreenCoord( screenPos.x, screenPos.y, screenPos.z );
+
+		D3DVIEWPORT9	viewPort;
+		iexSystem::Device->GetViewport( &viewPort );
+
+		D3DXMATRIX	worldMatrix;
+		D3DXMatrixIdentity( &worldMatrix );
+		D3DXVECTOR3	result;
+		D3DXVec3Unproject( &result, &d3dxScreenCoord, &viewPort, &matProjection, &matView, &worldMatrix );
+
+		out = Vector3( result.x, result.y, result.z );
+	}
+
 	//	モーション番号登録
 	void	SetMotionNum( int& motionData, int motionNum )
 	{
