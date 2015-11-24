@@ -67,8 +67,6 @@ class GameManager
 private:
 	//オプション情報
 	int		coinmax;
-	int		timerminutes;
-	int		timersecond;
 	bool	itemflg;
 
 	//	ゲーム設定用

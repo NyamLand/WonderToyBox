@@ -206,6 +206,7 @@
 			break;
 		}
 		if (KEY_Get(KEY_B) == 3){
+			tempmode = mode+1;
 			SetMode(MENU_MODE::OPTION);
 		}
 
@@ -781,7 +782,7 @@
 	void	sceneMenu::OptionInitialize( void )
 	{
 		//@\‘¢‘Ì‰Šú‰»
-		optionInfo.itemflg = false;
+		optionInfo.itemflg = true;
 		optionInfo.coinMAX = 200;
 		optionInfo.minute = 1;
 		optionInfo.second = 30;
@@ -851,7 +852,7 @@
 			gameManager->SetCoinMax(optionInfo.coinMAX);
 			gameManager->SetTime(optionInfo.minute,optionInfo.second);
 		if (KEY_Get(KEY_A) == 3){
-			SetMode(MENU_MODE::SELECT_PLAYERNUM);
+			SetMode(tempmode);
 		}
 	}
 

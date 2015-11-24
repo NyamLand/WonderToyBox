@@ -112,7 +112,7 @@
 		timeStop = 0;
 
 		//	ゲームデータテキストを読み込む
-		LoadTextData();
+		//LoadTextData();
 		timer = timelimit;
 	}
 
@@ -155,7 +155,7 @@
 			ui->SetAlertFlag(true);
 			sound->PlaySE(SE::EVENT_SE);
 		}
-		if (timer == 40 * SECOND) eventManager->SetEvent(EVENT_MODE::JAM_SLOPE_CAMERA/*Random::GetInt( 0, EVENT_MODE::NONE - 1 )*/);
+		if ( timer == 40 * SECOND ) eventManager->SetEvent( EVENT_MODE::SLOPE_CAMERA/*Random::GetInt( 0, EVENT_MODE::NONE - 1 )*/ );
 
 		if ( timer != 0 )
 		{
@@ -175,8 +175,8 @@
 			{
 				if ( Random::PercentageRandom( 0.6f ) )
 				{
-					if ( coinNum[0] + coinNum[1] + coinNum[2] + coinNum[3] + coinManager->GetFreeCoinNum() < 201)
-					coinManager->Append( Vector3( Random::GetFloat( -20.0f, 20.0f ), 50.0f, Random::GetFloat( -20.0f, 12.0f ) ), Vector3( 0.0f, -1.0f, 0.0f ), 1.0f );
+					if ( coinNum[0] + coinNum[1] + coinNum[2] + coinNum[3] + m_CoinManager->GetFreeCoinNum() < coinmax)
+					m_CoinManager->Set( Vector3( Random::GetFloat( -20.0f, 20.0f ), 50.0f, Random::GetFloat( -20.0f, 12.0f ) ), Vector3( 0.0f, -1.0f, 0.0f ), 1.0f );
 				}
 			}
 		}
@@ -442,6 +442,7 @@
 	void	GameManager::SetTime(int minute,int second)
 	{
 		timer=minute*MINUTE + second*SECOND;
+		timelimit = timer;
 	}
 
 	//コイン枚数設定
