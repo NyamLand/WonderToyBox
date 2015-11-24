@@ -205,9 +205,9 @@
 			OptionUpdate();
 			break;
 		}
-		if (KEY_Get(KEY_B) == 3){
-			tempmode = mode+1;
-			SetMode(MENU_MODE::OPTION);
+		if ( KEY_Get( KEY_B ) == 3 ){
+			tempmode = mode;
+			SetMode( MENU_MODE::OPTION );
 		}
 
 		//	スクリーン更新
@@ -788,6 +788,7 @@
 		optionInfo.minute = 1;
 		optionInfo.second = 30;
 		optionInfo.step = 0;
+		tempmode = MENU_MODE::INIT;
 		gameManager->SetItemFlg( optionInfo.itemflg );
 		gameManager->SetCoinMax( optionInfo.coinMAX );
 		gameManager->SetTime( optionInfo.minute, optionInfo.second );

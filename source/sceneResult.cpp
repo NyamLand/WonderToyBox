@@ -182,6 +182,16 @@
 			viewRankInOrder.timer = 0;
 			viewRankInOrder.step = 3;
 		}
+
+		//	ラストボーナス関連初期化
+		FOR( 0, PLAYER_MAX )	lastBonusInfo.bonus[value];
+		lastBonusInfo.step = 0;
+		
+		//	頂点設定
+		SetVertex( lastBonusInfo.v[0], iexSystem::ScreenWidth, iexSystem::ScreenHeight * 0.2f, 0.0f, 0, 0, 0xFFFFFFFF );
+		SetVertex( lastBonusInfo.v[1], iexSystem::ScreenWidth, iexSystem::ScreenHeight * 0.2f, 0.0f, 1, 0, 0xFFFFFFFF );
+		SetVertex( lastBonusInfo.v[2], iexSystem::ScreenWidth, iexSystem::ScreenHeight * 0.6f, 0.0f, 0, 1, 0xFFFFFFFF );
+		SetVertex( lastBonusInfo.v[3], iexSystem::ScreenWidth, iexSystem::ScreenHeight * 0.6f, 0.0f, 1, 1, 0xFFFFFFFF );
 		return	true;
 	}
 
@@ -787,6 +797,7 @@
 	//	ボード出現
 	bool	sceneResult::InBoard( void )
 	{
+		
 		return	false;
 	}
 
