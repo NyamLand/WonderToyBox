@@ -23,6 +23,7 @@
 
 #define	GETAWAY_LENGTH		3.0f	//	逃げる判定距離
 #define	MAX_HEIGHT					50.0f	//	想定している高さ最大値
+#define	MASS							10.0f;	//	質量
 //#define	MAX_SHADOW_SIZE		1.5f	//	影最大サイズ
 
 //-------------------------------------------------------------------------------
@@ -55,6 +56,13 @@
 		state = false;
 		getAwayflag = false;
 
+		//	物理用パラメータ
+		mass = MASS;
+		position = Vector3( 0.0f, 0.0f, 0.0f );
+		velocity = Vector3( 0.0f, 0.0f, 0.0f );
+		acceleration = Vector3( 0.0f, 0.0f, 0.0f );
+		resultant = Vector3( 0.0f, 0.0f, 0.0f );
+
 		//	影構造体初期化
 		{
 			shadow.pos = pos;
@@ -66,7 +74,9 @@
 		}
 
 		return	true;
+
 	}
+
 
 //-------------------------------------------------------------------------------
 //	更新・描画
@@ -111,7 +121,6 @@
 		obj->SetScale( scale );
 		obj->Update();
 	}
-
 	//	影情報更新
 	void	Coin::ShadowUpdate( void )
 	{
@@ -317,4 +326,88 @@
 	bool		Coin::GetState( void )
 	{
 		return	state;
+	}
+
+//-------------------------------------------------------------------------------
+//	物理用動作関数
+//-------------------------------------------------------------------------------
+
+	//	情報統合
+	void	Coin::Integrate( float dt )
+	{
+		acceleration = ( resultant / mass );
+		velocity += acceleration * dt;
+		position = velocity * dt;
+
+		resultant = Vector3( 0.0f, 0.0f ,0.0f );
+	}
+
+	//	力を加える
+	void	Coin::AddForce( const Vector3& force )
+	{
+		resultant += force;
+	}
+
+	//	面を指定してレイをとばす
+	bool	Coin::RayPick( LVERTEX v[3], Vector3& out_hitPos, Vector3& out_normal, Vector3 pos, Vector3 moveVec, float dist )
+	{
+		//	パラメータ準備
+		Vector3	p = pos;
+		Vector3	vec = moveVec;
+		Vector3	v1, v2, v3;
+		Vector3	n;
+		Vector3	l1, l2, l3;
+		Vector3	temp;
+		Vector3	cp;
+		Vector3	p1, p2, p3;
+		float neart = 0.0f;
+		//float dist;
+
+		//	頂点取得
+		v1 = Vector3( v[0].x, v[0].y, v[0].z );
+		v2 = Vector3( v[1].x, v[1].y, v[1].z );
+		v3 = Vector3( v[2].x, v[2].y, v[2].z );
+
+		//	距離判定
+		l1 = v2 - v1;
+		l2 = v3 - v2;
+
+		//	外積による法線算出
+		Vector3Cross( n, l1, l2 );
+		out_normal = n;
+
+		//	内積の結果がプラスなら裏向き
+		float	dot = Vector3Dot( vec, n );
+		if ( dot >= 0.0f )	return false;
+
+		//	交点算出
+		p1 = v1 - p;
+		float	t = Vector3Dot( n, p1 ) / dot;
+		if ( t < 0.0f || t > neart )	return false;
+
+		cp = vec * t + p;
+
+		//	内点判定
+		p1 = v1 - cp;
+
+		Vector3Cross( temp, p1, l1 );
+		if ( Vector3Dot( temp, n ) < 0.0f )	return false;
+
+		p2 = v2 - cp;
+		Vector3Cross( temp, p2, l2 );
+		if ( Vector3Dot( temp, n ) < 0.0f )	return false;
+
+		l3 = v1 - v3;
+		p3 = v3 - cp;
+		Vector3Cross( temp, p3, l3 );
+		if ( Vector3Dot( temp, n ) < 0.0f )	return false;
+
+		out_hitPos = cp;
+		return	true;
+	}
+
+	//	ポリゴンとの当たり判定
+	void	Coin::Collide( void )
+	{
+
 	}
