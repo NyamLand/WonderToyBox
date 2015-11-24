@@ -41,6 +41,7 @@
 				SELECT_CHECK,
 				MOVE_MAIN,
 				MOVE_TITLE,
+				OPTION,
 			};
 		}
 	}
@@ -89,6 +90,10 @@
 		face = new iex2DObj( "DATA/UI/chara_emotion.png" );
 		cursor = new iex2DObj( "DATA/UI/cursor.png" );
 
+
+		Oimage = new iex2DObj("DATA/UI/OptionText.png");
+		Otime = new iex2DObj("DATA/UI/number.png");
+		OCmax = new iex2DObj("DATA/UI/number.png");
 		//	モデル読み込み
 		//org[CHARACTER_TYPE::KNIGHT] = new iex3DObj( "DATA/CHR/Knight/Knight_Dammy.IEM" );		//	騎士
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Knight/Knight_Dammy.IEM" ) );		//	掃除屋
@@ -148,6 +153,11 @@
 		SafeDelete( face );
 		SafeDelete( cursor );
 		Random::Release();
+
+		//設計中
+		SafeDelete(Oimage);
+		SafeDelete(Otime);
+		SafeDelete(OCmax);
 	}
 
 //-------------------------------------------------------------------------------
@@ -189,6 +199,13 @@
 		case MENU_MODE::MOVE_TITLE:
 			MoveTitleUpdate();
 			break;
+
+		case MENU_MODE::OPTION:
+			OptionUpdate();
+			break;
+		}
+		if (KEY_Get(KEY_B) == 3){
+			SetMode(MENU_MODE::OPTION);
 		}
 
 		//	スクリーン更新
@@ -227,6 +244,9 @@
 
 		case MENU_MODE::MOVE_MAIN:
 			MoveMainRender();
+			break;
+		case MENU_MODE::OPTION:
+			OptionRender();
 			break;
 		}
 
@@ -762,28 +782,105 @@
 
 		//　構造体初期化
 		optionInfo.itemflg = false;
-		/*optionInfo.coinMAX = 0;
-		optionInfo.minute = 0;
-		optionInfo.second = 0;*/
+		optionInfo.coinMAX = 200;
+		optionInfo.minute = 1;
+		optionInfo.second = 30;
+		optionInfo.step = 0;
 	}
 
 	void	sceneMenu::OptionUpdate( void )
 	{
-		if (KEY_Get(KEY_SPACE) == 3){
-			if (optionInfo.itemflg == false){
-				optionInfo.itemflg = true;
+		if (KEY_Get(KEY_DOWN) == 3){
+			if (optionInfo.step<3)
+			optionInfo.step++;
+		}
+		if (KEY_Get(KEY_UP) == 3){
+			if (optionInfo.step>0){
+				optionInfo.step--;
 			}
-			else{
-				optionInfo.itemflg = false;
+		}
+
+		switch (optionInfo.step){
+		case 0:
+			if (KEY_Get(KEY_RIGHT) == 3 || KEY_Get(KEY_LEFT) == 3){
+				if (optionInfo.itemflg == false){
+					optionInfo.itemflg = true;
+				}
+				else{
+					optionInfo.itemflg = false;
+				}
 			}
+			break;
+		case 1:
+			if (KEY_Get(KEY_RIGHT) == 3 ){
+				if (optionInfo.coinMAX<500){
+					optionInfo.coinMAX += 50;
+				}
+			}
+			else if (KEY_Get(KEY_LEFT) == 3){
+				if (optionInfo.coinMAX>200){
+					optionInfo.coinMAX -= 50;
+				}
+			}
+			break;
+		case 2:
+			if (KEY_Get(KEY_RIGHT) == 3){
+				if (optionInfo.minute<5){
+					optionInfo.minute++;
+				}
+			}
+			else if (KEY_Get(KEY_LEFT) == 3){
+				if (optionInfo.minute>1){
+					optionInfo.minute--;
+				}
+			}
+			break;
+		case 3:
+			if (KEY_Get(KEY_RIGHT) == 3){
+				optionInfo.second = 30;
+			}
+			else if (KEY_Get(KEY_LEFT) == 3){
+				optionInfo.second = 0;
+			}
+			break;
+		}
+			gameManager->SetItemFlg(optionInfo.itemflg);
+			gameManager->SetCoinMax(optionInfo.coinMAX);
+			gameManager->SetTimeMinutes(optionInfo.minute);
+			gameManager->SetTimeSecond(optionInfo.second);
+		if (KEY_Get(KEY_A) == 3){
+			SetMode(MENU_MODE::SELECT_PLAYERNUM);
 		}
 	}
 
 	void	sceneMenu::OptionRender( void )
 	{
+		Oimage->Render(300, 150, 512, 128, 0, 128*2, 512, 128);
+		Oimage->Render(300, 350, 512, 128, 0, 128*0, 512, 128);
+		Oimage->Render(400, 550, 256, 128, 0, 128*1, 256, 128);
+
+		//アイテムの有無描画
+		if (optionInfo.itemflg){
+			Oimage->Render(950, 150, 256, 128, 0, 128 * 3, 256, 128);
+		}
+		else{
+			Oimage->Render(950, 150, 256, 128, 256, 128 * 3, 256, 128);
+		}
+
+		OCmax->Render(950,			350, 128, 128,			(optionInfo.coinMAX/100)*64, 128 * 0, 64, 64);
+		OCmax->Render(950+128,		350, 128, 128,	((optionInfo.coinMAX / 10)%10) * 64, 128 * 0, 64, 64);
+		OCmax->Render(950+(128*2),	350, 128, 128,									  0, 128 * 0, 64, 64);
+
+		TimerRender();
+	}
+	void	sceneMenu::TimerRender(void)
+	{
+		//Oimage->Render(970, 550, 256, 128, 256, 128 * 1, 256, 128);
+		OCmax->Render(950 , 550, 128, 128, optionInfo.minute*64, 128 * 0, 64, 64);
+		OCmax->Render(950 + 128, 550, 128, 128, ((optionInfo.second / 10) % 10) * 64, 128 * 0, 64, 64);
+		OCmax->Render(950 + (128 * 2), 550, 128, 128, 0, 0, 64, 64);
 
 	}
-
 //-------------------------------------------------------------------------------
 //	情報設定
 //-------------------------------------------------------------------------------
@@ -812,6 +909,9 @@
 
 		case MENU_MODE::MOVE_MAIN:
 			MoveMainInitialize();
+			break;
+		case MENU_MODE::OPTION:
+			OptionInitialize();
 			break;
 		}
 

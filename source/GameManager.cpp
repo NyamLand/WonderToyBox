@@ -64,7 +64,7 @@
 
 		//	ゲームデータテキストを読み込む
 		LoadTextData();
-		timer = timelimit;
+		timer = this->GetTimeMinutes()*MINUTE+this->GetTimeSecond()*SECOND;
 
 		return	true;
 	}
@@ -162,9 +162,11 @@
 			//	5秒ごとにアイテムを３割の確率ででランダムに配置
 			if ( timer % ( 5* SECOND ) == 0 )
 			{
-				if ( Random::PercentageRandom( 0.7f ) )
-				{
-					itemManager->Append( Vector3( Random::GetFloat( -20.0f, 20.0f ), 50.0f, Random::GetFloat( -20.0f, 15.0f ) ), ITEM_TYPE::ATTACK_UP );
+				if (itemflg){
+					if (Random::PercentageRandom(0.7f))
+					{
+						itemManager->Append(Vector3(Random::GetFloat(-20.0f, 20.0f), 50.0f, Random::GetFloat(-20.0f, 15.0f)), ITEM_TYPE::ATTACK_UP);
+					}
 				}
 			}
 
@@ -330,6 +332,27 @@
 		return out;
 	}
 
+	//タイムリミット分取得
+	int	GameManager::GetTimeMinutes(void)const
+	{
+		return timerminutes;
+	}
+	//タイムリミット秒取得
+	int GameManager::GetTimeSecond(void)const
+	{
+		return timersecond;
+	}
+	//コイン枚数取得
+	int	GameManager::GetCoinMax(void)const
+	{
+		return coinmax;
+	}
+
+	//アイテム有無取得
+	bool	GameManager::GetItemFlg(void)const
+	{
+		return itemflg;
+	}
 	//　順位更新
 	int		GameManager::GetRank( int player )
 	{
@@ -423,4 +446,27 @@
 	void	GameManager::SetTimeStop( int time )
 	{
 		this->timeStop = time;
+	}
+
+	//タイムリミット分設定
+	void	GameManager::SetTimeMinutes(int timeminutes)
+	{
+		this->timerminutes = timeminutes;
+	}
+
+	//タイムリミット秒設定
+	void	GameManager::SetTimeSecond(int timesecond)
+	{
+		this->timersecond = timesecond;
+	}
+	//コイン枚数設定
+	void	GameManager::SetCoinMax(int coinmax)
+	{
+		this->coinmax = coinmax;
+	}
+
+	//アイテム有無設定
+	void	GameManager::SetItemFlg(bool itemflg)
+	{
+		this->itemflg = itemflg;
 	}

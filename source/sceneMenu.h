@@ -50,31 +50,46 @@ private:
 	struct OptionInfo
 	{
 		bool	itemflg;
+		int		coinMAX;
+		int		minute;
+		int		second;
+		int		step;
 	};
 private:	
+	//option設計中
+	iex2DObj*				Oimage;
+	iex2DObj*				Otime;
+	iex2DObj*				OCmax;
+public:
+	void TimerRender(void);
+
+
+private:
 	//	画像・モデル
 	unique_ptr<iex2DObj>	back;
 	unique_ptr<iex2DObj>	frame;
 	unique_ptr<iex2DObj>	checkBack;
 	unique_ptr<iex2DObj>	checkCursor;
 	unique_ptr<iex2DObj>	playerNumText;
-	unique_ptr<iexMesh>	deskStage;
-	unique_ptr<iexMesh>	forestStage;	
+	unique_ptr<iexMesh>		deskStage;
+	unique_ptr<iexMesh>		forestStage;	
 	unique_ptr<iex2DObj>	playerNum;
 	unique_ptr<iex3DObj>	org[4];
-	iex3DObj*						obj[4];
-	iex2DObj*						face;
-	iex2DObj*						cursor;
-	ImageObj						textImage;
-	ImageObj						faceImage[CHARACTER_TYPE::MAX];
-	ImageObj						cursorImage[4];
+	iex3DObj*				obj[4];
+	iex2DObj*				face;
+	iex2DObj*				cursor;
+	ImageObj				textImage;
+	ImageObj				faceImage[CHARACTER_TYPE::MAX];
+	ImageObj				cursorImage[4];
+
+
 
 	//	各モード情報
 	PlayerNumSelectInfo		playerNumSelectInfo;
 	CharacterSelectInfo		characterSelectInfo;
-	StageSelectInfo				stageSelectInfo;
-	CheckSelectInfo				checkSelectInfo;
-	OptionInfo						 optionInfo;
+	StageSelectInfo			stageSelectInfo;
+	CheckSelectInfo			checkSelectInfo;
+	OptionInfo				optionInfo;
 
 	//	共通変数
 	int		mode;
