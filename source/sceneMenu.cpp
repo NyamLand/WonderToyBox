@@ -139,6 +139,7 @@
 		}
 
 		//	モード設定
+		tempmode = 0;
 		SetMode( MENU_MODE::INIT );
 
 		//	全体更新
@@ -205,9 +206,11 @@
 			OptionUpdate();
 			break;
 		}
-		if (KEY_Get(KEY_B) == 3){
-			tempmode = mode+1;
-			SetMode(MENU_MODE::OPTION);
+		if (KEY_Get(KEY_D) == 3){
+			if (mode != MENU_MODE::OPTION){
+				tempmode = mode;
+				SetMode(MENU_MODE::OPTION);
+			}
 		}
 
 		//	スクリーン更新
@@ -851,7 +854,7 @@
 			gameManager->SetItemFlg(optionInfo.itemflg);
 			gameManager->SetCoinMax(optionInfo.coinMAX);
 			gameManager->SetTime(optionInfo.minute,optionInfo.second);
-		if (KEY_Get(KEY_A) == 3){
+		if (KEY_Get(KEY_SPACE) == 3){
 			SetMode(tempmode);
 		}
 	}
@@ -914,7 +917,7 @@
 			MoveMainInitialize();
 			break;
 		case MENU_MODE::OPTION:
-			OptionInitialize();
+			//OptionInitialize();
 			break;
 		}
 
