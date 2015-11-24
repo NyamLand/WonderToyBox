@@ -115,7 +115,7 @@
 			本チャンに戻す場合はWinMainのシーン読み込みをタイトルに戻して、
 			この↓の関数をコメントアウトしてください。
 		*/
-		InitializeDebug();
+		//InitializeDebug();
 
 		return true;
 	}
@@ -258,7 +258,7 @@
 		AllUpdate();
 
 		//	とりあえず仮
-		if ( gameStartCoinNum < GAME_START_COIN_NUM )
+		if ( gameStartCoinNum < gameManager->GetCoinMax() )
 		{
 			switch ( gameManager->GetStageType() )
 			{

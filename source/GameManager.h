@@ -66,7 +66,7 @@ class GameManager
 {
 private:
 	//オプション情報
-	int		coinmax;
+	int		coinMax;
 	bool	itemflg;
 
 	//	ゲーム設定用

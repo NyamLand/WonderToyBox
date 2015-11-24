@@ -155,7 +155,7 @@
 			ui->SetAlertFlag(true);
 			sound->PlaySE(SE::EVENT_SE);
 		}
-		if ( timer == 40 * SECOND ) eventManager->SetEvent( EVENT_MODE::SLOPE_CAMERA/*Random::GetInt( 0, EVENT_MODE::NONE - 1 )*/ );
+		if ( timer == 40 * SECOND ) eventManager->SetEvent( EVENT_MODE::JAM_SLOPE_CAMERA/*Random::GetInt( 0, EVENT_MODE::NONE - 1 )*/ );
 
 		if ( timer != 0 )
 		{
@@ -175,8 +175,8 @@
 			{
 				if ( Random::PercentageRandom( 0.6f ) )
 				{
-					if ( coinNum[0] + coinNum[1] + coinNum[2] + coinNum[3] + m_CoinManager->GetFreeCoinNum() < coinmax)
-					m_CoinManager->Set( Vector3( Random::GetFloat( -20.0f, 20.0f ), 50.0f, Random::GetFloat( -20.0f, 12.0f ) ), Vector3( 0.0f, -1.0f, 0.0f ), 1.0f );
+					if ( coinNum[0] + coinNum[1] + coinNum[2] + coinNum[3] + coinManager->GetFreeCoinNum() < coinMax)
+					coinManager->Append( Vector3( Random::GetFloat( -20.0f, 20.0f ), 50.0f, Random::GetFloat( -20.0f, 12.0f ) ), Vector3( 0.0f, -1.0f, 0.0f ), 1.0f );
 				}
 			}
 		}
@@ -333,9 +333,9 @@
 	}
 
 	//コイン枚数取得
-	int	GameManager::GetCoinMax(void)const
+	int		GameManager::GetCoinMax( void )const
 	{
-		return coinmax;
+		return coinMax;
 	}
 
 	//アイテム有無取得
@@ -438,17 +438,17 @@
 		this->timeStop = time;
 	}
 
-	//タイムリミット分設定
-	void	GameManager::SetTime(int minute,int second)
+	// タイムリミット分設定
+	void	GameManager::SetTime( int minute,int second )
 	{
-		timer=minute*MINUTE + second*SECOND;
+		timer = minute * MINUTE + second * SECOND;
 		timelimit = timer;
 	}
 
 	//コイン枚数設定
 	void	GameManager::SetCoinMax(int coinmax)
 	{
-		this->coinmax = coinmax;
+		this->coinMax = coinmax;
 	}
 
 	//アイテム有無設定

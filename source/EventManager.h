@@ -60,7 +60,6 @@ private:
 		int		step;
 	};
 
-
 	struct EVENT_COIN_SACK	
 	{
 		iex3DObj*	sack;
@@ -106,16 +105,16 @@ private:
 	
 private:
 	int		eventflag;
-	EVENT_JAM_SLOPE			event_Jam_Slope;
+	EVENT_JAM_SLOPE				event_Jam_Slope;
 	EVENT_JAM_COINGETAWAY	event_Jam_CoinGetAway;
-	EVENT_JAM_SLIP			event_Jam_Slip;
+	EVENT_JAM_SLIP					event_Jam_Slip;
 
-	EVENT_COIN_SACK			event_Coin_Sack;
-	EVENT_COIN_FALL			event_Coin_Fall;
-	EVENT_COIN_SPLASH		event_Coin_Splash;
-	EVENT_COIN_JUELBOX		event_Coin_Juelbox;
-	EVENT_COIN_WAVE			event_Coin_Wave;
-	EVENT_COIN_DUBBLE		event_Coin_Dubble;
+	EVENT_COIN_SACK				event_Coin_Sack;
+	EVENT_COIN_FALL					event_Coin_Fall;
+	EVENT_COIN_SPLASH			event_Coin_Splash;
+	EVENT_COIN_JUELBOX			event_Coin_Juelbox;
+	EVENT_COIN_WAVE				event_Coin_Wave;
+	EVENT_COIN_DUBBLE			event_Coin_Dubble;
 
 public:
 	//	èâä˙âªÅEâï˙
