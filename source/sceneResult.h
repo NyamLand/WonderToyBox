@@ -44,6 +44,8 @@ private:
 	struct LASTBONUS_INFO
 	{
 		int		bonus[4];
+		int		step;
+		LVERTEX	v[4];
 	};
 
 	//	コイン枚数構造体
@@ -88,6 +90,7 @@ private:
 	ROULETTE_INFO		rouletteInfo;
 	MENU_INFO				menuInfo;
 	VIEW_RANK_INORDER	viewRankInOrder;
+	LASTBONUS_INFO		lastBonusInfo;
 
 	//	モデル・画像
 	unique_ptr<iex2DObj>	back;
