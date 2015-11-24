@@ -157,6 +157,12 @@
     <Filter Include="ソース ファイル\StageManager">
       <UniqueIdentifier>{8ed026fe-458c-4da9-812b-91367850d576}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Bullet\Thief_Bullet03">
+      <UniqueIdentifier>{94937493-1ea3-4327-9e05-eca8654214b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Bullet\Thief_Bullet04">
+      <UniqueIdentifier>{60967d9d-6360-4e74-a969-e5b55b4cb019}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -342,6 +348,12 @@
     <ClCompile Include="source\StageManager.cpp">
       <Filter>ソース ファイル\StageManager</Filter>
     </ClCompile>
+    <ClCompile Include="source\Thief_Bullet03.cpp">
+      <Filter>ソース ファイル\Bullet\Thief_Bullet03</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Thief_Bullet04.cpp">
+      <Filter>ソース ファイル\Bullet\Thief_Bullet04</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -481,6 +493,12 @@
     </ClInclude>
     <ClInclude Include="source\StageManager.h">
       <Filter>ソース ファイル\StageManager</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Thief_Bullet03.h">
+      <Filter>ソース ファイル\Bullet\Thief_Bullet03</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Thief_Bullet04.h">
+      <Filter>ソース ファイル\Bullet\Thief_Bullet04</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

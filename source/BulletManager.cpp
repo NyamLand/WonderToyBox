@@ -40,9 +40,11 @@
 	//	èâä˙âª
 	bool	BulletManager::Initialize( void )
 	{
-		org[0] = new iexMesh("DATA/BG/Bullet/bulletEx.imo");
-		org[1] = new iexMesh("DATA/BG/Bullet/bulletEx.imo");
-		org[2] = new iexMesh("DATA/BG/Bullet/bullet02.imo");
+		org[BULLET_MODEL::SQUIRREL] = new iexMesh("DATA/BG/Bullet/bulletEx.imo");
+		org[BULLET_MODEL::THIEF_01] = new iexMesh("DATA/Effect/kq_tramp/tramp.imo");
+		org[BULLET_MODEL::THIEF_02] = new iexMesh("DATA/Effect/kq_hat/hat.imo");
+		org[BULLET_MODEL::THIEF_03] = new iexMesh("DATA/Effect/kq_hand(âº)/arm.imo");
+		org[BULLET_MODEL::THIEF_04] = new iexMesh("DATA/Effect/kq_hand(âº)/hand.imo");
 		bullet_num = 0;
 
 		for ( int i = 0; i < BULLET_MAX; i++ )
@@ -125,6 +127,25 @@
 			Vector3	v = vec;
 			v.Normalize();
 			c_Bullet[i]->move = v * speed;
+			c_Bullet[i]->playerNum = playerNum;
+			c_Bullet[i]->Initialize();
+			break;
+		}
+	}
+
+	void	BulletManager::Set(int type, BaseBullet* obj, Vector3 pos, const Vector3 vec, const Vector3 angle, float speed, int playerNum)
+	{
+		for (int i = 0; i < BULLET_MAX; i++)
+		{
+			if (c_Bullet[i] != NULL)	continue;
+
+			c_Bullet[i] = obj;
+			c_Bullet[i]->obj = org[type]->Clone();
+			c_Bullet[i]->pos = pos;
+			Vector3	v = vec;
+			v.Normalize();
+			c_Bullet[i]->move = v * speed;
+			c_Bullet[i]->angle = angle;
 			c_Bullet[i]->playerNum = playerNum;
 			c_Bullet[i]->Initialize();
 			break;

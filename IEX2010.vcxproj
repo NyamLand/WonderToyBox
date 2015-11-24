@@ -110,9 +110,7 @@
   <ItemGroup>
     <ClCompile Include="source\BaseChara.cpp" />
     <ClCompile Include="source\BaseBullet.cpp" />
-    <ClCompile Include="source\Physics.cpp" />
     <ClCompile Include="source\Squirrel_Bullet01.cpp" />
-    <ClCompile Include="source\StageManager.cpp" />
     <ClCompile Include="source\Thief_Bullet01.cpp" />
     <ClCompile Include="source\BulletManager.cpp" />
     <ClCompile Include="source\Camera.cpp" />
@@ -167,18 +165,18 @@
     <ClCompile Include="source\textLoader.cpp" />
     <ClCompile Include="source\Thief.cpp" />
     <ClCompile Include="source\Thief_Bullet02.cpp" />
+    <ClCompile Include="source\Thief_Bullet03.cpp" />
+    <ClCompile Include="source\Thief_Bullet04.cpp" />
     <ClCompile Include="source\Thief_CPU.cpp" />
     <ClCompile Include="source\Tiger.cpp" />
     <ClCompile Include="source\Tiger_CPU.cpp" />
     <ClCompile Include="source\UI.cpp" />
-    <ClCompile Include="source\Wipe.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\BaseChara.h" />
     <ClInclude Include="source\BaseBullet.h" />
-    <ClInclude Include="source\Physics.h" />
     <ClInclude Include="source\Squirrel_Bullet01.h" />
-    <ClInclude Include="source\StageManager.h" />
+    <ClInclude Include="source\Thief_Bullet04.h" />
     <ClInclude Include="source\Thief_Bullet01.h" />
     <ClInclude Include="source\BulletManager.h" />
     <ClInclude Include="source\Camera.h" />
@@ -218,11 +216,11 @@
     <ClInclude Include="source\textLoader.h" />
     <ClInclude Include="source\Thief.h" />
     <ClInclude Include="source\Thief_Bullet02.h" />
+    <ClInclude Include="source\Thief_Bullet03.h" />
     <ClInclude Include="source\Thief_CPU.h" />
     <ClInclude Include="source\Tiger.h" />
     <ClInclude Include="source\Tiger_CPU.h" />
     <ClInclude Include="source\UI.h" />
-    <ClInclude Include="source\Wipe.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="DATA\Shader\2D.fx" />

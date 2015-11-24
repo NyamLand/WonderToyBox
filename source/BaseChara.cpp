@@ -618,7 +618,7 @@ namespace
 			attackInfo.t = 0.0f;
 			attackInfo.r = 0.0f;
 			attackInfo.type = 0;
-			attackInfo.pos = GetPos();
+			attackInfo.pos = Vector3(0.0f, 0.0f, 0.0f);
 			knockBackInfo.type = 0;
 			unrivaled = false;
 		}
@@ -917,28 +917,28 @@ namespace
 	//	AI操作
 	void	BaseChara::ControlAI( void )
 	{
-		//switch (aiInfo.mode)
-		//{
-		//case AI_MODE_STATE::ATTACK:
-		//	AutoAttack();
-		//	break;
+		switch (aiInfo.mode)
+		{
+		case AI_MODE_STATE::ATTACK:
+			AutoAttack();
+			break;
 
-		//case AI_MODE_STATE::RUN:		//　コインを取りに行く
-		//	AutoRun();
-		//	break;
+		case AI_MODE_STATE::RUN:		//　コインを取りに行く
+			AutoRun();
+			break;
 
-		//case AI_MODE_STATE::RUNAWAY:
-		//	RunAway();
-		//	break;
+		case AI_MODE_STATE::RUNAWAY:
+			RunAway();
+			break;
 
-		//case AI_MODE_STATE::GUARD:
-		//	AutoGuard();
-		//	break;
+		case AI_MODE_STATE::GUARD:
+			AutoGuard();
+			break;
 
-		//case AI_MODE_STATE::WAIT:
-		//	AutoWait();
-		//	break;
-		//}
+		case AI_MODE_STATE::WAIT:
+			AutoWait();
+			break;
+		}
 
 		//--------------------------------------------
 		//　ここでは各モードになるための条件を実装
@@ -1339,6 +1339,14 @@ namespace
 	float		BaseChara::GetAngle( void )const
 	{
 		return	angle;
+	}
+
+	float		BaseChara::GetAngle(Vector3 vec1, Vector3 vec2)const
+	{
+		float out;
+		out = Vector3Dot(vec1, vec2) / (vec1.Length() * vec2.Length());
+		out = acos(out);
+		return out;
 	}
 
 	//	スケール取得

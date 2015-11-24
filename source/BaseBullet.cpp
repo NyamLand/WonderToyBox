@@ -26,12 +26,13 @@
 //-------------------------------------------------------------------------------
 
 	//	コンストラクタ
-	BaseBullet::BaseBullet(void) :
-	obj(NULL),
-	pos(0, 0, 0), move(0, 0, 0),
-	limitTimer(0), judgeTimer(0), number(0), leanpower(0), playerNum(0), time(0), step(0),
-	scale(0), angle(0),
-	state(false), activate(false)
+BaseBullet::BaseBullet(void) :
+obj(NULL),
+pos(0, 0, 0), move(0, 0, 0),
+limitTimer(0), judgeTimer(0), number(0), leanpower(0), playerNum(0), liveTime(0), step(0), 
+radius(0),
+scale(0,0,0), angle(0,0,0),
+state(false), activate(false)
 	{
 	}
 
@@ -69,11 +70,11 @@
 	void	BaseBullet::Render(void)
 	{
 		obj->Render();
-		DrawSphere( Vector3( pos.x, pos.y + 0.5f, pos.z ), scale * 5, 0xFFFF0000 );
+		DrawSphere( Vector3( pos.x, pos.y, pos.z ), scale.y * radius, 0xFFFF0000 );
 	}
 
 	//	シェーダー付き描画
-	void	BaseBullet::Render( iexShader* shader, LPSTR technique )
+	void	BaseBullet::Render(iexShader* shader, LPSTR technique)
 	{
 		obj->Render( shader, technique );
 	}
@@ -97,7 +98,7 @@
 	}
 
 	//	プレイヤーとのあたりチェック
-	bool	BaseBullet::PlayerCollisionCheck( void )
+	bool	BaseBullet::PlayerCollisionCheck(void)
 	{
 		for ( int i = 0; i < 4; i++ )
 		{
@@ -105,14 +106,14 @@
 			if ( characterManager->GetUnrivaled( i ) )	continue;
 			
 			//	プレイヤー情報設定
-			Vector3	p_pos_bottom = characterManager->GetPos( i );
+			Vector3	p_pos_bottom = characterManager->GetPos(i);
 			Vector3	p_pos_top = Vector3( p_pos_bottom.x, p_pos_bottom.y + 3.0f, p_pos_bottom.z );
 			float		p_r = 1.0f;
 			
 			//	バレット情報設定
 			Vector3	bulletPos = GetPos();
-			bulletPos.y += 0.5f;
-			float		bullet_r = scale * 5.0f;
+			//bulletPos.y += 0.5f;
+			float		bullet_r = scale.y * radius;
 
 			bool isHit = Collision::CapsuleVSSphere( p_pos_bottom, p_pos_top, p_r, bulletPos, bullet_r );
 
@@ -146,7 +147,7 @@
 				//	コインがあればばらまき
 				if ( p2_coinNum > 0 )
 				{
-					coinManager->Append( p_pos_top, vec, power );
+					m_CoinManager->Set( p_pos_top, vec, power );
 					gameManager->SubCoin( p2_Num );
 				}
 				return true;
@@ -161,9 +162,47 @@
 
 	//	設定
 	void	BaseBullet::SetPos(Vector3 pos){ this->pos = pos; }
-	void	BaseBullet::SetAngle(float angle){ this->angle = angle; }
-	void	BaseBullet::SetScale(float scale){ this->scale = scale; }
+	void	BaseBullet::SetAngle(Vector3 angle){ this->angle = angle; }
+	void	BaseBullet::SetScale(Vector3 scale){ this->scale = scale; }
 
 	//	取得
 	Vector3	BaseBullet::GetPos(void){ return	this->pos; }
-	float		BaseBullet::GetAngle(void){ return	this->angle; }
+	Vector3		BaseBullet::GetAngle(void){ return	this->angle; }
+
+
+	//	前方取得
+	Vector3	BaseBullet::GetFront(void)
+	{
+		Matrix	mat = obj->TransMatrix;
+		Vector3	out = Vector3(mat._31, mat._32, mat._33);
+		out.Normalize();
+		return	out;
+	}
+
+	//	右方取得
+	Vector3	BaseBullet::GetRight(void)
+	{
+		Matrix	mat = obj->TransMatrix;
+		Vector3	out = Vector3(mat._11, mat._12, mat._13);
+		out.Normalize();
+		return	out;
+	}
+
+	//	上方取得
+	Vector3	BaseBullet::GetUp(void)
+	{
+		Matrix	mat = obj->TransMatrix;
+		Vector3	out = Vector3(mat._21, mat._22, mat._23);
+		out.Normalize();
+		return	out;
+	}
+
+
+	float BaseBullet::GetDegreeAngle(Vector3 vec1, Vector3 vec2)
+	{
+		float out;
+		out = Vector3Dot(vec1, vec2) / (vec1.Length() * vec2.Length());
+		out = acos(out);
+		out = out * 180.0f / PI;
+		return out;
+	}

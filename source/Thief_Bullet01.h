@@ -8,8 +8,28 @@
 //	Thief_Bullet01クラス
 //
 //*****************************************************************************
+
+namespace STEP
+{
+	enum
+	{
+		CREATED = 0,	//トランプ出現
+		WAIT,			//待機
+		TARGETING,		//照準を合わせる
+		FIRING,			//発射
+		STALK			//追跡
+	};
+}
+
 class Thief_Bullet01 : public BaseBullet
 {
+private:
+	float ToPlayerLength;
+	Vector3 ToPlayerVec;
+	float frontDot, backDot, upDot, downDot;
+	Vector3 cross;
+	Vector3 front;
+	Vector3 up;
 
 public:
 	//	初期化・解放
@@ -17,10 +37,13 @@ public:
 	~Thief_Bullet01(void){};
 
 	bool Initialize();
+	void Update();
 
+	void Wait();
+	void Targeting();
+	void Firing();
 	void Move();
 	void Stalk();
-	void Update();
 };
 
 //*****************************************************************************

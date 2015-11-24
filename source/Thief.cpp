@@ -112,7 +112,8 @@ bool	Thief::QuickArts(void)
 		up * 5.0f,
 		up * 5.0f + right * -3.0f
 	};
-	static float	 bulletSpeed = 0.5f;
+	p_pos.y += 3.0f;
+	float	 bulletSpeed = 0.5f;
 	int leanpower = 30;
 	int playerNum = GetPlayerNum();
 
@@ -120,12 +121,13 @@ bool	Thief::QuickArts(void)
 	{
 		for (int i = 0; i < 3; i++)
 		{
-			m_BulletManager->Set( BULLET_MODEL::THIEF_01 , new Thief_Bullet01, p_pos, vec[i], bulletSpeed, playerNum );
+			m_BulletManager->Set(BULLET_MODEL::THIEF_01 , new Thief_Bullet01, p_pos, vec[i], bulletSpeed, playerNum);
 		}
 	}
 	time++;
 
-	if ( time >= 1 * SECOND )
+	//一秒間硬直
+	if (time >= 1 * SECOND)
 	{
 		time = 0;
 		return true;
@@ -147,7 +149,7 @@ bool	Thief::PowerArts(void)
 	p_pos.y += 1.0f;
 	Vector3	vec = front * 1.0f;
 
-	static float	 bulletSpeed = 0.5f;
+	float	 bulletSpeed = 0.8f;
 	int leanpower = 30;
 	int playerNum = GetPlayerNum();
 
@@ -168,37 +170,53 @@ bool	Thief::PowerArts(void)
 //	ハイパーアーツ
 bool	Thief::HyperArts(void)
 {
-	//無敵判定を切らないとそもそもコインを集められないので無敵切ってます。
-	//問題なら言ってください
-	unrivaled = false;
-	absorb_length = 10.0f;
-	stayTime++;
+	power = HYPER;
 
-	list<Coin*>	coinList = coinManager->GetList();
-	FOR_LIST( coinList.begin(), coinList.end() )
+	static int time = 0;
+
+	//	行列から情報取得
+	Vector3	front = GetFront();
+	Vector3	right = GetRight();
+	Vector3	p_pos = GetPos();
+	SetMove(Vector3(0.0f, move.y, 0.0f));
+
+	//	情報設定
+	Vector3	vec[5] =
 	{
-		bool state = ( *it )->GetState();
-		if ( state )
+		front * 5.0f + right * 8.0f,
+		front * 5.0f + right * 3.0f,
+		front * 5.0f,
+		front * 5.0f + right * -3.0f,
+		front * 5.0f + right * -8.0f
+	};
+	Vector3 b_angle[5] =
+	{
+		{ 0, angle + GetAngle(vec[0], front), 0 },
+		{ 0, angle + GetAngle(vec[1], front), 0 },
+		{ 0, angle, 0 },
+		{ 0, angle - GetAngle(vec[3], front), 0 },
+		{ 0, angle - GetAngle(vec[4], front), 0 }
+	};
+	float	 bulletSpeed = 0.5f;
+	int playerNum = GetPlayerNum();
+
+	if (time == 0)
+	{
+		for (int i = 0; i < 5; i++)
 		{
-			Vector3 vec = ( *it )->GetPos() - this->pos;
-			vec.Normalize();
-			float length = vec.Length();
-			if ( length < absorb_length )
-			{
-				( *it )->SetMove( -vec * 1.0f );
-			}
+			m_BulletManager->Set(BULLET_MODEL::THIEF_03, new Thief_Bullet03, p_pos, vec[i], b_angle[i],  bulletSpeed, playerNum);
 		}
 	}
+	time++;
 
-	if (stayTime > 2 * SECOND)
+	if (time >= 150)
 	{
-		stayTime = 0;
-		absorb_length = DEFAULT_ABSORB_LENGTH;
+		time = 0;
 		return true;
 	}
-
 	return	false;
 }
+
 
 //	モーション管理
 void	Thief::MotionManagement(int motion)

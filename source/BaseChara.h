@@ -350,6 +350,7 @@ public:
 	Vector3	GetBoneRight( int num )const;
 	Vector3	GetBoneUp( int num )const;
 	float	GetAngle( void )const;
+	float	GetAngle(Vector3 vec1, Vector3 vec2)const;
 	float	GetScale( void )const;
 	float	GetAttack_R( void )const;
 	float	GetAttack_T( void )const;
