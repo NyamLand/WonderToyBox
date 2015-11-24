@@ -976,7 +976,7 @@
 	//	ÉoÅ[ìÆçÏ
 	void	UI::BarControl( void )
 	{
-		static const int MAX_COIN = 201;
+		//static const int MAX_COIN = 201;
 
 		bar_x[1] = bar_x[0] + bar_sx[0];
 		bar_x[2] = bar_x[1] + bar_sx[1];
@@ -986,7 +986,7 @@
 		for (int i = 0; i < 4; i++)
 		{
 			num_coin[i] = gameManager->GetCoinNum(i);
-			bar_sx[i] = backgauge.w * num_coin[i] / MAX_COIN;
+			bar_sx[i] = backgauge.w * num_coin[i] / gameManager->GetCoinMax();
 		}
 	}
 

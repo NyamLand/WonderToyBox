@@ -78,8 +78,8 @@
 		screen->SetScreenMode( SCREEN_MODE::WIPE_IN, 1.5f );
 
 		//	ゲームマネージャ初期化
-		gameManager->Initialize();
 		OptionInitialize();
+		gameManager->Initialize();
 		
 		//	画像読み込み
 		back = make_unique<iex2DObj>( LPSTR( "DATA/UI/back.png" ) );
@@ -139,6 +139,7 @@
 		}
 
 		//	モード設定
+		tempmode = 0;
 		SetMode( MENU_MODE::INIT );
 
 		//	全体更新
@@ -205,9 +206,11 @@
 			OptionUpdate();
 			break;
 		}
-		if ( KEY_Get( KEY_B ) == 3 ){
-			tempmode = mode;
-			SetMode( MENU_MODE::OPTION );
+		if (KEY_Get(KEY_D) == 3){
+			if (mode != MENU_MODE::OPTION){
+				tempmode = mode;
+				SetMode(MENU_MODE::OPTION);
+			}
 		}
 
 		//	スクリーン更新
@@ -778,7 +781,6 @@
 //-------------------------------------------------------------------------------
 //	オプション関数
 //-------------------------------------------------------------------------------
-	
 	//	オプション
 	void	sceneMenu::OptionInitialize( void )
 	{
@@ -788,15 +790,13 @@
 		optionInfo.minute = 1;
 		optionInfo.second = 30;
 		optionInfo.step = 0;
-		tempmode = MENU_MODE::INIT;
-		gameManager->SetItemFlg( optionInfo.itemflg );
-		gameManager->SetCoinMax( optionInfo.coinMAX );
-		gameManager->SetTime( optionInfo.minute, optionInfo.second );
+		gameManager->SetItemFlg(optionInfo.itemflg);
+		gameManager->SetCoinMax(optionInfo.coinMAX);
+		gameManager->SetTime(optionInfo.minute, optionInfo.second);
 	}
 
 	void	sceneMenu::OptionUpdate( void )
 	{
-		//	上下で選択
 		if (KEY_Get(KEY_DOWN) == 3){
 			if (optionInfo.step<3)
 			optionInfo.step++;
@@ -807,10 +807,8 @@
 			}
 		}
 
-		//	各項目の設定
 		switch (optionInfo.step){
 		case 0:
-			//	左右でアイテムの有無を設定
 			if (KEY_Get(KEY_RIGHT) == 3 || KEY_Get(KEY_LEFT) == 3){
 				if (optionInfo.itemflg == false){
 					optionInfo.itemflg = true;
@@ -821,7 +819,6 @@
 			}
 			break;
 		case 1:
-			//	コインの上限を設定
 			if (KEY_Get(KEY_RIGHT) == 3 ){
 				if (optionInfo.coinMAX<500){
 					optionInfo.coinMAX += 50;
@@ -834,7 +831,6 @@
 			}
 			break;
 		case 2:
-			//	分を設定
 			if (KEY_Get(KEY_RIGHT) == 3){
 				if (optionInfo.minute<5){
 					optionInfo.minute++;
@@ -847,7 +843,6 @@
 			}
 			break;
 		case 3:
-			//	秒を設定
 			if (KEY_Get(KEY_RIGHT) == 3){
 				optionInfo.second = 30;
 			}
@@ -856,11 +851,10 @@
 			}
 			break;
 		}
-		//	情報を設定
 			gameManager->SetItemFlg(optionInfo.itemflg);
 			gameManager->SetCoinMax(optionInfo.coinMAX);
-			gameManager->SetTime( optionInfo.minute,optionInfo.second );
-		if (KEY_Get(KEY_A) == 3){
+			gameManager->SetTime(optionInfo.minute,optionInfo.second);
+		if (KEY_Get(KEY_SPACE) == 3){
 			SetMode(tempmode);
 		}
 	}
@@ -923,7 +917,7 @@
 			MoveMainInitialize();
 			break;
 		case MENU_MODE::OPTION:
-			OptionInitialize();
+			//OptionInitialize();
 			break;
 		}
 
