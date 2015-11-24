@@ -112,7 +112,7 @@
 		timeStop = 0;
 
 		//	ゲームデータテキストを読み込む
-		LoadTextData();
+		//LoadTextData();
 		timer = timelimit;
 	}
 
@@ -175,7 +175,7 @@
 			{
 				if ( Random::PercentageRandom( 0.6f ) )
 				{
-					if ( coinNum[0] + coinNum[1] + coinNum[2] + coinNum[3] + m_CoinManager->GetFreeCoinNum() < 201)
+					if ( coinNum[0] + coinNum[1] + coinNum[2] + coinNum[3] + m_CoinManager->GetFreeCoinNum() < coinmax)
 					m_CoinManager->Set( Vector3( Random::GetFloat( -20.0f, 20.0f ), 50.0f, Random::GetFloat( -20.0f, 12.0f ) ), Vector3( 0.0f, -1.0f, 0.0f ), 1.0f );
 				}
 			}
@@ -442,6 +442,7 @@
 	void	GameManager::SetTime(int minute,int second)
 	{
 		timer=minute*MINUTE + second*SECOND;
+		timelimit = timer;
 	}
 
 	//コイン枚数設定

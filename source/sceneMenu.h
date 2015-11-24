@@ -93,6 +93,7 @@ private:
 
 	//	‹¤’Ê•Ï”
 	int		mode;
+	int		tempmode;
 	
 public:
 	//	‰Šú‰»E‰ğ•ú
