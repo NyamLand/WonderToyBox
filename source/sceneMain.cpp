@@ -339,6 +339,9 @@
 		//	player
 		characterManager->Update();
 
+		//　ステージ更新
+		stageManager->Update();
+
 		//	パーティクル更新
 		particle->Update();
 
