@@ -29,11 +29,11 @@ void	IEX_InitText( void )
 	/*	フォント設定	*/ 
 	hF = (HFONT)GetStockObject( SYSTEM_FONT );
 	GetObject( hF,sizeof( LOGFONT ),(LPSTR)&lf );
-	lf.Height = 16;
+	lf.Height = 32;
 	lf.Width  = 0;
 	lf.Italic = 0;
 	lf.CharSet = SHIFTJIS_CHARSET;
-	strcpy_s( lf.FaceName,"ＭＳ ゴシック" );	//ＭＳ ゴシック
+	strcpy_s( lf.FaceName,"メイリオ" );	//ＭＳ ゴシック
 
 	D3DXCreateFontIndirect( iexSystem::Device, &lf, &g_pd3dFont );
 

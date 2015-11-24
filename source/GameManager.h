@@ -17,6 +17,7 @@ namespace
 	const		int		PLAYER_MAX = 4;
 	const		float	GRAVITY = -0.01f;
 	const		int		CHARATYPE_MAX = 4;
+	//const		int		COIN_MAX = 50;
 
 	namespace GAME_MODE
 	{
@@ -82,6 +83,8 @@ private:
 
 public:
 	Vector3	InitPos[4];
+
+public:
 	
 public:
 

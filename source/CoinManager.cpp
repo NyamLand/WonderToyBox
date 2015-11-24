@@ -80,9 +80,9 @@
 	//	描画
 	void	CoinManager::Render( iexShader* shader, LPSTR technique )
 	{
+		//	コイン描画
 		FOR_LIST( coinList.begin(), coinList.end() )
 		{
-			//	コイン描画
 			if ( shader == nullptr || technique == nullptr )
 			{
 				( *it )->Render();
@@ -91,6 +91,14 @@
 			{
 				( *it )->Render( shader, technique );
 			}
+		}
+
+		//	デバッグ用
+		if ( debug )
+		{
+			char	str[256];
+			sprintf_s( str, "コイン枚数 = %d", coin_num );
+			DrawString( str, 10, 100 );
 		}
 	}
 

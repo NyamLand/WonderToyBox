@@ -89,7 +89,7 @@ void Framework::Render()
 //#ifdef _DEBUG
 	char	str[64];
 	wsprintf( str, "FPS %03d / %03d\n", dwFPS, dwRenderFPS );
-	IEX_DrawText( str, 10,10,200,20, 0xFFFFFF00 );
+	IEX_DrawText( str, 10,10,200,32, 0xFFFFFF00 );
 //#endif
 
 	// ÉVÅ[ÉìèIóπ

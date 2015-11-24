@@ -76,6 +76,12 @@ public:
 	void	GetAway( void );
 	void	Magnet( void );
 
+	//	•¨——p“®ìŠÖ”
+	void	Integrate( float dt );
+	void	AddForce( const Vector3& force );
+	bool	RayPick( LVERTEX v[3], Vector3& out_hitPos, Vector3& out_normal, Vector3 pos, Vector3 vec, float dist );
+	void	Collide( void );
+
 	//	î•ñæ“¾Eİ’è
 	void	SetPos(const Vector3& pos);
 	void	SetMove(const Vector3& move);
