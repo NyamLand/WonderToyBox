@@ -141,6 +141,11 @@ public:
 	bool	RankWave( void );
 	void	MoveScene( void );
 
+	//	ラストボーナス用関数
+	bool	InBoard( void );
+	bool	BonusAnnouncing( void );	
+	bool	OutBoard( void );
+
 	//	情報設定
 	void	SetRank( void );
 	void	SetNumberImageInfo( const int& player, const int& coin );

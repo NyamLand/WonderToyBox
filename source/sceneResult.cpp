@@ -355,73 +355,84 @@
 		bool	isEnd = false;
 		bool	isFinViewRankInOrder = false;
 
+		//	段階ごとの処理
 		switch ( step )
 		{
-		case 0:		//	ルーレット
-			isEnd = Roulette();
+		case 0:
+			//-----------------------------------------------------------------------------------
+			//	ルーレット
+			//-----------------------------------------------------------------------------------
+				isEnd = Roulette();
 
-			//	決定ボタンでスキップ
-			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
-			{
-				for ( int i = 0; i < PLAYER_MAX; i++ )
+				//	決定ボタンでスキップ
+				if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
 				{
-					SetNumberImageInfo( i, originInfo[i].coin );
-					SetWave( rankImage[i], 1.5f );
-					rankImage[i].renderflag = true;
+					FOR( 0, PLAYER_MAX )
+					{
+						SetNumberImageInfo( value, originInfo[value].coin );
+						SetWave( rankImage[value], 1.5f );
+						rankImage[value].renderflag = true;
+					}	
+					step = 3;
 				}
-				
-				step = 3;
-			}
 
-			//	回転が終了したら
-			if ( isEnd )		step++;
-			break;
-
+				//	回転が終了したら
+				if ( isEnd )		step++;
+				break;
+		
 		case 1:
+			//-----------------------------------------------------------------------------------
+			//	ラストボーナス演出
+			//-----------------------------------------------------------------------------------
 			break;
 			
-		case 2:		//	順位描画
-			isFinViewRankInOrder = ViewRankInOrder();
-			isEnd = RankWave();
+		case 2:
+			//-----------------------------------------------------------------------------------
+			//	順位発表
+			//-----------------------------------------------------------------------------------
+				isFinViewRankInOrder = ViewRankInOrder();
+				isEnd = RankWave();
 
-			//	決定ボタンでスキップ
-			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
-			{
-				for ( int i = 0; i < PLAYER_MAX; i++ )
-				{
-					SetNumberImageInfo( i, originInfo[i].coin );
-					SetWave( rankImage[i], 1.5f );
-					rankImage[i].renderflag = true;
-				}
-
-				step = 3;
-			}
-
-			//	波紋終了後に選択可
-			if ( isFinViewRankInOrder && isEnd )
-			{
+				//	決定ボタンでスキップ
 				if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
 				{
-					step = 0;
-					mode = MOVE_MODE::SELECT;
+					FOR( 0, PLAYER_MAX )
+					{
+						SetNumberImageInfo( value, originInfo[value].coin );
+						SetWave( rankImage[value], 1.5f );
+						rankImage[value].renderflag = true;
+					}
+					step = 3;
 				}
-			}
-			break;
 
-		case 3:	//	順位描画(スキップ用)
-			for ( int i = 0; i < PLAYER_MAX; i++ )		isEnd = WaveUpdate( rankImage[i] );
-
-			//	波紋終了後に選択可
-			if ( isEnd )
-			{
-				if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+				//	波紋終了後に選択可
+				if ( isFinViewRankInOrder && isEnd )
 				{
-					step = 0;
-					mode = MOVE_MODE::SELECT;
+					if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+					{
+						step = 0;
+						mode = MOVE_MODE::SELECT;
+					}
 				}
+				break;
+
+		case 3:
+			//-----------------------------------------------------------------------------------
+			//	順位発表(スキップ用)
+			//-----------------------------------------------------------------------------------
+				FOR( 0, PLAYER_MAX )	isEnd = WaveUpdate( rankImage[value] );
+
+				//	波紋終了後に選択可
+				if ( isEnd )
+				{
+					if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+					{
+						step = 0;
+						mode = MOVE_MODE::SELECT;
+					}
+				}
+				break;
 			}
-			break;
-		}
 	}
 
 	//	セレクト時の更新
@@ -468,7 +479,7 @@
 		}
 	}
 
-	//セレクト画面描画
+	//	セレクト画面描画
 	void	sceneResult::SelectRender( void )
 	{
 		for ( int i = 0; i < 3; i++ )
@@ -768,3 +779,26 @@
 			break;
 		}
 	}
+
+//----------------------------------------------------------------------------
+//	ラストボーナス関数( ボード出現→文字→コイン枚数更新→ボード退却 )
+//----------------------------------------------------------------------------
+	
+	//	ボード出現
+	bool	sceneResult::InBoard( void )
+	{
+		return	false;
+	}
+
+	//	ボード退却
+	bool	sceneResult::OutBoard( void )
+	{
+		return	false;
+	}
+
+	//	ボーナス発表
+	bool	sceneResult::BonusAnnouncing( void )
+	{
+		return	false;
+	}
+	
