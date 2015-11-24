@@ -40,8 +40,6 @@ private:
 
 public:
 	//	‰Šú‰»E‰ğ•ú
-	PlayerWipe( void );
-	~PlayerWipe( void );
 	bool	Initialize( void );
 
 	//	XV

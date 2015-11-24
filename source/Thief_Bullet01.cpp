@@ -25,7 +25,7 @@ bool Thief_Bullet01::Initialize()
 	limitTimer = 3 * SECOND;
 	activate = false;
 	state = true;
-	scale = Vector3(0.05f,0.05,0.05f);
+	scale = Vector3( 0.05f,0.05f,0.05f );
 	leanpower = 0;
 	angle.y = characterManager->GetAngle(playerNum);
 
