@@ -63,8 +63,8 @@
 		timeStop = 0;
 
 		//	ゲームデータテキストを読み込む
-		LoadTextData();
-		timer = this->GetTimeMinutes()*MINUTE+this->GetTimeSecond()*SECOND;
+		//LoadTextData();
+		timer = 0;
 
 		return	true;
 	}
@@ -332,16 +332,6 @@
 		return out;
 	}
 
-	//タイムリミット分取得
-	int	GameManager::GetTimeMinutes(void)const
-	{
-		return timerminutes;
-	}
-	//タイムリミット秒取得
-	int GameManager::GetTimeSecond(void)const
-	{
-		return timersecond;
-	}
 	//コイン枚数取得
 	int	GameManager::GetCoinMax(void)const
 	{
@@ -449,16 +439,11 @@
 	}
 
 	//タイムリミット分設定
-	void	GameManager::SetTimeMinutes(int timeminutes)
+	void	GameManager::SetTime(int minute,int second)
 	{
-		this->timerminutes = timeminutes;
+		timer=minute*MINUTE + second*SECOND;
 	}
 
-	//タイムリミット秒設定
-	void	GameManager::SetTimeSecond(int timesecond)
-	{
-		this->timersecond = timesecond;
-	}
 	//コイン枚数設定
 	void	GameManager::SetCoinMax(int coinmax)
 	{

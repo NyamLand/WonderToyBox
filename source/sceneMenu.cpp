@@ -78,8 +78,9 @@
 		screen->SetScreenMode( SCREEN_MODE::WIPE_IN, 1.5f );
 
 		//	ゲームマネージャ初期化
+		OptionInitialize();
 		gameManager->Initialize();
-
+		
 		//	画像読み込み
 		back = make_unique<iex2DObj>( LPSTR( "DATA/UI/back.png" ) );
 		frame = make_unique<iex2DObj>( LPSTR( "DATA/UI/frame.png" ) );
@@ -779,13 +780,15 @@
 	//	オプション
 	void	sceneMenu::OptionInitialize( void )
 	{
-
 		//　構造体初期化
 		optionInfo.itemflg = false;
 		optionInfo.coinMAX = 200;
 		optionInfo.minute = 1;
 		optionInfo.second = 30;
 		optionInfo.step = 0;
+		gameManager->SetItemFlg(optionInfo.itemflg);
+		gameManager->SetCoinMax(optionInfo.coinMAX);
+		gameManager->SetTime(optionInfo.minute, optionInfo.second);
 	}
 
 	void	sceneMenu::OptionUpdate( void )
@@ -846,8 +849,7 @@
 		}
 			gameManager->SetItemFlg(optionInfo.itemflg);
 			gameManager->SetCoinMax(optionInfo.coinMAX);
-			gameManager->SetTimeMinutes(optionInfo.minute);
-			gameManager->SetTimeSecond(optionInfo.second);
+			gameManager->SetTime(optionInfo.minute,optionInfo.second);
 		if (KEY_Get(KEY_A) == 3){
 			SetMode(MENU_MODE::SELECT_PLAYERNUM);
 		}

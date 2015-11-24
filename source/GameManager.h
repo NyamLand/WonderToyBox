@@ -127,8 +127,6 @@ public:
 	int		GetMode( void );
 	int		GetRank(int player);   
 	int     GetTimeStop(void);
-	int		GetTimeMinutes(void)const;
-	int		GetTimeSecond(void)const;
 	int		GetCoinMax(void)const;
 	bool	GetItemFlg(void)const;
 	static	GameManager*	GetInstance( void );
@@ -143,8 +141,7 @@ public:
 	void	SetNewsFlag( const bool& flag );
 	void    SetShakeCamera(float wide, int timer);
 	void    SetTimeStop(int time);
-	void	SetTimeMinutes(int timeminutes);
-	void	SetTimeSecond(int timesecond);
+	void	SetTime(int minute, int second);
 	void	SetCoinMax(int coinmax);
 	void	SetItemFlg(bool itemflg);
 };
