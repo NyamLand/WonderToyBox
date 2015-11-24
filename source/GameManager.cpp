@@ -80,7 +80,7 @@
 			coinNum[i] = 0;
 		}
 		playerNum = 1;	//@‘€ì‚·‚él”
-		stageType = 0;
+		stageType = 1;
 		mode = 0;
 		donketsuBoostState = false;
 		lastBonus = rand() % PLAYER_MAX;
