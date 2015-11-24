@@ -78,8 +78,8 @@
 		screen->SetScreenMode( SCREEN_MODE::WIPE_IN, 1.5f );
 
 		//	ゲームマネージャ初期化
-		OptionInitialize();
 		gameManager->Initialize();
+		OptionInitialize();
 		
 		//	画像読み込み
 		back = make_unique<iex2DObj>( LPSTR( "DATA/UI/back.png" ) );

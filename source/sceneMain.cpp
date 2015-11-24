@@ -258,7 +258,7 @@
 		AllUpdate();
 
 		//	‚Æ‚è‚ ‚¦‚¸‰¼
-		if ( gameStartCoinNum < gameManager->GetCoinMax() )
+		if ( gameStartCoinNum < 50 )
 		{
 			switch ( gameManager->GetStageType() )
 			{
