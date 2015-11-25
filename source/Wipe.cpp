@@ -1,4 +1,3 @@
-
 #include	"iextreme.h"
 #include	"system\System.h"
 #include	"GlobalFunction.h"
@@ -16,14 +15,19 @@
 //
 //*****************************************************************************************************************************
 
-	//	初期化
-	bool	PlayerWipe::Initialize( void )
+	//	コンストラクタ
+	PlayerWipe::PlayerWipe( void )
 	{
 		WIPE_LEFT	= ( float )SPACE;
 		WIPE_RIGHT	= ( float )iexSystem::ScreenWidth - WIPE_WIDTH - SPACE;
 		WIPE_UP		= ( float )SPACE;
 		WIPE_DOWN	= ( float )iexSystem::ScreenHeight - WIPE_HEIGHT - SPACE;
-		
+		LEN_MAX		= 0.0f;
+	}
+	
+	//	初期化
+	bool	PlayerWipe::Initialize( void )
+	{
 		//	レンダーターゲット用
 		FOR(0, PLAYER_MAX)
 		{
@@ -48,6 +52,14 @@
 
 		return true;
 	}
+
+
+	//	デストラクタ
+	PlayerWipe::~PlayerWipe( void )
+	{
+
+	}
+
 
 //*****************************************************************************************************************************
 //
@@ -117,11 +129,8 @@
 	void	PlayerWipe::Arrow( int num, Vector3 target )
 	{
 		Vector3	stringPos;
-		WorldToClient(characterManager->GetPos(num), stringPos, matView* matProjection);
+		WorldToClient(LengthChecker(num, target), stringPos, matView* matProjection);
 	
-		Vector3 targetPos;
-		WorldToClient(target, targetPos, matView* matProjection);
-
 		//	ワイプ中心
 		Vector3 center;
 		center.x = pos[num].x + WIPE_WIDTH / 2;
@@ -149,7 +158,8 @@
 	void	PlayerWipe::Move( int num, Vector3 target )
 	{
 		Vector3	stringPos;
-		WorldToClient(characterManager->GetPos(num), stringPos, matView* matProjection);
+		WorldToClient(LengthChecker(num,target), stringPos, matView* matProjection);
+
 		//Vector3 targetPos;
 		//WorldToClient(target, targetPos, matView* matProjection);
 
@@ -182,8 +192,36 @@
 		if (pos[num].y > WIPE_DOWN)	pos[num].y = WIPE_DOWN;
 		if (pos[num].y < WIPE_UP)	pos[num].y = WIPE_UP;
 
+	}
 
+	//	距離の修正判定
+	Vector3	PlayerWipe::LengthChecker( int num, Vector3 target )
+	{
+		//	カメラとターゲットの射影長を取る
+		Vector3 v1;
+		v1 = Vector3(mainView->GetSpringPos().x, 0, mainView->GetSpringPos().z) - target;
+		LEN_MAX = v1.Length();
 
+		//	プレイヤーとターゲットの距離を取る
+		v1 = characterManager->GetPos(num) - target;
+		
+		if (num == 3) printf("%f,%f,%f\n", characterManager->GetPos(num).x, characterManager->GetPos(num).y, characterManager->GetPos(num).z);
+
+		Vector3 test;
+		//	距離が離れすぎていないか判定
+		if (LEN_MAX < v1.Length())
+		{
+			v1.Normalize();
+			if (num == 3)
+			{
+				num = num;
+				test = characterManager->GetPos(num);
+				int s = 0;
+			}
+			return target + v1 * LEN_MAX;
+		}
+
+		return characterManager->GetPos(num);
 	}
 
 //*****************************************************************************************************************************
