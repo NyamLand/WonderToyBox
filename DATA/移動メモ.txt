@@ -1,0 +1,20 @@
+～移動～
+
+DATA/Result		⇒『UI』へ移動
+DATA/Load		⇒『UI』へ移動
+DATA/MenuStage		⇒『BG』へ移動
+DATA/back		⇒『stage-desk』に改名し、『BG』へ移動
+DATA/BG/number.png	⇒『timer』に改名し、『UI』へ移動
+DATA/curtain.png	⇒『UI/title』へ移動
+
+
+～内部フォルダ整理～
+DATA/Sound	⇒『SE』『BGM』にフォルダわけ
+DATA/Object	⇒アイテム類は『Item』フォルダへ
+		⇒コイン、コインバッグは『Coin』フォルダへ
+DATA/Effect	⇒プレイヤーサークルは『circle』へ
+		⇒ドンケツオーラ、ガードは『state』へ
+DATA/UI		⇒「menu-head」「selectCheck_Back」
+		　「selectCheck_Cursor」　「menu-int」
+		　「playerNum」「playerNum_Text」
+		  を『menu』へ
