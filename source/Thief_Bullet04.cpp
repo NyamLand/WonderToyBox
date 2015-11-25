@@ -11,8 +11,19 @@
 #include	"BaseBullet.h"
 #include	"Thief_Bullet04.h"
 
-Thief_Bullet04::Thief_Bullet04() :growSpeed(0.0f), checkMax(false), checkMin(false)
+Thief_Bullet04::Thief_Bullet04() :holdCoinNum(0), growSpeed(0.0f), checkMax(false), checkMin(false)
 {
+	for (int i = 0; i < PLAYER_MAX; i++)
+	{
+		isPlayerCheck[i] = false;
+
+		//撃ったプレイヤーに対してはあたり判定をなくすために
+		//既に当たったものとします
+		if (i == playerNum)
+		{
+			isPlayerCheck[i] == true;
+		}
+	}
 }
 
 bool Thief_Bullet04::Initialize()
@@ -39,7 +50,14 @@ void	Thief_Bullet04::Update(void)
 
 	PlayerCollisionCheck();
 
-	if (checkMin == true) state = false;
+	if (checkMin == true)
+	{
+		for (int i = 0; i < holdCoinNum; i++)
+		{
+			gameManager->AddCoin(playerNum);	//消滅時に奪い取ったコイン加算
+		}
+		state = false;
+	}
 
 
 	obj->SetAngle(angle);
@@ -56,7 +74,12 @@ void	Thief_Bullet04::Move(void)
 	growSpeed += 0.05f;
 	float addLength = sinf(growSpeed);
 	move = front * addLength;
-	pos += move;
+	//打ち出したプレイヤーとの距離
+	Vector3 ToPlayerVec = characterManager->GetPos(playerNum) - pos;
+	float ToPlayerLength = ToPlayerVec.Length();
+
+
+	if(!Collision::CheckWall(pos, move)) pos += move;
 
 	//縮み始めたら最大まで伸びたものとする(縮み始めている)
 	if (addLength <= 0)
@@ -65,7 +88,7 @@ void	Thief_Bullet04::Move(void)
 	}
 
 	//一度縮んでから再度伸びると最小まで縮んだものとする
-	if (addLength >= 0 && checkMax == true)
+	if (addLength >= 0 && checkMax == true || ToPlayerLength <= 0.5f && checkMax == true)
 	{
 		checkMin = true;
 	}
@@ -76,6 +99,7 @@ bool	Thief_Bullet04::PlayerCollisionCheck(void)
 {
 	for (int i = 0; i < 4; i++)
 	{
+		if (isPlayerCheck[i]) continue;	//同一のプレイヤーと二度以上触れるの禁止
 		if (!activate)	continue;
 		if (characterManager->GetUnrivaled(i))	continue;
 
@@ -93,35 +117,25 @@ bool	Thief_Bullet04::PlayerCollisionCheck(void)
 
 		if (isHit)
 		{
+			isPlayerCheck[i] = true;
 			//	エフェクトだす
 			float	effectScale = 0.2f;
 			particle->Spark(p_pos_top, effectScale);
-
-			//	ノックバック
-			Vector3	knockBackVec = bulletPos - p_pos_bottom;
-			knockBackVec.y = p_pos_bottom.y;
-			knockBackVec.Normalize();
 			Vector3	color = characterManager->GetDamageColor(i);
 			characterManager->SetPassColor(i, color);
-			characterManager->SetKnockBackVec(i, -knockBackVec);
-			characterManager->SetLeanFrame(i, leanpower);
-			characterManager->SetMode(i, MODE_STATE::DAMAGE_LEANBACKWARD);
 
-			//	コインばらまき方向設定
-			std::uniform_real_distribution<float>	vecrand(-1.0f, 1.0f);
-			Vector3	vec = Vector3(Random::GetFloat(-1.0f, 1.0f), 1.0f, Random::GetFloat(-1.0f, 1.0f));
-			vec.Normalize();
-
-			//	プレイヤー番号取得とばらまきパワー設定
-			float	power = 0.2f;
+			//	プレイヤー番号取得
 			int		p2_Num = characterManager->GetPlayerNum(i);
-			int		p2_coinNum = gameManager->GetCoinNum(p2_Num);
 
-			//	コインがあればばらまき
-			if (p2_coinNum > 0)
+			//	コインがあれば奪い取る
+			for (int i = 0; i < 30; i++)
 			{
-				coinManager->Append(p_pos_top, vec, power);
-				gameManager->SubCoin(p2_Num);
+				int		p2_coinNum = gameManager->GetCoinNum(p2_Num);
+				if (p2_coinNum > 0)
+				{
+					gameManager->SubCoin(p2_Num);
+					holdCoinNum++;
+				}
 			}
 			return true;
 		}

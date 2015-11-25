@@ -44,6 +44,7 @@
 		org[BULLET_MODEL::THIEF_01] = new iexMesh("DATA/Effect/kq_tramp/tramp.imo");
 		org[BULLET_MODEL::THIEF_02] = new iexMesh("DATA/Effect/kq_hat/hat.imo");
 		org[BULLET_MODEL::THIEF_03] = new iexMesh("DATA/Effect/kq_hand(‰¼)/arm.imo");
+		//org[BULLET_MODEL::THIEF_03] = new iexMesh("DATA/Effect/kq_arm/kq_arm.imo");
 		org[BULLET_MODEL::THIEF_04] = new iexMesh("DATA/Effect/kq_hand(‰¼)/hand.imo");
 		bullet_num = 0;
 

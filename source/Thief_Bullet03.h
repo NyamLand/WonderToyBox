@@ -24,7 +24,7 @@ public:
 
 	bool Initialize();
 
-	void Move();
+	void ControlScale();
 	void Update();
 };
 
