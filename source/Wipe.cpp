@@ -15,19 +15,15 @@
 //
 //*****************************************************************************************************************************
 
-	//	コンストラクタ
-	PlayerWipe::PlayerWipe( void )
+	//	初期化
+	bool	PlayerWipe::Initialize( void )
 	{
 		WIPE_LEFT	= ( float )SPACE;
 		WIPE_RIGHT	= ( float )iexSystem::ScreenWidth - WIPE_WIDTH - SPACE;
 		WIPE_UP		= ( float )SPACE;
 		WIPE_DOWN	= ( float )iexSystem::ScreenHeight - WIPE_HEIGHT - SPACE;
 		LEN_MAX		= 0.0f;
-	}
-	
-	//	初期化
-	bool	PlayerWipe::Initialize( void )
-	{
+
 		//	レンダーターゲット用
 		FOR(0, PLAYER_MAX)
 		{
@@ -52,14 +48,6 @@
 
 		return true;
 	}
-
-
-	//	デストラクタ
-	PlayerWipe::~PlayerWipe( void )
-	{
-
-	}
-
 
 //*****************************************************************************************************************************
 //
