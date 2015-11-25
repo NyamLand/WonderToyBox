@@ -40,11 +40,10 @@
 	
 		case STAGE_DATA::TYPE_FOREST:	//	森ステージ
 			obj_collision = new iexMesh( "DATA/BG/Forest/Collision/collision_forest.IMO" );
-			obj_stage = new iexMesh( "DATA/BG/Forest/model/forest2.IMO" );
-			obj_stage->SetScale( STAGE_DATA::SCALE_FOREST );
+			obj_stage = new iexMesh( "DATA/BG/Forest/model/forest_base.IMO" );
 			obj_ex1 = new iexMesh( "DATA/BG/Forest/model/forest_river.IMO" );
+			obj_stage->SetScale( STAGE_DATA::SCALE_FOREST );
 			obj_ex1->SetScale( STAGE_DATA::SCALE_FOREST );
-			obj_ex1->SetPos( 0.0f, 1.0f, 0.0f );
 			iexLight::DirLight(shader3D, 0, &dir, 0.5f, 0.5f, 0.5f);
 			break;
 		}
@@ -69,9 +68,9 @@
 
 	void StageManager::Release( void )
 	{
+		SafeDelete(obj_collision);
 		SafeDelete(obj_stage);
 		SafeDelete(obj_ex1);
-		SafeDelete(obj_collision);
 	}
 
 	//**************************************************************************************************
@@ -93,10 +92,9 @@
 		}
 		
 		//　モデルの通常更新
-		obj_stage->Update();
 		obj_collision->Update();
+		obj_stage->Update();
 		if (obj_ex1) obj_ex1->Update();
-
 	}
 
 	//　机のステージ
@@ -109,7 +107,8 @@
 	void StageManager::StageForestUpdate( void )
 	{
 		//　川の流れ（UVアニメ）
-		_adjustV -= 0.01f;
+		_adjustV -= 0.001f;
+
 	}
 
 	//**************************************************************************************************
@@ -126,8 +125,9 @@
 	void StageManager::Render( iexShader* shader, LPSTR technique )
 	{
 		shader3D->SetValue( "adjustV", _adjustV );
+
 		if (obj_ex1)obj_ex1->Render(shader, "effect_add");
-		obj_stage->Render( shader, technique );
+		obj_stage->Render( shader, technique );		//　ベースのほうを後に描画
 	}
 
 	//**************************************************************************************************

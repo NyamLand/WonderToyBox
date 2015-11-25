@@ -88,6 +88,8 @@
 		//	ゲームデータテキストを読み込む
 		LoadTextData();
 		timer = timelimit;
+		coinMax = 50;
+
 
 		return	true;
 	}

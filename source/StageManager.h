@@ -6,8 +6,8 @@
 class StageManager
 {
 private:
-	iexMesh*	obj_stage;			//　ステージ
 	iexMesh*	obj_collision;		//　当たり判定用
+	iexMesh*	obj_stage;			//　ステージ
 	iexMesh*	obj_ex1;			//　おまけ用（川とか）
 
 	int		stage_type;
