@@ -670,14 +670,14 @@
 			}
 		}
 
-		//	同枚数は同じランクにする
-		FOR( 1, PLAYER_MAX )
-		{
-			if ( sortInfo[value].coin == sortInfo[value - 1].coin )
-			{
-				sortInfo[value].rank = sortInfo[value - 1].rank;
-			}
-		}
+		////	同枚数は同じランクにする
+		//FOR( 1, PLAYER_MAX )
+		//{
+		//	if ( sortInfo[value].coin == sortInfo[value - 1].coin )
+		//	{
+		//		sortInfo[value].rank = sortInfo[value - 1].rank;
+		//	}
+		//}
 	}
 
 	//	ラストボーナス設定
