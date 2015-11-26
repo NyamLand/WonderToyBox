@@ -19,7 +19,7 @@
 			const		LPSTR	bgmfile[] =
 			{
 				"",	//	Title
-				"DATA/SOUND/FightBGM.ogg",	//	Main
+				"DATA/SOUND/BGM/FightBGM.ogg",	//	Main
 				"",	//	Result
 			};
 		}
@@ -44,14 +44,14 @@
 	//	èâä˙âª
 	void	Sound::Initialize( void )
 	{
-		IEX_SetWAV( SE::HYPER_SE, "DATA/Sound/attack-h.wav" );
-		IEX_SetWAV( SE::POWER_SE, "DATA/Sound/attack-p.wav" );
-		IEX_SetWAV( SE::QUICK_SE, "DATA/Sound/attack-q.wav" );
-		IEX_SetWAV( SE::COIN_SE, "DATA/Sound/coin.wav" );
-		IEX_SetWAV( SE::ITEM_SE, "DATA/Sound/item-get.wav" );
-		IEX_SetWAV( SE::DECIDE_SE, "DATA/Sound/decide.wav" );
-		IEX_SetWAV(SE::EVENT_SE, "DATA/Sound/event.wav");
-		IEX_SetWAV( SE::NEWS_SE, "DATA/Sound/decision3.wav" );
+		IEX_SetWAV( SE::HYPER_SE, "DATA/Sound/SE/attack-h.wav" );
+		IEX_SetWAV( SE::POWER_SE, "DATA/Sound/SE/attack-p.wav" );
+		IEX_SetWAV( SE::QUICK_SE, "DATA/Sound/SE/attack-q.wav" );
+		IEX_SetWAV( SE::COIN_SE, "DATA/Sound/SE/coin.wav" );
+		IEX_SetWAV( SE::ITEM_SE, "DATA/Sound/SE/item-get.wav" );
+		IEX_SetWAV( SE::DECIDE_SE, "DATA/Sound/SE/decide.wav" );
+		IEX_SetWAV(SE::EVENT_SE, "DATA/Sound/SE/event.wav");
+		IEX_SetWAV( SE::NEWS_SE, "DATA/Sound/SE/decision3.wav" );
 		isPlay = false;
 	}
 

@@ -84,17 +84,17 @@
 		//	âÊëúì«Ç›çûÇ›
 		back = make_unique<iex2DObj>( LPSTR( "DATA/UI/back.png" ) );
 		frame = make_unique<iex2DObj>( LPSTR( "DATA/UI/frame.png" ) );
-		checkBack = make_unique<iex2DObj>( LPSTR( "DATA/UI/selectCheck_Back.png" ) );
-		checkCursor = make_unique<iex2DObj>( LPSTR( "DATA/UI/selectCheck_Cursor.png" ) );
-		playerNumText = make_unique<iex2DObj>( LPSTR( "DATA/UI/playerNum_Text.png" ) );
-		playerNum = make_unique<iex2DObj>( LPSTR( "DATA/UI/playerNum.png" ) );
+		checkBack = make_unique<iex2DObj>( LPSTR( "DATA/UI/menu/selectCheck_Back.png" ) );
+		checkCursor = make_unique<iex2DObj>( LPSTR( "DATA/UI/menu/selectCheck_Cursor.png" ) );
+		playerNumText = make_unique<iex2DObj>( LPSTR( "DATA/UI/menu/playerNum_Text.png" ) );
+		playerNum = make_unique<iex2DObj>( LPSTR( "DATA/UI/menu/playerNum.png" ) );
 		face = new iex2DObj( "DATA/UI/chara_emotion.png" );
 		cursor = new iex2DObj( "DATA/UI/cursor.png" );
 
 
-		Oimage = new iex2DObj("DATA/UI/OptionText.png");
-		Otime = new iex2DObj("DATA/UI/number.png");
-		OCmax = new iex2DObj("DATA/UI/number.png");
+		Oimage =		new iex2DObj( "DATA/UI/OptionText.png" );
+		Otime	=		new iex2DObj( "DATA/UI/number.png" );
+		OCmax	=		new iex2DObj( "DATA/UI/number.png" );
 		//	ÉÇÉfÉãì«Ç›çûÇ›
 		//org[CHARACTER_TYPE::KNIGHT] = new iex3DObj( "DATA/CHR/Knight/Knight_Dammy.IEM" );		//	ãRém
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Knight/Knight_Dammy.IEM" ) );		//	ë|èúâÆ
@@ -123,12 +123,12 @@
 		org[CHARACTER_TYPE::THIEF ]->Update();		//	ÉäÉX
 		org[CHARACTER_TYPE::TIGER]->Update();			//	ÉgÉâ
 
-		deskStage = make_unique<iexMesh>( LPSTR( "DATA/back/stage.IMO" ) );
+		deskStage = make_unique<iexMesh>( LPSTR( "DATA/BG/stage-desk/stage.IMO" ) );
 		forestStage = make_unique<iexMesh>( LPSTR( "DATA/BG/Forest/model/forest.IMO" ) );
 
 		//	âÊëúç\ë¢ëÃèâä˙âª
 		{
-			textImage.obj = new iex2DObj( "DATA/UI/menu-head.png" );
+			textImage.obj = new iex2DObj( "DATA/UI/menu/menu-head.png" );
 			int x = static_cast<int>( iexSystem::ScreenWidth / 2 );
 			int y = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
 			int w = static_cast<int>( iexSystem::ScreenWidth * 0.29f );

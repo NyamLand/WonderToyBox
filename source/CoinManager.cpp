@@ -28,7 +28,7 @@
 	{
 		//	Œ³ƒ‚ƒfƒ‹“Ç‚İ‚İ
 		org = nullptr;
-		org = new iexMesh( "DATA/Object/coin01.imo" );
+		org = new iexMesh( "DATA/Object/Coin/Coin/coin01.imo" );
 
 		//	ƒŠƒXƒg‰Šú‰»
 		coinList.clear();

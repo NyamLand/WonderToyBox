@@ -54,15 +54,15 @@
 	//	èâä˙âª
 	void	Effect::Initialize()
 	{
-		aura = new iexMesh("DATA\\Effect\\aura.IMO");
+		aura = new iexMesh("DATA/Effect/state/aura.IMO");
 
-		circle_pic[0] = new iex2DObj("DATA/Effect/PL1.png");
-		circle_pic[1] = new iex2DObj("DATA/Effect/PL2.png");
-		circle_pic[2] = new iex2DObj("DATA/Effect/PL3.png");
-		circle_pic[3] = new iex2DObj("DATA/Effect/PL4.png");
+		circle_pic[0] = new iex2DObj("DATA/Effect/circle/PL1.png");
+		circle_pic[1] = new iex2DObj("DATA/Effect/circle/PL2.png");
+		circle_pic[2] = new iex2DObj("DATA/Effect/circle/PL3.png");
+		circle_pic[3] = new iex2DObj("DATA/Effect/circle/PL4.png");
 
 		pow_up.obj = new iex2DObj( "DATA/Effect/ol-r.png" );
-		shieldInfo.obj = new iex2DObj( "DATA/Effect/Guard-ef.png" );
+		shieldInfo.obj = new iex2DObj( "DATA/Effect/state/Guard-ef.png" );
 		ImageInitialize(pow_up, 0, 0, 90, 90, 0, 0, 0, 0);
 
 		for (int i = 0; i < 4; i++){

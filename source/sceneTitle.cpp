@@ -98,7 +98,7 @@ namespace
 		ui->Initialize( UI_MODE::TITLE );
 		
 		//	ステージ
-		stage = new iexMesh( "DATA/BG/title_map.IMO" );
+		stage = new iexMesh( "DATA/BG/titlestage/title_map.IMO" );
 
 		//	乱数初期化
 		Random::Initialize();		
@@ -114,8 +114,8 @@ namespace
 	void	sceneTitle::TitleInitialize( void )
 	{
 		//	画像読み込み
-		titleInfo.curtainL.obj = new iex2DObj( "DATA/curtain1.png" );
-		titleInfo.curtainR.obj = new iex2DObj( "DATA/curtain2.png" );
+		titleInfo.curtainL.obj = new iex2DObj( "DATA/UI/title/curtain1.png" );
+		titleInfo.curtainR.obj = new iex2DObj( "DATA/UI/title/curtain2.png" );
 		titleInfo.titleImage.obj = new iex2DObj( "DATA/UI/title.png" );
 		titleInfo.pressSpace.obj = new iex2DObj( "DATA/UI/pressspace.png" );
 

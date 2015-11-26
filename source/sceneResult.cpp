@@ -74,9 +74,9 @@
 
 		//	‰æ‘œ“Ç‚İ‚İ
 		back = make_unique<iex2DObj>( LPSTR( "DATA/UI/back.png" ) );
-		menuHead.obj = new iex2DObj( "DATA/UI/menu-head.png" );
+		menuHead.obj = new iex2DObj( "DATA/UI/menu/menu-head.png" );
 		originNumber = new iex2DObj( "DATA/UI/number.png" );
-		menuText = new iex2DObj( "DATA/Result/result-cho.png" );
+		menuText = new iex2DObj( "DATA/UI/result/result-cho.png" );
 		lastBonusText = new iex2DObj( "DATA/UI/LastBonusText.png" );
 
 		//	ƒ‚ƒfƒ‹“Ç‚İ‚İ

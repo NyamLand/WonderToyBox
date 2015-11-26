@@ -49,7 +49,7 @@ using namespace std;
 
 		//	ƒJƒƒ‰İ’è
 		mainView = new Camera();
-		load = new iex2DObj( "DATA/Load/Lord-back.png" );
+		load = new iex2DObj( "DATA/UI/Load/Lord-back.png" );
 		load_anykey.obj = new iex2DObj( "DATA/UI/pressspace.png" );
 		int x = static_cast<int>( iexSystem::ScreenWidth * 0.86f );
 		int y = static_cast<int>( iexSystem::ScreenHeight * 0.93f );

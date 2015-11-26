@@ -175,7 +175,7 @@
 	void	UI::TitleInitialize( void )
 	{
 		//	‰æ‘œ‰Šú‰»
-		titleInfo.textImage.obj = new iex2DObj( "DATA/UI/menu-int.png" );
+		titleInfo.textImage.obj = new iex2DObj( "DATA/UI/menu/menu-int.png" );
 
 		//	\‘¢‘Ì‰Šú‰»
 		int x = static_cast<int>( iexSystem::ScreenWidth * 1.01f );
@@ -197,7 +197,7 @@
 	//	ƒƒCƒ“—p‰Šú‰»
 	void	UI::MainInitialize( void )
 	{
-		timer.obj = new iex2DObj("DATA/BG/number.png");
+		timer.obj = new iex2DObj("DATA/UI/timer.png");
 		coinbar = new iex2DObj("DATA/BG/coin_gage.png");
 		gauge.obj = coinbar;
 		backgauge.obj = coinbar;

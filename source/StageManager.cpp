@@ -31,11 +31,11 @@
 		switch (stage_type)
 		{
 		case STAGE_DATA::TYPE_DESK:	//	机ステージ
-			obj_collision = new iexMesh("DATA/back/Collision.IMO");
-			obj_stage = new iexMesh("DATA/back/stage.IMO");
+			obj_collision = new iexMesh( "DATA/BG/stage-desk/Collision.IMO" );
+			obj_stage = new iexMesh( "DATA/BG/stage-desk/stage.IMO" );
 			obj_ex1 = nullptr;
-			obj_stage->SetAngle(D3DX_PI);
-			iexLight::DirLight(shader3D, 0, &dir, 1.5f, 1.5f, 1.5f);
+			obj_stage->SetAngle( D3DX_PI );
+			iexLight::DirLight( shader3D, 0, &dir, 1.5f, 1.5f, 1.5f );
 			break;
 	
 		case STAGE_DATA::TYPE_FOREST:	//	森ステージ

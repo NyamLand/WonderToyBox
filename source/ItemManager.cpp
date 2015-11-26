@@ -17,7 +17,7 @@
 	//	‰Šú‰»
 	bool	ItemManager::Initialize( void )
 	{
-		org = new iexMesh( "DATA/Object/Item.IMO" );
+		org = new iexMesh( "DATA/Object/Item/Item.IMO" );
 		itemList.clear();
 
 		return	true;
