@@ -45,7 +45,9 @@ private:
 	{
 		int		bonus[4];
 		int		step;
-		LVERTEX	v[4];
+		float	t;
+		ImageObj	textImage;
+		TLVERTEX	v[4];
 	};
 
 	//	コイン枚数構造体
@@ -83,25 +85,31 @@ private:
 	};
 
 private:
-	SORT_INFO				sortInfo[4];
-	ORIGINAL_INFO			originInfo[4];
-	NUMBER_INFO			number[4];
-	NUMBERIMAGE_INFO	numberImageInfo[4];
-	ROULETTE_INFO		rouletteInfo;
-	MENU_INFO				menuInfo;
+	SORT_INFO					sortInfo[4];
+	ORIGINAL_INFO				originInfo[4];
+	NUMBER_INFO				number[4];
+	NUMBER_INFO				bonusNumber[4];
+	NUMBERIMAGE_INFO		numberImageInfo[4];
+	NUMBERIMAGE_INFO		bonusNumberImageInfo[4];
+	ROULETTE_INFO			rouletteInfo;
+	MENU_INFO					menuInfo;
 	VIEW_RANK_INORDER	viewRankInOrder;
-	LASTBONUS_INFO		lastBonusInfo;
+	LASTBONUS_INFO			lastBonusInfo;
 
 	//	モデル・画像
 	unique_ptr<iex2DObj>	back;
 	unique_ptr<iex3DObj>	org[4];
-	iex3DObj*	obj[4];
-	iex2DObj*	originNumber;
-	iex2DObj*	menuText;
-	ImageObj	menuHead;
-	ImageObj	originCoinImage[4];
-	ImageObj	rankImage[4];
-	ImageObj	menuImage[3];
+	iex3DObj*						obj[4];
+	iex2DObj*						originNumber;
+	iex2DObj*						menuText;
+	iex2DObj*						lastBonusText;
+	ImageObj						menuHead;
+	ImageObj						originCoinImage[4];
+	ImageObj						rankImage[4];
+	ImageObj						menuImage[3];
+	ImageObj						playerNumImage;
+	ImageObj						faceImage;
+	ImageObj						waveCircleImage;
 
 	//	変数
 	int		mode;
@@ -138,6 +146,7 @@ public:
 	
 	//	動作関数
 	void	SetLastBonus( void );
+	void	SetBonusPlayer( void );
 	void	Sort( void );
 	bool	Roulette( void );
 	bool	ViewRankInOrder( void );
@@ -145,13 +154,17 @@ public:
 	void	MoveScene( void );
 
 	//	ラストボーナス用関数
+	bool	LastBonusUpdate( void );
 	bool	InBoard( void );
-	bool	BonusAnnouncing( void );	
+	bool	BonusAnnouncing( void );
+	bool	PlayerAnnouncing( void );
 	bool	OutBoard( void );
+	bool	AddBonus( void );
 
 	//	情報設定
 	void	SetRank( void );
 	void	SetNumberImageInfo( const int& player, const int& coin );
+	void	SetNumberImageInfo( NUMBERIMAGE_INFO& numImageInfo, NUMBER_INFO& numInfo, const int& num );
 	void	SetNumberInfo( NUMBER_INFO& number, int coin );	//	コイン枚数引き渡し
 };
 

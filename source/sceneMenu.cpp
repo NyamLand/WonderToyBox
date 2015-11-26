@@ -787,8 +787,8 @@
 		//@\‘¢‘Ì‰Šú‰»
 		optionInfo.itemflg = true;
 		optionInfo.coinMAX = 200;
-		optionInfo.minute = 1;
-		optionInfo.second = 30;
+		optionInfo.minute = 0;
+		optionInfo.second = 5;
 		optionInfo.step = 0;
 		gameManager->SetItemFlg(optionInfo.itemflg);
 		gameManager->SetCoinMax(optionInfo.coinMAX);

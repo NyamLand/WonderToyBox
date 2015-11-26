@@ -77,6 +77,7 @@
 		menuHead.obj = new iex2DObj( "DATA/UI/menu-head.png" );
 		originNumber = new iex2DObj( "DATA/UI/number.png" );
 		menuText = new iex2DObj( "DATA/Result/result-cho.png" );
+		lastBonusText = new iex2DObj( "DATA/UI/LastBonusText.png" );
 
 		//	モデル読み込み
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Knight/Knight_Dammy.IEM" ) );			//	掃除屋
@@ -85,22 +86,22 @@
 		org[CHARACTER_TYPE::TIGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/ECCMAN/ECCMAN.IEM" ) );					//	トラ
 
 		//	オリジナルモデル情報初期化
-		org[CHARACTER_TYPE::SCAVENGER]->SetScale( 0.05f );			//	掃除屋
+		org[CHARACTER_TYPE::SCAVENGER]->SetScale( 0.05f );		//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->SetScale( 0.02f );			//	姫
 		org[CHARACTER_TYPE::THIEF]->SetScale( 0.04f );				//	リス
 		org[CHARACTER_TYPE::TIGER]->SetScale( 0.02f );				//	トラ
 
 		org[CHARACTER_TYPE::SCAVENGER]->SetAngle( D3DX_PI );		//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS]->SetAngle( D3DX_PI );			//	姫
-		org[CHARACTER_TYPE::THIEF]->SetAngle( D3DX_PI );			//	シーフ
-		org[CHARACTER_TYPE::TIGER]->SetAngle( D3DX_PI );			//	トラ
+		org[CHARACTER_TYPE::PRINCESS]->SetAngle( D3DX_PI );		//	姫
+		org[CHARACTER_TYPE::THIEF]->SetAngle( D3DX_PI );				//	シーフ
+		org[CHARACTER_TYPE::TIGER]->SetAngle( D3DX_PI );				//	トラ
 
-		org[CHARACTER_TYPE::SCAVENGER]->SetMotion( 2 );				//	掃除屋
+		org[CHARACTER_TYPE::SCAVENGER]->SetMotion( 2 );			//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->SetMotion( 1 );				//	姫
 		org[CHARACTER_TYPE::THIEF]->SetMotion( 0 );	 				//	シーフ
 		org[CHARACTER_TYPE::TIGER]->SetMotion( 0 );					//	トラ
 
-		org[CHARACTER_TYPE::SCAVENGER]->Update();					//	掃除屋
+		org[CHARACTER_TYPE::SCAVENGER]->Update();				//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->Update();					//	姫
 		org[CHARACTER_TYPE::THIEF]->Update();						//	リス
 		org[CHARACTER_TYPE::TIGER]->Update();						//	トラ
@@ -109,7 +110,7 @@
 		ModelInitialize();
 
 		//	構造体初期化
-		int x = static_cast<int>( iexSystem::ScreenWidth / 2 );
+		int x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
 		int y = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
 		int w = static_cast<int>( iexSystem::ScreenWidth * 0.29f );
 		int h = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
@@ -184,14 +185,51 @@
 		}
 
 		//	ラストボーナス関連初期化
-		FOR( 0, PLAYER_MAX )	lastBonusInfo.bonus[value];
-		lastBonusInfo.step = 0;
+		{
+			FOR( 0, PLAYER_MAX )	lastBonusInfo.bonus[value];
+			lastBonusInfo.step = 0;
+			lastBonusInfo.t = 0.0f;
+			
+			//	テキスト初期化
+			int		x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
+			int		y = static_cast<int>( iexSystem::ScreenHeight * 0.4f );
+			int		w =static_cast<int>( iexSystem::ScreenWidth * 0.2f );
+			int		h = static_cast<int>( iexSystem::ScreenHeight * 0.1f );
+			ImageInitialize( lastBonusInfo.textImage, x, y, w, h, 0, lastBonus * 128, 512, 128 );
+			lastBonusInfo.textImage.renderflag = false;
+			lastBonusInfo.textImage.obj = lastBonusText;
+			
+			//	頂点設定
+			SetVertex( lastBonusInfo.v[0], static_cast<float>( iexSystem::ScreenWidth ), static_cast<float>( iexSystem::ScreenHeight * 0.2f ), 0.0f, 0.0f, 0.0f, 0x77333333 );
+			SetVertex( lastBonusInfo.v[1], static_cast<float>( iexSystem::ScreenWidth ), static_cast<float>( iexSystem::ScreenHeight * 0.2f ), 0.0f, 1.0f, 0.0f, 0x77333333 );
+			SetVertex( lastBonusInfo.v[2], static_cast<float>( iexSystem::ScreenWidth ), static_cast<float>( iexSystem::ScreenHeight * 0.6f ), 0.0f, 0.0f, 1.0f, 0x77333333 );
+			SetVertex( lastBonusInfo.v[3], static_cast<float>( iexSystem::ScreenWidth ), static_cast<float>( iexSystem::ScreenHeight * 0.6f ), 0.0f, 1.0f, 1.0f, 0x77333333 );
+
+			//	顔画像初期化
+			y = static_cast<int>( iexSystem::ScreenHeight * 0.6f );
+			w = 0;
+			h = 0;
+			ImageInitialize( faceImage, x, y, w, h, 0, 0, 256, 256 );
+			faceImage.obj = new iex2DObj( "DATA/UI/chara_emotion.png" );
+			faceImage.renderflag = false;
+
+			//	虹円画像初期化
+			w = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
+			h = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
+			ImageInitialize( waveCircleImage, x, y, w, h, 0, 0, 512, 512 );
+			waveCircleImage.obj = new iex2DObj( "DATA/UI/Rainbow-circle.png" );
+			waveCircleImage.renderflag = false;
 		
-		//	頂点設定
-		SetVertex( lastBonusInfo.v[0], iexSystem::ScreenWidth, iexSystem::ScreenHeight * 0.2f, 0.0f, 0, 0, 0xFFFFFFFF );
-		SetVertex( lastBonusInfo.v[1], iexSystem::ScreenWidth, iexSystem::ScreenHeight * 0.2f, 0.0f, 1, 0, 0xFFFFFFFF );
-		SetVertex( lastBonusInfo.v[2], iexSystem::ScreenWidth, iexSystem::ScreenHeight * 0.6f, 0.0f, 0, 1, 0xFFFFFFFF );
-		SetVertex( lastBonusInfo.v[3], iexSystem::ScreenWidth, iexSystem::ScreenHeight * 0.6f, 0.0f, 1, 1, 0xFFFFFFFF );
+
+			//	プレイヤー番号初期化
+			x = static_cast<int>( iexSystem::ScreenWidth * 0.45f );
+			y = static_cast<int>( iexSystem::ScreenHeight * 0.52f );
+			w = static_cast<int>( iexSystem::ScreenWidth * 0.05f );
+			h = static_cast<int>( iexSystem::ScreenHeight * 0.075f );
+			ImageInitialize( playerNumImage, x, y, w, h, 0, 0, 128, 128 );
+			playerNumImage.obj = new iex2DObj( "DATA/UI/cursor.png" );
+			playerNumImage.renderflag = false;
+		}
 		return	true;
 	}
 
@@ -202,6 +240,10 @@
 		SafeDelete( originNumber );
 		SafeDelete( menuText );
 		SafeDelete( mainView );
+		SafeDelete( lastBonusText );
+		SafeDelete( faceImage.obj );
+		SafeDelete( playerNumImage.obj );
+		SafeDelete( waveCircleImage.obj );
 		Random::Release();
 	}
 
@@ -238,10 +280,10 @@
 			//	ゲーム終了時のデータを格納( ここでボーナスも設定しておく )
 			originInfo[i].coin = gameManager->GetCoinNum( i );
 			originInfo[i].rank = i;
-			originInfo[i].bonus = 0;
+			originInfo[i].bonus = Random::GetInt( 0, 100 );
 
 			//	ランキング計算用に総計データを格納( ボーナス数値が整い次第、元のコイン枚数にボーナスを足す、ランクはソートにかけるため適当に代入 )
-			sortInfo[i].coin = originInfo[i].coin;
+			sortInfo[i].coin = originInfo[i].coin + originInfo[i].bonus;
 			sortInfo[i].rank = i;
 		}
 	}
@@ -260,14 +302,21 @@
 			numberImageInfo[i].pos.x = static_cast<int>( out.x );
 			numberImageInfo[i].pos.y = static_cast<int>( iexSystem::ScreenHeight * 0.38f );
 			numberImageInfo[i].scale = 100;
+			bonusNumberImageInfo[i].pos.x = static_cast<int>( out.x + ( iexSystem::ScreenWidth * 0.05f ) );
+			bonusNumberImageInfo[i].pos.y = static_cast<int>( iexSystem::ScreenHeight * 0.45f );
+			bonusNumberImageInfo[i].scale = 70;
 
 			//	各位画像設定
 			numberImageInfo[i].one.obj = originNumber;
 			numberImageInfo[i].ten.obj = originNumber;
 			numberImageInfo[i].hundred.obj = originNumber;
-
+			bonusNumberImageInfo[i].one.obj = originNumber;
+			bonusNumberImageInfo[i].ten.obj = originNumber;
+			bonusNumberImageInfo[i].hundred.obj = originNumber;
+		
 			//	数値画像構造体初期化
-			SetNumberImageInfo( i, originInfo[i].coin );
+			SetNumberImageInfo( numberImageInfo[i], number[i], originInfo[i].coin );
+			SetNumberImageInfo( bonusNumberImageInfo[i], bonusNumber[i], originInfo[i].bonus );
 		}
 	}
 
@@ -352,6 +401,22 @@
 		//	順位描画
 		RankRender();
 
+		//	ラストボーナス用ポリゴン描画
+		iexPolygon::Render2D( lastBonusInfo.v, 2, nullptr, RS_COPY );
+
+		//	ラストボーナステキスト描画
+		RenderImage( lastBonusInfo.textImage, 0, 0, 512, 128, IMAGE_MODE::ADOPTPARAM );
+		RenderImage( lastBonusInfo.textImage, 0, 0, 512, 128, IMAGE_MODE::WAVE );
+
+		//	円虹描画
+		RenderImage( waveCircleImage, 0, 0, 512, 512, IMAGE_MODE::WAVE );
+
+		//	プレイヤー顔描画
+		RenderImage( faceImage, 0, 0, 256, 256, IMAGE_MODE::ADOPTPARAM );
+
+		//	プレイヤー番号描画
+		RenderImage( playerNumImage, 0, 0, 128, 128, IMAGE_MODE::NORMAL );
+
 		//	メニュー用スクリーン描画
 		iexPolygon::Rect( 0, 0, iexSystem::ScreenWidth, menuInfo.screenH, RS_COPY, GetColor( 0.0f, 0.0f, 0.0f, menuInfo.alpha ) );
 
@@ -363,7 +428,8 @@
 	void	sceneResult::ResultUpdate( void )
 	{
 		bool	isEnd = false;
-		bool	isFinViewRankInOrder = false;
+		bool	isFinViewRankInOrder = false; 
+		bool	isEndWave = false;
 
 		//	段階ごとの処理
 		switch ( step )
@@ -394,6 +460,8 @@
 			//-----------------------------------------------------------------------------------
 			//	ラストボーナス演出
 			//-----------------------------------------------------------------------------------
+			isEnd = LastBonusUpdate();
+			if ( isEnd )	step++;
 			break;
 			
 		case 2:
@@ -503,6 +571,9 @@
 	{
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
+			//-----------------------------------------------------------------------------------------------
+			//	コイン枚数描画
+			//-----------------------------------------------------------------------------------------------
 			//	１００の位描画
 			int		sx = numberImageInfo[i].hundred.sx;
 			int		sy = numberImageInfo[i].hundred.sy;
@@ -525,6 +596,32 @@
 			sw = numberImageInfo[i].one.sw;
 			sh = numberImageInfo[i].one.sh;
 			RenderImage( numberImageInfo[i].one, sx, sy, sw, sh, IMAGE_MODE::NORMAL );
+
+			//-----------------------------------------------------------------------------------------------
+			//	ボーナス数値描画
+			//-----------------------------------------------------------------------------------------------
+			//	１００の位描画
+			sx = bonusNumberImageInfo[i].hundred.sx;
+			sy = bonusNumberImageInfo[i].hundred.sy;
+			sw = bonusNumberImageInfo[i].hundred.sw;
+			sh = bonusNumberImageInfo[i].hundred.sh;
+
+			if ( bonusNumberImageInfo[i].hundredRenderFlag )
+				RenderImage( bonusNumberImageInfo[i].hundred, sx, sy, sw, sh, IMAGE_MODE::NORMAL );
+
+			//	１０の位描画
+			sx = bonusNumberImageInfo[i].ten.sx;
+			sy = bonusNumberImageInfo[i].ten.sy;
+			sw = bonusNumberImageInfo[i].ten.sw;
+			sh = bonusNumberImageInfo[i].ten.sh;
+			RenderImage( bonusNumberImageInfo[i].ten, sx, sy, sw, sh, IMAGE_MODE::NORMAL );
+
+			//	１の位描画
+			sx = bonusNumberImageInfo[i].one.sx;
+			sy = bonusNumberImageInfo[i].one.sy;
+			sw = bonusNumberImageInfo[i].one.sw;
+			sh = bonusNumberImageInfo[i].one.sh;
+			RenderImage( bonusNumberImageInfo[i].one, sx, sy, sw, sh, IMAGE_MODE::NORMAL );
 		}
 	}
 
@@ -570,6 +667,15 @@
 					//	退避してたやつを戻す
 					sortInfo[s] = temp;
 				}
+			}
+		}
+
+		//	同枚数は同じランクにする
+		FOR( 1, PLAYER_MAX )
+		{
+			if ( sortInfo[value].coin == sortInfo[value - 1].coin )
+			{
+				sortInfo[value].rank = sortInfo[value - 1].rank;
 			}
 		}
 	}
@@ -623,11 +729,18 @@
 		if ( coin >= 100 )		numberImageInfo[player].hundredRenderFlag = true;
 		else							numberImageInfo[player].hundredRenderFlag = false;
 
+		if ( originInfo[player].bonus >= 100 )		bonusNumberImageInfo[player].hundredRenderFlag = true;
+		else														bonusNumberImageInfo[player].hundredRenderFlag = false;
+
 		//	数字構造体設定
 		SetNumberInfo( number[player], coin );
+		SetNumberInfo( bonusNumber[player], originInfo[player].bonus );
 
 		//	各位画像構造体初期化
 		int		x, y, w, h, sx, sy, sw, sh;
+		//------------------------------------------------------------------------------------------------
+		//	総数用構造体設定
+		//------------------------------------------------------------------------------------------------
 		if ( numberImageInfo[player].hundredRenderFlag )
 		{
 			//	１０の位設定
@@ -664,6 +777,106 @@
 			x = numberImageInfo[player].pos.x + w / 3;
 			sx = number[player].one * 64;
 			ImageInitialize( numberImageInfo[player].one, x, y, w, h, sx, sy, sw, sh );
+		}
+
+		//------------------------------------------------------------------------------------------------
+		//	ボーナス用構造体設定
+		//------------------------------------------------------------------------------------------------
+		if ( bonusNumberImageInfo[player].hundredRenderFlag )
+		{
+			//	１０の位設定
+			x = bonusNumberImageInfo[player].pos.x;
+			y = bonusNumberImageInfo[player].pos.y;
+			w = h = bonusNumberImageInfo[player].scale;
+			sx = bonusNumber[player].ten * 64;
+			sy = 0;
+			sw = sh = 64;
+			ImageInitialize( bonusNumberImageInfo[player].ten, x, y, w, h, sx, sy, sw, sh );
+
+			//	１００の位設定
+			x = bonusNumberImageInfo[player].pos.x - static_cast<int>( bonusNumberImageInfo[player].ten.w / 1.5f );
+			sx = bonusNumber[player].hundred * 64;
+			ImageInitialize( bonusNumberImageInfo[player].hundred, x, y, w, h, sx, sy, sw, sh );
+
+			//	１の位設定
+			x = bonusNumberImageInfo[player].pos.x + static_cast<int>( bonusNumberImageInfo[player].ten.w / 1.5f );
+			sx = bonusNumber[player].one * 64;
+			ImageInitialize( bonusNumberImageInfo[player].one, x, y, w, h, sx, sy, sw, sh );
+		}
+		else
+		{
+			//	１０の位設定
+			w = h = bonusNumberImageInfo[player].scale;
+			x = bonusNumberImageInfo[player].pos.x - w / 3;
+			y = bonusNumberImageInfo[player].pos.y;
+			sx = bonusNumber[player].ten * 64;
+			sy = 0;
+			sw = sh = 64;
+			ImageInitialize( bonusNumberImageInfo[player].ten, x, y, w, h, sx, sy, sw, sh );
+
+			//	１の位設定
+			x = bonusNumberImageInfo[player].pos.x + w / 3;
+			sx = bonusNumber[player].one * 64;
+			ImageInitialize( bonusNumberImageInfo[player].one, x, y, w, h, sx, sy, sw, sh );
+		}
+
+		//	非表示にする
+		bonusNumberImageInfo[player].one.renderflag = false;
+		bonusNumberImageInfo[player].ten.renderflag = false;
+		bonusNumberImageInfo[player].hundred.renderflag = false;
+	}
+
+	//	設定した数値にあわせて構造体情報を設定、１００以上かで配置も変更
+	void	sceneResult::SetNumberImageInfo( NUMBERIMAGE_INFO& numImageInfo, NUMBER_INFO& numInfo, const int& num )
+	{
+		//	桁数確認
+		if ( num >= 100 )		numImageInfo.hundredRenderFlag = true;
+		else							numImageInfo.hundredRenderFlag = false;
+
+		//	数字構造体設定
+		SetNumberInfo( numInfo, num );
+
+		//	各位画像構造体初期化
+		int		x, y, w, h, sx, sy, sw, sh;
+		//------------------------------------------------------------------------------------------------
+		//	総数用構造体設定
+		//------------------------------------------------------------------------------------------------
+		if ( numImageInfo.hundredRenderFlag )
+		{
+			//	１０の位設定
+			x = numImageInfo.pos.x;
+			y = numImageInfo.pos.y;
+			w = h = numImageInfo.scale;
+			sx = numInfo.ten * 64;
+			sy = 0;
+			sw = sh = 64;
+			ImageInitialize( numImageInfo.ten, x, y, w, h, sx, sy, sw, sh );
+
+			//	１００の位設定
+			x = numImageInfo.pos.x - static_cast<int>( numImageInfo.ten.w / 1.5f );
+			sx = numInfo.hundred * 64;
+			ImageInitialize( numImageInfo.hundred, x, y, w, h, sx, sy, sw, sh );
+
+			//	１の位設定
+			x = numImageInfo.pos.x + static_cast<int>( numImageInfo.ten.w / 1.5f );
+			sx = numInfo.one * 64;
+			ImageInitialize( numImageInfo.one, x, y, w, h, sx, sy, sw, sh );
+		}
+		else
+		{
+			//	１０の位設定
+			w = h = numImageInfo.scale;
+			x = numImageInfo.pos.x - w / 3;
+			y = numImageInfo.pos.y;
+			sx = numInfo.ten * 64;
+			sy = 0;
+			sw = sh = 64;
+			ImageInitialize( numImageInfo.ten, x, y, w, h, sx, sy, sw, sh );
+
+			//	１の位設定
+			x = numImageInfo.pos.x + w / 3;
+			sx = numInfo.one * 64;
+			ImageInitialize( numImageInfo.one, x, y, w, h, sx, sy, sw, sh );
 		}
 	}
 
@@ -793,23 +1006,279 @@
 //----------------------------------------------------------------------------
 //	ラストボーナス関数( ボード出現→文字→コイン枚数更新→ボード退却 )
 //----------------------------------------------------------------------------
+
+	//	ラストボーナス動作更新
+	bool	sceneResult::LastBonusUpdate( void )
+	{
+		bool	isEnd = false;
+		bool	isEndWave = false;
+
+		switch ( lastBonusInfo.step )
+		{
+		case 0:
+			//	黒ボード出現
+			isEnd = InBoard();
+
+			//	黒ボードの動作終了後ラストボーナスのテキストの描画をONにする
+			if ( isEnd )
+			{
+				lastBonusInfo.textImage.renderflag = true;
+				lastBonusInfo.t = 0.0f;
+				lastBonusInfo.step++;
+			}
+			break;
+
+		case 1:
+			//	ラストボーナス発表
+			isEnd = BonusAnnouncing();
+			
+			//	発表直後波紋設定
+			if ( isEnd )		isEndWave = WaveUpdate( lastBonusInfo.textImage );
+
+			//	波紋終了後対象プレイヤーの描画をONにして次のステップへ
+			if ( isEndWave )
+			{
+				faceImage.renderflag = true;
+				lastBonusInfo.t = 0.0f;
+				lastBonusInfo.step++;
+			}
+			break;
+
+		case 2:
+			//	対象プレイヤー発表
+			isEnd = PlayerAnnouncing();
+
+			//	プレイヤー発表後、波紋を設定
+			if ( isEnd )		isEndWave = WaveUpdate( waveCircleImage, 140 );
+			
+			//	波紋動作終了後プレイヤー番号表示
+			if ( isEndWave )
+			{
+				playerNumImage.renderflag = true;
+				lastBonusInfo.t = 0.0f;
+				lastBonusInfo.step++;
+			}
+			break;
+
+		case 3:
+			//	ボーナス加算演出
+			isEnd = AddBonus();
+
+			if ( isEnd )
+			{
+				lastBonusInfo.t = 0.0f;
+				lastBonusInfo.step++;
+			}
+
+		case 5:
+				return	true;
+			break;
+		}
+		return	false;
+	}
 	
 	//	ボード出現
 	bool	sceneResult::InBoard( void )
 	{
+		//	パラメータ更新
+		lastBonusInfo.t += 0.1f;
+		if ( lastBonusInfo.t >= 1.0f )	lastBonusInfo.t = 1.0f;
 		
+		//	頂点移動
+		CubicFunctionInterpolation( lastBonusInfo.v[0].sx, static_cast<int>( iexSystem::ScreenWidth ), 0, lastBonusInfo.t );
+		CubicFunctionInterpolation( lastBonusInfo.v[2].sx, static_cast<int>( iexSystem::ScreenWidth ), 0, lastBonusInfo.t );
+		CubicFunctionInterpolation( lastBonusInfo.v[0].sy, static_cast<int>( iexSystem::ScreenHeight * 0.2f ), static_cast<int>( iexSystem::ScreenHeight * 0.4f ), lastBonusInfo.t );
+		CubicFunctionInterpolation( lastBonusInfo.v[2].sy, static_cast<int>( iexSystem::ScreenHeight * 0.6f ), static_cast<int>( iexSystem::ScreenHeight * 0.8f ), lastBonusInfo.t );
+
+		//	処理が終了してたらtrueをかえす
+		if ( lastBonusInfo.t >= 1.0f )	return	true;
 		return	false;
 	}
 
 	//	ボード退却
 	bool	sceneResult::OutBoard( void )
-	{
+	{		
+		//	パラメータ更新
+		lastBonusInfo.t += 0.1f;
+		if ( lastBonusInfo.t >= 1.0f )	lastBonusInfo.t = 1.0f;
+
+		//	頂点移動
+		Lerp( lastBonusInfo.v[1].sx, static_cast<int>( iexSystem::ScreenWidth ), 0, lastBonusInfo.t );
+		Lerp( lastBonusInfo.v[3].sx, static_cast<int>( iexSystem::ScreenWidth ), 0, lastBonusInfo.t );
+		Lerp( lastBonusInfo.v[1].sy, static_cast<int>( iexSystem::ScreenHeight * 0.2f ), static_cast<int>( iexSystem::ScreenHeight * 0.4f ), lastBonusInfo.t );
+		Lerp( lastBonusInfo.v[3].sy, static_cast<int>( iexSystem::ScreenHeight * 0.6f ), static_cast<int>( iexSystem::ScreenHeight * 0.8f ), lastBonusInfo.t );
+
+		//	処理が終了してたらtrueをかえす
+		if ( lastBonusInfo.t >= 1.0f )	return	true;
 		return	false;
 	}
 
 	//	ボーナス発表
 	bool	sceneResult::BonusAnnouncing( void )
 	{
+		if ( lastBonusInfo.t >= 1.0f )	return	true;
+
+		//	パラメータ更新
+		lastBonusInfo.t += 0.01f;
+		if ( lastBonusInfo.t >= 1.0f )	lastBonusInfo.t = 1.0f;
+
+		//	文字回転
+		static	float startAngle = -D3DX_PI * 0.035f;
+		static	float	endAngle = startAngle + ( D3DX_PI * 20.0f );
+		Lerp( lastBonusInfo.textImage.angle, startAngle, endAngle, lastBonusInfo.t );
+
+		//	文字サイズ変更
+		static	int		startWidth = static_cast<int>( iexSystem::ScreenWidth * 0.35f );
+		static	int		maxWidth = startWidth + static_cast<int>( iexSystem::ScreenWidth * 0.2f );
+		static	int		startHeight = static_cast<int>( iexSystem::ScreenHeight * 0.1f );
+		static	int		maxHeight = startHeight + static_cast<int>( iexSystem::ScreenHeight * 0.05f );
+		CubicFunctionInterpolation( lastBonusInfo.textImage.w, startWidth, maxWidth, lastBonusInfo.t * 1.5f );
+		CubicFunctionInterpolation( lastBonusInfo.textImage.h, startHeight, maxHeight, lastBonusInfo.t * 1.5f );
+		if ( lastBonusInfo.t >= 1.0f )
+		{
+			SetWave( lastBonusInfo.textImage, 1.0f );
+			return	true;
+		}
+		return	false;
+	}
+
+	//	プレイヤー発表
+	bool	sceneResult::PlayerAnnouncing( void )
+	{
+		if ( lastBonusInfo.t >= 1.0f )	return	true;
+
+		//	パラメータ更新
+		lastBonusInfo.t += 0.1f;
+		if ( lastBonusInfo.t >= 1.0f )	lastBonusInfo.t = 1.0f;
+
+		//	顔画像拡大
+		float	t = GetBezier( ePrm_t::eRapid_Lv3, ePrm_t::eSlow_Lv5, lastBonusInfo.t );
+		int		startWidth = static_cast<int>( iexSystem::ScreenWidth * 0.08f );
+		int		startHeight = static_cast<int>( iexSystem::ScreenHeight * 0.15f );
+		int		endWidth = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
+		int		endHeight = static_cast<int>( iexSystem::ScreenHeight * 0.18f );
+		CubicFunctionInterpolation( faceImage.w, startWidth, endWidth, lastBonusInfo.t );
+		CubicFunctionInterpolation( faceImage.h, startHeight, endHeight, lastBonusInfo.t );
+
+		//	処理が終了してたらtrueをかえす
+		if ( lastBonusInfo.t >= 1.0f )
+		{
+			SetWave( waveCircleImage, 2.0f );
+			waveCircleImage.renderflag = true;
+			return	true;
+		}
+		return	false;
+	}
+
+	//	ボーナス加算演出（　一定時間ボーナス描画→）
+	bool	sceneResult::AddBonus( void )
+	{
+		static	const		int WAIT_TIME	=	90;		//	カウント時間
+		static	int			addBonusStep	=	0;			//	switch文用ステップ
+		static	int			waitTimer			=	0;			//	待機時間カウント
+		static	int			temp[4] = { 0, 0, 0, 0 };	//	退避用
+		bool					isEnd					=	false;	//	終了チェック用変数
+
+		switch ( addBonusStep )
+		{
+		case	0:
+			//	一定時間でボーナスを非表示にする
+			waitTimer++;
+			if ( waitTimer == WAIT_TIME )
+			{
+				waitTimer = 0;
+				faceImage.renderflag = false;
+				playerNumImage.renderflag = false;
+				lastBonusInfo.textImage.renderflag = false;
+				addBonusStep++;
+			}
+			break;
+
+		case 1:
+			//	ボード退避
+			isEnd = OutBoard();
+
+			//	ボード退避終了後、ボーナスの数値の描画をONにする
+			if ( isEnd )
+			{
+				FOR( 0, PLAYER_MAX )
+				{
+					//	退避用変数にボーナスをコピー
+					temp[value] = originInfo[value].bonus;
+
+					//	ボーナスがあれば表示
+					if ( originInfo[value].bonus > 0 )
+					{
+						if ( bonusNumberImageInfo[value].hundredRenderFlag )	bonusNumberImageInfo[value].hundred.renderflag = true;
+						bonusNumberImageInfo[value].one.renderflag = true;
+						bonusNumberImageInfo[value].ten.renderflag = true;
+					}
+				}
+				addBonusStep++;
+			}
+			break;
+
+		case 2:
+			//	待機
+			waitTimer++;
+			if ( waitTimer == WAIT_TIME )
+			{
+				waitTimer = 0;
+				FOR( 0, PLAYER_MAX )
+				{
+					//	ボーナス非表示
+					bonusNumberImageInfo[value].hundred.renderflag = true;
+					bonusNumberImageInfo[value].one.renderflag = false;
+					bonusNumberImageInfo[value].ten.renderflag = false;
+				}
+
+				addBonusStep++;
+			}
+			break;
+
+		case	3:
+			//	数値にボーナス分を加算する
+			FOR( 0, PLAYER_MAX )
+			{
+				if ( temp[value] == 0 )	continue;
+				
+				//	元の数値に加算して退避用から減算
+				originInfo[value].coin++;
+				temp[value]--;
+
+				SetNumberImageInfo( numberImageInfo[value], number[value], originInfo[value].coin );
+				SetNumberImageInfo( bonusNumberImageInfo[value], bonusNumber[value], temp[value] );
+			}
+
+			if ( temp[0] + temp[1] + temp[2] + temp[3] == 0 )
+			{
+				addBonusStep++;
+			}
+			break;
+
+		case	4:
+			//	待機
+			waitTimer++;
+			if ( waitTimer == WAIT_TIME )
+			{
+				waitTimer = 0;	
+				FOR( 0, PLAYER_MAX )
+				{
+					//	ボーナス非表示
+					bonusNumberImageInfo[value].hundred.renderflag = true;
+					bonusNumberImageInfo[value].one.renderflag = false;
+					bonusNumberImageInfo[value].ten.renderflag = false;
+				}
+				
+				addBonusStep++;
+			}
+			break;
+
+		case	5:
+			return	true;
+			break;
+		}
+
 		return	false;
 	}
 	

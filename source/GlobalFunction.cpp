@@ -182,7 +182,7 @@
 			posy = image.y - height / 2;
 
 			if ( image.waverenderflag )
-			image.obj->Render( posx, posy, width, height, sx, sy, sw, sh, RS_COPY, GetColor( 1.0f, 1.0f, 1.0f, image.waveAlpha ) );
+			image.obj->Render( posx, posy, width, height, sx, sy, sw, sh, image.p, image.angle, RS_COPY, GetColor( 1.0f, 1.0f, 1.0f, image.waveAlpha ) );
 			break;
 
 		case IMAGE_MODE::FLASH:
