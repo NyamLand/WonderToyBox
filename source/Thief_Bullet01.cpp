@@ -9,6 +9,7 @@
 #include	"CoinManager.h"
 #include	"CharacterManager.h"
 #include	"BaseBullet.h"
+#include	"BulletManager.h"
 #include	"Thief_Bullet01.h"
 
 
@@ -20,14 +21,14 @@ Thief_Bullet01::Thief_Bullet01()
 
 bool Thief_Bullet01::Initialize()
 {
-	judgeTimer = 10;
-	radius = 10.0f;
-	limitTimer = 3 * SECOND;
-	activate = false;
-	state = true;
-	scale = Vector3( 0.05f,0.05f,0.05f );
-	leanpower = 0;
-	angle.y = characterManager->GetAngle(playerNum);
+	activate	=	true;
+	state		=	true;
+	scale		=	Vector3( 0.05f,0.05f,0.05f );
+	leanpower	=	0;
+	angle.y		=	characterManager->GetAngle(playerNum);
+//	judgeTimer	=	BULLET_JUDGETIMER	[	BULLET_TYPE::THIEF_01	];
+	radius		=	BULLET_RADIUS		[	BULLET_TYPE::THIEF_01	];
+	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::THIEF_01	];
 
 	return true;
 }
@@ -37,8 +38,8 @@ void	Thief_Bullet01::Update(void)
 	//	“®ì
 	Move();
 
-	if (judgeTimer > 0)	judgeTimer--;
-	else							activate = true;
+//	if (judgeTimer > 0)	judgeTimer--;
+//	else							activate = true;
 
 	limitTimer--;
 
@@ -141,20 +142,6 @@ void Thief_Bullet01::Wait()
 			step = STEP::TARGETING;
 		}
 	}
-
-
-	//if (cross.y < 0)
-	//{
-	//	if (frontDot > backDot) angle.y -= 0.1f;
-	//	else angle.y += 0.05f;
-	//}
-	//else
-	//{
-	//	if (frontDot > backDot) angle.y += 0.1f;
-	//	else angle.y -= 0.1f;
-	//}
-
-	//if (liveTime >= 50) step = STEP::TARGETING;
 }
 
 void Thief_Bullet01::Targeting()

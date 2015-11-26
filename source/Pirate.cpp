@@ -3,15 +3,13 @@
 #include	"GlobalFunction.h"
 #include	"Collision.h"
 #include	"Particle.h"
-#include	"Thief.h"
-#include	"Coin.h"
-#include	"CoinManager.h"
+#include	"Pirate.h"
 #include	"GameManager.h"
 #include	"BulletManager.h"
 
 //*********************************************************************************
 //
-//	Thiefクラス
+//	Princessクラス
 //
 //*********************************************************************************
 
@@ -34,32 +32,35 @@ namespace
 //-----------------------------------------------------------------------------------
 
 //	コンストラクタ
-Thief::Thief(void) : BaseChara()
+Pirate::Pirate(void) : BaseChara()
 {
 	//	パラメータ初期化
+	power = 2;/*仮*/
 	speed = 0.25f;
 	scale = 0.02f;
 	diffence = -1;
-	stayTime = 0;
-	absorb_length = DEFAULT_ABSORB_LENGTH;
 	isGround = true;
 }
 
 //	デストラクタ
-Thief::~Thief(void)
+Pirate::~Pirate(void)
 {
 
 }
 
 //	初期化
-bool	Thief::Initialize(int playerNum, Vector3 pos)
+bool	Pirate::Initialize(int playerNum, Vector3 pos)
 {
 	//	親の初期化
 	BaseChara::Initialize(playerNum, pos);
 
 	//	モデル読み込み
 	if (obj == nullptr)
-		obj = new iex3DObj("DATA/CHR/Knight/Knight_Dammy.IEM");
+		obj = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
+
+	//	スケール設定
+	obj->SetScale(0.02f);
+	obj->Update();
 
 	if (obj == nullptr)	return	false;
 	return	true;
@@ -70,7 +71,7 @@ bool	Thief::Initialize(int playerNum, Vector3 pos)
 //-----------------------------------------------------------------------------------
 
 //	描画
-void	Thief::Render(iexShader* shader, LPSTR technique)
+void	Pirate::Render(iexShader* shader, LPSTR technique)
 {
 	BaseChara::Render(shader, technique);
 
@@ -86,7 +87,7 @@ void	Thief::Render(iexShader* shader, LPSTR technique)
 	Vector3	stringPos;
 	WorldToClient(pos, stringPos, matView* matProjection);
 	stringPos.y -= 150.0f;
-	sprintf_s(str, "怪\n盗\n↓");
+	sprintf_s(str, "海\n賊\n↓");
 	DrawString(str, (int)stringPos.x, (int)stringPos.y);
 }
 
@@ -95,34 +96,25 @@ void	Thief::Render(iexShader* shader, LPSTR technique)
 //-----------------------------------------------------------------------------------
 
 //	クイックアーツ
-bool	Thief::QuickArts(void)
+bool	Pirate::QuickArts(void)
 {
 	static int time = 0;
 
 	//	行列から情報取得
-	Vector3	up = GetUp();
-	Vector3	right = GetRight();
+	Vector3	front = GetFront();
+	front.Normalize();
 	Vector3	p_pos = GetPos();
 	SetMove(Vector3(0.0f, move.y, 0.0f));
+	Vector3 vec = front;
 
-	//	情報設定
-	Vector3	vec[3] =
-	{
-		up * 5.0f + right * 3.0f,
-		up * 5.0f,
-		up * 5.0f + right * -3.0f
-	};
-	p_pos.y += 3.0f;
+	p_pos.y += 1.0f;
 	float	 bulletSpeed = 0.5f;
 	int leanpower = 30;
 	int playerNum = GetPlayerNum();
 
 	if (time == 0)
 	{
-		for (int i = 0; i < 3; i++)
-		{
-			m_BulletManager->Set(BULLET_TYPE::THIEF_01 , new Thief_Bullet01, p_pos, vec[i], bulletSpeed, playerNum);
-		}
+		m_BulletManager->Set(BULLET_TYPE::PIRATE_01, new Pirate_Bullet01, p_pos, vec, bulletSpeed, playerNum);
 	}
 	time++;
 
@@ -136,92 +128,64 @@ bool	Thief::QuickArts(void)
 }
 
 //	パワーアーツ
-bool	Thief::PowerArts(void)
+bool	Pirate::PowerArts(void)
 {
-	static int time = 0;
-
-	//	行列から情報取得
-	Vector3	front = GetFront();
+	power = POWER;
 	Vector3	p_pos = GetPos();
-	SetMove(Vector3(0.0f, move.y, 0.0f));
+	attackInfo.pos = Vector3(p_pos.x, p_pos.y + 1.5f, p_pos.z);
+	SetMove(Vector3(0.0f, 0.0f, 0.0f));
 
-	//	情報設定
-	p_pos.y += 1.0f;
-	Vector3	vec = front * 1.0f;
+	//	範囲拡大
+	Lerp(attackInfo.r, 0.0f, 3.0f, attackInfo.t);
 
-	float	 bulletSpeed = 0.8f;
-	int leanpower = 30;
-	int playerNum = GetPlayerNum();
+	//	パラメータ加算
+	attackInfo.t += 0.02f;
 
-	if (time == 0)
-	{
-		m_BulletManager->Set(BULLET_TYPE::THIEF_02, new Thief_Bullet02, p_pos, vec, bulletSpeed, playerNum);
-	}
-		time++;
+	//	無敵状態
+	if (attackInfo.t <= 0.5f)		unrivaled = true;
+	else									unrivaled = false;
 
-		if (time >= 1 * SECOND)
-		{
-			time = 0;
-			return true;
-		}
+	if (attackInfo.t >= 1.0f)	return	true;
 	return	false;
 }
 
 //	ハイパーアーツ
-bool	Thief::HyperArts(void)
+bool	Pirate::HyperArts(void)
 {
 	power = HYPER;
-	unrivaled = true;
-	move = Vector3(0, 0 - GRAVITY, 0);	//撃ってる間は静止させる
 
-	static int time = 0;
-
-	//	行列から情報取得
-	Vector3	front = GetFront();
-	Vector3	right = GetRight();
+	static	int		num = 0;	//	回数
+	SetMove(Vector3(0.0f, 0.0f, 0.0f));
 	Vector3	p_pos = GetPos();
-	SetMove(Vector3(0.0f, move.y, 0.0f));
+	attackInfo.pos = Vector3(p_pos.x, p_pos.y + 1.5f, p_pos.z);
 
-	//	情報設定
-	Vector3	vec[5] =
-	{
-		front * 5.0f + right * 8.0f,
-		front * 5.0f + right * 3.0f,
-		front * 5.0f,
-		front * 5.0f + right * -3.0f,
-		front * 5.0f + right * -8.0f
-	};
-	Vector3 b_angle[5] =
-	{
-		{ 0, angle + GetAngle(vec[0], front), 0 },
-		{ 0, angle + GetAngle(vec[1], front), 0 },
-		{ 0, angle, 0 },
-		{ 0, angle - GetAngle(vec[3], front), 0 },
-		{ 0, angle - GetAngle(vec[4], front), 0 }
-	};
-	float	 bulletSpeed = 0.5f;
-	int playerNum = GetPlayerNum();
+	//	範囲拡大
+	float t = GetBezier(ePrm_t::eSlow_Lv4, ePrm_t::eRapid_Lv1, attackInfo.t);
+	Lerp(attackInfo.r, 0.0f, 50.0f, t);
 
-	if (time == 0)
+	//	パラメータ加算
+	attackInfo.t += 0.02f;
+
+	if (attackInfo.t >= 1.0f)
 	{
-		for (int i = 0; i < 5; i++)
+		switch (num)
 		{
-			m_BulletManager->Set(BULLET_TYPE::THIEF_03, new Thief_Bullet03, p_pos, vec[i], b_angle[i],  bulletSpeed, playerNum);
-		}
-	}
-	time++;
+		case 0:
+			num++;
+			attackInfo.t = 0.0f;
+			break;
 
-	if (time >= 150)
-	{
-		time = 0;
-		return true;
+		case 1:
+			num = 0;
+			return	true;
+			break;
+		}
 	}
 	return	false;
 }
 
-
 //	モーション管理
-void	Thief::MotionManagement(int motion)
+void	Pirate::MotionManagement(int motion)
 {
 	switch (motion)
 	{
@@ -234,11 +198,11 @@ void	Thief::MotionManagement(int motion)
 		break;
 
 	case MOTION_NUM::JUMP:
-		obj->SetMotion(MOTION_DATA::POSTURE);
+		obj->SetMotion(MOTION_DATA::JUMP);
 		break;
 
 	case MOTION_NUM::GUARD:
-		obj->SetMotion(MOTION_DATA::POSTURE);
+		obj->SetMotion(MOTION_DATA::GUARD);
 		break;
 
 	case MOTION_NUM::LANDING:
@@ -246,19 +210,19 @@ void	Thief::MotionManagement(int motion)
 		break;
 
 	case MOTION_NUM::RUN:
-		obj->SetMotion(MOTION_DATA::POSTURE);
+		obj->SetMotion(MOTION_DATA::RUN);
 		break;
 
 	case MOTION_NUM::ATTACK1:
-		obj->SetMotion(MOTION_DATA::POSTURE);
+		obj->SetMotion(MOTION_DATA::ATTACK1);
 		break;
 
 	case MOTION_NUM::ATTACK2:
-		obj->SetMotion(MOTION_DATA::POSTURE);
+		obj->SetMotion(MOTION_DATA::ATTACK2);
 		break;
 
 	case MOTION_NUM::ATTACK3:
-		obj->SetMotion(MOTION_DATA::POSTURE);
+		obj->SetMotion(MOTION_DATA::ATTACK3);
 		break;
 	}
 }
@@ -268,7 +232,7 @@ void	Thief::MotionManagement(int motion)
 //-----------------------------------------------------------------------------------
 
 //	攻撃用パラメータ設定
-void	Thief::SetAttackParam(int attackKind)
+void	Pirate::SetAttackParam(int attackKind)
 {
 	switch (attackKind)
 	{

@@ -110,6 +110,9 @@
   <ItemGroup>
     <ClCompile Include="source\BaseChara.cpp" />
     <ClCompile Include="source\BaseBullet.cpp" />
+    <ClCompile Include="source\Pirate.cpp" />
+    <ClCompile Include="source\Pirate_Bullet01.cpp" />
+    <ClCompile Include="source\Pirate_CPU.cpp" />
     <ClCompile Include="source\Squirrel_Bullet01.cpp" />
     <ClCompile Include="source\StageManager.cpp" />
     <ClCompile Include="source\Thief_Bullet01.cpp" />
@@ -177,6 +180,9 @@
   <ItemGroup>
     <ClInclude Include="source\BaseChara.h" />
     <ClInclude Include="source\BaseBullet.h" />
+    <ClInclude Include="source\Pirate.h" />
+    <ClInclude Include="source\Pirate_Bullet01.h" />
+    <ClInclude Include="source\Pirate_CPU.h" />
     <ClInclude Include="source\Squirrel_Bullet01.h" />
     <ClInclude Include="source\StageManager.h" />
     <ClInclude Include="source\Thief_Bullet04.h" />

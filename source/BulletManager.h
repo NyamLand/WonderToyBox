@@ -2,26 +2,70 @@
 #ifndef		__BULLET_MANAGER_H__
 #define		__BULLET_MANAGER_H__
 
+#include	"GameManager.h"
 #include	"BaseBullet.h"
 #include	"Squirrel_Bullet01.h"
 #include	"Thief_Bullet01.h"
 #include	"Thief_Bullet02.h"
 #include	"Thief_Bullet03.h"
 #include	"Thief_Bullet04.h"
+#include	"Pirate_Bullet01.h"
 //******************************************************************************
 //
 //	BulletManagerクラス
 //
 //******************************************************************************
-namespace BULLET_MODEL
+namespace BULLET_TYPE
 {
 	enum
 	{
-		SQUIRREL = 0,
-		THIEF_01 = 1,
-		THIEF_02 = 2,
-		THIEF_03 = 3,
-		THIEF_04 = 4
+		SQUIRREL_01 = 0,
+		THIEF_01,
+		THIEF_02,
+		THIEF_03,
+		THIEF_04,
+		PIRATE_01
+	};
+}
+
+namespace
+{
+	//------------------------------------------------
+	//判定有効時間や消滅時間が特に決まっていない場合は
+	//とりあえず100秒にしておきます
+	//-------------------------------------------------
+
+	////判定有効時間
+	//int BULLET_JUDGETIMER[] =
+	//{
+	//	100 * SECOND,		//リス1
+	//	100 * SECOND,		//怪盗1
+	//	100 * SECOND,		//怪盗2
+	//	100 * SECOND,		//怪盗3のアーム
+	//	100 * SECOND,		//怪盗3の手部分
+	//	100 * SECOND			//海賊1
+	//};
+
+	//消滅するまでの時間
+	int BULLET_LIMITTIMER[] =
+	{
+		10 * SECOND,		//リス1
+		3  * SECOND,		//怪盗1
+		10 * SECOND,		//怪盗2
+		10 * SECOND,		//怪盗3のアーム
+		10 * SECOND,		//怪盗3の手部分
+		3  * SECOND,		//海賊1
+	};
+
+	//あたり判定が円状でないものに関してはNULL
+	const float BULLET_RADIUS[] =
+	{
+		10.0f,		//リス1
+		10.0f,		//怪盗1
+		10.0f,		//怪盗2
+		NULL,		//怪盗3のアーム
+		100.0f,		//怪盗3の手部分
+		10.0f		//海賊1
 	};
 }
 

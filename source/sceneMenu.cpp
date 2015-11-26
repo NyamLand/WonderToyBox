@@ -100,28 +100,33 @@
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Knight/Knight_Dammy.IEM" ) );		//	ë|èúâÆ
 		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Y2009/Y2009.IEM" ) );					//	ïP
 		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>(LPSTR("DATA/CHR/SQUIRREL/SQUIRREL.IEM"));		//	ÉäÉX
-		org[CHARACTER_TYPE::TIGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/ECCMAN/ECCMAN.IEM" ) );				//	ÉgÉâ
+		//org[CHARACTER_TYPE::TIGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/ECCMAN/ECCMAN.IEM" ) );				//	ÉgÉâ
+		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>(LPSTR("DATA/CHR/ECCMAN/ECCMAN.IEM"));				//	äCëØ
 
 		//	ÉIÉäÉWÉiÉãÉÇÉfÉãèÓïÒèâä˙âª
 		org[CHARACTER_TYPE::SCAVENGER]->SetScale( 0.05f );	//	ë|èúâÆ
 		org[CHARACTER_TYPE::PRINCESS]->SetScale( 0.02f );		//	ïP
 		org[CHARACTER_TYPE::THIEF]->SetScale(0.04f);		//	ÉäÉX
-		org[CHARACTER_TYPE::TIGER]->SetScale( 0.02f );			//	ÉgÉâ
+		//org[CHARACTER_TYPE::TIGER]->SetScale( 0.02f );			//	ÉgÉâ
+		org[CHARACTER_TYPE::PIRATE]->SetScale(0.02f);			//	äCëØ
 
 		org[CHARACTER_TYPE::SCAVENGER]->SetAngle( D3DX_PI );	//	ë|èúâÆ
 		org[CHARACTER_TYPE::PRINCESS]->SetAngle( D3DX_PI );	//	ïP
 		org[CHARACTER_TYPE::THIEF]->SetAngle( D3DX_PI );	//	ÉäÉX
-		org[CHARACTER_TYPE::TIGER]->SetAngle( D3DX_PI );			//	ÉgÉâ
+		//org[CHARACTER_TYPE::TIGER]->SetAngle( D3DX_PI );			//	ÉgÉâ
+		org[CHARACTER_TYPE::PIRATE]->SetAngle(D3DX_PI);			//	äCëØ
 
 		org[CHARACTER_TYPE::SCAVENGER]->SetMotion( 2 );	//	ë|èúâÆ
 		org[CHARACTER_TYPE::PRINCESS]->SetMotion( 1 );		//	ïP
 		org[CHARACTER_TYPE::THIEF]->SetMotion( 0 );		//	ÉäÉX
-		org[CHARACTER_TYPE::TIGER]->SetMotion( 0 );			//	ÉgÉâ
+		//org[CHARACTER_TYPE::TIGER]->SetMotion( 0 );			//	ÉgÉâ
+		org[CHARACTER_TYPE::PIRATE]->SetMotion(0);			//	äCëØ
 
 		org[CHARACTER_TYPE::SCAVENGER]->Update();	//	ë|èúâÆ
 		org[CHARACTER_TYPE::PRINCESS]->Update();		//	ïP
 		org[CHARACTER_TYPE::THIEF ]->Update();		//	ÉäÉX
-		org[CHARACTER_TYPE::TIGER]->Update();			//	ÉgÉâ
+		//org[CHARACTER_TYPE::TIGER]->Update();			//	ÉgÉâ
+		org[CHARACTER_TYPE::PIRATE]->Update();			//	äCëØ
 
 		deskStage = make_unique<iexMesh>( LPSTR( "DATA/BG/stage-desk/stage.IMO" ) );
 		forestStage = make_unique<iexMesh>( LPSTR( "DATA/BG/Forest/model/forest.IMO" ) );

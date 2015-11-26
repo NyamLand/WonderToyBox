@@ -7,6 +7,7 @@
 #include	"Coin.h"
 #include	"CoinManager.h"
 #include	"GameManager.h"
+#include	"Camera.h"
 
 //*********************************************************************************
 //
@@ -17,6 +18,7 @@
 //-----------------------------------------------------------------------------------
 //	グローバル
 //-----------------------------------------------------------------------------------
+#define	MIN_INPUT_STATE	300	//	スティック判定最小値
 
 namespace
 {
@@ -100,8 +102,14 @@ void	Scavenger::Render(iexShader* shader, LPSTR technique)
 
 //	クイックアーツ
 bool	Scavenger::QuickArts(void)
+
 {
 	power = QUICK;
+	////平行移動
+	ShiftMove();
+
+	//その場回転
+	//RollAngle();
 
 	//無敵判定を切らないとそもそもコインを集められないので無敵切ってます。
 	//問題なら言ってください
@@ -244,7 +252,64 @@ bool	Scavenger::HyperArts( void )
 
 	return	false;
 }
+void	Scavenger::ShiftMove(void)
+{
+	//	左スティックの入力チェック
+	float	axisX = (float)input->Get(KEY_AXISX);
+	float	axisY = (float)input->Get(KEY_AXISY);
+	float	length = sqrtf(axisX * axisX + axisY * axisY);
 
+	//	カメラの前方方向を求める
+	Vector3	vEye(mainView->GetTarget() - mainView->GetPos());
+	float	cameraAngle = atan2f(vEye.x, vEye.z);
+
+	//	入力方向を求める
+	float inputAngle = atan2f(axisX, axisY);
+
+	//	目標の角度を求める
+	float	targetAngle = cameraAngle + inputAngle;
+
+	Vector3 direction = Vector3(sinf(targetAngle), 0.0f, cosf(targetAngle));
+
+	moveVec = atan2f(direction.x, direction.z);
+
+	if (length > MIN_INPUT_STATE)
+	{
+		if (!slip.state)
+		{
+			move.x = sinf(moveVec) * speed / 4;
+			move.z = -cosf(moveVec) * speed / 4;
+		}
+		else
+		{
+			if (move.Length() < speed)
+			{
+				move.x += sinf(moveVec) * slipInfo.speed / 4;
+				move.z += cosf(moveVec) * slipInfo.speed / 4;
+			}
+		}
+	}
+	else
+	{
+		SetDrag(0.8f);
+	}
+}
+
+
+void	Scavenger::RollAngle(void)
+{
+	//	入力方向を求める
+	float	axisX = (float)input->Get(KEY_AXISX);
+
+	if (axisX > 0)
+	{
+		angle += 0.02f;
+	}
+	if (axisX < 0)
+	{
+		angle -= 0.02f;
+	}
+}
 //	モーション管理
 void	Scavenger::MotionManagement(int motion)
 {

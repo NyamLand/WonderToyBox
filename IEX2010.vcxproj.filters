@@ -169,6 +169,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
+    <Filter Include="ソース ファイル\Character\Pirate">
+      <UniqueIdentifier>{65c1b651-e688-4958-951f-2d6f9306f124}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Bullet\Pirate_Bullet01">
+      <UniqueIdentifier>{1ef33839-09d0-4665-b5a2-60d54b9e0e39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Character\CPU\Pirate">
+      <UniqueIdentifier>{8c8922ea-b73d-4438-886e-4ed68fbe9e8b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -366,6 +375,15 @@
     <ClCompile Include="source\StageManager.cpp">
       <Filter>ソース ファイル\StageManager</Filter>
     </ClCompile>
+    <ClCompile Include="source\Pirate.cpp">
+      <Filter>ソース ファイル\Character\Pirate</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pirate_Bullet01.cpp">
+      <Filter>ソース ファイル\Bullet\Pirate_Bullet01</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pirate_CPU.cpp">
+      <Filter>ソース ファイル\Character\CPU\Pirate</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -517,6 +535,15 @@
     </ClInclude>
     <ClInclude Include="source\StageManager.h">
       <Filter>ソース ファイル\StageManager</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Pirate.h">
+      <Filter>ソース ファイル\Character\Pirate</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Pirate_Bullet01.h">
+      <Filter>ソース ファイル\Bullet\Pirate_Bullet01</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Pirate_CPU.h">
+      <Filter>ソース ファイル\Character\CPU\Pirate</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

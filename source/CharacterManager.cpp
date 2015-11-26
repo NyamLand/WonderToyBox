@@ -62,9 +62,14 @@
 			else					character[playerNum] = new Thief_CPU();
 			break;
 
-		case CHARACTER_TYPE::TIGER:
-			if ( isPlayer )		character[playerNum] = new Tiger();
-			else					character[playerNum] = new Tiger_CPU();
+		//case CHARACTER_TYPE::TIGER:
+		//	if ( isPlayer )		character[playerNum] = new Tiger();
+		//	else					character[playerNum] = new Tiger_CPU();
+		//	break;
+
+		case CHARACTER_TYPE::PIRATE:
+			if ( isPlayer )		character[playerNum] = new Pirate();
+			else					character[playerNum] = new Pirate_CPU();
 			break;
 		}
 
@@ -532,6 +537,12 @@
 	void        CharacterManager::SetRank(int player, int rank)
 	{
 		character[player]->SetRank(rank);
+	}
+
+	//	ノックバック力設定
+	void		CharacterManager::SetForce(int player, float force)
+	{
+		character[player]->SetForce(force);
 	}
 
 	//ノックバック情報設定

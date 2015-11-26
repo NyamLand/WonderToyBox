@@ -129,7 +129,7 @@
 		static float bulletSpeed = 0.5f;
 		int playerNum = GetPlayerNum();
 
-		if (time == 0)m_BulletManager->Set(BULLET_MODEL::SQUIRREL, new Squirrel_Bullet01, p_pos, vec, bulletSpeed, playerNum);
+		if (time == 0)m_BulletManager->Set(BULLET_TYPE::SQUIRREL_01, new Squirrel_Bullet01, p_pos, vec, bulletSpeed, playerNum);
 		time++;
 
 		if ( time >= 60 )
@@ -168,7 +168,7 @@
 		{
 			for ( int i = 0; i < 3; i++ )
 			{
-				//m_BulletManager->Set(BULLET_MODEL::SQUIRREL, new Squirrel_Bullet01, p_pos, vec[i], bulletSpeed, leanpower);
+				//m_BulletManager->Set(BULLET_TYPE::SQUIRREL, new Squirrel_Bullet01, p_pos, vec[i], bulletSpeed, leanpower);
 			}
 		}
 		time++;
@@ -218,7 +218,7 @@
 
 		case 1:
 			angleParam += 0.1f;
-			//if (time % 16 == 0) m_BulletManager->Set(BULLET_MODEL::SQUIRREL, new Squirrel_Bullet01, p_pos, vec /*bulletScale, bulletSpeed*/);
+			//if (time % 16 == 0) m_BulletManager->Set(BULLET_TYPE::SQUIRREL, new Squirrel_Bullet01, p_pos, vec /*bulletScale, bulletSpeed*/);
 			time++;
 			if ( time > 16 * 4 - 1 ) step++;
 			break;
@@ -237,6 +237,8 @@
 		return	false;
 	}
 
+
+	
 	//	ƒ‚[ƒVƒ‡ƒ“ŠÇ—
 	void	Squirrel::MotionManagement(int motion)
 	{

@@ -8,6 +8,7 @@
 #include	"Particle.h"
 #include	"CoinManager.h"
 #include	"BaseBullet.h"
+#include	"BulletManager.h"
 #include	"Squirrel_Bullet01.h"
 
 Squirrel_Bullet01::Squirrel_Bullet01()
@@ -17,13 +18,13 @@ Squirrel_Bullet01::Squirrel_Bullet01()
 
 bool Squirrel_Bullet01::Initialize()
 {
-	judgeTimer = 10; 
-	radius = 10.0f;
-	limitTimer = 0;
-	activate = false;
-	state = true;
-	scale = Vector3(0.05f,0.05f,0.05f);
-	leanpower = 0;
+	activate	=	false;
+	state		=	true;
+	scale		=	Vector3(0.05f,0.05f,0.05f);
+	leanpower	=	0;
+//	judgeTimer	=	BULLET_JUDGETIMER	[	BULLET_TYPE::SQUIRREL_01	]; 
+	radius		=	BULLET_RADIUS		[	BULLET_TYPE::SQUIRREL_01	];
+	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::SQUIRREL_01	];
 	return true;
 }
 
@@ -32,8 +33,8 @@ void	Squirrel_Bullet01::Update(void)
 	//	“®ì
 	Move();
 
-	if (judgeTimer > 0)	judgeTimer--;
-	else							activate = true;
+//	if (judgeTimer > 0)	judgeTimer--;
+//	else							activate = true;
 
 	limitTimer++;
 

@@ -1,10 +1,10 @@
 
-#ifndef __SCAVENGER_H__
-#define	__SCAVENGER_H__
+#ifndef __PIRATE_H__
+#define	__PIRATE_H__
 
 //*********************************************************************************
 //
-//	Scavengerクラス
+//	Princessクラス
 //
 //*********************************************************************************
 
@@ -12,7 +12,7 @@
 #include	"BaseChara.h"
 
 //	class
-class Scavenger : public		BaseChara
+class Pirate : public		BaseChara
 {
 private:
 	enum MOTION_DATA
@@ -26,17 +26,14 @@ private:
 		JUMP,
 		GUARD,
 	};
-	const float DEFAULT_ABSORB_LENGTH = 3.0f;
 
 private:
-	int		stayTime;	//技関連の硬直経過時間
-	float	absorb_length;		//コインを吸い込める距離
 	void	MotionManagement(int motion)override;
 
 public:
 	//	初期化・解放
-	Scavenger(void);
-	~Scavenger(void);
+	Pirate(void);
+	~Pirate(void);
 	bool	Initialize(int playerNum, Vector3 pos)override;
 
 	//	更新・描画
@@ -47,12 +44,9 @@ public:
 	bool	PowerArts(void)override;
 	bool	HyperArts(void)override;
 
-	void	ShiftMove(void);
-	void	RollAngle(void);
-
 	//	情報設定
 	void	SetAttackParam(int attackKind)override;
 };
 
 //*********************************************************************************
-#endif // !__MAID_H__
+#endif // !__PRINCESS_H__

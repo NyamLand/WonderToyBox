@@ -9,6 +9,7 @@
 #include	"CoinManager.h"
 #include	"CharacterManager.h"
 #include	"BaseBullet.h"
+#include	"BulletManager.h"
 #include	"Thief_Bullet02.h"
 
 Thief_Bullet02::Thief_Bullet02() : holdCoinNum(0), range(0)
@@ -17,14 +18,14 @@ Thief_Bullet02::Thief_Bullet02() : holdCoinNum(0), range(0)
 
 bool Thief_Bullet02::Initialize()
 {
-	judgeTimer = 10000;
-	radius = 10.0f;
-	limitTimer = 10000 * SECOND;
-	activate = false;
-	state = true;
-	scale = Vector3(0.05f,0.05f,0.05f);
-	leanpower = 0;
-	range = 0.97f;
+	activate	=	true;
+	state		=	true;
+	scale		=	Vector3(0.05f,0.05f,0.05f);
+	leanpower	=	0;
+	range		=	0.97f;
+//	judgeTimer	=	BULLET_JUDGETIMER	[	BULLET_TYPE::THIEF_02	]	;
+	radius		=	BULLET_RADIUS		[	BULLET_TYPE::THIEF_02	];
+	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::THIEF_02	];
 	return true;
 }
 
@@ -34,8 +35,8 @@ void	Thief_Bullet02::Update(void)
 	CollectCoin();
 	Move();
 
-	if (judgeTimer > 0)	judgeTimer--;
-	else							activate = true;
+//	if (judgeTimer > 0)	judgeTimer--;
+//	else							activate = true;
 
 	limitTimer--;
 

@@ -40,12 +40,13 @@
 	//	èâä˙âª
 	bool	BulletManager::Initialize( void )
 	{
-		org[BULLET_MODEL::SQUIRREL] = new iexMesh("DATA/BG/Bullet/bulletEx.imo");
-		org[BULLET_MODEL::THIEF_01] = new iexMesh("DATA/Effect/kq_tramp/tramp.imo");
-		org[BULLET_MODEL::THIEF_02] = new iexMesh("DATA/Effect/kq_hat/hat.imo");
-		org[BULLET_MODEL::THIEF_03] = new iexMesh("DATA/Effect/kq_hand(âº)/arm.imo");
-		//org[BULLET_MODEL::THIEF_03] = new iexMesh("DATA/Effect/kq_arm/kq_arm.imo");
-		org[BULLET_MODEL::THIEF_04] = new iexMesh("DATA/Effect/kq_hand(âº)/hand.imo");
+		org[BULLET_TYPE::SQUIRREL_01] = new iexMesh("DATA/BG/Bullet/bulletEx.imo");
+		org[BULLET_TYPE::THIEF_01] = new iexMesh("DATA/Effect/kq_tramp/tramp.imo");
+		org[BULLET_TYPE::THIEF_02] = new iexMesh("DATA/Effect/kq_hat/k_arm.imo");
+		org[BULLET_TYPE::THIEF_03] = new iexMesh("DATA/Effect/k_arm/k_arm2.imo");
+		//org[BULLET_TYPE::THIEF_03] = new iexMesh("DATA/Effect/kq_arm/kq_arm.imo");
+		org[BULLET_TYPE::THIEF_04] = new iexMesh("DATA/Effect/kq_hand(âº)/hand.imo");
+		org[BULLET_TYPE::PIRATE_01] = new iexMesh("DATA/BG/Bullet/bulletEx.imo");
 		bullet_num = 0;
 
 		for ( int i = 0; i < BULLET_MAX; i++ )

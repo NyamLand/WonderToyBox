@@ -15,12 +15,15 @@
 #include	"Squirrel.h"
 #include	"Scavenger.h"
 #include	"Thief.h"
+#include	"Pirate.h"
+
 #include	"Tiger_CPU.h"
 #include	"Knight_CPU.h"
 #include	"Princess_CPU.h"
 #include	"Squirrel_CPU.h"
 #include	"Scavenger_CPU.h"
 #include	"Thief_CPU.h"
+#include	"Pirate_CPU.h"
 
 //	class
 class CharacterManager
@@ -90,6 +93,7 @@ public:
 	void		SetPassColor( int player, Vector3 color );
 	void		SetParameterInfo( int player, int parameterInfo );
 	void		SetRank(int player, int rank);
+	void		SetForce(int player, float force);
 	void		SetKnockBackParam(BaseChara* bc1, BaseChara* bc2);
 };
 

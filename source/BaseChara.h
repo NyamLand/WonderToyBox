@@ -67,7 +67,8 @@ namespace
 			PRINCESS,	//	姫
 			//SQUIRREL,	//	リス
 			THIEF,		//　怪盗
-			TIGER,			//	トラ
+			//TIGER,			//	トラ
+			PIRATE,
 			MAX,
 		};
 	}
@@ -97,8 +98,10 @@ namespace
 			//"ナイト",
 			"掃除屋"
 			"プリンセス",
-			"リス",
-			"とら",
+			//"リス",
+			//"とら",
+			"怪盗",
+			"海賊"
 		};
 	}
 }
