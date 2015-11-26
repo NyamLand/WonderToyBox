@@ -29,6 +29,7 @@ private:
 	struct SORT_INFO
 	{
 		int		coin;
+		int		sortRank;
 		int		rank;
 	};
 
