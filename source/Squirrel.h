@@ -45,6 +45,7 @@ public:
 	bool	PowerArts( void )override;
 	bool	HyperArts( void )override;
 
+
 	//	î•ñİ’è
 	void	SetAttackParam( int attackKind )override;
 };

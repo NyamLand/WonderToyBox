@@ -9,6 +9,7 @@
 #include	"CoinManager.h"
 #include	"CharacterManager.h"
 #include	"BaseBullet.h"
+#include	"BulletManager.h"
 #include	"Thief_Bullet04.h"
 
 Thief_Bullet04::Thief_Bullet04() :holdCoinNum(0), growSpeed(0.0f), checkMax(false), checkMin(false)
@@ -16,25 +17,18 @@ Thief_Bullet04::Thief_Bullet04() :holdCoinNum(0), growSpeed(0.0f), checkMax(fals
 	for (int i = 0; i < PLAYER_MAX; i++)
 	{
 		isPlayerCheck[i] = false;
-
-		//撃ったプレイヤーに対してはあたり判定をなくすために
-		//既に当たったものとします
-		if (i == playerNum)
-		{
-			isPlayerCheck[i] == true;
-		}
 	}
 }
 
 bool Thief_Bullet04::Initialize()
 {
-	judgeTimer = 10000;
-	radius = 100.0f;
-	limitTimer = 10 * SECOND;
-	activate = true;
-	state = true;
-	scale = Vector3(0.03f, 0.03f, 0.03f);
-	leanpower = 0;
+	activate	=	true;
+	state		=	true;
+	scale		=	Vector3(0.03f, 0.03f, 0.03f);
+	leanpower	=	0;
+//	judgeTimer	=	BULLET_JUDGETIMER	[	BULLET_TYPE::THIEF_04	];
+	radius		=	BULLET_RADIUS		[	BULLET_TYPE::THIEF_04	];
+	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::THIEF_04	];
 	return true;
 }
 
@@ -43,8 +37,8 @@ void	Thief_Bullet04::Update(void)
 	//	動作
 	Move();
 
-	if (judgeTimer > 0)	judgeTimer--;
-	else							activate = true;
+//	if (judgeTimer > 0)	judgeTimer--;
+//	else							activate = true;
 
 	limitTimer--;
 
@@ -99,6 +93,7 @@ bool	Thief_Bullet04::PlayerCollisionCheck(void)
 {
 	for (int i = 0; i < 4; i++)
 	{
+		if (i == playerNum) continue;	//撃ったプレイヤーなら除外
 		if (isPlayerCheck[i]) continue;	//同一のプレイヤーと二度以上触れるの禁止
 		if (!activate)	continue;
 		if (characterManager->GetUnrivaled(i))	continue;
