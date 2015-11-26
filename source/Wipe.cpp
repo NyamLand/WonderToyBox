@@ -193,19 +193,11 @@
 		//	プレイヤーとターゲットの距離を取る
 		v1 = characterManager->GetPos(num) - target;
 		
-		if (num == 3) printf("%f,%f,%f\n", characterManager->GetPos(num).x, characterManager->GetPos(num).y, characterManager->GetPos(num).z);
-
 		Vector3 test;
 		//	距離が離れすぎていないか判定
 		if (LEN_MAX < v1.Length())
 		{
 			v1.Normalize();
-			if (num == 3)
-			{
-				num = num;
-				test = characterManager->GetPos(num);
-				int s = 0;
-			}
 			return target + v1 * LEN_MAX;
 		}
 

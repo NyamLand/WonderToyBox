@@ -132,6 +132,8 @@ bool	Scavenger::QuickArts(void)
 			{
 				( *it )->SetMove( -vec * 0.2f );
 			}
+
+			particle->Suck(this->pos, this->pos + GetFront() * absorb_length, GetRight(), absorb_length, 0.5f);
 		}
 	}
 
@@ -156,6 +158,7 @@ bool	Scavenger::PowerArts( void )
 	Vector3 p_front = Vector3(sinf(this->angle), 0, cosf(this->angle));
 	p_front.Normalize();
 	float speed = 0.5f;
+	
 
 	list<Coin*>	coinList = coinManager->GetList();
 	FOR_LIST( coinList.begin(), coinList.end() )
@@ -181,8 +184,13 @@ bool	Scavenger::PowerArts( void )
 		}
 	}
 
-	if (attackInfo.t < 1.0f) move = p_front * speed;
-
+	if (attackInfo.t < 1.0f)
+	{
+		//	Œã‚ë
+		particle->Dust(this->pos, GetFront()*-1, GetRight(), 0.5f);
+	
+		move = p_front * speed;
+	}
 	//	ƒpƒ‰ƒ[ƒ^‰ÁZ
 	attackInfo.t += 0.03f;
 

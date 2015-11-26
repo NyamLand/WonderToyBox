@@ -223,6 +223,87 @@ namespace
 			pt->Set(ARROW_DOWN, 0, 1.0f, 60, 0.0f, 40, 0.5f, &Pos, &Move, &Power, 1.0f, 1.0f, 1.0f, scale, RS_COPY);
 		}
 	}
+
+	//	吸い込み
+	void	Particle::Suck(const Vector3& pos, const Vector3& target, const Vector3& side, const float& length, const float& scale, const int& time)
+	{
+		Vector3	Pos, Move, Power;
+		timer++;
+		if (timer % time != 0) return;
+		for (int j = 0; j < 1; j++)
+		{
+			Vector3 v1, center, ran_pos;
+			float	t_len;
+
+			//	ターゲットとポジションの中心点をとる
+			v1 = pos - target;
+			t_len = v1.Length();
+			v1.Normalize();
+			center = target + v1 * (t_len / 2);
+
+			//	ランダムで法線用ポジションをとる
+			ran_pos = center + side * (Random::GetFloat(-(t_len / 2) , t_len / 2));
+
+			//	法線を使って最終的発生位置を決める
+			v1 = ran_pos - pos;
+			v1.Normalize();
+			Pos =  pos + v1 * t_len;
+
+			//	向きを逆に
+			Move = -v1;
+
+			Power = Move * (Random::GetFloat(0.0001f, 0.001f));
+
+			//		画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
+			pt->Set(ARROW_DOWN, 0, 1.0f, 1 * (int)length, 1.0f, 0, 1.0f, &Pos, &Move, &Power, 1.0f, 1.0f, 1.0f, scale, RS_COPY);
+		}
+	}
+
+	//	砂埃
+	void	Particle::Dust(const Vector3& pos, const Vector3& back, const Vector3& side, const float& scale, const int& time)
+	{
+		Vector3	Pos, Move, Power;
+		timer++;
+		if (timer % time != 0) return;
+		for (int j = 0; j < 1; j++)
+		{
+			Pos = pos;
+
+
+			Vector3 ideal_pos,ran_pos;
+			
+			//	背後の理想ポジション
+			ideal_pos = pos + back * 1.0f;
+
+			//	ランダムで法線用ポジションをとる
+			ran_pos = ideal_pos + side * (Random::GetFloat(-1.0f, 1.0f));
+			
+			//	法線をセット
+			Move = ran_pos - pos;
+			Move.Normalize();
+
+			Move *= (Random::GetFloat(0.05f, 0.2f));
+
+
+			Power = Move * (Random::GetFloat(0.00001f, 0.0001f)) + Vector3(0.0f, 1.0f, 0.0f) * (Random::GetFloat(0.0001f, 0.001f));
+
+
+			////	法線を使って最終的発生位置を決める
+			//v1 = ran_pos - pos;
+			//v1.Normalize();
+			//Pos = pos + v1 * t_len;
+
+			////	向きを逆に
+			//Move = -v1;
+
+			//Power = Move * (Random::GetFloat(0.0001f, 0.001f));
+
+
+			//		画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
+			pt->Set(ARROW_DOWN, 0, 0.0f, 60, 0.0f, 20, 1.0f, &Pos, &Move, &Power, 1.0f, 1.0f, 1.0f, scale, RS_COPY);
+		}
+	}
+
 //------------------------------------------------------------------------
 //	情報取得
 //------------------------------------------------------------------------
