@@ -280,11 +280,12 @@
 			//	ゲーム終了時のデータを格納( ここでボーナスも設定しておく )
 			originInfo[i].coin = gameManager->GetCoinNum( i );
 			originInfo[i].rank = i;
-			originInfo[i].bonus = Random::GetInt( 0, 100 );
+			originInfo[i].bonus = Random::GetInt( 0, 0 );
 
 			//	ランキング計算用に総計データを格納( ボーナス数値が整い次第、元のコイン枚数にボーナスを足す、ランクはソートにかけるため適当に代入 )
 			sortInfo[i].coin = originInfo[i].coin + originInfo[i].bonus;
 			sortInfo[i].rank = i;
+			sortInfo[i].sortRank = i;
 		}
 	}
 
@@ -670,14 +671,11 @@
 			}
 		}
 
-		////	同枚数は同じランクにする
-		//FOR( 1, PLAYER_MAX )
-		//{
-		//	if ( sortInfo[value].coin == sortInfo[value - 1].coin )
-		//	{
-		//		sortInfo[value].rank = sortInfo[value - 1].rank;
-		//	}
-		//}
+		FOR( 1, PLAYER_MAX )
+		{
+			if ( sortInfo[value].coin == sortInfo[value - 1].coin )
+				sortInfo[value].sortRank = sortInfo[value - 1].sortRank;
+		}
 	}
 
 	//	ラストボーナス設定
@@ -716,7 +714,7 @@
 			{
 				if ( i == sortInfo[n].rank )
 				{
-					originInfo[i].rank = n;
+					originInfo[i].rank = sortInfo[n].sortRank;
 				}
 			}
 		}
@@ -1069,8 +1067,8 @@
 				lastBonusInfo.t = 0.0f;
 				lastBonusInfo.step++;
 			}
-
-		case 5:
+			break;
+		case 4:
 				return	true;
 			break;
 		}
@@ -1081,7 +1079,7 @@
 	bool	sceneResult::InBoard( void )
 	{
 		//	パラメータ更新
-		lastBonusInfo.t += 0.1f;
+		lastBonusInfo.t += 0.07f;
 		if ( lastBonusInfo.t >= 1.0f )	lastBonusInfo.t = 1.0f;
 		
 		//	頂点移動
@@ -1099,7 +1097,7 @@
 	bool	sceneResult::OutBoard( void )
 	{		
 		//	パラメータ更新
-		lastBonusInfo.t += 0.1f;
+		lastBonusInfo.t += 0.07f;
 		if ( lastBonusInfo.t >= 1.0f )	lastBonusInfo.t = 1.0f;
 
 		//	頂点移動
@@ -1124,7 +1122,7 @@
 
 		//	文字回転
 		static	float startAngle = -D3DX_PI * 0.035f;
-		static	float	endAngle = startAngle + ( D3DX_PI * 20.0f );
+		static	float	endAngle = startAngle + ( ( D3DX_PI * 2 ) * 10.0f );
 		Lerp( lastBonusInfo.textImage.angle, startAngle, endAngle, lastBonusInfo.t );
 
 		//	文字サイズ変更
@@ -1250,10 +1248,7 @@
 				SetNumberImageInfo( bonusNumberImageInfo[value], bonusNumber[value], temp[value] );
 			}
 
-			if ( temp[0] + temp[1] + temp[2] + temp[3] == 0 )
-			{
-				addBonusStep++;
-			}
+			if ( temp[0] + temp[1] + temp[2] + temp[3] == 0 )		addBonusStep++;
 			break;
 
 		case	4:
@@ -1275,6 +1270,7 @@
 			break;
 
 		case	5:
+			addBonusStep = 0;
 			return	true;
 			break;
 		}
