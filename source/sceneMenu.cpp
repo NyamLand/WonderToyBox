@@ -872,19 +872,20 @@
 		else{
 			Oimage->Render(950, 150, 256, 128, 256, 128 * 3, 256, 128);
 		}
-
-		OCmax->Render(950,			350, 128, 128,			(optionInfo.coinMAX/100)*64, 128 * 0, 64, 64);
-		OCmax->Render(950+128,		350, 128, 128,	((optionInfo.coinMAX / 10)%10) * 64, 128 * 0, 64, 64);
-		OCmax->Render(950+(128*2),	350, 128, 128,									  0, 128 * 0, 64, 64);
+		//ƒRƒCƒ“MAX‚Ì•`‰æ
+		OCmax->Render(940,			350, 128, 128,			(optionInfo.coinMAX/100)*64, 128 * 0, 64, 64);
+		OCmax->Render(950+80,		350, 128, 128,	((optionInfo.coinMAX / 10)%10) * 64, 128 * 0, 64, 64);
+		OCmax->Render(950+(80*2),	350, 128, 128,									  0, 128 * 0, 64, 64);
 
 		TimerRender();
 	}
 	void	sceneMenu::TimerRender(void)
 	{
-		//Oimage->Render(970, 550, 256, 128, 256, 128 * 1, 256, 128);
-		OCmax->Render(950 , 550, 128, 128, optionInfo.minute*64, 128 * 0, 64, 64);
-		OCmax->Render(950 + 128, 550, 128, 128, ((optionInfo.second / 10) % 10) * 64, 128 * 0, 64, 64);
-		OCmax->Render(950 + (128 * 2), 550, 128, 128, 0, 0, 64, 64);
+		OCmax->Render(930 , 550, 128, 128, optionInfo.minute*64, 64 * 4, 64, 64);
+		OCmax->Render(1140, 550, 128, 128, ((optionInfo.second / 10) % 10) * 64, 64 * 4, 64, 64);
+		OCmax->Render(1220, 550, 128, 128, 0, 64*4, 64, 64);
+		Oimage->Render(1020, 550, 128, 128, 256, 128 * 1, 128, 128);
+		Oimage->Render(1300, 550, 128, 128, 384, 128 * 1, 128, 128);
 
 	}
 //-------------------------------------------------------------------------------
