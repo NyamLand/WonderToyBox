@@ -360,7 +360,7 @@
 	}
 
 	//	ニュースフラグ取得
-	bool	GameManager::GetNewsFlag( void )
+	bool		GameManager::GetNewsFlag( void )
 	{
 		bool	out = newsflag;
 		return	out;
@@ -394,7 +394,7 @@
 	}
 
 	//アイテム有無取得
-	bool	GameManager::GetItemFlg(void)const
+	bool		GameManager::GetItemFlg(void)const
 	{
 		return itemflg;
 	}
@@ -457,6 +457,12 @@
 	int		GameManager::GetHitAttackNum( int player )const
 	{
 		return	hitAttackNum[player];
+	}
+
+	//	コイン総数取得
+	int		GameManager::GetTotalCoinNum( int player )const
+	{
+		return	minCoinNum[player];
 	}
 
 	//	実体取得

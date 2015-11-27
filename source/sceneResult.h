@@ -86,23 +86,23 @@ private:
 	};
 
 private:
-	SORT_INFO					sortInfo[4];
+	SORT_INFO						sortInfo[4];
 	ORIGINAL_INFO				originInfo[4];
-	NUMBER_INFO				number[4];
-	NUMBER_INFO				bonusNumber[4];
+	NUMBER_INFO					number[4];
+	NUMBER_INFO					bonusNumber[4];
 	NUMBERIMAGE_INFO		numberImageInfo[4];
 	NUMBERIMAGE_INFO		bonusNumberImageInfo[4];
-	ROULETTE_INFO			rouletteInfo;
-	MENU_INFO					menuInfo;
+	ROULETTE_INFO				rouletteInfo;
+	MENU_INFO						menuInfo;
 	VIEW_RANK_INORDER	viewRankInOrder;
 	LASTBONUS_INFO			lastBonusInfo;
 
 	//	ラストボーナス計算用
-	SORT_INFO			maxCoinNum;
-	SORT_INFO			fallStageNum;
-	SORT_INFO			coin77;
-	SORT_INFO			minCoinNum;
-	SORT_INFO			hitAttackNum;
+	SORT_INFO						maxCoinNum[4];
+	SORT_INFO						fallStageNum[4];
+	SORT_INFO						coin774[4];
+	SORT_INFO						minCoinNum[4];
+	SORT_INFO						hitAttackNum[4];
 	
 	//	モデル・画像
 	unique_ptr<iex2DObj>	back;
@@ -111,19 +111,19 @@ private:
 	iex2DObj*						originNumber;
 	iex2DObj*						menuText;
 	iex2DObj*						lastBonusText;
-	ImageObj						menuHead;
-	ImageObj						originCoinImage[4];
-	ImageObj						rankImage[4];
-	ImageObj						menuImage[3];
-	ImageObj						playerNumImage;
-	ImageObj						faceImage;
-	ImageObj						waveCircleImage;
+	ImageObj							menuHead;
+	ImageObj							originCoinImage[4];
+	ImageObj							rankImage[4];
+	ImageObj							menuImage[3];
+	ImageObj							playerNumImage;
+	ImageObj							faceImage;
+	ImageObj							waveCircleImage;
 
 	//	変数
 	int		mode;
 	int		step;
 	int		lastBonus;
-	bool	changeScene;
+	bool		changeScene;
 
 public:
 	//	初期化・解放
@@ -154,8 +154,9 @@ public:
 	
 	//	動作関数
 	void	SetLastBonus( void );
+	void	AddLastBonus( void );
 	void	SetBonusPlayer( void );
-	void	Sort( void );
+	void	Sort( SORT_INFO( &sort_info )[4] );
 	bool	Roulette( void );
 	bool	ViewRankInOrder( void );
 	bool	RankWave( void );

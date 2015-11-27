@@ -131,20 +131,26 @@
 		mode = MOVE_MODE::RESULT;
 		changeScene = false;
 
-		//	ラストボーナス設定
-		SetLastBonus();
-
 		//	結果用情報構造体初期化
 		ResultInfoInitialize();
+
+		//	ソートかける
+		Sort( sortInfo );
+		Sort( maxCoinNum );
+		Sort( fallStageNum );
+		Sort( coin774 );
+		Sort( minCoinNum );
+		Sort( hitAttackNum );
+
+		//	ラストボーナス設定
+		SetLastBonus();
+		
+		//	ランキング設定
+		SetRank();
 
 		//	数値構造体初期化
 		NumberImageInfoInitialize();
 
-		//	ソートかける
-		Sort();
-
-		//	ランキング設定
-		SetRank();
 		
 		//	順位画像構造体初期化
 		RankImageInitialize();
@@ -220,7 +226,6 @@
 			waveCircleImage.obj = new iex2DObj( "DATA/UI/Rainbow-circle.png" );
 			waveCircleImage.renderflag = false;
 		
-
 			//	プレイヤー番号初期化
 			x = static_cast<int>( iexSystem::ScreenWidth * 0.45f );
 			y = static_cast<int>( iexSystem::ScreenHeight * 0.52f );
@@ -286,6 +291,23 @@
 			sortInfo[i].num = originInfo[i].num + originInfo[i].bonus;
 			sortInfo[i].rank = i;
 			sortInfo[i].sortRank = i;
+
+			//	ラストボーナスの情報も設定
+			maxCoinNum[i].num = gameManager->GetMaxCoinNum( i );
+			maxCoinNum[i].rank = i;
+			maxCoinNum[i].sortRank = i;
+			fallStageNum[i].num = gameManager->GetFallStageNum( i );
+			fallStageNum[i].rank = i;
+			fallStageNum[i].sortRank = i;
+			coin774[i].num = gameManager->GetSubCoin77( i );
+			coin774[i].rank = i;
+			coin774[i].sortRank = i;
+			minCoinNum[i].num = gameManager->GetTotalCoinNum( i );
+			minCoinNum[i].rank = i;
+			minCoinNum[i].sortRank = i;
+			hitAttackNum[i].num = gameManager->GetHitAttackNum( i );
+			hitAttackNum[i].rank = i;
+			hitAttackNum[i].sortRank = i;
 		}
 	}
 
@@ -646,7 +668,7 @@
 //----------------------------------------------------------------------------
 
 	//	ソート
-	void	sceneResult::Sort( void )
+	void	sceneResult::Sort( SORT_INFO	( &sort_info )[4]  )
 	{
 		//	退避用
 		SORT_INFO temp;
@@ -657,24 +679,24 @@
 			for ( int s = PLAYER_MAX - 1; s > i; --s )
 			{
 				//	一つ下の要素と比較
-				if ( sortInfo[s].num >	sortInfo[s - 1].num )
+				if ( sort_info[s].num >	sort_info[s - 1].num )
 				{
 					//	一時的に退避
-					temp = sortInfo[s - 1];
+					temp = sort_info[s - 1];
 
 					//	交換
-					sortInfo[s - 1] = sortInfo[s];
+					sort_info[s - 1] = sort_info[s];
 
 					//	退避してたやつを戻す
-					sortInfo[s] = temp;
+					sort_info[s] = temp;
 				}
 			}
 		}
 
 		FOR( 1, PLAYER_MAX )
 		{
-			if ( sortInfo[value].num == sortInfo[value - 1].num )
-				sortInfo[value].sortRank = sortInfo[value - 1].sortRank;
+			if ( sort_info[value].num == sort_info[value - 1].num )
+				sort_info[value].sortRank = sort_info[value - 1].sortRank;
 		}
 	}
 
@@ -693,6 +715,41 @@
 			{
 				lastBonus = Random::GetInt( 0, 4 );
 			}
+		}
+	}
+
+	//	ラストボーナス数値加算
+	void	sceneResult::AddLastBonus( void )
+	{
+		switch ( lastBonus )
+		{
+		case 0:
+			//maxCoinNum[0].rank;
+			//fallStageNum[i].num = gameManager->GetFallStageNum(i);
+			//fallStageNum[i].rank = i;
+			//fallStageNum[i].sortRank = i;
+			//coin774[i].num = gameManager->GetSubCoin77(i);
+			//coin774[i].rank = i;
+			//coin774[i].sortRank = i;
+			//minCoinNum[i].num = gameManager->GetTotalCoinNum(i);
+			//minCoinNum[i].rank = i;
+			//minCoinNum[i].sortRank = i;
+			//hitAttackNum[i].num = gameManager->GetHitAttackNum(i);
+			//hitAttackNum[i].rank = i;
+			//hitAttackNum[i].sortRank = i;
+			break;
+
+		case 1:
+			break;
+
+		case 2:
+			break;
+
+		case 3:
+			break;
+
+		case 4:
+			break;
 		}
 	}
 
