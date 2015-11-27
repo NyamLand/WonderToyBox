@@ -96,7 +96,8 @@
 		lastBonus = rand() % PLAYER_MAX;
 		timeStop = 0;
 		//	ゲームデータテキストを読み込む
-		LoadTextData();
+		//LoadTextData();
+		timelimit = 46 * SECOND;
 		timer = timelimit;
 		coinMax = 50;
 
@@ -162,19 +163,39 @@
 		//	ニュース設定
 		if ( timer == 1 * MINUTE )		newsflag = true;
 
+		static int eventmode = 0;
+		int alert_type = 0;
+		int alert_sound = 0;
 		//	イベント設定
-		if (timer == 42 * SECOND)	{
-			ui->SetAlertFlag(true);
-			sound->PlaySE(SE::EVENT_SE);
+		if (timer == 42 * SECOND)
+		{
+			eventmode = Random::GetInt(0, EVENT_MODE::MAX - 1);
+			if (eventmode < EVENT_MODE::COIN_SACK)
+			{
+				alert_type = ALERT_TYPE_INFO::JAM;
+				alert_sound = SE::EVENT_SE;
+			}
+			else
+			{
+				alert_type = ALERT_TYPE_INFO::COIN;
+				alert_sound = SE::EVENT_SE;		//　仮　コイン用に変更
+			}
+			ui->SetAlertInfo(true, alert_type);
+			sound->PlaySE(alert_sound);
 		}
-		if ( timer == 40 * SECOND ) eventManager->SetEvent( EVENT_MODE::JAM_SLOPE_CAMERA/*Random::GetInt( 0, EVENT_MODE::NONE - 1 )*/ );
-
+		if (timer == 40 * SECOND)
+		{
+			eventmode = EVENT_MODE::JAM_SLOPE_CAMERA+1;	//　仮
+			eventManager->SetEvent(eventmode);
+		}
+		
 		if ( timer != 0 )
 		{
 			//	5秒ごとにアイテムを３割の確率ででランダムに配置
 			if ( timer % ( 5* SECOND ) == 0 )
 			{
-				if (itemflg){
+				if (itemflg)
+				{
 					if (Random::PercentageRandom(0.7f))
 					{
 						itemManager->Append(Vector3(Random::GetFloat(-20.0f, 20.0f), 50.0f, Random::GetFloat(-20.0f, 15.0f)), ITEM_TYPE::ATTACK_UP);

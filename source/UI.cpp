@@ -51,6 +51,21 @@
 				MENU_SRC_POS_Y,
 			};
 		}
+
+		
+
+		
+
+		//　どんけつ演出用
+		namespace DD_TIMING
+		{
+			const int WAIT_MAX = 5 * SECOND + 30;
+			const int DB_LOCK = 5 * SECOND;
+			const int FACE_START = 4 * SECOND + 40;
+			const int FACE_LOCK = 2 * SECOND + 30;
+			const int P_START = 1 * SECOND + 50;
+			const int P_LOCK = 20;
+		}
 	}
 
 	//	実体
@@ -591,6 +606,7 @@
 		alertInfo.alpha = 0.0f;
 		alertInfo.timer = 0;
 		alertInfo.param = 0.0f;
+		alertInfo.type = 0;
 
 		//	画像構造体初期化
 		int x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
@@ -1096,8 +1112,8 @@
 	//　DonketsuBoooooooooooost!!!の演出
 	void	UI::DB_Direction( int wait )
 	{
-		const int POS_X = iexSystem::ScreenWidth / 4;		//　固定位置
-		const int POS_Y = iexSystem::ScreenHeight / 4;		//　固定位置
+		const int POS_X = iexSystem::ScreenWidth / 5;		//　固定位置
+		const int POS_Y = iexSystem::ScreenHeight / 6;		//　固定位置
 		const int TRANS_X = (POS_X - static_cast<int>( iexSystem::ScreenWidth * 0.94f ) ) / 30;	//　TPF
 		const int TRANS_Y = (POS_Y - static_cast<int>( iexSystem::ScreenHeight * -0.14f ) ) / 30;	//　TPF
 		const int SIZE_X = static_cast<int>( iexSystem::ScreenWidth * 0.47f );
@@ -1140,7 +1156,7 @@
 			ddInfo.DB.y = POS_Y;
 			ddInfo.DB.w = SIZE_X;
 			ddInfo.DB.h = SIZE_Y;
-			ddInfo.DB.angle = 0;
+			ddInfo.DB.angle = D3DXToRadian(-30.0f);
 			break;
 		}
 	}
@@ -1339,9 +1355,10 @@
 	}
 
 	//	警告フラグ設定
-	void	UI::SetAlertFlag( bool flag )
+	void	UI::SetAlertInfo( bool flag , int type )
 	{
 		alertInfo.flag = flag;
+		alertInfo.type = type;
 	}
 
 	//	HurryUpフラグ設定
@@ -1404,6 +1421,3 @@
 		bool	out = this->changeflag;
 		return	out;
 	}
-
-	
-

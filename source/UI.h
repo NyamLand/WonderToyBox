@@ -21,18 +21,17 @@ namespace
 			RESULT,
 		};
 	}
-
-	namespace DD_TIMING
+	
+	namespace ALERT_TYPE_INFO
 	{
-		const int WAIT_MAX		= 5 * SECOND + 30;
-		const int DB_LOCK		= 5 * SECOND;
-		const int FACE_START	= 4 * SECOND + 40;
-		const int FACE_LOCK		= 2 * SECOND + 30;
-		const int P_START		= 1 * SECOND + 50;
-		const int P_LOCK		= 20;
+		enum
+		{
+			JAM,
+			COIN
+		};
 	}
-}
 
+}
 
 //	UIÉNÉâÉX
 class UI
@@ -44,6 +43,7 @@ private:
 		int		timer;
 		float	alpha;
 		float	param;
+		int		type;
 	};
 
 	struct TITLE_INFO
@@ -252,7 +252,7 @@ public:
 
 	//	èÓïÒê›íË
 	void	SetChangeFlag( const bool& flag );
-	void	SetAlertFlag( bool flag );
+	void	SetAlertInfo( bool flag, int type );
 	void	SetHurryFlag( bool flag );
 	void	SetFlyingIn( int type );
 	void	SetImageSrcPos( int mode );

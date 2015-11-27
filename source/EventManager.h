@@ -28,7 +28,9 @@ namespace
 			COIN_SPLASH,
 			COIN_JUELBOX,
 			COIN_WAVE,
-			COIN_DUBBLE
+			COIN_DUBBLE,
+
+			MAX
 		};
 	}
 }
