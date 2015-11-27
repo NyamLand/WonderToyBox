@@ -1,0 +1,5 @@
+Item	⇒攻撃Up
+Item02	⇒防御Up
+Item03	⇒移動速度Up
+Item04	⇒マグネット
+Item05	⇒ハイパー解禁
