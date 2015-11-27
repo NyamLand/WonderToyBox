@@ -15,7 +15,7 @@ namespace
 	const		int		MINUTE = 60 * 60;	//	１分
 	const		int		TIMELIMIT = 3* SECOND;
 	const		int		PLAYER_MAX = 4;
-	const		float	GRAVITY = -0.01f;
+	const		float		GRAVITY = -0.01f;
 	const		int		CHARATYPE_MAX = 4;
 	//const		int		COIN_MAX = 50;
 
@@ -85,16 +85,23 @@ private:
 	bool	newsflag;    
 	int    timeStop;    //画面一時停止用
 
-public:
-	Vector3	InitPos[4];
+	//	ラストボーナス用カウント
+	int	maxCoinNum[4];
+	int	fallStageNum[4];
+	int	coin77[4]; 
+	int	minCoinNum[4];
+	int	hitAttackNum[4];
 
+public:	
+		Vector3	InitPos[4];
 public:
 	
-public:
-
+private:
 	//	初期化・解放
 	GameManager( void );
 	~GameManager( void );
+
+public:
 	bool	Initialize( void );
 	bool	InitializeDebug( void );
 	void	Release( void );
@@ -111,23 +118,37 @@ public:
 	void	SubCoin( int playerNum );
 	void	DecideWorst( void );
 	void	LoadTextData( void );
+	
+	//	ラストボーナス用カウント
+	void	CalcMaxCoin( int player );
+	void	CalcSubCoin77( int player );
+	void	AddFallStage( int player );
+	void	AddTotalCoinNum( int player );
+	void	AddHitAttackCount( int player );
 
 	//	情報取得
 	int		GetCharacterType( int num );
 	int		GetPlayerNum( void );
 	int		GetStageType( void );
 	int		GetCoinNum( int num );
-	bool	GetDonketsuBoostState( void );
+	bool		GetDonketsuBoostState( void );
 	int		GetLastBonus( void );
 	int		GetTimer( void );
-	bool	GetNewsFlag( void );
+	bool		GetNewsFlag( void );
 	int		GetWorst( void );
 	int		GetMode( void );
 	int		GetRank(int player);   
-	int     GetTimeStop(void);
+	int		GetTimeStop(void);
 	int		GetCoinMax(void)const;
-	bool	GetItemFlg(void)const;
+	bool		GetItemFlg(void)const;
 	static	GameManager*	GetInstance( void );
+
+	//	ラストボーナス用情報取得
+	int	GetMaxCoinNum( int player )const;
+	int	GetFallStageNum( int player )const;
+	int	GetSubCoin77( int player )const;
+	int	GetTotalCoinNum( int player )const;
+	int	GetHitAttackNum( int player )const;
 
 	//	情報設定
 	void	SetCharacterType( int num, int type );
@@ -137,8 +158,8 @@ public:
 	void	SetLastBonusNews( void );
 	void	SetMode( const int& modeNum );
 	void	SetNewsFlag( const bool& flag );
-	void    SetShakeCamera(float wide, int timer);
-	void    SetTimeStop(int time);
+	void	SetShakeCamera(float wide, int timer);
+	void	SetTimeStop(int time);
 	void	SetTime(int minute, int second);
 	void	SetCoinMax(int coinmax);
 	void	SetItemFlg(bool itemflg);

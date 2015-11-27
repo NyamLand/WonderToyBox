@@ -83,28 +83,28 @@
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Knight/Knight_Dammy.IEM" ) );			//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Y2009/Y2009.IEM" ) );					//	姫
 		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/SQUIRREL/SQUIRREL.IEM" ) );				//	リス
-		org[CHARACTER_TYPE::TIGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/ECCMAN/ECCMAN.IEM" ) );					//	トラ
+		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/ECCMAN/ECCMAN.IEM" ) );					//	トラ
 
 		//	オリジナルモデル情報初期化
-		org[CHARACTER_TYPE::SCAVENGER]->SetScale( 0.05f );		//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS]->SetScale( 0.02f );			//	姫
+		org[CHARACTER_TYPE::SCAVENGER]->SetScale( 0.05f );	//	掃除屋
+		org[CHARACTER_TYPE::PRINCESS]->SetScale( 0.02f );		//	姫
 		org[CHARACTER_TYPE::THIEF]->SetScale( 0.04f );				//	リス
-		org[CHARACTER_TYPE::TIGER]->SetScale( 0.02f );				//	トラ
+		org[CHARACTER_TYPE::PIRATE]->SetScale(0.02f);				//	トラ
 
-		org[CHARACTER_TYPE::SCAVENGER]->SetAngle( D3DX_PI );		//	掃除屋
+		org[CHARACTER_TYPE::SCAVENGER]->SetAngle( D3DX_PI );	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->SetAngle( D3DX_PI );		//	姫
 		org[CHARACTER_TYPE::THIEF]->SetAngle( D3DX_PI );				//	シーフ
-		org[CHARACTER_TYPE::TIGER]->SetAngle( D3DX_PI );				//	トラ
+		org[CHARACTER_TYPE::PIRATE]->SetAngle( D3DX_PI );			//	トラ
 
-		org[CHARACTER_TYPE::SCAVENGER]->SetMotion( 2 );			//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS]->SetMotion( 1 );				//	姫
+		org[CHARACTER_TYPE::SCAVENGER]->SetMotion( 2 );		//	掃除屋
+		org[CHARACTER_TYPE::PRINCESS]->SetMotion( 1 );			//	姫
 		org[CHARACTER_TYPE::THIEF]->SetMotion( 0 );	 				//	シーフ
-		org[CHARACTER_TYPE::TIGER]->SetMotion( 0 );					//	トラ
+		org[CHARACTER_TYPE::PIRATE]->SetMotion(0);					//	トラ
 
 		org[CHARACTER_TYPE::SCAVENGER]->Update();				//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->Update();					//	姫
-		org[CHARACTER_TYPE::THIEF]->Update();						//	リス
-		org[CHARACTER_TYPE::TIGER]->Update();						//	トラ
+		org[CHARACTER_TYPE::THIEF]->Update();							//	リス
+		org[CHARACTER_TYPE::PIRATE]->Update();						//	トラ
 
 		//	モデル初期化
 		ModelInitialize();
@@ -168,7 +168,7 @@
 			//	メニューの項目数まわす
 			for ( int i = 0; i < 3; i++ )
 			{
-				x = static_cast<int>( iexSystem::ScreenWidth / 2 );
+				x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
 				y = static_cast<int>( iexSystem::ScreenHeight * 0.28f );
 				w = static_cast<int>( iexSystem::ScreenWidth * 0.55f );
 				h = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
@@ -278,12 +278,12 @@
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			//	ゲーム終了時のデータを格納( ここでボーナスも設定しておく )
-			originInfo[i].coin = gameManager->GetCoinNum( i );
+			originInfo[i].num = gameManager->GetCoinNum( i );
 			originInfo[i].rank = i;
-			originInfo[i].bonus = Random::GetInt( 0, 0 );
+			originInfo[i].bonus = Random::GetInt( 0, 100 );
 
 			//	ランキング計算用に総計データを格納( ボーナス数値が整い次第、元のコイン枚数にボーナスを足す、ランクはソートにかけるため適当に代入 )
-			sortInfo[i].coin = originInfo[i].coin + originInfo[i].bonus;
+			sortInfo[i].num = originInfo[i].num + originInfo[i].bonus;
 			sortInfo[i].rank = i;
 			sortInfo[i].sortRank = i;
 		}
@@ -316,7 +316,7 @@
 			bonusNumberImageInfo[i].hundred.obj = originNumber;
 		
 			//	数値画像構造体初期化
-			SetNumberImageInfo( numberImageInfo[i], number[i], originInfo[i].coin );
+			SetNumberImageInfo( numberImageInfo[i], number[i], originInfo[i].num );
 			SetNumberImageInfo( bonusNumberImageInfo[i], bonusNumber[i], originInfo[i].bonus );
 		}
 	}
@@ -446,7 +446,7 @@
 				{
 					FOR( 0, PLAYER_MAX )
 					{
-						SetNumberImageInfo( value, originInfo[value].coin );
+						SetNumberImageInfo( value, originInfo[value].num );
 						SetWave( rankImage[value], 1.5f );
 						rankImage[value].renderflag = true;
 					}	
@@ -477,7 +477,7 @@
 				{
 					FOR( 0, PLAYER_MAX )
 					{
-						SetNumberImageInfo( value, originInfo[value].coin );
+						SetNumberImageInfo( value, originInfo[value].num );
 						SetWave( rankImage[value], 1.5f );
 						rankImage[value].renderflag = true;
 					}
@@ -657,7 +657,7 @@
 			for ( int s = PLAYER_MAX - 1; s > i; --s )
 			{
 				//	一つ下の要素と比較
-				if ( sortInfo[s].coin >	sortInfo[s - 1].coin )
+				if ( sortInfo[s].num >	sortInfo[s - 1].num )
 				{
 					//	一時的に退避
 					temp = sortInfo[s - 1];
@@ -673,7 +673,7 @@
 
 		FOR( 1, PLAYER_MAX )
 		{
-			if ( sortInfo[value].coin == sortInfo[value - 1].coin )
+			if ( sortInfo[value].num == sortInfo[value - 1].num )
 				sortInfo[value].sortRank = sortInfo[value - 1].sortRank;
 		}
 	}
@@ -714,7 +714,7 @@
 			{
 				if ( i == sortInfo[n].rank )
 				{
-					originInfo[i].rank = sortInfo[n].sortRank;
+					originInfo[i].rank = n;
 				}
 			}
 		}
@@ -918,7 +918,7 @@
 		{
 			if ( i < rouletteInfo.step )
 			{
-				SetNumberImageInfo( i, originInfo[i].coin );
+				SetNumberImageInfo( i, originInfo[i].num );
 			}
 		}
 
@@ -1168,7 +1168,7 @@
 		return	false;
 	}
 
-	//	ボーナス加算演出（　一定時間ボーナス描画→）
+	//	ボーナス加算演出（　一定時間ボーナス描画→ ）
 	bool	sceneResult::AddBonus( void )
 	{
 		static	const		int WAIT_TIME	=	90;		//	カウント時間
@@ -1241,10 +1241,10 @@
 				if ( temp[value] == 0 )	continue;
 				
 				//	元の数値に加算して退避用から減算
-				originInfo[value].coin++;
+				originInfo[value].num++;
 				temp[value]--;
 
-				SetNumberImageInfo( numberImageInfo[value], number[value], originInfo[value].coin );
+				SetNumberImageInfo( numberImageInfo[value], number[value], originInfo[value].num );
 				SetNumberImageInfo( bonusNumberImageInfo[value], bonusNumber[value], temp[value] );
 			}
 

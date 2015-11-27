@@ -28,7 +28,7 @@ private:
 	//	並べかえる情報
 	struct SORT_INFO
 	{
-		int		coin;
+		int		num;
 		int		sortRank;
 		int		rank;
 	};
@@ -36,7 +36,7 @@ private:
 	//	元のデータ
 	struct ORIGINAL_INFO
 	{
-		int		coin;			//	ゲーム終了時のコイン枚数
+		int		num;			//	ゲーム終了時のコイン枚数
 		int		rank;			//	ゲーム終了時の順位
 		int		bonus;		//	ボーナス
 	};
@@ -97,6 +97,13 @@ private:
 	VIEW_RANK_INORDER	viewRankInOrder;
 	LASTBONUS_INFO			lastBonusInfo;
 
+	//	ラストボーナス計算用
+	SORT_INFO			maxCoinNum;
+	SORT_INFO			fallStageNum;
+	SORT_INFO			coin77;
+	SORT_INFO			minCoinNum;
+	SORT_INFO			hitAttackNum;
+	
 	//	モデル・画像
 	unique_ptr<iex2DObj>	back;
 	unique_ptr<iex3DObj>	org[4];

@@ -739,6 +739,7 @@ namespace
 				}
 			}
 			pos = gameManager->InitPos[this->playerNum];
+			gameManager->AddFallStage( GetPlayerNum() );
 		}
 	} 
 
@@ -1360,6 +1361,7 @@ namespace
 	{
 		return	power;
 	}
+
 	int			BaseChara::GetTotalPower( void )const
 	{
 		return	totalPower;
