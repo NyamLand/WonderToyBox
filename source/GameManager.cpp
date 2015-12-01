@@ -60,7 +60,7 @@
 		stageType = 1;
 		mode = 0;
 		donketsuBoostState = false;
-		lastBonus = Random::GetInt( 0, 3 );
+		lastBonus = 1;//Random::GetInt( 0, 3 );
 		timeStop = 0;
 
 		//	ゲームデータテキストを読み込む
@@ -81,7 +81,7 @@
 	}
 
 	//　（メインから始めるための）デバッグ用
-	bool	GameManager::InitializeDebug(void)
+	bool	GameManager::InitializeDebug( void )
 	{
 		charatype[0] = 1;
 
@@ -122,7 +122,7 @@
 
 		mode = 0;
 		donketsuBoostState = false;
-		lastBonus = rand() % PLAYER_MAX;
+		lastBonus = Random::GetInt( 0, 3 );
 		timeStop = 0;
 
 		//	ゲームデータテキストを読み込む

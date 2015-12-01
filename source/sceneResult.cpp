@@ -1293,7 +1293,6 @@
 	{
 		if ( lastBonusInfo.t >= 1.0f )	return	true;
 
-
 		//	Šç‰æ‘œŠg‘å
 		if ( bonusPlayer != 4 )
 		{
@@ -1325,11 +1324,9 @@
 		//	ˆ—‚ªI—¹‚µ‚Ä‚½‚çtrue‚ð‚©‚¦‚·
 		if ( lastBonusInfo.t >= 1.0f )
 		{
-			if ( bonusPlayer != 4 )
-			{
-				SetWave( waveCircleImage, 2.0f );
-				waveCircleImage.renderflag = true;
-			}
+			SetWave( waveCircleImage, 2.0f );
+			if ( bonusPlayer != 4 )		waveCircleImage.renderflag = true;
+			else									waveCircleImage.renderflag = false;
 			return	true;
 		}
 		return	false;

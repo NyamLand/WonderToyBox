@@ -64,7 +64,6 @@ private:
 public:
 	void TimerRender(void);
 
-
 private:
 	//	‰æ‘œEƒ‚ƒfƒ‹
 	unique_ptr<iex2DObj>	back;
@@ -95,10 +94,12 @@ private:
 	//	‹¤’Ê•Ï”
 	int		mode;
 	int		tempmode;
+	int		tempPlayerNum;
+	bool		retry;
 	
 public:
 	//	‰Šú‰»E‰ğ•ú
-	sceneMenu( void );
+	sceneMenu( bool retry = false );
 	~sceneMenu( void );
 	bool	Initialize( void );
 	void	Release( void );

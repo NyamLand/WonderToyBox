@@ -51,7 +51,7 @@
 //-------------------------------------------------------------------------------
 
 	//	コンストラクタ
-	sceneMenu::sceneMenu( void )
+	sceneMenu::sceneMenu( bool retry )
 	{
 	
 	}
@@ -78,7 +78,9 @@
 		screen->SetScreenMode( SCREEN_MODE::WIPE_IN, 1.5f );
 
 		//	ゲームマネージャ初期化
+		tempPlayerNum = gameManager->GetPlayerNum();
 		gameManager->Initialize();
+		if ( retry )	gameManager->SetPlayerNum( tempPlayerNum );
 		OptionInitialize();
 		
 		//	画像読み込み
@@ -148,7 +150,7 @@
 		//	モード設定
 		tempmode = 0;
 		SetMode( MENU_MODE::INIT );
-
+		
 		//	全体更新
 		Update();
 		return	true;
@@ -182,7 +184,8 @@
 		case MENU_MODE::INIT:
 			if ( screen->GetScreenState() )
 			{
-				SetMode( MENU_MODE::SELECT_PLAYERNUM );
+				if( !retry )		SetMode( MENU_MODE::SELECT_PLAYERNUM );
+				else				SetMode( MENU_MODE::SELECT_CHARACTER );
 			}
 			break;
 
@@ -804,9 +807,9 @@
 		optionInfo.minute = 1;
 		optionInfo.second = 3;
 		optionInfo.step = 0;
-		gameManager->SetItemFlg(optionInfo.itemflg);
-		gameManager->SetCoinMax(optionInfo.coinMAX);
-		gameManager->SetTime(optionInfo.minute, optionInfo.second);
+		gameManager->SetItemFlg( optionInfo.itemflg );
+		gameManager->SetCoinMax( optionInfo.coinMAX );
+		gameManager->SetTime( optionInfo.minute, optionInfo.second );
 	}
 
 	//	更新

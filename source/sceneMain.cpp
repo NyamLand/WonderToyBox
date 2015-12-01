@@ -35,7 +35,7 @@
 //*****************************************************************************************************************************
 
 	//	コンストラクタ
-	sceneMain::sceneMain( void ) : playerNum(0), stageType(0)
+	sceneMain::sceneMain( void ) : playerNum( 0 ), stageType( 0 )
 	{
 		
 	}
@@ -115,7 +115,7 @@
 			本チャンに戻す場合はWinMainのシーン読み込みをタイトルに戻して、
 			この↓の関数をコメントアウトしてください。
 		*/
-		InitializeDebug();
+		//InitializeDebug();
 
 		return true;
 	}
