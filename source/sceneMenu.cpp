@@ -780,7 +780,7 @@
 	{
 		if ( screen->GetScreenState() )
 		{
-			MainFrame->ChangeScene( new sceneLoad( new sceneTitle() ) );
+			MainFrame->ChangeScene( new sceneTitle() );
 			return;
 		}
 	}
@@ -794,7 +794,8 @@
 //-------------------------------------------------------------------------------
 //	オプション関数
 //-------------------------------------------------------------------------------
-	//	オプション
+	
+	//	初期化
 	void	sceneMenu::OptionInitialize( void )
 	{
 		//　構造体初期化
@@ -808,6 +809,7 @@
 		gameManager->SetTime(optionInfo.minute, optionInfo.second);
 	}
 
+	//	更新
 	void	sceneMenu::OptionUpdate( void )
 	{
 		if (KEY_Get(KEY_DOWN) == 3){
@@ -869,6 +871,7 @@
 			gameManager->SetTime(optionInfo.minute,optionInfo.second);
 	}
 
+	//	描画
 	void	sceneMenu::OptionRender( void )
 	{
 		Oimage->Render(300, 150, 512, 128, 0, 128*2, 512, 128);
@@ -892,6 +895,8 @@
 
 		Omenu->Render(80, 50, 256, 128, 0, 64, 256, 128);
 	}
+
+	//	タイマー描画
 	void	sceneMenu::TimerRender(void)
 	{
 		OCmax->Render(930 , 550, 128, 128, optionInfo.minute*64, 64 * 0, 64, 64);
@@ -902,6 +907,7 @@
 
 	}
 
+	//	カーソル描画
 	void	sceneMenu::ArrowRender()
 	{
 		switch (optionInfo.step){
@@ -922,7 +928,6 @@
 			break;
 		}
 	}
-
 
 //-------------------------------------------------------------------------------
 //	情報設定
