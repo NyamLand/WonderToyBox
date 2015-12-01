@@ -169,7 +169,8 @@
 		//	イベント設定
 		if (timer == 42 * SECOND)
 		{
-			eventmode = Random::GetInt(0, EVENT_MODE::MAX - 1);
+			//eventmode = Random::GetInt(0, EVENT_MODE::MAX - 1);
+			eventmode = EVENT_MODE::COIN_DUBBLE;	//　仮 （本番：いらない、上の行のコメントはずす）
 			if (eventmode < EVENT_MODE::COIN_SACK)
 			{
 				alert_type = ALERT_TYPE_INFO::JAM;
@@ -185,7 +186,6 @@
 		}
 		if (timer == 40 * SECOND)
 		{
-			eventmode = EVENT_MODE::JAM_SLOPE_CAMERA+1;	//　仮
 			eventManager->SetEvent(eventmode);
 		}
 		

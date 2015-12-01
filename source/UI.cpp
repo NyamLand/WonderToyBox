@@ -221,6 +221,7 @@
 		faceImage.obj = face;
 		countImage.obj = new iex2DObj("DATA/UI/bfUI.png");
 		alertImage.obj = new iex2DObj("DATA/UI/alert.png");
+		alert_coinImage.obj = new iex2DObj("DATA/UI/coin_alert.png");
 		playerNumber = new iex2DObj( "DATA/UI/cursor.png" );
 
 		//	共通変数初期化 
@@ -265,6 +266,7 @@
 		SafeDelete( face );
 		SafeDelete( countImage.obj );
 		SafeDelete( alertImage.obj );
+		SafeDelete( alert_coinImage.obj );
 		SafeDelete( playerNumber );
 	}
 
@@ -615,6 +617,8 @@
 		int h = static_cast<int>( iexSystem::ScreenHeight * 0.27f );
 		ImageInitialize( alertImage, x, y, w, h, 0, 0, 256, 256 );
 		alertImage.renderflag = true;
+		ImageInitialize(alert_coinImage, x, y, w, h, 0, 0, 256, 256);
+		alert_coinImage.renderflag = true;
 	}
 
 	//	HurryUp演出初期化
@@ -814,7 +818,11 @@
 		alertInfo.alpha = 0.1f + 0.1f * sinf( alertInfo.param );
 
 		alertInfo.timer++;
-		if ( alertInfo.timer % 15 == 0 )	alertImage.renderflag = !alertImage.renderflag;
+		if (alertInfo.timer % 15 == 0)
+		{
+			alertImage.renderflag = !alertImage.renderflag;
+			alert_coinImage.renderflag = !alert_coinImage.renderflag;
+		}
 
 		//	二秒半で終了
 		if ( alertInfo.timer >= 120 )
@@ -953,11 +961,17 @@
 	//	警告描画
 	void	UI::AlertRender( void )
 	{
-		//	赤フィルター描画
-		iexPolygon::Rect( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, RS_COPY, GetColor( 1.0f, 0.0f, 0.0f, alertInfo.alpha ) );
+		int color = (alertInfo.type == ALERT_TYPE_INFO::JAM) ?
+			GetColor(1.0f, 0.0f, 0.0f, alertInfo.alpha) :	//　赤
+			GetColor(1.0f, 1.0f, 0.0f, alertInfo.alpha);	//　黄
+		
+		//	フィルター描画
+		iexPolygon::Rect( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, RS_COPY, color);
 
 		//	警告画像描画
-		RenderImage( alertImage, 0, 0, 256, 256, IMAGE_MODE::NORMAL );
+		(alertInfo.type == ALERT_TYPE_INFO::JAM) ?
+			RenderImage(alertImage, 0, 0, 256, 256, IMAGE_MODE::NORMAL) :
+			RenderImage(alert_coinImage, 0, 0, 256, 256, IMAGE_MODE::NORMAL);
 	}
 
 	//	時間警告描画
