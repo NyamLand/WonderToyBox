@@ -60,6 +60,7 @@ private:
 	iex2DObj*				Oimage;
 	iex2DObj*				Otime;
 	iex2DObj*				OCmax;
+	iex2DObj*				Omenu;
 public:
 	void TimerRender(void);
 
@@ -140,6 +141,7 @@ public:
 	void	OptionInitialize( void );
 	void	OptionUpdate( void );
 	void	OptionRender( void );
+	void	ArrowRender( void );
 
 	//	èÓïÒê›íË
 	void	SetMode( int mode );
