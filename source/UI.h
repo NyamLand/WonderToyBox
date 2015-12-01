@@ -116,6 +116,7 @@ private:
 	ImageObj	faceImage;
 	ImageObj	countImage;
 	ImageObj	alertImage;
+	ImageObj	alert_coinImage;
 	iex2DObj*	playerNumber;
 	ImageObj	pNumImage[PLAYER_MAX];
 
