@@ -77,7 +77,7 @@
 		menuHead.obj = new iex2DObj( "DATA/UI/menu/menu-head.png" );
 		originNumber = new iex2DObj( "DATA/UI/number.png" );
 		menuText = new iex2DObj( "DATA/UI/result/result-cho.png" );
-		lastBonusText = new iex2DObj( "DATA/UI/LastBonusText.png" );
+		lastBonusText = new iex2DObj( "DATA/UI/Result/LastBonusText.png" );
 
 		//	モデル読み込み
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Knight/Knight_Dammy.IEM" ) );			//	掃除屋
@@ -226,6 +226,15 @@
 			ImageInitialize( waveCircleImage, x, y, w, h, 0, 0, 512, 512 );
 			waveCircleImage.obj = new iex2DObj( "DATA/UI/Rainbow-circle.png" );
 			waveCircleImage.renderflag = false;
+			
+			//	該当なし画像初期化
+			w = static_cast<int>( iexSystem::ScreenWidth * 0.3f );
+			h = static_cast<int>( iexSystem::ScreenHeight * 0.3f );
+			ImageInitialize( notApplicable, x, y, w, h, 0, 0, 512, 256 );
+			notApplicable.obj = new iex2DObj( "DATA/UI/Result/resultText.png" );
+			notApplicable.renderflag = false;
+			notApplicable.alpha = 0.0f;
+			notApplicable.angle = -D3DX_PI * 0.035f;
 		
 			//	プレイヤー番号初期化
 			x = static_cast<int>( iexSystem::ScreenWidth * 0.45f );
@@ -235,6 +244,8 @@
 			ImageInitialize( playerNumImage, x, y, w, h, 128 * ( bonusPlayer % 2 ), 128 * ( bonusPlayer / 2 ), 128, 128 );
 			playerNumImage.obj = new iex2DObj( "DATA/UI/cursor.png" );
 			playerNumImage.renderflag = false;
+
+			
 		}
 		return	true;
 	}
@@ -250,6 +261,7 @@
 		SafeDelete( faceImage.obj );
 		SafeDelete( playerNumImage.obj );
 		SafeDelete( waveCircleImage.obj );
+		SafeDelete( notApplicable.obj );
 		Random::Release();
 	}
 
@@ -445,6 +457,13 @@
 		sw = faceImage.sw;
 		sh = faceImage.sh;
 		RenderImage( faceImage, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM );
+
+		//	該当なし文字描画
+		sx = notApplicable.sx;
+		sy = notApplicable.sy;
+		sw = notApplicable.sw;
+		sh = notApplicable.sh;
+		RenderImage( notApplicable, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM );
 
 		//	プレイヤー番号描画
 		sx = playerNumImage.sx;
@@ -731,21 +750,39 @@
 		}
 	}
 
-	//	ラストボーナス数値加算
+	//	ラストボーナス数値加算、全員同じ値　or　０だった場合ボーナスに最終値を入れ該当なしにする
 	void	sceneResult::AddLastBonus( void )
 	{
 		int	bonus = 0;
+		int	result = 0;
 		switch ( lastBonus )
 		{
 		case 0:
+			//	該当なしかチェック
+			FOR( 0, PLAYER_MAX ) 	result += maxCoinNum[value].num;
+			if ( result == 0 )
+			{
+				bonusPlayer = 4;
+				return;
+			}
+
 			//	最大コイン枚数
 			bonus = Random::GetInt( 10, 30 );
 			sortInfo[maxCoinNum[0].rank].num += bonus;
 			originInfo[maxCoinNum[0].rank].bonus = bonus;
 			bonusPlayer = maxCoinNum[0].rank;
+			
 			break;
 
 		case 1:
+			//	該当なしかチェック
+			FOR( 0, PLAYER_MAX ) 	result += fallStageNum[value].num;
+			if ( result == 0 )
+			{
+				bonusPlayer = 4;
+				return;
+			}
+
 			//	ステージからの落下回数
 			bonus = Random::GetInt( 10, 30 );
 			sortInfo[fallStageNum[0].rank].num += bonus;
@@ -754,6 +791,14 @@
 			break;
 
 		case 2:
+			//	該当なしかチェック
+			FOR( 0, PLAYER_MAX ) 	result += coin77[value].num;
+			if ( result == 0 )
+			{
+				bonusPlayer = 4;
+				return;
+			}
+			
 			//	７７枚とコイン枚数の差
 			bonus = Random::GetInt( 10, 30 );
 			sortInfo[coin77[3].rank].num += bonus;
@@ -762,6 +807,14 @@
 			break;
 
 		case 3:
+			//	該当なしかチェック
+			FOR( 0, PLAYER_MAX ) 	result += minCoinNum[value].num;
+			if ( result == 0 )
+			{
+				bonusPlayer = 4;
+				return;
+			}
+
 			//	取得コイン総数が一番少ない
 			bonus = Random::GetInt( 10, 30 );
 			sortInfo[minCoinNum[3].rank].num += bonus;
@@ -770,6 +823,14 @@
 			break;
 
 		case 4:
+			//	該当なしかチェック
+			FOR( 0, PLAYER_MAX ) 	result += hitAttackNum[value].num;
+			if ( result == 0 )
+			{
+				bonusPlayer = 4;
+				return;
+			}
+
 			//	攻撃を当てた回数
 			bonus = Random::GetInt( 10, 30 );
 			sortInfo[hitAttackNum[0].rank].num += bonus;
@@ -1122,7 +1183,8 @@
 			//	波紋終了後対象プレイヤーの描画をONにして次のステップへ
 			if ( isEndWave )
 			{
-				faceImage.renderflag = true;
+				if ( bonusPlayer != 4 )		faceImage.renderflag = true;
+				else								notApplicable.renderflag = true;
 				lastBonusInfo.t = 0.0f;
 				lastBonusInfo.step++;
 			}
@@ -1138,7 +1200,7 @@
 			//	波紋動作終了後プレイヤー番号表示
 			if ( isEndWave )
 			{
-				playerNumImage.renderflag = true;
+				if ( bonusPlayer != 4 )		playerNumImage.renderflag = true;
 				lastBonusInfo.t = 0.0f;
 				lastBonusInfo.step++;
 			}
@@ -1231,30 +1293,49 @@
 	{
 		if ( lastBonusInfo.t >= 1.0f )	return	true;
 
-		//	パラメータ更新
-		lastBonusInfo.t += 0.1f;
-		if ( lastBonusInfo.t >= 1.0f )	lastBonusInfo.t = 1.0f;
 
 		//	顔画像拡大
-		float	t = GetBezier( ePrm_t::eRapid_Lv3, ePrm_t::eSlow_Lv5, lastBonusInfo.t );
-		int		startWidth = static_cast<int>( iexSystem::ScreenWidth * 0.08f );
-		int		startHeight = static_cast<int>( iexSystem::ScreenHeight * 0.15f );
-		int		endWidth = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
-		int		endHeight = static_cast<int>( iexSystem::ScreenHeight * 0.18f );
-		CubicFunctionInterpolation( faceImage.w, startWidth, endWidth, lastBonusInfo.t );
-		CubicFunctionInterpolation( faceImage.h, startHeight, endHeight, lastBonusInfo.t );
+		if ( bonusPlayer != 4 )
+		{
+			//	パラメータ更新
+			lastBonusInfo.t += 0.1f;
+			if ( lastBonusInfo.t >= 1.0f )	lastBonusInfo.t = 1.0f;
+			float	t = GetBezier( ePrm_t::eRapid_Lv3, ePrm_t::eSlow_Lv5, lastBonusInfo.t );
+			int		startWidth = static_cast<int>( iexSystem::ScreenWidth * 0.08f );
+			int		startHeight = static_cast<int>( iexSystem::ScreenHeight * 0.15f );
+			int		endWidth = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
+			int		endHeight = static_cast<int>( iexSystem::ScreenHeight * 0.18f );
+			CubicFunctionInterpolation( faceImage.w, startWidth, endWidth, lastBonusInfo.t );
+			CubicFunctionInterpolation( faceImage.h, startHeight, endHeight, lastBonusInfo.t );
+		}
+		else
+		{
+			//	該当なし
+			//	パラメータ更新
+			lastBonusInfo.t += 0.01f;
+			if ( lastBonusInfo.t >= 1.0f )	lastBonusInfo.t = 1.0f;
+
+			float	t = GetBezier( ePrm_t::eRapid_Lv3, ePrm_t::eSlow_Lv5, lastBonusInfo.t );
+			int	startPos = static_cast<int>( iexSystem::ScreenHeight * 0.5f );
+			int	endPos = static_cast<int>( iexSystem::ScreenHeight * 0.55f );
+			Lerp( notApplicable.alpha, 0.0f, 1.0f, lastBonusInfo.t );
+			Lerp( notApplicable.y, startPos, endPos, lastBonusInfo.t );
+		}
 
 		//	処理が終了してたらtrueをかえす
 		if ( lastBonusInfo.t >= 1.0f )
 		{
-			SetWave( waveCircleImage, 2.0f );
-			waveCircleImage.renderflag = true;
+			if ( bonusPlayer != 4 )
+			{
+				SetWave( waveCircleImage, 2.0f );
+				waveCircleImage.renderflag = true;
+			}
 			return	true;
 		}
 		return	false;
 	}
 
-	//	ボーナス加算演出（　一定時間ボーナス描画→ ）
+	//	ボーナス加算演出
 	bool	sceneResult::AddBonus( void )
 	{
 		static	const		int WAIT_TIME	=	90;		//	カウント時間

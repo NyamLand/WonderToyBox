@@ -118,6 +118,7 @@ private:
 	ImageObj							playerNumImage;
 	ImageObj							faceImage;
 	ImageObj							waveCircleImage;
+	ImageObj							notApplicable;		//	ŠY“–‚È‚µ‰æ‘œ
 
 	//	•Ï”
 	int		mode;
