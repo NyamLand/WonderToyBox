@@ -91,10 +91,12 @@
 		face = new iex2DObj( "DATA/UI/chara_emotion.png" );
 		cursor = new iex2DObj( "DATA/UI/cursor.png" );
 
-
+		//	オプション関係画像読み込み
 		Oimage =		new iex2DObj( "DATA/UI/OptionText.png" );
 		Otime	=		new iex2DObj( "DATA/UI/number.png" );
 		OCmax	=		new iex2DObj( "DATA/UI/number.png" );
+		Omenu = new iex2DObj("DATA/UI/option-int.png");
+
 		//	モデル読み込み
 		//org[CHARACTER_TYPE::KNIGHT] = new iex3DObj( "DATA/CHR/Knight/Knight_Dammy.IEM" );		//	騎士
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Knight/Knight_Dammy.IEM" ) );		//	掃除屋
@@ -165,6 +167,7 @@
 		SafeDelete(Oimage);
 		SafeDelete(Otime);
 		SafeDelete(OCmax);
+		SafeDelete(Omenu);
 	}
 
 //-------------------------------------------------------------------------------
@@ -211,10 +214,13 @@
 			OptionUpdate();
 			break;
 		}
-		if (KEY_Get(KEY_D) == 3){
+		if (KEY_Get(KEY_D) == 3||KEY_Get(KEY_B6)==3){
 			if (mode != MENU_MODE::OPTION){
 				tempmode = mode;
 				SetMode(MENU_MODE::OPTION);
+			}
+			else if (mode == MENU_MODE::OPTION){
+				SetMode(tempmode);
 			}
 		}
 
@@ -259,7 +265,9 @@
 			OptionRender();
 			break;
 		}
-
+		if (mode != MENU_MODE::OPTION){
+			Omenu->Render(80, 50, 256, 64, 0, 0, 256, 64);
+		}
 		//	スクリーン
 		screen->Render();
 	}
@@ -772,7 +780,7 @@
 	{
 		if ( screen->GetScreenState() )
 		{
-			MainFrame->ChangeScene( new sceneLoad( new sceneTitle() ) );
+			MainFrame->ChangeScene( new sceneTitle() );
 			return;
 		}
 	}
@@ -786,20 +794,22 @@
 //-------------------------------------------------------------------------------
 //	オプション関数
 //-------------------------------------------------------------------------------
-	//	オプション
+	
+	//	初期化
 	void	sceneMenu::OptionInitialize( void )
 	{
 		//　構造体初期化
 		optionInfo.itemflg = true;
 		optionInfo.coinMAX = 200;
-		optionInfo.minute = 0;
-		optionInfo.second = 5;
+		optionInfo.minute = 1;
+		optionInfo.second = 3;
 		optionInfo.step = 0;
 		gameManager->SetItemFlg(optionInfo.itemflg);
 		gameManager->SetCoinMax(optionInfo.coinMAX);
 		gameManager->SetTime(optionInfo.minute, optionInfo.second);
 	}
 
+	//	更新
 	void	sceneMenu::OptionUpdate( void )
 	{
 		if (KEY_Get(KEY_DOWN) == 3){
@@ -859,11 +869,9 @@
 			gameManager->SetItemFlg(optionInfo.itemflg);
 			gameManager->SetCoinMax(optionInfo.coinMAX);
 			gameManager->SetTime(optionInfo.minute,optionInfo.second);
-		if (KEY_Get(KEY_SPACE) == 3){
-			SetMode(tempmode);
-		}
 	}
 
+	//	描画
 	void	sceneMenu::OptionRender( void )
 	{
 		Oimage->Render(300, 150, 512, 128, 0, 128*2, 512, 128);
@@ -883,16 +891,44 @@
 		OCmax->Render(950+(80*2),	350, 128, 128,									  0, 128 * 0, 64, 64);
 
 		TimerRender();
+		ArrowRender();
+
+		Omenu->Render(80, 50, 256, 128, 0, 64, 256, 128);
 	}
+
+	//	タイマー描画
 	void	sceneMenu::TimerRender(void)
 	{
-		OCmax->Render(930 , 550, 128, 128, optionInfo.minute*64, 64 * 4, 64, 64);
-		OCmax->Render(1140, 550, 128, 128, ((optionInfo.second / 10) % 10) * 64, 64 * 4, 64, 64);
-		OCmax->Render(1220, 550, 128, 128, 0, 64*4, 64, 64);
+		OCmax->Render(930 , 550, 128, 128, optionInfo.minute*64, 64 * 0, 64, 64);
+		OCmax->Render(1140, 550, 128, 128, ((optionInfo.second / 10) % 10) * 64, 64 * 0, 64, 64);
+		OCmax->Render(1220, 550, 128, 128, 0, 64*0, 64, 64);
 		Oimage->Render(1020, 550, 128, 128, 256, 128 * 1, 128, 128);
 		Oimage->Render(1300, 550, 128, 128, 384, 128 * 1, 128, 128);
 
 	}
+
+	//	カーソル描画
+	void	sceneMenu::ArrowRender()
+	{
+		switch (optionInfo.step){
+		case 0:
+			OCmax->Render(830, 150, 128, 128, 64*4, 64 * 3, 64, 64);
+			break;
+		case 1:
+			OCmax->Render(830, 350, 128, 128, 64 * 4, 64 * 3, 64, 64);
+			break;
+		case 2:
+			OCmax->Render(830, 550, 128, 128, 64 * 4, 64 * 3, 64, 64);
+			OCmax->Render(930, 550, 128, 128, optionInfo.minute * 64, 64 * 1, 64, 64);
+			break;
+		case 3:
+			OCmax->Render(830, 550, 128, 128, 64 * 4, 64 * 3, 64, 64);
+			OCmax->Render(1140, 550, 128, 128, ((optionInfo.second / 10) % 10) * 64, 64 * 1, 64, 64);
+			OCmax->Render(1220, 550, 128, 128, 0, 64 * 1, 64, 64);
+			break;
+		}
+	}
+
 //-------------------------------------------------------------------------------
 //	情報設定
 //-------------------------------------------------------------------------------

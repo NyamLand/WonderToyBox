@@ -38,7 +38,7 @@ private:
 	{
 		int		num;			//	ゲーム終了時のコイン枚数
 		int		rank;			//	ゲーム終了時の順位
-		int		bonus;		//	ボーナス
+		int		bonus;			//	ボーナス
 	};
 
 	//	ラストボーナスデータ
@@ -100,7 +100,7 @@ private:
 	//	ラストボーナス計算用
 	SORT_INFO						maxCoinNum[4];
 	SORT_INFO						fallStageNum[4];
-	SORT_INFO						coin774[4];
+	SORT_INFO						coin77[4];
 	SORT_INFO						minCoinNum[4];
 	SORT_INFO						hitAttackNum[4];
 	
@@ -118,11 +118,13 @@ private:
 	ImageObj							playerNumImage;
 	ImageObj							faceImage;
 	ImageObj							waveCircleImage;
+	ImageObj							notApplicable;		//	該当なし画像
 
 	//	変数
 	int		mode;
 	int		step;
 	int		lastBonus;
+	int		bonusPlayer;
 	bool		changeScene;
 
 public:

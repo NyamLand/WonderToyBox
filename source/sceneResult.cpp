@@ -77,7 +77,7 @@
 		menuHead.obj = new iex2DObj( "DATA/UI/menu/menu-head.png" );
 		originNumber = new iex2DObj( "DATA/UI/number.png" );
 		menuText = new iex2DObj( "DATA/UI/result/result-cho.png" );
-		lastBonusText = new iex2DObj( "DATA/UI/LastBonusText.png" );
+		lastBonusText = new iex2DObj( "DATA/UI/Result/LastBonusText.png" );
 
 		//	モデル読み込み
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Knight/Knight_Dammy.IEM" ) );			//	掃除屋
@@ -130,27 +130,28 @@
 		step = 0;
 		mode = MOVE_MODE::RESULT;
 		changeScene = false;
+		bonusPlayer = 0;
 
 		//	結果用情報構造体初期化
 		ResultInfoInitialize();
 
 		//	ソートかける
-		Sort( sortInfo );
 		Sort( maxCoinNum );
 		Sort( fallStageNum );
-		Sort( coin774 );
+		Sort( coin77 );
 		Sort( minCoinNum );
 		Sort( hitAttackNum );
 
 		//	ラストボーナス設定
 		SetLastBonus();
+		AddLastBonus();
+		Sort( sortInfo );
 		
 		//	ランキング設定
 		SetRank();
 
 		//	数値構造体初期化
 		NumberImageInfoInitialize();
-
 		
 		//	順位画像構造体初期化
 		RankImageInitialize();
@@ -215,7 +216,7 @@
 			y = static_cast<int>( iexSystem::ScreenHeight * 0.6f );
 			w = 0;
 			h = 0;
-			ImageInitialize( faceImage, x, y, w, h, 0, 0, 256, 256 );
+			ImageInitialize( faceImage, x, y, w, h, 0, 256 * bonusPlayer, 256, 256 );
 			faceImage.obj = new iex2DObj( "DATA/UI/chara_emotion.png" );
 			faceImage.renderflag = false;
 
@@ -225,15 +226,26 @@
 			ImageInitialize( waveCircleImage, x, y, w, h, 0, 0, 512, 512 );
 			waveCircleImage.obj = new iex2DObj( "DATA/UI/Rainbow-circle.png" );
 			waveCircleImage.renderflag = false;
+			
+			//	該当なし画像初期化
+			w = static_cast<int>( iexSystem::ScreenWidth * 0.3f );
+			h = static_cast<int>( iexSystem::ScreenHeight * 0.3f );
+			ImageInitialize( notApplicable, x, y, w, h, 0, 0, 512, 256 );
+			notApplicable.obj = new iex2DObj( "DATA/UI/Result/resultText.png" );
+			notApplicable.renderflag = false;
+			notApplicable.alpha = 0.0f;
+			notApplicable.angle = -D3DX_PI * 0.035f;
 		
 			//	プレイヤー番号初期化
 			x = static_cast<int>( iexSystem::ScreenWidth * 0.45f );
 			y = static_cast<int>( iexSystem::ScreenHeight * 0.52f );
 			w = static_cast<int>( iexSystem::ScreenWidth * 0.05f );
 			h = static_cast<int>( iexSystem::ScreenHeight * 0.075f );
-			ImageInitialize( playerNumImage, x, y, w, h, 0, 0, 128, 128 );
+			ImageInitialize( playerNumImage, x, y, w, h, 128 * ( bonusPlayer % 2 ), 128 * ( bonusPlayer / 2 ), 128, 128 );
 			playerNumImage.obj = new iex2DObj( "DATA/UI/cursor.png" );
 			playerNumImage.renderflag = false;
+
+			
 		}
 		return	true;
 	}
@@ -249,6 +261,7 @@
 		SafeDelete( faceImage.obj );
 		SafeDelete( playerNumImage.obj );
 		SafeDelete( waveCircleImage.obj );
+		SafeDelete( notApplicable.obj );
 		Random::Release();
 	}
 
@@ -285,7 +298,7 @@
 			//	ゲーム終了時のデータを格納( ここでボーナスも設定しておく )
 			originInfo[i].num = gameManager->GetCoinNum( i );
 			originInfo[i].rank = i;
-			originInfo[i].bonus = Random::GetInt( 0, 100 );
+			originInfo[i].bonus = 0;
 
 			//	ランキング計算用に総計データを格納( ボーナス数値が整い次第、元のコイン枚数にボーナスを足す、ランクはソートにかけるため適当に代入 )
 			sortInfo[i].num = originInfo[i].num + originInfo[i].bonus;
@@ -299,9 +312,9 @@
 			fallStageNum[i].num = gameManager->GetFallStageNum( i );
 			fallStageNum[i].rank = i;
 			fallStageNum[i].sortRank = i;
-			coin774[i].num = gameManager->GetSubCoin77( i );
-			coin774[i].rank = i;
-			coin774[i].sortRank = i;
+			coin77[i].num = gameManager->GetSubCoin77( i );
+			coin77[i].rank = i;
+			coin77[i].sortRank = i;
 			minCoinNum[i].num = gameManager->GetTotalCoinNum( i );
 			minCoinNum[i].rank = i;
 			minCoinNum[i].sortRank = i;
@@ -354,7 +367,7 @@
 			WorldToClient( obj[i]->GetPos(), out, matView * matProjection );
 
 			//	構造体初期化
-			int 	x = static_cast<int>( out.x );
+			int 		x = static_cast<int>( out.x );
 			int		y = static_cast<int>( iexSystem::ScreenHeight * 0.55f );
 			int		w = static_cast<int>( iexSystem::ScreenWidth * 0.12f );
 			int		h = static_cast<int>( iexSystem::ScreenHeight * 0.13f );
@@ -428,17 +441,36 @@
 		iexPolygon::Render2D( lastBonusInfo.v, 2, nullptr, RS_COPY );
 
 		//	ラストボーナステキスト描画
-		RenderImage( lastBonusInfo.textImage, 0, 0, 512, 128, IMAGE_MODE::ADOPTPARAM );
-		RenderImage( lastBonusInfo.textImage, 0, 0, 512, 128, IMAGE_MODE::WAVE );
+		int	sx = lastBonusInfo.textImage.sx;
+		int	sy = lastBonusInfo.textImage.sy;
+		int	sw = lastBonusInfo.textImage.sw;
+		int	sh = lastBonusInfo.textImage.sh;
+		RenderImage( lastBonusInfo.textImage, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM );
+		RenderImage( lastBonusInfo.textImage, sx, sy, sw, sh, IMAGE_MODE::WAVE );
 
 		//	円虹描画
 		RenderImage( waveCircleImage, 0, 0, 512, 512, IMAGE_MODE::WAVE );
 
 		//	プレイヤー顔描画
-		RenderImage( faceImage, 0, 0, 256, 256, IMAGE_MODE::ADOPTPARAM );
+		sx = faceImage.sx;
+		sy = faceImage.sy;
+		sw = faceImage.sw;
+		sh = faceImage.sh;
+		RenderImage( faceImage, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM );
+
+		//	該当なし文字描画
+		sx = notApplicable.sx;
+		sy = notApplicable.sy;
+		sw = notApplicable.sw;
+		sh = notApplicable.sh;
+		RenderImage( notApplicable, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM );
 
 		//	プレイヤー番号描画
-		RenderImage( playerNumImage, 0, 0, 128, 128, IMAGE_MODE::NORMAL );
+		sx = playerNumImage.sx;
+		sy = playerNumImage.sy;
+		sw = playerNumImage.sw;
+		sh = playerNumImage.sh;
+		RenderImage( playerNumImage, sx, sy, sw, sh, IMAGE_MODE::NORMAL );
 
 		//	メニュー用スクリーン描画
 		iexPolygon::Rect( 0, 0, iexSystem::ScreenWidth, menuInfo.screenH, RS_COPY, GetColor( 0.0f, 0.0f, 0.0f, menuInfo.alpha ) );
@@ -713,42 +745,97 @@
 			//	違う結果が出るまでループ
 			while ( lastBonus == gameManager->GetLastBonus() )
 			{
-				lastBonus = Random::GetInt( 0, 4 );
+				lastBonus = Random::GetInt( 0, 3 );
 			}
 		}
 	}
 
-	//	ラストボーナス数値加算
+	//	ラストボーナス数値加算、全員同じ値　or　０だった場合ボーナスに最終値を入れ該当なしにする
 	void	sceneResult::AddLastBonus( void )
 	{
+		int	bonus = 0;
+		int	result = 0;
 		switch ( lastBonus )
 		{
 		case 0:
-			//maxCoinNum[0].rank;
-			//fallStageNum[i].num = gameManager->GetFallStageNum(i);
-			//fallStageNum[i].rank = i;
-			//fallStageNum[i].sortRank = i;
-			//coin774[i].num = gameManager->GetSubCoin77(i);
-			//coin774[i].rank = i;
-			//coin774[i].sortRank = i;
-			//minCoinNum[i].num = gameManager->GetTotalCoinNum(i);
-			//minCoinNum[i].rank = i;
-			//minCoinNum[i].sortRank = i;
-			//hitAttackNum[i].num = gameManager->GetHitAttackNum(i);
-			//hitAttackNum[i].rank = i;
-			//hitAttackNum[i].sortRank = i;
+			//	該当なしかチェック
+			FOR( 0, PLAYER_MAX ) 	result += maxCoinNum[value].num;
+			if ( result == 0 )
+			{
+				bonusPlayer = 4;
+				return;
+			}
+
+			//	最大コイン枚数
+			bonus = Random::GetInt( 10, 30 );
+			sortInfo[maxCoinNum[0].rank].num += bonus;
+			originInfo[maxCoinNum[0].rank].bonus = bonus;
+			bonusPlayer = maxCoinNum[0].rank;
+			
 			break;
 
 		case 1:
+			//	該当なしかチェック
+			FOR( 0, PLAYER_MAX ) 	result += fallStageNum[value].num;
+			if ( result == 0 )
+			{
+				bonusPlayer = 4;
+				return;
+			}
+
+			//	ステージからの落下回数
+			bonus = Random::GetInt( 10, 30 );
+			sortInfo[fallStageNum[0].rank].num += bonus;
+			originInfo[maxCoinNum[0].rank].bonus = bonus;
+			bonusPlayer = maxCoinNum[0].rank;
 			break;
 
 		case 2:
+			//	該当なしかチェック
+			FOR( 0, PLAYER_MAX ) 	result += coin77[value].num;
+			if ( result == 0 )
+			{
+				bonusPlayer = 4;
+				return;
+			}
+			
+			//	７７枚とコイン枚数の差
+			bonus = Random::GetInt( 10, 30 );
+			sortInfo[coin77[3].rank].num += bonus;
+			originInfo[coin77[3].rank].bonus = bonus;
+			bonusPlayer = coin77[3].rank;
 			break;
 
 		case 3:
+			//	該当なしかチェック
+			FOR( 0, PLAYER_MAX ) 	result += minCoinNum[value].num;
+			if ( result == 0 )
+			{
+				bonusPlayer = 4;
+				return;
+			}
+
+			//	取得コイン総数が一番少ない
+			bonus = Random::GetInt( 10, 30 );
+			sortInfo[minCoinNum[3].rank].num += bonus;
+			originInfo[minCoinNum[3].rank].bonus = bonus;
+			bonusPlayer = minCoinNum[3].rank;
 			break;
 
 		case 4:
+			//	該当なしかチェック
+			FOR( 0, PLAYER_MAX ) 	result += hitAttackNum[value].num;
+			if ( result == 0 )
+			{
+				bonusPlayer = 4;
+				return;
+			}
+
+			//	攻撃を当てた回数
+			bonus = Random::GetInt( 10, 30 );
+			sortInfo[hitAttackNum[0].rank].num += bonus;
+			originInfo[hitAttackNum[0].rank].bonus = bonus;
+			bonusPlayer = hitAttackNum[0].rank;
 			break;
 		}
 	}
@@ -765,13 +852,16 @@
 	void	sceneResult::SetRank( void )
 	{
 		//	ソートの結果を反映
-		for ( int i = 0; i < PLAYER_MAX; i++ )
+		FOR( 0, PLAYER_MAX )
 		{
-			for ( int n = 0; n < PLAYER_MAX; n++ )
+			originInfo[sortInfo[value].rank].rank = value;
+
+			if ( value != 0 )
 			{
-				if ( i == sortInfo[n].rank )
+				//	上位の人と同じコイン枚数だったら同ランクにする
+				if ( originInfo[sortInfo[value].rank].num == originInfo[sortInfo[value - 1].rank].num )
 				{
-					originInfo[i].rank = n;
+					originInfo[sortInfo[value].rank].rank = originInfo[sortInfo[value - 1].rank].rank;
 				}
 			}
 		}
@@ -1093,7 +1183,8 @@
 			//	波紋終了後対象プレイヤーの描画をONにして次のステップへ
 			if ( isEndWave )
 			{
-				faceImage.renderflag = true;
+				if ( bonusPlayer != 4 )		faceImage.renderflag = true;
+				else								notApplicable.renderflag = true;
 				lastBonusInfo.t = 0.0f;
 				lastBonusInfo.step++;
 			}
@@ -1109,7 +1200,7 @@
 			//	波紋動作終了後プレイヤー番号表示
 			if ( isEndWave )
 			{
-				playerNumImage.renderflag = true;
+				if ( bonusPlayer != 4 )		playerNumImage.renderflag = true;
 				lastBonusInfo.t = 0.0f;
 				lastBonusInfo.step++;
 			}
@@ -1202,30 +1293,49 @@
 	{
 		if ( lastBonusInfo.t >= 1.0f )	return	true;
 
-		//	パラメータ更新
-		lastBonusInfo.t += 0.1f;
-		if ( lastBonusInfo.t >= 1.0f )	lastBonusInfo.t = 1.0f;
 
 		//	顔画像拡大
-		float	t = GetBezier( ePrm_t::eRapid_Lv3, ePrm_t::eSlow_Lv5, lastBonusInfo.t );
-		int		startWidth = static_cast<int>( iexSystem::ScreenWidth * 0.08f );
-		int		startHeight = static_cast<int>( iexSystem::ScreenHeight * 0.15f );
-		int		endWidth = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
-		int		endHeight = static_cast<int>( iexSystem::ScreenHeight * 0.18f );
-		CubicFunctionInterpolation( faceImage.w, startWidth, endWidth, lastBonusInfo.t );
-		CubicFunctionInterpolation( faceImage.h, startHeight, endHeight, lastBonusInfo.t );
+		if ( bonusPlayer != 4 )
+		{
+			//	パラメータ更新
+			lastBonusInfo.t += 0.1f;
+			if ( lastBonusInfo.t >= 1.0f )	lastBonusInfo.t = 1.0f;
+			float	t = GetBezier( ePrm_t::eRapid_Lv3, ePrm_t::eSlow_Lv5, lastBonusInfo.t );
+			int		startWidth = static_cast<int>( iexSystem::ScreenWidth * 0.08f );
+			int		startHeight = static_cast<int>( iexSystem::ScreenHeight * 0.15f );
+			int		endWidth = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
+			int		endHeight = static_cast<int>( iexSystem::ScreenHeight * 0.18f );
+			CubicFunctionInterpolation( faceImage.w, startWidth, endWidth, lastBonusInfo.t );
+			CubicFunctionInterpolation( faceImage.h, startHeight, endHeight, lastBonusInfo.t );
+		}
+		else
+		{
+			//	該当なし
+			//	パラメータ更新
+			lastBonusInfo.t += 0.01f;
+			if ( lastBonusInfo.t >= 1.0f )	lastBonusInfo.t = 1.0f;
+
+			float	t = GetBezier( ePrm_t::eRapid_Lv3, ePrm_t::eSlow_Lv5, lastBonusInfo.t );
+			int	startPos = static_cast<int>( iexSystem::ScreenHeight * 0.5f );
+			int	endPos = static_cast<int>( iexSystem::ScreenHeight * 0.55f );
+			Lerp( notApplicable.alpha, 0.0f, 1.0f, lastBonusInfo.t );
+			Lerp( notApplicable.y, startPos, endPos, lastBonusInfo.t );
+		}
 
 		//	処理が終了してたらtrueをかえす
 		if ( lastBonusInfo.t >= 1.0f )
 		{
-			SetWave( waveCircleImage, 2.0f );
-			waveCircleImage.renderflag = true;
+			if ( bonusPlayer != 4 )
+			{
+				SetWave( waveCircleImage, 2.0f );
+				waveCircleImage.renderflag = true;
+			}
 			return	true;
 		}
 		return	false;
 	}
 
-	//	ボーナス加算演出（　一定時間ボーナス描画→ ）
+	//	ボーナス加算演出
 	bool	sceneResult::AddBonus( void )
 	{
 		static	const		int WAIT_TIME	=	90;		//	カウント時間

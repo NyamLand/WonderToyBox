@@ -50,6 +50,7 @@
 	//	初期化
 	bool	GameManager::Initialize( void )
 	{
+		Random::Initialize();
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			charatype[i] = 0;		
@@ -59,7 +60,7 @@
 		stageType = 1;
 		mode = 0;
 		donketsuBoostState = false;
-		lastBonus = rand() % PLAYER_MAX;
+		lastBonus = Random::GetInt( 0, 3 );
 		timeStop = 0;
 
 		//	ゲームデータテキストを読み込む

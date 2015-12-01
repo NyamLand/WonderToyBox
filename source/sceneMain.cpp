@@ -126,7 +126,7 @@
 		gameStartCoinNum = 0;
 
 		//　ステージ
-		stageManager->Initialize(dir);
+		stageManager->Initialize( dir );
 
 		//　プレイヤー・CPU
 		PlayerInitialize();
@@ -135,7 +135,7 @@
 		itemManager->Initialize();
 		coinManager->Initialize();
 		m_Effect->Initialize();
-		ui->Initialize(UI_MODE::MAIN);
+		ui->Initialize( UI_MODE::MAIN );
 	}
 
 	//	デストラクタ
