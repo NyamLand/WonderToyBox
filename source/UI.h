@@ -74,6 +74,10 @@ private:
 		//　？P
 		ImageObj	P;
 		int			P_step;
+
+		//　FightLast
+		ImageObj	fight;
+		int			fight_step;
 	};
 
 	struct HURRY_INFO
@@ -245,6 +249,7 @@ public:
 	void FaceRoulette( int face_wait );
 	void DB_Direction( int wait );
 	void P_Direction( int wait );
+	void Fight_Direction( int wait );
 
 	//	テスト用
 	void	BarControl2( void );
