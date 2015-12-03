@@ -320,9 +320,6 @@
 		}
 	}
 
-
-
-
 	//	レンダーターゲット用
 	void	PlayerWipe::RenderTarget( int num )
 	{

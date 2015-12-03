@@ -151,7 +151,6 @@ namespace
 		menuInfo.menu_num = 0;
 	}
 
-
 //-----------------------------------------------------------------------------------
 //	更新・描画
 //-----------------------------------------------------------------------------------
@@ -199,12 +198,12 @@ namespace
 		mainView->Clear();
 
 		//	ステージ描画
-		stage->Render();
+		stage->Render( shader3D, "full" );
 
 		//	パーティクル描画
 		particle->Render();
 
-		switch (mode)
+		switch ( mode )
 		{
 		case TITLE_MODE::TITLE:
 			TitleRender();

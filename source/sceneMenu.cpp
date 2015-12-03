@@ -99,15 +99,15 @@
 
 		//	モデル読み込み
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Knight/Knight_Dammy.IEM" ) );		//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/プリンセス/prinsess.IEM" ) );					//	姫
+		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/プリンセス/prinsess1.IEM" ) );					//	姫
 		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>(LPSTR("DATA/CHR/SQUIRREL/SQUIRREL.IEM"));		//	リス
 		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>(LPSTR("DATA/CHR/ECCMAN/ECCMAN.IEM"));				//	海賊
 
 		//	オリジナルモデル情報初期化
 		org[CHARACTER_TYPE::SCAVENGER]->SetScale( 0.05f );	//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS]->SetScale( 0.02f );		//	姫
-		org[CHARACTER_TYPE::THIEF]->SetScale(0.04f);		//	リス
-		org[CHARACTER_TYPE::PIRATE]->SetScale(0.02f);			//	海賊
+		org[CHARACTER_TYPE::PRINCESS]->SetScale( 0.04f );	//	姫
+		org[CHARACTER_TYPE::THIEF]->SetScale( 0.04f );			//	怪盗
+		org[CHARACTER_TYPE::PIRATE]->SetScale( 0.02f );			//	海賊
 
 		org[CHARACTER_TYPE::SCAVENGER]->SetAngle( D3DX_PI );	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->SetAngle( D3DX_PI );	//	姫
@@ -791,7 +791,7 @@
 //	オプション関数
 //-------------------------------------------------------------------------------
 	
-	//	オプション
+	//	初期化
 	void	sceneMenu::OptionInitialize( void )
 	{
 		//　構造体初期化
@@ -805,6 +805,7 @@
 		gameManager->SetTime(optionInfo.minute, optionInfo.second);
 	}
 
+	//	更新
 	void	sceneMenu::OptionUpdate( void )
 	{
 		if (KEY_Get(KEY_DOWN) == 3){
@@ -866,6 +867,7 @@
 			gameManager->SetTime(optionInfo.minute,optionInfo.second);
 	}
 
+	//	描画
 	void	sceneMenu::OptionRender( void )
 	{
 		Oimage->Render(300, 150, 512, 128, 0, 128*2, 512, 128);
@@ -890,7 +892,9 @@
 
 		Omenu->Render(80, 50, 256, 128, 0, 64, 256, 128);
 	}
-	void	sceneMenu::TimerRender(void)
+
+	//	タイマー描画
+	void	sceneMenu::TimerRender( void )
 	{
 		OCmax->Render(930 , 550, 128, 128, optionInfo.minute*64, 64 * 0, 64, 64);
 		OCmax->Render(1140, 550, 128, 128, ((optionInfo.second / 10) % 10) * 64, 64 * 0, 64, 64);
@@ -899,7 +903,9 @@
 		Oimage->Render(1300, 550, 128, 128, 384, 128 * 1, 128, 128);
 
 	}
-	void	sceneMenu::OptionSelectRender()
+
+	//	項目描画
+	void	sceneMenu::OptionSelectRender( void )
 	{
 		
 		//項目描画
@@ -925,7 +931,9 @@
 		Oimage->Render(1140, 520, 64, 64, 256, 128 * 1, 128, 128);
 		Oimage->Render(1300, 520, 64, 64, 384, 128 * 1, 128, 128);
 	}
-	void	sceneMenu::ArrowRender()
+
+	//	カーソル描画
+	void	sceneMenu::ArrowRender( void )
 	{
 		switch (optionInfo.step){
 		case 0:
@@ -945,7 +953,6 @@
 			break;
 		}
 	}
-
 
 //-------------------------------------------------------------------------------
 //	情報設定

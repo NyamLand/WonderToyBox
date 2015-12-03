@@ -35,7 +35,7 @@
 		//	パラメータ初期化
 		power = 2;/*仮*/
 		speed = 0.25f;
-		scale = 0.02f;
+		scale = 0.04f;
 		diffence = -1;
 		isGround = true;
 	}
@@ -57,7 +57,7 @@
 			obj = new iex3DObj( "DATA/CHR/プリンセス/prinsess1.IEM" );
 
 		//	スケール設定
-		obj->SetScale( 0.02f );
+		obj->SetScale( scale );
 		obj->Update();
 
 		if ( obj == nullptr )	return	false;
@@ -187,27 +187,27 @@
 		switch ( motion )
 		{
 		case MOTION_NUM::STAND:
-			SetMotion( MOTION_DATA::STAND );
+			obj->SetMotion( MOTION_DATA::STAND );
 			break;
 
 		case MOTION_NUM::POSTURE:
-			SetMotion( MOTION_DATA::POSTURE );
+			obj->SetMotion( MOTION_DATA::POSTURE );
 			break;
 
 		case MOTION_NUM::RUN:
-			SetMotion( MOTION_DATA::RUN );
+			obj->SetMotion( MOTION_DATA::RUN );
 			break;
 
 		case MOTION_NUM::JUMP:
-			SetMotion( MOTION_DATA::JUMP );
+			obj->SetMotion( MOTION_DATA::JUMP );
 			break;
 
 		case MOTION_NUM::GUARD:
-			SetMotion( MOTION_DATA::GUARD );
+			obj->SetMotion( MOTION_DATA::GUARD );
 			break;
 
 		case MOTION_NUM::FALLTOGROUND:
-			SetMotion( MOTION_DATA::FALLTOGROUND );
+			obj->SetMotion( MOTION_DATA::FALLTOGROUND );
 			break;
 
 		case MOTION_NUM::ATTACK1:
