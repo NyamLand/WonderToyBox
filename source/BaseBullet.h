@@ -19,6 +19,7 @@ protected:
 	Vector3			angle;
 	bool			state;		//存在するかどうか
 	bool			activate;	//あたり判定の有無
+	bool			enable;		//描画するかどうか
 	float			radius;		//物体の半径(あたり判定で使用))
 	//int				judgeTimer;	//	判定有効時間
 	int				limitTimer; //	消滅までの時間

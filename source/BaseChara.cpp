@@ -283,6 +283,7 @@ namespace
 			
 			//	影描画
 			iexPolygon::Render3D( shadow.v, 2, shadow.obj, shader3D, "alpha" );
+			DrawCapsule(pos, Vector3(pos.x, pos.y + 3.0f, pos.z), 1.0f);
 			
 			obj->Render( shader, technique );
 		}
@@ -918,28 +919,28 @@ namespace
 	//	AI操作
 	void	BaseChara::ControlAI( void )
 	{
-		//switch (aiInfo.mode)
-		//{
-		//case AI_MODE_STATE::ATTACK:
-		//	AutoAttack();
-		//	break;
+		switch (aiInfo.mode)
+		{
+		case AI_MODE_STATE::ATTACK:
+			AutoAttack();
+			break;
 
-		//case AI_MODE_STATE::RUN:		//　コインを取りに行く
-		//	AutoRun();
-		//	break;
+		case AI_MODE_STATE::RUN:		//　コインを取りに行く
+			AutoRun();
+			break;
 
-		//case AI_MODE_STATE::RUNAWAY:
-		//	RunAway();
-		//	break;
+		case AI_MODE_STATE::RUNAWAY:
+			RunAway();
+			break;
 
-		//case AI_MODE_STATE::GUARD:
-		//	AutoGuard();
-		//	break;
+		case AI_MODE_STATE::GUARD:
+			AutoGuard();
+			break;
 
-		//case AI_MODE_STATE::WAIT:
-		//	AutoWait();
-		//	break;
-		//}
+		case AI_MODE_STATE::WAIT:
+			AutoWait();
+			break;
+		}
 
 		//--------------------------------------------
 		//　ここでは各モードになるための条件を実装

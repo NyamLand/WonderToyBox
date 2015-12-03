@@ -13,7 +13,10 @@
 
 Pirate_Bullet01::Pirate_Bullet01() :explosion(false)
 {
-
+	for (int i = 0; i < PLAYER_MAX; i++)
+	{
+		isPlayerCheck[i] = false;
+	}
 }
 
 bool Pirate_Bullet01::Initialize()
@@ -39,17 +42,18 @@ void	Pirate_Bullet01::Update(void)
 	limitTimer--;
 
 	StageCollisionCheck();
-	if (PlayerCollisionCheck()) explosion = true;
 
-	if (explosion)
+
+	if (PlayerCollisionCheck() || Collision::CheckWall(pos, move))
 	{
-		radius += 5.0f;
-		move = Vector3(0, 0, 0);
+		enable = false;
+		explosion = true;
 	}
 
-	//爆発範囲が一定以上になったら消去
-	if (radius > 150.0f) state = false;
+	if (explosion) Explode();
 
+
+	pos += move;
 
 	obj->SetAngle(angle);
 	obj->SetPos(pos);
@@ -61,10 +65,16 @@ void	Pirate_Bullet01::Update(void)
 void	Pirate_Bullet01::Move(void)
 {
 	move.y += GRAVITY;
-	if (Collision::CheckWall(pos, move)) explosion = true;/*state = false*/;
-	pos += move;
+
 }
 
+void	Pirate_Bullet01::Explode(void)
+{
+	radius += 1.0f;
+	move = Vector3(0, 0, 0);
+	//爆発範囲が一定以上になったら消去
+	if (radius > 40.0f) state = false;
+}
 
 //	プレイヤーとのあたりチェック
 bool	Pirate_Bullet01::PlayerCollisionCheck(void)
@@ -72,6 +82,7 @@ bool	Pirate_Bullet01::PlayerCollisionCheck(void)
 	for (int i = 0; i < 4; i++)
 	{
 		if (i == playerNum) continue;	//撃ったプレイヤーなら除外
+		if (isPlayerCheck[i]) continue;	//同一のプレイヤーと二度以上触れるの禁止
 		if (!activate)	continue;
 		if (characterManager->GetUnrivaled(i))	continue;
 
@@ -83,12 +94,13 @@ bool	Pirate_Bullet01::PlayerCollisionCheck(void)
 		//	バレット情報設定
 		Vector3	bulletPos = GetPos();
 		//bulletPos.y += 0.5f;
-		float		bullet_r = scale.y * radius;
+		float		bullet_r = radius;
 
 		bool isHit = Collision::CapsuleVSSphere(p_pos_bottom, p_pos_top, p_r, bulletPos, bullet_r);
 
 		if (isHit)
 		{
+			isPlayerCheck[i] = true;
 			//	エフェクトだす
 			//state = false;
 			float	effectScale = 0.2f;

@@ -112,6 +112,7 @@
     <ClCompile Include="source\BaseBullet.cpp" />
     <ClCompile Include="source\Pirate.cpp" />
     <ClCompile Include="source\Pirate_Bullet01.cpp" />
+    <ClCompile Include="source\Pirate_Bullet02.cpp" />
     <ClCompile Include="source\Pirate_CPU.cpp" />
     <ClCompile Include="source\Squirrel_Bullet01.cpp" />
     <ClCompile Include="source\StageManager.cpp" />
@@ -182,6 +183,7 @@
     <ClInclude Include="source\BaseBullet.h" />
     <ClInclude Include="source\Pirate.h" />
     <ClInclude Include="source\Pirate_Bullet01.h" />
+    <ClInclude Include="source\Pirate_Bullet02.h" />
     <ClInclude Include="source\Pirate_CPU.h" />
     <ClInclude Include="source\Squirrel_Bullet01.h" />
     <ClInclude Include="source\StageManager.h" />
