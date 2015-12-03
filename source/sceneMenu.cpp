@@ -51,7 +51,7 @@
 //-------------------------------------------------------------------------------
 
 	//	コンストラクタ
-	sceneMenu::sceneMenu( bool retry )
+	sceneMenu::sceneMenu( void )
 	{
 	
 	}
@@ -78,9 +78,7 @@
 		screen->SetScreenMode( SCREEN_MODE::WIPE_IN, 1.5f );
 
 		//	ゲームマネージャ初期化
-		tempPlayerNum = gameManager->GetPlayerNum();
 		gameManager->Initialize();
-		if ( retry )	gameManager->SetPlayerNum( tempPlayerNum );
 		OptionInitialize();
 		
 		//	画像読み込み
@@ -102,7 +100,7 @@
 		//	モデル読み込み
 		//org[CHARACTER_TYPE::KNIGHT] = new iex3DObj( "DATA/CHR/Knight/Knight_Dammy.IEM" );		//	騎士
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Knight/Knight_Dammy.IEM" ) );		//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/プリンセス/prinsess.IEM" ) );					//	姫
+		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Y2009/Y2009.IEM" ) );					//	姫
 		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>(LPSTR("DATA/CHR/SQUIRREL/SQUIRREL.IEM"));		//	リス
 		//org[CHARACTER_TYPE::TIGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/ECCMAN/ECCMAN.IEM" ) );				//	トラ
 		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>(LPSTR("DATA/CHR/ECCMAN/ECCMAN.IEM"));				//	海賊
@@ -150,7 +148,7 @@
 		//	モード設定
 		tempmode = 0;
 		SetMode( MENU_MODE::INIT );
-		
+
 		//	全体更新
 		Update();
 		return	true;
@@ -184,8 +182,7 @@
 		case MENU_MODE::INIT:
 			if ( screen->GetScreenState() )
 			{
-				if( !retry )		SetMode( MENU_MODE::SELECT_PLAYERNUM );
-				else				SetMode( MENU_MODE::SELECT_CHARACTER );
+				SetMode( MENU_MODE::SELECT_PLAYERNUM );
 			}
 			break;
 
@@ -217,7 +214,7 @@
 			OptionUpdate();
 			break;
 		}
-		if (KEY_Get(KEY_D) == 3||KEY_Get(KEY_B6)==3){
+		if (KEY_Get(KEY_D) == 3||KEY_Get(KEY_B5)==3){
 			if (mode != MENU_MODE::OPTION){
 				tempmode = mode;
 				SetMode(MENU_MODE::OPTION);
@@ -306,7 +303,7 @@
 				playerNumSelectInfo.num++;
 				if ( playerNumSelectInfo.num >= 4 )
 				{
-					playerNumSelectInfo.num = -1;
+					playerNumSelectInfo.num = 3;
 					playerNumSelectInfo.t = 1.0f;
 				}
 				else
@@ -322,7 +319,7 @@
 				playerNumSelectInfo.num--;
 				if ( playerNumSelectInfo.num < 0 )
 				{
-					playerNumSelectInfo.num = 4;
+					playerNumSelectInfo.num = 0;
 					playerNumSelectInfo.t = 1.0f;
 				}
 				else
@@ -644,7 +641,7 @@
 
 		//	ステージ座標、向き設定
 		{
-			deskStage->SetPos( 0.0f, 5.0f, 5.0f );
+			deskStage->SetPos( -7.0f, 5.0f, 5.0f );
 			deskStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 			deskStage->SetScale( 0.08f );
 			deskStage->Update();
@@ -740,6 +737,8 @@
 			h = static_cast<int>( iexSystem::ScreenHeight * 0.13f );
 			checkCursor->Render( x, y, w, h, 0, checkSelectInfo.select * 128, 512, 128 );
 		}
+
+		OptionSelectRender();
 	}
 
 //-------------------------------------------------------------------------------
@@ -783,7 +782,7 @@
 	{
 		if ( screen->GetScreenState() )
 		{
-			MainFrame->ChangeScene( new sceneTitle() );
+			MainFrame->ChangeScene( new sceneLoad( new sceneTitle() ) );
 			return;
 		}
 	}
@@ -797,8 +796,7 @@
 //-------------------------------------------------------------------------------
 //	オプション関数
 //-------------------------------------------------------------------------------
-	
-	//	初期化
+	//	オプション
 	void	sceneMenu::OptionInitialize( void )
 	{
 		//　構造体初期化
@@ -807,12 +805,11 @@
 		optionInfo.minute = 1;
 		optionInfo.second = 3;
 		optionInfo.step = 0;
-		gameManager->SetItemFlg( optionInfo.itemflg );
-		gameManager->SetCoinMax( optionInfo.coinMAX );
-		gameManager->SetTime( optionInfo.minute, optionInfo.second );
+		gameManager->SetItemFlg(optionInfo.itemflg);
+		gameManager->SetCoinMax(optionInfo.coinMAX);
+		gameManager->SetTime(optionInfo.minute, optionInfo.second);
 	}
 
-	//	更新
 	void	sceneMenu::OptionUpdate( void )
 	{
 		if (KEY_Get(KEY_DOWN) == 3){
@@ -874,7 +871,6 @@
 			gameManager->SetTime(optionInfo.minute,optionInfo.second);
 	}
 
-	//	描画
 	void	sceneMenu::OptionRender( void )
 	{
 		Oimage->Render(300, 150, 512, 128, 0, 128*2, 512, 128);
@@ -887,6 +883,7 @@
 		}
 		else{
 			Oimage->Render(950, 150, 256, 128, 256, 128 * 3, 256, 128);
+
 		}
 		//コインMAXの描画
 		OCmax->Render(940,			350, 128, 128,			(optionInfo.coinMAX/100)*64, 128 * 0, 64, 64);
@@ -898,8 +895,6 @@
 
 		Omenu->Render(80, 50, 256, 128, 0, 64, 256, 128);
 	}
-
-	//	タイマー描画
 	void	sceneMenu::TimerRender(void)
 	{
 		OCmax->Render(930 , 550, 128, 128, optionInfo.minute*64, 64 * 0, 64, 64);
@@ -909,8 +904,32 @@
 		Oimage->Render(1300, 550, 128, 128, 384, 128 * 1, 128, 128);
 
 	}
+	void	sceneMenu::OptionSelectRender()
+	{
+		
+		//項目描画
+		Oimage->Render(800, 320, 256, 64, 0, 128 * 2, 512, 128);
+		Oimage->Render(800, 420, 256, 64, 0, 128 * 0, 512, 128);
+		Oimage->Render(800, 520, 128, 64, 0, 128 * 1, 256, 128);
+		//アイテムの有無描画
+		if (optionInfo.itemflg){
+			Oimage->Render(1100, 320, 128, 64, 0, 128 * 3, 256, 128);
+		}
+		else{
+			Oimage->Render(1100, 320, 128, 64, 256, 128 * 3, 256, 128);
 
-	//	カーソル描画
+		}
+		//コインMAXの描画
+		OCmax->Render(1100, 420, 64, 64, (optionInfo.coinMAX / 100) * 64, 128 * 0, 64, 64);
+		OCmax->Render(1150, 420, 64, 64, ((optionInfo.coinMAX / 10) % 10) * 64, 128 * 0, 64, 64);
+		OCmax->Render(1200, 420, 64, 64, 0, 128 * 0, 64, 64);
+		//タイム
+		OCmax->Render(1080, 520, 64, 64, optionInfo.minute * 64, 64 * 0, 64, 64);
+		OCmax->Render(1200, 520, 64, 64, ((optionInfo.second / 10) % 10) * 64, 64 * 0, 64, 64);
+		OCmax->Render(1240, 520, 64, 64, 0, 64 * 0, 64, 64);
+		Oimage->Render(1140, 520, 64, 64, 256, 128 * 1, 128, 128);
+		Oimage->Render(1300, 520, 64, 64, 384, 128 * 1, 128, 128);
+	}
 	void	sceneMenu::ArrowRender()
 	{
 		switch (optionInfo.step){
@@ -931,6 +950,7 @@
 			break;
 		}
 	}
+
 
 //-------------------------------------------------------------------------------
 //	情報設定

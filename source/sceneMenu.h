@@ -63,6 +63,7 @@ private:
 	iex2DObj*				Omenu;
 public:
 	void TimerRender(void);
+	void OptionSelectRender(void);
 
 private:
 	//	‰æ‘œEƒ‚ƒfƒ‹
@@ -94,12 +95,10 @@ private:
 	//	‹¤’Ê•Ï”
 	int		mode;
 	int		tempmode;
-	int		tempPlayerNum;
-	bool		retry;
 	
 public:
 	//	‰Šú‰»E‰ğ•ú
-	sceneMenu( bool retry = false );
+	sceneMenu( void );
 	~sceneMenu( void );
 	bool	Initialize( void );
 	void	Release( void );
