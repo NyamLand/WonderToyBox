@@ -17,13 +17,13 @@ class Princess : public		BaseChara
 private:
 	enum MOTION_DATA
 	{
-		STAND = 1,			//	—§‚¿
-		POSTURE,				//	\‚¦
-		RUN = 4,				//	‘–‚è
+		STAND = 0,			//	—§‚¿
+		POSTURE = 0,		//	\‚¦
+		RUN,					//	‘–‚è
+		JUMP,
 		ATTACK1,				//	UŒ‚‚P’iŠK–Ú
 		ATTACK2,				//	UŒ‚‚Q’iŠK–Ú
 		ATTACK3,				//	UŒ‚‚R’iŠK–Ú
-		JUMP,
 		GUARD,
 	};
 
