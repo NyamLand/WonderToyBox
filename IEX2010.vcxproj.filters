@@ -178,6 +178,9 @@
     <Filter Include="ソース ファイル\Character\CPU\Pirate">
       <UniqueIdentifier>{8c8922ea-b73d-4438-886e-4ed68fbe9e8b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Bullet\Pirate_Bullet02">
+      <UniqueIdentifier>{0a3c6889-e7c2-46fd-b57a-b940359c59c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -384,6 +387,9 @@
     <ClCompile Include="source\Pirate_CPU.cpp">
       <Filter>ソース ファイル\Character\CPU\Pirate</Filter>
     </ClCompile>
+    <ClCompile Include="source\Pirate_Bullet02.cpp">
+      <Filter>ソース ファイル\Bullet\Pirate_Bullet02</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -544,6 +550,9 @@
     </ClInclude>
     <ClInclude Include="source\Pirate_CPU.h">
       <Filter>ソース ファイル\Character\CPU\Pirate</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Pirate_Bullet02.h">
+      <Filter>ソース ファイル\Bullet\Pirate_Bullet02</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

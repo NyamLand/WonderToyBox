@@ -6,6 +6,7 @@
 #include	"Pirate.h"
 #include	"GameManager.h"
 #include	"BulletManager.h"
+#include	"Random.h"
 
 //*********************************************************************************
 //
@@ -152,37 +153,34 @@ bool	Pirate::PowerArts(void)
 //	ハイパーアーツ
 bool	Pirate::HyperArts(void)
 {
-	power = HYPER;
+	static int time = 0;
 
-	static	int		num = 0;	//	回数
-	SetMove(Vector3(0.0f, 0.0f, 0.0f));
-	Vector3	p_pos = GetPos();
-	attackInfo.pos = Vector3(p_pos.x, p_pos.y + 1.5f, p_pos.z);
+	//	行列から情報取得
+	SetMove(Vector3(0.0f, move.y, 0.0f));
 
-	//	範囲拡大
-	float t = GetBezier(ePrm_t::eSlow_Lv4, ePrm_t::eRapid_Lv1, attackInfo.t);
-	Lerp(attackInfo.r, 0.0f, 50.0f, t);
+	float	 bulletSpeed = 0.5f;
+	int leanpower = 30;
+	int playerNum = GetPlayerNum();
 
-	//	パラメータ加算
-	attackInfo.t += 0.02f;
-
-	if (attackInfo.t >= 1.0f)
+	time++;
+	if (time % 2 == 0)
 	{
-		switch (num)
-		{
-		case 0:
-			num++;
-			attackInfo.t = 0.0f;
-			break;
+		Vector3	p_pos = Vector3(Random::GetFloat(-40.0f, 40.0f), 50.0f, Random::GetFloat(-40.0f, 40.0f));
+		Vector3 vec = Vector3(Random::GetFloat(-0.1f, 0.1f), 1.0f, Random::GetFloat(-0.1f, 0.1f));
 
-		case 1:
-			num = 0;
-			return	true;
-			break;
-		}
+		m_BulletManager->Set(BULLET_TYPE::PIRATE_02, new Pirate_Bullet02, p_pos, vec, bulletSpeed, playerNum);
+	}
+
+	//5秒後弾降らしやめる
+	if (time >= 120)
+	{
+		time = 0;
+		return true;
 	}
 	return	false;
 }
+
+
 
 //	モーション管理
 void	Pirate::MotionManagement(int motion)

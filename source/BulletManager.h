@@ -10,6 +10,7 @@
 #include	"Thief_Bullet03.h"
 #include	"Thief_Bullet04.h"
 #include	"Pirate_Bullet01.h"
+#include	"Pirate_Bullet02.h"
 //******************************************************************************
 //
 //	BulletManagerクラス
@@ -24,7 +25,8 @@ namespace BULLET_TYPE
 		THIEF_02,
 		THIEF_03,
 		THIEF_04,
-		PIRATE_01
+		PIRATE_01,
+		PIRATE_02,
 	};
 }
 
@@ -49,12 +51,13 @@ namespace
 	//消滅するまでの時間
 	int BULLET_LIMITTIMER[] =
 	{
-		10 * SECOND,		//リス1
+		100 * SECOND,		//リス1
 		3  * SECOND,		//怪盗1
-		10 * SECOND,		//怪盗2
-		10 * SECOND,		//怪盗3のアーム
-		10 * SECOND,		//怪盗3の手部分
+		100 * SECOND,		//怪盗2
+		100 * SECOND,		//怪盗3のアーム
+		100 * SECOND,		//怪盗3の手部分
 		3  * SECOND,		//海賊1
+		100 * SECOND,		//海賊2
 	};
 
 	//あたり判定が円状でないものに関してはNULL
@@ -65,7 +68,8 @@ namespace
 		10.0f,		//怪盗2
 		NULL,		//怪盗3のアーム
 		100.0f,		//怪盗3の手部分
-		10.0f		//海賊1
+		0.5f,		//海賊1
+		0.5f		//海賊2
 	};
 }
 

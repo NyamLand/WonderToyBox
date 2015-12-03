@@ -69,14 +69,15 @@ state(false), activate(false)
 	//	描画
 	void	BaseBullet::Render(void)
 	{
-		obj->Render();
-		DrawSphere( Vector3( pos.x, pos.y, pos.z ), scale.y * radius, 0xFFFF0000 );
+		if(enable) obj->Render();
+		DrawSphere( Vector3( pos.x, pos.y, pos.z ), radius / 5, 0xFFFF0000 );
 	}
 
 	//	シェーダー付き描画
 	void	BaseBullet::Render(iexShader* shader, LPSTR technique)
 	{
 		obj->Render( shader, technique );
+		
 	}
 
 //-------------------------------------------------------------------------------
@@ -113,7 +114,7 @@ state(false), activate(false)
 			//	バレット情報設定
 			Vector3	bulletPos = GetPos();
 			//bulletPos.y += 0.5f;
-			float		bullet_r = scale.y * radius;
+			float		bullet_r = radius;
 
 			bool isHit = Collision::CapsuleVSSphere( p_pos_bottom, p_pos_top, p_r, bulletPos, bullet_r );
 
