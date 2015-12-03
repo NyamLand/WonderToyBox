@@ -106,7 +106,7 @@
 		//	オリジナルモデル情報初期化
 		org[CHARACTER_TYPE::SCAVENGER]->SetScale( 0.05f );	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->SetScale( 0.04f );	//	姫
-		org[CHARACTER_TYPE::THIEF]->SetScale( 0.15f );			//	怪盗
+		org[CHARACTER_TYPE::THIEF]->SetScale( 0.03f );			//	怪盗
 		org[CHARACTER_TYPE::PIRATE]->SetScale( 0.02f );			//	海賊
 
 		org[CHARACTER_TYPE::SCAVENGER]->SetAngle( D3DX_PI );	//	掃除屋

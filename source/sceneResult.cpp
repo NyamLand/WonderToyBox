@@ -771,7 +771,6 @@
 			sortInfo[maxCoinNum[0].rank].num += bonus;
 			originInfo[maxCoinNum[0].rank].bonus = bonus;
 			bonusPlayer = maxCoinNum[0].rank;
-			
 			break;
 
 		case 1:
