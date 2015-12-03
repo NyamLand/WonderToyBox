@@ -224,19 +224,19 @@ bool	Scavenger::HyperArts( void )
 	//–³“G”»’è‚ðØ‚ç‚È‚¢‚Æ‚»‚à‚»‚àƒRƒCƒ“‚ðW‚ß‚ç‚ê‚È‚¢‚Ì‚Å–³“GØ‚Á‚Ä‚Ü‚·B
 	//–â‘è‚È‚çŒ¾‚Á‚Ä‚­‚¾‚³‚¢
 	unrivaled = false;
-	absorb_length = 10.0f;
+	absorb_length = 25.0f;
 	stayTime++;
 
+	m_Effect->StormSet(this->pos + Vector3(0.0f, 2.0f, 0.0f) , 2 * SECOND);
 	list<Coin*>	coinList = coinManager->GetList();
 	FOR_LIST( coinList.begin(), coinList.end() )
 	{
 		bool	state = ( *it )->GetState();
 		if ( state )
 		{
-			m_Effect->StormSet( this->pos + Vector3( 0.0f, 8.0f, 0.0f ) );
 			Vector3 vec = ( *it )->GetPos() - this->pos;
-			vec.Normalize();
 			float length = vec.Length();
+			vec.Normalize();
 			if ( length < absorb_length )
 			{
 				( *it )->SetMove( -vec * 1.0f );
@@ -249,7 +249,6 @@ bool	Scavenger::HyperArts( void )
 	{
 		stayTime = 0;
 		absorb_length = DEFAULT_ABSORB_LENGTH;
-		m_Effect->StormOff();
 		return true;
 	}
 

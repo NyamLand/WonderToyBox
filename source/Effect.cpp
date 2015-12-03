@@ -57,6 +57,7 @@
 		aura = new iexMesh("DATA/Effect/state/aura.IMO");
 		storm = new iexMesh("DATA/Effect/cyclone/cyclone.IMO");
 		storm_pos = Vector3(0.0f, 0.0f, 0.0f);
+		storm_time = 0;
 
 		circle_pic[0] = new iex2DObj("DATA/Effect/circle/PL1.png");
 		circle_pic[1] = new iex2DObj("DATA/Effect/circle/PL2.png");
@@ -118,6 +119,9 @@
 		}
 		//	オーラ
 		AuraUpdate();
+
+		//	竜巻タイマー
+		StormTimer();
 		
 		_adjustV += 0.02f;
 
@@ -162,21 +166,32 @@
 	}
 
 	//	竜巻
-	void	Effect::StormSet( Vector3 pos)
+	void	Effect::StormSet( Vector3 pos, int time)
 	{
+		if (isStorm) return;
+
+
 		isStorm = true;
 		storm_pos = pos;
+		storm_time = time;
 
 		storm->SetPos(storm_pos);
-		storm->SetScale(0.02f);
+		storm->SetScale(0.06f,0.02f,0.06f);
 		storm->SetAngle(0.0f);
 		storm->Update();
 
 	}
 
-	void	Effect::StormOff( void )
+	void	Effect::StormTimer( void )
 	{
-		isStorm = false;
+		if (storm_time > 0)
+		{
+			storm_time--;
+		}
+		else
+		{
+			isStorm = false;
+		}
 	}
 
 	//	回転

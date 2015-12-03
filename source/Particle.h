@@ -32,6 +32,7 @@ public:
 	void	Particle::Arrow_DOWN(const Vector3& pos, const float& scale = 1.0f, const int move = 100, const int& time =11);				//	ñÓàÛDOWN
 	void	Particle::Suck(const Vector3& pos, const Vector3& target, const Vector3& side, const float& length, const float& scale = 1.0f, const int& time = 60);					//	ãzÇ¢çûÇ›
 	void	Particle::Dust(const Vector3& pos, const Vector3& back, const Vector3& side, const float& scale = 1.0f, const int& time = 1);
+	void	Particle::Bom(const Vector3& pos, const float& move, const float& scale = 1.0f, const int& time = 6);
 
 
 
