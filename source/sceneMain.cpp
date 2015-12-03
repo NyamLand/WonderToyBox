@@ -207,16 +207,7 @@
 		ui->Update( gameManager->GetMode() );
 
 		//	Playerワイプ更新
-		playerWipe->Update();
-		FOR(0, PLAYER_MAX)
-		{
-			playerWipe->Check( value );
-			playerWipe->Arrow( value, mainView->GetTarget() );
-			playerWipe->Move( value, mainView->GetTarget() );
-			Vector3 test = characterManager->GetPos(0) - mainView->GetTarget();
-			
-		//	printf(" %f\n", test.Length());
-		}
+		playerWipe->Update( mainView->GetTarget() );
 
 		//	デバッグモード切り替え
 		if ( KEY( KEY_ENTER ) == 3 )		debug = !debug;
@@ -294,6 +285,9 @@
 	//	どんけつ更新
 	void	sceneMain::DonketsuUpdate( void )
 	{
+		//	ワイプ描画停止
+		playerWipe->CheckOff();
+
 		if ( ui->GetChangeFlag() )
 		{
 			gameManager->SetMode( GAME_MODE::CLIMAX );
@@ -376,6 +370,7 @@
 			//		プレイヤー個人ワイプ
 			else
 			{
+				if (!playerWipe->GetCheck( value ))	continue;
 				playerWipe->RenderTarget( value );
 			}
 

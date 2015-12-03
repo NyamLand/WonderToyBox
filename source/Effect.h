@@ -41,8 +41,13 @@ private:
 		bool	state[4];
 	};
 private:
+	//	オーラ
 	iexMesh*	aura;
 	bool		isAura;
+	//	竜巻
+	iexMesh*	storm;
+	bool		isStorm;
+	Vector3		storm_pos;
 	float		_adjustV;
 
 	iex2DObj*	circle_pic[4];
@@ -66,6 +71,9 @@ public:
 	//	更新・描画
 	void	Spin( void );
 	void	Update( void );
+	void	AuraUpdate( void );
+	void	StormSet( Vector3 pos );
+	void	StormOff( void );
 	void	Render( void );
 	void	RenderShield( void );
 

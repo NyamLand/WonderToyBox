@@ -139,6 +139,7 @@
 		image.t = 0.0f;
 		image.alpha = 1.0f;
 		image.angle = 0.0f;
+		image.color = Vector3(1.0f, 1.0f, 1.0f);
 		image.p = GetPoint( image.x, image.y );
 		image.renderflag = true;
 
@@ -172,7 +173,7 @@
 
 		case IMAGE_MODE::ADOPTPARAM:
 			if ( image.renderflag )
-				image.obj->Render( posx, posy, width, height, sx, sy, sw, sh, image.p, image.angle, RS_COPY, GetColor( 1.0f, 1.0f, 1.0f, image.alpha ) );
+				image.obj->Render( posx, posy, width, height, sx, sy, sw, sh, image.p, image.angle, RS_COPY, GetColor( image.color, image.alpha ) );
 			break;
 
 		case IMAGE_MODE::WAVE:
@@ -182,12 +183,12 @@
 			posy = image.y - height / 2;
 
 			if ( image.waverenderflag )
-			image.obj->Render( posx, posy, width, height, sx, sy, sw, sh, image.p, image.angle, RS_COPY, GetColor( 1.0f, 1.0f, 1.0f, image.waveAlpha ) );
+			image.obj->Render( posx, posy, width, height, sx, sy, sw, sh, image.p, image.angle, RS_COPY, GetColor( image.color, image.waveAlpha ) );
 			break;
 
 		case IMAGE_MODE::FLASH:
 			if ( image.flashingRenderflag )
-				image.obj->Render( posx, posy, width, height, sx, sy, sw, sh, RS_COPY, GetColor( 1.0f, 1.0f, 1.0f, image.flashingAlpha ) );
+				image.obj->Render( posx, posy, width, height, sx, sy, sw, sh, RS_COPY, GetColor( image.color, image.flashingAlpha ) );
 			break;
 		}
 	}
@@ -209,7 +210,7 @@
 
 		case IMAGE_MODE::ADOPTPARAM:
 			if (image.renderflag)
-				image.obj->Render(posx, posy, width, height, sx, sy, sw, sh, image.p, image.angle, RS_COPY, GetColor(1.0f, 1.0f, 1.0f, image.alpha));
+				image.obj->Render(posx, posy, width, height, sx, sy, sw, sh, image.p, image.angle, RS_COPY, GetColor(image.color, image.alpha));
 			break;
 
 		case IMAGE_MODE::WAVE:
@@ -219,12 +220,12 @@
 			posy = y - height / 2;
 
 			if (image.waverenderflag)
-				image.obj->Render(posx, posy, width, height, sx, sy, sw, sh, RS_COPY, GetColor(1.0f, 1.0f, 1.0f, image.waveAlpha));
+				image.obj->Render(posx, posy, width, height, sx, sy, sw, sh, RS_COPY, GetColor(image.color, image.waveAlpha));
 			break;
 
 		case IMAGE_MODE::FLASH:
 			if (image.flashingRenderflag)
-				image.obj->Render(posx, posy, width, height, sx, sy, sw, sh, RS_COPY, GetColor(1.0f, 1.0f, 1.0f, image.flashingAlpha));
+				image.obj->Render(posx, posy, width, height, sx, sy, sw, sh, RS_COPY, GetColor(image.color, image.flashingAlpha));
 			break;
 		}
 	}

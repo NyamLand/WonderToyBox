@@ -19,6 +19,8 @@ private:
 						float	WIPE_LEFT;
 						float	WIPE_UP;
 						float	WIPE_DOWN;
+						float	WIPE_SIZE;
+						float	FRAME_SIZE;
 						float	LEN_MAX;
 
 private:
@@ -44,12 +46,14 @@ public:
 	bool	Initialize( void );
 
 	//	XV
-	void	Update( void );
+	void	Update( Vector3 target );
 	void	Set( void );
-	void	Check( int num );
+	void	Check( void );
 	void	Arrow( int num, Vector3 target );
 	void	Move( int num, Vector3 target );
+	void	SufferChecker( int num );
 	Vector3	LengthChecker( int num, Vector3 target );
+	void	CheckOff( void );
 
 	//	•`‰æ
 	void	Render( void );
@@ -57,6 +61,7 @@ public:
 
 	//	î•ñæ“¾
 	static	PlayerWipe*		GetInstance();
+	bool	GetCheck( int num ){ return check[num]; }
 
 };
 #define	 playerWipe ( PlayerWipe::GetInstance() )

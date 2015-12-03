@@ -25,6 +25,8 @@ namespace
 			SMOKE,
 			ARROW_UP,
 			ARROW_DOWN,
+			DUST,
+			SUCK,
 		};
 	}
 
@@ -250,12 +252,12 @@ namespace
 			Pos =  pos + v1 * t_len;
 
 			//	向きを逆に
-			Move = -v1;
+			Move = -v1 * scale;
 
 			Power = Move * (Random::GetFloat(0.0001f, 0.001f));
 
 			//		画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
-			pt->Set(ARROW_DOWN, 0, 1.0f, 1 * (int)length, 1.0f, 0, 1.0f, &Pos, &Move, &Power, 1.0f, 1.0f, 1.0f, scale, RS_COPY);
+			pt->Set(SUCK, 0, 1.0f, 2 * (int)length, 1.0f, 0, 1.0f, &Pos, &Move, &Power, 1.0f, 1.0f, 1.0f, scale, RS_COPY);
 		}
 	}
 
@@ -282,7 +284,7 @@ namespace
 			Move = ran_pos - pos;
 			Move.Normalize();
 
-			Move *= (Random::GetFloat(0.05f, 0.2f));
+			Move *= (Random::GetFloat(0.05f, 0.2f) * scale);
 
 
 			Power = Move * (Random::GetFloat(0.00001f, 0.0001f)) + Vector3(0.0f, 1.0f, 0.0f) * (Random::GetFloat(0.0001f, 0.001f));
@@ -300,7 +302,7 @@ namespace
 
 
 			//		画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
-			pt->Set(ARROW_DOWN, 0, 0.0f, 60, 0.0f, 20, 1.0f, &Pos, &Move, &Power, 1.0f, 1.0f, 1.0f, scale, RS_COPY);
+			pt->Set(DUST, 0, 0.0f, 60, 0.0f, 20, 1.0f, &Pos, &Move, &Power, 1.0f, 1.0f, 1.0f, scale, RS_COPY);
 		}
 	}
 

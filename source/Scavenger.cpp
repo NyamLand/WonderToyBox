@@ -7,6 +7,7 @@
 #include	"Coin.h"
 #include	"CoinManager.h"
 #include	"GameManager.h"
+#include	"Effect.h"
 
 //*********************************************************************************
 //
@@ -224,6 +225,7 @@ bool	Scavenger::HyperArts( void )
 		bool	state = ( *it )->GetState();
 		if ( state )
 		{
+			m_Effect->StormSet(this->pos + Vector3(0.0f, 8.0f, 0.0f));
 			Vector3 vec = ( *it )->GetPos() - this->pos;
 			vec.Normalize();
 			float length = vec.Length();
@@ -239,6 +241,7 @@ bool	Scavenger::HyperArts( void )
 	{
 		stayTime = 0;
 		absorb_length = DEFAULT_ABSORB_LENGTH;
+		m_Effect->StormOff();
 		return true;
 	}
 
