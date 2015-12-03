@@ -209,6 +209,8 @@
 		titleInfo.t = 0.0f;
 		titleInfo.moveState = false;
 		titleInfo.savePos = 0;
+
+		AirPlaneInitialize();
 	}
 
 	//	ÉÅÉCÉìópèâä˙âª
@@ -436,11 +438,11 @@
 	{
 		airPlaneInfo.IN_START_POS_X = static_cast<int>(iexSystem::ScreenWidth * 1.5f);
 		airPlaneInfo.IN_START_POS_Y = static_cast<int>(iexSystem::ScreenHeight * -0.13f);
-		airPlaneInfo.IN_END_POS_X = static_cast<int>(iexSystem::ScreenWidth / 2);
+		airPlaneInfo.IN_END_POS_X = static_cast<int>(iexSystem::ScreenWidth * 0.5f);
 		airPlaneInfo.IN_END_POS_Y = static_cast<int>(iexSystem::ScreenHeight * 0.2f);
-		airPlaneInfo.OUT_START_POS_X = static_cast<int>(iexSystem::ScreenWidth / 2);
+		airPlaneInfo.OUT_START_POS_X = static_cast<int>(iexSystem::ScreenWidth * 0.5f);
 		airPlaneInfo.OUT_END_POS_X = static_cast<int>(iexSystem::ScreenWidth * -0.55f);
-		airPlaneInfo.OUT_END_POS_Y = static_cast<int>(iexSystem::ScreenHeight * 0);
+		airPlaneInfo.OUT_END_POS_Y = static_cast<int>( iexSystem::ScreenHeight * -0.13f );
 		airPlaneInfo.ROLL_POINT_ADJUST_X = 200;
 	}
 
@@ -624,8 +626,8 @@
 		//	âÊëúç\ë¢ëÃèâä˙âª
 		int x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
 		int y = static_cast<int>( iexSystem::ScreenHeight * 0.5f );
-		int w = static_cast<int>( iexSystem::ScreenWidth * 0.15f );
-		int h = static_cast<int>( iexSystem::ScreenHeight * 0.27f );
+		int w = static_cast<int>( iexSystem::ScreenWidth * 0.3f );
+		int h = static_cast<int>( iexSystem::ScreenHeight * 0.5f );
 		ImageInitialize( alertImage, x, y, w, h, 0, 0, 256, 256 );
 		alertImage.renderflag = true;
 		ImageInitialize(alert_coinImage, x, y, w, h, 0, 0, 256, 256);
@@ -986,9 +988,9 @@
 		iexPolygon::Rect( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, RS_COPY, color);
 
 		//	åxçêâÊëúï`âÊ
-		(alertInfo.type == ALERT_TYPE_INFO::JAM) ?
-			RenderImage(alertImage, 0, 0, 256, 256, IMAGE_MODE::NORMAL) :
-			RenderImage(alert_coinImage, 0, 0, 256, 256, IMAGE_MODE::NORMAL);
+		( alertInfo.type == ALERT_TYPE_INFO::JAM ) ?
+			RenderImage( alertImage, 0, 0, 256, 256, IMAGE_MODE::NORMAL) :
+			RenderImage( alert_coinImage, 0, 0, 256, 256, IMAGE_MODE::NORMAL);
 	}
 
 	//	éûä‘åxçêï`âÊ

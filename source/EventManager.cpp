@@ -128,13 +128,16 @@
 	void	EventManager::Update( void )
 	{
 		//	カメラ傾き
-		if (event_Jam_Slope.eventFlag)		Event_Jam_Slope();
+		if ( event_Jam_Slope.eventFlag )		Event_Jam_Slope();
 
 		//	コイン逃走
-		if (event_Jam_CoinGetAway.eventflag)	Event_Jam_CoinGetAway();
+		if ( event_Jam_CoinGetAway.eventflag )	Event_Jam_CoinGetAway();
 
 		//	スリップ
-		if (event_Jam_Slip.eventflag)		Event_Jam_Slip();
+		if ( event_Jam_Slip.eventflag )		Event_Jam_Slip();
+
+		//	コインの滝
+		if ( event_Coin_Fall.eventflag )		Event_Coin_Fall();
 	}
 
 	//	描画
@@ -274,6 +277,23 @@
 			break;
 		}
 	}
+
+	//	コインの滝
+	void	EventManager::Event_Coin_Fall( void )
+	{
+		Vector3	pos = Vector3( Random::GetFloat( -20.0f, 20.0f ), 50.0f, Random::GetFloat( -20.0f, 12.0f ) );
+		static	Vector3	vec = Vector3( 0.0f, -1.0f, 0.0f );
+		static	float	power = 1.0f;
+		coinManager->Append( pos, vec, power );
+		event_Coin_Fall.count++;
+
+		if ( event_Coin_Fall.count >= 100 )
+		{
+			event_Coin_Fall.eventflag = false;
+			event_Coin_Fall.count = 0;
+			event_Coin_Fall.step = 0;
+		}
+	}
 	
 //--------------------------------------------------------------------------------
 //	情報取得
@@ -325,6 +345,7 @@
 			break;
 
 		case EVENT_MODE::COIN_FALL: 
+			event_Coin_Fall.eventflag = true;
 			break;
 
 		case EVENT_MODE::COIN_SPLASH: 

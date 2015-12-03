@@ -291,6 +291,7 @@
 		if ( ui->GetChangeFlag() )
 		{
 			gameManager->SetMode( GAME_MODE::CLIMAX );
+			eventManager->SetEvent( EVENT_MODE::COIN_FALL );
 			ui->SetChangeFlag( false );
 		}
 	}

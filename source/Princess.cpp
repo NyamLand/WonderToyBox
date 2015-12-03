@@ -139,8 +139,8 @@
 		attackInfo.t += 0.02f;
 
 		//	–³“Gó‘Ô
-		if (attackInfo.t <= 0.5f)		unrivaled = true;
-		else									unrivaled = false;
+		if ( attackInfo.t <= 0.5f )		unrivaled = true;
+		else										unrivaled = false;
 
 		if ( attackInfo.t >= 1.0f )	return	true;
 		return	false;
