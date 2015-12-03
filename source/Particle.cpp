@@ -82,16 +82,16 @@ namespace
 		Vector3	Pos, Move, Power;
 		for ( int j = 0; j<5; j++ )
 		{
-			Pos.x = pos.x + ( Random::GetInt( -1000, 0 )	 * ( 0.001f * scale ) );
-			Pos.y = pos.y + ( Random::GetInt( -500, 0 )	 * ( 0.001f * scale ) );
-			Pos.z = pos.z + ( Random::GetInt( -1000, 0 )		* ( 0.001f * scale ) );
+			Pos.x = pos.x + ( Random::GetFloat( -1000.0f, 0.0f )	 * ( 0.001f * scale ) );
+			Pos.y = pos.y + ( Random::GetFloat( -500.0f, 0.0f )	 * ( 0.001f * scale ) );
+			Pos.z = pos.z + ( Random::GetFloat( -1000.0f, 0.0f )		* ( 0.001f * scale ) );
 
 			Move.x = 0.0f;
 			Move.y = 0.0f;
 			Move.z = 0.0f;
 
 			Power.x = 0.0f;
-			Power.y = Random::GetInt( 0,100 ) * ( scale * 0.00015f );
+			Power.y = Random::GetFloat( 0.0f,100.0f ) * ( scale * 0.00015f );
 			Power.z = 0.0f;
 
 			//	画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
@@ -109,12 +109,12 @@ namespace
 			Pos.y = pos.y;
 			Pos.z = pos.z;
 
-			Move.x = Random::GetInt(-100, 100) *(0.002f * scale);
+			Move.x = Random::GetFloat(-100.0f, 100.0f) *(0.002f * scale);
 			Move.y = 1.0f * scale;
-			Move.z = Random::GetInt(-100, 100) * (0.002f * scale);
+			Move.z = Random::GetFloat(-100.0f, 100.0f) * (0.002f * scale);
 
 			Power.x = 0.0f;
-			Power.y = Random::GetInt(-100, 0) * ( scale * 0.001f );
+			Power.y = Random::GetFloat(-100.0f, 0.0f) * (scale * 0.001f);
 			Power.z = 0.0f;
 
 			//					画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
@@ -135,9 +135,9 @@ namespace
 			Pos.y = pos.y;
 			Pos.z = pos.z;
 
-			Move.x = Random::GetInt( -50, 50 ) * ( 0.005f * scale );
-			Move.y = 0.8f * scale + (0.2f * scale * (j %2));
-			Move.z = Random::GetInt( -20, 20 ) * ( 0.02f * scale );
+			Move.x = Random::GetFloat(-50.0f, 50.0f) * (0.005f * scale);
+			Move.y = 0.8f * scale + (0.2f * scale * (j % 2));
+			Move.z = Random::GetFloat(-20.0f, 20.0f) * (0.02f * scale);
 
 			Power.x = 0.0f;
 			Power.y = -(scale * 0.05f);
@@ -187,7 +187,7 @@ namespace
 			Pos.z = pos.z + (Random::GetInt(-move, move)	 * (0.01f * scale));
 
 			Move.x = 0.0f;
-			Move.y = Random::GetInt(50, 100)	 * (0.001f * scale);
+			Move.y = Random::GetFloat(50.0f, 100.0f)	 * (0.001f * scale);
 			Move.z = 0.0f;
 
 			Power.x = 0.0f;
@@ -213,7 +213,7 @@ namespace
 			Pos.z = pos.z + (Random::GetInt(-move, move)	 * (0.01f * scale));
 
 			Move.x = 0.0f;
-			Move.y = Random::GetInt(-100, -50)	 * (0.0007f * scale);
+			Move.y = Random::GetFloat(-100.0f, -50.0f)	 * (0.0007f * scale);
 			Move.z = 0.0f;
 
 			Power.x = 0.0f;
@@ -303,6 +303,48 @@ namespace
 
 			//		画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
 			pt->Set(DUST, 0, 0.0f, 60, 0.0f, 20, 1.0f, &Pos, &Move, &Power, 1.0f, 1.0f, 1.0f, scale, RS_COPY);
+		}
+	}
+
+	//	爆発
+	void	Particle::Bom(const Vector3& pos, const float& move, const float& scale, const int& time)
+	{
+		Vector3	Pos, Move, Power;
+		timer++;
+		if (timer % time != 0) return;
+
+		for (int j = 0; j<10; j++)
+		{
+			Pos.x = pos.x + (Random::GetFloat(-move, move) * (0.2f * scale));
+			Pos.y = pos.y + (Random::GetFloat( 0.0f, move) * (0.2f * scale));
+			Pos.z = pos.z + (Random::GetFloat(-move, move) * (0.2f * scale));
+
+			Move.x = 0.0f;
+			Move.y = 0.0f;
+			Move.z = 0.0f;
+
+			Power.x = 0.0f;
+			Power.y = 0.0f;
+			Power.z = 0.0f;
+
+			//					画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
+			pt->Set(DUST, 0, 1.0f, 60, 0.0f, 40, 0.5f, &Pos, &Move, &Power, 0.8f, 0.0f, 0.0f, scale, RS_COPY);
+
+			if (j <= 8) continue;
+
+			Pos.x = pos.x + (Random::GetFloat(-move, move) * (0.2f * scale));
+			Pos.y = pos.y + (Random::GetFloat(0.0f, move) * (0.2f * scale));
+			Pos.z = pos.z + (Random::GetFloat(-move, move) * (0.2f * scale));
+
+			Move.x = 0.0f;
+			Move.y = 0.0f;
+			Move.z = 0.0f;
+
+			Power.x = 0.0f;
+			Power.y = 0.0f;
+			Power.z = 0.0f;
+
+			IEX_SetParticle(DUST, 0, 1.0f, 60, 0.0f, 40, 0.5f, &Pos, &Move, &Power, 0.8f, 0.8f, 0.8f, scale, RS_SUB);
 		}
 	}
 

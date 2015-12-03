@@ -48,6 +48,7 @@ private:
 	iexMesh*	storm;
 	bool		isStorm;
 	Vector3		storm_pos;
+	int			storm_time;
 	float		_adjustV;
 
 	iex2DObj*	circle_pic[4];
@@ -72,8 +73,8 @@ public:
 	void	Spin( void );
 	void	Update( void );
 	void	AuraUpdate( void );
-	void	StormSet( Vector3 pos );
-	void	StormOff( void );
+	void	StormSet( Vector3 pos, int time );
+	void	StormTimer( void );
 	void	Render( void );
 	void	RenderShield( void );
 
