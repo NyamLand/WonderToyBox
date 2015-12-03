@@ -159,15 +159,15 @@
 	//	ステージ当たり判定チェック
 	void	Coin::StageCollisionCheck( void )
 	{
-		//	想定しているよりも高くとんでいたらスキップ
+		//	想定しているよりも高くとんでいたらスキップ　
 		if ( pos.y >= MAX_HEIGHT )	return;
-		//float work = Collision::GetHeight( pos );
-		//shadow.pos.y = work + 0.1f;
-		//if ( pos.y <= work )
-		//{
-		//	pos.y = work;
-		//	move.y = 0;
-		//}
+		float work = Collision::GetHeight( pos );
+		shadow.pos.y = work + 0.1f;
+		if ( pos.y <= work )
+		{
+			pos.y = work;
+			move.y = 0;
+		}
 	}
 
 	//	プレイヤーとのあたりチェック

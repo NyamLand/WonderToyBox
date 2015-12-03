@@ -1,5 +1,5 @@
 
-#ifndef __PRINCESS_H__
+#ifndef		__PRINCESS_H__
 #define	__PRINCESS_H__
 
 //*********************************************************************************
@@ -20,11 +20,16 @@ private:
 		STAND = 0,			//	立ち
 		POSTURE = 0,		//	構え
 		RUN,					//	走り
-		JUMP,
+		JUMP,					//	ジャンプ
 		ATTACK1,				//	攻撃１段階目
 		ATTACK2,				//	攻撃２段階目
-		ATTACK3,				//	攻撃３段階目
-		GUARD,
+		GUARD,				//	ガード
+		DAMAGE,				//	ダメージ
+		KNOCKBACK,		//	吹っ飛び
+		FALLTOGROUND,	//	地面に落下
+		GETUP,				//	起き上がる
+		WIN,					//	勝利
+		DEFEAT,				//	敗北
 	};
 
 private:

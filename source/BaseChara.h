@@ -78,14 +78,20 @@ namespace
 		enum 
 		{
 			STAND,					//	立ち
-			POSTURE,				//	構え
-			RUN,						//	走り
+			RUN,					//	走り
 			ATTACK1,				//	攻撃１段階目
+			POSTURE,				//	構え
 			JUMP,					//	ジャンプ
 			LANDING,				//	着地
 			ATTACK2,				//	攻撃２段階目
 			ATTACK3,				//	攻撃３段階目
 			GUARD,					//	ガード
+			DAMAGE,				//	ダメージ
+			KNOCKBACK,		//	吹っ飛び
+			FALLTOGROUND,	//	地面に落下
+			GETUP,				//	起き上がる
+			WIN,					//	勝利
+			DEFEAT,				//	敗北
 		};
 	}
 
@@ -122,6 +128,12 @@ private:
 		ATTACK2,				//	攻撃２段階目
 		ATTACK3,				//	攻撃３段階目
 		GUARD,					//	ガード
+		DAMAGE,				//	ダメージ
+		KNOCKBACK,		//	吹っ飛び
+		FALLTOGROUND,	//	地面に落下
+		GETUP,				//	起き上がる
+		WIN,					//	勝利
+		DEFEAT,				//	敗北
 	};
 
 protected:
@@ -251,7 +263,6 @@ protected:
 private:
 	virtual	void	MotionManagement( int motion );
 	virtual	void	ModeManagement( void );
-	void	SetMotion( int motion );
 	void	ParameterInfoInitialize( void );
 	void	ParameterInfoInitialize( PARAMETER_INFO& ps );
 
@@ -335,6 +346,7 @@ public:
 	void	SetRank( int rank );
 	void	SetParameterState( PARAMETER_INFO& paramterState, int time );
 	void	SetForce(float force);
+	void	SetMotion( int motion );
 
 	//	情報取得
 	Matrix	GetMatrix( void )const;

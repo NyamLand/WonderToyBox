@@ -187,27 +187,27 @@
 		switch ( motion )
 		{
 		case MOTION_NUM::STAND:
-			obj->SetMotion( MOTION_DATA::STAND );
+			SetMotion( MOTION_DATA::STAND );
 			break;
 
 		case MOTION_NUM::POSTURE:
-			obj->SetMotion( MOTION_DATA::POSTURE );
-			break;
-
-		case MOTION_NUM::JUMP:
-			obj->SetMotion( MOTION_DATA::JUMP );
-			break;
-
-		case MOTION_NUM::GUARD:
-			obj->SetMotion( MOTION_DATA::GUARD );
-			break;
-
-		case MOTION_NUM::LANDING:
-			obj->SetMotion( MOTION_DATA::POSTURE );
+			SetMotion( MOTION_DATA::POSTURE );
 			break;
 
 		case MOTION_NUM::RUN:
-			obj->SetMotion( MOTION_DATA::RUN );
+			SetMotion( MOTION_DATA::RUN );
+			break;
+
+		case MOTION_NUM::JUMP:
+			SetMotion( MOTION_DATA::JUMP );
+			break;
+
+		case MOTION_NUM::GUARD:
+			SetMotion( MOTION_DATA::GUARD );
+			break;
+
+		case MOTION_NUM::FALLTOGROUND:
+			SetMotion( MOTION_DATA::FALLTOGROUND );
 			break;
 
 		case MOTION_NUM::ATTACK1:
@@ -218,8 +218,12 @@
 			obj->SetMotion( MOTION_DATA::ATTACK2 );
 			break;
 
-		case MOTION_NUM::ATTACK3:
-			obj->SetMotion( MOTION_DATA::ATTACK3 );
+		case MOTION_NUM::GETUP:
+			SetMotion( MOTION_DATA::GETUP );
+			break;
+
+		case MOTION_NUM::KNOCKBACK:
+			SetMotion( MOTION_DATA::KNOCKBACK );
 			break;
 		}
 	}
