@@ -98,36 +98,30 @@
 		Omenu = new iex2DObj("DATA/UI/option-int.png");
 
 		//	モデル読み込み
-		//org[CHARACTER_TYPE::KNIGHT] = new iex3DObj( "DATA/CHR/Knight/Knight_Dammy.IEM" );		//	騎士
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Knight/Knight_Dammy.IEM" ) );		//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/プリンセス/prinsess.IEM" ) );					//	姫
 		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>(LPSTR("DATA/CHR/SQUIRREL/SQUIRREL.IEM"));		//	リス
-		//org[CHARACTER_TYPE::TIGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/ECCMAN/ECCMAN.IEM" ) );				//	トラ
 		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>(LPSTR("DATA/CHR/ECCMAN/ECCMAN.IEM"));				//	海賊
 
 		//	オリジナルモデル情報初期化
 		org[CHARACTER_TYPE::SCAVENGER]->SetScale( 0.05f );	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->SetScale( 0.02f );		//	姫
 		org[CHARACTER_TYPE::THIEF]->SetScale(0.04f);		//	リス
-		//org[CHARACTER_TYPE::TIGER]->SetScale( 0.02f );			//	トラ
 		org[CHARACTER_TYPE::PIRATE]->SetScale(0.02f);			//	海賊
 
 		org[CHARACTER_TYPE::SCAVENGER]->SetAngle( D3DX_PI );	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->SetAngle( D3DX_PI );	//	姫
 		org[CHARACTER_TYPE::THIEF]->SetAngle( D3DX_PI );	//	リス
-		//org[CHARACTER_TYPE::TIGER]->SetAngle( D3DX_PI );			//	トラ
 		org[CHARACTER_TYPE::PIRATE]->SetAngle(D3DX_PI);			//	海賊
 
 		org[CHARACTER_TYPE::SCAVENGER]->SetMotion( 2 );	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->SetMotion( 1 );		//	姫
 		org[CHARACTER_TYPE::THIEF]->SetMotion( 0 );		//	リス
-		//org[CHARACTER_TYPE::TIGER]->SetMotion( 0 );			//	トラ
 		org[CHARACTER_TYPE::PIRATE]->SetMotion(0);			//	海賊
 
 		org[CHARACTER_TYPE::SCAVENGER]->Update();	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->Update();		//	姫
 		org[CHARACTER_TYPE::THIEF ]->Update();		//	リス
-		//org[CHARACTER_TYPE::TIGER]->Update();			//	トラ
 		org[CHARACTER_TYPE::PIRATE]->Update();			//	海賊
 
 		deskStage = make_unique<iexMesh>( LPSTR( "DATA/BG/stage-desk/stage.IMO" ) );
@@ -796,6 +790,7 @@
 //-------------------------------------------------------------------------------
 //	オプション関数
 //-------------------------------------------------------------------------------
+	
 	//	オプション
 	void	sceneMenu::OptionInitialize( void )
 	{
