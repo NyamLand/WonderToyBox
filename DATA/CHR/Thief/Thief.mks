@@ -1,0 +1,11 @@
+Mikoto Scene Ver 1
+Character {
+	name = "Thief.mqo"
+	coordinate = "Thief.mqo"
+	fileName = "Thief.mks"
+	readOnly = 0
+	Import "C:\Users\2130024.MAETEL.000\Desktop\WonderToyBox\DATA\CHR\Thief\Thief.mqo" ro(1)
+	Import "C:\Users\2130024.MAETEL.000\Desktop\WonderToyBox\DATA\CHR\Thief\Thief.mkm" ro(0)
+}
+Current( "")
+Eof

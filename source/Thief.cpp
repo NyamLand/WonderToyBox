@@ -38,7 +38,7 @@ Thief::Thief(void) : BaseChara()
 {
 	//	パラメータ初期化
 	speed = 0.25f;
-	scale = 0.02f;
+	scale = 0.2f;
 	diffence = -1;
 	stayTime = 0;
 	absorb_length = DEFAULT_ABSORB_LENGTH;
@@ -59,7 +59,7 @@ bool	Thief::Initialize(int playerNum, Vector3 pos)
 
 	//	モデル読み込み
 	if (obj == nullptr)
-		obj = new iex3DObj("DATA/CHR/Knight/Knight_Dammy.IEM");
+		obj = new iex3DObj("DATA/CHR/Thief/Thief.IEM");
 
 	if (obj == nullptr)	return	false;
 	return	true;

@@ -59,12 +59,14 @@
 		//　どんけつ演出用
 		namespace DD_TIMING
 		{
-			const int WAIT_MAX = 5 * SECOND + 30;
-			const int DB_LOCK = 5 * SECOND;
-			const int FACE_START = 4 * SECOND + 40;
-			const int FACE_LOCK = 2 * SECOND + 30;
-			const int P_START = 1 * SECOND + 50;
-			const int P_LOCK = 20;
+			const int WAIT_MAX		= 7 * SECOND + 30;
+			const int DB_LOCK		= WAIT_MAX - 30;
+			const int FACE_START	= DB_LOCK - 20;
+			const int FACE_LOCK		= FACE_START - 2 * SECOND - 10;
+			const int P_START		= FACE_LOCK - 40;
+			const int P_LOCK		= P_START - 1 * SECOND - 30;
+			const int FIGHT_START	= P_LOCK - 20;
+			const int FIGHT_LOCK	= FIGHT_START - 1 * SECOND - 30;
 		}
 	}
 
@@ -263,6 +265,7 @@
 		SafeDelete( ddInfo.face.obj );
 		SafeDelete( ddInfo.DB.obj );
 		SafeDelete( ddInfo.P.obj );
+		SafeDelete( ddInfo.fight.obj );
 		SafeDelete( face );
 		SafeDelete( countImage.obj );
 		SafeDelete( alertImage.obj );
@@ -599,6 +602,14 @@
 		ImageInitialize(ddInfo.P, x, y, 0, 0, 0, 256, 128, 128);
 		ddInfo.P.renderflag = false;
 		ddInfo.P_step = -1;
+
+		//　FightLast
+		ddInfo.fight.obj = new iex2DObj("DATA/UI/L_coin_alert.png");
+		x = static_cast<int>(iexSystem::ScreenWidth * 0.5f);
+		y = static_cast<int>(iexSystem::ScreenHeight * 0.5f);
+		ImageInitialize(ddInfo.fight, x, y, 256, 256, 0, 0, 256, 256);
+		ddInfo.fight.renderflag = false;
+		ddInfo.fight_step = -1;
 	}
 
 	//	警告演出初期化
@@ -807,6 +818,9 @@
 		//　「？P」
 		P_Direction(wait);
 
+		//　がんばれ！のやつ
+		Fight_Direction(wait);
+
 		//　更新
 		wait--;
 	}
@@ -947,6 +961,9 @@
 	
 		//　？P
 		RenderImage(ddInfo.P, gameManager->GetWorst()*128, 256, 128, 128, IMAGE_MODE::NORMAL);
+
+		//　FightLast
+		RenderImage(ddInfo.fight, 0, 0, 256, 256, IMAGE_MODE::NORMAL);
 
 		//　デバッグ
 		if (debug)
@@ -1240,6 +1257,10 @@
 		case DD_TIMING::FACE_LOCK:
 			ddInfo.face_step = 7;
 			break;
+
+		case DD_TIMING::FIGHT_START:
+			ddInfo.face_step = 8;
+			break;
 		}
 
 		//　演出
@@ -1354,6 +1375,31 @@
 		case 3:
 			ddInfo.P.w = SIZE_X;
 			ddInfo.P.h = SIZE_Y;
+			break;
+		}
+	}
+
+	//　FightLastの演出
+	void	UI::Fight_Direction(int wait)
+	{
+		//　タイミングによる設定
+		switch (wait)
+		{
+		case DD_TIMING::FIGHT_START:
+			ddInfo.fight.renderflag = true;
+			ddInfo.fight_step = 0;
+
+			ddInfo.DB.renderflag = false;
+			ddInfo.face.renderflag = false;
+			ddInfo.P.renderflag = false;
+			break;
+		}
+
+		//　演出部
+		switch (ddInfo.fight_step)
+		{
+		case 0:
+			
 			break;
 		}
 	}

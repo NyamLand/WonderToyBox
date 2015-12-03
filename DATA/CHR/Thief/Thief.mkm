@@ -1,0 +1,1744 @@
+Mikoto Motion Ver 2
+Motion {
+	name = "0_wait"
+	endframe = 60
+	loop = 0
+	Vector {
+		name = "j_bone11"
+		class = "Locate"
+		member = "pos"
+		curve = "linear"
+		0 (0.000000 14.433898 -0.015200)
+		30 (0.018989 14.266298 0.025139)
+		60 (0.000000 14.433898 -0.015200)
+	}
+	Quaternion {
+		name = "bone11"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (0.000000 0.701437 -0.712731 0.000000)
+		30 (0.000000 0.701437 -0.712731 0.000000)
+		60 (0.000000 0.701437 -0.712731 0.000000)
+	}
+	Quaternion {
+		name = "bone"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (0.046859 -0.002255 -0.998766 -0.016312)
+		30 (0.046859 -0.002255 -0.998766 -0.016312)
+		60 (0.046859 -0.002255 -0.998766 -0.016312)
+	}
+	Quaternion {
+		name = "bone01"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (-0.017498 -0.008656 -0.022568 0.999555)
+		30 (-0.017498 -0.008656 -0.022568 0.999555)
+		60 (-0.017498 -0.008656 -0.022568 0.999555)
+	}
+	Quaternion {
+		name = "bone02"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (0.062263 -0.604880 -0.793822 -0.009500)
+		30 (0.062263 -0.604880 -0.793822 -0.009500)
+		60 (0.062263 -0.604880 -0.793822 -0.009500)
+	}
+	Quaternion {
+		name = "bone03"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (-0.390985 -0.000316 0.000567 -0.920397)
+		30 (-0.390985 -0.000316 0.000567 -0.920397)
+		60 (-0.390985 -0.000316 0.000567 -0.920397)
+	}
+	Quaternion {
+		name = "bone07"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (-0.046859 -0.002255 -0.998766 0.016312)
+		30 (-0.046859 -0.002255 -0.998766 0.016312)
+		60 (-0.046859 -0.002255 -0.998766 0.016312)
+	}
+	Quaternion {
+		name = "bone08"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (0.000623 -0.009009 0.014135 0.999859)
+		30 (0.000623 -0.009009 0.014135 0.999859)
+		60 (0.000623 -0.009009 0.014135 0.999859)
+	}
+	Quaternion {
+		name = "bone09"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (-0.062263 -0.604880 -0.793822 0.009500)
+		30 (-0.062263 -0.604880 -0.793822 0.009500)
+		60 (-0.062263 -0.604880 -0.793822 0.009500)
+	}
+	Quaternion {
+		name = "bone10"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (-0.390985 0.000316 -0.000567 -0.920397)
+		30 (-0.390985 0.000316 -0.000567 -0.920397)
+		60 (-0.390985 0.000316 -0.000567 -0.920397)
+	}
+	Quaternion {
+		name = "bone12"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (-0.687822 0.000000 0.000000 0.725879)
+		30 (-0.687822 0.000000 0.000000 0.725879)
+		60 (-0.687822 0.000000 0.000000 0.725879)
+	}
+	Quaternion {
+		name = "bone13"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (-0.010140 0.000000 -0.000000 0.999949)
+		30 (-0.079719 0.106706 0.001449 0.991089)
+		60 (-0.010140 0.000000 -0.000000 0.999949)
+	}
+	Quaternion {
+		name = "bone04"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (0.689258 0.712633 0.090854 0.093930)
+		30 (0.686732 0.711577 0.109278 0.100576)
+		60 (0.689258 0.712633 0.090854 0.093930)
+	}
+	Quaternion {
+		name = "bone05"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (0.002844 0.000000 -0.000000 0.999996)
+		30 (0.002844 0.000000 -0.000000 0.999996)
+		60 (0.002844 0.000000 -0.000000 0.999996)
+	}
+	Quaternion {
+		name = "bone06"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (-0.011720 0.000000 -0.000000 0.999931)
+		30 (-0.011720 0.000000 -0.000000 0.999931)
+		60 (-0.011720 0.000000 -0.000000 0.999931)
+	}
+	Quaternion {
+		name = "bone14"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (-0.689196 0.712716 0.090754 -0.093851)
+		30 (-0.689364 0.711034 0.088802 -0.106404)
+		60 (-0.689196 0.712716 0.090754 -0.093851)
+	}
+	Quaternion {
+		name = "bone15"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (0.002844 -0.000000 0.000000 0.999996)
+		30 (0.002844 -0.000000 0.000000 0.999996)
+		60 (0.002844 -0.000000 0.000000 0.999996)
+	}
+	Quaternion {
+		name = "bone16"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (-0.011720 -0.000000 0.000000 0.999931)
+		30 (-0.011720 -0.000000 0.000000 0.999931)
+		60 (-0.011720 -0.000000 0.000000 0.999931)
+	}
+	Quaternion {
+		name = "bone17"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (-0.016247 0.000000 -0.000000 0.999868)
+		30 (-0.016247 0.000000 -0.000000 0.999868)
+		60 (-0.016247 0.000000 -0.000000 0.999868)
+	}
+}
+Motion {
+	name = "1_run"
+	endframe = 60
+	loop = 0
+	Vector {
+		name = "j_bone11"
+		class = "Locate"
+		member = "pos"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone11"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone01"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone02"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone03"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone07"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone08"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone09"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone10"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone12"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone13"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone04"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone05"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone06"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone14"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone15"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone16"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone17"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+}
+Motion {
+	name = "2_jump"
+	endframe = 60
+	loop = 0
+	Vector {
+		name = "j_bone11"
+		class = "Locate"
+		member = "pos"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone11"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone01"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone02"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone03"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone07"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone08"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone09"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone10"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone12"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone13"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone04"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone05"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone06"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone14"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone15"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone16"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone17"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+}
+Motion {
+	name = "3_guard"
+	endframe = 60
+	loop = 0
+	Vector {
+		name = "j_bone11"
+		class = "Locate"
+		member = "pos"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone11"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone01"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone02"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone03"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone07"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone08"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone09"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone10"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone12"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone13"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone04"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone05"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone06"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone14"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone15"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone16"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone17"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+}
+Motion {
+	name = "4_quick"
+	endframe = 60
+	loop = 0
+	Vector {
+		name = "j_bone11"
+		class = "Locate"
+		member = "pos"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone11"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone01"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone02"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone03"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone07"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone08"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone09"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone10"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone12"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone13"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone04"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone05"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone06"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone14"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone15"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone16"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone17"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+}
+Motion {
+	name = "5_power"
+	endframe = 60
+	loop = 0
+	Vector {
+		name = "j_bone11"
+		class = "Locate"
+		member = "pos"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone11"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone01"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone02"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone03"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone07"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone08"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone09"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone10"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone12"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone13"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone04"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone05"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone06"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone14"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone15"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone16"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone17"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+}
+Motion {
+	name = "6_hyper"
+	endframe = 60
+	loop = 0
+	Vector {
+		name = "j_bone11"
+		class = "Locate"
+		member = "pos"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone11"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone01"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone02"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone03"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone07"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone08"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone09"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone10"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone12"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone13"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone04"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone05"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone06"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone14"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone15"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone16"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone17"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+}
+Motion {
+	name = "7_damage"
+	endframe = 60
+	loop = 0
+	Vector {
+		name = "j_bone11"
+		class = "Locate"
+		member = "pos"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone11"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone01"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone02"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone03"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone07"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone08"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone09"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone10"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone12"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone13"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone04"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone05"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone06"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone14"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone15"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone16"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone17"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+}
+Motion {
+	name = "8_down"
+	endframe = 60
+	loop = 0
+	Vector {
+		name = "j_bone11"
+		class = "Locate"
+		member = "pos"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone11"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone01"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone02"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone03"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone07"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone08"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone09"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone10"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone12"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone13"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone04"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone05"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone06"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone14"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone15"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone16"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone17"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+}
+Motion {
+	name = "9_guts!"
+	endframe = 60
+	loop = 0
+	Vector {
+		name = "j_bone11"
+		class = "Locate"
+		member = "pos"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone11"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone01"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone02"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone03"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone07"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone08"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone09"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone10"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone12"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone13"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone04"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone05"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone06"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone14"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone15"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone16"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone17"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+}
+Motion {
+	name = "10_happy"
+	endframe = 60
+	loop = 0
+	Vector {
+		name = "j_bone11"
+		class = "Locate"
+		member = "pos"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone11"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone01"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone02"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone03"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone07"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone08"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone09"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone10"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone12"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone13"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone04"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone05"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone06"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone14"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone15"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone16"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone17"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+}
+Motion {
+	name = "11_sad"
+	endframe = 60
+	loop = 0
+	Vector {
+		name = "j_bone11"
+		class = "Locate"
+		member = "pos"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone11"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone01"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone02"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone03"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone07"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone08"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone09"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone10"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone12"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone13"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone04"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone05"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone06"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone14"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone15"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone16"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone17"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+}
+Motion {
+	name = "12_angry"
+	endframe = 60
+	loop = 0
+	Vector {
+		name = "j_bone11"
+		class = "Locate"
+		member = "pos"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone11"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone01"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone02"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone03"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone07"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone08"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone09"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone10"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone12"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone13"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone04"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone05"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone06"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone14"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone15"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone16"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+	Quaternion {
+		name = "bone17"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+	}
+}
+Motion {
+	name = "default"
+	endframe = 1
+	loop = 0
+	Vector {
+		name = "j_bone11"
+		class = "Locate"
+		member = "pos"
+		curve = "linear"
+		0 (0.000000 14.433898 -0.015200)
+	}
+	Quaternion {
+		name = "bone11"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (0.000000 0.701437 -0.712731 0.000000)
+	}
+	Quaternion {
+		name = "bone"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (0.046859 -0.002255 -0.998766 -0.016312)
+	}
+	Quaternion {
+		name = "bone01"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (0.000623 0.009009 -0.014135 0.999859)
+	}
+	Quaternion {
+		name = "bone02"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (0.062263 -0.604880 -0.793822 -0.009500)
+	}
+	Quaternion {
+		name = "bone03"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (-0.390985 -0.000316 0.000567 -0.920397)
+	}
+	Quaternion {
+		name = "bone07"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (-0.046859 -0.002255 -0.998766 0.016312)
+	}
+	Quaternion {
+		name = "bone08"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (0.000623 -0.009009 0.014135 0.999859)
+	}
+	Quaternion {
+		name = "bone09"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (-0.062263 -0.604880 -0.793822 0.009500)
+	}
+	Quaternion {
+		name = "bone10"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (-0.390985 0.000316 -0.000567 -0.920397)
+	}
+	Quaternion {
+		name = "bone12"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (-0.687822 0.000000 0.000000 0.725879)
+	}
+	Quaternion {
+		name = "bone13"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (-0.010140 0.000000 -0.000000 0.999949)
+	}
+	Quaternion {
+		name = "bone04"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (-0.011845 0.707007 -0.011875 0.707008)
+	}
+	Quaternion {
+		name = "bone05"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (0.002844 0.000000 -0.000000 0.999996)
+	}
+	Quaternion {
+		name = "bone06"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (-0.011720 0.000000 -0.000000 0.999931)
+	}
+	Quaternion {
+		name = "bone14"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (-0.011845 -0.707007 0.011875 0.707008)
+	}
+	Quaternion {
+		name = "bone15"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (0.002844 -0.000000 0.000000 0.999996)
+	}
+	Quaternion {
+		name = "bone16"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (-0.011720 -0.000000 0.000000 0.999931)
+	}
+	Quaternion {
+		name = "bone17"
+		class = "Bone"
+		member = "rot"
+		curve = "linear"
+		0 (-0.016247 0.000000 -0.000000 0.999868)
+	}
+}
+Eof

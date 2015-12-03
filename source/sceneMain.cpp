@@ -129,7 +129,7 @@
 		stageManager->Initialize( dir );
 
 		//　プレイヤー・CPU
-		PlayerInitialize();
+		//PlayerInitialize();
 
 		m_BulletManager->Initialize();
 		itemManager->Initialize();

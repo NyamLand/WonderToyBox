@@ -83,26 +83,39 @@
 	//　（メインから始めるための）デバッグ用
 	bool	GameManager::InitializeDebug( void )
 	{
-		charatype[0] = 1;
+		//　プレイヤー
+		//charatype[0] = 0;	//　掃除屋
+		//charatype[0] = 1;	//　プリンセス
+		charatype[0] = 2;	//　怪盗
+		//charatype[0] = 3;	//　海賊
+		characterManager->Initialize(0, charatype[0], gameManager->InitPos[0], true);
 
+		//　ステージ
+		//stageType = 0;	//　机
+		stageType = 1;	//　森
+
+		//　時間
+		timelimit = 32 * SECOND;
+
+		//　コイン最大
+		coinMax = 50;
+
+		//　CPU初期化
 		for (int i = 1; i < PLAYER_MAX; i++)
 		{
+			characterManager->Initialize(i, charatype[i], gameManager->InitPos[i], false);
 			charatype[i] = i;
-			coinNum[i] = 0;
 		}
+		
+		//　他いろいろ
+		for (int i = 0; i < PLAYER_MAX; i++)	coinNum[i] = 0;
 		playerNum = 1;	//　操作する人数
-		stageType = 1;
 		mode = 0;
 		donketsuBoostState = false;
 		lastBonus = rand() % PLAYER_MAX;
 		timeStop = 0;
-		//	ゲームデータテキストを読み込む
-		//LoadTextData();
-		timelimit = 46 * SECOND;
 		timer = timelimit;
-		coinMax = 50;
-
-
+		
 		return	true;
 	}
 
