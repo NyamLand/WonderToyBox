@@ -100,7 +100,7 @@
 		//	モデル読み込み
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Knight/Knight_Dammy.IEM" ) );		//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/プリンセス/prinsess.IEM" ) );					//	姫
-		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>(LPSTR("DATA/CHR/SQUIRREL/SQUIRREL.IEM"));		//	リス
+		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>(LPSTR("DATA/CHR/Thief/Thief.IEM"));		//	リス
 		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>(LPSTR("DATA/CHR/ECCMAN/ECCMAN.IEM"));				//	海賊
 
 		//	オリジナルモデル情報初期化
@@ -297,7 +297,7 @@
 				playerNumSelectInfo.num++;
 				if ( playerNumSelectInfo.num >= 4 )
 				{
-					playerNumSelectInfo.num = 3;
+					playerNumSelectInfo.num = -1;
 					playerNumSelectInfo.t = 1.0f;
 				}
 				else
@@ -313,7 +313,7 @@
 				playerNumSelectInfo.num--;
 				if ( playerNumSelectInfo.num < 0 )
 				{
-					playerNumSelectInfo.num = 0;
+					playerNumSelectInfo.num = 4;
 					playerNumSelectInfo.t = 1.0f;
 				}
 				else
