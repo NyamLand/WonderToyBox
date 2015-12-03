@@ -226,11 +226,11 @@ void	Thief::MotionManagement(int motion)
 	switch (motion)
 	{
 	case MOTION_NUM::STAND:
-		obj->SetMotion(MOTION_DATA::STAND);
+		obj->SetMotion( MOTION_DATA::STAND );
 		break;
 
 	case MOTION_NUM::POSTURE:
-		obj->SetMotion(MOTION_DATA::POSTURE);
+		obj->SetMotion( MOTION_DATA::POSTURE );
 		break;
 
 	case MOTION_NUM::JUMP:
