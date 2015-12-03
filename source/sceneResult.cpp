@@ -24,6 +24,8 @@
 //	グローバル
 //----------------------------------------------------------------------------
 
+#define	NO_BONUS	-1
+
 	namespace
 	{
 		namespace MOVE_MODE
@@ -45,6 +47,19 @@
 				END,								//	終端
 			};
 		}
+
+		namespace LASTBONUS
+		{
+			enum
+			{
+				MAX_COIN,
+				FALL_STAGE,
+				COIN77,
+				MIN_TOTALCOIN,
+				HIT_ATTACK_NUM,
+			};
+		}
+	
 	}
 
 //----------------------------------------------------------------------------
@@ -88,7 +103,7 @@
 		//	オリジナルモデル情報初期化
 		org[CHARACTER_TYPE::SCAVENGER]->SetScale( 0.05f );	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->SetScale( 0.04f );		//	姫
-		org[CHARACTER_TYPE::THIEF]->SetScale( 0.15f );				//	リス
+		org[CHARACTER_TYPE::THIEF]->SetScale( 0.03f );				//	怪盗
 		org[CHARACTER_TYPE::PIRATE]->SetScale( 0.02f );				//	トラ
 
 		org[CHARACTER_TYPE::SCAVENGER]->SetAngle( D3DX_PI );	//	掃除屋
@@ -103,7 +118,7 @@
 
 		org[CHARACTER_TYPE::SCAVENGER]->Update();				//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->Update();					//	姫
-		org[CHARACTER_TYPE::THIEF]->Update();							//	リス
+		org[CHARACTER_TYPE::THIEF]->Update();							//	シーフ
 		org[CHARACTER_TYPE::PIRATE]->Update();						//	トラ
 
 		//	モデル初期化
@@ -138,8 +153,8 @@
 		//	ソートかける
 		Sort( maxCoinNum );
 		Sort( fallStageNum );
-		Sort( coin77 );
-		Sort( minCoinNum );
+		ReverseSort( coin77 );
+		ReverseSort( minCoinNum );
 		Sort( hitAttackNum );
 
 		//	ラストボーナス設定
@@ -732,6 +747,39 @@
 		}
 	}
 
+	//	逆向きソート
+	void	sceneResult::ReverseSort( SORT_INFO ( &sort_info )[4] )
+	{
+		//	退避用
+		SORT_INFO temp;
+
+		for (int i = 0; i < PLAYER_MAX; ++i)
+		{
+			//	後ろから順番にチェックしていく
+			for ( int s = PLAYER_MAX - 1; s > i; --s )
+			{
+				//	一つ下の要素と比較
+				if ( sort_info[s].num <	sort_info[s - 1].num ) 
+				{
+					//	一時的に退避
+					temp = sort_info[s - 1];
+
+					//	交換
+					sort_info[s - 1] = sort_info[s];
+
+					//	退避してたやつを戻す
+					sort_info[s] = temp;
+				}
+			}
+		}
+
+		FOR( 1, PLAYER_MAX )
+		{
+			if ( sort_info[value].num == sort_info[value - 1].num ) 
+				sort_info[value].sortRank = sort_info[value - 1].sortRank;
+		}
+	}
+
 	//	ラストボーナス設定
 	void	sceneResult::SetLastBonus( void )
 	{
@@ -757,12 +805,12 @@
 		int	result = 0;
 		switch ( lastBonus )
 		{
-		case 0:
+		case LASTBONUS::MAX_COIN:
 			//	該当なしかチェック
 			FOR( 0, PLAYER_MAX ) 	result += maxCoinNum[value].num;
 			if ( result == 0 )
 			{
-				bonusPlayer = 4;
+				bonusPlayer = NO_BONUS;
 				return;
 			}
 
@@ -773,12 +821,12 @@
 			bonusPlayer = maxCoinNum[0].rank;
 			break;
 
-		case 1:
+		case LASTBONUS::FALL_STAGE:
 			//	該当なしかチェック
 			FOR( 0, PLAYER_MAX ) 	result += fallStageNum[value].num;
 			if ( result == 0 )
 			{
-				bonusPlayer = 4;
+				bonusPlayer = NO_BONUS;
 				return;
 			}
 
@@ -789,44 +837,44 @@
 			bonusPlayer = maxCoinNum[0].rank;
 			break;
 
-		case 2:
+		case LASTBONUS::COIN77:
 			//	該当なしかチェック
 			FOR( 0, PLAYER_MAX ) 	result += coin77[value].num;
 			if ( result == 0 )
 			{
-				bonusPlayer = 4;
+				bonusPlayer = NO_BONUS;
 				return;
 			}
 			
 			//	７７枚とコイン枚数の差
 			bonus = Random::GetInt( 10, 30 );
-			sortInfo[coin77[3].rank].num += bonus;
-			originInfo[coin77[3].rank].bonus = bonus;
-			bonusPlayer = coin77[3].rank;
+			sortInfo[coin77[0].rank].num += bonus;
+			originInfo[coin77[0].rank].bonus = bonus;
+			bonusPlayer = coin77[0].rank;
 			break;
 
-		case 3:
+		case LASTBONUS::MIN_TOTALCOIN:
 			//	該当なしかチェック
 			FOR( 0, PLAYER_MAX ) 	result += minCoinNum[value].num;
 			if ( result == 0 )
 			{
-				bonusPlayer = 4;
+				bonusPlayer = NO_BONUS;
 				return;
 			}
 
 			//	取得コイン総数が一番少ない
 			bonus = Random::GetInt( 10, 30 );
-			sortInfo[minCoinNum[3].rank].num += bonus;
-			originInfo[minCoinNum[3].rank].bonus = bonus;
-			bonusPlayer = minCoinNum[3].rank;
+			sortInfo[minCoinNum[0].rank].num += bonus;
+			originInfo[minCoinNum[0].rank].bonus = bonus;
+			bonusPlayer = minCoinNum[0].rank;
 			break;
 
-		case 4:
+		case LASTBONUS::HIT_ATTACK_NUM:
 			//	該当なしかチェック
 			FOR( 0, PLAYER_MAX ) 	result += hitAttackNum[value].num;
 			if ( result == 0 )
 			{
-				bonusPlayer = 4;
+				bonusPlayer = NO_BONUS;
 				return;
 			}
 
@@ -1182,7 +1230,7 @@
 			//	波紋終了後対象プレイヤーの描画をONにして次のステップへ
 			if ( isEndWave )
 			{
-				if ( bonusPlayer != 4 )		faceImage.renderflag = true;
+				if ( bonusPlayer != NO_BONUS )		faceImage.renderflag = true;
 				else								notApplicable.renderflag = true;
 				lastBonusInfo.t = 0.0f;
 				lastBonusInfo.step++;
@@ -1194,12 +1242,16 @@
 			isEnd = PlayerAnnouncing();
 
 			//	プレイヤー発表後、波紋を設定
-			if ( isEnd )		isEndWave = WaveUpdate( waveCircleImage, 140 );
+			if ( isEnd )
+			{
+				if ( bonusPlayer != NO_BONUS )		isEndWave = WaveUpdate( waveCircleImage, 140 );
+				else	isEndWave = true;
+			}
 			
 			//	波紋動作終了後プレイヤー番号表示
 			if ( isEndWave )
 			{
-				if ( bonusPlayer != 4 )		playerNumImage.renderflag = true;
+				if ( bonusPlayer != NO_BONUS )		playerNumImage.renderflag = true;
 				lastBonusInfo.t = 0.0f;
 				lastBonusInfo.step++;
 			}
@@ -1293,7 +1345,7 @@
 		if ( lastBonusInfo.t >= 1.0f )	return	true;
 
 		//	顔画像拡大
-		if ( bonusPlayer != 4 )
+		if ( bonusPlayer != NO_BONUS )
 		{
 			//	パラメータ更新
 			lastBonusInfo.t += 0.1f;
@@ -1323,9 +1375,7 @@
 		//	処理が終了してたらtrueをかえす
 		if ( lastBonusInfo.t >= 1.0f )
 		{
-			SetWave( waveCircleImage, 2.0f );
-			if ( bonusPlayer != 4 )		waveCircleImage.renderflag = true;
-			else									waveCircleImage.renderflag = false;
+			if ( bonusPlayer != NO_BONUS )	SetWave( waveCircleImage, 2.0f );
 			return	true;
 		}
 		return	false;
@@ -1389,7 +1439,7 @@
 				FOR( 0, PLAYER_MAX )
 				{
 					//	ボーナス非表示
-					bonusNumberImageInfo[value].hundred.renderflag = true;
+					bonusNumberImageInfo[value].hundred.renderflag = false;
 					bonusNumberImageInfo[value].one.renderflag = false;
 					bonusNumberImageInfo[value].ten.renderflag = false;
 				}

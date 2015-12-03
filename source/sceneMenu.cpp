@@ -255,13 +255,15 @@
 		case MENU_MODE::MOVE_MAIN:
 			MoveMainRender();
 			break;
+		
 		case MENU_MODE::OPTION:
 			OptionRender();
 			break;
 		}
-		if (mode != MENU_MODE::OPTION){
+		if ( mode != MENU_MODE::OPTION ){
 			Omenu->Render(80, 50, 256, 64, 0, 0, 256, 64);
 		}
+
 		//	スクリーン
 		screen->Render();
 	}
@@ -635,11 +637,11 @@
 
 		//	ステージ座標、向き設定
 		{
-			deskStage->SetPos( -7.0f, 5.0f, 5.0f );
+			deskStage->SetPos( -5.0f, 5.0f, 5.0f );
 			deskStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 			deskStage->SetScale( 0.08f );
 			deskStage->Update();
-			forestStage->SetPos( 0.0f, 6.0f, 5.0f );
+			forestStage->SetPos( -5.0f, 6.0f, 5.0f );
 			forestStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 			forestStage->SetScale( 0.03f );
 			forestStage->Update();
@@ -716,6 +718,9 @@
 		//	テキスト画像描画
 		RenderImage( textImage, 0, 512, 512, 256, IMAGE_MODE::ADOPTPARAM );
 		
+		//	オプション設定項目描画
+		OptionSelectRender();
+
 		//	チェック項目描画
 		if ( checkSelectInfo.check )
 		{
@@ -732,7 +737,6 @@
 			checkCursor->Render( x, y, w, h, 0, checkSelectInfo.select * 128, 512, 128 );
 		}
 
-		OptionSelectRender();
 	}
 
 //-------------------------------------------------------------------------------

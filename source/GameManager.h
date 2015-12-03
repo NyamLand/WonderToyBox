@@ -33,20 +33,6 @@ namespace
 	
 	namespace GameInfo
 	{
-		// ラストボーナステキスト
-		namespace
-		{
-			const LPSTR	LastBonus[] =
-			{
-				"ラストボーナス１",
-				"ラストボーナス２",
-				"ラストボーナス３",
-				"ラストボーナス４",
-				"ラストボーナス５",
-				"ラストボーナス６",
-			};
-		}
-
 		//	ラストボーナス予想テキスト
 		namespace
 		{

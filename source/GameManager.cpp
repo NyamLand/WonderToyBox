@@ -60,7 +60,7 @@
 		stageType = 1;
 		mode = 0;
 		donketsuBoostState = false;
-		lastBonus = 1;//Random::GetInt( 0, 3 );
+		lastBonus = Random::GetInt( 0, 3 );
 		timeStop = 0;
 
 		//	ゲームデータテキストを読み込む
@@ -316,8 +316,10 @@
 	//	最大コイン枚数計算
 	void	GameManager::CalcMaxCoin( int player )
 	{
-		if ( maxCoinNum[player] > coinNum[player] )
+		if (maxCoinNum[player] <= coinNum[player])
+		{
 			maxCoinNum[player] = coinNum[player];
+		}
 	}
 
 	//	ステージからの落下回数加算

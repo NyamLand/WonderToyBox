@@ -121,6 +121,7 @@
 		obj->SetScale( scale );
 		obj->Update();
 	}
+	
 	//	‰eî•ñXV
 	void	Coin::ShadowUpdate( void )
 	{
@@ -148,8 +149,6 @@
 			obj->Render();
 		else
 			obj->Render( shader, technique );
-
-		DrawSphere(pos, 2.0f, 0xFFFFFF00);
 	}
 
 //-------------------------------------------------------------------------------

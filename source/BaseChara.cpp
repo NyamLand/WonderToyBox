@@ -283,7 +283,6 @@ namespace
 			
 			//	‰e•`‰æ
 			iexPolygon::Render3D( shadow.v, 2, shadow.obj, shader3D, "alpha" );
-			DrawCapsule(pos, Vector3(pos.x, pos.y + 3.0f, pos.z), 1.0f);
 			
 			obj->Render( shader, technique );
 		}

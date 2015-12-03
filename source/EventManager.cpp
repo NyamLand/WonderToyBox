@@ -287,7 +287,7 @@
 		coinManager->Append( pos, vec, power );
 		event_Coin_Fall.count++;
 
-		if ( event_Coin_Fall.count >= 100 )
+		if ( event_Coin_Fall.count >= 50 )
 		{
 			event_Coin_Fall.eventflag = false;
 			event_Coin_Fall.count = 0;

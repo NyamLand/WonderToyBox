@@ -159,6 +159,7 @@ public:
 	void	AddLastBonus( void );
 	void	SetBonusPlayer( void );
 	void	Sort( SORT_INFO( &sort_info )[4] );
+	void	ReverseSort( SORT_INFO( &sort_info )[4] );
 	bool	Roulette( void );
 	bool	ViewRankInOrder( void );
 	bool	RankWave( void );
