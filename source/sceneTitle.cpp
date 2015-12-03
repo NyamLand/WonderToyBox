@@ -73,9 +73,9 @@ namespace
 		iexLight::SetFog( 800, 1000, 0 );
 
 		//	ƒ‰ƒCƒgİ’è
-		Vector3 dir( 1.0f, -1.0f, -0.5f );
+		Vector3 dir( 0.0f, -1.0f, -0.0f );
 		dir.Normalize();
-		iexLight::DirLight( shader3D, 0, &dir, 0.8f, 0.8f, 0.8f );
+		iexLight::DirLight( shader3D, 0, &dir, 1.0f, 1.0f, 1.0f );
 
 		//	ƒJƒƒ‰İ’è
 		mainView = new Camera();

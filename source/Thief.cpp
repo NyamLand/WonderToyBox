@@ -38,7 +38,7 @@ Thief::Thief(void) : BaseChara()
 {
 	//	ƒpƒ‰ƒ[ƒ^‰Šú‰»
 	speed = 0.25f;
-	scale = 0.2f;
+	scale = 0.15f;
 	diffence = -1;
 	stayTime = 0;
 	absorb_length = DEFAULT_ABSORB_LENGTH;

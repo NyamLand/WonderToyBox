@@ -99,14 +99,14 @@
 
 		//	モデル読み込み
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Knight/Knight_Dammy.IEM" ) );		//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/プリンセス/prinsess1.IEM" ) );					//	姫
-		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>(LPSTR("DATA/CHR/SQUIRREL/SQUIRREL.IEM"));		//	リス
-		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>(LPSTR("DATA/CHR/ECCMAN/ECCMAN.IEM"));				//	海賊
+		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/プリンセス/prinsess1.IEM" ) );				//	姫
+		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Thief/Thief.IEM" ) );						//	怪盗
+		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/ECCMAN/ECCMAN.IEM" ) );							//	海賊
 
 		//	オリジナルモデル情報初期化
 		org[CHARACTER_TYPE::SCAVENGER]->SetScale( 0.05f );	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->SetScale( 0.04f );	//	姫
-		org[CHARACTER_TYPE::THIEF]->SetScale( 0.04f );			//	怪盗
+		org[CHARACTER_TYPE::THIEF]->SetScale( 0.15f );			//	怪盗
 		org[CHARACTER_TYPE::PIRATE]->SetScale( 0.02f );			//	海賊
 
 		org[CHARACTER_TYPE::SCAVENGER]->SetAngle( D3DX_PI );	//	掃除屋
@@ -474,7 +474,7 @@
 		//	モデルデータ更新
 		FOR( 0, PLAYER_MAX )
 		{
-			obj[value]->Animation();
+			//obj[value]->Animation();
 			obj[value]->SetPos( -7.0f + ( 14.0f / 3.0f * value ), 0.0f, 0.0f );
 			obj[value]->Update();
 		}

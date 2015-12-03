@@ -81,15 +81,15 @@
 
 		//	モデル読み込み
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Knight/Knight_Dammy.IEM" ) );			//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/プリンセス/prinsess.IEM" ) );					//	姫
-		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/SQUIRREL/SQUIRREL.IEM" ) );				//	リス
+		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/プリンセス/prinsess1.IEM" ) );					//	姫
+		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Thief/Thief.IEM" ) );				//	リス
 		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/ECCMAN/ECCMAN.IEM" ) );					//	トラ
 
 		//	オリジナルモデル情報初期化
 		org[CHARACTER_TYPE::SCAVENGER]->SetScale( 0.05f );	//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS]->SetScale( 0.02f );		//	姫
-		org[CHARACTER_TYPE::THIEF]->SetScale( 0.04f );				//	リス
-		org[CHARACTER_TYPE::PIRATE]->SetScale(0.02f);				//	トラ
+		org[CHARACTER_TYPE::PRINCESS]->SetScale( 0.04f );		//	姫
+		org[CHARACTER_TYPE::THIEF]->SetScale( 0.15f );				//	リス
+		org[CHARACTER_TYPE::PIRATE]->SetScale( 0.02f );				//	トラ
 
 		org[CHARACTER_TYPE::SCAVENGER]->SetAngle( D3DX_PI );	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->SetAngle( D3DX_PI );		//	姫
@@ -1351,6 +1351,7 @@
 				waitTimer = 0;
 				faceImage.renderflag = false;
 				playerNumImage.renderflag = false;
+				notApplicable.renderflag = false;
 				lastBonusInfo.textImage.renderflag = false;
 				addBonusStep++;
 			}
