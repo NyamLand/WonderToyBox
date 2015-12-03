@@ -33,7 +33,7 @@
 //-------------------------------------------------------------------------
 
 	//	コンストラクタ
-	Effect::Effect( void ) : aura( nullptr ), isAura( false ), _adjustV( 0 )
+	Effect::Effect( void ) : aura( nullptr ), isAura( false ), isStorm( false ), _adjustV( 0 )
 	{
 	
 	}
@@ -55,6 +55,8 @@
 	void	Effect::Initialize()
 	{
 		aura = new iexMesh("DATA/Effect/state/aura.IMO");
+		storm = new iexMesh("DATA/Effect/cyclone/cyclone.IMO");
+		storm_pos = Vector3(0.0f, 0.0f, 0.0f);
 
 		circle_pic[0] = new iex2DObj("DATA/Effect/circle/PL1.png");
 		circle_pic[1] = new iex2DObj("DATA/Effect/circle/PL2.png");
@@ -114,17 +116,10 @@
 		{
 			return;
 		}
-		if (gameManager->GetMode() == GAME_MODE::CLIMAX)	isAura = true;
-		if (isAura)
-		{
-			Vector3 p = characterManager->GetPos(gameManager->GetWorst()) + Vector3(0, 1.5f, 0);
-			aura->SetPos(p);
-			aura->SetScale(0.02f);
-			aura->SetAngle(0.0f);
-			aura->Update();
-		}
+		//	オーラ
+		AuraUpdate();
+		
 		_adjustV += 0.02f;
-		shader3D->SetValue("adjustV", _adjustV);
 
 		//	情報更新
 		for (int i = 0; i < 4; i++){
@@ -152,6 +147,38 @@
 
 	}
 
+	//	オーラ
+	void	Effect::AuraUpdate( void )
+	{
+		if (gameManager->GetMode() == GAME_MODE::CLIMAX)	isAura = true;
+		if (isAura)
+		{
+			Vector3 p = characterManager->GetPos(gameManager->GetWorst()) + Vector3(0, 1.5f, 0);
+			aura->SetPos(p);
+			aura->SetScale(0.02f);
+			aura->SetAngle(0.0f);
+			aura->Update();
+		}
+	}
+
+	//	竜巻
+	void	Effect::StormSet( Vector3 pos)
+	{
+		isStorm = true;
+		storm_pos = pos;
+
+		storm->SetPos(storm_pos);
+		storm->SetScale(0.02f);
+		storm->SetAngle(0.0f);
+		storm->Update();
+
+	}
+
+	void	Effect::StormOff( void )
+	{
+		isStorm = false;
+	}
+
 	//	回転
 	void	Effect::Spin( void )
 	{
@@ -169,7 +196,12 @@
 	//	描画
 	void	Effect::Render( void )
 	{
+
+		shader3D->SetValue("adjustV", _adjustV);
 		if(isAura)	aura->Render(shader3D,"effect_add");
+		if (isStorm) storm->Render(shader3D, "effect_add");
+
+		//	サークル描画
 		for (int i = 0; i < 4; i++){
 			iexPolygon::Render3D(circle_out[i].poligon, 2, circle_pic[i], shader3D, "alpha" );
 		}

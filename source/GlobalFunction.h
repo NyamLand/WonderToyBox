@@ -74,6 +74,7 @@
 		float	angle;
 		POINT	p;
 		bool	renderflag;
+		Vector3	color;
 
 		//	wave用パラメータ
 		int	 plusScaleX;
