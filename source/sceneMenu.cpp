@@ -214,7 +214,7 @@
 			OptionUpdate();
 			break;
 		}
-		if (KEY_Get(KEY_D) == 3||KEY_Get(KEY_B6)==3){
+		if (KEY_Get(KEY_D) == 3||KEY_Get(KEY_B5)==3){
 			if (mode != MENU_MODE::OPTION){
 				tempmode = mode;
 				SetMode(MENU_MODE::OPTION);
@@ -641,7 +641,7 @@
 
 		//	ステージ座標、向き設定
 		{
-			deskStage->SetPos( 0.0f, 5.0f, 5.0f );
+			deskStage->SetPos( -7.0f, 5.0f, 5.0f );
 			deskStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 			deskStage->SetScale( 0.08f );
 			deskStage->Update();
@@ -737,6 +737,8 @@
 			h = static_cast<int>( iexSystem::ScreenHeight * 0.13f );
 			checkCursor->Render( x, y, w, h, 0, checkSelectInfo.select * 128, 512, 128 );
 		}
+
+		OptionSelectRender();
 	}
 
 //-------------------------------------------------------------------------------
@@ -881,6 +883,7 @@
 		}
 		else{
 			Oimage->Render(950, 150, 256, 128, 256, 128 * 3, 256, 128);
+
 		}
 		//コインMAXの描画
 		OCmax->Render(940,			350, 128, 128,			(optionInfo.coinMAX/100)*64, 128 * 0, 64, 64);
@@ -901,7 +904,32 @@
 		Oimage->Render(1300, 550, 128, 128, 384, 128 * 1, 128, 128);
 
 	}
+	void	sceneMenu::OptionSelectRender()
+	{
+		
+		//項目描画
+		Oimage->Render(800, 320, 256, 64, 0, 128 * 2, 512, 128);
+		Oimage->Render(800, 420, 256, 64, 0, 128 * 0, 512, 128);
+		Oimage->Render(800, 520, 128, 64, 0, 128 * 1, 256, 128);
+		//アイテムの有無描画
+		if (optionInfo.itemflg){
+			Oimage->Render(1100, 320, 128, 64, 0, 128 * 3, 256, 128);
+		}
+		else{
+			Oimage->Render(1100, 320, 128, 64, 256, 128 * 3, 256, 128);
 
+		}
+		//コインMAXの描画
+		OCmax->Render(1100, 420, 64, 64, (optionInfo.coinMAX / 100) * 64, 128 * 0, 64, 64);
+		OCmax->Render(1150, 420, 64, 64, ((optionInfo.coinMAX / 10) % 10) * 64, 128 * 0, 64, 64);
+		OCmax->Render(1200, 420, 64, 64, 0, 128 * 0, 64, 64);
+		//タイム
+		OCmax->Render(1080, 520, 64, 64, optionInfo.minute * 64, 64 * 0, 64, 64);
+		OCmax->Render(1200, 520, 64, 64, ((optionInfo.second / 10) % 10) * 64, 64 * 0, 64, 64);
+		OCmax->Render(1240, 520, 64, 64, 0, 64 * 0, 64, 64);
+		Oimage->Render(1140, 520, 64, 64, 256, 128 * 1, 128, 128);
+		Oimage->Render(1300, 520, 64, 64, 384, 128 * 1, 128, 128);
+	}
 	void	sceneMenu::ArrowRender()
 	{
 		switch (optionInfo.step){

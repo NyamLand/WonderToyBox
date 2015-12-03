@@ -63,7 +63,7 @@ private:
 	iex2DObj*				Omenu;
 public:
 	void TimerRender(void);
-
+	void OptionSelectRender(void);
 
 private:
 	//	‰æ‘œEƒ‚ƒfƒ‹
