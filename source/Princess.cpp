@@ -54,7 +54,7 @@
 
 		//	モデル読み込み
 		if( obj == nullptr )
-			obj = new iex3DObj( "DATA/CHR/Y2009/Y2009.IEM" );
+			obj = new iex3DObj( "DATA/CHR/プリンセス/prinsess.IEM" );
 
 		//	スケール設定
 		obj->SetScale( 0.02f );
