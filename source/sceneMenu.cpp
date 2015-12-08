@@ -90,6 +90,8 @@
 		playerNum = make_unique<iex2DObj>( LPSTR( "DATA/UI/menu/playerNum.png" ) );
 		face = new iex2DObj( "DATA/UI/chara_emotion.png" );
 		cursor = new iex2DObj( "DATA/UI/cursor.png" );
+		
+
 
 		//	オプション関係画像読み込み
 		Oimage =		new iex2DObj( "DATA/UI/OptionText.png" );
@@ -126,7 +128,14 @@
 
 		deskStage = make_unique<iexMesh>( LPSTR( "DATA/BG/stage-desk/stage.IMO" ) );
 		forestStage = make_unique<iexMesh>( LPSTR( "DATA/BG/Forest/model/forest.IMO" ) );
+		BG = make_unique<iexMesh>(LPSTR("DATA/BG/MenuStage/menu.IMO"));
 
+		
+		//	机モデル初期化
+		BG->SetPos(0.0f, -20.0f, 0.0f);
+		BG->SetAngle(0.0f, 0.0f, 0.0f);
+		BG->SetScale(0.1f);
+		BG->Update();
 		//	画像構造体初期化
 		{
 			textImage.obj = new iex2DObj( "DATA/UI/menu/menu-head.png" );
@@ -229,10 +238,10 @@
 		mainView->Activate();
 		mainView->Clear();
 
-		//	背景( 一番後ろに表示 )
-		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
+		//背景( 一番後ろに表示 )
+	/*	iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
 		back->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 1280, 720 );
-		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
+		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );*/
 
 		switch ( mode )
 		{
@@ -263,7 +272,9 @@
 			Omenu->Render(80, 50, 256, 64, 0, 0, 256, 64);
 		}
 		//	スクリーン
-		screen->Render();
+		//screen->Render();
+		BG->Render();
+
 	}
 
 //-------------------------------------------------------------------------------
@@ -706,6 +717,9 @@
 		case 0:		deskStage->Render();		break;
 		case 1:		forestStage->Render();		break;
 		}
+		//	オプション確認描画
+		OptionSelectRender();
+
 
 		//	プレイヤー描画
 		FOR( 0, PLAYER_MAX )
@@ -732,7 +746,6 @@
 			checkCursor->Render( x, y, w, h, 0, checkSelectInfo.select * 128, 512, 128 );
 		}
 
-		OptionSelectRender();
 	}
 
 //-------------------------------------------------------------------------------
@@ -866,6 +879,66 @@
 			gameManager->SetTime(optionInfo.minute,optionInfo.second);
 	}
 
+	void	sceneMenu::OptionDUpdate(void)
+	{
+		if (KEY_Get(KEY_DOWN) == 3){
+			if (optionInfo.step<3)
+				optionInfo.step++;
+		}
+		if (KEY_Get(KEY_UP) == 3){
+			if (optionInfo.step>0){
+				optionInfo.step--;
+			}
+		}
+
+		switch (optionInfo.step){
+		case 0:
+			if (KEY_Get(KEY_RIGHT) == 3 || KEY_Get(KEY_D) == 3){
+				if (optionInfo.itemflg == false){
+					optionInfo.itemflg = true;
+				}
+				else{
+					optionInfo.itemflg = false;
+				}
+			}
+			break;
+		case 1:
+			if (KEY_Get(KEY_RIGHT) == 3){
+				if (optionInfo.coinMAX<500){
+					optionInfo.coinMAX += 50;
+				}
+			}
+			else if (KEY_Get(KEY_D) == 3){
+				if (optionInfo.coinMAX>200){
+					optionInfo.coinMAX -= 50;
+				}
+			}
+			break;
+		case 2:
+			if (KEY_Get(KEY_RIGHT) == 3){
+				if (optionInfo.minute<5){
+					optionInfo.minute++;
+				}
+			}
+			else if (KEY_Get(KEY_D) == 3){
+				if (optionInfo.minute>1){
+					optionInfo.minute--;
+				}
+			}
+			break;
+		case 3:
+			if (KEY_Get(KEY_RIGHT) == 3){
+				optionInfo.second = 30;
+			}
+			else if (KEY_Get(KEY_D) == 3){
+				optionInfo.second = 0;
+			}
+			break;
+		}
+		gameManager->SetItemFlg(optionInfo.itemflg);
+		gameManager->SetCoinMax(optionInfo.coinMAX);
+		gameManager->SetTime(optionInfo.minute, optionInfo.second);
+	}
 	void	sceneMenu::OptionRender( void )
 	{
 		Oimage->Render(300, 150, 512, 128, 0, 128*2, 512, 128);
@@ -919,11 +992,11 @@
 		OCmax->Render(1150, 420, 64, 64, ((optionInfo.coinMAX / 10) % 10) * 64, 128 * 0, 64, 64);
 		OCmax->Render(1200, 420, 64, 64, 0, 128 * 0, 64, 64);
 		//タイム
-		OCmax->Render(1080, 520, 64, 64, optionInfo.minute * 64, 64 * 0, 64, 64);
-		OCmax->Render(1200, 520, 64, 64, ((optionInfo.second / 10) % 10) * 64, 64 * 0, 64, 64);
-		OCmax->Render(1240, 520, 64, 64, 0, 64 * 0, 64, 64);
-		Oimage->Render(1140, 520, 64, 64, 256, 128 * 1, 128, 128);
-		Oimage->Render(1300, 520, 64, 64, 384, 128 * 1, 128, 128);
+		OCmax->Render(1080-40, 520, 64, 64, optionInfo.minute * 64, 64 * 0, 64, 64);
+		OCmax->Render(1200-40, 520, 64, 64, ((optionInfo.second / 10) % 10) * 64, 64 * 0, 64, 64);
+		OCmax->Render(1240-40, 520, 64, 64, 0, 64 * 0, 64, 64);
+		Oimage->Render(1140-40, 520, 64, 64, 256, 128 * 1, 128, 128);
+		Oimage->Render(1300-40, 520, 64, 64, 384, 128 * 1, 128, 128);
 	}
 	void	sceneMenu::ArrowRender()
 	{
