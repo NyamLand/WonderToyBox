@@ -61,9 +61,17 @@ private:
 	iex2DObj*				Otime;
 	iex2DObj*				OCmax;
 	iex2DObj*				Omenu;
+	unique_ptr<iexMesh>		BG;
+	
 public:
-	void TimerRender(void);
-	void OptionSelectRender(void);
+	//	オプション関数
+	void	OptionInitialize(void);
+	void	OptionUpdate(void);
+	void	OptionRender(void);
+	void	ArrowRender(void);
+	void	TimerRender(void);
+	void	OptionSelectRender(void);
+	void	OptionDUpdate(void);
 
 private:
 	//	画像・モデル
@@ -137,11 +145,6 @@ public:
 	void	MoveTitleUpdate( void );
 	void	MoveTitleRender( void );
 
-	//	オプション関数
-	void	OptionInitialize( void );
-	void	OptionUpdate( void );
-	void	OptionRender( void );
-	void	ArrowRender( void );
 
 	//	情報設定
 	void	SetMode( int mode );

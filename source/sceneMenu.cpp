@@ -90,6 +90,8 @@
 		playerNum = make_unique<iex2DObj>( LPSTR( "DATA/UI/menu/playerNum.png" ) );
 		face = new iex2DObj( "DATA/UI/chara_emotion.png" );
 		cursor = new iex2DObj( "DATA/UI/cursor.png" );
+		
+
 
 		//	オプション関係画像読み込み
 		Oimage =		new iex2DObj( "DATA/UI/OptionText.png" );
@@ -99,15 +101,15 @@
 
 		//	モデル読み込み
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Knight/Knight_Dammy.IEM" ) );		//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/プリンセス/prinsess1.IEM" ) );				//	姫
-		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Thief/Thief.IEM" ) );						//	怪盗
-		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Y2009/Y2009.IEM" ) );							//	海賊
+		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/プリンセス/prinsess.IEM" ) );					//	姫
+		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>(LPSTR("DATA/CHR/SQUIRREL/SQUIRREL.IEM"));		//	リス
+		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>(LPSTR("DATA/CHR/ECCMAN/ECCMAN.IEM"));				//	海賊
 
 		//	オリジナルモデル情報初期化
 		org[CHARACTER_TYPE::SCAVENGER]->SetScale( 0.05f );	//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS]->SetScale( 0.04f );	//	姫
-		org[CHARACTER_TYPE::THIEF]->SetScale( 0.03f );			//	怪盗
-		org[CHARACTER_TYPE::PIRATE]->SetScale( 0.02f );			//	海賊
+		org[CHARACTER_TYPE::PRINCESS]->SetScale( 0.02f );		//	姫
+		org[CHARACTER_TYPE::THIEF]->SetScale(0.04f);		//	リス
+		org[CHARACTER_TYPE::PIRATE]->SetScale(0.02f);			//	海賊
 
 		org[CHARACTER_TYPE::SCAVENGER]->SetAngle( D3DX_PI );	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->SetAngle( D3DX_PI );	//	姫
@@ -126,7 +128,14 @@
 
 		deskStage = make_unique<iexMesh>( LPSTR( "DATA/BG/stage-desk/stage.IMO" ) );
 		forestStage = make_unique<iexMesh>( LPSTR( "DATA/BG/Forest/model/forest.IMO" ) );
+		BG = make_unique<iexMesh>(LPSTR("DATA/BG/MenuStage/menu.IMO"));
 
+		
+		//	机モデル初期化
+		BG->SetPos(0.0f, -20.0f, 0.0f);
+		BG->SetAngle(0.0f, 0.0f, 0.0f);
+		BG->SetScale(0.1f);
+		BG->Update();
 		//	画像構造体初期化
 		{
 			textImage.obj = new iex2DObj( "DATA/UI/menu/menu-head.png" );
@@ -229,10 +238,10 @@
 		mainView->Activate();
 		mainView->Clear();
 
-		//	背景( 一番後ろに表示 )
-		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
+		//背景( 一番後ろに表示 )
+	/*	iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
 		back->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 1280, 720 );
-		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
+		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );*/
 
 		switch ( mode )
 		{
@@ -255,17 +264,17 @@
 		case MENU_MODE::MOVE_MAIN:
 			MoveMainRender();
 			break;
-		
 		case MENU_MODE::OPTION:
 			OptionRender();
 			break;
 		}
-		if ( mode != MENU_MODE::OPTION ){
+		if (mode != MENU_MODE::OPTION){
 			Omenu->Render(80, 50, 256, 64, 0, 0, 256, 64);
 		}
-
 		//	スクリーン
-		screen->Render();
+		//screen->Render();
+		BG->Render();
+
 	}
 
 //-------------------------------------------------------------------------------
@@ -476,7 +485,7 @@
 		//	モデルデータ更新
 		FOR( 0, PLAYER_MAX )
 		{
-			//obj[value]->Animation();
+			obj[value]->Animation();
 			obj[value]->SetPos( -7.0f + ( 14.0f / 3.0f * value ), 0.0f, 0.0f );
 			obj[value]->Update();
 		}
@@ -637,11 +646,11 @@
 
 		//	ステージ座標、向き設定
 		{
-			deskStage->SetPos( -5.0f, 5.0f, 5.0f );
+			deskStage->SetPos( -7.0f, 5.0f, 5.0f );
 			deskStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 			deskStage->SetScale( 0.08f );
 			deskStage->Update();
-			forestStage->SetPos( -5.0f, 6.0f, 5.0f );
+			forestStage->SetPos( 0.0f, 6.0f, 5.0f );
 			forestStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 			forestStage->SetScale( 0.03f );
 			forestStage->Update();
@@ -708,6 +717,9 @@
 		case 0:		deskStage->Render();		break;
 		case 1:		forestStage->Render();		break;
 		}
+		//	オプション確認描画
+		OptionSelectRender();
+
 
 		//	プレイヤー描画
 		FOR( 0, PLAYER_MAX )
@@ -718,9 +730,6 @@
 		//	テキスト画像描画
 		RenderImage( textImage, 0, 512, 512, 256, IMAGE_MODE::ADOPTPARAM );
 		
-		//	オプション設定項目描画
-		OptionSelectRender();
-
 		//	チェック項目描画
 		if ( checkSelectInfo.check )
 		{
@@ -795,7 +804,7 @@
 //	オプション関数
 //-------------------------------------------------------------------------------
 	
-	//	初期化
+	//	オプション
 	void	sceneMenu::OptionInitialize( void )
 	{
 		//　構造体初期化
@@ -809,7 +818,6 @@
 		gameManager->SetTime(optionInfo.minute, optionInfo.second);
 	}
 
-	//	更新
 	void	sceneMenu::OptionUpdate( void )
 	{
 		if (KEY_Get(KEY_DOWN) == 3){
@@ -871,7 +879,66 @@
 			gameManager->SetTime(optionInfo.minute,optionInfo.second);
 	}
 
-	//	描画
+	void	sceneMenu::OptionDUpdate(void)
+	{
+		if (KEY_Get(KEY_DOWN) == 3){
+			if (optionInfo.step<3)
+				optionInfo.step++;
+		}
+		if (KEY_Get(KEY_UP) == 3){
+			if (optionInfo.step>0){
+				optionInfo.step--;
+			}
+		}
+
+		switch (optionInfo.step){
+		case 0:
+			if (KEY_Get(KEY_RIGHT) == 3 || KEY_Get(KEY_D) == 3){
+				if (optionInfo.itemflg == false){
+					optionInfo.itemflg = true;
+				}
+				else{
+					optionInfo.itemflg = false;
+				}
+			}
+			break;
+		case 1:
+			if (KEY_Get(KEY_RIGHT) == 3){
+				if (optionInfo.coinMAX<500){
+					optionInfo.coinMAX += 50;
+				}
+			}
+			else if (KEY_Get(KEY_D) == 3){
+				if (optionInfo.coinMAX>200){
+					optionInfo.coinMAX -= 50;
+				}
+			}
+			break;
+		case 2:
+			if (KEY_Get(KEY_RIGHT) == 3){
+				if (optionInfo.minute<5){
+					optionInfo.minute++;
+				}
+			}
+			else if (KEY_Get(KEY_D) == 3){
+				if (optionInfo.minute>1){
+					optionInfo.minute--;
+				}
+			}
+			break;
+		case 3:
+			if (KEY_Get(KEY_RIGHT) == 3){
+				optionInfo.second = 30;
+			}
+			else if (KEY_Get(KEY_D) == 3){
+				optionInfo.second = 0;
+			}
+			break;
+		}
+		gameManager->SetItemFlg(optionInfo.itemflg);
+		gameManager->SetCoinMax(optionInfo.coinMAX);
+		gameManager->SetTime(optionInfo.minute, optionInfo.second);
+	}
 	void	sceneMenu::OptionRender( void )
 	{
 		Oimage->Render(300, 150, 512, 128, 0, 128*2, 512, 128);
@@ -896,9 +963,7 @@
 
 		Omenu->Render(80, 50, 256, 128, 0, 64, 256, 128);
 	}
-
-	//	タイマー描画
-	void	sceneMenu::TimerRender( void )
+	void	sceneMenu::TimerRender(void)
 	{
 		OCmax->Render(930 , 550, 128, 128, optionInfo.minute*64, 64 * 0, 64, 64);
 		OCmax->Render(1140, 550, 128, 128, ((optionInfo.second / 10) % 10) * 64, 64 * 0, 64, 64);
@@ -907,9 +972,7 @@
 		Oimage->Render(1300, 550, 128, 128, 384, 128 * 1, 128, 128);
 
 	}
-
-	//	項目描画
-	void	sceneMenu::OptionSelectRender( void )
+	void	sceneMenu::OptionSelectRender()
 	{
 		
 		//項目描画
@@ -929,15 +992,13 @@
 		OCmax->Render(1150, 420, 64, 64, ((optionInfo.coinMAX / 10) % 10) * 64, 128 * 0, 64, 64);
 		OCmax->Render(1200, 420, 64, 64, 0, 128 * 0, 64, 64);
 		//タイム
-		OCmax->Render(1080, 520, 64, 64, optionInfo.minute * 64, 64 * 0, 64, 64);
-		OCmax->Render(1200, 520, 64, 64, ((optionInfo.second / 10) % 10) * 64, 64 * 0, 64, 64);
-		OCmax->Render(1240, 520, 64, 64, 0, 64 * 0, 64, 64);
-		Oimage->Render(1140, 520, 64, 64, 256, 128 * 1, 128, 128);
-		Oimage->Render(1300, 520, 64, 64, 384, 128 * 1, 128, 128);
+		OCmax->Render(1080-40, 520, 64, 64, optionInfo.minute * 64, 64 * 0, 64, 64);
+		OCmax->Render(1200-40, 520, 64, 64, ((optionInfo.second / 10) % 10) * 64, 64 * 0, 64, 64);
+		OCmax->Render(1240-40, 520, 64, 64, 0, 64 * 0, 64, 64);
+		Oimage->Render(1140-40, 520, 64, 64, 256, 128 * 1, 128, 128);
+		Oimage->Render(1300-40, 520, 64, 64, 384, 128 * 1, 128, 128);
 	}
-
-	//	カーソル描画
-	void	sceneMenu::ArrowRender( void )
+	void	sceneMenu::ArrowRender()
 	{
 		switch (optionInfo.step){
 		case 0:
@@ -957,6 +1018,7 @@
 			break;
 		}
 	}
+
 
 //-------------------------------------------------------------------------------
 //	情報設定
