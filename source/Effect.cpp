@@ -118,7 +118,7 @@
 			return;
 		}
 		//	オーラ
-		AuraUpdate();
+		//AuraUpdate();
 
 		//	竜巻タイマー
 		StormTimer();

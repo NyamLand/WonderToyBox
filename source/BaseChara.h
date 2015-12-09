@@ -26,6 +26,7 @@ namespace
 			BOMB,
 			JUMP,
 			CONFUSION,
+			RESPAWN,
 		};
 	}
 
@@ -216,21 +217,22 @@ protected:
 	iexInput*	input;
 	Vector3		pos;
 	Vector3		move;
-	float			drag;		//	抵抗力・摩擦力
-	float			angle;
-	float			moveVec;
-	float			scale;
-	float			speed;
-	float			totalSpeed;
-	float			force;
-	float			diffence;
-	bool			unrivaled;
-	bool			isGround;
-	bool			canHyper;
+	float				drag;		//	抵抗力・摩擦力
+	float				angle;
+	float				moveVec;
+	float				scale;
+	float				speed;
+	float				totalSpeed;
+	float				force;
+	float				diffence;
+	bool				unrivaled;
+	bool				isGround;
+	bool				canHyper;
 	//bool			boosting;	//　→ PARAMETER_INFO型の boost
-	bool			isPlayer;
-	bool			jumpState;
-	bool			checkWall;
+	bool				isPlayer;
+	bool				jumpState;
+	bool				checkWall;
+	bool				renderflag;
 	int				mode;
 	int				playerNum;
 	int				power;
@@ -239,6 +241,7 @@ protected:
 	int				jumpStep;			//	ジャンプ動作
 	int				damageStep;
 	int				rank;
+	int				life;
 
 	//	各情報構造体
 	DAMAGECOLOR_INFO		damageColor;
@@ -259,6 +262,7 @@ protected:
 	PARAMETER_INFO		bomb;
 	PARAMETER_INFO		jump;
 	PARAMETER_INFO		confusion;
+	PARAMETER_INFO		respawn;
 
 private:
 	virtual	void	MotionManagement( int motion );
@@ -308,6 +312,7 @@ public:
 	void	ItemMagnet( void );
 	void	BoostUp( void );
 	void	Confusion( void );
+	void	Respawn( void );
 
 	//	子クラスで実装
 	virtual	bool	QuickArts( void ) = 0;
@@ -347,10 +352,11 @@ public:
 	void	SetParameterState( PARAMETER_INFO& paramterState, int time );
 	void	SetForce(float force);
 	void	SetMotion( int motion );
+	void	SetLife( int life );
 
 	//	情報取得
-	Matrix	GetMatrix( void )const;
-	Matrix	GetBoneMatrix( int num )const;
+	Matrix		GetMatrix( void )const;
+	Matrix		GetBoneMatrix( int num )const;
 	Vector3	GetPos( void )const;
 	Vector3	GetMove( void )const;
 	Vector3	GetFront( void )const;
@@ -364,16 +370,16 @@ public:
 	Vector3	GetBoneFront( int num )const;
 	Vector3	GetBoneRight( int num )const;
 	Vector3	GetBoneUp( int num )const;
-	float	GetAngle( void )const;
-	float	GetAngle(Vector3 vec1, Vector3 vec2)const;
-	float	GetScale( void )const;
-	float	GetAttack_R( void )const;
-	float	GetAttack_T( void )const;
+	float		GetAngle( void )const;
+	float		GetAngle(Vector3 vec1, Vector3 vec2)const;
+	float		GetScale( void )const;
+	float		GetAttack_R( void )const;
+	float		GetAttack_T( void )const;
 	//float	GetSpeed( void )const;
-	float	GetTotalSpeed( void )const;
-	bool	GetUnrivaled( void )const;
-	bool	GetCanHyper( void )const;
-	bool	GetParameterState( int type )const;
+	float		GetTotalSpeed( void )const;
+	bool		GetUnrivaled( void )const;
+	bool		GetCanHyper( void )const;
+	bool		GetParameterState( int type )const;
 	int		GetPower( void )const;
 	int		GetTotalPower( void )const;
 	int		GetMode( void )const;
@@ -384,4 +390,5 @@ public:
 	int		GetKnockBackIsUp(void)const;
 	int		GetLeanFrame( void )const;
 	int		GetRank( void )const;
+	int		GetLife( void )const;
 };

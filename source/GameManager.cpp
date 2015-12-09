@@ -55,6 +55,7 @@
 		{
 			charatype[i] = 0;		
 			coinNum[i] = 0;
+			startLife[i] = 3;
 		}
 		playerNum = 0;
 		stageType = 1;
@@ -158,11 +159,11 @@
 
 
 		//	残り時間３０秒でどんけつ演出へ
-		if ( timer == 30 * SECOND )
-		{
-			DecideWorst();
-			mode = GAME_MODE::DONKETSU_DIRECTION;
-		}
+		//if ( timer == 30 * SECOND )
+		//{
+		//	DecideWorst();
+		//	mode = GAME_MODE::DONKETSU_DIRECTION;
+		//}
 
 		//	時間切れ
 		if ( timer <= 0 )
@@ -172,9 +173,12 @@
 			for ( int i = 0; i < PLAYER_MAX; i++ )	characterManager->SetMode( i, MODE_STATE::WAIT );
 		}
 
-		//	どんけつブースト設定
-		if ( timer <= 30 * SECOND )		donketsuBoostState = true;
-		else	donketsuBoostState = false;
+		////	どんけつブースト設定
+		//if ( timer <= 30 * SECOND )		donketsuBoostState = true;
+		//else	donketsuBoostState = false;
+
+		//	クライマックスへ
+		if ( timer == 30 * SECOND ) SetMode( GAME_MODE::CLIMAX );
 
 		//	ニュース設定
 		if ( timer == 1 * MINUTE )		newsflag = true;
@@ -504,6 +508,12 @@
 		return	minCoinNum[player];
 	}
 
+	//	プレイヤー初期体力取得
+	int		GameManager::GetStartLife( int player )const
+	{
+		return	startLife[player];
+	}
+
 	//	実体取得
 	GameManager*	GameManager::GetInstance( void )
 	{
@@ -580,4 +590,10 @@
 	void	GameManager::SetItemFlg(bool itemflg)
 	{
 		this->itemflg = itemflg;
+	}
+
+	//	初期体力設定
+	void	GameManager::SetStartLife( int player, int life )
+	{
+		startLife[player] = life;
 	}

@@ -227,6 +227,7 @@
 		alertImage.obj = new iex2DObj("DATA/UI/alert.png");
 		alert_coinImage.obj = new iex2DObj("DATA/UI/coin_alert.png");
 		playerNumber = new iex2DObj( "DATA/UI/cursor.png" );
+		life = new iex2DObj( "DATA/UI/Life.png" );
 
 		//	共通変数初期化 
 		changeflag = false;
@@ -241,6 +242,7 @@
 		DonketsuDirectionInitialize();
 		AlertInitialize();
 		PlayerNumberInitialize();
+		LifeInitialize();
 	}
 
 	//	リザルト用初期化
@@ -273,6 +275,7 @@
 		SafeDelete( alertImage.obj );
 		SafeDelete( alert_coinImage.obj );
 		SafeDelete( playerNumber );
+		SafeDelete( life );
 	}
 
 	//	リザルト用解放
@@ -331,6 +334,7 @@
 	void	UI::MainUpdate( int mode )
 	{
 		PlayerNumberUpdate();
+		LifeUpdate();
 
 		switch ( mode )
 		{
@@ -387,6 +391,7 @@
 	void	UI::MainRender( int mode )
 	{
 		PlayerNumberRender();
+		LifeRender();
 
 		switch ( mode )
 		{
@@ -533,7 +538,6 @@
 	//	タイマー初期化
 	void	UI::TimerInitialize( void )
 	{
-
 		//	構造体初期化
 		int x = static_cast<int>( iexSystem::ScreenWidth * 0.4f );
 		int y = static_cast<int>( iexSystem::ScreenHeight * 0.1f );
@@ -652,6 +656,20 @@
 			int w = static_cast<int>( iexSystem::ScreenWidth * 0.04f );
 			int h = static_cast<int>( iexSystem::ScreenHeight * 0.07f );
 			ImageInitialize( pNumImage[i], 0, 0, w, h, ( i % 2 ) * 128, ( i / 2 ) * 128, 128, 128 );
+		}
+	}
+
+	//	体力画像初期化
+	void	UI::LifeInitialize( void )
+	{
+		FOR( 0, PLAYER_MAX )
+		{
+			lifeInfo[value].life = gameManager->GetStartLife( value );
+			for ( int i = 0; i < 3; i++ )
+			{
+				lifeInfo[value].lifeImage[i].obj = life;
+				ImageInitialize( lifeInfo[value].lifeImage[i], 0, 0, 30, 30, 0, 0, 256, 256 );
+			}
 		}
 	}
 	
@@ -889,6 +907,37 @@
 		}
 	}
 
+	//	ライフ更新
+	void	UI::LifeUpdate( void )
+	{
+		Vector3	p_Pos;
+		Vector3	p_Up;
+		Vector3	lifePos;
+		Vector3	out;
+
+		FOR( 0, PLAYER_MAX )
+		{
+			//	表示座標算出
+			p_Pos = characterManager->GetPos( value );
+			p_Up = characterManager->GetUp( value );
+			lifePos = p_Pos + p_Up * 5.0f;
+			WorldToClient( lifePos, out, matView * matProjection );
+
+			//	構造体に設定
+			lifeInfo[value].life = characterManager->GetLife( value );
+			for ( int i = 0; i < 3; i++ )
+			{
+				//	表示位置設定
+				lifeInfo[value].lifeImage[i].x = static_cast<int>( ( out.x - 30 ) + 30 * i );
+				lifeInfo[value].lifeImage[i].y = static_cast<int>( out.y - 30 * ( i % 2 ) );
+				
+				//	読み込み位置設定
+				if ( lifeInfo[value].life >= i )	lifeInfo[value].lifeImage[i].sx = 256;
+				else										lifeInfo[value].lifeImage[i].sx = 0;
+			}
+		}
+	}
+
 //------------------------------------------------------------------------------
 //	メイン描画
 //------------------------------------------------------------------------------
@@ -1015,6 +1064,18 @@
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			RenderImage( pNumImage[i], pNumImage[i].sx, pNumImage[i].sy, pNumImage[i].sw, pNumImage[i].sh, IMAGE_MODE::NORMAL );
+		}
+	}
+
+	//	ライフ描画
+	void	UI::LifeRender( void )
+	{
+		FOR( 0, PLAYER_MAX )
+		{
+			for ( int i = 0; i < 3; i++ )
+			{
+				RenderImage(lifeInfo[value].lifeImage[i], lifeInfo[value].lifeImage[i].sx, lifeInfo[value].lifeImage[i].sy, lifeInfo[value].lifeImage[i].sw, lifeInfo[value].lifeImage[i].sh, IMAGE_MODE::NORMAL );
+			}
 		}
 	}
 

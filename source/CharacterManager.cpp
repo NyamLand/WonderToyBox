@@ -42,30 +42,15 @@
 			else					character[playerNum] = new Princess_CPU();
 			break;
 
-		//case CHARACTER_TYPE::KNIGHT:
-		//	if ( isPlayer )		character[playerNum] = new Knight();
-		//	else					character[playerNum] = new Knight_CPU();
-		//	break;
-
 		case CHARACTER_TYPE::SCAVENGER:
 			if (isPlayer)		character[playerNum] = new Scavenger();
 			else					character[playerNum] = new Scavenger_CPU();
 			break;
 
-		//case CHARACTER_TYPE::SQUIRREL:
-		//	if ( isPlayer )		character[playerNum] = new Squirrel();
-		//	else					character[playerNum] = new Squirrel_CPU();
-		//	break;
-
 		case CHARACTER_TYPE::THIEF:
 			if (isPlayer)		character[playerNum] = new Thief();
 			else					character[playerNum] = new Thief_CPU();
 			break;
-
-		//case CHARACTER_TYPE::TIGER:
-		//	if ( isPlayer )		character[playerNum] = new Tiger();
-		//	else					character[playerNum] = new Tiger_CPU();
-		//	break;
 
 		case CHARACTER_TYPE::PIRATE:
 			if ( isPlayer )		character[playerNum] = new Pirate();
@@ -74,6 +59,7 @@
 		}
 
 		//	‰ŠúÝ’è
+		character[playerNum]->SetLife( gameManager->GetStartLife( playerNum ) );
 		character[playerNum]->Initialize( playerNum, pos, isPlayer );
 		return	true;
 	}
@@ -462,6 +448,12 @@
 		return character[player]->GetAIMode();
 	}
 
+	//	ƒ‰ƒCƒtŽæ“¾
+	int			CharacterManager::GetLife( int player )const
+	{
+		return	character[player]->GetLife();
+	}
+
 	//	ŽÀ‘ÌŽæ“¾
 	CharacterManager*	CharacterManager::GetInstance( void )
 	{
@@ -573,4 +565,10 @@
 			bc2->SetMode(MODE_STATE::DAMAGE_LEANBACKWARD);
 			break;
 		}
+	}
+
+	//	‘Ì—ÍÝ’è
+	void		CharacterManager::SetLife( int player, int life )
+	{
+		character[player]->SetLife( life );
 	}
