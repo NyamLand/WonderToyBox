@@ -56,6 +56,7 @@ private:
 	bool	itemflg;
 
 	//	ƒQ[ƒ€İ’è—p
+	int		startLife[4];
 	int		playerNum;
 	int		charatype[4];
 	int		stageType;
@@ -126,6 +127,7 @@ public:
 	int		GetRank(int player);   
 	int		GetTimeStop(void);
 	int		GetCoinMax(void)const;
+	int		GetStartLife( int player )const;
 	bool		GetItemFlg(void)const;
 	static	GameManager*	GetInstance( void );
 
@@ -149,6 +151,7 @@ public:
 	void	SetTime(int minute, int second);
 	void	SetCoinMax(int coinmax);
 	void	SetItemFlg(bool itemflg);
+	void	SetStartLife( int player, int life );
 };
 #define	gameManager ( GameManager::GetInstance() )
 

@@ -523,7 +523,7 @@
 				}
 
 				//	‰ñ“]‚ªI—¹‚µ‚½‚ç
-				if ( isEnd )		step++;
+				if ( isEnd )		step = 2;
 				break;
 		
 		case 1:

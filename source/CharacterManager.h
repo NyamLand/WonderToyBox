@@ -72,13 +72,14 @@ public:
 	bool		GetUnrivaled( int player )const;
 	bool		GetCanHyper( int player )const;
 	bool		GetParameterState( int player, int type )const;
-	int			GetAttackParam( int player )const;
-	int			GetPlayerNum( int playerNum )const;
-	int			GetPower( int playerNum )const;
-	int			GetTotalPower( int player )const;
-	int			GetRank( int player )const;
-	int			GetMode( int player )const;
-	int			GetAIMode(int player)const;
+	int		GetAttackParam( int player )const;
+	int		GetPlayerNum( int playerNum )const;
+	int		GetPower( int playerNum )const;
+	int		GetTotalPower( int player )const;
+	int		GetRank( int player )const;
+	int		GetMode( int player )const;
+	int		GetAIMode(int player)const;
+	int		GetLife( int player )const;
 	static	CharacterManager*	GetInstance();
 
 	//	î•ñİ’è
@@ -95,6 +96,7 @@ public:
 	void		SetRank(int player, int rank);
 	void		SetForce(int player, float force);
 	void		SetKnockBackParam(BaseChara* bc1, BaseChara* bc2);
+	void		SetLife( int player, int life );
 };
 
 #define	characterManager ( CharacterManager::GetInstance() )

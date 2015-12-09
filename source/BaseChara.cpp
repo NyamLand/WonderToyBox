@@ -68,8 +68,8 @@ namespace
 	BaseChara::BaseChara( void ) : obj( nullptr ), input( nullptr ),		//	pointer
 		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ),	//	Vector3
 		angle(0.0f), scale(0.0f), speed(0.0f),	totalSpeed(0.0f), drag(0.0f), force( 0.0f ), moveVec( 0.0f ),	//	float
-		unrivaled(false), isGround(false), isPlayer(false), jumpState(false), checkWall(false),//	bool
-		mode(0), playerNum(0), power(0), totalPower(0), leanFrame(0), jumpStep(0),damageStep(0),rank(0)		//	int
+		unrivaled(false), isGround(false), isPlayer(false), jumpState(false), checkWall(false), renderflag(true),//	bool
+		mode(0), playerNum(0), power(0), totalPower(0), leanFrame(0), jumpStep(0),damageStep(0),rank(0), life( 0 )		//	int
 	{
 	
 	}
@@ -202,6 +202,7 @@ namespace
 		ParameterInfoInitialize( jump );
 		ParameterInfoInitialize( magnet );
 		ParameterInfoInitialize( confusion );
+		ParameterInfoInitialize( respawn );
 	}
 
 	//	パラメータ状態初期化
@@ -284,6 +285,7 @@ namespace
 			//	影描画
 			iexPolygon::Render3D( shadow.v, 2, shadow.obj, shader3D, "alpha" );
 			
+			if ( renderflag )
 			obj->Render( shader, technique );
 		}
 	}
@@ -729,16 +731,23 @@ namespace
 	{
 		if ( pos.y < -3.0f )
 		{
-			//	コインを３枚減らす
-			FOR( 0, 3 )
+			//	コインを半分減らす
+			int		coinNum = gameManager->GetCoinNum( playerNum ) / 2;
+			FOR( 0, coinNum )
 			{
-				int		coinNum = gameManager->GetCoinNum( playerNum );
 				if ( coinNum > 0 )
 				{
 					gameManager->SubCoin( this->playerNum );
+					coinManager->Append( GetPos(), Vector3( Random::GetFloat( 0.3f, 0.7f ), 1.0f, Random::GetFloat( 0.3f, 0.7f ) ), Random::GetFloat( 0.3f, 0.7f ) );
 				}
 			}
+
+			//	初期位置に配置→待ち状態にして行動不能にする→リスポーン状態を設定
 			pos = gameManager->InitPos[this->playerNum];
+			SetMode( MODE_STATE::WAIT );
+			SetParameterState( PARAMETER_STATE::RESPAWN );
+
+			//	ステージ落下回数加算
 			gameManager->AddFallStage( GetPlayerNum() );
 		}
 	} 
@@ -799,6 +808,8 @@ namespace
 		//	混乱
 		Confusion();
 
+		//	リスポーン
+		Respawn();
 	}
 
 	//	攻撃力Upアイテム効果動作
@@ -885,6 +896,30 @@ namespace
 		}
 	}
 
+	//	リスポーン
+	void	BaseChara::Respawn( void )
+	{
+		if ( !respawn.state )	return;
+
+		//	タイマー減算
+		respawn.timer--;
+
+		//	無敵状態
+		unrivaled = true;
+
+		//	描画フラグ切り替え
+		if ( respawn.timer % 10 == 0 )	renderflag = !renderflag;
+
+		//	時間が来たら効果取り消し
+		if ( respawn.timer <= 0 )
+		{
+			unrivaled = false;
+			renderflag = true;
+			respawn.timer = 0;
+			respawn.state = false;
+			SetMode( MODE_STATE::MOVE );
+		}
+	}
 
 //----------------------------------------------------------------------------
 //	操作方法別動作
@@ -1424,47 +1459,55 @@ namespace
 	}
 
 	//	モード取得
-	int			BaseChara::GetMode( void )const
+	int		BaseChara::GetMode( void )const
 	{
 		return	mode;
 	}
-	int			BaseChara::GetAIMode(void)const
+	int		BaseChara::GetAIMode( void )const
 	{
 		return	aiInfo.mode;
 	}
 
 	//	プレイヤー番号取得
-	int			BaseChara::GetPlayerNum( void )const
+	int		BaseChara::GetPlayerNum( void )const
 	{
 		return	playerNum;
 	}
 
 	//	仰け反りフレーム取得
-	int			BaseChara::GetLeanFrame( void )const
+	int		BaseChara::GetLeanFrame( void )const
 	{
 		return	leanFrame;
 	}
 
 	//	攻撃タイプ取得
-	int			BaseChara::GetAttackParam( void )const
+	int		BaseChara::GetAttackParam( void )const
 	{
 		return	attackInfo.type;
 	}
 
 	//	ノックバックタイプ取得
-	int			BaseChara::GetKnockBackType( void )const
+	int		BaseChara::GetKnockBackType( void )const
 	{
 		return	knockBackInfo.type;
 	}
 
-	int			BaseChara::GetKnockBackIsUp(void)const
+	//	
+	int		BaseChara::GetKnockBackIsUp(void)const
 	{
 		return knockBackInfo.isUp;
 	}
+	
 	//　順位取得
-	int			BaseChara::GetRank( void )const
+	int		BaseChara::GetRank( void )const
 	{
 		return	rank;
+	}
+
+	//	ライフ取得
+	int		BaseChara::GetLife( void )const
+	{
+		return	life;
 	}
 
 //----------------------------------------------------------------------------
@@ -1600,6 +1643,9 @@ namespace
 		case PARAMETER_STATE::CONFUSION:
 			SetParameterState( confusion, 3 * SECOND );
 			break;
+
+		case PARAMETER_STATE::RESPAWN:
+			SetParameterState( respawn, 3 * SECOND );
 		}
 	}
 
@@ -1620,4 +1666,10 @@ namespace
 	void BaseChara::SetForce(float force)
 	{
 		this->force = force;
+	}
+
+	//	ライフ設定
+	void	BaseChara::SetLife( int life )
+	{
+		this->life = life;
 	}

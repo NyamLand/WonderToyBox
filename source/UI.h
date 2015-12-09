@@ -109,20 +109,28 @@ private:
 		int		coinNum[4];
 	};
 
+	//	ライフ情報
+	struct LIFE_INFO
+	{
+		int	life;
+		ImageObj	lifeImage[3];
+	};
+
 private:
 	//	各画像
-	ImageObj	timer;
+	ImageObj		timer;
 	iex2DObj*	coinbar;
-	ImageObj	frame;
-	ImageObj	backgauge;
-	ImageObj	gauge;
+	ImageObj		frame;
+	ImageObj		backgauge;
+	ImageObj		gauge;
 	iex2DObj*	face;
-	ImageObj	faceImage;
-	ImageObj	countImage;
-	ImageObj	alertImage;
-	ImageObj	alert_coinImage;
+	ImageObj		faceImage;
+	ImageObj		countImage;
+	ImageObj		alertImage;
+	ImageObj		alert_coinImage;
 	iex2DObj*	playerNumber;
-	ImageObj	pNumImage[PLAYER_MAX];
+	ImageObj		pNumImage[PLAYER_MAX];
+	iex2DObj*	life;
 
 private:
 	//	システム
@@ -167,6 +175,9 @@ private:
 
 	//	コインバー情報
 	COINBAR_INFO	coinBarInfo;
+
+	//	ライフ情報
+	LIFE_INFO			lifeInfo[4];
 
 	//	パラメータ
 	int		scene;
@@ -219,6 +230,7 @@ public:
 	void	AlertInitialize( void );
 	void	HurryUpInitialize( void );
 	void	PlayerNumberInitialize( void );
+	void	LifeInitialize( void );
 
 	//	メイン動作更新
 	void	TimerUpdate( void );
@@ -231,6 +243,7 @@ public:
 	void	HurryUpdate( void );
 	void	LastProduction( void );
 	void	PlayerNumberUpdate( void );
+	void	LifeUpdate( void );
 
 	//	メイン描画
 	void	TimerRender( void );
@@ -242,6 +255,7 @@ public:
 	void	AlertRender( void );
 	void	LastProductionRender( void );
 	void	PlayerNumberRender( void );
+	void	LifeRender( void );
 
 	//	メイン動作関数
 	void BarControl( void );
