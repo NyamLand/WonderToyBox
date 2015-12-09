@@ -17,14 +17,19 @@ class Thief : public		BaseChara
 private:
 	enum MOTION_DATA
 	{
-		STAND = 1,			//	—§‚¿
-		POSTURE,				//	\‚¦
-		RUN = 4,				//	‘–‚è
-		ATTACK1,				//	UŒ‚‚P’iŠK–Ú
-		ATTACK2,				//	UŒ‚‚Q’iŠK–Ú
-		ATTACK3,				//	UŒ‚‚R’iŠK–Ú
+		POSTURE = 0,
+		RUN,
 		JUMP,
 		GUARD,
+		QUICK,
+		POWER,
+		HYPER,
+		DAMAGE,
+		DOWN,
+		GUTS,
+		HAPPY,
+		SAD,
+		ANGRY
 	};
 	const float DEFAULT_ABSORB_LENGTH = 3.0f;
 

@@ -308,7 +308,7 @@
 				playerNumSelectInfo.num++;
 				if ( playerNumSelectInfo.num >= 4 )
 				{
-					playerNumSelectInfo.num = 3;
+					playerNumSelectInfo.num = -1;
 					playerNumSelectInfo.t = 1.0f;
 				}
 				else
@@ -324,7 +324,7 @@
 				playerNumSelectInfo.num--;
 				if ( playerNumSelectInfo.num < 0 )
 				{
-					playerNumSelectInfo.num = 0;
+					playerNumSelectInfo.num = 4;
 					playerNumSelectInfo.t = 1.0f;
 				}
 				else
