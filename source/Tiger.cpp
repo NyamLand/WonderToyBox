@@ -277,8 +277,8 @@
 			else											Lerp( attackInfo.pos, startPos_left, finPos_left, t );
 
 			//	‚ä‚Á‚­‚è‰ñ“]
-			if ( input->Get( KEY_AXISX ) < 0 )		angle -= 0.02f;
-			if ( input->Get( KEY_AXISX ) > 0 )		angle += 0.02f;
+			if ( input->Get( KEY_AXISX ) < 0 )		angle.y -= 0.02f;
+			if ( input->Get( KEY_AXISX ) > 0 )		angle.y += 0.02f;
 
 			if ( attackInfo.t >= 1.0f )
 			{

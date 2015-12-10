@@ -117,7 +117,7 @@ bool	Scavenger::QuickArts(void)
 	unrivaled = false;
 
 	if (absorb_length < 15.0f) absorb_length += 0.1f;		//吸い込む範囲を徐々に拡大
-	Vector3 p_front = Vector3(sinf(this->angle), 0, cosf(this->angle));
+	Vector3 p_front = Vector3(sinf(this->angle.y), 0, cosf(this->angle.y));
 
 	//	コイン情報取得
 	list<Coin*>	coinList = coinManager->GetList();
@@ -164,7 +164,7 @@ bool	Scavenger::PowerArts( void )
 	//問題なら言ってください
 	unrivaled = false;
 	absorb_length = 5.0f;
-	Vector3 p_front = Vector3(sinf(this->angle), 0, cosf(this->angle));
+	Vector3 p_front = Vector3(sinf(this->angle.y), 0, cosf(this->angle.y));
 	p_front.Normalize();
 	float speed = 0.5f;
 	
@@ -305,11 +305,11 @@ void	Scavenger::RollAngle(void)
 
 	if (axisX > 0)
 	{
-		angle += 0.02f;
+		angle.y += 0.02f;
 	}
 	if (axisX < 0)
 	{
-		angle -= 0.02f;
+		angle.y -= 0.02f;
 	}
 }
 //	モーション管理

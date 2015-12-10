@@ -66,8 +66,8 @@ namespace
 
 	//	コンストラクタ
 	BaseChara::BaseChara( void ) : obj( nullptr ), input( nullptr ),		//	pointer
-		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ),	//	Vector3
-		angle(0.0f), scale(0.0f), speed(0.0f),	totalSpeed(0.0f), drag(0.0f), force( 0.0f ), moveVec( 0.0f ),	//	float
+		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ), angle( 0.0f, 0.0f, 0.0f ), 	//	Vector3
+		scale(0.0f), speed(0.0f),	totalSpeed(0.0f), drag(0.0f), force( 0.0f ), moveVec( 0.0f ),	//	float
 		unrivaled(false), isGround(false), isPlayer(false), jumpState(false), checkWall(false), renderflag(true),//	bool
 		mode(0), playerNum(0), power(0), totalPower(0), leanFrame(0), jumpStep(0),damageStep(0),rank(0), life( 0 )		//	int
 	{
@@ -112,7 +112,7 @@ namespace
 		//	パラメータ初期化
 		mode = MODE_STATE::WAIT;
 		this->pos = pos;
-		angle = 0.0f;
+		angle = Vector3( 0.0f, 0.0f, 0.0f );
 		totalPower = power;
 		totalSpeed = speed;
 
@@ -236,6 +236,12 @@ namespace
 	{
 		//	モード管理
 		ModeManagement();
+
+		if ( GetLife() <= 0 )
+		{
+			life = 0;
+			SetMode( MODE_STATE::DEATH );
+		}
 
 		//	パラメータ情報更新
 		ParameterInfoUpdate();
@@ -373,6 +379,10 @@ namespace
 		case MODE_STATE::DAMAGE_LEANBACKWARD:
 			KnockBackLeanBackWard();
 			break;
+
+		case MODE_STATE::DEATH:
+			Death();
+			break;
 		}
 	}
 
@@ -492,8 +502,8 @@ namespace
 		SetAngle( targetAngle - dAngle );
 
 		//	プレイヤーの向きがπ以上にならないように調整する
-		if ( GetAngle() >= 1.0f * D3DX_PI )		angle -= 2.0f * D3DX_PI;
-		if ( GetAngle() <= -1.0f * D3DX_PI )	angle += 2.0f * D3DX_PI;
+		if ( GetAngle() >= 1.0f * D3DX_PI )		angle.y -= 2.0f * D3DX_PI;
+		if ( GetAngle() <= -1.0f * D3DX_PI )		angle.y += 2.0f * D3DX_PI;
 	}
 
 	//	ノックバック
@@ -692,6 +702,51 @@ namespace
 		KnockBack();
 	}
 
+	//	死亡
+	void	BaseChara::Death( void )
+	{
+		static	float	param = 0.0f;	//	仮
+		static	bool	initflag = false;		//	初期通過フラグ
+		static	float	moveAngle = 0.0f;
+		
+		//	死亡中無敵
+		unrivaled = true;
+		SetMotion( MOTION_NUM::DEATH );
+
+		//	コイン全部ばらまき
+		if ( !initflag )
+		{
+			int	coinNum = gameManager->GetCoinNum( this->playerNum );
+			FOR( 0, coinNum )
+			{
+				//	コイン全部ばらまき
+				if ( coinNum > 0 )	
+					coinManager->Append( GetPos(), Vector3( Random::GetFloat( 0.0f, 1.0f ), 1.0f, Random::GetFloat( 0.0f, 1.0f ) ), Random::GetFloat( 0.3f, 1.0f ) );
+			}
+			initflag = true;
+		}
+
+		//	待ち時間加算（仮）モーション出来次第変更
+		param += 0.01f;
+		if ( param >= 1.0f )	param = 1.0f;
+
+		CubicFunctionInterpolation( moveAngle, 0.0f, D3DX_PI * 0.5f, param );
+		SetAngle( Vector3( moveAngle, GetAngle(), 0.0f ) );
+
+		//	今はモーションないので２秒待ち時間を設定
+		if ( param >= 1.0f )
+		{
+			//	リスポーン
+			pos = gameManager->InitPos[this->playerNum];
+			SetLife( gameManager->GetStartLife( this->playerNum ) );	//	ライフを満タンにする
+			SetMode( MODE_STATE::WAIT );											//	待機にして動けなくする
+			SetParameterState( PARAMETER_STATE::RESPAWN );			//	点滅＆無敵処理開始
+			SetAngle( Vector3( 0.0f, 0.0f, 0.0f ) );
+			param = 0.0f;
+			initflag = false;
+		}
+	}
+
 	//	走る
 	void	BaseChara::Run( void )
 	{
@@ -785,6 +840,29 @@ namespace
 		SetVertex( shadow.v[1], shadow.pos.x + shadow.scale / 2, shadow.pos.y, shadow.pos.z + shadow.scale / 2, 1.0f, 0.0f, vertexColor );
 		SetVertex( shadow.v[2], shadow.pos.x - shadow.scale / 2, shadow.pos.y, shadow.pos.z - shadow.scale / 2, 0.0f, 1.0f, vertexColor );
 		SetVertex( shadow.v[3], shadow.pos.x + shadow.scale / 2, shadow.pos.y, shadow.pos.z - shadow.scale / 2, 1.0f, 1.0f, vertexColor );
+	}
+
+	//	ライフ加算
+	void	BaseChara::AddLife( void )
+	{
+		life++;
+		int	maxLife = gameManager->GetStartLife( this->playerNum );
+		if ( life >= maxLife )
+		{
+			life = maxLife;
+		}
+	}
+
+	//	ライフ減算
+	void	BaseChara::SubLife( void )
+	{
+		life--;
+		
+		if ( life <= 0 )
+		{
+			life = 0;
+			SetMode( MODE_STATE::DEATH );
+		}
 	}
 
 //-------------------------------------------------------------------------------------
@@ -1075,15 +1153,15 @@ namespace
 			AutoAngleAdjust(adjustSpeed, target);
 			if (!slip.state)
 			{
-				move.x = sinf(angle) * speed;
-				move.z = cosf(angle) * speed;
+				move.x = sinf(angle.y) * speed;
+				move.z = cosf(angle.y) * speed;
 			}
 			else
 			{
 				if (move.Length() < speed)
 				{
-					move.x += sinf(angle) * slipInfo.speed;
-					move.z += cosf(angle) * slipInfo.speed;
+					move.x += sinf(angle.y) * slipInfo.speed;
+					move.z += cosf(angle.y) * slipInfo.speed;
 				}
 			}
 		}
@@ -1374,7 +1452,7 @@ namespace
 	//	向き取得
 	float		BaseChara::GetAngle( void )const
 	{
-		return	angle;
+		return	angle.y;
 	}
 
 	float		BaseChara::GetAngle(Vector3 vec1, Vector3 vec2)const
@@ -1534,11 +1612,17 @@ namespace
 	{
 		this->move = move;
 	}
+	
+	//	向き設定
+	void	BaseChara::SetAngle( Vector3 angle )
+	{
+		this->angle = angle;
+	}
 
 	//	向き設定
 	void	BaseChara::SetAngle( float angle )
 	{
-		this->angle = angle;
+		this->angle.y = angle;
 	}
 
 	//	スケール設定

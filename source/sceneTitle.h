@@ -62,10 +62,14 @@ private:	//	構造体
 	struct TITLE_INFO
 	{
 		int		step;
+		int		nextMode;
 		CurtainInfo	curtainR;
 		CurtainInfo	curtainL;
+		iex2DObj*	titleText;
 		ImageObj		pressSpace;
 		ImageObj		titleImage;
+		ImageObj		gameStartImage;
+		ImageObj		creditTextImage;
 	};
 
 	//	メニュー用パラメータ
@@ -80,6 +84,13 @@ private:	//	構造体
 		int		mode;
 		int		select_mode;
 		int		menu_num;
+	};
+
+	struct CREDIT_INFO
+	{
+		iex2DObj*	credit;
+		int				sy;
+		float				t;
 	};
 
 private:
@@ -97,6 +108,7 @@ private:
 	TITLE_INFO		titleInfo;
 	MENU_INFO		menuInfo;
 	SELECT_INFO	selectInfo;
+	CREDIT_INFO	creditInfo;
 
 public:
 	//	初期化・解放
@@ -105,6 +117,7 @@ public:
 	bool	Initialize( void );
 	void	TitleInitialize( void );
 	void	MenuInitialize( void );
+	void	CreditInitialize( void );
 
 	//	更新・描画
 	void	Update( void );

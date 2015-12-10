@@ -932,7 +932,7 @@
 				lifeInfo[value].lifeImage[i].y = static_cast<int>( out.y - 30 * ( i % 2 ) );
 				
 				//	“Ç‚Ýž‚ÝˆÊ’uÝ’è
-				if ( lifeInfo[value].life >= i )	lifeInfo[value].lifeImage[i].sx = 256;
+				if ( lifeInfo[value].life > i )	lifeInfo[value].lifeImage[i].sx = 256;
 				else										lifeInfo[value].lifeImage[i].sx = 0;
 			}
 		}

@@ -44,7 +44,8 @@ namespace
 			GUARD,
 			DAMAGE,
 			DAMAGE_FLYUP,
-			DAMAGE_LEANBACKWARD
+			DAMAGE_LEANBACKWARD,
+			DEATH,
 		};
 	}
 
@@ -92,7 +93,8 @@ namespace
 			FALLTOGROUND,	//	ínñ Ç…óéâ∫
 			GETUP,				//	ãNÇ´è„Ç™ÇÈ
 			WIN,					//	èüóò
-			DEFEAT,				//	îsñk
+			DEFEAT,				//	îsñk,
+			DEATH,				//	éÄñS
 		};
 	}
 
@@ -217,8 +219,8 @@ protected:
 	iexInput*	input;
 	Vector3		pos;
 	Vector3		move;
+	Vector3		angle;
 	float				drag;		//	íÔçRóÕÅEñÄéCóÕ
-	float				angle;
 	float				moveVec;
 	float				scale;
 	float				speed;
@@ -298,12 +300,15 @@ public:
 	void	Jump( void );
 	void	Guard( void );
 	void	Damage( void );
-	void	KnockBack(void);
+	void	KnockBack( void );
+	void	Death( void );
 	void	AddKnockBackForce(float force);
 	void	KnockBackLeanBackWard( void );
 	void	FallCheck( void );
 	void	ParameterAdjust( void );
 	void	ShadowUpdate( void );
+	void	AddLife( void );
+	void	SubLife( void );
 
 	//	ÉpÉâÉÅÅ[É^èÛë‘ìÆçÏ
 	void	ParameterInfoUpdate( void );
@@ -338,6 +343,7 @@ public:
 	void	SetAIMode( int mode );
 	void	SetMove( Vector3 move );
 	void	SetPos( Vector3 pos );
+	void	SetAngle( Vector3 angle );
 	void	SetAngle( float angle );
 	void	SetScale( float scale );
 	void	SetDrag( float param );
@@ -371,7 +377,7 @@ public:
 	Vector3	GetBoneRight( int num )const;
 	Vector3	GetBoneUp( int num )const;
 	float		GetAngle( void )const;
-	float		GetAngle(Vector3 vec1, Vector3 vec2)const;
+	float		GetAngle( Vector3 vec1, Vector3 vec2 )const;
 	float		GetScale( void )const;
 	float		GetAttack_R( void )const;
 	float		GetAttack_T( void )const;

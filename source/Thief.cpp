@@ -193,11 +193,11 @@ bool	Thief::HyperArts(void)
 	};
 	Vector3 b_angle[5] =
 	{
-		{ 0, angle + GetAngle(vec[0], front), 0 },
-		{ 0, angle + GetAngle(vec[1], front), 0 },
-		{ 0, angle, 0 },
-		{ 0, angle - GetAngle(vec[3], front), 0 },
-		{ 0, angle - GetAngle(vec[4], front), 0 }
+		{ 0, angle.y + GetAngle(vec[0], front), 0 },
+		{ 0, angle.y + GetAngle(vec[1], front), 0 },
+		{ 0, angle.y, 0 },
+		{ 0, angle.y - GetAngle(vec[3], front), 0 },
+		{ 0, angle.y - GetAngle(vec[4], front), 0 }
 	};
 	float	 bulletSpeed = 0.5f;
 	int playerNum = GetPlayerNum();

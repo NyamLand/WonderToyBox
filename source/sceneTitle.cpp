@@ -62,6 +62,8 @@ namespace
 		SafeDelete( titleInfo.titleImage.obj );
 		SafeDelete( titleInfo.pressSpace.obj );
 		SafeDelete( stage );
+		SafeDelete( titleInfo.titleText );
+		SafeDelete( creditInfo.credit );
 		sound->AllStop();
 	}
 	
@@ -106,6 +108,7 @@ namespace
 		//	各モード初期化
 		TitleInitialize();
 		MenuInitialize();
+		CreditInitialize();
 
 		return	true;
 	}
@@ -118,10 +121,15 @@ namespace
 		titleInfo.curtainR.obj = new iex2DObj( "DATA/UI/title/curtain2.png" );
 		titleInfo.titleImage.obj = new iex2DObj( "DATA/UI/title.png" );
 		titleInfo.pressSpace.obj = new iex2DObj( "DATA/UI/pressspace.png" );
+		titleInfo.titleText = new iex2DObj( "DATA/UI/title/titleText.png" );
 
 		//	画像構造体初期化
-		ImageInitialize(titleInfo.pressSpace, iexSystem::ScreenWidth / 2, static_cast<int>( iexSystem::ScreenHeight * 0.82f ), static_cast<int>( iexSystem::ScreenWidth * 0.2f ), static_cast<int>( iexSystem::ScreenHeight * 0.15f ), 0, 0, 256, 128 );
-		ImageInitialize(titleInfo.titleImage, iexSystem::ScreenWidth / 2, static_cast<int>( iexSystem::ScreenHeight * 0.42f ), static_cast<int>( iexSystem::ScreenWidth * 0.4f ), static_cast<int>( iexSystem::ScreenHeight * 0.7f ), 0, 0, 512, 512 );
+		ImageInitialize( titleInfo.pressSpace, iexSystem::ScreenWidth / 2, static_cast<int>( iexSystem::ScreenHeight * 0.82f ), static_cast<int>( iexSystem::ScreenWidth * 0.2f ), static_cast<int>( iexSystem::ScreenHeight * 0.15f ), 0, 0, 256, 128 );
+		ImageInitialize( titleInfo.titleImage, iexSystem::ScreenWidth / 2, static_cast<int>( iexSystem::ScreenHeight * 0.42f ), static_cast<int>( iexSystem::ScreenWidth * 0.4f ), static_cast<int>( iexSystem::ScreenHeight * 0.7f ), 0, 0, 512, 512 );
+		ImageInitialize( titleInfo.gameStartImage, iexSystem::ScreenWidth / 2, static_cast<int>( iexSystem::ScreenHeight * 0.80f ), static_cast<int>( iexSystem::ScreenWidth * 0.15f ), static_cast<int>( iexSystem::ScreenHeight * 0.07f ), 0, 0, 512, 128 );
+		ImageInitialize( titleInfo.creditTextImage, iexSystem::ScreenWidth / 2, static_cast<int>( iexSystem::ScreenHeight * 0.87f ), static_cast<int>( iexSystem::ScreenWidth * 0.1f ), static_cast<int>( iexSystem::ScreenHeight * 0.07f ), 0, 128, 512, 128 );
+		titleInfo.gameStartImage.obj = titleInfo.titleText;
+		titleInfo.creditTextImage.obj = titleInfo.titleText;
 
 		//	カーテン用構造体初期化
 		{
@@ -143,12 +151,21 @@ namespace
 		//	変数初期化
 		titleInfo.titleImage.renderflag = true;
 		titleInfo.step = 0;
+		titleInfo.nextMode = 0;
 	}
 
 	//	メニュー初期化
 	void	sceneTitle::MenuInitialize( void )
 	{
 		menuInfo.menu_num = 0;
+	}
+
+	//	クレジット初期化
+	void	sceneTitle::CreditInitialize( void )
+	{
+		creditInfo.credit = new iex2DObj( "DATA/UI/title/credit.png" );
+		creditInfo.sy = 0;
+		creditInfo.t = 0.0f;
 	}
 
 //-----------------------------------------------------------------------------------
@@ -264,6 +281,32 @@ namespace
 				//	点滅更新
 				FlashingUpdate( titleInfo.pressSpace, D3DX_PI / 180 * 4.0f );
 
+				//	カーソル移動
+				if ( input[0]->Get( KEY_UP ) == 3 )
+				{
+					titleInfo.nextMode--;
+					if ( titleInfo.nextMode < 0 )	titleInfo.nextMode = 1;
+				}
+				if ( input[0]->Get( KEY_DOWN ) == 3 )
+				{
+					titleInfo.nextMode++;
+					if ( titleInfo.nextMode >= 2 )	titleInfo.nextMode = 0;
+				}
+
+				//	点滅更新
+				switch ( titleInfo.nextMode )
+				{
+				case 0:
+					FlashingUpdate( titleInfo.gameStartImage, D3DX_PI / 180 * 4.0f );
+					titleInfo.creditTextImage.flashingAlpha = 1.0f;
+					break;
+
+				case 1:
+					FlashingUpdate( titleInfo.creditTextImage, D3DX_PI / 180 * 4.0f );
+					titleInfo.gameStartImage.flashingAlpha = 1.0f;
+					break;
+				}
+				
 				//	SPACEキーで選択
 				if ( KEY( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )
 				{
@@ -275,7 +318,17 @@ namespace
 
 					//	pressspace波紋
 					static	float	wavespeed = 1.5f;
-					SetWave( titleInfo.pressSpace, wavespeed );
+					
+					switch ( titleInfo.nextMode )
+					{
+					case 0:
+						SetWave( titleInfo.gameStartImage, wavespeed );
+						break;
+
+					case 1:
+						SetWave( titleInfo.creditTextImage, wavespeed );
+						break;
+					}
 					titleInfo.step++;
 				}
 				break;
@@ -285,11 +338,23 @@ namespace
 				mainView->Update( VIEW_MODE::TITLE );
 
 				//	波紋更新
-				WaveUpdate( titleInfo.pressSpace );
+				//WaveUpdate( titleInfo.pressSpace );
+				WaveUpdate( titleInfo.gameStartImage );
+				WaveUpdate( titleInfo.creditTextImage );
 
 				//	点滅更新
-				FlashingUpdate( titleInfo.pressSpace, D3DX_PI / 180.0f * 10.0f );
+				switch (titleInfo.nextMode)
+				{
+				case 0:
+					FlashingUpdate( titleInfo.gameStartImage, D3DX_PI / 180 * 10.0f );
+					titleInfo.creditTextImage.flashingAlpha = 1.0f;
+					break;
 
+				case 1:
+					FlashingUpdate( titleInfo.creditTextImage, D3DX_PI / 180 * 10.0f );
+					titleInfo.gameStartImage.flashingAlpha = 1.0f;
+					break;
+				}
 				//	パラメータ加算
 				titleInfo.curtainL.t += D3DX_PI / 180 * speed;
 				titleInfo.curtainR.t += D3DX_PI / 180 * speed;
@@ -318,7 +383,17 @@ namespace
 				curtainStateR = false;
 				static	float	screenSpeed = 1.0f;
 				screen->SetScreenMode( SCREEN_MODE::WHITE_IN, screenSpeed );
-				mode = TITLE_MODE::MENU;
+
+				switch ( titleInfo.nextMode )
+				{
+				case 0:
+					mode = TITLE_MODE::MENU;
+					break;
+
+				case 1:
+					mode = TITLE_MODE::CREDIT;
+					break;
+				}
 				break;
 			}
 		}
@@ -337,8 +412,14 @@ namespace
 			RenderImage( titleInfo.titleImage, 0, 0, 512, 512, IMAGE_MODE::NORMAL );
 
 			//	pressSpace描画
-			RenderImage( titleInfo.pressSpace, 0, 0, 256, 128, IMAGE_MODE::FLASH );
+			//RenderImage( titleInfo.pressSpace, 0, 0, 256, 128, IMAGE_MODE::FLASH );
+			RenderImage( titleInfo.gameStartImage, 0, 0, 512, 128, IMAGE_MODE::FLASH );
+			RenderImage( titleInfo.creditTextImage, 0, 128, 512, 128, IMAGE_MODE::FLASH );
+
 			RenderImage( titleInfo.pressSpace, 0, 0, 256, 128, IMAGE_MODE::WAVE );
+			RenderImage( titleInfo.gameStartImage, 0, 0, 512, 128, IMAGE_MODE::WAVE );
+			RenderImage( titleInfo.creditTextImage, 0, 128, 512, 128, IMAGE_MODE::WAVE );
+
 		}
 
 	//--------------------------------------------------------
@@ -497,21 +578,23 @@ namespace
 		//	更新
 		void	sceneTitle::CreditUpdate( void )
 		{
-			ui->Update( mode );
-			mainView->Update( VIEW_MODE::TITLE );
-			if ( !mainView->GetMoveState() )	return;
-			if ( KEY( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )
+			if ( input[0]->Get( KEY_SPACE ) == 3 )
 			{
-				mode = TITLE_MODE::MENU;
-				sound->PlaySE( SE::DECIDE_SE );
-				mainView->SetNextPoint( TITLE_TARGET::PLAY, 0.01f );
+				mode = TITLE_MODE::TITLE;
+				creditInfo.t = 0.0f;
 			}
-			mainView->SetNextPoint(menuInfo.menu_num, 0.01f);
+			
+			if (screen->GetScreenState())
+			{
+				creditInfo.t += 0.005f;
+				if ( creditInfo.t >= 1.0f )	creditInfo.t = 1.0f;
+			}
+
+			Lerp( creditInfo.sy, 0, 1536, creditInfo.t );
 		}
 
 		//	描画
 		void	sceneTitle::CreditRender( void )
 		{
-			DrawString( "つくった戦士たちの紹介だよ", 50, 50 );
-			DrawString( "[SPACE]：メニューへ", 300, 400, 0xFFFFFF00 );
+			creditInfo.credit->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, creditInfo.sy, 512, 512 );
 		}

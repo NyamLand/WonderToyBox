@@ -96,9 +96,9 @@
 			c_Bullet[i]->Render();
 		}
 
-		char	str[256];
-		sprintf_s( str, "bullet_num = %d", bullet_num );
-		DrawString( str, 20, 120 );
+		//char	str[256];
+		//sprintf_s( str, "bullet_num = %d", bullet_num );
+		//DrawString( str, 20, 120 );
 	}
 
 	//	シェーダー付き描画

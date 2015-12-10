@@ -232,8 +232,14 @@
 			{
 				gameManager->SetShakeCamera( 1.0f, 30 );
 			}
+			
+			//	無敵にする
 			if ( bc2->GetUnrivaled() )	return;
 			bc2->SetUnrivaled( true );
+
+			//	ライフ減らす
+			bc2->SubLife();
+
 			//	エフェクトだす
 			float	effectScale = 1.0f;
 			particle->Spark( bc2_top, effectScale );
@@ -298,6 +304,9 @@
 			//	無敵状態取得・設定
 			if ( bc2->GetUnrivaled() )	return;
 			bc2->SetUnrivaled( true );
+
+			//	ライフ減らす
+			bc2->SubLife();
 
 			//	エフェクトだす
 			float	effectScale = 1.0f;
