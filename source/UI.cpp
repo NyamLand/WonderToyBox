@@ -216,17 +216,17 @@
 	//	メイン用初期化
 	void	UI::MainInitialize( void )
 	{
-		timer.obj = new iex2DObj("DATA/UI/timer.png");
-		coinbar = new iex2DObj("DATA/BG/coin_gage.png");
+		timer.obj = new iex2DObj( "DATA/UI/timer.png" );
+		coinbar = new iex2DObj( "DATA/BG/coin_gage.png" );
 		gauge.obj = coinbar;
 		backgauge.obj = coinbar;
 		frame.obj = coinbar;
-		face = new iex2DObj("DATA/UI/chara_emotion.png");
+		face = new iex2DObj( "DATA/UI/chara_emotion.png" );
 		faceImage.obj = face;
-		countImage.obj = new iex2DObj("DATA/UI/bfUI.png");
-		alertImage.obj = new iex2DObj("DATA/UI/alert.png");
-		alert_coinImage.obj = new iex2DObj("DATA/UI/coin_alert.png");
-		playerNumber = new iex2DObj( "DATA/UI/cursor.png" );
+		countImage.obj = new iex2DObj( "DATA/UI/bfUI.png" );
+		alertImage.obj = new iex2DObj( "DATA/UI/alert.png" );
+		alert_coinImage.obj = new iex2DObj( "DATA/UI/coin_alert.png" );
+		playerNumber = new iex2DObj( "DATA/UI/number.png" );
 		life = new iex2DObj( "DATA/UI/Life.png" );
 
 		//	共通変数初期化 
@@ -650,12 +650,14 @@
 	//	プレイヤー番号画像初期化
 	void	UI::PlayerNumberInitialize( void )
 	{
+		int rank = 0;
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
+			rank = characterManager->GetRank( i );
 			pNumImage[i].obj = playerNumber;
 			int w = static_cast<int>( iexSystem::ScreenWidth * 0.04f );
 			int h = static_cast<int>( iexSystem::ScreenHeight * 0.07f );
-			ImageInitialize( pNumImage[i], 0, 0, w, h, ( i % 2 ) * 128, ( i / 2 ) * 128, 128, 128 );
+			ImageInitialize( pNumImage[i], 0, 0, w, h, rank * 128, 128, 128, 64 );
 		}
 	}
 
@@ -886,7 +888,7 @@
 	void	UI::PlayerNumberUpdate( void )
 	{
 		//	変数初期化
-		Vector3 imagePos = Vector3( 0.0f, 0.0f, 0.0f );
+		Vector3	imagePos = Vector3( 0.0f, 0.0f, 0.0f );
 		Vector3	p_pos = Vector3( 0.0f, 0.0f, 0.0f );
 		Vector3	up = Vector3( 0.0f, 0.0f, 0.0f );
 		Vector3	out = Vector3( 0.0f, 0.0f, 0.0f );
@@ -904,6 +906,13 @@
 			//	構造体に情報設定
 			pNumImage[i].x = static_cast<int>( out.x );
 			pNumImage[i].y = static_cast<int>( out.y );
+
+			int rank = 0;
+			for (int i = 0; i < PLAYER_MAX; i++)
+			{
+				rank = characterManager->GetRank(i) - 1;
+				pNumImage[i].sx = rank * 128;
+			}
 		}
 	}
 
