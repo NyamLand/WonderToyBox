@@ -124,7 +124,7 @@
 //----------------------------------------------------------------------------
 
 	//	初期化
-	void	ImageInitialize( ImageObj& image, int x, int y, int w, int h, int sx, int sy, int sw, int sh )
+	void	ImageInitialize(ImageObj& image, int x, int y, int w, int h, int sx, int sy, int sw, int sh)
 	{
 		image.x = x;
 		image.y = y;
@@ -140,7 +140,7 @@
 		image.alpha = 1.0f;
 		image.angle = 0.0f;
 		image.color = Vector3(1.0f, 1.0f, 1.0f);
-		image.p = GetPoint( image.x, image.y );
+		image.p = GetPoint(image.x, image.y);
 		image.renderflag = true;
 
 		//	wave用パラメータ
@@ -154,9 +154,16 @@
 		image.flashingAlpha = 0.0f;
 		image.flashingParam = 0.0f;
 		image.flashingRenderflag = true;
+
+		//	scaling用パラメータ
+		image.scalingspeed = 0.0f;
+		image.scalingAlpha = 0.0f;
+		image.scalingState = true;
+		image.scalingFlag = false;
+		image.scalingrenderflag = true;
 	}
-	
-	//	画像(位置はイメージの値)
+
+	//	画像(位scalingrenderflag;置はイメージの値)
 	void	RenderImage( ImageObj image, int sx, int sy, int sw, int sh, int mode )
 	{
 		int		width = image.w;
@@ -189,6 +196,16 @@
 		case IMAGE_MODE::FLASH:
 			if ( image.flashingRenderflag )
 				image.obj->Render( posx, posy, width, height, sx, sy, sw, sh, RS_COPY, GetColor( image.color, image.flashingAlpha ) );
+			break;
+
+		case IMAGE_MODE::SCALING:
+			width = image.w + image.plusScaleX;
+			height = image.h + image.plusScaleY;
+			posx = image.x - width / 2;
+			posy = image.y - height / 2;
+
+			if ( image.scalingrenderflag )
+				image.obj->Render( posx, posy, width, height, sx, sy, sw, sh, image.p, image.angle, RS_COPY, GetColor( image.color, image.alpha ) );
 			break;
 		}
 	}
@@ -226,6 +243,16 @@
 		case IMAGE_MODE::FLASH:
 			if (image.flashingRenderflag)
 				image.obj->Render(posx, posy, width, height, sx, sy, sw, sh, RS_COPY, GetColor(image.color, image.flashingAlpha));
+			break;
+
+		case IMAGE_MODE::SCALING:
+			width = image.w + image.plusScaleX;
+			height = image.h + image.plusScaleY;
+			posx = x - width / 2;
+			posy = y - height / 2;
+
+			if ( image.scalingrenderflag )
+				image.obj->Render( posx, posy, width, height, sx, sy, sw, sh, image.p, image.angle, RS_COPY, GetColor( image.color, image.alpha ) );
 			break;
 		}
 	}
@@ -267,6 +294,78 @@
 		if ( image.t >= 1.0f )		return	true;
 		return	false;
 	}
+
+	//	拡大縮小終了
+	void	StopScaling( ImageObj& image )
+	{
+		image.plusScaleX = 0;
+		image.plusScaleY = 0;
+		image.t = 0;
+		image.scalingAlpha = 1.0f;
+		image.scalingState = true;
+		image.scalingspeed = 0.0f;
+		image.scalingFlag = false;
+		image.scalingrenderflag = true;
+	}
+
+	//	拡大縮小設定
+	void	SetScaling(ImageObj& image, float speed)
+	{
+		image.plusScaleX = 0;
+		image.plusScaleY = 0;
+		image.t = 0;
+		image.scalingAlpha = 1.0f;
+		image.scalingState = true;
+		image.scalingspeed = speed;
+		image.scalingFlag = true;
+		image.scalingrenderflag = true;
+	}
+
+	//	拡大縮小更新
+	void	ScalingUpdate(ImageObj& image, int max_scale)
+	{
+		if (!image.scalingFlag) return;
+
+		//	パラメータ加算
+		image.t += D3DX_PI / 180 * image.scalingspeed;
+	
+		//-------------------------
+		//	拡大
+		//-------------------------
+		if (image.scalingState)
+		{
+			//	パラメータ上限設定
+			if (image.t >= 1.0f)
+			{
+				image.t = 1.0f;
+				image.scalingState = false;
+			}
+
+			Lerp(image.plusScaleX, 0, max_scale, image.t);
+			Lerp(image.plusScaleY, 0, max_scale, image.t);
+
+		}
+
+		//-------------------------
+		//	縮小
+		//-------------------------
+		else
+		{
+			//	パラメータ上限設定
+			if (image.t >= 1.0f)
+			{
+				image.t = 1.0f;
+				image.scalingState = true;
+			}
+
+			Lerp(image.plusScaleX, max_scale, 0, image.t);
+			Lerp(image.plusScaleY, max_scale, 0, image.t);
+
+		}
+
+		if (image.t >= 1.0f)		image.t = 0.0f;
+	}
+
 
 	//	点滅処理
 	void	FlashingUpdate( ImageObj& image, float speed )
