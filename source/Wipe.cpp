@@ -164,18 +164,6 @@
 		//Vector3 targetPos;
 		//WorldToClient(target, targetPos, matView* matProjection);
 
-
-		//	中心から左
-		if (stringPos.x < iexSystem::ScreenWidth / 2)
-		{
-			pos[num].x = WIPE_LEFT;
-		}
-		//	中心から右
-		else
-		{
-			pos[num].x = WIPE_RIGHT;
-		}
-
 		//	高さを計算
 		Vector3 v1, v2;
 		Vector3 start = Vector3(pos[num].x, WIPE_UP, 0);
@@ -192,6 +180,29 @@
 
 		if (pos[num].y > WIPE_DOWN)	pos[num].y = WIPE_DOWN;
 		if (pos[num].y < WIPE_UP)	pos[num].y = WIPE_UP;
+
+		//	ワイプ横自由化
+		if (pos[num].y == WIPE_DOWN)
+		{
+			pos[num].x = stringPos.x;
+
+			if (pos[num].x > WIPE_RIGHT)	pos[num].x = WIPE_RIGHT;
+			if (pos[num].x < WIPE_LEFT)		pos[num].x = WIPE_LEFT;
+
+		}
+		//	下以外
+		else{
+			//	中心から左
+			if (stringPos.x < iexSystem::ScreenWidth / 2)
+			{
+				pos[num].x = WIPE_LEFT;
+			}
+			//	中心から右
+			else
+			{
+				pos[num].x = WIPE_RIGHT;
+			}
+		}
 
 		SufferChecker(num);
 

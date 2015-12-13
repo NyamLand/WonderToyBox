@@ -24,6 +24,7 @@
 			ADOPTPARAM,	//	パラメータ採用
 			WAVE,				//	波紋
 			FLASH,				//	点滅
+			SCALING,			//	拡大縮小
 			END,					//	終端
 		};
 	}
@@ -76,9 +77,11 @@
 		bool	renderflag;
 		Vector3	color;
 
-		//	wave用パラメータ
+		//	wave・scaling共通用パラメータ
 		int	 plusScaleX;
 		int	 plusScaleY;
+
+		//	wave用パラメータ
 		float	wavespeed;
 		float	waveAlpha;
 		bool	waveState;
@@ -89,6 +92,13 @@
 		float	flashingAlpha;
 		float	flashingRenderflag;
 		float	flashingParam;
+
+		//	scaling用パラメータ
+		float	scalingspeed;
+		float	scalingAlpha;
+		bool	scalingState;
+		bool	scalingFlag;
+		bool	scalingrenderflag;
 	};
 
 //----------------------------------------------------------------------
@@ -142,7 +152,10 @@
 	void	SetWave( ImageObj& image, float speed );
 	bool	WaveUpdate( ImageObj& image, int max_scale = 140, float max_alpha = 1.0f );
 	void	FlashingUpdate( ImageObj& image, float speed = -1.0f );
-
+	void	SetScaling( ImageObj& image, float speed );
+	void	ScalingUpdate( ImageObj& image, int max_scale = 140 );
+	void	StopScaling( ImageObj& image );
+	
 //----------------------------------------------------------------------
 //	図形描画
 //----------------------------------------------------------------------
