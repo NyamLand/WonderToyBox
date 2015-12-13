@@ -91,8 +91,6 @@
 		face = new iex2DObj( "DATA/UI/chara_emotion.png" );
 		cursor = new iex2DObj( "DATA/UI/cursor.png" );
 		
-
-
 		//	オプション関係画像読み込み
 		Oimage =		new iex2DObj( "DATA/UI/OptionText.png" );
 		Otime	=		new iex2DObj( "DATA/UI/number.png" );
@@ -497,7 +495,7 @@
 		//	テキスト画像
 		RenderImage( textImage, 512, 0, 512, 256, IMAGE_MODE::ADOPTPARAM );
 
-		//	モデル・顔・カーソル描画
+		//	モデル
 		FOR( 0, PLAYER_MAX )
 		{
 			//	モデル描画
@@ -514,6 +512,7 @@
 		{
 			cursorImage[value].x = faceImage[characterSelectInfo.character[value]].x;
 			cursorImage[value].y = faceImage[characterSelectInfo.character[value]].y - faceImage[characterSelectInfo.character[value]].h / 2;
+			if ( characterSelectInfo.select[value] )	cursorImage[value].color = Vector3( 0.5f, 0.5f, 0.5f );	//	決定時明度下げる
 			RenderImage( cursorImage[value], 128 * ( value % 2 ), 128 * ( value / 2 ), 128, 128, IMAGE_MODE::NORMAL );
 		}
 

@@ -151,15 +151,15 @@
 		ResultInfoInitialize();
 
 		//	ソートかける
-		Sort( maxCoinNum );
-		Sort( fallStageNum );
-		ReverseSort( coin77 );
-		ReverseSort( minCoinNum );
-		Sort( hitAttackNum );
+		//Sort( maxCoinNum );
+		//Sort( fallStageNum );
+		//ReverseSort( coin77 );
+		//ReverseSort( minCoinNum );
+		//Sort( hitAttackNum );
 
-		//	ラストボーナス設定
-		SetLastBonus();
-		AddLastBonus();
+		////	ラストボーナス設定
+		//SetLastBonus();
+		//AddLastBonus();
 		Sort( sortInfo );
 		
 		//	ランキング設定
@@ -492,6 +492,12 @@
 
 		//	メニュー項目描画
 		SelectRender();
+	}
+
+	//	中間結果発表
+	void	sceneResult::IntermediateResultsUpdate( void )
+	{
+
 	}
 
 	//	リザルト時の更新

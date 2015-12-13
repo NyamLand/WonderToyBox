@@ -798,6 +798,7 @@ namespace
 			}
 
 			//	初期位置に配置→待ち状態にして行動不能にする→リスポーン状態を設定
+			SubLife();
 			pos = gameManager->InitPos[this->playerNum];
 			SetMode( MODE_STATE::WAIT );
 			SetParameterState( PARAMETER_STATE::RESPAWN );

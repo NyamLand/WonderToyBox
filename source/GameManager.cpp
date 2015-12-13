@@ -63,6 +63,7 @@
 		donketsuBoostState = false;
 		lastBonus = Random::GetInt( 0, 3 );
 		timeStop = 0;
+		round = 0;
 
 		//	ゲームデータテキストを読み込む
 		//LoadTextData();
@@ -154,7 +155,7 @@
 	void	GameManager::Update( void )
 	{
 		//	タイマー更新
-		if (timeStop > 0) timeStop--;
+		if ( timeStop > 0 ) timeStop--;
 		else timer--;
 
 
@@ -514,6 +515,12 @@
 		return	startLife[player];
 	}
 
+	//	現ラウンド取得
+	int		GameManager::GetRound( void )const
+	{
+		return	round;
+	}
+
 	//	実体取得
 	GameManager*	GameManager::GetInstance( void )
 	{
@@ -596,4 +603,10 @@
 	void	GameManager::SetStartLife( int player, int life )
 	{
 		startLife[player] = life;
+	}
+
+	//	ラウンド設定
+	void	GameManager::SetRound( int round )
+	{
+		this->round = round;
 	}

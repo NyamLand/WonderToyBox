@@ -63,14 +63,15 @@ private:
 
 	//	ゲーム中情報
 	int		timer;
-	int		timelimit;	//	制限時間
+	int		timelimit;		//	制限時間
 	int		mode;
 	int		coinNum[4];
 	bool	donketsuBoostState;
 	int		worst;
 	int		lastBonus;
 	bool	newsflag;    
-	int    timeStop;    //画面一時停止用
+	int    timeStop;			//画面一時停止用
+	int	round;				//	ラウンド
 
 	//	ラストボーナス用カウント
 	int	maxCoinNum[4];
@@ -128,6 +129,7 @@ public:
 	int		GetTimeStop(void);
 	int		GetCoinMax(void)const;
 	int		GetStartLife( int player )const;
+	int		GetRound( void )const;
 	bool		GetItemFlg(void)const;
 	static	GameManager*	GetInstance( void );
 
@@ -151,6 +153,7 @@ public:
 	void	SetTime(int minute, int second);
 	void	SetCoinMax(int coinmax);
 	void	SetItemFlg(bool itemflg);
+	void	SetRound( int round );
 	void	SetStartLife( int player, int life );
 };
 #define	gameManager ( GameManager::GetInstance() )

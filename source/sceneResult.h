@@ -148,6 +148,7 @@ public:
 	//	各モード更新
 	void	ResultUpdate( void );
 	void	SelectUpdate( void );
+	void	IntermediateResultsUpdate( void );	//	中間結果
 
 	//	各画像描画
 	void	SelectRender( void );
