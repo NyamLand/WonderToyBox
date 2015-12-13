@@ -128,29 +128,31 @@ private:
 		int		one;			//コイン一桁目
 		bool	H_flg;			//百の位レンダー用フラグ
 	};
+	
 	//	ライフ情報
 	struct LIFE_INFO
 	{
 		int	life;
-		ImageObj	lifeImage[3];
+		ImageObj	lifeImage[5];
 	};
 
 private:
 	//	各画像
 	ImageObj	timer;
 	iex2DObj*	coinbar;
-	ImageObj	frame;
-	ImageObj	backgauge;
-	ImageObj	gauge;
+	ImageObj		frame;
+	ImageObj		backgauge;
+	ImageObj		gauge;
 	iex2DObj*	face;
-	ImageObj	faceImage;
-	ImageObj	countImage;
-	ImageObj	alertImage;
-	ImageObj	alert_coinImage;
+	ImageObj		faceImage;
+	ImageObj		countImage;
+	ImageObj		alertImage;
+	ImageObj		alert_coinImage;
 	iex2DObj*	playerNumber;
-	ImageObj	pNumImage[PLAYER_MAX];
+	ImageObj		pNumImage[PLAYER_MAX];
 	iex2DObj*	pCoinNumImage;
 	iex2DObj*	life;
+	ImageObj		roundImage;
 
 private:
 	//	システム
@@ -266,6 +268,7 @@ public:
 	void	PlayerNumberInitialize( void );
 	void	LifeInitialize( void );
 	void	CoinNumberInitialize( void );
+	void	RoundInitialize( void );
 
 	//	メイン動作更新
 	void	TimerUpdate( void );
@@ -303,6 +306,7 @@ public:
 	void P_Direction( int wait );
 	void Fight_Direction( int wait );
 	void CoinCounter( int coin , int num);
+	void	RoundRender( void );
 
 	//	テスト用
 	void	BarControl2( void );

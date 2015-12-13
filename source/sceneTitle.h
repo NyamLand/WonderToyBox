@@ -43,8 +43,9 @@ private:	//	構造体
 	//	カメラ用パラメータ構造体
 	struct CameraInfo
 	{
-		int			posNum;				//	仮のカメラ移動先のポジションを指し示す値
-		float		t;					//	補間パラメータ
+		int				posNum;				//	仮のカメラ移動先のポジションを指し示す値
+		float				t;					//	補間パラメータ
+		int				state;			//	状態
 		Vector3		pos;				//	カメラポジション
 		Vector3		target;				//	カメラのターゲットポジション
 		Vector3		lerpStartPos;		//	ラープスタートポジション

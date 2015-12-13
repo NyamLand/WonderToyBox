@@ -165,6 +165,9 @@
 		//	ランキング設定
 		SetRank();
 
+		//	次回ライフ設定
+		SetNextLife();
+
 		//	数値構造体初期化
 		NumberImageInfoInitialize();
 		
@@ -258,9 +261,7 @@
 			h = static_cast<int>( iexSystem::ScreenHeight * 0.075f );
 			ImageInitialize( playerNumImage, x, y, w, h, 128 * ( bonusPlayer % 2 ), 128 * ( bonusPlayer / 2 ), 128, 128 );
 			playerNumImage.obj = new iex2DObj( "DATA/UI/cursor.png" );
-			playerNumImage.renderflag = false;
-
-			
+			playerNumImage.renderflag = false;	
 		}
 		return	true;
 	}
@@ -311,12 +312,12 @@
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			//	ゲーム終了時のデータを格納( ここでボーナスも設定しておく )
-			originInfo[i].num = gameManager->GetCoinNum( i );
+			originInfo[i].num = gameManager->GetCoinTotal( i ) + gameManager->GetCoinNum( i );
 			originInfo[i].rank = i;
 			originInfo[i].bonus = 0;
 
 			//	ランキング計算用に総計データを格納( ボーナス数値が整い次第、元のコイン枚数にボーナスを足す、ランクはソートにかけるため適当に代入 )
-			sortInfo[i].num = originInfo[i].num + originInfo[i].bonus;
+			sortInfo[i].num = originInfo[i].num;
 			sortInfo[i].rank = i;
 			sortInfo[i].sortRank = i;
 
@@ -721,7 +722,7 @@
 //----------------------------------------------------------------------------
 
 	//	ソート
-	void	sceneResult::Sort( SORT_INFO	( &sort_info )[4]  )
+	void	sceneResult::Sort( SORT_INFO ( &sort_info )[4]  )
 	{
 		//	退避用
 		SORT_INFO temp;
@@ -1198,6 +1199,15 @@
 			MainFrame->ChangeScene( new sceneTitle() );
 			return;
 			break;
+		}
+	}
+
+	//	次回ライフ設定
+	void	sceneResult::SetNextLife( void )
+	{
+		FOR( 0, PLAYER_MAX )
+		{
+			gameManager->SetStartLife( value, originInfo[value].rank + 1 );
 		}
 	}
 

@@ -55,7 +55,8 @@
 		{
 			charatype[i] = 0;		
 			coinNum[i] = 0;
-			startLife[i] = 3;
+			startLife[i] = 5;
+			coinTotal[i] = 0;
 		}
 		playerNum = 0;
 		stageType = 1;
@@ -521,6 +522,12 @@
 		return	round;
 	}
 
+	//	トータルコイン取得
+	int		GameManager::GetCoinTotal( int player )const
+	{
+		return	coinTotal[player];
+	}
+
 	//	実体取得
 	GameManager*	GameManager::GetInstance( void )
 	{
@@ -588,13 +595,13 @@
 	}
 
 	//コイン枚数設定
-	void	GameManager::SetCoinMax(int coinmax)
+	void	GameManager::SetCoinMax( int coinmax )
 	{
 		this->coinMax = coinmax;
 	}
 
 	//アイテム有無設定
-	void	GameManager::SetItemFlg(bool itemflg)
+	void	GameManager::SetItemFlg( bool itemflg )
 	{
 		this->itemflg = itemflg;
 	}
@@ -609,4 +616,10 @@
 	void	GameManager::SetRound( int round )
 	{
 		this->round = round;
+	}
+
+	//	トータルコイン設定
+	void	GameManager::SetCoinTotal( int player, int total )
+	{
+		coinTotal[player] = total;
 	}

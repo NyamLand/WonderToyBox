@@ -32,8 +32,9 @@ namespace
 		{
 			Vector3( 8.0f, height, 0.0f ),		//門番
 			Vector3( 45.0f, height, -14.0f ),	//	オプション
-			Vector3( -41.0f, height, -20.0f ),	//	クレジット		
-			Vector3( 46.0f, height, 200.0f ),	//	メインへ
+			Vector3( -41.0f, height, -20.0f ),	//	クレジット
+			Vector3( 8.0f, 50.0f, 20.0f ),		//	上へ移動
+			Vector3( 10.0f, height,35.0f ),	//	メインへ
 		};
 
 		//	上と同じ
@@ -42,7 +43,8 @@ namespace
 			Vector3( 8.0f, 3.0f, 13.0f ),
 			Vector3( 53.0f, 3.0f, -5.0f ),
 			Vector3( -50.0f, 3.0f, -14.0f ),
-			Vector3( 46.0f, 4.0f, 200.0f ),
+			Vector3( 8.0f, 55.0f, 25.0f ),		//	上へ移動
+			Vector3( 10.0f, 4.0f, 35.0f ),
 		};
 	}
 	
@@ -53,7 +55,8 @@ namespace
 			PLAY,
 			OPTION,
 			CREDIT,
-			MOVE_MAIN,
+			MOVE_MENU_UP,
+			MOVE_MENU_IN,
 			END,
 		};
 	}

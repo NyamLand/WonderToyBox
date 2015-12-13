@@ -229,6 +229,7 @@
 		playerNumber = new iex2DObj( "DATA/UI/number.png" );
 		life = new iex2DObj( "DATA/UI/Life.png" );
 		pCoinNumImage = new iex2DObj("DATA/UI/number.png");
+		roundImage.obj = new iex2DObj( "DATA/UI/roundText.png" );
 
 		//	共通変数初期化 
 		changeflag = false;
@@ -246,6 +247,7 @@
 		LastProductionInitialize();
 		PlayerNumberInitialize();
 		LifeInitialize();
+		RoundInitialize();
 	}
 
 	//	リザルト用初期化
@@ -280,6 +282,7 @@
 		SafeDelete( playerNumber );
 		SafeDelete( life );
 		SafeDelete( pCoinNumImage );
+		SafeDelete( roundImage.obj );
 	}
 
 	//	リザルト用解放
@@ -398,6 +401,7 @@
 	{
 		PlayerNumberRender();
 		LifeRender();
+		RoundRender();
 
 		switch ( mode )
 		{
@@ -728,12 +732,27 @@
 		FOR( 0, PLAYER_MAX )
 		{
 			lifeInfo[value].life = gameManager->GetStartLife( value );
-			for ( int i = 0; i < 3; i++ )
+			for ( int i = 0; i < lifeInfo[value].life; i++ )
 			{
 				lifeInfo[value].lifeImage[i].obj = life;
 				ImageInitialize( lifeInfo[value].lifeImage[i], 0, 0, 30, 30, 0, 0, 256, 256 );
 			}
 		}
+	}
+
+	//	ラウンド初期化
+	void	UI::RoundInitialize( void )
+	{
+		int	x = iexSystem::ScreenWidth * 0.07f;
+		int	y = iexSystem::ScreenHeight * 0.9f;
+		int	w = iexSystem::ScreenWidth * 0.1f;
+		int	h = iexSystem::ScreenHeight * 0.05f;
+		int	sx = 0;
+		int	sy = gameManager->GetRound() * 128;
+		int	sw = 512;
+		int	sh = 128;
+		ImageInitialize( roundImage, x, y, w, h, sx, sy, sw, sh );
+		//roundImage.angle = D3DXToRadian( -30.0f );
 	}
 	
 //------------------------------------------------------------------------------
@@ -1021,11 +1040,42 @@
 
 			//	構造体に設定
 			lifeInfo[value].life = characterManager->GetLife( value );
-			for ( int i = 0; i < 3; i++ )
+			for ( int i = 0; i < lifeInfo[value].life; i++ )
 			{
-				//	表示位置設定
-				lifeInfo[value].lifeImage[i].x = static_cast<int>( ( out.x - 30 ) + 30 * i );
-				lifeInfo[value].lifeImage[i].y = static_cast<int>( out.y - 30 * ( i % 2 ) );
+				switch ( lifeInfo[value].life )
+				{
+				case 1:
+					//	表示位置設定
+					lifeInfo[value].lifeImage[i].x = static_cast<int>( out.x );
+					lifeInfo[value].lifeImage[i].y = static_cast<int>( out.y - 30 );
+					break;
+
+				case 2:
+					//	表示位置設定
+					lifeInfo[value].lifeImage[i].x = static_cast<int>( ( out.x - 15 ) + 30 * i );
+					lifeInfo[value].lifeImage[i].y = static_cast<int>( out.y - 30 );
+					break;
+
+				case 3:
+					//	表示位置設定
+					lifeInfo[value].lifeImage[i].x = static_cast<int>( ( out.x - 30 ) + 30 * i );
+					lifeInfo[value].lifeImage[i].y = static_cast<int>( out.y - 30 * ( i % 2 ) );
+					break;
+
+				case 4:
+					//	表示位置設定
+					lifeInfo[value].lifeImage[i].x = static_cast<int>( out.x - 40 + ( 80 / 3 ) * i );
+					if ( i == 1 || i == 2 )	lifeInfo[value].lifeImage[i].y = static_cast<int>( out.y - 30 );
+					else								lifeInfo[value].lifeImage[i].y = static_cast<int>( out.y );
+					break;
+
+				case 5:
+					lifeInfo[value].lifeImage[i].x = static_cast<int>( out.x - 40 + ( 100 / 4 ) * i );
+					if ( i == 2 )							lifeInfo[value].lifeImage[i].y = static_cast<int>( out.y - 40 );
+					else	if ( i == 1 || i == 3 )	lifeInfo[value].lifeImage[i].y = static_cast<int>( out.y - 20 );
+					else										lifeInfo[value].lifeImage[i].y = static_cast<int>( out.y );
+					break;
+				}
 				
 				//	読み込み位置設定
 				if ( lifeInfo[value].life > i )	lifeInfo[value].lifeImage[i].sx = 256;
@@ -1204,11 +1254,17 @@
 	{
 		FOR( 0, PLAYER_MAX )
 		{
-			for ( int i = 0; i < 3; i++ )
+			for ( int i = 0; i < lifeInfo[value].life; i++ )
 			{
 				RenderImage(lifeInfo[value].lifeImage[i], lifeInfo[value].lifeImage[i].sx, lifeInfo[value].lifeImage[i].sy, lifeInfo[value].lifeImage[i].sw, lifeInfo[value].lifeImage[i].sh, IMAGE_MODE::NORMAL );
 			}
 		}
+	}
+
+	//	ラウンド描画
+	void	UI::RoundRender( void )
+	{
+		RenderImage( roundImage, roundImage.sx, roundImage.sy, roundImage.sw, roundImage.sh, IMAGE_MODE::ADOPTPARAM );
 	}
 
 //------------------------------------------------------------------------------

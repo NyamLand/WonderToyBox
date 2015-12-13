@@ -148,6 +148,11 @@ namespace
 			SetVertex( titleInfo.curtainR.tlv[3], static_cast<float>( iexSystem::ScreenWidth ), static_cast<float>( iexSystem::ScreenHeight ), 0, 1, 1, 0xFFFFFFFF );
 		}
 
+		//	カメラ情報初期化
+		{
+			cameraInfo.state = 0;
+		}
+
 		//	変数初期化
 		titleInfo.titleImage.renderflag = true;
 		titleInfo.step = 0;
@@ -455,9 +460,9 @@ namespace
 						mode = TITLE_MODE::PLAY;
 						if (mainView->GetMoveState())
 						{
-							mainView->SetNextPoint(TITLE_TARGET::MOVE_MAIN, 0.005f);
+							mainView->SetNextPoint( TITLE_TARGET::MOVE_MENU_UP, 0.01f );
 							//sound->PlaySE(SE::DECIDE_SE);
-							screen->SetScreenMode( SCREEN_MODE::WIPE_OUT, 1.5f );
+							
 						}
 						break;
 
@@ -527,15 +532,30 @@ namespace
 		void	sceneTitle::MoveSelectUpdate( void )
 		{			
 			//	カメラ更新
-			mainView->Update(VIEW_MODE::TITLE);
+			mainView->Update( VIEW_MODE::TITLE );
 
 			//	UI更新
 			ui->Update( TITLE_MODE::MOVE_MAIN );
 
-			if ( screen->GetScreenState() )
+
+			switch ( cameraInfo.state )
 			{
-				MainFrame->ChangeScene(new sceneMenu());
-				return;
+			case 0:
+				if ( mainView->GetMoveState() )
+				{
+					mainView->SetNextPoint( TITLE_TARGET::MOVE_MENU_IN, 0.01f );
+					screen->SetScreenMode( SCREEN_MODE::WIPE_OUT, 1.5f );
+					cameraInfo.state++;
+				}
+				break;
+
+			case 1:
+				if ( screen->GetScreenState() )
+				{
+					MainFrame->ChangeScene( new sceneMenu() );
+					return;
+				}
+				break;
 			}
 		}
 

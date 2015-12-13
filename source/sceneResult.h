@@ -175,6 +175,7 @@ public:
 	bool	AddBonus( void );
 
 	//	î•ñİ’è
+	void	SetNextLife( void );
 	void	SetRank( void );
 	void	SetNumberImageInfo( const int& player, const int& coin );
 	void	SetNumberImageInfo( NUMBERIMAGE_INFO& numImageInfo, NUMBER_INFO& numInfo, const int& num );
