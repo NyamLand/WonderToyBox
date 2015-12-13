@@ -216,18 +216,19 @@
 	//	メイン用初期化
 	void	UI::MainInitialize( void )
 	{
-		timer.obj = new iex2DObj( "DATA/UI/timer.png" );
-		coinbar = new iex2DObj( "DATA/BG/coin_gage.png" );
+		timer.obj = new iex2DObj("DATA/UI/timer.png");
+		coinbar = new iex2DObj("DATA/BG/coin_gage.png");
 		gauge.obj = coinbar;
 		backgauge.obj = coinbar;
 		frame.obj = coinbar;
-		face = new iex2DObj( "DATA/UI/chara_emotion.png" );
+		face = new iex2DObj("DATA/UI/chara_emotion.png");
 		faceImage.obj = face;
 		countImage.obj = new iex2DObj( "DATA/UI/bfUI.png" );
 		alertImage.obj = new iex2DObj( "DATA/UI/alert.png" );
 		alert_coinImage.obj = new iex2DObj( "DATA/UI/coin_alert.png" );
 		playerNumber = new iex2DObj( "DATA/UI/number.png" );
 		life = new iex2DObj( "DATA/UI/Life.png" );
+		pCoinNumImage = new iex2DObj("DATA/UI/number.png");
 
 		//	共通変数初期化 
 		changeflag = false;
@@ -235,12 +236,14 @@
 			charatype[i] = gameManager->GetCharacterType(i);
 
 		//	各UI情報初期化
-		CoinBarInitialize();
+		//CoinBarInitialize();
+		CoinNumberInitialize();
 		TimerInitialize();
 		StartAndTimeUpInitialize();
 		NewsBarInitialize();
 		DonketsuDirectionInitialize();
 		AlertInitialize();
+		LastProductionInitialize();
 		PlayerNumberInitialize();
 		LifeInitialize();
 	}
@@ -276,6 +279,7 @@
 		SafeDelete( alert_coinImage.obj );
 		SafeDelete( playerNumber );
 		SafeDelete( life );
+		SafeDelete( pCoinNumImage );
 	}
 
 	//	リザルト用解放
@@ -345,7 +349,8 @@
 		case GAME_MODE::MAINGAME:
 			TimerUpdate();
 			NewsBarUpdate();
-			CoinBarUpdate();
+			//CoinBarUpdate();
+			CoinNumberUpdate();
 			break;
 
 		case GAME_MODE::DONKETSU_DIRECTION:
@@ -355,7 +360,8 @@
 		case GAME_MODE::CLIMAX:
 			TimerUpdate();
 			NewsBarUpdate();
-			CoinBarUpdate();
+			//CoinBarUpdate();
+			CoinNumberUpdate();
 			LastProduction();
 
 			//　どんけつの顔は「怒」に。（時間管理してるとこで↓の処理書きたいけどこれから変更ありそうやからとりあえずここに書いてる許してニャンっ♪）
@@ -402,13 +408,15 @@
 		case GAME_MODE::MAINGAME:
 			TimerRender();
 			NewsBarRender();
-			CoinBarRender();
+			//CoinBarRender();
+			CoinNumberRender();
 			break;
 
 		case GAME_MODE::DONKETSU_DIRECTION:
 			TimerRender();
 			NewsBarRender();
-			CoinBarRender();
+			//CoinBarRender();
+			CoinNumberRender();
 			DonketsuDirectionRender();
 			break;
 
@@ -416,7 +424,8 @@
 			//TimerRender();
 			LastProductionRender();
 			NewsBarRender();
-			CoinBarRender();
+			//CoinBarRender();
+			CoinNumberRender();
 
 			break;
 
@@ -535,18 +544,61 @@
 		}
 	}
 
+	//	コイン枚数初期化
+	void	UI::CoinNumberInitialize( void )
+	{
+		//	コイン枚数位置（横）
+		coinNumInfo[0].pos.x = static_cast<int>(iexSystem::ScreenWidth * 0.1);
+		coinNumInfo[1].pos.x = static_cast<int>(iexSystem::ScreenWidth * 0.3);
+		coinNumInfo[2].pos.x = static_cast<int>(iexSystem::ScreenWidth * 0.7);
+		coinNumInfo[3].pos.x = static_cast<int>(iexSystem::ScreenWidth * 0.9);
+
+		//	表示色
+		coinColor[0] = Vector3(1.0f, 0.0f, 0.0f);
+		coinColor[1] = Vector3(0.0f, 0.0f, 1.0f);
+		coinColor[2] = Vector3(1.0f, 1.0f, 0.0f);
+		coinColor[3] = Vector3(0.0f, 1.0f, 0.0f);
+
+
+		FOR(0, PLAYER_MAX){
+			//	コイン枚数用
+			coinNum[value] = gameManager->GetCoinNum(value);
+
+			//	コイン枚数位置（縦）
+			coinNumInfo[value].pos.y = static_cast<int>(iexSystem::ScreenHeight * 0.1f);
+			coinNumInfo[value].scale = 100;
+			
+			//	画像設定
+			coinNumInfo[value].one.obj			= pCoinNumImage;
+			coinNumInfo[value].ten.obj			= pCoinNumImage;
+			coinNumInfo[value].hundred.obj		= pCoinNumImage;
+			
+			//	情報設定
+			SetCoinImageInfo(coinNumInfo[value], numInfo[value], gameManager->GetCoinNum(value));
+			
+			//	色設定	
+			coinNumInfo[value].one.color		= coinColor[value];
+			coinNumInfo[value].ten.color		= coinColor[value];
+			coinNumInfo[value].hundred.color	= coinColor[value];
+
+		
+		}
+	}
+
 	//	タイマー初期化
 	void	UI::TimerInitialize( void )
 	{
+
 		//	構造体初期化
-		int x = static_cast<int>( iexSystem::ScreenWidth * 0.4f );
+		int x = static_cast<int>( iexSystem::ScreenWidth * 0.43f );
 		int y = static_cast<int>( iexSystem::ScreenHeight * 0.1f );
 		int w = static_cast<int>( iexSystem::ScreenWidth * 0.05f );
 		int h = static_cast<int>( iexSystem::ScreenHeight * 0.09f );
 		ImageInitialize( timer, x, y, w, h, 64, 0, 64, 64 );
+		minute = 0;
 		for ( int i = 0; i < 2; i++ )
 		{
-			minute[i] = 0;
+			second[i] = 0;
 		}
 	}
 
@@ -630,8 +682,8 @@
 		//	画像構造体初期化
 		int x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
 		int y = static_cast<int>( iexSystem::ScreenHeight * 0.5f );
-		int w = static_cast<int>( iexSystem::ScreenWidth * 0.3f );
-		int h = static_cast<int>( iexSystem::ScreenHeight * 0.5f );
+		int w = static_cast<int>( iexSystem::ScreenWidth * 0.15f );
+		int h = static_cast<int>( iexSystem::ScreenHeight * 0.27f );
 		ImageInitialize( alertImage, x, y, w, h, 0, 0, 256, 256 );
 		alertImage.renderflag = true;
 		ImageInitialize(alert_coinImage, x, y, w, h, 0, 0, 256, 256);
@@ -660,6 +712,15 @@
 			ImageInitialize( pNumImage[i], 0, 0, w, h, rank * 128, 128, 128, 64 );
 		}
 	}
+	
+	//	時間警告初期化
+	void	UI::LastProductionInitialize( void )
+	{
+		SetScaling(timer, 1.0f);
+		last_state = false;
+		last_t = 0.0f;
+		last_alpha = 1.0f;
+	}
 
 	//	体力画像初期化
 	void	UI::LifeInitialize( void )
@@ -684,11 +745,11 @@
 	{
 		this->time = gameManager->GetTimer();
 		//分
-		second = this->time / MINUTE % 10;
+		minute = this->time / MINUTE % 10;
 		//秒二桁目
-		minute[0] = ( this->time / SECOND ) % 60 / 10 % 10;
+		second[0] = ( this->time / SECOND ) % 60 / 10 % 10;
 		//秒一桁目
-		minute[1] = this->time / SECOND % 10;
+		second[1] = this->time / SECOND % 10;
 	}
 
 	//	ニュースバー関連動作
@@ -747,6 +808,15 @@
 
 		//	顔動作
 		StateImageControl();
+	}
+
+	//	コイン枚数動作
+	void	UI::CoinNumberUpdate( void )
+	{
+		FOR(0, PLAYER_MAX){
+			CoinCounter(gameManager->GetCoinNum(value),value);
+			CoinImageInfoUpdate(coinNumInfo[value], numInfo[value], coinNum[value]);
+		}
 	}
 
 	//	カウントダウン・スタート演出
@@ -881,14 +951,31 @@
 	//	時間警告演出
 	void	UI::LastProduction( void )
 	{
-		FlashingUpdate(timer, 0.5f);
+		ScalingUpdate(timer,100);
+
+		if (gameManager->GetTimer() / SECOND <= 3) last_state = true;
+		if (!last_state)	return;
+		last_t += D3DX_PI / 180 * 1.0f;
+		
+		//	パラメータ上限設定
+		if (last_t >= 1.0f)
+		{
+			last_t = 1.0f;
+		}
+		
+		Lerp(last_alpha, 1.0f, 0.0f, last_t);
+
+		if (gameManager->GetTimer() % SECOND == 0) last_t = 0.0f;
+
+
+
 	}
 
 	//	プレイヤー番号位置決定
 	void	UI::PlayerNumberUpdate( void )
 	{
 		//	変数初期化
-		Vector3	imagePos = Vector3( 0.0f, 0.0f, 0.0f );
+		Vector3 imagePos = Vector3( 0.0f, 0.0f, 0.0f );
 		Vector3	p_pos = Vector3( 0.0f, 0.0f, 0.0f );
 		Vector3	up = Vector3( 0.0f, 0.0f, 0.0f );
 		Vector3	out = Vector3( 0.0f, 0.0f, 0.0f );
@@ -973,6 +1060,36 @@
 		}
 	}
 
+	//	コイン枚数描画
+	void	UI::CoinNumberRender( void )
+	{
+		FOR(0, PLAYER_MAX)
+		{
+			//	１００の位描画
+			int		sx = coinNumInfo[value].hundred.sx;
+			int		sy = coinNumInfo[value].hundred.sy;
+			int		sw = coinNumInfo[value].hundred.sw;
+			int		sh = coinNumInfo[value].hundred.sh;
+
+			if (coinNumInfo[value].hundredRenderFlag)
+				RenderImage(coinNumInfo[value].hundred, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM);
+
+			//	１０の位描画
+			sx = coinNumInfo[value].ten.sx;
+			sy = coinNumInfo[value].ten.sy;
+			sw = coinNumInfo[value].ten.sw;
+			sh = coinNumInfo[value].ten.sh;
+			RenderImage(coinNumInfo[value].ten, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM);
+
+			//	１の位描画
+			sx = coinNumInfo[value].one.sx;
+			sy = coinNumInfo[value].one.sy;
+			sw = coinNumInfo[value].one.sw;
+			sh = coinNumInfo[value].one.sh;
+			RenderImage(coinNumInfo[value].one, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM);
+		}
+	}
+
 	//	ニュース描画
 	void	UI::NewsBarRender( void )
 	{
@@ -986,10 +1103,10 @@
 	void	UI::TimerRender( void )
 	{
 		
-		RenderImage( timer, timer.sx * second		, timer.sy, timer.sw, timer.sh, IMAGE_MODE::NORMAL, timer.x + timer.w * 0, timer.y );
+		RenderImage( timer, timer.sx * minute		, timer.sy, timer.sw, timer.sh, IMAGE_MODE::NORMAL, timer.x + timer.w * 0, timer.y );
 		RenderImage( timer, timer.sx * 10			, timer.sy, timer.sw, timer.sh, IMAGE_MODE::NORMAL, timer.x + timer.w * 1, timer.y  );
-		RenderImage( timer, timer.sx * minute[0]	, timer.sy, timer.sw, timer.sh, IMAGE_MODE::NORMAL, timer.x + timer.w * 2, timer.y  );
-		RenderImage( timer, timer.sx * minute[1]	, timer.sy, timer.sw, timer.sh, IMAGE_MODE::NORMAL, timer.x + timer.w * 3, timer.y  );
+		RenderImage( timer, timer.sx * second[0]	, timer.sy, timer.sw, timer.sh, IMAGE_MODE::NORMAL, timer.x + timer.w * 2, timer.y  );
+		RenderImage( timer, timer.sx * second[1]	, timer.sy, timer.sw, timer.sh, IMAGE_MODE::NORMAL, timer.x + timer.w * 3, timer.y  );
 
 	}
 
@@ -1046,9 +1163,9 @@
 		iexPolygon::Rect( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, RS_COPY, color);
 
 		//	警告画像描画
-		( alertInfo.type == ALERT_TYPE_INFO::JAM ) ?
-			RenderImage( alertImage, 0, 0, 256, 256, IMAGE_MODE::NORMAL) :
-			RenderImage( alert_coinImage, 0, 0, 256, 256, IMAGE_MODE::NORMAL);
+		(alertInfo.type == ALERT_TYPE_INFO::JAM) ?
+			RenderImage(alertImage, 0, 0, 256, 256, IMAGE_MODE::NORMAL) :
+			RenderImage(alert_coinImage, 0, 0, 256, 256, IMAGE_MODE::NORMAL);
 	}
 
 	//	時間警告描画
@@ -1056,12 +1173,18 @@
 	{
 		//	タイマー文字色を赤へ
 		timer.sy = 64;
-
-		RenderImage(timer, timer.sx * second	, timer.sy, timer.sw, timer.sh, IMAGE_MODE::FLASH, timer.x + timer.w * 0, timer.y);
-		RenderImage(timer, timer.sx * 10		, timer.sy, timer.sw, timer.sh, IMAGE_MODE::FLASH, timer.x + timer.w * 1, timer.y);
-		RenderImage(timer, timer.sx * minute[0]	, timer.sy, timer.sw, timer.sh, IMAGE_MODE::FLASH, timer.x + timer.w * 2, timer.y);
-		RenderImage(timer, timer.sx * minute[1]	, timer.sy, timer.sw, timer.sh, IMAGE_MODE::FLASH, timer.x + timer.w * 3, timer.y);
-
+		if (!last_state){
+			RenderImage(timer, timer.sx * minute, timer.sy, timer.sw, timer.sh, IMAGE_MODE::SCALING, timer.x + timer.w * 0, timer.y);
+			RenderImage(timer, timer.sx * 10, timer.sy, timer.sw, timer.sh, IMAGE_MODE::SCALING, timer.x + timer.w * 1, timer.y);
+			RenderImage(timer, timer.sx * second[0], timer.sy, timer.sw, timer.sh, IMAGE_MODE::SCALING, timer.x + timer.w * 2, timer.y);
+			RenderImage(timer, timer.sx * second[1], timer.sy, timer.sw, timer.sh, IMAGE_MODE::SCALING, timer.x + timer.w * 3, timer.y);
+		}
+		else
+		{
+			timer.alpha = last_alpha;
+			timer.x = iexSystem::ScreenWidth / 2;	timer.y = iexSystem::ScreenHeight / 2;
+			RenderImage(timer, timer.sx * second[1], timer.sy, timer.sw, timer.sh, IMAGE_MODE::ADOPTPARAM);
+		}
 		//	タイマー文字色を白へ
 		timer.sy = 0;
 
@@ -1091,6 +1214,24 @@
 //------------------------------------------------------------------------------
 //	動作関数
 //------------------------------------------------------------------------------
+
+	//	コイン枚数を1枚ずつカウントアップダウン
+	void	UI::CoinCounter( int coin, int num )
+	{
+		if (coinNum[num] == coin) return;
+
+		//	コイン減少
+		if( coinNum[num] > coin )
+		{
+			coinNum[num]--;
+		}
+
+		//	コイン増加
+		if (coinNum[num] < coin)
+		{
+			coinNum[num]++;
+		}
+	}
 
 	//	バー動作
 	void	UI::BarControl( void )
@@ -1475,6 +1616,44 @@
 			break;
 		}
 	}
+	
+	//	設定した数値にあわせて構造体情報を設定、１００以上かで配置も変更
+	void	UI::CoinImageInfoUpdate(NUMBERIMAGE_INFO& numImageInfo, NUMBER_INFO& numInfo, const int& num)
+	{
+		//	桁数確認
+		if (num >= 100)		numImageInfo.hundredRenderFlag = true;
+		else							numImageInfo.hundredRenderFlag = false;
+
+		//	数字構造体設定
+		SetNumberInfo(numInfo, num);
+
+		//------------------------------------------------------------------------------------------------
+		//	総数用構造体設定
+		//------------------------------------------------------------------------------------------------
+		if (numImageInfo.hundredRenderFlag)
+		{
+			//	１０の位設定
+			numImageInfo.ten.x = numImageInfo.pos.x;
+			numImageInfo.ten.sx = numInfo.ten * 64;
+
+			//	１００の位設定
+			numImageInfo.hundred.sx = numInfo.hundred * 64;
+
+			//	１の位設定
+			numImageInfo.one.x = numImageInfo.pos.x + static_cast<int>(numImageInfo.ten.w / 1.5f);
+			numImageInfo.one.sx = numInfo.one * 64;
+		}
+		else
+		{
+			//	１０の位設定
+			numImageInfo.ten.x = numImageInfo.pos.x - numImageInfo.scale / 3;
+			numImageInfo.ten.sx = numInfo.ten * 64;
+
+			//	１の位設定
+			numImageInfo.one.x = numImageInfo.pos.x + numImageInfo.scale / 3;
+			numImageInfo.one.sx = numInfo.one * 64;
+		}
+	}
 
 //------------------------------------------------------------------------------
 //	情報設定・取得
@@ -1552,4 +1731,66 @@
 	{
 		bool	out = this->changeflag;
 		return	out;
+	}
+
+	//	設定した数値にあわせて構造体情報を設定、１００以上かで配置も変更
+	void	UI::SetCoinImageInfo(NUMBERIMAGE_INFO& numImageInfo, NUMBER_INFO& numInfo, const int& num)
+	{
+		//	桁数確認
+		if (num >= 100)		numImageInfo.hundredRenderFlag = true;
+		else							numImageInfo.hundredRenderFlag = false;
+
+		//	数字構造体設定
+		SetNumberInfo(numInfo, num);
+
+		//	各位画像構造体初期化
+		int		x, y, w, h, sx, sy, sw, sh;
+		//------------------------------------------------------------------------------------------------
+		//	総数用構造体設定
+		//------------------------------------------------------------------------------------------------
+		if (numImageInfo.hundredRenderFlag)
+		{
+			//	１０の位設定
+			x = numImageInfo.pos.x;
+			y = numImageInfo.pos.y;
+			w = h = numImageInfo.scale;
+			sx = numInfo.ten * 64;
+			sy = 0;
+			sw = sh = 64;
+			ImageInitialize(numImageInfo.ten, x, y, w, h, sx, sy, sw, sh);
+
+			//	１００の位設定
+			x = numImageInfo.pos.x - static_cast<int>(numImageInfo.ten.w / 1.5f);
+			sx = numInfo.hundred * 64;
+			ImageInitialize(numImageInfo.hundred, x, y, w, h, sx, sy, sw, sh);
+
+			//	１の位設定
+			x = numImageInfo.pos.x + static_cast<int>(numImageInfo.ten.w / 1.5f);
+			sx = numInfo.one * 64;
+			ImageInitialize(numImageInfo.one, x, y, w, h, sx, sy, sw, sh);
+		}
+		else
+		{
+			//	１０の位設定
+			w = h = numImageInfo.scale;
+			x = numImageInfo.pos.x - w / 3;
+			y = numImageInfo.pos.y;
+			sx = numInfo.ten * 64;
+			sy = 0;
+			sw = sh = 64;
+			ImageInitialize(numImageInfo.ten, x, y, w, h, sx, sy, sw, sh);
+
+			//	１の位設定
+			x = numImageInfo.pos.x + w / 3;
+			sx = numInfo.one * 64;
+			ImageInitialize(numImageInfo.one, x, y, w, h, sx, sy, sw, sh);
+		}
+	}
+
+	//	数値構造体に値をセットする
+	void	UI::SetNumberInfo(NUMBER_INFO& number, int coin)
+	{
+		number.hundred = coin / 100 % 10;
+		number.ten = coin / 10 % 10;
+		number.one = coin % 10;
 	}

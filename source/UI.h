@@ -109,6 +109,25 @@ private:
 		int		coinNum[4];
 	};
 
+	//	コイン枚数構造体
+	struct NUMBERIMAGE_INFO
+	{
+		int				scale;
+		POINT			pos;
+		ImageObj		hundred;			//	コイン三桁目
+		ImageObj		ten;				//	コイン二桁目
+		ImageObj		one;				//	コイン一桁目
+		bool			hundredRenderFlag;	//	百の位レンダー用フラグ
+	};
+
+	//	数字情報
+	struct NUMBER_INFO
+	{
+		int		hundred;		//コイン三桁目
+		int		ten;			//コイン二桁目
+		int		one;			//コイン一桁目
+		bool	H_flg;			//百の位レンダー用フラグ
+	};
 	//	ライフ情報
 	struct LIFE_INFO
 	{
@@ -118,18 +137,19 @@ private:
 
 private:
 	//	各画像
-	ImageObj		timer;
+	ImageObj	timer;
 	iex2DObj*	coinbar;
-	ImageObj		frame;
-	ImageObj		backgauge;
-	ImageObj		gauge;
+	ImageObj	frame;
+	ImageObj	backgauge;
+	ImageObj	gauge;
 	iex2DObj*	face;
-	ImageObj		faceImage;
-	ImageObj		countImage;
-	ImageObj		alertImage;
-	ImageObj		alert_coinImage;
+	ImageObj	faceImage;
+	ImageObj	countImage;
+	ImageObj	alertImage;
+	ImageObj	alert_coinImage;
 	iex2DObj*	playerNumber;
-	ImageObj		pNumImage[PLAYER_MAX];
+	ImageObj	pNumImage[PLAYER_MAX];
+	iex2DObj*	pCoinNumImage;
 	iex2DObj*	life;
 
 private:
@@ -143,7 +163,7 @@ private:
 	//	タイマー
 	int		x, y, sx, sy;
 	int		time;
-	int		second, minute[2];
+	int		second[2], minute;
 
 	//	コインバー
 	static	const		int		NUM_BAR = 4;
@@ -152,8 +172,17 @@ private:
 	int		state_x[4];
 	int		state_type[4];
 
+	//	コイン枚数
+	int		coinNum[PLAYER_MAX];
+	Vector3	coinColor[PLAYER_MAX];
+
 	//　キャラ情報
-	int		charatype[4];
+	int		charatype[PLAYER_MAX];
+
+	//	ラスト時間
+	bool	last_state;
+	float	last_alpha;
+	float	last_t;
 
 	//	ニュース
 	NewsBar	newsbar;
@@ -179,6 +208,10 @@ private:
 	//	ライフ情報
 	LIFE_INFO			lifeInfo[4];
 
+	//	コイン枚数情報
+	NUMBERIMAGE_INFO	coinNumInfo[PLAYER_MAX];
+	NUMBER_INFO			numInfo[PLAYER_MAX];
+	
 	//	パラメータ
 	int		scene;
 	
@@ -229,8 +262,10 @@ public:
 	void	DonketsuDirectionInitialize( void );
 	void	AlertInitialize( void );
 	void	HurryUpInitialize( void );
+	void	LastProductionInitialize( void );
 	void	PlayerNumberInitialize( void );
 	void	LifeInitialize( void );
+	void	CoinNumberInitialize( void );
 
 	//	メイン動作更新
 	void	TimerUpdate( void );
@@ -244,6 +279,8 @@ public:
 	void	LastProduction( void );
 	void	PlayerNumberUpdate( void );
 	void	LifeUpdate( void );
+	void	CoinNumberUpdate( void );
+	void	CoinImageInfoUpdate(NUMBERIMAGE_INFO& numImageinfo, NUMBER_INFO& numinfo, const int& num);
 
 	//	メイン描画
 	void	TimerRender( void );
@@ -256,6 +293,7 @@ public:
 	void	LastProductionRender( void );
 	void	PlayerNumberRender( void );
 	void	LifeRender( void );
+	void	CoinNumberRender( void );
 
 	//	メイン動作関数
 	void BarControl( void );
@@ -264,6 +302,7 @@ public:
 	void DB_Direction( int wait );
 	void P_Direction( int wait );
 	void Fight_Direction( int wait );
+	void CoinCounter( int coin , int num);
 
 	//	テスト用
 	void	BarControl2( void );
@@ -277,6 +316,8 @@ public:
 	void	SetFlyingIn( int type );
 	void	SetImageSrcPos( int mode );
 	void	SetImageSrcPos( int sx, int sy );
+	void	SetCoinImageInfo(NUMBERIMAGE_INFO& numImageinfo, NUMBER_INFO& numinfo, const int& num);
+	void	SetNumberInfo(NUMBER_INFO& nomber, int coin);
 
 	//	情報取得
 	bool	GetChangeFlag( void );
