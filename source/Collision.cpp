@@ -204,14 +204,14 @@ iexMesh*	Collision::obj = NULL;
 		return false;
 	}
 
-	//	オブジェクトの反射
-	bool	Collision::GetReflect( iexMesh*	org, Vector3& pos, Vector3& vec, float rate ) 
+	//	動くオブジェクトの反射
+	bool	Collision::GetReflect( iexMesh* org, Vector3& pos, Vector3& vec, float rate ) 
 	{
 		// オブジェクトの逆行列を算出
 		org->Update();
 		Matrix mat = org->TransMatrix;
 		Matrix invMat;	// 逆行列
-		D3DXMatrixInverse(&invMat, null, &mat);
+		D3DXMatrixInverse( &invMat, null, &mat );
 
 		// 逆行列でレイをローカル化
 		Vector3 invVec;
@@ -228,16 +228,15 @@ iexMesh*	Collision::obj = NULL;
 		Vector3 p = invPos;
 		Vector3 out;
 		float d = 100.0f;
-		if (org->RayPick(&out, &p, &v, &d) >= 0)
+		if ( org->RayPick( &out, &p, &v, &d ) >= 0 )
 		{
 			Vector3 vv = out - p;
 			float dd = vv.Length();
 			float dm = invVec.Length();
-			if (dd < dm){
+			if ( dd < dm ){
 				v.Normalize();		//	法線算出			
-				float dot = Vector3Dot(-invVec, v);	//　法線方向に射影
-				invVec = v*dot*2.0f - (-invVec);
-
+				float dot = Vector3Dot( -invVec, v );	//　法線方向に射影
+				invVec = v*dot*2.0f - ( -invVec );
 
 				Vector3 p;
 				p.x = mat._11 * out.x + mat._21 * out.y + mat._31 * out.z + mat._41;
