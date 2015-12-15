@@ -215,7 +215,7 @@
 			OptionUpdate();
 			break;
 		}
-		if (KEY_Get(KEY_D) == 3||KEY_Get(KEY_B5)==3){
+		if (KEY_Get(KEY_D) == 3||KEY_Get(KEY_B6)==3){
 			if (mode != MENU_MODE::OPTION){
 				tempmode = mode;
 				SetMode(MENU_MODE::OPTION);
@@ -237,9 +237,9 @@
 		mainView->Clear();
 
 		//背景( 一番後ろに表示 )
-	/*	iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
+		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
 		back->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 1280, 720 );
-		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );*/
+		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
 
 		switch ( mode )
 		{
@@ -270,8 +270,8 @@
 			Omenu->Render(80, 50, 256, 64, 0, 0, 256, 64);
 		}
 		//	スクリーン
-		//screen->Render();
-		BG->Render();
+		screen->Render();
+		//BG->Render();
 
 	}
 
@@ -645,11 +645,11 @@
 
 		//	ステージ座標、向き設定
 		{
-			deskStage->SetPos( -7.0f, 5.0f, 5.0f );
+			deskStage->SetPos( -5.0f, 5.0f, 5.0f );
 			deskStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 			deskStage->SetScale( 0.08f );
 			deskStage->Update();
-			forestStage->SetPos( 0.0f, 6.0f, 5.0f );
+			forestStage->SetPos(-5.0f, 5.0f, 5.0f);
 			forestStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 			forestStage->SetScale( 0.03f );
 			forestStage->Update();
@@ -716,8 +716,6 @@
 		case 0:		deskStage->Render();		break;
 		case 1:		forestStage->Render();		break;
 		}
-		//	オプション確認描画
-		OptionSelectRender();
 
 
 		//	プレイヤー描画
@@ -725,6 +723,8 @@
 		{
 			obj[value]->Render( shader3D, "toon" );
 		}
+		//	オプション確認描画
+		OptionSelectRender();
 
 		//	テキスト画像描画
 		RenderImage( textImage, 0, 512, 512, 256, IMAGE_MODE::ADOPTPARAM );
