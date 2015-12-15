@@ -235,6 +235,7 @@ bool	Scavenger::HyperArts( void )
 		if ( state )
 		{
 			Vector3 vec = ( *it )->GetPos() - this->pos;
+			
 			vec.Normalize();
 			float length = vec.Length();
 			if ( length < absorb_length )
