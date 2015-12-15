@@ -44,7 +44,7 @@ void	Pirate_Bullet02::Update(void)
 	}
 
 	if (explosion) Explode();
-	move *= 0.99;	//èôÅXÇ…å∏ë¨
+	move *= 0.99f;	//èôÅXÇ…å∏ë¨
 
 	pos += move;
 
