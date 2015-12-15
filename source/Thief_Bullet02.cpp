@@ -14,18 +14,16 @@
 
 Thief_Bullet02::Thief_Bullet02() : holdCoinNum(0), range(0)
 {
+	scale		=	Vector3(0.05f,0.05f,0.05f);
+	leanpower	=	0;
+	range		=	0.97f;
+//	judgeTimer	=	BULLET_JUDGETIMER	[	BULLET_TYPE::THIEF_02	];
+	radius		=	BULLET_RADIUS		[	BULLET_TYPE::THIEF_02	];
+	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::THIEF_02	];
 }
 
 bool Thief_Bullet02::Initialize()
 {
-	activate	=	true;
-	state		=	true;
-	scale		=	Vector3(0.05f,0.05f,0.05f);
-	leanpower	=	0;
-	range		=	0.97f;
-//	judgeTimer	=	BULLET_JUDGETIMER	[	BULLET_TYPE::THIEF_02	]	;
-	radius		=	BULLET_RADIUS		[	BULLET_TYPE::THIEF_02	];
-	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::THIEF_02	];
 	return true;
 }
 
@@ -40,6 +38,7 @@ void	Thief_Bullet02::Update(void)
 
 	limitTimer--;
 
+	liveTime++;
 	PlayerCollisionCheck();
 
 	obj->SetAngle(angle);

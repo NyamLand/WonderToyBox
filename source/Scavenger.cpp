@@ -117,7 +117,7 @@ bool	Scavenger::QuickArts(void)
 	unrivaled = false;
 
 	if (absorb_length < 15.0f) absorb_length += 0.1f;		//吸い込む範囲を徐々に拡大
-	Vector3 p_front = Vector3(sinf(this->angle.y), 0, cosf(this->angle.y));
+	Vector3 p_front = Vector3(sinf(this->angle), 0, cosf(this->angle));
 
 	//	コイン情報取得
 	list<Coin*>	coinList = coinManager->GetList();
@@ -164,7 +164,7 @@ bool	Scavenger::PowerArts( void )
 	//問題なら言ってください
 	unrivaled = false;
 	absorb_length = 5.0f;
-	Vector3 p_front = Vector3(sinf(this->angle.y), 0, cosf(this->angle.y));
+	Vector3 p_front = Vector3(sinf(this->angle), 0, cosf(this->angle));
 	p_front.Normalize();
 	float speed = 0.5f;
 	
@@ -224,22 +224,26 @@ bool	Scavenger::HyperArts( void )
 	//無敵判定を切らないとそもそもコインを集められないので無敵切ってます。
 	//問題なら言ってください
 	unrivaled = false;
-	absorb_length = 25.0f;
+	absorb_length = 10.0f;
 	stayTime++;
 
-	m_Effect->StormSet(this->pos + Vector3(0.0f, 2.0f, 0.0f) , 2 * SECOND);
 	list<Coin*>	coinList = coinManager->GetList();
 	FOR_LIST( coinList.begin(), coinList.end() )
 	{
 		bool	state = ( *it )->GetState();
 		if ( state )
 		{
+			m_Effect->StormSet( this->pos + Vector3( 0.0f, 8.0f, 0.0f ) );
+
 			Vector3 vec = ( *it )->GetPos() - this->pos;
-			float length = vec.Length();
 			vec.Normalize();
+			float length = vec.Length();
 			if ( length < absorb_length )
 			{
-				( *it )->SetMove( -vec * 1.0f );
+				Vector3 parabola_move;
+				Parabola(parabola_move, (*it)->GetPos(), pos, 0.7f, GRAVITY);
+				(*it)->SetAbsorbedFlag(true);
+				if (stayTime == 1) (*it)->SetMove(parabola_move);
 			}
 		}
 
@@ -249,6 +253,7 @@ bool	Scavenger::HyperArts( void )
 	{
 		stayTime = 0;
 		absorb_length = DEFAULT_ABSORB_LENGTH;
+		m_Effect->StormOff();
 		return true;
 	}
 
@@ -305,11 +310,11 @@ void	Scavenger::RollAngle(void)
 
 	if (axisX > 0)
 	{
-		angle.y += 0.02f;
+		angle += 0.02f;
 	}
 	if (axisX < 0)
 	{
-		angle.y -= 0.02f;
+		angle -= 0.02f;
 	}
 }
 //	モーション管理

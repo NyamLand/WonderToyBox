@@ -625,6 +625,59 @@
 		v.rhw = 1.0f;
 	}
 
+//----------------------------------------------------------------------
+//	放物線(出力、開始点、目標地点、初速、重力)
+//----------------------------------------------------------------------
+	bool Parabola(Vector3& out, Vector3 start, Vector3 end, float speed, float gravity)
+	{
+		float angleTan;
+		float elevation;	//仰角
+		float height = start.y - end.y;	//高低差
+		float tx = end.x - start.x;	//　X座標差
+		float tz = end.z - start.z;	//　Z座標差
+
+		float txz = sqrtf(tx*tx + tz*tz);
+
+		// y = v0 * sinθ*t + 0.5f*G*t*t
+		// x = v0 * cosθ*t
+		// 2次方程式 a*T*T + b*T + c = 0
+		float A = (gravity*txz*txz) / (2.0f*speed*speed);
+
+		// Tの係数(aT*T + b*T + c = 0)	
+		float a, b, c;
+		a = 1.0f;
+		if (A != 0){
+			b = txz / A;
+			c = 1.0f + height / A;
+		}
+		// 解の公式(平方根)
+		float D = b * b - 4 * a * c;
+		if (D < 0)
+		{
+			out = Vector3(0, 0, 0);
+			angleTan = 0;
+			return false;
+		}
+
+		// 解の公式
+		elevation = (-b + sqrtf(D)) / (2.0f*a);
+
+		// 仰角
+		angleTan = atanf(elevation);
+
+		// 移動距離
+		D3DXVECTOR3 tt;
+		tt.x = end.x - start.x;
+		tt.y = 0;
+		tt.z = end.z - start.z;
+		D3DXVec3Normalize(&tt, &tt);
+
+		out.x = speed * cosf(angleTan)*tt.x;
+		out.y = speed * sinf(angleTan);
+		out.z = speed * cosf(angleTan)*tt.z;
+
+		return true;
+	}
 //-------------------------------------------------------------------------
 //	相互変換DirectX<->IEX
 //-------------------------------------------------------------------------
