@@ -45,6 +45,7 @@ protected:
 	bool			state;
 	bool			activate;
 	bool			getAwayflag;
+	bool			absorbedflg; // ‘|œ‰®‚É‹zû‚³‚ê‚Ä‚¢‚éó‘Ô
 	int				judgeTimer;	//	”»’è—LŒøŠÔ
 
 	//	physics_parameter
@@ -88,6 +89,7 @@ public:
 	void	SetAngle( const float& angle );
 	void	SetScale( const float& angle );
 	void	SetGetAwayFlag(bool flag);
+	void	SetAbsorbedFlag(bool flag);
 	void	SetState(bool state);
 	Vector3	GetPos( void );
 	float		GetAngle( void );

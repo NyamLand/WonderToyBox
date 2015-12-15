@@ -234,12 +234,16 @@ bool	Scavenger::HyperArts( void )
 		if ( state )
 		{
 			m_Effect->StormSet( this->pos + Vector3( 0.0f, 8.0f, 0.0f ) );
+
 			Vector3 vec = ( *it )->GetPos() - this->pos;
 			vec.Normalize();
 			float length = vec.Length();
 			if ( length < absorb_length )
 			{
-				( *it )->SetMove( -vec * 1.0f );
+				Vector3 parabola_move;
+				Parabola(parabola_move, (*it)->GetPos(), pos, 0.7f, GRAVITY);
+				(*it)->SetAbsorbedFlag(true);
+				if (stayTime == 1) (*it)->SetMove(parabola_move);
 			}
 		}
 

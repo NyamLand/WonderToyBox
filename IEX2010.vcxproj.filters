@@ -381,14 +381,14 @@
     <ClCompile Include="source\Pirate.cpp">
       <Filter>ソース ファイル\Character\Pirate</Filter>
     </ClCompile>
-    <ClCompile Include="source\Pirate_Bullet01.cpp">
-      <Filter>ソース ファイル\Bullet\Pirate_Bullet01</Filter>
-    </ClCompile>
     <ClCompile Include="source\Pirate_CPU.cpp">
       <Filter>ソース ファイル\Character\CPU\Pirate</Filter>
     </ClCompile>
     <ClCompile Include="source\Pirate_Bullet02.cpp">
       <Filter>ソース ファイル\Bullet\Pirate_Bullet02</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Pirate_Bullet01.cpp">
+      <Filter>ソース ファイル\Bullet\Pirate_Bullet01</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

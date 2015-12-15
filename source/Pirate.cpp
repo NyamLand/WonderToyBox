@@ -156,23 +156,25 @@ bool	Pirate::HyperArts(void)
 	static int time = 0;
 
 	//	s—ñ‚©‚çî•ñŽæ“¾
+	Vector3	front = GetFront();
+	front.Normalize();
+	Vector3	p_pos = GetPos();
 	SetMove(Vector3(0.0f, move.y, 0.0f));
+	Vector3 vec = front;
 
+	p_pos.y += 1.0f;
 	float	 bulletSpeed = 0.5f;
 	int leanpower = 30;
 	int playerNum = GetPlayerNum();
 
-	time++;
-	if (time % 2 == 0)
+	if (time == 0)
 	{
-		Vector3	p_pos = Vector3(Random::GetFloat(-40.0f, 40.0f), 50.0f, Random::GetFloat(-40.0f, 40.0f));
-		Vector3 vec = Vector3(Random::GetFloat(-0.1f, 0.1f), 1.0f, Random::GetFloat(-0.1f, 0.1f));
-
 		m_BulletManager->Set(BULLET_TYPE::PIRATE_02, new Pirate_Bullet02, p_pos, vec, bulletSpeed, playerNum);
 	}
+	time++;
 
-	//5•bŒã’e~‚ç‚µ‚â‚ß‚é
-	if (time >= 120)
+	//ˆê•bŠÔd’¼
+	if (time >= 1 * SECOND)
 	{
 		time = 0;
 		return true;

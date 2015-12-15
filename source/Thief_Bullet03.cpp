@@ -14,18 +14,16 @@
 
 Thief_Bullet03::Thief_Bullet03() :growSpeed(0.0f), checkMax(false), checkMin(false)
 {
-}
-
-bool Thief_Bullet03::Initialize()
-{
-	activate	=	true;
-	state		=	true;
 	scale		=	Vector3(0.01f,0.01f,0.005f);
 	leanpower	=	0;	
 //	judgeTimer	=	BULLET_JUDGETIMER	[	BULLET_TYPE::THIEF_03	];
 	radius		=	BULLET_RADIUS		[	BULLET_TYPE::THIEF_03	];
 	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::THIEF_03	];
 	m_BulletManager->Set(BULLET_TYPE::THIEF_04, new Thief_Bullet04, pos, move, angle, 0.5f, playerNum);
+}
+
+bool Thief_Bullet03::Initialize()
+{
 	return true;
 }
 
@@ -38,6 +36,8 @@ void	Thief_Bullet03::Update(void)
 //	else							activate = true;
 
 	limitTimer--;
+
+	liveTime++;
 
 	//PlayerCollisionCheck();
 

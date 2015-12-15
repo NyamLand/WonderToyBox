@@ -21,13 +21,12 @@ protected:
 	bool			activate;	//あたり判定の有無
 	bool			enable;		//描画するかどうか
 	float			radius;		//物体の半径(あたり判定で使用))
-	//int				judgeTimer;	//	判定有効時間
 	int				limitTimer; //	消滅までの時間
 	int				leanpower; //	仰け反り時間用
 	int				number;		//	番号割り当て用
 	int				playerNum;	//何番目のプレイヤーの弾か
-	int liveTime;	//生成されてからの時間
-	int step;
+	int				liveTime;	//生成されてからの時間
+	int				step;
 	
 
 public:

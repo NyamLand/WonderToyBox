@@ -14,6 +14,11 @@
 
 Thief_Bullet04::Thief_Bullet04() :holdCoinNum(0), growSpeed(0.0f), checkMax(false), checkMin(false)
 {
+	scale		=	Vector3(0.03f, 0.03f, 0.03f);
+	leanpower	=	0;
+//	judgeTimer	=	BULLET_JUDGETIMER	[	BULLET_TYPE::THIEF_04	];
+	radius		=	BULLET_RADIUS		[	BULLET_TYPE::THIEF_04	];
+	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::THIEF_04	];
 	for (int i = 0; i < PLAYER_MAX; i++)
 	{
 		isPlayerCheck[i] = false;
@@ -22,13 +27,6 @@ Thief_Bullet04::Thief_Bullet04() :holdCoinNum(0), growSpeed(0.0f), checkMax(fals
 
 bool Thief_Bullet04::Initialize()
 {
-	activate	=	true;
-	state		=	true;
-	scale		=	Vector3(0.03f, 0.03f, 0.03f);
-	leanpower	=	0;
-//	judgeTimer	=	BULLET_JUDGETIMER	[	BULLET_TYPE::THIEF_04	];
-	radius		=	BULLET_RADIUS		[	BULLET_TYPE::THIEF_04	];
-	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::THIEF_04	];
 	return true;
 }
 
@@ -41,6 +39,8 @@ void	Thief_Bullet04::Update(void)
 //	else							activate = true;
 
 	limitTimer--;
+
+	liveTime++;
 
 	PlayerCollisionCheck();
 
