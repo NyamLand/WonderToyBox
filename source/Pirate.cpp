@@ -4,6 +4,7 @@
 #include	"Collision.h"
 #include	"Particle.h"
 #include	"Pirate.h"
+#include	"CharacterManager.h"
 #include	"GameManager.h"
 #include	"BulletManager.h"
 #include	"Random.h"
@@ -78,7 +79,7 @@ void	Pirate::Render(iexShader* shader, LPSTR technique)
 
 	//	デバッグ用
 	if (!debug)	return;
-	DrawSphere(attackInfo.pos, attackInfo.r, 0xFFFFFFFF);
+	DrawCapsule(attackInfo.bottom, attackInfo.top, attackInfo.r, 0xFFFFFFFF);
 	particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z - attackInfo.r), 0.3f);
 	particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z + attackInfo.r), 0.3f);
 	particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z), 0.3f);
@@ -108,14 +109,29 @@ bool	Pirate::QuickArts(void)
 	SetMove(Vector3(0.0f, move.y, 0.0f));
 	Vector3 vec = front;
 
+	//弾を発射するときの情報を決定
 	p_pos.y += 1.0f;
 	float	 bulletSpeed = 0.5f;
 	int leanpower = 30;
 	int playerNum = GetPlayerNum();
 
+	//発射する弾の種類を決定
+	int pattern;
+	int rnd = Random::GetInt(0, 99);
+	if (0 <= rnd && rnd < 70)	pattern = QuickArts_DATA::NORMAL_SHOT;
+	if (70 <= rnd && rnd < 100)	pattern = QuickArts_DATA::TIMER_SHOT;
+
 	if (time == 0)
 	{
-		m_BulletManager->Set(BULLET_TYPE::PIRATE_01, new Pirate_Bullet01, p_pos, vec, bulletSpeed, playerNum);
+		switch (pattern)
+		{
+		case QuickArts_DATA::NORMAL_SHOT:
+			m_BulletManager->Set(BULLET_TYPE::PIRATE_01, new Pirate_Bullet01, p_pos, vec, bulletSpeed, playerNum);
+			break;
+		case QuickArts_DATA::TIMER_SHOT:
+			m_BulletManager->Set(BULLET_TYPE::PIRATE_02, new Pirate_Bullet02, p_pos, vec, bulletSpeed, playerNum);
+			break;
+		}
 	}
 	time++;
 
@@ -131,20 +147,22 @@ bool	Pirate::QuickArts(void)
 //	パワーアーツ
 bool	Pirate::PowerArts(void)
 {
-	power = POWER;
-	Vector3	p_pos = GetPos();
-	attackInfo.pos = Vector3(p_pos.x, p_pos.y + 1.5f, p_pos.z);
-	SetMove(Vector3(0.0f, 0.0f, 0.0f));
+	float run_speed = 0.5f;
 
-	//	範囲拡大
-	Lerp(attackInfo.r, 0.0f, 3.0f, attackInfo.t);
+	//	行列から前方取得
+	SetMove(Vector3(0.0f, 0.0f, 0.0f));
+	Vector3	front = GetFront();
+	Vector3	p_pos = GetPos();
+
+	//	あたり判定のパラメータを与える
+	attackInfo.r = 1.0f;
+	attackInfo.bottom = p_pos;
+	attackInfo.top = attackInfo.bottom + Vector3(0.0f,3.0f,0.0f);
 
 	//	パラメータ加算
-	attackInfo.t += 0.02f;
+	attackInfo.t += 0.015f;
 
-	//	無敵状態
-	if (attackInfo.t <= 0.5f)		unrivaled = true;
-	else									unrivaled = false;
+	move = front * run_speed;
 
 	if (attackInfo.t >= 1.0f)	return	true;
 	return	false;
@@ -153,33 +171,32 @@ bool	Pirate::PowerArts(void)
 //	ハイパーアーツ
 bool	Pirate::HyperArts(void)
 {
-	static int time = 0;
+	//大砲の砲弾発射位置決定（画面上側）
+	Vector3 b_pos;	
+	b_pos = Vector3(
+		Random::GetFloat(-20.0f, -20.0f),
+		30.0f,
+		Random::GetFloat(-20.0f, 20.0f)
+		);
 
-	//	行列から情報取得
-	Vector3	front = GetFront();
-	front.Normalize();
-	Vector3	p_pos = GetPos();
-	SetMove(Vector3(0.0f, move.y, 0.0f));
-	Vector3 vec = front;
-
-	p_pos.y += 1.0f;
-	float	 bulletSpeed = 0.5f;
-	int leanpower = 30;
-	int playerNum = GetPlayerNum();
-
-	if (time == 0)
+	//自分以外のプレイヤー三人を着弾地点にする
+	Vector3 target[3];
+	for (int i = 0,n = 0; i < 4; i++)
 	{
-		m_BulletManager->Set(BULLET_TYPE::PIRATE_02, new Pirate_Bullet02, p_pos, vec, bulletSpeed, playerNum);
+		if (i == playerNum) continue;	//自分は除外
+		target[n] = characterManager->GetPos(i);
+		n++;
 	}
-	time++;
 
-	//一秒間硬直
-	if (time >= 1 * SECOND)
+	float bulletSpeed = 0.5f;
+	Vector3 vec[3];
+	for (int i = 0; i < 3; i++)
 	{
-		time = 0;
-		return true;
+		Parabola(vec[i], b_pos, target[i], bulletSpeed, GRAVITY);
+		m_BulletManager->Set(BULLET_TYPE::PIRATE_01, new Pirate_Bullet03, b_pos, vec[i], bulletSpeed, playerNum);
 	}
-	return	false;
+
+	return true;
 }
 
 
@@ -245,7 +262,7 @@ void	Pirate::SetAttackParam(int attackKind)
 
 	case MODE_STATE::POWERARTS:
 		knockBackInfo.isUp = true;
-		attackInfo.type = Collision::SPHEREVSCAPSULE;
+		attackInfo.type = Collision::CAPSULEVSCAPSULE;
 		knockBackInfo.type = KNOCKBACK_TYPE::MIDDLE;
 		break;
 

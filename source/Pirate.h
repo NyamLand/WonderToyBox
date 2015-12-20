@@ -27,6 +27,12 @@ private:
 		GUARD,
 	};
 
+	enum QuickArts_DATA
+	{
+		NORMAL_SHOT = 0,
+		TIMER_SHOT,
+	};
+
 private:
 	void	MotionManagement(int motion)override;
 
