@@ -743,10 +743,10 @@
 	//	ƒ‰ƒEƒ“ƒh‰Šú‰»
 	void	UI::RoundInitialize( void )
 	{
-		int	x = iexSystem::ScreenWidth * 0.07f;
-		int	y = iexSystem::ScreenHeight * 0.9f;
-		int	w = iexSystem::ScreenWidth * 0.1f;
-		int	h = iexSystem::ScreenHeight * 0.05f;
+		int	x = static_cast<int>( iexSystem::ScreenWidth * 0.07f );
+		int	y = static_cast<int>( iexSystem::ScreenHeight * 0.9f );
+		int	w = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
+		int	h = static_cast<int>( iexSystem::ScreenHeight * 0.05f );
 		int	sx = 0;
 		int	sy = gameManager->GetRound() * 128;
 		int	sw = 512;

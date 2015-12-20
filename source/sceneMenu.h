@@ -87,10 +87,11 @@ private:
 	iex3DObj*				obj[4];
 	iex2DObj*				face;
 	iex2DObj*				cursor;
+	iex2DObj*				cpuCursor;
+	iex2DObj*				selectCheckCursor;
 	ImageObj				textImage;
 	ImageObj				faceImage[CHARACTER_TYPE::MAX];
 	ImageObj				cursorImage[4];
-
 
 
 	//	äeÉÇÅ[ÉhèÓïÒ
