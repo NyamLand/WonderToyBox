@@ -30,20 +30,17 @@ bool Pirate_Bullet01::Initialize()
 
 void	Pirate_Bullet01::Update(void)
 {
-	//	“®ì
-	Move();
 
 //	if (judgeTimer > 0)	judgeTimer--;
 //	else							activate = true;
 
-	limitTimer--;
+	//limitTimer--;
 
 	liveTime++;
 
-	StageCollisionCheck();
+	//StageCollisionCheck();
 
-
-	if (PlayerCollisionCheck() || Collision::CheckWall(pos, move))
+	if (PlayerCollisionCheck()/* || Collision::CheckWall(pos, move)*/)	
 	{
 		enable = false;
 		explosion = true;
@@ -52,7 +49,8 @@ void	Pirate_Bullet01::Update(void)
 	if (explosion) Explode();
 
 
-	pos += move;
+	//	“®ì
+	Move();
 
 	obj->SetAngle(angle);
 	obj->SetPos(pos);
@@ -64,6 +62,7 @@ void	Pirate_Bullet01::Update(void)
 void	Pirate_Bullet01::Move(void)
 {
 	move.y += GRAVITY;
+	pos += move;
 }
 
 void	Pirate_Bullet01::Explode(void)

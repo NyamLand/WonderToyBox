@@ -1,19 +1,19 @@
-#ifndef __PIRATE_BULLET02_H__
-#define	__PIRATE_BULLET02_H__
+#ifndef __PIRATE_BULLET03_H__
+#define	__PIRATE_BULLET03_H__
 
 #include	"Pirate_Bullet01.h"
 //*****************************************************************************
 //
-//	Pirate_Bullet02クラス
+//	Pirate_Bullet03クラス
 //
 //*****************************************************************************
-class Pirate_Bullet02 : public Pirate_Bullet01
+class Pirate_Bullet03 : public Pirate_Bullet01
 {
 private:
 public:
 	//	初期化・解放
-	Pirate_Bullet02(void);
-	~Pirate_Bullet02(void){};
+	Pirate_Bullet03(void);
+	~Pirate_Bullet03(void){};
 
 	void Move();
 	void Update();

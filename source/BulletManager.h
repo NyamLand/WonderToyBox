@@ -11,6 +11,7 @@
 #include	"Thief_Bullet04.h"
 #include	"Pirate_Bullet01.h"
 #include	"Pirate_Bullet02.h"
+#include	"Pirate_Bullet03.h"
 //******************************************************************************
 //
 //	BulletManagerƒNƒ‰ƒX
@@ -27,6 +28,7 @@ namespace BULLET_TYPE
 		THIEF_04,
 		PIRATE_01,
 		PIRATE_02,
+		PIRATE_03,
 	};
 }
 
@@ -58,6 +60,7 @@ namespace
 		100 * SECOND,		//‰ö“3‚Ìè•”•ª
 		3  * SECOND,		//ŠC‘¯1
 		100 * SECOND,		//ŠC‘¯2
+		100 * SECOND,		//ŠC‘¯3
 	};
 
 	//‚ ‚½‚è”»’è‚ª‰~ó‚Å‚È‚¢‚à‚Ì‚ÉŠÖ‚µ‚Ä‚ÍNULL
@@ -69,7 +72,8 @@ namespace
 		NULL,		//‰ö“3‚ÌƒA[ƒ€
 		100.0f,		//‰ö“3‚Ìè•”•ª
 		0.5f,		//ŠC‘¯1
-		0.5f		//ŠC‘¯2
+		0.5f,		//ŠC‘¯2
+		0.5f		//ŠC‘¯3
 	};
 }
 
