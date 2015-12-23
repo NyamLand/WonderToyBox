@@ -70,8 +70,8 @@ class Camera : public iexView
 {
 private:
 	//	定数
-	static	const		int		MAX = 10;		//	カメラからターゲットの距離の最大
-	static	const		int		MIN = 4;		//								最少
+	static	const		int		MAX = 15;		//	カメラからターゲットの距離の最大
+	static	const		int		MIN = 8;		//								最少
 	static	const		int		PLAYER_NUM = 4;	//	プレイヤーの数
 
 private:
@@ -89,6 +89,7 @@ private:
 	
 	//	ゴムパラメータ
 	Rubber*		q;
+	Rubber*		p[4];
 	
 	//	振動用パラメータ
 	Vector3 adjust;
@@ -165,7 +166,9 @@ public:
 	~Rubber( void );
 
 	//	更新
+	void	FastInitialize( Vector3 pos );
 	void	Update( void );
+	void	Move( Vector3 pos );
 	void	Integrate( float dt );
 
 	//	情報設定・情報取得

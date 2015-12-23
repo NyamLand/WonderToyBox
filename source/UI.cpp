@@ -1840,6 +1840,11 @@
 			x = numImageInfo.pos.x + w / 3;
 			sx = numInfo.one * 64;
 			ImageInitialize(numImageInfo.one, x, y, w, h, sx, sy, sw, sh);
+
+			//	１００の位設定(初期化の時のみセットするため）
+			x = numImageInfo.pos.x - static_cast<int>(numImageInfo.ten.w / 1.5f);
+			sx = numInfo.hundred * 64;
+			ImageInitialize(numImageInfo.hundred, x, y, w, h, sx, sy, sw, sh);
 		}
 	}
 
