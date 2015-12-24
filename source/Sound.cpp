@@ -18,7 +18,7 @@
 		{
 			const		LPSTR	bgmfile[] =
 			{
-				"",	//	Title
+				"DATA/SOUND/BGM/MenuBGM.ogg",	//	Title
 				"DATA/SOUND/BGM/FightBGM.ogg",	//	Main
 				"",	//	Result
 			};
