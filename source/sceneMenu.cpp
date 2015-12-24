@@ -90,6 +90,8 @@
 		playerNum = make_unique<iex2DObj>( LPSTR( "DATA/UI/menu/playerNum.png" ) );
 		face = new iex2DObj( "DATA/UI/chara_emotion.png" );
 		cursor = new iex2DObj( "DATA/UI/cursor.png" );
+		cpuCursor = new iex2DObj( "DATA/UI/cpuIcon.png" );
+		selectCheckCursor = new iex2DObj("DATA/UI/menu/cursor.png");
 		
 		//	オプション関係画像読み込み
 		Oimage =		new iex2DObj( "DATA/UI/OptionText.png" );
@@ -112,12 +114,12 @@
 		org[CHARACTER_TYPE::SCAVENGER]->SetAngle( D3DX_PI );	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->SetAngle( D3DX_PI );	//	姫
 		org[CHARACTER_TYPE::THIEF]->SetAngle( D3DX_PI );	//	リス
-		org[CHARACTER_TYPE::PIRATE]->SetAngle(D3DX_PI);			//	海賊
+		org[CHARACTER_TYPE::PIRATE]->SetAngle( D3DX_PI );			//	海賊
 
 		org[CHARACTER_TYPE::SCAVENGER]->SetMotion( 2 );	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->SetMotion( 1 );		//	姫
 		org[CHARACTER_TYPE::THIEF]->SetMotion( 0 );		//	リス
-		org[CHARACTER_TYPE::PIRATE]->SetMotion(0);			//	海賊
+		org[CHARACTER_TYPE::PIRATE]->SetMotion( 0 );			//	海賊
 
 		org[CHARACTER_TYPE::SCAVENGER]->Update();	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->Update();		//	姫
@@ -126,9 +128,8 @@
 
 		deskStage = make_unique<iexMesh>( LPSTR( "DATA/BG/stage-desk/stage.IMO" ) );
 		forestStage = make_unique<iexMesh>( LPSTR( "DATA/BG/Forest/model/forest.IMO" ) );
-		BG = make_unique<iexMesh>(LPSTR("DATA/BG/MenuStage/menu.IMO"));
+		BG = make_unique<iexMesh>( LPSTR( "DATA/BG/MenuStage/menu.IMO" ) );
 
-		
 		//	机モデル初期化
 		BG->SetPos(0.0f, -20.0f, 0.0f);
 		BG->SetAngle(0.0f, 0.0f, 0.0f);
@@ -165,6 +166,8 @@
 		SafeDelete( textImage.obj );
 		SafeDelete( face );
 		SafeDelete( cursor );
+		SafeDelete( selectCheckCursor );
+		SafeDelete( cpuCursor );
 		Random::Release();
 		sound->AllStop();
 
@@ -633,11 +636,13 @@
 		org[CHARACTER_TYPE::PRINCESS]->SetMotion( 2 );
 		
 		//	各プレイヤーモデル初期化
+		static	Vector3	cursorPos[4];
 		FOR( 0, PLAYER_MAX )
 		{
 			obj[value] = org[gameManager->GetCharacterType( value )]->Clone();
 			obj[value]->SetPos( -7.0f + ( 14.0f / 3.0f * value ), 0.0f, 0.0f );
 			obj[value]->Update();
+			WorldToClient( obj[value]->GetPos(), cursorPos[value], matView * matProjection );
 		}
 
 		//	構造体初期化
@@ -657,6 +662,21 @@
 			forestStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 			forestStage->SetScale( 0.03f );
 			forestStage->Update();
+		}
+
+		//	カーソル初期化
+		{
+			FOR( 0, PLAYER_MAX )
+			{
+				//	座標初期化
+				cursorImage[value].x = static_cast<int>( cursorPos[value].x - ( iexSystem::ScreenWidth * 0.05f ) );
+				cursorImage[value].y = static_cast<int>( cursorPos[value].y - ( iexSystem::ScreenHeight * 0.3f ) );
+				cursorImage[value].renderflag = true;
+				
+				//	CPUかプレイヤーで画像差し替え
+				if ( value >= gameManager->GetPlayerNum() )
+					cursorImage[value].obj = cpuCursor;
+			}
 		}
 	}
 
@@ -721,11 +741,16 @@
 		case 1:		forestStage->Render();		break;
 		}
 
-
 		//	プレイヤー描画
 		FOR( 0, PLAYER_MAX )
 		{
+			//	モデル描画
 			obj[value]->Render( shader3D, "toon" );
+
+			if ( value < gameManager->GetPlayerNum() )
+				RenderImage( cursorImage[value], 128 * ( value % 2 ), 128 * ( value / 2 ), 128, 128, IMAGE_MODE::NORMAL );
+			else
+				RenderImage( cursorImage[value], 0, 0, 64, 64, IMAGE_MODE::NORMAL );
 		}
 		//	オプション確認描画
 		OptionSelectRender();
@@ -736,17 +761,27 @@
 		//	チェック項目描画
 		if ( checkSelectInfo.check )
 		{
+			//	確認の背景描画
 			int x = static_cast<int>( iexSystem::ScreenWidth * 0.3f );
 			int y = static_cast<int>( iexSystem::ScreenHeight * 0.17f );
 			int w = static_cast<int>( iexSystem::ScreenWidth *  0.39f );
 			int h = static_cast<int>( iexSystem::ScreenHeight * 0.7f );
 			checkBack->Render( x, y, w, h, 0, 0, 512, 512 );
 
+			//	確認項目描画
 			x = static_cast<int>( iexSystem::ScreenWidth * 0.34f );
 			y = static_cast<int>( iexSystem::ScreenHeight * 0.62f );
 			w = static_cast<int>( iexSystem::ScreenWidth *  0.31f );
 			h = static_cast<int>( iexSystem::ScreenHeight * 0.13f );
 			checkCursor->Render( x, y, w, h, 0, checkSelectInfo.select * 128, 512, 128 );
+
+			//	確認カーソル描画
+			if ( !checkSelectInfo.select )		x = static_cast<int>( iexSystem::ScreenWidth * 0.369f );
+			else											x = static_cast<int>( iexSystem::ScreenWidth * 0.51f );
+			y = static_cast<int>( iexSystem::ScreenHeight * 0.64f );
+			w = static_cast<int>( iexSystem::ScreenWidth *  0.11f );
+			h = static_cast<int>( iexSystem::ScreenHeight * 0.1f );
+			selectCheckCursor->Render( x, y, w, h, 0, 0, 256, 256 );
 		}
 
 	}

@@ -224,7 +224,7 @@ bool	Scavenger::HyperArts( void )
 	//–³“G”»’è‚ðØ‚ç‚È‚¢‚Æ‚»‚à‚»‚àƒRƒCƒ“‚ðW‚ß‚ç‚ê‚È‚¢‚Ì‚Å–³“GØ‚Á‚Ä‚Ü‚·B
 	//–â‘è‚È‚çŒ¾‚Á‚Ä‚­‚¾‚³‚¢
 	unrivaled = false;
-	absorb_length = 25.0f;
+	absorb_length = 10.0f;
 	stayTime++;
 
 	m_Effect->StormSet(this->pos + Vector3(0.0f, 2.0f, 0.0f) , 2 * SECOND);
@@ -235,11 +235,15 @@ bool	Scavenger::HyperArts( void )
 		if ( state )
 		{
 			Vector3 vec = ( *it )->GetPos() - this->pos;
-			float length = vec.Length();
+			
 			vec.Normalize();
+			float length = vec.Length();
 			if ( length < absorb_length )
 			{
-				( *it )->SetMove( -vec * 1.0f );
+				Vector3 parabola_move;
+				Parabola(parabola_move, (*it)->GetPos(), pos, 0.7f, GRAVITY);
+				(*it)->SetAbsorbedFlag(true);
+				if (stayTime == 1) (*it)->SetMove(parabola_move);
 			}
 		}
 

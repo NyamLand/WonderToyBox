@@ -13,6 +13,10 @@
 
 Pirate_Bullet01::Pirate_Bullet01() :explosion(false)
 {
+	radius		=	BULLET_RADIUS		[	BULLET_TYPE::PIRATE_01	];
+	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::PIRATE_01	];
+	scale		=	Vector3(0.05f, 0.05f, 0.05f);
+	leanpower	=	0;
 	for (int i = 0; i < PLAYER_MAX; i++)
 	{
 		isPlayerCheck[i] = false;
@@ -21,30 +25,22 @@ Pirate_Bullet01::Pirate_Bullet01() :explosion(false)
 
 bool Pirate_Bullet01::Initialize()
 {
-	activate	=	true;
-	state		=	true;
-	scale		=	Vector3(0.05f, 0.05f, 0.05f);
-	leanpower	=	0;
-//	judgeTimer	=	BULLET_JUDGETIMER	[	BULLET_TYPE::PIRATE_01	];
-	radius		=	BULLET_RADIUS		[	BULLET_TYPE::PIRATE_01	];
-	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::PIRATE_01	];
 	return true;
 }
 
 void	Pirate_Bullet01::Update(void)
 {
-	//	“®ì
-	Move();
 
 //	if (judgeTimer > 0)	judgeTimer--;
 //	else							activate = true;
 
-	limitTimer--;
+	//limitTimer--;
 
-	StageCollisionCheck();
+	liveTime++;
 
+	//StageCollisionCheck();
 
-	if (PlayerCollisionCheck() || Collision::CheckWall(pos, move))
+	if (PlayerCollisionCheck()/* || Collision::CheckWall(pos, move)*/)	
 	{
 		enable = false;
 		explosion = true;
@@ -53,7 +49,8 @@ void	Pirate_Bullet01::Update(void)
 	if (explosion) Explode();
 
 
-	pos += move;
+	//	“®ì
+	Move();
 
 	obj->SetAngle(angle);
 	obj->SetPos(pos);
@@ -65,7 +62,7 @@ void	Pirate_Bullet01::Update(void)
 void	Pirate_Bullet01::Move(void)
 {
 	move.y += GRAVITY;
-
+	pos += move;
 }
 
 void	Pirate_Bullet01::Explode(void)

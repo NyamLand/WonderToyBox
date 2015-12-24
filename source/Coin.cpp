@@ -55,6 +55,7 @@
 		activate = false;
 		state = false;
 		getAwayflag = false;
+		absorbedflg = false;
 
 		//	•¨——pƒpƒ‰ƒ[ƒ^
 		mass = MASS;
@@ -105,8 +106,11 @@
 		shadow.pos = pos;
 
 		//	‹[—Šµ«
-		move.x *= 0.97f;
-		move.z *= 0.97f;
+		if (!absorbedflg)	//‘|œ‰®‚Ì‹z‚¢‚İ‚ğó‚¯‚Ä‚¢‚é‚Æ‚«‚Í–³Œø
+		{
+			move.x *= 0.97f;
+			move.z *= 0.97f;
+		}
 
 		//	“–‚½‚è”»’è
 		StageCollisionCheck();
@@ -296,6 +300,13 @@
 	{
 		this->getAwayflag = flag;
 	}
+
+	//	‘|œ‰®‚É‹zû‚³‚ê‚Ä‚¢‚éó‘Ôƒtƒ‰ƒOİ’è
+	void	Coin::SetAbsorbedFlag(bool flag)
+	{
+		this->absorbedflg = flag;
+	}
+	
 
 	//ó‘Ôİ’è
 	void	Coin::SetState(bool state)

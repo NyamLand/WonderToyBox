@@ -9,12 +9,12 @@
 #include	"CoinManager.h"
 #include	"BaseBullet.h"
 #include	"BulletManager.h"
-#include	"Pirate_Bullet02.h"
+#include	"Pirate_Bullet03.h"
 
-Pirate_Bullet02::Pirate_Bullet02()
+Pirate_Bullet03::Pirate_Bullet03()
 {
-	radius		=	BULLET_RADIUS		[	BULLET_TYPE::PIRATE_02	];
-	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::PIRATE_02	];
+	radius		=	BULLET_RADIUS		[	BULLET_TYPE::PIRATE_03	];
+	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::PIRATE_03	];
 	scale		=	Vector3(0.05f, 0.05f, 0.05f);
 	leanpower	=	0;
 	for (int i = 0; i < PLAYER_MAX; i++)
@@ -23,30 +23,29 @@ Pirate_Bullet02::Pirate_Bullet02()
 	}
 }
 
-void	Pirate_Bullet02::Update(void)
+void	Pirate_Bullet03::Update(void)
 {
-	//	動作
-	Move();
 
 	//	if (judgeTimer > 0)	judgeTimer--;
 	//	else							activate = true;
 
-	limitTimer--;
+	//limitTimer--;
 
-	liveTime++; 
+	liveTime++;
 
-	StageCollisionCheck();
+	//
 
-	if (liveTime >= 300)
+	if (PlayerCollisionCheck() ||/* Collision::CheckWall(pos, move)*/StageCollisionCheck())
 	{
 		enable = false;
 		explosion = true;
 	}
 
 	if (explosion) Explode();
-	move *= 0.99f;	//徐々に減速
 
-	pos += move;
+
+	//	動作
+	Move();
 
 	obj->SetAngle(angle);
 	obj->SetPos(pos);
@@ -55,10 +54,8 @@ void	Pirate_Bullet02::Update(void)
 }
 
 
-void	Pirate_Bullet02::Move(void)
-{	
-	// 反射( ステージ )	
-	static float rate = 0.4f;
-	Collision::GetReflect(pos, move, rate);
+void	Pirate_Bullet03::Move(void)
+{
 	move.y += GRAVITY;
+	pos += move;
 }

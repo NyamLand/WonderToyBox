@@ -13,18 +13,15 @@
 
 Squirrel_Bullet01::Squirrel_Bullet01()
 {
-
-}
-
-bool Squirrel_Bullet01::Initialize()
-{
-	activate	=	false;
-	state		=	true;
 	scale		=	Vector3(0.05f,0.05f,0.05f);
 	leanpower	=	0;
 //	judgeTimer	=	BULLET_JUDGETIMER	[	BULLET_TYPE::SQUIRREL_01	]; 
 	radius		=	BULLET_RADIUS		[	BULLET_TYPE::SQUIRREL_01	];
 	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::SQUIRREL_01	];
+}
+
+bool Squirrel_Bullet01::Initialize()
+{
 	return true;
 }
 
@@ -37,6 +34,8 @@ void	Squirrel_Bullet01::Update(void)
 //	else							activate = true;
 
 	limitTimer++;
+
+	liveTime++;
 
 	StageCollisionCheck();
 	PlayerCollisionCheck();

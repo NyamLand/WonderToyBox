@@ -15,6 +15,8 @@
 //	グローバル
 //-----------------------------------------------------------------------------------
 
+#define	POWER_ARTS_RADIUS	6.0f
+
 	namespace
 	{
 		enum OFFENSIVE_POWER
@@ -129,7 +131,7 @@
 		SetMove( Vector3( 0.0f, 0.0f, 0.0f ) );
 
 		//	範囲拡大
-		Lerp( attackInfo.r, 0.0f, 3.0f, attackInfo.t );
+		Lerp( attackInfo.r, 0.0f, POWER_ARTS_RADIUS, attackInfo.t );
 
 		//	パラメータ加算
 		attackInfo.t += 0.02f;

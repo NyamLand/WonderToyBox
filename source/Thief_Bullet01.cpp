@@ -17,18 +17,16 @@
 
 Thief_Bullet01::Thief_Bullet01()
 {
-}
-
-bool Thief_Bullet01::Initialize()
-{
-	activate	=	true;
-	state		=	true;
 	scale		=	Vector3( 0.05f,0.05f,0.05f );
 	leanpower	=	0;
 	angle.y		=	characterManager->GetAngle(playerNum);
 //	judgeTimer	=	BULLET_JUDGETIMER	[	BULLET_TYPE::THIEF_01	];
 	radius		=	BULLET_RADIUS		[	BULLET_TYPE::THIEF_01	];
 	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::THIEF_01	];
+}
+
+bool Thief_Bullet01::Initialize()
+{
 
 	return true;
 }
