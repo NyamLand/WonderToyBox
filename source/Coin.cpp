@@ -6,6 +6,7 @@
 #include	"GlobalFunction.h"
 #include	"GameManager.h"
 #include	"CharacterManager.h"
+#include	"Stage.h"
 #include	"Sound.h"
 #include	"Particle.h"
 
@@ -33,7 +34,7 @@
 	//	コンストラクタ
 	Coin::Coin( void ) : obj( nullptr )
 	{
-			shadow.obj = new iex2DObj( "DATA/Effect/shadow.png" );	
+		shadow.obj = new iex2DObj( "DATA/Effect/shadow.png" );	
 	}
 
 	//	デストラクタ
@@ -163,14 +164,12 @@
 	void	Coin::StageCollisionCheck( void )
 	{
 		//	想定しているよりも高くとんでいたらスキップ　
+		float	height = 0.0f;
 		if ( pos.y >= MAX_HEIGHT )	return;
-		float work = Collision::GetHeight( pos );
-		shadow.pos.y = work + 0.1f;
-		if ( pos.y <= work )
-		{
-			pos.y = work;
-			move.y = 0;
-		}
+		float work = stage->GetHeight( pos );
+		float	objectWork = stage->GetHeightToObject( pos );
+		if ( objectWork > work )	shadow.pos.y = objectWork + 0.1f;
+		else									shadow.pos.y = work + 0.1f;
 	}
 
 	//	プレイヤーとのあたりチェック
@@ -202,7 +201,7 @@
 
 		// 反射( ステージ )	
 		static float rate = 0.4f;
-		Collision::GetReflect( pos, move, rate );
+		stage->GetReflect( pos, move, rate );
 
 		//	落下したら再配置
 		if ( GetPos().y <= -3.0f )

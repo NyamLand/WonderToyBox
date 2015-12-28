@@ -12,6 +12,7 @@
 #include	"Effect.h"
 #include	"Sound.h"
 #include	"Random.h"
+#include	"Stage.h"
 
 #include	"BaseChara.h"
 #include	"CharacterManager.h"
@@ -29,7 +30,8 @@
 #define	MIN_INPUT_STATE	300	//	スティック判定最小値
 #define	MIN_SLIP_LENGTH	0.01f	//	滑り長さ最小値
 #define	SLIP_TIMER_MAX		300	
-
+#define	JUMP_POWER		0.08f	//	ジャンプ力
+#define	WALL_DIST			2.0f		//	壁との距離
 namespace
 {
 	namespace AI_MODE_STATE
@@ -67,8 +69,8 @@ namespace
 	//	コンストラクタ
 	BaseChara::BaseChara( void ) : obj( nullptr ), input( nullptr ),		//	pointer
 		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ), angle( 0.0f, 0.0f, 0.0f ), 	//	Vector3
-		scale(0.0f), speed(0.0f),	totalSpeed(0.0f), drag(0.0f), force( 0.0f ), moveVec( 0.0f ),	//	float
-		unrivaled(false), isGround(false), isPlayer(false), jumpState(false), checkWall(false), renderflag(true),//	bool
+		scale(0.0f), speed(0.0f),	totalSpeed(0.0f), drag(0.0f), force( 0.0f ), moveVec( 0.0f ), jumpPower( 0.0f ),	//	float
+		unrivaled(false), isGround(false), isPlayer(false), jumpState( true ), checkWall(false), renderflag(true),//	bool
 		mode(0), playerNum(0), power(0), totalPower(0), leanFrame(0), jumpStep(0),damageStep(0),rank(0), life( 0 )		//	int
 	{
 	
@@ -253,12 +255,12 @@ namespace
 		//	影座標設定
 		shadow.pos = pos;
 
-		//	ステージ当たり判定
-		StageCollisionCheck();
-
 		//	移動値加算
 		AddMove();
 		
+		//	ステージ当たり判定
+		StageCollisionCheck();
+
 		//	抗力計算
 		CalcDrag();
 
@@ -290,6 +292,7 @@ namespace
 			
 			//	影描画
 			iexPolygon::Render3D( shadow.v, 2, shadow.obj, shader3D, "alpha" );
+			particle->BlueFlame( Vector3( pos.x, pos.y + 1.5f, pos.z ), 0.1f );
 			
 			if ( renderflag )
 			obj->Render( shader, technique );
@@ -421,29 +424,71 @@ namespace
 	//	ステージ当たり判定
 	void	BaseChara::StageCollisionCheck( void )
 	{
-		//	壁判定
-		checkWall = Collision::CheckWall( pos, move );
+		float		height = 0.0f;
+		float		work = 0.0f;
+		float		objectWork = 0.0f;
 
-		static	int fallTimer = 0;
-		Vector3	height = Vector3( 0.0f, 0.0f, 0.0f );
+		//	下方レイ判定
+		work = stage->GetHeight( pos );
+		objectWork = stage->GetHeightToObject( pos );
 
-		//　床判定
-		if ( Collision::CheckDown( pos, move, height ) )
+		if ( pos.y < work || pos.y < objectWork )
 		{
+			if ( pos.y < objectWork )			pos.y = height = objectWork;
+			if ( pos.y < work )					pos.y = height =work;
+			move.y = 0.0f;
 			isGround = true;
-			jumpState = true;
-			fallTimer = 0;
+			if ( jumpPower < 0.0f )
+			{
+				if ( GetMode() == MODE_STATE::JUMP )
+				{
+					jumpState = true;
+					SetMode( MODE_STATE::MOVE );
+				}
+			}
 		}
-		else
+		//	前方レイ判定
+		work = stage->GetFront( pos );
+		objectWork = stage->GetFrontToObject( pos );
+		if ( pos.z > work - WALL_DIST  || pos.z > objectWork - WALL_DIST )
 		{
-			fallTimer++;
-			isGround = false;
+			if ( pos.z > objectWork - WALL_DIST )	pos.z = objectWork - WALL_DIST;
+			if ( pos.z > work - WALL_DIST )				pos.z = work - WALL_DIST;
+			move.z = 0.0f;
+		} 
+
+		//	後方レイ判定
+		work = stage->GetBack( pos );
+		objectWork = stage->GetBackToObject( pos );
+		if ( pos.z < work + WALL_DIST || pos.z < objectWork + WALL_DIST )
+		{
+			if ( pos.z < objectWork + WALL_DIST )	pos.z = objectWork + WALL_DIST;
+			if ( pos.z < work + WALL_DIST )				pos.z = work + WALL_DIST;
+			move.z = 0.0f;
+		}
+
+		//	右レイ判定
+		work = stage->GetRight( pos );
+		objectWork = stage->GetRightToObject( pos );
+		if ( pos.x > work - WALL_DIST || pos.x > objectWork - WALL_DIST )
+		{
+			if ( pos.x > objectWork - WALL_DIST )	pos.x = objectWork - WALL_DIST;
+			if ( pos.x > work - WALL_DIST )				pos.x = work - WALL_DIST;
+			move.x = 0.0f;
+		}
+
+		//	左レイ判定
+		work = stage->GetLeft( pos );
+		objectWork = stage->GetLeftToObject( pos );
+		if ( pos.x < work + WALL_DIST || pos.x < objectWork + WALL_DIST )
+		{
+			if ( pos.x <objectWork + WALL_DIST )	pos.x = objectWork + WALL_DIST;
+			if ( pos.x < work + WALL_DIST )				pos.x = work + WALL_DIST;
+			move.x = 0.0f;
 		}
 
 		//	影高さ設定
-		shadow.pos.y = height.y + 0.1f;
-
-		if ( fallTimer >= 5 )	jumpState = false;
+		shadow.pos.y = height + 0.1f;
 	}
 
 	//	角度調整
@@ -639,45 +684,18 @@ namespace
 	//	ジャンプ
 	void	BaseChara::Jump( void )
 	{
-		static	float toY = 11.0f;
-		switch ( jumpStep )
+		if ( jumpState )
 		{
-		case 0:
+			jumpPower = JUMP_POWER;
 			jumpState = false;
-			toY = pos.y + 0.3f;
-			jumpStep++;
-			break;
-
-		case 1:
-			//	プレイヤーかCPUかで処理を分ける
-			if ( isPlayer )	Control();
-			else				ControlAI();
-
-			if ( pos.y <= toY )
-			{
-				move.y += 0.1f;
-			}
-			else
-			{
-				jumpStep++;
-			}
-			break;
-
-		case 2:
-			//	プレイヤーかCPUかで処理を分ける
-			if ( isPlayer )	Control();
-			else				ControlAI();
-
-			if ( isGround )
-			{
-				jumpStep = 0;
-				jumpState = true;
-				toY = 0;
-				SetMode( MODE_STATE::MOVE );
-			}
-			break;
 		}
-
+		else
+		{
+			if ( jumpPower > 0.0f )		move.y += jumpPower;
+			jumpPower -= JUMP_POWER * 0.1f;
+		}
+		if ( isPlayer )		Control();
+		else					ControlAI();
 	}
 
 	//	ガード
@@ -1019,7 +1037,11 @@ namespace
 	
 		if ( input->Get( KEY_B ) == 3 )
 		{
-			if ( jumpState )		mode = MODE_STATE::JUMP;
+			if ( jumpState )
+			{
+				Jump();
+				mode = MODE_STATE::JUMP;
+			}
 		}
 		
 		if ( input->Get( KEY_B6 ) == 3 )

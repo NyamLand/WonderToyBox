@@ -49,7 +49,7 @@ iexMesh*	Collision::obj = NULL;
 //--------------------------------------------------------------------------------------------
 
 	//	ステージ高さ取得
-	float	Collision::GetHeight( const Vector3	pos )
+	float	Collision::GetHeight( const Vector3&	pos )
 	{
 		Vector3	p_pos = Vector3( pos.x, pos.y + 3.0f, pos.z );
 		Vector3	vec = Vector3( 0.0f, -1.0f, 0.0f );
@@ -60,11 +60,10 @@ iexMesh*	Collision::obj = NULL;
 			return	pos.y;
 		else
 			return	out.y;
-
 	}
 
 	//　ステージ高さ取得（判定距離指定）
-	float	Collision::GetHeight( const Vector3	pos, float dist )
+	float	Collision::GetHeight( const Vector3&	pos, float dist )
 	{
 		Vector3	p_pos = Vector3( pos.x, pos.y + 3.0f, pos.z );
 		Vector3	vec = Vector3( 0.0f, -1.0f, 0.0f );
@@ -99,7 +98,7 @@ iexMesh*	Collision::obj = NULL;
 	}
 
 	//	壁との当たり判定
-	bool	Collision::CheckWall( const Vector3 pos, Vector3& p_move )
+	bool	Collision::CheckWall( const Vector3& pos, Vector3& p_move )
 	{
 		const	float	DIST = 2.0f;	//	壁との距離
 		Vector3	p_pos = Vector3( pos.x, pos.y + 1.0f, pos.z );
@@ -144,11 +143,141 @@ iexMesh*	Collision::obj = NULL;
 		return	false;
 	}
 
+	//	壁との当たり判定
+	bool	Collision::CheckWall( iexMesh* org, const Vector3& pos, Vector3& vec )
+	{
+		//	情報保存
+		Vector3	p_pos = Vector3( pos.x, pos.y + 1.0f, pos.z );
+		Vector3	p_vec = Vector3( vec.x, 0.0f, vec.z );
+		p_vec.Normalize();
+
+		// オブジェクトの逆行列を算出
+		org->Update();
+		Matrix mat = org->TransMatrix;
+		Matrix invMat;	// 逆行列
+		D3DXMatrixInverse( &invMat, null, &mat );
+
+		// 逆行列でレイをローカル化
+		Vector3 invVec;
+		invVec.x = invMat._11 * vec.x + invMat._21 * vec.y + invMat._31 * vec.z;
+		invVec.y = invMat._12 * vec.x + invMat._22 * vec.y + invMat._32 * vec.z;
+		invVec.z = invMat._13 * vec.x + invMat._23 * vec.y + invMat._33 * vec.z;
+
+		Vector3 invPos;
+		invPos.x = invMat._11 * p_pos.x + invMat._21 * p_pos.y + invMat._31 * p_pos.z + invMat._41;
+		invPos.y = invMat._12 * p_pos.x + invMat._22 * p_pos.y + invMat._32 * p_pos.z + invMat._42;
+		invPos.z = invMat._13 * p_pos.x + invMat._23 * p_pos.y + invMat._33 * p_pos.z + invMat._43;
+
+		Vector3 v = invVec;
+		Vector3 p = invPos;
+		Vector3 takePos;
+		const	float	DIST = 2.0f;	//	壁との距離
+		float d = 100.0f;
+
+		if ( org->RayPick( &takePos, &p, &v, &d ) != -1 )
+		{
+			float	disToWall = Vector3( Vector3( takePos.x, 0.0f, takePos.z ) - Vector3( p.x, 0.0f, p.z ) ).Length();
+			if ( disToWall <= DIST ){
+
+				//	移動量
+				float	move = Vector3( v.x, 0.0f, v.z ).Length();
+
+				//	プレイヤーからレイの交差点へのベクトル
+				Vector3	vPtoWall( takePos - p_pos );
+				vPtoWall.y = 0.0f;	vPtoWall.Normalize();
+				v.y = 0.0f;	v.Normalize();
+
+				//	法線の上方向（？）を求める
+				Vector3	vCrossUp;
+				Vector3Cross( vCrossUp, v, vPtoWall );
+				vCrossUp.Normalize();
+
+				//	法線の上方向（？）と法線の外積から滑る方向を計算
+				Vector3	vCrossSide;
+				Vector3Cross( vCrossSide, vCrossUp, v );
+				vCrossSide.Normalize();
+
+				//	法線とプレーヤーからレイの交差点へのベクトルの内積
+				float	dotNP = Vector3Dot( v, vPtoWall );
+
+				//	移動量の調整
+				v.x = vCrossSide.x * move * ( dotNP + 1.0f );
+				v.z = vCrossSide.z * move * ( dotNP + 1.0f );
+
+				//	元に戻す
+				vec.x = mat._11 * v.x + mat._21 * v.y + mat._31 * v.z;
+				vec.z = mat._13 * v.x + mat._23 * v.y + mat._33 * v.z;
+				
+				return	true;
+			}
+		}
+		return		false;
+	}
+
+	//	壁判定修正込バージョン
+	bool	Collision::CheckWallOut( iexMesh* org, Vector3& outPos, Vector3& outVec )
+	{
+		//	情報保存
+		Vector3	p_pos = Vector3( outPos.x, outPos.y + 1.0f, outPos.z);
+		Vector3	p_vec = Vector3( outVec.x, 0.0f, outVec.z );
+		p_vec.Normalize();
+
+		// オブジェクトの逆行列を算出
+		org->Update();
+		Matrix mat = org->TransMatrix;
+		Matrix invMat;	// 逆行列
+		D3DXMatrixInverse( &invMat, null, &mat );
+
+		// 逆行列でレイをローカル化
+		Vector3 invVec;
+		invVec.x = invMat._11 * p_vec.x + invMat._21 * p_vec.y + invMat._31 * p_vec.z;
+		invVec.y = invMat._12 * p_vec.x + invMat._22 * p_vec.y + invMat._32 * p_vec.z;
+		invVec.z = invMat._13 * p_vec.x + invMat._23 * p_vec.y + invMat._33 * p_vec.z;
+
+		Vector3 invPos;
+		invPos.x = invMat._11 * outPos.x + invMat._21 * outPos.y + invMat._31 * outPos.z + invMat._41;
+		invPos.y = invMat._12 * outPos.x + invMat._22 * outPos.y + invMat._32 * outPos.z + invMat._42;
+		invPos.z = invMat._13 * outPos.x + invMat._23 * outPos.y + invMat._33 * outPos.z + invMat._43;
+
+		Vector3 v = invVec;
+		Vector3 p = invPos;
+		Vector3 out;
+		const	float	DIST = 2.0f;	//	壁との距離
+		float d = 100.0f;
+
+		if ( org->RayPick( &out, &p, &v, &d ) != -1 )
+		{
+			//	レイの交点
+			Vector3	resultOut;
+			resultOut.x = mat._11 * out.x + mat._21 * out.y + mat._31 * out.z + mat._41;
+			resultOut.y = mat._12 * out.x + mat._22 * out.y + mat._32 * out.z + mat._42;
+			resultOut.z = mat._13 * out.x + mat._23 * out.y + mat._33 * out.z + mat._43;
+
+			//	プレイヤーの位置
+			Vector3	resultPos;
+			resultPos.x = mat._11 * out.x + mat._21 * out.y + mat._31 * out.z + mat._41;
+			resultPos.y = mat._12 * out.x + mat._22 * out.y + mat._32 * out.z + mat._42;
+			resultPos.z = mat._13 * out.x + mat._23 * out.y + mat._33 * out.z + mat._43;
+			p = resultPos;
+
+			//	移動方向
+			Vector3 resultVec;
+			resultVec.x = mat._11 * invVec.x + mat._21 * invVec.y + mat._31 * invVec.z;
+			resultVec.y = mat._12 * invVec.x + mat._22 * invVec.y + mat._32 * invVec.z;
+			resultVec.z = mat._13 * invVec.x + mat._23 * invVec.y + mat._33 * invVec.z;
+			v = resultVec;
+
+			
+		}
+
+		return	false;
+	}
+
 	//	地面との当たり判定
 	bool	Collision::CheckDown( Vector3& pos, Vector3& p_move, Vector3& Out )
 	{
 		Vector3	p = pos + Vector3( 0.0f, 3.0f, 0.0f );
-		Vector3 vec = Vector3( 0.0f, -1.0f, 0.0f );
+		Vector3	vec = Vector3( 0.0f, -1.0f, 0.0f );
 		Vector3	out;
 
 		float	dist = 1000.0f;
@@ -164,6 +293,236 @@ iexMesh*	Collision::obj = NULL;
 			}
 		}
 		return	false;
+	}
+
+	//	地面との当たり判定
+	bool	Collision::CheckDown( iexMesh*	org, const Vector3& pos, float& outHeight )
+	{
+		Vector3 p( pos.x, pos.y + 2.0f, pos.z );
+		Vector3 vec( 0, -1.0f, 0 );
+		Vector3 out;
+		outHeight = pos.y;
+		float dist = 100.0f;
+
+		// オブジェクトの逆行列を算出
+		org->Update();
+		Matrix mat = org->TransMatrix;
+		Matrix invMat;	// 逆行列
+		D3DXMatrixInverse( &invMat, null, &mat );
+
+		// 逆行列でレイをローカル化
+		Vector3 invVec;
+		invVec.x = invMat._11 * vec.x + invMat._21 * vec.y + invMat._31 * vec.z;
+		invVec.y = invMat._12 * vec.x + invMat._22 * vec.y + invMat._32 * vec.z;
+		invVec.z = invMat._13 * vec.x + invMat._23 * vec.y + invMat._33 * vec.z;
+
+		Vector3 invPos;
+		invPos.x = invMat._11 * p.x + invMat._21 * p.y + invMat._31 * p.z + invMat._41;
+		invPos.y = invMat._12 * p.x + invMat._22 * p.y + invMat._32 * p.z + invMat._42;
+		invPos.z = invMat._13 * p.x + invMat._23 * p.y + invMat._33 * p.z + invMat._43;
+
+		if ( org->RayPick( &out, &invPos, &invVec, &dist ) >= 0 )
+		{
+
+			Vector3 resultPos;
+			resultPos.x = mat._11 * out.x + mat._21 * out.y + mat._31 * out.z + mat._41;
+			resultPos.y = mat._12 * out.x + mat._22 * out.y + mat._32 * out.z + mat._42;
+			resultPos.z = mat._13 * out.x + mat._23 * out.y + mat._33 * out.z + mat._43;
+
+			outHeight = resultPos.y;
+
+			if ( pos.y < resultPos.y )
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	//	下方取得
+	float	Collision::GetHeight( iexMesh* org, const Vector3& pos )
+	{
+		Vector3 p( pos.x, pos.y + 1.5f, pos.z );
+		Vector3 v( 0.0f, -1.0f, 0.0f );
+		Vector3 out = pos;
+		float dist = 50.0f;
+
+		// オブジェクトの逆行列を算出
+		org->Update();
+		Matrix mat = org->TransMatrix;
+		Matrix invMat;	// 逆行列
+		D3DXMatrixInverse( &invMat, null, &mat );
+
+		// 逆行列でレイをローカル化
+		Vector3 invVec;
+		invVec.x = invMat._11 * v.x + invMat._21 * v.y + invMat._31 * v.z;
+		invVec.y = invMat._12 * v.x + invMat._22 * v.y + invMat._32 * v.z;
+		invVec.z = invMat._13 * v.x + invMat._23 * v.y + invMat._33 * v.z;
+
+		Vector3 invPos;
+		invPos.x = invMat._11 * p.x + invMat._21 * p.y + invMat._31 * p.z + invMat._41;
+		invPos.y = invMat._12 * p.x + invMat._22 * p.y + invMat._32 * p.z + invMat._42;
+		invPos.z = invMat._13 * p.x + invMat._23 * p.y + invMat._33 * p.z + invMat._43;
+
+		if ( org->RayPick( &out, &invPos, &invVec, &dist ) >= 0 )
+		{
+			Vector3 resultPos;
+			resultPos.x = mat._11 * out.x + mat._21 * out.y + mat._31 * out.z + mat._41;
+			resultPos.y = mat._12 * out.x + mat._22 * out.y + mat._32 * out.z + mat._42;
+			resultPos.z = mat._13 * out.x + mat._23 * out.y + mat._33 * out.z + mat._43;
+
+			return	resultPos.y;
+		}
+		return -1000.0f;
+	}
+
+	//	前方取得
+	float	Collision::GetFront( iexMesh*	org, const Vector3& pos )
+	{
+		Vector3 p( pos.x, pos.y + 2.0f, pos.z - 5.0f );
+		Vector3 v( 0, 0, 1.0f );
+		Vector3 out = pos;
+		float dist = 50.0f;
+
+		// オブジェクトの逆行列を算出
+		org->Update();
+		Matrix mat = org->TransMatrix;
+		Matrix invMat;	// 逆行列
+		D3DXMatrixInverse( &invMat, null, &mat );
+
+		// 逆行列でレイをローカル化
+		Vector3 invVec;
+		invVec.x = invMat._11 * v.x + invMat._21 * v.y + invMat._31 * v.z;
+		invVec.y = invMat._12 * v.x + invMat._22 * v.y + invMat._32 * v.z;
+		invVec.z = invMat._13 * v.x + invMat._23 * v.y + invMat._33 * v.z;
+
+		Vector3 invPos;
+		invPos.x = invMat._11 * p.x + invMat._21 * p.y + invMat._31 * p.z + invMat._41;
+		invPos.y = invMat._12 * p.x + invMat._22 * p.y + invMat._32 * p.z + invMat._42;
+		invPos.z = invMat._13 * p.x + invMat._23 * p.y + invMat._33 * p.z + invMat._43;
+
+		if ( org->RayPick( &out, &invPos, &invVec, &dist ) >= 0 )
+		{
+			Vector3 resultPos;
+			resultPos.x = mat._11 * out.x + mat._21 * out.y + mat._31 * out.z + mat._41;
+			resultPos.y = mat._12 * out.x + mat._22 * out.y + mat._32 * out.z + mat._42;
+			resultPos.z = mat._13 * out.x + mat._23 * out.y + mat._33 * out.z + mat._43;
+
+			return	resultPos.z;
+		}
+		return 1000.0f;
+	}
+
+	//	後方取得
+	float	Collision::GetBack( iexMesh* org, const Vector3& pos )
+	{
+		Vector3 p( pos.x, pos.y + 2.0f, pos.z + 5.0f );
+		Vector3 v( 0, 0, -1.0f );
+		Vector3 out = pos;
+		float dist = 50.0f;
+
+		// オブジェクトの逆行列を算出
+		org->Update();
+		Matrix mat = org->TransMatrix;
+		Matrix invMat;	// 逆行列
+		D3DXMatrixInverse( &invMat, null, &mat );
+
+		// 逆行列でレイをローカル化
+		Vector3 invVec;
+		invVec.x = invMat._11 * v.x + invMat._21 * v.y + invMat._31 * v.z;
+		invVec.y = invMat._12 * v.x + invMat._22 * v.y + invMat._32 * v.z;
+		invVec.z = invMat._13 * v.x + invMat._23 * v.y + invMat._33 * v.z;
+
+		Vector3 invPos;
+		invPos.x = invMat._11 * p.x + invMat._21 * p.y + invMat._31 * p.z + invMat._41;
+		invPos.y = invMat._12 * p.x + invMat._22 * p.y + invMat._32 * p.z + invMat._42;
+		invPos.z = invMat._13 * p.x + invMat._23 * p.y + invMat._33 * p.z + invMat._43;
+
+		if ( org->RayPick( &out, &invPos, &invVec, &dist ) >= 0 )
+		{
+			Vector3 resultPos;
+			resultPos.x = mat._11 * out.x + mat._21 * out.y + mat._31 * out.z + mat._41;
+			resultPos.y = mat._12 * out.x + mat._22 * out.y + mat._32 * out.z + mat._42;
+			resultPos.z = mat._13 * out.x + mat._23 * out.y + mat._33 * out.z + mat._43;
+
+			return	resultPos.z;
+		}
+		return -1000.0f;
+	}
+
+	//	右方取得
+	float	Collision::GetRight( iexMesh* org, const Vector3& pos )
+	{
+		Vector3 p( pos.x - 5.0f, pos.y + 2.0f, pos.z );
+		Vector3 v( 1.0f, 0.0f, 0.0f );
+		Vector3 out = pos;
+		float dist = 50.0f;
+
+		// オブジェクトの逆行列を算出
+		org->Update();
+		Matrix mat = org->TransMatrix;
+		Matrix invMat;	// 逆行列
+		D3DXMatrixInverse( &invMat, null, &mat );
+
+		// 逆行列でレイをローカル化
+		Vector3 invVec;
+		invVec.x = invMat._11 * v.x + invMat._21 * v.y + invMat._31 * v.z;
+		invVec.y = invMat._12 * v.x + invMat._22 * v.y + invMat._32 * v.z;
+		invVec.z = invMat._13 * v.x + invMat._23 * v.y + invMat._33 * v.z;
+
+		Vector3 invPos;
+		invPos.x = invMat._11 * p.x + invMat._21 * p.y + invMat._31 * p.z + invMat._41;
+		invPos.y = invMat._12 * p.x + invMat._22 * p.y + invMat._32 * p.z + invMat._42;
+		invPos.z = invMat._13 * p.x + invMat._23 * p.y + invMat._33 * p.z + invMat._43;
+
+		if ( org->RayPick( &out, &invPos, &invVec, &dist ) >= 0 )
+		{
+			Vector3 resultPos;
+			resultPos.x = mat._11 * out.x + mat._21 * out.y + mat._31 * out.z + mat._41;
+			resultPos.y = mat._12 * out.x + mat._22 * out.y + mat._32 * out.z + mat._42;
+			resultPos.z = mat._13 * out.x + mat._23 * out.y + mat._33 * out.z + mat._43;
+
+			return	resultPos.x;
+		}
+		return 1000.0f;
+	}
+
+	//	左方取得
+	float	Collision::GetLeft( iexMesh* org, const Vector3& pos )
+	{
+		Vector3 p(pos.x + 5.0f, pos.y + 2.0f, pos.z );
+		Vector3 v( -1.0f, 0.0f, 0.0f );
+		Vector3 out = pos;
+		float dist = 50.0f;
+
+		// オブジェクトの逆行列を算出
+		org->Update();
+		Matrix mat = org->TransMatrix;
+		Matrix invMat;	// 逆行列
+		D3DXMatrixInverse( &invMat, null, &mat );
+
+		// 逆行列でレイをローカル化
+		Vector3 invVec;
+		invVec.x = invMat._11 * v.x + invMat._21 * v.y + invMat._31 * v.z;
+		invVec.y = invMat._12 * v.x + invMat._22 * v.y + invMat._32 * v.z;
+		invVec.z = invMat._13 * v.x + invMat._23 * v.y + invMat._33 * v.z;
+
+		Vector3 invPos;
+		invPos.x = invMat._11 * p.x + invMat._21 * p.y + invMat._31 * p.z + invMat._41;
+		invPos.y = invMat._12 * p.x + invMat._22 * p.y + invMat._32 * p.z + invMat._42;
+		invPos.z = invMat._13 * p.x + invMat._23 * p.y + invMat._33 * p.z + invMat._43;
+
+		if ( org->RayPick( &out, &invPos, &invVec, &dist ) >= 0 )
+		{
+			Vector3 resultPos;
+			resultPos.x = mat._11 * out.x + mat._21 * out.y + mat._31 * out.z + mat._41;
+			resultPos.y = mat._12 * out.x + mat._22 * out.y + mat._32 * out.z + mat._42;
+			resultPos.z = mat._13 * out.x + mat._23 * out.y + mat._33 * out.z + mat._43;
+
+			return	resultPos.x;
+		}
+		return -1000.0f;
 	}
 
 //--------------------------------------------------------------------------------------------
@@ -317,7 +676,7 @@ iexMesh*	Collision::obj = NULL;
 //--------------------------------------------------------------------------------------------
 	
 	//	距離判定
-	bool	Collision::DistCheck( const Vector3 p1, const Vector3 p2, float dist )
+	bool	Collision::DistCheck( const Vector3& p1, const Vector3& p2, float dist )
 	{
 		Vector3 len = p1 - p2;
 		float length = len.Length();

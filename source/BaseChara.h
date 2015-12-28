@@ -227,6 +227,7 @@ protected:
 	float				totalSpeed;
 	float				force;
 	float				diffence;
+	float				jumpPower;
 	bool				unrivaled;
 	bool				isGround;
 	bool				canHyper;

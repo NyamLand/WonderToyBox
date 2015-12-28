@@ -19,6 +19,7 @@
 #include	"Effect.h"
 #include	"StageManager.h"
 #include	"Wipe.h"
+#include	"Stage.h"
 
 #include	"sceneMain.h"
 
@@ -81,7 +82,8 @@
 		gameStartCoinNum = 0;
 
 		//	ステージ
-		stageManager->Initialize(dir);
+		stageManager->Initialize( dir );
+		stage->Initialize();
 
 		//	プレイヤー
 		PlayerInitialize();
@@ -150,6 +152,7 @@
 		backBuffer->Release();
 		Random::Release();
 		stageManager->Release();
+		stage->Release();
 		particle->Release();
 		itemManager->Release();
 		characterManager->Release();
@@ -304,7 +307,6 @@
 
 		//	全体更新
 		AllUpdate();
-
 	}
 
 	//	タイムアップ更新
@@ -328,6 +330,7 @@
 
 		//　ステージ更新
 		stageManager->Update();
+		stage->Update();
 
 		//	パーティクル更新
 		particle->Update();
@@ -380,7 +383,8 @@
 		//************************************************************
 
 			//	オブジェクト描画
- 			stageManager->Render(shader3D, "full_s");
+			stage->Render();
+ 			//stageManager->Render(shader3D, "full_s");
 			characterManager->Render(shader3D, "toon");
 			coinManager->Render(shader3D, "full");
 			m_BulletManager->Render();

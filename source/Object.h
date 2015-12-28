@@ -8,45 +8,59 @@
 //
 //*******************************************************************************
 
+//	include
+
+//	class
 class Object
 {
-protected:
-	iexMesh*	obj;
-	Vector3		pos;
-	Vector3		move;
-	float			scale;
-	float			angle;
+private:
+	int			type;
+	int			durableValue;	//	耐久値
 	bool			state;
-	bool			activate;
-	int				judgeTimer;	//	判定有効時間
+	iexMesh*	obj;
+	Vector3	pos;
+	Vector3	angle;
+	Vector3	scale;
 
+public:
+	enum OBJECT_TYPE
+	{
+		FIX_BOX,
+		BREAK_OBJECT,
+		MOVE_BOX_SIDE,
+		MOVE_BOX_HIEGHT,
+	};
+	
 public:
 	//	初期化・解放
 	Object( void );
 	~Object( void );
-	virtual	bool	Initialize( void );
-	virtual	void	Release( void );
 
 	//	更新・描画
-	virtual	void	Update( void );
-	virtual	void	Render( iexShader* shader = nullptr, LPSTR technique = nullptr );
+	void	Update( void );
+	void	Render( iexShader*	shader = nullptr, LPSTR technique = nullptr );
 
 	//	動作関数
-	virtual	void	StageCollisionCheck( void );
-	virtual	void	PlayerCollisionCheck( void );
-	virtual	void	Move( void );
-	virtual	void	HitDuaringTheOperation( const Vector3& pos, const int& num );	//	ヒット時動作
+	void	Move( void );
+	void	HitCheck( void );
 
 	//	情報設定
-	void	SetObj( iexMesh* obj );
-	void	SetPos( Vector3 pos );
-	void	SetScale( float scale );
-	void	SetAngle( float angle );
+	void	SetPos( Vector3 Pos );
+	void	SetAngle( Vector3 Angle );
+	void	SetAngle( float Angle );
+	void	SetScale( Vector3 Scale );
+	void	SetScale( float Scale );
+	void	SetMesh( iexMesh* org );
+	void	SetType( int objType );
 
 	//	情報取得
 	Vector3	GetPos( void )const;
-	float		GetAngle( void )const;
-	bool		GetState( void )const;
+	Vector3	GetScale( void )const;
+	float			GetAngle( void )const;
+	void			GetAngle( Vector3& out )const;
+	bool			GetState( void )const;
+	int			GetType( void )const;
+	int			GetDurable( void )const;
 };
 
 //*******************************************************************************
