@@ -184,6 +184,9 @@
     <Filter Include="ソース ファイル\Bullet\Pirate_Bullet03">
       <UniqueIdentifier>{93e3c1de-d014-4fee-af83-2f9f9b008e8f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Stage">
+      <UniqueIdentifier>{9109e5d6-b65d-40d0-874f-45154ce7e914}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -396,6 +399,9 @@
     <ClCompile Include="source\Pirate_Bullet03.cpp">
       <Filter>ソース ファイル\Bullet\Pirate_Bullet03</Filter>
     </ClCompile>
+    <ClCompile Include="source\Stage.cpp">
+      <Filter>ソース ファイル\Stage</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -562,6 +568,9 @@
     </ClInclude>
     <ClInclude Include="source\Pirate_Bullet03.h">
       <Filter>ソース ファイル\Bullet\Pirate_Bullet03</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Stage.h">
+      <Filter>ソース ファイル\Stage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

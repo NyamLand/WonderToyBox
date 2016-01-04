@@ -59,6 +59,8 @@ public:
 	void	HitCheck( void );
 	void	HitCheckSphereVSCapsule( BaseChara* bc1, BaseChara* bc2 );
 	void	HitCheckCapsuleVSCapsule( BaseChara* bc1, BaseChara* bc2 );
+	void	HitCheckObjectCapsule( BaseChara* bc );
+	void	HitCheckObjectSphere( BaseChara* bc );
 
 	//	î•ñæ“¾
 	Matrix	GetMatrix( int player )const;

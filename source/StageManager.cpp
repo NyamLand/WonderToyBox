@@ -23,6 +23,20 @@
 	//	初期化
 	//
 	//**************************************************************************************************
+
+	//	コンストラクタ
+	StageManager::StageManager( void )
+	{
+
+	}
+
+	//	デストラクタ
+	StageManager::~StageManager( void )
+	{
+
+	}
+
+	//	初期化
 	bool StageManager::Initialize( Vector3 dir )
 	{
 		stage_type = gameManager->GetStageType();
@@ -80,7 +94,7 @@
 	//**************************************************************************************************
 	void StageManager::Update( void )
 	{
-		switch (stage_type)
+		switch ( stage_type )
 		{
 		case STAGE_DATA::TYPE_DESK:
 			StageDeskUpdate();
@@ -116,12 +130,6 @@
 	//	描画
 	//
 	//**************************************************************************************************
-	void StageManager::Render()
-	{
-		obj_stage->Render();
-		if (obj_ex1) obj_ex1->Render();
-	}
-
 	void StageManager::Render( iexShader* shader, LPSTR technique )
 	{
 		shader3D->SetValue( "adjustV", _adjustV );
