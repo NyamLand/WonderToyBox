@@ -82,7 +82,8 @@
 		gameStartCoinNum = 0;
 
 		//	ステージ
-		stageManager->Initialize( dir );
+		//stageManager->Initialize( dir );
+		stage->SetDirLightVec( dir );
 		stage->Initialize();
 
 		//	プレイヤー
@@ -128,7 +129,7 @@
 		gameStartCoinNum = 0;
 
 		//　ステージ
-		stageManager->Initialize( dir );
+		//stageManager->Initialize( dir );
 
 		//　プレイヤー・CPU
 		//PlayerInitialize();
@@ -151,7 +152,7 @@
 
 		backBuffer->Release();
 		Random::Release();
-		stageManager->Release();
+		//stageManager->Release();
 		stage->Release();
 		particle->Release();
 		itemManager->Release();
@@ -329,7 +330,7 @@
 		characterManager->Update();
 
 		//　ステージ更新
-		stageManager->Update();
+		//stageManager->Update();
 		stage->Update();
 
 		//	パーティクル更新
@@ -383,7 +384,7 @@
 		//************************************************************
 
 			//	オブジェクト描画
-			stage->Render();
+			stage->Render( shader3D, "full_s" );
  			//stageManager->Render(shader3D, "full_s");
 			characterManager->Render(shader3D, "toon");
 			coinManager->Render(shader3D, "full");

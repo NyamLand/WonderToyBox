@@ -220,6 +220,7 @@ protected:
 	Vector3		pos;
 	Vector3		move;
 	Vector3		angle;
+	Vector3		objectMove;
 	float				drag;		//	’ïR—ÍE–€C—Í
 	float				moveVec;
 	float				scale;
@@ -228,6 +229,7 @@ protected:
 	float				force;
 	float				diffence;
 	float				jumpPower;
+	float				dt;
 	bool				unrivaled;
 	bool				isGround;
 	bool				canHyper;

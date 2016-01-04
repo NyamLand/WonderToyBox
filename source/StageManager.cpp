@@ -94,7 +94,7 @@
 	//**************************************************************************************************
 	void StageManager::Update( void )
 	{
-		switch (stage_type)
+		switch ( stage_type )
 		{
 		case STAGE_DATA::TYPE_DESK:
 			StageDeskUpdate();

@@ -6,6 +6,7 @@
 #include	"Collision.h"
 #include	"Particle.h"
 #include	"Sound.h"
+#include	"Stage.h"
 #include	"CoinManager.h"
 #include	"CharacterManager.h"
 
@@ -181,6 +182,19 @@
 			//	攻撃タイプ取得( 攻撃中でなかったらつぎへ )
 			int	 attackParam = character[i]->GetAttackParam();
 			if ( attackParam == 0 )	continue;
+
+			//	オブジェクトへの当たり判定
+			switch ( attackParam )
+			{
+			case	Collision::SPHEREVSCAPSULE:
+				HitCheckObjectSphere( character[i] );
+				break;
+
+			case Collision::CAPSULEVSCAPSULE:
+				HitCheckObjectCapsule( character[i] );
+				break;
+			}
+
 			for ( int n = 0; n < PLAYER_MAX; n++ )
 			{
 				//	自分か相手が無敵状態だとつぎへ
@@ -341,6 +355,186 @@
 				coinManager->Append( bc2_top, vec, power );
 				gameManager->SubCoin( bc2_Num );
 
+			}
+		}
+	}
+
+	//	オブジェクトへの攻撃
+	void	CharacterManager::HitCheckObjectCapsule( BaseChara* bc )
+	{
+		//	攻撃する方
+		Vector3	bc_pos = bc->GetPos();
+		Vector3	bc_attack_bottom = bc->GetAttackPos_Bottom();
+		Vector3	bc_attack_top = bc->GetAttackPos_Top();
+		float			bc_attack_r = bc->GetAttack_R();
+
+		//	判定用
+		float			workFront = 0.0f;
+		float			workBack = 0.0f;
+		float			workRight = 0.0f;
+		float			workLeft = 0.0f;
+		Vector3	hitPos = Vector3( 0.0f, 0.0f, 0.0f );
+		int			outId = 0;
+		
+		//	全方向取得
+		workFront = stage->GetFrontToObject( bc_pos, hitPos, outId );
+		
+		bool	isHit = false;
+		if ( !stage->GetUnrivaled( outId ) )
+		{
+			isHit = Collision::CapsuleVSSphere( bc_attack_top, bc_attack_bottom, bc_attack_r, hitPos, 2.0f );
+
+			if ( isHit )
+			{
+				//	耐久値減少
+				stage->SubDurableValue( outId );
+
+				//	無敵にする
+				stage->SetUnrivaled( outId, true );
+			}
+		}
+
+		workBack = stage->GetBackToObject( bc_pos, hitPos, outId );
+
+		if ( !stage->GetUnrivaled( outId ) )
+		{
+			isHit = Collision::CapsuleVSSphere( bc_attack_top, bc_attack_bottom, bc_attack_r, hitPos, 2.0f );
+
+			if ( isHit )
+			{
+				//	耐久値減少
+				stage->SubDurableValue( outId );
+
+				//	無敵にする
+				stage->SetUnrivaled( outId, true );
+			}
+		}
+
+		workRight = stage->GetRightToObject( bc_pos, hitPos, outId );
+
+		if ( !stage->GetUnrivaled( outId ) )
+		{
+			isHit = Collision::CapsuleVSSphere( bc_attack_top, bc_attack_bottom, bc_attack_r, hitPos, 2.0f );
+
+			if ( isHit )
+			{
+				//	耐久値減少
+				stage->SubDurableValue( outId );
+
+				//	無敵にする
+				stage->SetUnrivaled( outId, true );
+			}
+		}
+
+		workLeft = stage->GetLeftToObject( bc_pos, hitPos, outId );
+
+		if ( !stage->GetUnrivaled( outId ) )
+		{
+			isHit = Collision::CapsuleVSSphere( bc_attack_top, bc_attack_bottom, bc_attack_r, hitPos, 2.0f );
+
+			if ( isHit )
+			{
+				//	耐久値減少
+				stage->SubDurableValue( outId );
+
+				//	無敵にする
+				stage->SetUnrivaled( outId, true );
+			}
+		}
+	}
+
+	//	オブジェクトへの攻撃
+	void	CharacterManager::HitCheckObjectSphere( BaseChara* bc )
+	{
+		//	攻撃する方
+		Vector3	bc_pos = bc->GetPos();
+		Vector3	bc_attackPos = bc->GetAttackPos();
+		float			bc_attack_r = bc->GetAttack_R();
+
+
+		//	判定用
+		float			workFront = 0.0f;
+		float			workBack = 0.0f;
+		float			workRight = 0.0f;
+		float			workLeft = 0.0f;
+		Vector3	hitPos = Vector3( 0.0f, 0.0f, 0.0f );
+		int			outId = 0;
+
+		//	全方向取得
+		workFront = stage->GetFrontToObject( bc_pos, hitPos, outId );
+
+		bool	isHit = false;
+		if ( !stage->GetUnrivaled( outId ) )
+		{
+			isHit = Collision::SphereVSSphere( bc_attackPos, bc_attack_r, hitPos, 2.0f );
+
+			if ( isHit )
+			{
+				//	エフェクト
+				particle->BlueFlame( hitPos, 1.0f );
+
+				//	耐久値減少
+				stage->SubDurableValue( outId );
+
+				//	無敵にする
+				stage->SetUnrivaled( outId, true );
+			}
+		}
+
+		workBack = stage->GetBackToObject( bc_pos, hitPos, outId );
+
+		if ( !stage->GetUnrivaled( outId ) )
+		{
+			isHit = Collision::SphereVSSphere( bc_attackPos, bc_attack_r, hitPos, 2.0f );
+
+			if ( isHit )
+			{
+				//	エフェクト
+				particle->BlueFlame( hitPos, 1.0f );
+
+				//	耐久値減少
+				stage->SubDurableValue( outId );
+
+				//	無敵にする
+				stage->SetUnrivaled( outId, true );
+			}
+		}
+
+		workRight = stage->GetRightToObject( bc_pos, hitPos, outId );
+
+		if ( !stage->GetUnrivaled( outId ) )
+		{
+			isHit = Collision::SphereVSSphere( bc_attackPos, bc_attack_r, hitPos, 2.0f );
+
+			if ( isHit )
+			{
+				//	エフェクト
+				particle->BlueFlame( hitPos, 1.0f );
+
+				//	耐久値減少
+				stage->SubDurableValue( outId );
+
+				//	無敵にする
+				stage->SetUnrivaled( outId, true );
+			}
+		}
+
+		workLeft = stage->GetLeftToObject( bc_pos, hitPos, outId );
+
+		if ( !stage->GetUnrivaled( outId ) )
+		{
+			isHit = Collision::SphereVSSphere( bc_attackPos, bc_attack_r, hitPos, 2.0f );
+
+			if ( isHit )
+			{
+				//	エフェクト
+				particle->BlueFlame( hitPos, 1.0f );
+
+				//	耐久値減少
+				stage->SubDurableValue( outId );
+
+				//	無敵にする
+				stage->SetUnrivaled( outId, true );
 			}
 		}
 	}

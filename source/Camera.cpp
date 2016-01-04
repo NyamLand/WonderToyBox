@@ -477,7 +477,6 @@
 		DWORD elapse = timeGetTime() - last;
 		if (elapse > 0) Integrate((FLOAT)elapse / 1000.0f);
 		last += elapse;
-
 	}
 	
 	//	î•ñ‚Ì‚·‚×‚Ä‚ğXV

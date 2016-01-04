@@ -7,6 +7,7 @@
 #include	"Particle.h"
 #include	"Sound.h"
 #include	"CharacterManager.h"
+#include	"Stage.h"
 #include	"Object.h"
 
 //*******************************************************************************
@@ -15,15 +16,20 @@
 //
 //*******************************************************************************
 
+#define	MOVE_HEIGHT			5.0f
+#define	DURABLE_VALUE		3		//	耐久値
+#define	UNRIVALEDTIME		30		//	無敵時間
+
 //------------------------------------------------------------------------------
 //	初期化・解放
 //------------------------------------------------------------------------------
 
 	//	コンストラクタ
-	Object::Object( void ) : obj( nullptr ),
-		pos(0.0f, 0.0f, 0.0f), angle(0.0f, 0.0f, 0.0f), scale(0.0f,0.0f,0.0f),
-		state(true), 
-		type(0), durableValue(0)
+	Object::Object( void ) : obj( nullptr ), collisionObj( nullptr ),
+		pos(0.0f, 0.0f, 0.0f), angle(0.0f, 0.0f, 0.0f), scale(0.0f, 0.0f, 0.0f), tempPos(0.0f, 0.0f, 0.0f), move(0.0f, 0.0f, 0.0f),
+		moveHeight( 0.0f ),
+		state(true), unrivaled(false),
+		moveType(MOVE_TYPE::FIX_BOX), durableValue(DURABLE_VALUE), objectType(OBJECT_TYPE::BASE), id(1), unrivaledTime(0)
 	{
 		
 	}
@@ -32,6 +38,7 @@
 	Object::~Object( void )
 	{
 		SafeDelete( obj );
+		SafeDelete( collisionObj );
 	}
 
 //------------------------------------------------------------------------------
@@ -41,10 +48,32 @@
 	//	更新
 	void	Object::Update( void )
 	{
+		//	動作
+		Move();
+
+		//	移動量加算
+		pos += move;
+
+		//	情報更新
 		obj->SetScale( scale );
-		obj->SetAngle( angle );
+		if ( objectType == OBJECT_TYPE::DESK_BASE ) 	obj->SetAngle( angle.y + D3DX_PI );
+		else																			obj->SetAngle( angle );
 		obj->SetPos( pos );
 		obj->Update();
+		
+		//	情報更新
+		collisionObj->SetScale( scale );
+		collisionObj->SetAngle( angle );
+		collisionObj->SetPos( pos );
+		collisionObj->Update();
+
+		//	前回からの移動量を算出
+		static DWORD last = timeGetTime();
+		DWORD elapse = timeGetTime() - last;
+		float dt = elapse / 1000.0f;
+		last += elapse;
+		tempPos = move;
+		int a = 0;
 	}
 
 	//	描画
@@ -63,13 +92,109 @@
 	//	動作
 	void	Object::Move( void )
 	{
+		switch ( moveType )
+		{
+		case MOVE_TYPE::FIX_BOX:
+			//	固定なのでなにもしない
+			break;
 
+		case MOVE_TYPE::BREAK_OBJECT:
+			//	耐久値０で破壊
+			if ( durableValue <= 0 )
+			{
+				particle->BlueFlame( pos, 3.0f );
+				state = false;
+			}
+
+			//	無敵時間解除
+			if ( unrivaled )
+			{
+				unrivaledTime++;
+				
+				if ( unrivaledTime >= UNRIVALEDTIME )
+				{
+					unrivaledTime = 0;
+					unrivaled = false;
+				}
+			}
+			
+			//	重力適用
+			move.y += GRAVITY;
+
+			//	接地判定
+			StageCollisionCheck();
+
+			//	攻撃当たり判定
+			//	エフェクト( ヒット時エフェクト、破壊エフェクト )
+			break;
+
+		case	MOVE_TYPE::MOVE_BOX_HIEGHT:
+			//	上下に移動
+			MoveHeight();
+			break;
+
+		case	MOVE_TYPE::MOVE_BOX_SIDE:
+			//	左右に移動
+			MoveSide();
+			break;
+		}
+	}
+
+	//	上下移動
+	void	Object::MoveHeight( void )
+	{
+		static	float	param = 0.0f;
+		param += D3DX_PI * 0.01f;
+		if ( param >= D3DX_PI * 2.0f )	param = 0.0f;
+
+		//	一秒で一往復
+		move.y = MOVE_HEIGHT / 60.0f * sinf( param );
+	}
+
+	//	左右移動
+	void	Object::MoveSide( void )
+	{
+		static	float	param = 0.0f;
+		static	float	speed = 0.6f;
+		param += D3DX_PI * 0.01f;
+		if ( param >= D3DX_PI * 2.0f )	param = 0.0f;
+
+		//	一秒で一往復
+		move.x = MOVE_HEIGHT / 60.0f * sinf( param );
+	}
+
+	//	ステージあたり判定
+	void	Object::StageCollisionCheck( void )
+	{
+		float	work = 0.0f;
+		float	objectWork = 0.0f;
+		Vector3	tempPos;
+		int	outId;
+
+		work = stage->GetHeight( pos );
+		objectWork = stage->GetHeightToObject( pos, tempPos, outId, id );
+		if ( pos.y < work || pos.y < objectWork )
+		{
+			if ( pos.y < objectWork )
+			{
+				pos.y = objectWork;
+				pos += tempPos;
+			}
+			if ( pos.y < work )			pos.y = work;
+			move.y = 0.0f;
+		}
 	}
 
 	//	当たり判定
 	void	Object::HitCheck( void )
 	{
 
+	}
+
+	//	耐久値減少
+	void	Object::SubDurableValue( void )
+	{
+		durableValue--;
 	}
 
 //------------------------------------------------------------------------------
@@ -111,21 +236,81 @@
 	{
 		obj = org;
 	}
-	
-	//	タイプ設定
-	void	Object::SetType( int objType )
+
+	//	当たり判定用モデル設定
+	void	Object::SetCollisionModel( iexMesh* org )
 	{
-		type = objType;
+		collisionObj = org;
+	}
+	
+	//	動作タイプ設定
+	void	Object::SetMoveType( int MoveType )
+	{
+		moveType = MoveType;
+	}
+
+	//	モデルタイプ設定
+	void	Object::SetObjectType( int ObjectType )
+	{
+		objectType = ObjectType;
+	}
+
+	//	元の高さ設定
+	void	Object::SetOriginHeight( float height )
+	{
+		originHeight = height;
+	}
+
+	//	ID設定
+	void	Object::SetId( int ID )
+	{
+		id = ID;
+	}
+
+	//	無敵設定
+	void	Object::SetUnrivaled( bool state )
+	{
+		unrivaled = state;
+	}
+
+	//	初期値移動量初期設定
+	void	Object::InitTempPos( void )
+	{
+		tempPos = pos;
 	}
 
 //------------------------------------------------------------------------------
 //	情報取得
 //------------------------------------------------------------------------------
 
+	//	動作タイプ取得
+	int	Object::GetMoveType( void )const
+	{
+		return	moveType;
+	}
+
+	//	オブジェクトタイプ取得
+	int	Object::GetObjectType( void )const
+	{
+		return	objectType;
+	}
+
+	//	モデル取得
+	iexMesh*	Object::GetMesh( void )const
+	{
+		return	collisionObj;
+	}
+	
 	//	座標取得
 	Vector3	Object::GetPos( void )const
 	{
 		return	pos;
+	}
+
+	//	前回からの移動量取得
+	Vector3	Object::GetTempPos( void )const
+	{
+		return	tempPos * 2.0f;
 	}
 
 	//	向き取得
@@ -152,15 +337,32 @@
 		return	state;
 	}
 
-	//	オブジェクトタイプ取得
-	int			Object::GetType( void )const
+	//	無敵状態取得
+	bool			Object::GetUnrivaled( void )const
 	{
-		return	type;
+		return	unrivaled;
 	}
 
 	//	耐久値取得
 	int			Object::GetDurable( void )const
 	{
 		return	durableValue;
+	}
+
+	//	ID取得
+	int			Object::GetID( void )const
+	{
+		return	id;
+	}
+
+	//	移動量取得
+	Vector3	Object::GetMove( void )const
+	{
+		static DWORD last = timeGetTime();
+		DWORD elapse = timeGetTime() - last;
+		float dt = elapse / 1000.0f;
+		last += elapse;
+
+		return	move;
 	}
 	

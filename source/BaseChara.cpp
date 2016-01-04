@@ -31,7 +31,7 @@
 #define	MIN_SLIP_LENGTH	0.01f	//	滑り長さ最小値
 #define	SLIP_TIMER_MAX		300	
 #define	JUMP_POWER		0.08f	//	ジャンプ力
-#define	WALL_DIST			2.0f		//	壁との距離
+#define	WALL_DIST			2.5f		//	壁との距離
 namespace
 {
 	namespace AI_MODE_STATE
@@ -68,8 +68,8 @@ namespace
 
 	//	コンストラクタ
 	BaseChara::BaseChara( void ) : obj( nullptr ), input( nullptr ),		//	pointer
-		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ), angle( 0.0f, 0.0f, 0.0f ), 	//	Vector3
-		scale(0.0f), speed(0.0f),	totalSpeed(0.0f), drag(0.0f), force( 0.0f ), moveVec( 0.0f ), jumpPower( 0.0f ),	//	float
+		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ), angle( 0.0f, 0.0f, 0.0f ), objectMove( 0.0f, 0.0f, 0.0f ),	//	Vector3
+		scale(0.0f), speed(0.0f),	totalSpeed(0.0f), drag(0.0f), force( 0.0f ), moveVec( 0.0f ), jumpPower( 0.0f ), dt( 0.0f ),	//	float
 		unrivaled(false), isGround(false), isPlayer(false), jumpState( true ), checkWall(false), renderflag(true),//	bool
 		mode(0), playerNum(0), power(0), totalPower(0), leanFrame(0), jumpStep(0),damageStep(0),rank(0), life( 0 )		//	int
 	{
@@ -255,11 +255,11 @@ namespace
 		//	影座標設定
 		shadow.pos = pos;
 
-		//	移動値加算
-		AddMove();
-		
 		//	ステージ当たり判定
 		StageCollisionCheck();
+		
+		//	移動値加算
+		AddMove();
 
 		//	抗力計算
 		CalcDrag();
@@ -276,6 +276,11 @@ namespace
 		obj->SetAngle( angle );
 		obj->SetScale( scale );
 		obj->Update();
+
+		static DWORD last = timeGetTime();
+		DWORD elapse = timeGetTime() - last;
+		dt = elapse / 1000.0f;
+		last += elapse;
 	}
 
 	//	描画
@@ -424,67 +429,76 @@ namespace
 	//	ステージ当たり判定
 	void	BaseChara::StageCollisionCheck( void )
 	{
+		int	outId;
 		float		height = 0.0f;
 		float		work = 0.0f;
 		float		objectWork = 0.0f;
+		objectMove = Vector3( 0.0f, 0.0f, 0.0f );
+		Vector3	tempPos = Vector3( 0.0f, 0.0f, 0.0f );
+		//checkWall = false;
+
+		//	壁判定
+		checkWall = stage->CheckWall( pos, move );
 
 		//	下方レイ判定
 		work = stage->GetHeight( pos );
-		objectWork = stage->GetHeightToObject( pos );
+		objectWork = stage->GetHeightToObject( pos, objectMove, outId );
+		
+		//	影設定
+		if ( work < objectWork )	height = objectWork;
+		else									height = work;
 
+		//	接地判定
 		if ( pos.y < work || pos.y < objectWork )
 		{
-			if ( pos.y < objectWork )			pos.y = height = objectWork;
+			if ( pos.y < objectWork )
+			{
+				pos.y = height = objectWork;
+				pos += objectMove;
+			}
 			if ( pos.y < work )					pos.y = height =work;
 			move.y = 0.0f;
 			isGround = true;
 			if ( jumpPower < 0.0f )
 			{
-				if ( GetMode() == MODE_STATE::JUMP )
-				{
-					jumpState = true;
-					SetMode( MODE_STATE::MOVE );
-				}
+				jumpState = true;
+				SetMode( MODE_STATE::MOVE );
 			}
 		}
 		//	前方レイ判定
-		work = stage->GetFront( pos );
-		objectWork = stage->GetFrontToObject( pos );
-		if ( pos.z > work - WALL_DIST  || pos.z > objectWork - WALL_DIST )
+		objectWork = stage->GetFrontToObject( pos, tempPos, outId );
+		if ( pos.z >= objectWork - WALL_DIST )
 		{
-			if ( pos.z > objectWork - WALL_DIST )	pos.z = objectWork - WALL_DIST;
-			if ( pos.z > work - WALL_DIST )				pos.z = work - WALL_DIST;
+			if ( pos.z >= objectWork - WALL_DIST )	pos.z = objectWork - WALL_DIST;
 			move.z = 0.0f;
+			checkWall = true;
 		} 
 
 		//	後方レイ判定
-		work = stage->GetBack( pos );
-		objectWork = stage->GetBackToObject( pos );
-		if ( pos.z < work + WALL_DIST || pos.z < objectWork + WALL_DIST )
+		objectWork = stage->GetBackToObject( pos, tempPos, outId );
+		if ( pos.z <= objectWork + WALL_DIST )
 		{
-			if ( pos.z < objectWork + WALL_DIST )	pos.z = objectWork + WALL_DIST;
-			if ( pos.z < work + WALL_DIST )				pos.z = work + WALL_DIST;
+			if ( pos.z <= objectWork + WALL_DIST )	pos.z = objectWork + WALL_DIST;
 			move.z = 0.0f;
+			checkWall = true;
 		}
 
 		//	右レイ判定
-		work = stage->GetRight( pos );
-		objectWork = stage->GetRightToObject( pos );
-		if ( pos.x > work - WALL_DIST || pos.x > objectWork - WALL_DIST )
+		objectWork = stage->GetRightToObject( pos, tempPos, outId );
+		if ( pos.x >= objectWork - WALL_DIST )
 		{
-			if ( pos.x > objectWork - WALL_DIST )	pos.x = objectWork - WALL_DIST;
-			if ( pos.x > work - WALL_DIST )				pos.x = work - WALL_DIST;
+			if ( pos.x >= objectWork - WALL_DIST )	pos.x = objectWork - WALL_DIST;
 			move.x = 0.0f;
+			checkWall = true;
 		}
 
 		//	左レイ判定
-		work = stage->GetLeft( pos );
-		objectWork = stage->GetLeftToObject( pos );
-		if ( pos.x < work + WALL_DIST || pos.x < objectWork + WALL_DIST )
+		objectWork = stage->GetLeftToObject( pos, tempPos, outId );
+		if ( pos.x <= objectWork + WALL_DIST )
 		{
-			if ( pos.x <objectWork + WALL_DIST )	pos.x = objectWork + WALL_DIST;
-			if ( pos.x < work + WALL_DIST )				pos.x = work + WALL_DIST;
+			if ( pos.x <= objectWork + WALL_DIST )	pos.x = objectWork + WALL_DIST;
 			move.x = 0.0f;
+			checkWall = true;
 		}
 
 		//	影高さ設定

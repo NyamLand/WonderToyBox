@@ -110,25 +110,25 @@ iexMesh*	Collision::obj = NULL;
 		if ( obj->RayPick( &takePos, &p_pos, &vec, &dist ) != -1 ){
 			float	disToWall = Vector3( Vector3( takePos.x, 0.0f, takePos.z ) - Vector3( p_pos.x, 0.0f, p_pos.z ) ).Length();
 			if ( disToWall <= DIST ){
-				
+
 				//	移動量
 				float	move = Vector3( p_move.x, 0.0f, p_move.z ).Length();
-				
+
 				//	プレイヤーからレイの交差点へのベクトル
 				Vector3	vPtoWall( takePos - p_pos );
 				vPtoWall.y = 0.0f;	vPtoWall.Normalize();
 				vec.y = 0.0f;	vec.Normalize();
-				
+
 				//	法線の上方向（？）を求める
 				Vector3	vCrossUp;
 				Vector3Cross( vCrossUp, vec, vPtoWall );
 				vCrossUp.Normalize();
-				
+
 				//	法線の上方向（？）と法線の外積から滑る方向を計算
 				Vector3	vCrossSide;
 				Vector3Cross( vCrossSide, vCrossUp, vec );
 				vCrossSide.Normalize();
-				
+
 				//	法線とプレーヤーからレイの交差点へのベクトルの内積
 				float	dotNP = Vector3Dot( vec, vPtoWall );
 
@@ -142,76 +142,53 @@ iexMesh*	Collision::obj = NULL;
 
 		return	false;
 	}
-
 	//	壁との当たり判定
-	bool	Collision::CheckWall( iexMesh* org, const Vector3& pos, Vector3& vec )
+	bool	Collision::CheckWall( iexMesh* org, const Vector3& pos, Vector3& p_move )
 	{
-		//	情報保存
-		Vector3	p_pos = Vector3( pos.x, pos.y + 1.0f, pos.z );
-		Vector3	p_vec = Vector3( vec.x, 0.0f, vec.z );
-		p_vec.Normalize();
+		//org->Update();
+		const	float	DIST = 2.0f;	//	壁との距離
+		Vector3	p_pos = Vector3(pos.x, pos.y + 1.0f, pos.z);
+		Vector3	vec = Vector3(p_move.x, 0.0f, p_move.z);
+		vec.Normalize();
+		Vector3	takePos;
+		float	dist = 100.0f;
 
 		// オブジェクトの逆行列を算出
-		org->Update();
-		Matrix mat = org->TransMatrix;
-		Matrix invMat;	// 逆行列
-		D3DXMatrixInverse( &invMat, null, &mat );
 
-		// 逆行列でレイをローカル化
-		Vector3 invVec;
-		invVec.x = invMat._11 * vec.x + invMat._21 * vec.y + invMat._31 * vec.z;
-		invVec.y = invMat._12 * vec.x + invMat._22 * vec.y + invMat._32 * vec.z;
-		invVec.z = invMat._13 * vec.x + invMat._23 * vec.y + invMat._33 * vec.z;
-
-		Vector3 invPos;
-		invPos.x = invMat._11 * p_pos.x + invMat._21 * p_pos.y + invMat._31 * p_pos.z + invMat._41;
-		invPos.y = invMat._12 * p_pos.x + invMat._22 * p_pos.y + invMat._32 * p_pos.z + invMat._42;
-		invPos.z = invMat._13 * p_pos.x + invMat._23 * p_pos.y + invMat._33 * p_pos.z + invMat._43;
-
-		Vector3 v = invVec;
-		Vector3 p = invPos;
-		Vector3 takePos;
-		const	float	DIST = 2.0f;	//	壁との距離
-		float d = 100.0f;
-
-		if ( org->RayPick( &takePos, &p, &v, &d ) != -1 )
-		{
-			float	disToWall = Vector3( Vector3( takePos.x, 0.0f, takePos.z ) - Vector3( p.x, 0.0f, p.z ) ).Length();
-			if ( disToWall <= DIST ){
-
+		if ( org->RayPick( &takePos, &p_pos, &vec, &dist ) != -1 ){
+			float	disToWall = Vector3( Vector3( takePos.x, 0.0f, takePos.z ) - Vector3( p_pos.x, 0.0f, p_pos.z ) ).Length();
+			if ( disToWall <= DIST )
+			{
 				//	移動量
-				float	move = Vector3( v.x, 0.0f, v.z ).Length();
+				float	move = Vector3( p_move.x, 0.0f, p_move.z ).Length();
 
 				//	プレイヤーからレイの交差点へのベクトル
 				Vector3	vPtoWall( takePos - p_pos );
 				vPtoWall.y = 0.0f;	vPtoWall.Normalize();
-				v.y = 0.0f;	v.Normalize();
+				vec.y = 0.0f;	vec.Normalize();
 
 				//	法線の上方向（？）を求める
 				Vector3	vCrossUp;
-				Vector3Cross( vCrossUp, v, vPtoWall );
+				Vector3Cross( vCrossUp, vec, vPtoWall );
 				vCrossUp.Normalize();
 
 				//	法線の上方向（？）と法線の外積から滑る方向を計算
 				Vector3	vCrossSide;
-				Vector3Cross( vCrossSide, vCrossUp, v );
+				Vector3Cross( vCrossSide, vCrossUp, vec );
 				vCrossSide.Normalize();
 
 				//	法線とプレーヤーからレイの交差点へのベクトルの内積
-				float	dotNP = Vector3Dot( v, vPtoWall );
+				float	dotNP = Vector3Dot( vec, vPtoWall );
 
 				//	移動量の調整
-				v.x = vCrossSide.x * move * ( dotNP + 1.0f );
-				v.z = vCrossSide.z * move * ( dotNP + 1.0f );
+				p_move.x = vCrossSide.x * move * ( dotNP + 1.0f );
+				p_move.z = vCrossSide.z * move * ( dotNP + 1.0f );
 
-				//	元に戻す
-				vec.x = mat._11 * v.x + mat._21 * v.y + mat._31 * v.z;
-				vec.z = mat._13 * v.x + mat._23 * v.y + mat._33 * v.z;
-				
 				return	true;
 			}
 		}
-		return		false;
+
+		return	false;
 	}
 
 	//	壁判定修正込バージョン
@@ -341,7 +318,7 @@ iexMesh*	Collision::obj = NULL;
 	}
 
 	//	下方取得
-	float	Collision::GetHeight( iexMesh* org, const Vector3& pos )
+	float	Collision::GetHeight( iexMesh* org, const Vector3& pos, Vector3& outHitPos )
 	{
 		Vector3 p( pos.x, pos.y + 1.5f, pos.z );
 		Vector3 v( 0.0f, -1.0f, 0.0f );
@@ -371,16 +348,16 @@ iexMesh*	Collision::obj = NULL;
 			resultPos.x = mat._11 * out.x + mat._21 * out.y + mat._31 * out.z + mat._41;
 			resultPos.y = mat._12 * out.x + mat._22 * out.y + mat._32 * out.z + mat._42;
 			resultPos.z = mat._13 * out.x + mat._23 * out.y + mat._33 * out.z + mat._43;
-
+			outHitPos = resultPos;
 			return	resultPos.y;
 		}
 		return -1000.0f;
 	}
 
 	//	前方取得
-	float	Collision::GetFront( iexMesh*	org, const Vector3& pos )
+	float	Collision::GetFront( iexMesh*	org, const Vector3& pos, Vector3& outHitPos )
 	{
-		Vector3 p( pos.x, pos.y + 2.0f, pos.z - 5.0f );
+		Vector3 p( pos.x, pos.y + 1.0f, pos.z - 5.0f );
 		Vector3 v( 0, 0, 1.0f );
 		Vector3 out = pos;
 		float dist = 50.0f;
@@ -409,15 +386,16 @@ iexMesh*	Collision::obj = NULL;
 			resultPos.y = mat._12 * out.x + mat._22 * out.y + mat._32 * out.z + mat._42;
 			resultPos.z = mat._13 * out.x + mat._23 * out.y + mat._33 * out.z + mat._43;
 
+			outHitPos = resultPos;
 			return	resultPos.z;
 		}
 		return 1000.0f;
 	}
 
 	//	後方取得
-	float	Collision::GetBack( iexMesh* org, const Vector3& pos )
+	float	Collision::GetBack( iexMesh* org, const Vector3& pos, Vector3& outHitPos )
 	{
-		Vector3 p( pos.x, pos.y + 2.0f, pos.z + 5.0f );
+		Vector3 p( pos.x, pos.y + 1.0f, pos.z + 5.0f );
 		Vector3 v( 0, 0, -1.0f );
 		Vector3 out = pos;
 		float dist = 50.0f;
@@ -445,6 +423,7 @@ iexMesh*	Collision::obj = NULL;
 			resultPos.x = mat._11 * out.x + mat._21 * out.y + mat._31 * out.z + mat._41;
 			resultPos.y = mat._12 * out.x + mat._22 * out.y + mat._32 * out.z + mat._42;
 			resultPos.z = mat._13 * out.x + mat._23 * out.y + mat._33 * out.z + mat._43;
+			outHitPos = resultPos;
 
 			return	resultPos.z;
 		}
@@ -452,9 +431,9 @@ iexMesh*	Collision::obj = NULL;
 	}
 
 	//	右方取得
-	float	Collision::GetRight( iexMesh* org, const Vector3& pos )
+	float	Collision::GetRight( iexMesh* org, const Vector3& pos, Vector3& outHitPos )
 	{
-		Vector3 p( pos.x - 5.0f, pos.y + 2.0f, pos.z );
+		Vector3 p( pos.x - 5.0f, pos.y + 1.0f, pos.z );
 		Vector3 v( 1.0f, 0.0f, 0.0f );
 		Vector3 out = pos;
 		float dist = 50.0f;
@@ -482,16 +461,16 @@ iexMesh*	Collision::obj = NULL;
 			resultPos.x = mat._11 * out.x + mat._21 * out.y + mat._31 * out.z + mat._41;
 			resultPos.y = mat._12 * out.x + mat._22 * out.y + mat._32 * out.z + mat._42;
 			resultPos.z = mat._13 * out.x + mat._23 * out.y + mat._33 * out.z + mat._43;
-
+			outHitPos = resultPos;
 			return	resultPos.x;
 		}
 		return 1000.0f;
 	}
 
 	//	左方取得
-	float	Collision::GetLeft( iexMesh* org, const Vector3& pos )
+	float	Collision::GetLeft( iexMesh* org, const Vector3& pos, Vector3& outHitPos )
 	{
-		Vector3 p(pos.x + 5.0f, pos.y + 2.0f, pos.z );
+		Vector3 p(pos.x + 5.0f, pos.y + 1.0f, pos.z );
 		Vector3 v( -1.0f, 0.0f, 0.0f );
 		Vector3 out = pos;
 		float dist = 50.0f;
@@ -519,7 +498,7 @@ iexMesh*	Collision::obj = NULL;
 			resultPos.x = mat._11 * out.x + mat._21 * out.y + mat._31 * out.z + mat._41;
 			resultPos.y = mat._12 * out.x + mat._22 * out.y + mat._32 * out.z + mat._42;
 			resultPos.z = mat._13 * out.x + mat._23 * out.y + mat._33 * out.z + mat._43;
-
+			outHitPos = resultPos;
 			return	resultPos.x;
 		}
 		return -1000.0f;
@@ -539,6 +518,40 @@ iexMesh*	Collision::obj = NULL;
 		obj->Update();
 
 		if ( obj->RayPick( &out, &p, &v, &dist ) == -1 )
+			return false;
+		// 移動量の長さ
+		float vec_len = vec.Length();
+		// 壁までのベクトル
+		Vector3 pos_out_vec = out - pos;
+		// 壁までの距離
+		float pos_out_len = pos_out_vec.Length();
+		if ( vec_len > pos_out_len )
+		{
+			// 法線正規化
+			v.Normalize();
+			// 入射ベクトルを法線に射影
+			float dot = Vector3Dot( -vec, v );
+			// 入射ベクトルと反射ベクトルの
+			// 合成ベクトルから
+			// 入射ベクトルを引く。
+			vec = v*2.0f*dot - ( -vec );
+			// 反射率の計算
+			vec *= rate;
+			return true;
+		}
+		return false;
+	}
+
+	//	オブジェクトの反射（固定）
+	bool	Collision::GetRefrectFix( iexMesh* org, Vector3& pos, Vector3& vec, float rate )
+	{
+		Vector3 p = pos;
+		Vector3 v = vec;
+		Vector3 out;
+		float dist = 50.0f;
+		org->Update();
+
+		if ( org->RayPick( &out, &p, &v, &dist ) == -1 )
 			return false;
 		// 移動量の長さ
 		float vec_len = vec.Length();

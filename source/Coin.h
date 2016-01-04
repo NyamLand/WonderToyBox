@@ -46,6 +46,7 @@ protected:
 	bool			activate;
 	bool			getAwayflag;
 	bool			absorbedflg; // ‘|œ‰®‚É‹zû‚³‚ê‚Ä‚¢‚éó‘Ô
+	bool			moveCheck;
 	int				judgeTimer;	//	”»’è—LŒøŠÔ
 
 	//	physics_parameter

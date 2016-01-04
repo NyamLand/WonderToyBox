@@ -32,7 +32,7 @@
 //-------------------------------------------------------------------------------
 
 	//	コンストラクタ
-	Coin::Coin( void ) : obj( nullptr )
+	Coin::Coin( void ) : obj( nullptr ), moveCheck(true)
 	{
 		shadow.obj = new iex2DObj( "DATA/Effect/shadow.png" );	
 	}
@@ -107,7 +107,7 @@
 		shadow.pos = pos;
 
 		//	擬似慣性
-		if (!absorbedflg)	//掃除屋の吸い込みを受けているときは無効
+		if ( !absorbedflg )	//掃除屋の吸い込みを受けているときは無効
 		{
 			move.x *= 0.97f;
 			move.z *= 0.97f;
@@ -154,6 +154,8 @@
 			obj->Render();
 		else
 			obj->Render( shader, technique );
+
+		printf( "%3f\n", move.Length() );
 	}
 
 //-------------------------------------------------------------------------------
@@ -164,12 +166,31 @@
 	void	Coin::StageCollisionCheck( void )
 	{
 		//	想定しているよりも高くとんでいたらスキップ　
+		int	outId;
 		float	height = 0.0f;
-		if ( pos.y >= MAX_HEIGHT )	return;
+		Vector3	tempPos;
+		//	下方レイ判定
 		float work = stage->GetHeight( pos );
-		float	objectWork = stage->GetHeightToObject( pos );
-		if ( objectWork > work )	shadow.pos.y = objectWork + 0.1f;
-		else									shadow.pos.y = work + 0.1f;
+		float objectWork = stage->GetHeightToObject( pos, tempPos, outId );
+
+		//	影設定
+		if ( work < objectWork )	height = objectWork;
+		else									height = work;
+
+		//	接地判定
+		if ( pos.y < work || pos.y < objectWork )
+		{
+			if ( pos.y < objectWork )
+			{
+				pos.y = height = objectWork;
+				pos += tempPos;
+			}
+			if ( pos.y < work )					pos.y = height = work;
+			move.y = 0.0f;
+		}
+
+		//	影高さ設定
+		shadow.pos.y = height + 0.1f;
 	}
 
 	//	プレイヤーとのあたりチェック
@@ -194,6 +215,7 @@
 	void	Coin::Move( void )
 	{
 		//	重力加算
+		if ( moveCheck )
 		move.y += GRAVITY;
 		
 		//	回転
@@ -201,7 +223,7 @@
 
 		// 反射( ステージ )	
 		static float rate = 0.4f;
-		stage->GetReflect( pos, move, rate );
+		if( moveCheck )	stage->GetReflect( pos, move, rate );
 
 		//	落下したら再配置
 		if ( GetPos().y <= -3.0f )

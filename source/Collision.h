@@ -33,20 +33,21 @@ public:
 	static	float	GetHeight(const Vector3& pos);
 	static	float	GetHeight(const Vector3& pos, float dist);
 	static	bool	CheckWall( const Vector3& pos, Vector3& p_move );
-	static	bool	CheckWall( iexMesh* org, const Vector3& pos, Vector3& vec );
+	static	bool	CheckWall( iexMesh* org, const Vector3& pos, Vector3& p_move );
 	static	bool	CheckDown( Vector3& pos, Vector3& p_move, Vector3& Out = Vector3( 0.0f, 0.0f, 0.0f ) );
 	static	bool	CheckDown( iexMesh*	org, const Vector3& pos, float& outHeight );
 	static	bool	CheckWallOut( iexMesh* org, Vector3& outPos, Vector3& outVec );
 	
 	//	ステージ判定
-	static	float	GetHeight( iexMesh* org, const Vector3& pos );
-	static	float	GetFront( iexMesh* org, const Vector3& pos );
-	static	float	GetBack( iexMesh* org, const Vector3& pos );
-	static	float	GetRight( iexMesh* org, const Vector3& pos );
-	static	float	GetLeft( iexMesh* org, const Vector3& pos );
+	static	float	GetHeight( iexMesh* org, const Vector3& pos, Vector3& outHitPos = Vector3( 0.0f, 0.0f, 0.0f ) );
+	static	float	GetFront( iexMesh* org, const Vector3& pos, Vector3& outHitPos = Vector3( 0.0f, 0.0f, 0.0f ) );
+	static	float	GetBack( iexMesh* org, const Vector3& pos, Vector3& outHitPos = Vector3( 0.0f, 0.0f, 0.0f ) );
+	static	float	GetRight( iexMesh* org, const Vector3& pos, Vector3& outHitPos = Vector3( 0.0f, 0.0f, 0.0f ) );
+	static	float	GetLeft( iexMesh* org, const Vector3& pos, Vector3& outHitPos = Vector3( 0.0f, 0.0f, 0.0f ) );
 	
 	//	反射
 	static	bool	DistCheck( const Vector3& p1, const Vector3& p2, float dist );
+	static	bool	GetRefrectFix( iexMesh* org, Vector3& pos, Vector3& vec, float rate );
 	static	bool	GetReflect( Vector3& pos, Vector3& vec, float rate );
 	static	bool	GetReflect( iexMesh* org, Vector3& pos, Vector3& vec, float rate );
 	static	bool	GetReflectFloor( const float& height, Vector3& pos, Vector3& vec, float rate );
