@@ -39,6 +39,13 @@
 		target = nextTarget = TITLE_MOVE_INFO::target[TITLE_TARGET::PLAY];
 		speed = 0.005f;
 
+		FOR(0, PLAYER_NUM)
+		{
+			p[value] = new Rubber();
+			p[value]->position = pos;
+			p[value]->mass = 1.0f;
+		}
+
 		//振動関連
 		adjust = Vector3(0.0f, 0.0f, 0.0f);
 		shakeflag = false;
@@ -94,8 +101,6 @@
 
 		shader3D->SetValue("ViewPos", mainView->GetPos());
 		shader3D->SetValue("matView", mainView->GetMatrix());
-		q->Update();
-		CheckViewAngle();
 	}
 
 	//	描画
@@ -157,6 +162,20 @@
 	//	追いかけカメラ
 	void	Camera::ModeChase( void )
 	{
+		//-----------------------------------
+		//	ターゲットプレイヤー
+		//-----------------------------------
+		FOR(0, PLAYER_NUM){
+			//	初回のみq->positionに現在のposを与える
+			p[value]->FastInitialize(playerPos[value]);
+
+			//	理想地点への移動
+			p[value]->Move(playerPos[value]);
+
+			//	情報更新
+			p[value]->Update();
+		}
+
 		//	中心座標・中心からの最大距離・カメラ位置計算
 		this->target = CalcCenterPos();
 		this->length = CalcMaxDist();
@@ -256,20 +275,15 @@
 	//	弾性力を使ったカメラ移動
 	void	Camera::SpringMove( Vector3 position )
 	{
+		//-----------------------------------
+		//	カメラ
+		//-----------------------------------
+
 		//	初回のみq->positionに現在のposを与える
-		if ( q->init_flag )
-		{
-			q->position = position;
-			q->init_flag = false;
-		}
+		q->FastInitialize(position);	
 
-		Vector3 n = position - q->position;
-		float len = n.Length();
-		float F = -2 * (5 - len);
-		n.Normalize();
-		Vector3 drag = -q->velocity * 1.0f;
-
-		q->AddForce((n*F) + drag);
+		//	理想地点への移動
+		q->Move(position);
 
 		//	情報更新
 		q->Update();
@@ -285,7 +299,7 @@
 	{
 		Vector3	out = Vector3( 0.0f, 0.0f, 0.0f );
 
-		for ( int i = 0; i < PLAYER_NUM; i++ )	out += playerPos[i];
+		for ( int i = 0; i < PLAYER_NUM; i++ )	out += p[i]->position;
 
 		out /= PLAYER_NUM;
 
@@ -470,6 +484,27 @@
 //	更新
 //------------------------------------------------------------------------------------------
 
+	//	初回のみ初期化
+	void	Rubber::FastInitialize( Vector3 pos )
+	{
+		if (!init_flag)	return;
+
+		position = pos;
+		init_flag = false;
+	}
+
+	//	理想地点への移動
+	void	Rubber::Move( Vector3 pos )
+	{
+		Vector3 n = pos - position;
+		float len = n.Length();
+		float F = -2 * (5 - len);
+		n.Normalize();
+		Vector3 drag = -velocity * 1.0f;
+
+		AddForce((n*F) + drag);
+	}
+
 	//	更新
 	void	Rubber::Update( void )
 	{
@@ -477,7 +512,6 @@
 		DWORD elapse = timeGetTime() - last;
 		if (elapse > 0) Integrate((FLOAT)elapse / 1000.0f);
 		last += elapse;
-
 	}
 	
 	//	情報のすべてを更新
