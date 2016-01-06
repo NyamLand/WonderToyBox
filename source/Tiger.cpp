@@ -348,24 +348,20 @@
 			attackInfo.type = Collision::SPHEREVSCAPSULE;
 			if (attackCount < 4)
 			{
-				knockBackInfo.isUp = false;
 				knockBackInfo.type = KNOCKBACK_TYPE::LEANBACKWARD;
 			}
 			if (attackCount >= 4)
 			{
-				knockBackInfo.isUp = true;
 				knockBackInfo.type = KNOCKBACK_TYPE::MIDDLE;
 			}
 			break;
 
 		case MODE_STATE::POWERARTS:
 			attackInfo.type = 0;
-			knockBackInfo.isUp = false;
 			knockBackInfo.type = KNOCKBACK_TYPE::MIDDLE;
 			break;
 
 		case MODE_STATE::HYPERARTS:
-			knockBackInfo.isUp = false;
 			attackInfo.type = Collision::SPHEREVSCYRINDER;
 			if (attackCount < 20) knockBackInfo.type = KNOCKBACK_TYPE::LEANBACKWARD;
 			if (attackCount >= 20) knockBackInfo.type = KNOCKBACK_TYPE::STRENGTH;

@@ -259,8 +259,8 @@
 			particle->Spark( bc2_top, effectScale );
 
 			//	ノックバック
-			Vector3	knockBackVec = bc1_attackPos - bc2_bottom;
-			knockBackVec.y = bc2_bottom.y;
+			Vector3	knockBackVec = bc1_attackPos - bc2_top;
+			knockBackVec.y = bc2_top.y;
 			knockBackVec.Normalize();
 			Vector3	color = bc1->GetDamageColor();
 			bc2->SetPassColor( color );
@@ -327,8 +327,8 @@
 			particle->Spark( bc2_top, effectScale );
 
 			//	ノックバック
-			Vector3	knockBackVec = bc1_attack_top - bc2_bottom;
-			knockBackVec.y = bc2_bottom.y;
+			Vector3	knockBackVec = bc1_attack_top - bc2_top;
+			knockBackVec.y = bc2_top.y;
 			knockBackVec.Normalize();
 			Vector3	color = bc1->GetDamageColor();
 			bc2->SetPassColor( color );
@@ -746,21 +746,18 @@
 		switch (bc1->GetKnockBackType())
 		{
 		case KNOCKBACK_TYPE::STRENGTH:
-			bc2->SetForce(3.0f);
-			if (bc1->GetKnockBackIsUp()) bc2->SetMode(MODE_STATE::DAMAGE_FLYUP);
-			else bc2->SetMode(MODE_STATE::DAMAGE);
+			bc2->SetForce(1.5f);
+			bc2->SetMode(MODE_STATE::DAMAGE);
 			break;
 
 		case KNOCKBACK_TYPE::MIDDLE:
-			bc2->SetForce(2.0f);
-			if (bc1->GetKnockBackIsUp()) bc2->SetMode(MODE_STATE::DAMAGE_FLYUP);
-			else bc2->SetMode(MODE_STATE::DAMAGE);
+			bc2->SetForce(1.0f);
+			bc2->SetMode(MODE_STATE::DAMAGE);
 			break;
 
 		case KNOCKBACK_TYPE::WEAK:
-			bc2->SetForce(1.0f);
-			if (bc1->GetKnockBackIsUp()) bc2->SetMode(MODE_STATE::DAMAGE_FLYUP);
-			else bc2->SetMode(MODE_STATE::DAMAGE);
+			bc2->SetForce(0.5f);
+			bc2->SetMode(MODE_STATE::DAMAGE);
 			break;
 
 		case KNOCKBACK_TYPE::LEANBACKWARD:

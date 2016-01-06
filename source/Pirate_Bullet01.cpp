@@ -38,9 +38,9 @@ void	Pirate_Bullet01::Update(void)
 
 	liveTime++;
 
-	//StageCollisionCheck();
+	StageCollisionCheck();
 
-	if (PlayerCollisionCheck()/* || Collision::CheckWall(pos, move)*/)	
+	if (PlayerCollisionCheck() || Collision::CheckWall(pos, move))	
 	{
 		enable = false;
 		explosion = true;
@@ -113,7 +113,7 @@ bool	Pirate_Bullet01::PlayerCollisionCheck(void)
 			characterManager->SetKnockBackVec(i, -knockBackVec);
 			characterManager->SetLeanFrame(i, leanpower);
 			characterManager->SetForce(i, 2.0f);
-			characterManager->SetMode(i, MODE_STATE::DAMAGE_FLYUP);
+			characterManager->SetMode(i, MODE_STATE::DAMAGE);
 
 			//	ƒRƒCƒ“‚Î‚ç‚Ü‚«•ûŒüİ’è
 			std::uniform_real_distribution<float>	vecrand(-1.0f, 1.0f);
