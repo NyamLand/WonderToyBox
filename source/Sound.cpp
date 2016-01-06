@@ -85,6 +85,7 @@
 		{
 			IEX_StopStreamSound( stream );
 			isPlay = false;
+			
 		}
 	}
 

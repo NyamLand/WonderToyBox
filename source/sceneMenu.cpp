@@ -151,7 +151,7 @@
 		tempmode = 0;
 		SetMode( MENU_MODE::INIT );
 
-		//BGMÝ’è
+		//BGMÝ’èÄ¶
 		sound->PlayBGM(BGM::TITLE_BGM);
 
 		//	‘S‘ÌXV
