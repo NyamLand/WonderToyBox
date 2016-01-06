@@ -459,9 +459,10 @@ namespace
 			if ( pos.y < work )					pos.y = height =work;
 			move.y = 0.0f;
 			isGround = true;
-			if ( jumpPower < 0.0f )
+			if ( jumpPower < 0.0f && GetMode() == MODE_STATE::JUMP )
 			{
 				jumpState = true;
+				
 				SetMode( MODE_STATE::MOVE );
 			}
 		}
