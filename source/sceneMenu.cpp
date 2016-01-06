@@ -151,6 +151,9 @@
 		tempmode = 0;
 		SetMode( MENU_MODE::INIT );
 
+		//BGM設定
+		sound->PlayBGM(BGM::TITLE_BGM);
+
 		//	全体更新
 		Update();
 		return	true;
@@ -166,6 +169,7 @@
 		SafeDelete( selectCheckCursor );
 		SafeDelete( cpuCursor );
 		Random::Release();
+		sound->AllStop();
 
 		//設計中
 		SafeDelete(Oimage);
