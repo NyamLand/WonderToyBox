@@ -27,6 +27,7 @@ namespace
 			ARROW_DOWN,
 			DUST,
 			SUCK,
+			FLOWER = 8,
 		};
 	}
 
@@ -346,6 +347,29 @@ namespace
 
 			//	画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
 			IEX_SetParticle(DUST, 0, 1.0f, 60, 0.0f, 40, 0.5f, &Pos, &Move, &Power, 0.8f, 0.8f, 0.8f, scale, RS_SUB);
+		}
+	}
+
+	//	花
+	void	Particle::Flower( const Vector3& pos, float scale, const Vector3& color, const int& time )
+	{
+		Vector3	Pos, Move, Power;
+
+		for ( int i = 0; i < 5; i++ )
+		{
+			Pos.x = pos.x + ( Random::GetInt( 0, 200 ) - 100 ) * 0.007f * scale;
+			Pos.y = pos.y + ( Random::GetInt( 0, 200 ) - 100 ) * 0.007f * scale;
+			Pos.z = pos.z + ( Random::GetInt( 0, 200 ) - 100 ) * 0.007f * scale;
+
+			Move.x = 0.0f;
+			Move.y = 0.0f;
+			Move.z = 0.0f;
+
+			Power = Pos - pos;
+			Power.Normalize();
+			Power *= 0.001f * scale;
+
+			pt->Set( FLOWER, 0, 0.0f, 30, 0.0f, 20, 1.0f, &Pos, &Move, &Power, color.x, color.y, color.z, scale * 0.1f, RS_COPY );
 		}
 	}
 
