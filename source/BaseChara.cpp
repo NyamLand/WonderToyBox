@@ -134,7 +134,6 @@ namespace
 			{
 				knockBackInfo.type = 0;
 				knockBackInfo.vec = Vector3(0.0f, 0.0f, 0.0f);
-				knockBackInfo.isUp = false;
 		}
 
 			//	ダメージ時色情報初期化
@@ -380,7 +379,6 @@ namespace
 			break;
 
 		case MODE_STATE::DAMAGE:
-		case MODE_STATE::DAMAGE_FLYUP:
 			AddKnockBackForce(force);
 			break;
 
@@ -459,10 +457,9 @@ namespace
 			if ( pos.y < work )					pos.y = height =work;
 			move.y = 0.0f;
 			isGround = true;
-			if ( jumpPower < 0.0f && GetMode() == MODE_STATE::JUMP )
+			if ( jumpPower < 0.0f && mode == MODE_STATE::JUMP)
 			{
 				jumpState = true;
-				
 				SetMode( MODE_STATE::MOVE );
 			}
 		}
@@ -571,46 +568,28 @@ namespace
 	{
 
 		SetMotion(MOTION_NUM::POSTURE);
-		switch (mode)
+
+		unrivaled = true;
+		SetDrag(1.0f);
+		if (move.y <= 0.01f && isGround)
 		{
-		case MODE_STATE::DAMAGE:
-			unrivaled = true;
-			SetDrag(0.9f);
-			if (move.Length() <= 0.001f)
-			{
-				damageStep = 0;
-				SetMode(MODE_STATE::MOVE);
-				unrivaled = false;
-			}
-			break;
-
-		case MODE_STATE::DAMAGE_FLYUP:
-			unrivaled = true;
-			SetDrag(1.0f);
-			if (isGround)
-			{
-				move = Vector3(0.0f, 0.0f, 0.0f);
-				damageStep = 0;
-				SetMode(MODE_STATE::MOVE);
-				unrivaled = false;
-			}
-			break;
+			move = Vector3(0.0f, 0.0f, 0.0f);
+			damageStep = 0;
+			SetMode(MODE_STATE::MOVE);
+			unrivaled = false;
 		}
-
 	}
 
 	//	ノックバック与力
 	void	BaseChara::AddKnockBackForce( float force )
 	{
-		if (mode == MODE_STATE::DAMAGE_FLYUP) force /= 4;
 		switch (damageStep)
 		{
 		case 0:
+			isGround = false;
 			SetDamageColor(damageColor.catchColor);
-			move = knockBackInfo.vec * force;
-
-			if (mode == MODE_STATE::DAMAGE) move.y = 0;
-			if (mode == MODE_STATE::DAMAGE_FLYUP) move.y = force / 2;
+			move = knockBackInfo.vec * (force / 4);
+			move.y = force / 4;
 
 			damageStep++;
 			break;
@@ -1069,28 +1048,28 @@ namespace
 	//	AI操作
 	void	BaseChara::ControlAI( void )
 	{
-		switch (aiInfo.mode)
-		{
-		case AI_MODE_STATE::ATTACK:
-			AutoAttack();
-			break;
+		//switch (aiInfo.mode)
+		//{
+		//case AI_MODE_STATE::ATTACK:
+		//	AutoAttack();
+		//	break;
 
-		case AI_MODE_STATE::RUN:		//　コインを取りに行く
-			AutoRun();
-			break;
+		//case AI_MODE_STATE::RUN:		//　コインを取りに行く
+		//	AutoRun();
+		//	break;
 
-		case AI_MODE_STATE::RUNAWAY:
-			RunAway();
-			break;
+		//case AI_MODE_STATE::RUNAWAY:
+		//	RunAway();
+		//	break;
 
-		case AI_MODE_STATE::GUARD:
-			AutoGuard();
-			break;
+		//case AI_MODE_STATE::GUARD:
+		//	AutoGuard();
+		//	break;
 
-		case AI_MODE_STATE::WAIT:
-			AutoWait();
-			break;
-		}
+		//case AI_MODE_STATE::WAIT:
+		//	AutoWait();
+		//	break;
+		//}
 
 		//--------------------------------------------
 		//　ここでは各モードになるための条件を実装
@@ -1608,11 +1587,6 @@ namespace
 		return	knockBackInfo.type;
 	}
 
-	//	
-	int		BaseChara::GetKnockBackIsUp(void)const
-	{
-		return knockBackInfo.isUp;
-	}
 	
 	//　順位取得
 	int		BaseChara::GetRank( void )const

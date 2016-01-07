@@ -36,8 +36,8 @@ void	Pirate_Bullet02::Update(void)
 	liveTime++; 
 
 	StageCollisionCheck();
-
-	if (liveTime >= 300)
+	
+	if (PlayerCollisionCheck() || liveTime >= 300)
 	{
 		enable = false;
 		explosion = true;

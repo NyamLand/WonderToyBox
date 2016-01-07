@@ -43,7 +43,6 @@ namespace
 			JUMP,
 			GUARD,
 			DAMAGE,
-			DAMAGE_FLYUP,
 			DAMAGE_LEANBACKWARD,
 			DEATH,
 		};
@@ -163,8 +162,7 @@ protected:
 	struct KNOCKBACK_INFO
 	{
 		Vector3	vec;
-		int			type;
-		bool	isUp;
+		int		type;
 	};
 	
 	//	ÉpÉâÉÅÅ[É^èÓïÒ
@@ -396,7 +394,6 @@ public:
 	int		GetPlayerNum( void )const;
 	int		GetAttackParam( void )const;
 	int		GetKnockBackType(void)const;
-	int		GetKnockBackIsUp(void)const;
 	int		GetLeanFrame( void )const;
 	int		GetRank( void )const;
 	int		GetLife( void )const;

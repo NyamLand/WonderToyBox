@@ -39,7 +39,7 @@ void	Thief_Bullet02::Update(void)
 	limitTimer--;
 
 	liveTime++;
-	PlayerCollisionCheck();
+	//PlayerCollisionCheck();
 
 	obj->SetAngle(angle);
 	obj->SetPos(pos);
