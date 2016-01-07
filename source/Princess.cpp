@@ -130,7 +130,7 @@
 	{
 		power = POWER;
 		Vector3	p_pos = GetPos();
-		attackInfo.pos = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
+		attackInfo.pos = Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z );
 		SetMove( Vector3( 0.0f, 0.0f, 0.0f ) );
 
 		//	範囲拡大
@@ -138,6 +138,9 @@
 
 		//	パラメータ加算
 		attackInfo.t += 0.02f;
+
+		//	エフェクト
+		particle->FlowerDisseminate( attackInfo.pos, attackInfo.r, Vector3( 1.0f, 0.4f, 0.4f ) );
 
 		//	無敵状態
 		if ( attackInfo.t <= 0.5f )		unrivaled = true;

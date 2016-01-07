@@ -357,9 +357,9 @@ namespace
 
 		for ( int i = 0; i < 5; i++ )
 		{
-			Pos.x = pos.x + ( Random::GetInt( 0, 200 ) - 100 ) * 0.007f * scale;
+			Pos.x = pos.x + sinf( Random::GetFloat( 0.0f, 2 * D3DX_PI ) ) * ( Random::GetInt( 0, 200 ) - 100 ) * 0.007f * scale;
 			Pos.y = pos.y + ( Random::GetInt( 0, 200 ) - 100 ) * 0.007f * scale;
-			Pos.z = pos.z + ( Random::GetInt( 0, 200 ) - 100 ) * 0.007f * scale;
+			Pos.z = pos.z + cosf( Random::GetFloat( 0.0f, 2 * D3DX_PI ) ) * ( Random::GetInt( 0, 200 ) - 100 ) * 0.007f * scale;
 
 			Move.x = 0.0f;
 			Move.y = 0.0f;
@@ -370,6 +370,30 @@ namespace
 			Power *= 0.001f * scale;
 
 			pt->Set( FLOWER, 0, 0.0f, 30, 0.0f, 20, 1.0f, &Pos, &Move, &Power, color.x, color.y, color.z, scale * 0.1f, RS_COPY );
+		}
+	}
+
+	//	‰Ô‚Î‚ç‚Ü‚«
+	void	Particle::FlowerDisseminate( const Vector3& pos, float scale, const Vector3& color )
+	{
+		Vector3	Pos, Move, Power;
+
+		for ( int i = 0; i < 5; i++ )
+		{
+			Pos.x = pos.x + sinf( Random::GetFloat( 0.0f, 2 * D3DX_PI ) ) * ( Random::GetInt( 0, 200 ) - 100 ) * 0.007f * scale;
+			Pos.y = pos.y;
+			Pos.z = pos.z + cosf( Random::GetFloat( 0.0f, 2 * D3DX_PI ) ) * ( Random::GetInt( 0, 200 ) - 100 ) * 0.007f * scale;
+
+			Move.x = 0.0f;
+			Move.y = -0.1f;
+			Move.z = 0.0f;
+
+			Power = Pos - pos;
+			Power.y = 2.0f;
+			Power.Normalize();
+			Power *= 0.0005f * scale;
+
+			pt->Set( FLOWER, 0, 0.0f, 60, 0.0f, 30, 1.0f, &Pos, &Move, &Power, color.x, color.y, color.z, scale * 0.1f, RS_COPY );
 		}
 	}
 

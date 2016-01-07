@@ -34,6 +34,7 @@ public:
 	void	Dust(const Vector3& pos, const Vector3& back, const Vector3& side, const float& scale = 1.0f, const int& time = 1);
 	void	Bom(const Vector3& pos, const float& move, const float& scale = 1.0f, const int& time = 6);
 	void	Flower( const Vector3& pos, float scale, const Vector3& color, const int& time = 5 );
+	void	FlowerDisseminate( const Vector3& pos, float scale, const Vector3& color );
 
 
 
