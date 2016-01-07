@@ -59,7 +59,7 @@
 	//	パラメータ
 	float		adjustValue = -0.004f;
 	float		Shadow = 0.4f;
-
+	float		flashParam = 0.0f;
 
 	//	影テクスチャ情報取得
 	inline		float3	GetShadowTex( float3 Pos )
@@ -219,7 +219,11 @@
 			OUT.rgb += pow( max( 0, dot( R, In.vLight ) ), 10 ) * sp_tex;
 
 			//	シャドウマップ適用
-			OUT.rgb *= GetShadow(In.vShadow);
+			OUT.rgb *= GetShadow( In.vShadow );
+
+			OUT.r += flashParam;
+			OUT.g += flashParam;
+			OUT.b += flashParam;
 
 			return	OUT;
 		}

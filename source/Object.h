@@ -57,6 +57,7 @@ private:
 
 	float			moveHeight;	//	ã‰ºˆÚ“®’l
 	float			originHeight;	//	Œ³‚Ì‚‚³
+	float			flashParam;		//	“_–Å
 	iexMesh*	obj;
 	iexMesh*	collisionObj;
 	Vector3	pos;

@@ -1711,9 +1711,9 @@
 				BlendOp				=		Add;
 				SrcBlend				=		SrcAlpha;
 				DestBlend				=		InvSrcAlpha;
-				ZWriteEnable			=		true;
+				ZWriteEnable		=		true;
 
-				VertexShader			=		compile		vs_3_0 VS_Full_S();
+				VertexShader		=		compile		vs_3_0 VS_Full_S();
 				PixelShader			=		compile		ps_3_0 PS_Full_S();
 			}
 		}

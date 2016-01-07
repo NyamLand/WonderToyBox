@@ -27,7 +27,7 @@
 	{
 		q = new Rubber();
 
-		pos = Vector3( 0.0f, 20.0f, -80.0f );
+		pos = Vector3( 0.0f, 200.0f, -1000.0f );
 		q->position = pos;
 		q->mass = 1.0f;
 		target = Vector3( 0.0f, 0.6f, 0.8f ); 
@@ -37,7 +37,7 @@
 		t = 0.0f;
 		moveState = false;
 		target = nextTarget = TITLE_MOVE_INFO::target[TITLE_TARGET::PLAY];
-		speed = 0.005f;
+		speed = 0.0035f;
 
 		FOR(0, PLAYER_NUM)
 		{

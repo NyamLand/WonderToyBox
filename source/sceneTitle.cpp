@@ -100,7 +100,10 @@ namespace
 		ui->Initialize( UI_MODE::TITLE );
 		
 		//	ステージ
-		stage = new iexMesh( "DATA/BG/titlestage/title_map.IMO" );
+		stage = new iexMesh( "DATA/BG/title_stageV2/title_stagev2.IMO" );
+		stage->SetAngle( PI );
+		stage->SetScale( 0.1f );
+		stage->Update();
 
 		//	乱数初期化
 		Random::Initialize();		
@@ -220,7 +223,7 @@ namespace
 		mainView->Clear();
 
 		//	ステージ描画
-		stage->Render( shader3D, "full" );
+		stage->Render();
 
 		//	パーティクル描画
 		particle->Render();
@@ -458,9 +461,9 @@ namespace
 					{
 					case TITLE_TARGET::PLAY:
 						mode = TITLE_MODE::PLAY;
-						if (mainView->GetMoveState())
+						if ( mainView->GetMoveState() )
 						{
-							mainView->SetNextPoint( TITLE_TARGET::MOVE_MENU_UP, 0.01f );
+							mainView->SetNextPoint( TITLE_TARGET::MOVE_MENU_UP, 0.008f );
 							//sound->PlaySE(SE::DECIDE_SE);
 							
 						}

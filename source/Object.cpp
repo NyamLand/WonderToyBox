@@ -1,5 +1,6 @@
 
 #include	"iextreme.h"
+#include	"system/System.h"
 #include	"Random.h"
 #include	"GlobalFunction.h"
 #include	"GameManager.h"
@@ -27,7 +28,7 @@
 	//	コンストラクタ
 	Object::Object( void ) : obj( nullptr ), collisionObj( nullptr ),
 		pos(0.0f, 0.0f, 0.0f), angle(0.0f, 0.0f, 0.0f), scale(0.0f, 0.0f, 0.0f), tempPos(0.0f, 0.0f, 0.0f), move(0.0f, 0.0f, 0.0f),
-		moveHeight( 0.0f ),
+		moveHeight(0.0f), flashParam(0.0f),
 		state(true), unrivaled(false),
 		moveType(MOVE_TYPE::FIX_BOX), durableValue(DURABLE_VALUE), objectType(OBJECT_TYPE::BASE), id(1), unrivaledTime(0)
 	{
@@ -79,10 +80,19 @@
 	//	描画
 	void	Object::Render( iexShader* shader, LPSTR technique )
 	{
-		if ( shader != nullptr && technique != nullptr )	
+		if ( shader != nullptr && technique != nullptr )
+		{
+			if ( moveType == MOVE_TYPE::BREAK_OBJECT )
+			{
+				shader3D->SetValue( "flashParam", 0.5f + 0.5f * sinf( flashParam) );
+			}
 			obj->Render( shader, technique );
+			shader3D->SetValue( "flashParam", 0.0f );
+		}
 		else
+		{
 			obj->Render();
+		}
 	}
 
 //------------------------------------------------------------------------------
@@ -123,6 +133,10 @@
 
 			//	接地判定
 			StageCollisionCheck();
+
+			//	点滅
+			flashParam += D3DX_PI / 180 * 1.0f;
+			if ( flashParam >= 2 * D3DX_PI )	flashParam = 0.0f;
 
 			//	攻撃当たり判定
 			//	エフェクト( ヒット時エフェクト、破壊エフェクト )
