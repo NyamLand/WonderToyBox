@@ -29,7 +29,7 @@
 	Object::Object( void ) : obj( nullptr ), collisionObj( nullptr ),
 		pos(0.0f, 0.0f, 0.0f), angle(0.0f, 0.0f, 0.0f), scale(0.0f, 0.0f, 0.0f), tempPos(0.0f, 0.0f, 0.0f), move(0.0f, 0.0f, 0.0f),
 		moveHeight(0.0f), flashParam(0.0f),
-		state(true), unrivaled(false),
+		state(false), unrivaled(false),
 		moveType(MOVE_TYPE::FIX_BOX), durableValue(DURABLE_VALUE), objectType(OBJECT_TYPE::BASE), id(1), unrivaledTime(0)
 	{
 		
@@ -40,6 +40,18 @@
 	{
 		SafeDelete( obj );
 		SafeDelete( collisionObj );
+	}
+
+	//	‰Šú‰»
+	bool	Object::Initialize( void )
+	{
+		move = Vector3( 0.0f, 0.0f, 0.0f );
+		moveHeight = 0.0f;
+		flashParam = 0.0f;
+		unrivaled = false;
+		durableValue = DURABLE_VALUE;
+		unrivaledTime = 0;
+		return	true;
 	}
 
 //------------------------------------------------------------------------------
@@ -67,14 +79,6 @@
 		collisionObj->SetAngle( angle );
 		collisionObj->SetPos( pos );
 		collisionObj->Update();
-
-		//	‘O‰ñ‚©‚ç‚ÌˆÚ“®—Ê‚ğZo
-		static DWORD last = timeGetTime();
-		DWORD elapse = timeGetTime() - last;
-		float dt = elapse / 1000.0f;
-		last += elapse;
-		tempPos = move;
-		int a = 0;
 	}
 
 	//	•`‰æ
@@ -291,6 +295,12 @@
 	void	Object::InitTempPos( void )
 	{
 		tempPos = pos;
+	}
+
+	//	ó‘Ôİ’è
+	void	Object::SetState( bool state )
+	{
+		this->state = state;
 	}
 
 //------------------------------------------------------------------------------

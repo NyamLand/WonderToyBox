@@ -83,9 +83,9 @@
 
 		//	ステージ
 		//stageManager->Initialize( dir );
-		stage->SetDirLightVec( dir );
-		stage->Initialize();
-
+		stage = new Stage();
+		stage->LightInitialize( dir );
+		
 		//	プレイヤー
 		PlayerInitialize();
 		
@@ -149,11 +149,11 @@
 		SafeDelete( mainView );
 		SafeDelete( m_BulletManager );
 		SafeDelete( ui );
+		SafeDelete( stage );
 
 		backBuffer->Release();
 		Random::Release();
 		//stageManager->Release();
-		stage->Release();
 		particle->Release();
 		itemManager->Release();
 		characterManager->Release();

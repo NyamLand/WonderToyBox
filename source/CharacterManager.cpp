@@ -44,12 +44,12 @@
 			break;
 
 		case CHARACTER_TYPE::SCAVENGER:
-			if (isPlayer)		character[playerNum] = new Scavenger();
+			if ( isPlayer )		character[playerNum] = new Scavenger();
 			else					character[playerNum] = new Scavenger_CPU();
 			break;
 
 		case CHARACTER_TYPE::THIEF:
-			if (isPlayer)		character[playerNum] = new Thief();
+			if ( isPlayer )		character[playerNum] = new Thief();
 			else					character[playerNum] = new Thief_CPU();
 			break;
 

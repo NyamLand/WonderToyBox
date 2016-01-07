@@ -16,26 +16,22 @@
 //	class
 class Stage
 {
-public:
-
 private:
-	std::list<Object*>		objList;
-	iexMesh*						org[OBJECT_TYPE::END];
-	iexMesh*						collisionObj[OBJECT_TYPE::END];
-	iexMesh*						forestRiver;
-	Vector3						dirLightVec;
-	float								adjustV;
-	int								objectID;
-	int								stageType;
-
-private:
-	//	コンストラクタ・デストラクタ
-	Stage( void );
-	~Stage( void );
+	static	const	int	OBJ_MAX = 20;
+	Object*					object[OBJ_MAX];	//	リスト
+	iexMesh*					org[OBJECT_TYPE::END];
+	iexMesh*					collisionObj[OBJECT_TYPE::END];
+	iexMesh*					forestRiver;
+	Vector3					dirLightVec;
+	float							adjustV;
+	int							objectID;
+	int							stageType;
 
 public:
 	//	初期化・解放
-	bool	Initialize( void );
+	Stage( void );
+	~Stage( void );
+	bool	LightInitialize( Vector3	dir );
 	void	Release( void );
 
 	//	更新・描画
@@ -51,7 +47,6 @@ public:
 
 	//	情報設定
 	void	SetUnrivaled( int id, bool state );
-	void	SetDirLightVec( Vector3 dir );
 
 	//	情報取得
 	bool	GetUnrivaled( int id );
@@ -67,7 +62,6 @@ public:
 	float	GetBack( const Vector3& pos );
 	float	GetRight( const Vector3& pos );
 	float	GetLeft( const Vector3& pos );
-	static	Stage*	GetInstance( void );
 };
 
-#define	stage ( Stage::GetInstance() )
+extern	Stage* stage;

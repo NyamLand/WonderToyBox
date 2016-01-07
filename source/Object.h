@@ -70,6 +70,7 @@ public:
 	//	初期化・解放
 	Object( void );
 	~Object( void );
+	bool	Initialize( void );
 
 	//	更新・描画
 	void	Update( void );
@@ -97,6 +98,7 @@ public:
 	void	SetId( int ID );
 	void	SetUnrivaled( bool state );
 	void	InitTempPos( void );
+	void	SetState( bool state );
 
 	//	情報取得
 	iexMesh*	GetMesh( void )const;
