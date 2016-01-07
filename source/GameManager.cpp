@@ -159,7 +159,6 @@
 		if ( timeStop > 0 ) timeStop--;
 		else timer--;
 
-
 		//	残り時間３０秒でどんけつ演出へ
 		//if ( timer == 30 * SECOND )
 		//{
@@ -167,7 +166,9 @@
 		//	mode = GAME_MODE::DONKETSU_DIRECTION;
 		//}
 
+		//-------------------------------------------------------
 		//	時間切れ
+		//-------------------------------------------------------
 		if ( timer <= 0 )
 		{
 			timer = 0;
@@ -175,42 +176,67 @@
 			for ( int i = 0; i < PLAYER_MAX; i++ )	characterManager->SetMode( i, MODE_STATE::WAIT );
 		}
 
-		////	どんけつブースト設定
+		//-------------------------------------------------------
+		//	どんけつブースト設定
+		//-------------------------------------------------------
 		//if ( timer <= 30 * SECOND )		donketsuBoostState = true;
 		//else	donketsuBoostState = false;
 
+		//-------------------------------------------------------
 		//	クライマックスへ
+		//-------------------------------------------------------
 		if ( timer == 30 * SECOND ) SetMode( GAME_MODE::CLIMAX );
 
+		//-------------------------------------------------------
 		//	ニュース設定
+		//-------------------------------------------------------
 		if ( timer == 1 * MINUTE )		newsflag = true;
 
+		//-------------------------------------------------------
+		//　イベント
+		//-------------------------------------------------------
 		static int eventmode = 0;
 		int alert_type = 0;
 		int alert_sound = 0;
-		//	イベント設定
+
+		/*
+			ランダムでイベント決定、
+			イベントの各種設定後、
+			eventManagerでイベントを発生させる
+		*/
 		if (timer == 42 * SECOND)
 		{
 			//eventmode = Random::GetInt(0, EVENT_MODE::MAX - 1);
-			eventmode = EVENT_MODE::COIN_FALL;	//　仮 （本番：いらない、上の行のコメントはずす）
-			if (eventmode < EVENT_MODE::COIN_SACK)
+			eventmode = EVENT_MODE::COIN_FALL;	//　仮 （本番：この行いらない、上の行のコメントはずす）
+			if (eventmode <= EVENT_MODE::JAM_UFO)
 			{
 				alert_type = ALERT_TYPE_INFO::JAM;
 				alert_sound = SE::EVENT_SE;
 			}
-			else
+			else if (EVENT_MODE::COIN_SACK <= eventmode  && eventmode <= EVENT_MODE::COIN_DUBBLE)
 			{
 				alert_type = ALERT_TYPE_INFO::COIN;
-				alert_sound = SE::EVENT_SE;		//　仮　コイン用に変更
+				alert_sound = SE::EVENT_SE;		//　仮　コインイベント用に変更
+			}
+			else
+			{
+				alert_type = ALERT_TYPE_INFO::MISSION;
+				alert_sound = SE::EVENT_SE;		//　仮　ミッションイベント用に変更
 			}
 			ui->SetAlertInfo(true, alert_type);
 			sound->PlaySE(alert_sound);
 		}
+
+		//　イベント発生
 		if (timer == 40 * SECOND)
 		{
 			eventManager->SetEvent(eventmode);
 		}
 		
+
+		//-------------------------------------------------------
+		//		アイテム・コインばらまき
+		//-------------------------------------------------------
 		if ( timer != 0 )
 		{
 			//	5秒ごとにアイテムを３割の確率ででランダムに配置
@@ -236,7 +262,9 @@
 			}
 		}
 
+		//-------------------------------------------------------
 		//	ラストボーナス計算
+		//-------------------------------------------------------
 		FOR( 0, PLAYER_MAX )
 		{
 			CalcMaxCoin( value );

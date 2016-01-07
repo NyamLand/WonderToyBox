@@ -27,7 +27,8 @@ namespace
 		enum
 		{
 			JAM,
-			COIN
+			COIN,
+			MISSION
 		};
 	}
 
@@ -293,6 +294,7 @@ public:
 	void	FinishRender( void );
 	void	DonketsuDirectionRender( void );
 	void	AlertRender( void );
+	void	MissionDirectionRender( void );
 	void	LastProductionRender( void );
 	void	PlayerNumberRender( void );
 	void	LifeRender( void );

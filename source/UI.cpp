@@ -1203,19 +1203,38 @@
 	}
 
 	//	警告描画
-	void	UI::AlertRender( void )
+	void	UI::AlertRender(void)
 	{
-		int color = (alertInfo.type == ALERT_TYPE_INFO::JAM) ?
-			GetColor(1.0f, 0.0f, 0.0f, alertInfo.alpha) :	//　赤
-			GetColor(1.0f, 1.0f, 0.0f, alertInfo.alpha);	//　黄
-		
-		//	フィルター描画
-		iexPolygon::Rect( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, RS_COPY, color);
+		int color;
+		switch (alertInfo.type)
+		{
+		case ALERT_TYPE_INFO::JAM:
+			//　フィルタ色設定、フィルタ描画、警告画像描画
+			color = GetColor(1.0f, 0.0f, 0.0f, alertInfo.alpha);	//　赤
+			iexPolygon::Rect(0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, RS_COPY, color);
+			RenderImage(alertImage, 0, 0, 256, 256, IMAGE_MODE::NORMAL);
+			break;
 
-		//	警告画像描画
-		(alertInfo.type == ALERT_TYPE_INFO::JAM) ?
-			RenderImage(alertImage, 0, 0, 256, 256, IMAGE_MODE::NORMAL) :
+		case ALERT_TYPE_INFO::COIN:
+			color = GetColor(1.0f, 1.0f, 0.0f, alertInfo.alpha);	//　黄
+			iexPolygon::Rect(0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, RS_COPY, color);
 			RenderImage(alert_coinImage, 0, 0, 256, 256, IMAGE_MODE::NORMAL);
+			break;
+
+			//　ミッションイベント演出
+		case ALERT_TYPE_INFO::MISSION:
+			MissionDirectionRender();
+			break;
+
+		default:	break;
+		}
+
+	}
+
+	//　ミッションイベント演出
+	void	UI::MissionDirectionRender()
+	{
+
 	}
 
 	//	時間警告描画
