@@ -114,9 +114,6 @@
     <Filter Include="ソース ファイル\Screen">
       <UniqueIdentifier>{f549f8e3-6aa3-4b3c-b46d-dd5693a58522}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\EventManager">
-      <UniqueIdentifier>{b3b0d18b-79b1-4ba7-9e23-b152e0b6ef51}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\TextLoader">
       <UniqueIdentifier>{de03cd3a-a7c0-4add-b2fd-7771cd946f2f}</UniqueIdentifier>
     </Filter>
@@ -186,6 +183,12 @@
     </Filter>
     <Filter Include="ソース ファイル\Stage">
       <UniqueIdentifier>{9109e5d6-b65d-40d0-874f-45154ce7e914}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Events">
+      <UniqueIdentifier>{599a5610-f91a-4cf5-907e-ffee01825250}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Events\EventManager">
+      <UniqueIdentifier>{b3b0d18b-79b1-4ba7-9e23-b152e0b6ef51}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -337,7 +340,7 @@
       <Filter>ソース ファイル\Character\CPU\Squirrel</Filter>
     </ClCompile>
     <ClCompile Include="source\EventManager.cpp">
-      <Filter>ソース ファイル\EventManager</Filter>
+      <Filter>ソース ファイル\Events\EventManager</Filter>
     </ClCompile>
     <ClCompile Include="source\textLoader.cpp">
       <Filter>ソース ファイル\TextLoader</Filter>
@@ -401,6 +404,15 @@
     </ClCompile>
     <ClCompile Include="source\Stage.cpp">
       <Filter>ソース ファイル\Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Event_Mission.cpp">
+      <Filter>ソース ファイル\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Event_Jamming.cpp">
+      <Filter>ソース ファイル\Events</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Event_Coin.cpp">
+      <Filter>ソース ファイル\Events</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -507,7 +519,7 @@
       <Filter>ソース ファイル\Character\CPU\Squirrel</Filter>
     </ClInclude>
     <ClInclude Include="source\EventManager.h">
-      <Filter>ソース ファイル\EventManager</Filter>
+      <Filter>ソース ファイル\Events\EventManager</Filter>
     </ClInclude>
     <ClInclude Include="source\textLoader.h">
       <Filter>ソース ファイル\TextLoader</Filter>
@@ -571,6 +583,15 @@
     </ClInclude>
     <ClInclude Include="source\Stage.h">
       <Filter>ソース ファイル\Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Event_Mission.h">
+      <Filter>ソース ファイル\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Event_Jamming.h">
+      <Filter>ソース ファイル\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Event_Coin.h">
+      <Filter>ソース ファイル\Events</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

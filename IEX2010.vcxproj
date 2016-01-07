@@ -111,6 +111,9 @@
   <ItemGroup>
     <ClCompile Include="source\BaseChara.cpp" />
     <ClCompile Include="source\BaseBullet.cpp" />
+    <ClCompile Include="source\Event_Coin.cpp" />
+    <ClCompile Include="source\Event_Jamming.cpp" />
+    <ClCompile Include="source\Event_Mission.cpp" />
     <ClCompile Include="source\Pirate.cpp" />
     <ClCompile Include="source\Pirate_Bullet01.cpp" />
     <ClCompile Include="source\Pirate_Bullet02.cpp" />
@@ -184,6 +187,9 @@
   <ItemGroup>
     <ClInclude Include="source\BaseChara.h" />
     <ClInclude Include="source\BaseBullet.h" />
+    <ClInclude Include="source\Event_Coin.h" />
+    <ClInclude Include="source\Event_Jamming.h" />
+    <ClInclude Include="source\Event_Mission.h" />
     <ClInclude Include="source\Pirate.h" />
     <ClInclude Include="source\Pirate_Bullet01.h" />
     <ClInclude Include="source\Pirate_Bullet02.h" />

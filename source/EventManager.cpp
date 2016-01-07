@@ -9,6 +9,9 @@
 #include	"Particle.h"
 #include	"CoinManager.h"
 #include	"CharacterManager.h"
+#include	"Event_Coin.h"
+#include	"Event_Jamming.h"
+#include	"Event_Mission.h"
 
 #include	"EventManager.h"
 
@@ -22,8 +25,7 @@
 //	グローバル
 //--------------------------------------------------------------------------------
 
-#define	SLOPE_COUNT_MAX	300
-#define	COIN_GETAWAY_COUNT_MAX	600
+
 
 //--------------------------------------------------------------------------------
 //	初期化・解放
@@ -33,83 +35,12 @@
 	bool	EventManager::Initialize( void )
 	{
 		//	変数初期化
-		eventflag = EVENT_MODE::JAM_NONE;
-
-		//	構造体初期化
-		{
-			//-------------------------------------------
-			//　妨害イベント関係
-			//-------------------------------------------
-
-			//	画面傾きイベント初期化
-			{
-				event_Jam_Slope.step = 0;
-				event_Jam_Slope.count = 0;
-				event_Jam_Slope.param = 0.0f;
-				event_Jam_Slope.slope = 0.0f;
-				event_Jam_Slope.eventFlag = false;
-			}
-
-			//	コイン逃走イベント初期化
-			{
-				event_Jam_CoinGetAway.step = 0;
-				event_Jam_CoinGetAway.count = 0;
-				event_Jam_CoinGetAway.eventflag = false;
-		}
-
-			//	スリップイベント初期化
-			{
-				event_Jam_Slip.step = 0;
-				event_Jam_Slip.count = 0;
-				event_Jam_Slip.eventflag = false;
-			}
-
-			//-------------------------------------------
-			//　コインイベント関係
-			//-------------------------------------------
-
-			//　コイン袋
-			{
-				event_Coin_Sack.eventflag = false;
-				event_Coin_Sack.count = 0;
-				event_Coin_Sack.step = 0;
-			}
-
-			//　コインの滝
-			{
-				event_Coin_Fall.eventflag = false;
-				event_Coin_Fall.count = 0;
-				event_Coin_Fall.step = 0;
-			}
-
-			//　コインワッシャァア
-			{
-				event_Coin_Splash.eventflag = false;
-				event_Coin_Splash.count = 0;
-				event_Coin_Splash.step = 0;
-			}
-
-			//　宝石箱
-			{
-				event_Coin_Juelbox.eventflag = false;
-				event_Coin_Juelbox.count = 0;
-				event_Coin_Juelbox.step = 0;
-			}
-
-			//　コインのウェーブ
-			{
-				event_Coin_Wave.eventflag = false;
-				event_Coin_Wave.count = 0;
-				event_Coin_Wave.step = 0;
-			}
-
-			//　コイン２倍
-			{
-				event_Coin_Dubble.eventflag = false;
-				event_Coin_Dubble.count = 0;
-				event_Coin_Dubble.step = 0;
-			}
-		}
+		eventflag = EVENT_MODE::NONE;
+		
+		//　各種イベントパラメータ初期化
+		event_coin->Initialize();
+		event_jamming->Initialize();
+		event_mission->Initialize();
 
 		return	true;
 	}
@@ -127,17 +58,9 @@
 	//	更新
 	void	EventManager::Update( void )
 	{
-		//	カメラ傾き
-		if ( event_Jam_Slope.eventFlag )		Event_Jam_Slope();
-
-		//	コイン逃走
-		if ( event_Jam_CoinGetAway.eventflag )	Event_Jam_CoinGetAway();
-
-		//	スリップ
-		if ( event_Jam_Slip.eventflag )		Event_Jam_Slip();
-
-		//	コインの滝
-		if ( event_Coin_Fall.eventflag )		Event_Coin_Fall();
+		event_coin->Update();
+		event_jamming->Update();
+		event_mission->Update();
 	}
 
 	//	描画
@@ -146,155 +69,6 @@
 
 	}
 
-//--------------------------------------------------------------------------------
-//	動作関数
-//--------------------------------------------------------------------------------
-
-	//	画面が傾く
-	void	EventManager::Event_Jam_Slope(void)
-	{
-		//	パラメータ準備
-		bool	isEnd;
-		static	float	slopeAngle = 0.0f;
-
-		switch ( event_Jam_Slope.step )
-		{
-		case 0:
-			//	初期化
-			slopeAngle = Random::GetFloat( D3DX_PI / 180.0f * -90.0f, D3DX_PI / 180.0f * 90.0f );
-			event_Jam_Slope.step++;
-			break;
-
-		case 1:
-			//	パラメータ加算
-			event_Jam_Slope.param += 0.01f;
-
-			//	パラメータ限度設定
-			if ( event_Jam_Slope.param >= 1.0f )
-			{
-				event_Jam_Slope.param = 1.0f;
-			}
-
-			//	画面を４５度傾ける
-			isEnd = CubicFunctionInterpolation( event_Jam_Slope.slope, 0.0f, slopeAngle, event_Jam_Slope.param );
-
-			//	カメラへ設定
-			mainView->SetSlope( event_Jam_Slope.slope );
-
-			//	傾き終わると次のステップへ
-			if ( isEnd )
-			{
-				event_Jam_Slope.step++;
-			}
-			break;
-
-		case 2:
-			//	数秒待つ
-			event_Jam_Slope.count++;
-
-			if ( event_Jam_Slope.count >= SLOPE_COUNT_MAX )
-			{
-				event_Jam_Slope.count = 0;
-				event_Jam_Slope.param = 0.0f;
-				event_Jam_Slope.step++;
-			}
-			break;
-
-		case 3:
-			//	パラメータ加算
-			event_Jam_Slope.param += 0.01f;
-
-			//	パラメータ限度設定
-			if ( event_Jam_Slope.param >= 1.0f )
-			{
-				event_Jam_Slope.param = 1.0f;
-			}
-
-			//	画面を傾ける
-			isEnd = CubicFunctionInterpolation( event_Jam_Slope.slope, slopeAngle, 0.0f, event_Jam_Slope.param );
-			
-			//	カメラへ設定
-			mainView->SetSlope( event_Jam_Slope.slope );
-			
-			//	傾き終わると次のステップへ
-			if ( isEnd )
-			{
-				event_Jam_Slope.step = 0;
-				event_Jam_Slope.eventFlag = false;
-				event_Jam_Slope.slope = 0.0f;
-				eventflag = EVENT_MODE::JAM_NONE;
-			}
-			break;
-		}
-	} 
-
-	//	コイン逃走
-	void	EventManager::Event_Jam_CoinGetAway(void)
-	{
-		switch ( event_Jam_CoinGetAway.step )
-		{
-		case 0:
-			//	コインの動作切り替え
-			coinManager->SetCoinGetAwayFlag( true );
-			event_Jam_CoinGetAway.step++;
-			break;
-
-		case 1:
-			event_Jam_CoinGetAway.count++;
-			if ( event_Jam_CoinGetAway.count >= COIN_GETAWAY_COUNT_MAX )
-			{
-				event_Jam_CoinGetAway.step++;
-				event_Jam_CoinGetAway.count = 0;
-			}
-			break;
-
-		case 2:
-			coinManager->SetCoinGetAwayFlag( false );
-			event_Jam_CoinGetAway.step = 0;
-			event_Jam_CoinGetAway.eventflag = false;
-			eventflag = EVENT_MODE::JAM_NONE;
-			break;
-		}
-	}
-
-	//	スリップ
-	void	EventManager::Event_Jam_Slip(void)
-	{
-		switch ( event_Jam_Slip.step )
-		{
-		case 0:
-			for ( int i = 0; i < PLAYER_MAX; i++ )
-			{
-				characterManager->SetParameterInfo( i, PARAMETER_STATE::SLIP );
-			}
-			event_Jam_Slip.step++;
-			break;
-
-		case 1:
-			event_Jam_Slip.eventflag = false;
-			event_Jam_Slip.count = 0;
-			event_Jam_Slip.step = 0;
-			break;
-		}
-	}
-
-	//	コインの滝
-	void	EventManager::Event_Coin_Fall( void )
-	{
-		Vector3	pos = Vector3( Random::GetFloat( -20.0f, 20.0f ), 50.0f, Random::GetFloat( -20.0f, 12.0f ) );
-		static	Vector3	vec = Vector3( 0.0f, -1.0f, 0.0f );
-		static	float	power = 1.0f;
-		coinManager->Append( pos, vec, power );
-		event_Coin_Fall.count++;
-
-		if ( event_Coin_Fall.count >= 50 )
-		{
-			event_Coin_Fall.eventflag = false;
-			event_Coin_Fall.count = 0;
-			event_Coin_Fall.step = 0;
-		}
-	}
-	
 //--------------------------------------------------------------------------------
 //	情報取得
 //--------------------------------------------------------------------------------
@@ -320,45 +94,7 @@
 	void	EventManager::SetEvent( int eventflag )
 	{
 		this->eventflag = eventflag;
-		switch ( eventflag )
-		{
-		case EVENT_MODE::JAM_SLOPE_CAMERA:
-			event_Jam_Slope.eventFlag = true;
-			break;
-
-		case EVENT_MODE::JAM_SLIP:
-			event_Jam_Slip.eventflag = true;
-			break;
-
-		case EVENT_MODE::JAM_FALL_BOMB:
-			break;
-
-		case EVENT_MODE::JAM_UFO:
-			break;
-
-		case EVENT_MODE::JAM_COIN_GETAWAY:
-			event_Jam_CoinGetAway.eventflag = true;
-			break;
-
-		case EVENT_MODE::COIN_SACK:
-
-			break;
-
-		case EVENT_MODE::COIN_FALL: 
-			event_Coin_Fall.eventflag = true;
-			break;
-
-		case EVENT_MODE::COIN_SPLASH: 
-			break;
-
-		case EVENT_MODE::COIN_JUELBOX: 
-			break;
-
-		case EVENT_MODE::COIN_WAVE: 
-			break;
-
-		case EVENT_MODE::COIN_DUBBLE: 
-			break;
-
-		}
+		if (EVENT_MODE::JAM_SLOPE_CAMERA <= eventflag && eventflag <= EVENT_MODE::JAM_UFO)	event_jamming->SetEvent(eventflag);
+		else if (EVENT_MODE::COIN_SACK <= eventflag && eventflag <= EVENT_MODE::COIN_DUBBLE)	event_jamming->SetEvent(eventflag);
+		else event_mission->SetEvent(eventflag);
 	}
