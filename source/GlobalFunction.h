@@ -153,7 +153,8 @@
 	bool	WaveUpdate( ImageObj& image, int max_scale = 140, float max_alpha = 1.0f );
 	void	FlashingUpdate( ImageObj& image, float speed = -1.0f );
 	void	SetScaling( ImageObj& image, float speed );
-	void	ScalingUpdate( ImageObj& image, int max_scale = 140 );
+	void	ScalingUpdate(ImageObj& image, int max_scale = 140);
+	void	ScalingAlphaUpdate(ImageObj& image, int max_scale = 140);
 	void	StopScaling( ImageObj& image );
 	
 //----------------------------------------------------------------------
