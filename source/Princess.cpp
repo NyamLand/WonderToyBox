@@ -140,7 +140,7 @@
 		attackInfo.t += 0.02f;
 
 		//	エフェクト
-		particle->FlowerDisseminate( attackInfo.pos, attackInfo.r, Vector3( 1.0f, 0.4f, 0.4f ) );
+		particle->FlowerDisseminate( attackInfo.pos, attackInfo.r, 1.0f, Vector3( 1.0f, 0.4f, 0.4f ) );
 
 		//	無敵状態
 		if ( attackInfo.t <= 0.5f )		unrivaled = true;
@@ -163,6 +163,9 @@
 		//	範囲拡大
 		float t = GetBezier( ePrm_t::eSlow_Lv4, ePrm_t::eRapid_Lv1, attackInfo.t );
 		Lerp( attackInfo.r, 0.0f, 50.0f, t );
+
+		//	エフェクト
+		particle->FlowerDisseminate( attackInfo.pos, attackInfo.r, 2.0f, Vector3( 1.0f, 0.4f, 0.4f ) );
 
 		//	パラメータ加算
 		attackInfo.t += 0.02f;

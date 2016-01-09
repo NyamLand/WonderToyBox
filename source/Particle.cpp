@@ -374,7 +374,7 @@ namespace
 	}
 
 	//	‰Ô‚Î‚ç‚Ü‚«
-	void	Particle::FlowerDisseminate( const Vector3& pos, float scale, const Vector3& color )
+	void	Particle::FlowerDisseminate( const Vector3& pos, float scale, float speed, const Vector3& color )
 	{
 		Vector3	Pos, Move, Power;
 
@@ -391,9 +391,9 @@ namespace
 			Power = Pos - pos;
 			Power.y = 2.0f;
 			Power.Normalize();
-			Power *= 0.0005f * scale;
+			Power *= ( 0.0005f * speed ) * scale;
 
-			pt->Set( FLOWER, 0, 0.0f, 60, 0.0f, 30, 1.0f, &Pos, &Move, &Power, color.x, color.y, color.z, scale * 0.1f, RS_COPY );
+			pt->Set( FLOWER, 0, 0.5f, 60, 1.0f, 30, 0.5f, &Pos, &Move, &Power, color.x, color.y, color.z, scale * 0.1f, RS_COPY );
 		}
 	}
 
