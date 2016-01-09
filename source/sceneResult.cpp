@@ -622,7 +622,7 @@
 			for ( int i = 0; i < 3; i++ )
 			{
 				if ( i == menuInfo.select )	menuImage[i].sx = 512;
-				else									menuImage[i].sx = 0;
+				else										menuImage[i].sx = 0;
 			}
 
 			//	Œˆ’è
@@ -1181,11 +1181,14 @@
 	{
 		if ( !changeScene )	return;
 
+		int	nextRound = gameManager->GetRound() + 1;
+
 		switch ( menuInfo.select )
 		{
 		case MENU::RESTART:
 			//	ƒQ[ƒ€î•ñ‰Šú‰»
 			gameManager->RetryInitialize();
+			gameManager->SetRound( nextRound );
 			MainFrame->ChangeScene( new sceneMain() );
 			return;
 			break;
