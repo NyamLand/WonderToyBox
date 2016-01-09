@@ -970,21 +970,33 @@
 	//	時間警告演出
 	void	UI::LastProduction( void )
 	{
-		ScalingUpdate(timer,100);
-
-		if (gameManager->GetTimer() / SECOND <= 3) last_state = true;
-		if (!last_state)	return;
-		last_t += D3DX_PI / 180 * 1.0f;
-		
-		//	パラメータ上限設定
-		if (last_t >= 1.0f)
-		{
-			last_t = 1.0f;
+		//	30秒～4秒
+		if (!last_state){
+			ScalingUpdate(timer, 100);
+			if (gameManager->GetTimer() / SECOND <= 3)
+			{
+				SetScaling(timer, 1.0f);
+				last_state = true;
+			}
+			return;
 		}
+	
 		
-		Lerp(last_alpha, 1.0f, 0.0f, last_t);
+		//	3秒～0秒
+		if (!timer.scalingFlag)	SetScaling(timer, 1.0f);
+		//timer.w = iexSystem::ScreenWidth / 6;	timer.h = iexSystem::ScreenHeight / 6;
+		ScalingAlphaUpdate(timer, 1000);
+		//last_t += D3DX_PI / 180 * 1.0f;
+		//
+		////	パラメータ上限設定
+		//if (last_t >= 1.0f)
+		//{
+		//	last_t = 1.0f;
+		//}
+		//
+		//Lerp(last_alpha, 1.0f, 0.0f, last_t);
 
-		if (gameManager->GetTimer() % SECOND == 0) last_t = 0.0f;
+		//if (gameManager->GetTimer() % SECOND == 0) last_t = 0.0f;
 
 
 
@@ -1250,9 +1262,10 @@
 		}
 		else
 		{
-			timer.alpha = last_alpha;
+			//timer.alpha = last_alpha;
+			
 			timer.x = iexSystem::ScreenWidth / 2;	timer.y = iexSystem::ScreenHeight / 2;
-			RenderImage(timer, timer.sx * second[1], timer.sy, timer.sw, timer.sh, IMAGE_MODE::ADOPTPARAM);
+			RenderImage(timer, timer.sx * second[1], timer.sy, timer.sw, timer.sh, IMAGE_MODE::SCALING);
 		}
 		//	タイマー文字色を白へ
 		timer.sy = 0;

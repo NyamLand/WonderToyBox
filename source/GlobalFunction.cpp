@@ -366,6 +366,32 @@
 		if (image.t >= 1.0f)		image.t = 0.0f;
 	}
 
+	//	拡大縮小更新
+	void	ScalingAlphaUpdate(ImageObj& image, int max_scale)
+	{
+		if (!image.scalingFlag) return;
+
+		//	パラメータ加算
+		image.t += D3DX_PI / 180 * image.scalingspeed;
+		image.alpha -= D3DX_PI / 180 * image.scalingspeed;
+
+		//-------------------------
+		//	拡大
+		//-------------------------
+		//	パラメータ上限設定
+		if (image.t >= 1.0f)
+		{
+			image.t = 0.0f;
+			image.alpha = 1.0f;
+			image.scalingFlag = false;
+		}
+
+		Lerp(image.plusScaleX, 0, max_scale, image.t);
+		Lerp(image.plusScaleY, 0, max_scale, image.t);
+		
+		if (image.alpha <= 0.0f) image.alpha = 0.0f;
+	}
+
 
 	//	点滅処理
 	void	FlashingUpdate( ImageObj& image, float speed )
