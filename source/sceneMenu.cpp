@@ -44,6 +44,22 @@
 				OPTION,
 			};
 		}
+		namespace CAMERA_TARGET
+		{
+			Vector3 front(0.0f, 0.0f, -1.0f);
+			Vector3 back(0.0f, 0.0f, 1.0f);
+			Vector3 right(-1.0f, 0.0f, 0.0f);
+			Vector3 left(1.0f, 0.0f, 0.0f);
+			Vector3 up(0.0f, 1.0f, 0.0f);
+		}
+		namespace CHECK_MODE
+		{
+			enum
+			{
+				SELECT,
+				MOVETARGET,
+			};
+		}
 	}
 
 //-------------------------------------------------------------------------------
@@ -66,9 +82,21 @@
 	bool	sceneMenu::Initialize( void )
 	{
 		//	camera
+		//背景用構造体初期化
+		bgInfo.t = 1.0f;
+		bgInfo.mt = 0.0f;
 		mainView = new Camera();
-		mainView->SetProjection( D3DXToRadian( 10.0f ), 1.0f, 1000.0f );
-		mainView->Set( Vector3( 0.0f, 5.2f, -70.0f ), Vector3( 0.0, 5.2f, 0.0f ) );
+		//mainView->SetProjection( D3DXToRadian( 45.0f ), 1.0f, 1000.0f );
+		bgInfo.cpos = Vector3(0.0f, 10.0f, 1.0f);
+		bgInfo.cspos = bgInfo.cpos;
+		bgInfo.cepos = Vector3(0.0f, 30.0f, 1.0f);
+		bgInfo.target = bgInfo.cpos + CAMERA_TARGET::front;
+		bgInfo.start	= bgInfo.target;
+		bgInfo.end		= bgInfo.target;
+		bgInfo.moveflg = false;
+		bgInfo.targetflg = false;
+		bgInfo.renderflg = false;
+		mainView->Set(bgInfo.cpos, bgInfo.target);
 
 		//	random
 		Random::Initialize();
@@ -128,10 +156,10 @@
 
 		deskStage = make_unique<iexMesh>( LPSTR( "DATA/BG/stage-desk/stage.IMO" ) );
 		forestStage = make_unique<iexMesh>( LPSTR( "DATA/BG/Forest/model/forest.IMO" ) );
-		BG = make_unique<iexMesh>( LPSTR( "DATA/BG/MenuStage/menu.IMO" ) );
+		BG = make_unique<iexMesh>( LPSTR( "DATA/BG/MenuStage/menustage.IMO" ) );
 
 		//	机モデル初期化
-		BG->SetPos(0.0f, -20.0f, 0.0f);
+		BG->SetPos(0.0f, 0.0f, -1.0f);
 		BG->SetAngle(0.0f, 0.0f, 0.0f);
 		BG->SetScale(0.1f);
 		BG->Update();
@@ -153,6 +181,8 @@
 
 		//BGM設定再生
 		sound->PlayBGM(BGM::TITLE_BGM);
+
+
 
 		//	全体更新
 		Update();
@@ -185,6 +215,21 @@
 	//	更新
 	void	sceneMenu::Update( void )
 	{
+		if (KEY_Get(KEY_D) == 3||KEY_Get(KEY_B6)==3){
+			if (mode != MENU_MODE::OPTION){
+				tempmode = mode;
+				SetMode(MENU_MODE::OPTION);
+			}
+			else if (mode == MENU_MODE::OPTION){
+				SetMode(tempmode);
+			}
+		}
+		bgInfo.t += 0.01f;
+		if (bgInfo.t >= 1.0f)bgInfo.t = 1.0f;
+		bgInfo.targetflg= CubicFunctionInterpolation(bgInfo.target, bgInfo.start, bgInfo.end, bgInfo.t);
+		mainView->SetTarget(bgInfo.target);
+		//	スクリーン更新
+		screen->Update();
 		switch ( mode )
 		{
 		case MENU_MODE::INIT:
@@ -222,18 +267,6 @@
 			OptionUpdate();
 			break;
 		}
-		if (KEY_Get(KEY_D) == 3||KEY_Get(KEY_B6)==3){
-			if (mode != MENU_MODE::OPTION){
-				tempmode = mode;
-				SetMode(MENU_MODE::OPTION);
-			}
-			else if (mode == MENU_MODE::OPTION){
-				SetMode(tempmode);
-			}
-		}
-
-		//	スクリーン更新
-		screen->Update();
 	}
 
 	//	描画
@@ -241,12 +274,13 @@
 	{
 		//	camera
 		mainView->Activate();
-		mainView->Clear();
+		mainView->Clear(0xFFFFFFFF);
 
-		//背景( 一番後ろに表示 )
-		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
-		back->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 1280, 720 );
-		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
+		BG->Render();
+		////背景( 一番後ろに表示 )
+		//iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
+		//back->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 1280, 720 );
+		//iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
 
 		switch ( mode )
 		{
@@ -278,7 +312,7 @@
 		}
 		//	スクリーン
 		screen->Render();
-		//BG->Render();
+
 
 	}
 
@@ -298,6 +332,7 @@
 	//	更新
 	void	sceneMenu::SelectPlayerNumUpdate( void )
 	{
+		if (bgInfo.t < 1.0f)return;
 		//	パラメータ加算
 		playerNumSelectInfo.t += 0.08f;
 		if ( playerNumSelectInfo.t >= 1.0f )	playerNumSelectInfo.t = 1.0f;	
@@ -342,6 +377,9 @@
 			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
 			{
 				gameManager->SetPlayerNum( playerNumSelectInfo.num + 1 );
+				bgInfo.start = bgInfo.cpos + CAMERA_TARGET::front;
+				bgInfo.end = bgInfo.cpos + CAMERA_TARGET::right;
+				bgInfo.t = 0.0f;
 				SetMode( MENU_MODE::SELECT_CHARACTER );
 			}
 		}
@@ -358,6 +396,7 @@
 	//	描画
 	void	sceneMenu::SelectPlayerNumRender( void )
 	{
+		if (bgInfo.t < 1.0f)return;
 		int x = static_cast<int>( iexSystem::ScreenWidth * 0.28f );
 		int y = static_cast<int>( iexSystem::ScreenHeight * 0.4f );
 		int w = static_cast<int>( iexSystem::ScreenWidth * 0.08f );
@@ -426,6 +465,7 @@
 	//	キャラクター選択
 	void	sceneMenu::SelectCharacterUpdate( void )
 	{
+		if (bgInfo.t < 1.0f)return;
 		//	各プレイヤー動作
 		FOR( 0, characterSelectInfo.playerNum )
 		{
@@ -466,6 +506,9 @@
 		{
 			if ( KEY( KEY_B ) == 3 )
 			{
+				bgInfo.t = 0.0f;
+				bgInfo.start = bgInfo.cpos + CAMERA_TARGET::right;
+				bgInfo.end = bgInfo.cpos + CAMERA_TARGET::front;
 				SetMode( MENU_MODE::SELECT_PLAYERNUM );
 			}
 		}
@@ -484,6 +527,9 @@
 			}
 
 			//	ステージ選択へ
+			bgInfo.t = 0.0f;
+			bgInfo.start = bgInfo.cpos + CAMERA_TARGET::right;
+			bgInfo.end = bgInfo.cpos + CAMERA_TARGET::back;
 			SetMode( MENU_MODE::SELECT_STAGE );
 		}
 
@@ -499,6 +545,7 @@
 	//	キャラクター選択描画
 	void	sceneMenu::SelectCharacterRender( void )
 	{
+		if (bgInfo.t < 1.0f)return;
 		//	テキスト画像
 		RenderImage( textImage, 512, 0, 512, 256, IMAGE_MODE::ADOPTPARAM );
 
@@ -552,6 +599,7 @@
 	//	ステージ選択
 	void	sceneMenu::SelectStageUpdate( void )
 	{
+		if (bgInfo.t < 1.0f)return;
 		//	ステージ回転
 		stageSelectInfo.angle += 0.01f;
 
@@ -599,12 +647,18 @@
 			deskStage->SetAngle( D3DXToRadian( 5.0f ), D3DX_PI, 0.0f );
 
 			//	次のモードへ
+			bgInfo.t = 0.0f;
+			bgInfo.start = bgInfo.cpos + CAMERA_TARGET::back;
+			bgInfo.end = bgInfo.cpos + CAMERA_TARGET::left;
 			SetMode( MENU_MODE::SELECT_CHECK );
 		}
 
 		//	キャンセル
 		if ( KEY( KEY_B ) == 3 )
 		{
+			bgInfo.t = 0.0f;
+			bgInfo.start = bgInfo.cpos + CAMERA_TARGET::back;
+			bgInfo.end = bgInfo.cpos + CAMERA_TARGET::right;
 			SetMode( MENU_MODE::SELECT_CHARACTER );
 		}
 
@@ -616,6 +670,7 @@
 	//	ステージ選択描画
 	void	sceneMenu::SelectStageRender( void )
 	{
+		if (bgInfo.t < 1.0f)return;
 		//	テキスト画像描画(背面に描画)
 		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
 		RenderImage( textImage, 0, 256, 512, 256, IMAGE_MODE::ADOPTPARAM );
@@ -683,22 +738,46 @@
 	//	最終確認
 	void	sceneMenu::SelectCheckUpdate( void )
 	{
+		if ( bgInfo.t < 1.0f )return;
+		switch (checkSelectInfo.step)
+		{
+		case CHECK_MODE::SELECT:
 		//	決定（はい：メインへ、いいえ：キャラ選択へ）
 		if ( input[0]->Get( KEY_A ) == 3 || input[0]->Get( KEY_SPACE ) == 3 )
 		{
-			if ( !checkSelectInfo.check )	checkSelectInfo.check = true;
+			//	確認表示
+			if ( !checkSelectInfo.check )
+			{
+				checkSelectInfo.check = true;
+			}
 			else
 			{
-				if ( !checkSelectInfo.select )
+				//	はい・いいえ
+				if ( !checkSelectInfo.select )	//	はい
 				{
-					SetMode( MENU_MODE::MOVE_MAIN );
-				}
-				else
+					bgInfo.t = 0.0f;
+					bgInfo.targetflg = false;
+					bgInfo.start = bgInfo.end;
+					bgInfo.end = bgInfo.cpos + CAMERA_TARGET::up;
+					checkSelectInfo.step = CHECK_MODE::MOVETARGET;
+						//SetMode(MENU_MODE::MOVE_MAIN);
+					
+				}				
+				else //いいえ
 				{
-					SetMode( MENU_MODE::SELECT_CHARACTER );
+					bgInfo.t = 0.0f;
+					bgInfo.start = bgInfo.cpos + CAMERA_TARGET::left;
+					bgInfo.end = bgInfo.cpos + CAMERA_TARGET::back;
+					if (bgInfo.t >= 1.0f){
+						bgInfo.t = 0.0f;
+						bgInfo.start = bgInfo.cpos + CAMERA_TARGET::back;
+						bgInfo.end = bgInfo.cpos + CAMERA_TARGET::right;
+						SetMode( MENU_MODE::SELECT_CHARACTER );
+					}
 				}
 			}
 		}
+
 
 		//	選択中動作(カーソル移動, キャンセル)
 		if ( checkSelectInfo.check )
@@ -719,7 +798,11 @@
 			//	キャンセルでステージ選択へ
 			if ( input[0]->Get( KEY_B ) == 3 )
 			{
+				bgInfo.t = 0.0f;
+				bgInfo.start = bgInfo.cpos + CAMERA_TARGET::left;
+				bgInfo.end = bgInfo.cpos + CAMERA_TARGET::back;
 				SetMode( MENU_MODE::SELECT_STAGE );
+				return;
 			}
 		}
 
@@ -729,11 +812,21 @@
 			obj[value]->Animation();
 			obj[value]->Update();
 		}
+		break;
+
+		case  CHECK_MODE::MOVETARGET:
+			if (bgInfo.t >= 1.0f)
+			{
+				SetMode(MENU_MODE::MOVE_MAIN);
+			}
+			break;
+		}
 	}
 
 	//	最終確認描画
 	void	sceneMenu::SelectCheckRender( void )
 	{
+		if (bgInfo.t < 1.0f/*||bgInfo.renderflg*/)return;
 		//	ステージ描画
 		switch ( gameManager->GetStageType() )
 		{
@@ -799,11 +892,17 @@
 	//	メインへ
 	void	sceneMenu::MoveMainUpdate( void )
 	{
-		if ( screen->GetScreenState() )
-		{
-			MainFrame->ChangeScene( new sceneLoad( new sceneMain() ) );
-			return;
-		}
+		if (bgInfo.t < 1.0)return;
+			bgInfo.mt += 0.01f;
+			if (bgInfo.mt >= 1.0f)bgInfo.mt = 1.0f;
+			if (CubicFunctionInterpolation(bgInfo.cpos.y, bgInfo.cspos.y, bgInfo.cepos.y, bgInfo.mt)){
+				if ( screen->GetScreenState() )
+				{
+					MainFrame->ChangeScene( new sceneLoad( new sceneMain() ) );
+					return;
+				}
+			}
+		
 	}
 
 	//	メイン移動描画
