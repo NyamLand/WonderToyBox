@@ -6,6 +6,8 @@
 #include	"CharacterManager.h"
 #include	"GameManager.h"
 #include	"sceneTitle.h"
+#include	"EventManager.h"
+
 #include	"UI.h"
 
 //****************************************************************************************
@@ -52,10 +54,6 @@
 			};
 		}
 
-		
-
-		
-
 		//　どんけつ演出用
 		namespace DD_TIMING
 		{
@@ -67,6 +65,19 @@
 			const int P_LOCK		= P_START - 1 * SECOND - 30;
 			const int FIGHT_START	= P_LOCK - 20;
 			const int FIGHT_LOCK	= FIGHT_START - 1 * SECOND - 30;
+		}
+
+		namespace EVENT_TEX_INFO
+		{
+			enum 
+			{
+				C_FALL,
+				C_WAVE,
+				C_DUBBLE,
+				J_CAMERA,
+				J_SLIP,
+				J_GETAWAY
+			};
 		}
 	}
 
@@ -211,7 +222,7 @@
 		titleInfo.moveState = false;
 		titleInfo.savePos = 0;
 
-		AirPlaneInitialize();
+		AirPlaneInitialize(airPlaneInfo);
 	}
 
 	//	メイン用初期化
@@ -249,6 +260,7 @@
 		PlayerNumberInitialize();
 		LifeInitialize();
 		RoundInitialize();
+		EventInitialize();
 	}
 
 	//	リザルト用初期化
@@ -285,6 +297,7 @@
 		SafeDelete( life );
 		SafeDelete( pCoinNumImage );
 		SafeDelete( roundImage.obj );
+
 	}
 
 	//	リザルト用解放
@@ -370,6 +383,7 @@
 			NewsBarUpdate();
 			//CoinBarUpdate();
 			CoinNumberUpdate();
+			EventUpdate();
 			break;
 
 		case GAME_MODE::DONKETSU_DIRECTION:
@@ -382,8 +396,9 @@
 			//CoinBarUpdate();
 			CoinNumberUpdate();
 			LastProduction();
+			EventUpdate();
 
-			//　どんけつの顔は「怒」に。（時間管理してるとこで↓の処理書きたいけどこれから変更ありそうやからとりあえずここに書いてる許してニャンっ♪）
+			//　どんけつの顔は「怒」に
 			state_type[gameManager->GetWorst()] = FACE_INFO::Angry;
 			break;
 
@@ -431,6 +446,7 @@
 			NewsBarRender();
 			//CoinBarRender();
 			CoinNumberRender();
+			EventRender();
 			break;
 
 		case GAME_MODE::DONKETSU_DIRECTION:
@@ -447,6 +463,7 @@
 			NewsBarRender();
 			//CoinBarRender();
 			CoinNumberRender();
+			EventRender();
 
 			break;
 
@@ -469,16 +486,16 @@
 //------------------------------------------------------------------------------
 
 	//	飛行機初期化
-	void	UI::AirPlaneInitialize( void )
+	void	UI::AirPlaneInitialize(AIRPLANE_INFO out)
 	{
-		airPlaneInfo.IN_START_POS_X = static_cast<int>(iexSystem::ScreenWidth * 1.5f);
-		airPlaneInfo.IN_START_POS_Y = static_cast<int>(iexSystem::ScreenHeight * -0.13f);
-		airPlaneInfo.IN_END_POS_X = static_cast<int>(iexSystem::ScreenWidth * 0.5f);
-		airPlaneInfo.IN_END_POS_Y = static_cast<int>(iexSystem::ScreenHeight * 0.2f);
-		airPlaneInfo.OUT_START_POS_X = static_cast<int>(iexSystem::ScreenWidth * 0.5f);
-		airPlaneInfo.OUT_END_POS_X = static_cast<int>(iexSystem::ScreenWidth * -0.55f);
-		airPlaneInfo.OUT_END_POS_Y = static_cast<int>( iexSystem::ScreenHeight * -0.13f );
-		airPlaneInfo.ROLL_POINT_ADJUST_X = 200;
+		out.IN_START_POS_X = static_cast<int>(iexSystem::ScreenWidth * 1.5f);
+		out.IN_START_POS_Y = static_cast<int>(iexSystem::ScreenHeight * -0.13f);
+		out.IN_END_POS_X = static_cast<int>(iexSystem::ScreenWidth * 0.5f);
+		out.IN_END_POS_Y = static_cast<int>(iexSystem::ScreenHeight * 0.2f);
+		out.OUT_START_POS_X = static_cast<int>(iexSystem::ScreenWidth * 0.5f);
+		out.OUT_END_POS_X = static_cast<int>(iexSystem::ScreenWidth * -0.55f);
+		out.OUT_END_POS_Y = static_cast<int>(iexSystem::ScreenHeight * -0.13f);
+		out.ROLL_POINT_ADJUST_X = 200;
 	}
 
 	//	飛んでくる
@@ -770,6 +787,17 @@
 		int	sh = 128;
 		ImageInitialize( roundImage, x, y, w, h, sx, sy, sw, sh );
 		//roundImage.angle = D3DXToRadian( -30.0f );
+	}
+
+	//　イベント情報初期化
+	void	UI::EventInitialize(void)
+	{
+		eventInfo.mode = 0;
+		eventInfo.texture.obj = new iex2DObj("DATA/UI/Event-int.png");
+		AirPlaneInitialize(eventInfo.airPlane);
+		int w = static_cast<int>(iexSystem::ScreenWidth * 0.6f);
+		int h = static_cast<int>(iexSystem::ScreenHeight * 0.14f);
+		ImageInitialize(eventInfo.texture, eventInfo.airPlane.IN_START_POS_X, eventInfo.airPlane.IN_START_POS_Y, w, h, 0, 0, 1024, 128);
 	}
 	
 //------------------------------------------------------------------------------
@@ -1125,6 +1153,29 @@
 		}
 	}
 
+	//　イベントのUI（飛行機挙動）
+	void	UI::EventUpdate()
+	{
+		bool isEnd = !eventManager->GetEventFlag();
+		if (isEnd)	return;
+
+		int eventmode = eventManager->GetEvent();
+		switch (eventmode)
+		{
+		case EVENT_MODE::COIN_FALL:			eventInfo.mode = EVENT_TEX_INFO::C_FALL;	break;
+		case EVENT_MODE::COIN_WAVE:			eventInfo.mode = EVENT_TEX_INFO::C_WAVE;	break;
+		case EVENT_MODE::COIN_DUBBLE:		eventInfo.mode = EVENT_TEX_INFO::C_DUBBLE;	break;
+		case EVENT_MODE::JAM_SLOPE_CAMERA:	eventInfo.mode = EVENT_TEX_INFO::J_CAMERA;	break;
+		case EVENT_MODE::JAM_SLIP:			eventInfo.mode = EVENT_TEX_INFO::J_SLIP;	break;
+		case EVENT_MODE::JAM_COIN_GETAWAY:	eventInfo.mode = EVENT_TEX_INFO::J_GETAWAY; break;
+		default:	break;
+		}
+
+		eventInfo.texture.x = 100;
+		eventInfo.texture.y = 100;
+		eventInfo.texture.sy = eventInfo.mode * 128;
+	}
+
 //------------------------------------------------------------------------------
 //	メイン描画
 //------------------------------------------------------------------------------
@@ -1326,6 +1377,13 @@
 	void	UI::RoundRender( void )
 	{
 		RenderImage( roundImage, roundImage.sx, roundImage.sy, roundImage.sw, roundImage.sh, IMAGE_MODE::ADOPTPARAM );
+	}
+
+	//	イベント関連情報描画（飛行機表示）
+	void	UI::EventRender(void)
+	{
+		if (eventManager->GetEventFlag())
+			RenderImage(eventInfo.texture, eventInfo.texture.sx, eventInfo.texture.sy, eventInfo.texture.sw, eventInfo.texture.sh, IMAGE_MODE::ADOPTPARAM);
 	}
 
 //------------------------------------------------------------------------------

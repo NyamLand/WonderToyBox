@@ -55,13 +55,25 @@ void	Event_Jamming::Release(void)
 void	Event_Jamming::Update(void)
 {
 	//	カメラ傾き
-	if (m_Slope.eventFlag)		Slope();
+	if (m_Slope.eventFlag)
+	{
+		Slope();
+		eventManager->SetEventFlag(m_Slope.eventFlag);
+	}
 
 	//	コイン逃走
-	if (m_CoinGetAway.eventflag)	CoinGetAway();
+	if (m_CoinGetAway.eventflag)
+	{
+		CoinGetAway();
+		eventManager->SetEventFlag(m_CoinGetAway.eventflag);
+	}
 
 	//	スリップ
-	if (m_Slip.eventflag)		Slip();
+	if (m_Slip.eventflag)
+	{
+		Slip();
+		eventManager->SetEventFlag(m_Slip.eventflag);
+	}
 }
 
 void	Event_Jamming::Render(void)

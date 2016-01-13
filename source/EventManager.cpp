@@ -24,7 +24,7 @@
 //--------------------------------------------------------------------------------
 //	グローバル
 //--------------------------------------------------------------------------------
-
+bool EventManager::eventFlag = false;
 
 
 //--------------------------------------------------------------------------------
@@ -35,7 +35,8 @@
 	bool	EventManager::Initialize( void )
 	{
 		//	変数初期化
-		eventflag = EVENT_MODE::NONE;
+		eventMode = EVENT_MODE::NONE;
+		eventFlag = false;
 		
 		//　各種イベントパラメータ初期化
 		event_coin->Initialize();
@@ -66,6 +67,8 @@
 	//	描画
 	void	EventManager::Render( void )
 	{
+		
+		//RenderImage()
 
 	}
 
@@ -83,18 +86,30 @@
 	//	発動中のイベントを取得
 	int		EventManager::GetEvent( void )const
 	{
-		return	eventflag;
+		return	eventMode;
+	}
+
+	//　イベント発動中かどうかのフラグを取得
+	bool	EventManager::GetEventFlag(void)const
+	{
+		return	eventFlag;
 	}
 
 //--------------------------------------------------------------------------------
 //	情報設定
 //--------------------------------------------------------------------------------
 
-	//	イベントフラグ設定
-	void	EventManager::SetEvent( int eventflag )
+	//	イベントモード設定
+	void	EventManager::SetEvent( int eventMode )
 	{
-		this->eventflag = eventflag;
-		if (EVENT_MODE::JAM_SLOPE_CAMERA <= eventflag && eventflag <= EVENT_MODE::JAM_UFO)	event_jamming->SetEvent(eventflag);
-		else if (EVENT_MODE::COIN_SACK <= eventflag && eventflag <= EVENT_MODE::COIN_DUBBLE)	event_coin->SetEvent(eventflag);
-		else event_mission->SetEvent(eventflag);
+		this->eventMode = eventMode;
+		if (EVENT_MODE::JAM_SLOPE_CAMERA <= eventMode && eventMode <= EVENT_MODE::JAM_UFO)	event_jamming->SetEvent(eventMode);
+		else if (EVENT_MODE::COIN_SACK <= eventMode && eventMode <= EVENT_MODE::COIN_DUBBLE)	event_coin->SetEvent(eventMode);
+		else event_mission->SetEvent(eventMode);
+	}
+
+	//	イベントフラグ設定
+	void	EventManager::SetEventFlag(bool eventFlag)
+	{
+		this->eventFlag = eventFlag;
 	}
