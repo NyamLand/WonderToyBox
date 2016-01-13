@@ -50,6 +50,7 @@ private:
 		int		step;
 	};
 
+public:
 	struct DUBBLE
 	{
 		bool	eventflag;
@@ -87,6 +88,7 @@ public:
 	//	î•ñæ“¾
 	static	Event_Coin*	GetInstance(void);
 	int		GetEvent(void)const;
+	DUBBLE	GetDubbleInst();
 
 	//	î•ñİ’è
 	void	SetEvent(int eventflag);

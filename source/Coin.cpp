@@ -9,6 +9,7 @@
 #include	"Stage.h"
 #include	"Sound.h"
 #include	"Particle.h"
+#include	"Event_Coin.h"
 
 #include	"Coin.h"
 
@@ -239,6 +240,7 @@
 		float	effectScale = 0.2f;
 		particle->Spark( pos, effectScale );
 		gameManager->AddCoin( Num );
+		if (event_coin->GetDubbleInst().eventflag) gameManager->AddCoin(Num);
 		sound->PlaySE( SE::COIN_SE );
 	}
 
