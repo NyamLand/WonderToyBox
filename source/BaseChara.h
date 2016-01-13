@@ -17,6 +17,7 @@ namespace
 	{
 		enum
 		{
+			UNRIVALED,
 			SLIP,
 			BOOST,
 			OUTRAGE,
@@ -155,6 +156,7 @@ protected:
 		Vector3	pos;
 		Vector3	top;
 		Vector3	bottom;
+		int		addParam;	//追加効果
 		float	r;
 		float	t;
 	};
@@ -194,6 +196,7 @@ protected:
 		float	drag;
 	};
 
+
 	//	plusStatus情報
 	struct PLUS_STATUS_INFO
 	{
@@ -229,7 +232,6 @@ protected:
 	float				diffence;
 	float				jumpPower;
 	float				dt;
-	bool				unrivaled;
 	bool				isGround;
 	bool				canHyper;
 	//bool			boosting;	//　→ PARAMETER_INFO型の boost
@@ -252,11 +254,12 @@ protected:
 	ATTACK_INFO				attackInfo;
 	KNOCKBACK_INFO			knockBackInfo;
 	AI_INFO						aiInfo;
-	SLIP_INFO						slipInfo;
+	SLIP_INFO					slipInfo;
 	PLUS_STATUS_INFO		plusStatusInfo;
 	SHADOW_INFO				shadow;
 
 	//	状態	
+	PARAMETER_INFO		unrivaled;
 	PARAMETER_INFO		slip;
 	PARAMETER_INFO		boost;
 	PARAMETER_INFO		outrage;
@@ -314,6 +317,7 @@ public:
 	void	SubLife( void );
 
 	//	パラメータ状態動作
+	void	Unrivaled(void);
 	void	ParameterInfoUpdate( void );
 	void	AttackUp( void );
 	void	EventSlip( void );
@@ -323,7 +327,7 @@ public:
 	void	Respawn( void );
 	void	Magnet( void );
 	void	SpeedUp( void );
-	void	Unrivaled( void );
+	void	ItemUnrivaled( void );
 
 	//	子クラスで実装
 	virtual	bool	QuickArts( void ) = 0;
@@ -385,11 +389,12 @@ public:
 	float		GetAngle( void )const;
 	float		GetAngle( Vector3 vec1, Vector3 vec2 )const;
 	float		GetScale( void )const;
+	int			GetAttack_addParam(void)const;
 	float		GetAttack_R( void )const;
 	float		GetAttack_T( void )const;
 	//float	GetSpeed( void )const;
 	float		GetTotalSpeed( void )const;
-	bool		GetUnrivaled( void )const;
+	//bool		GetUnrivaled( void )const;
 	bool		GetCanHyper( void )const;
 	bool		GetParameterState( int type )const;
 	int		GetPower( void )const;

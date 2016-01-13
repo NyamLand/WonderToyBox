@@ -8,6 +8,7 @@
 #include	"CharacterManager.h"
 #include	"Particle.h"
 #include	"CoinManager.h"
+#include	"Stage.h"
 
 #include	"BaseBullet.h"
 
@@ -87,7 +88,7 @@ state(true), activate(true)
 	//	ステージ当たり判定チェック
 	bool	BaseBullet::StageCollisionCheck(void)
 	{
-		float work = Collision::GetHeight( pos );
+		float work = stage->GetHeight( pos );
 
 		if ( pos.y <= work )
 		{

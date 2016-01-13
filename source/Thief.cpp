@@ -171,7 +171,7 @@ bool	Thief::PowerArts(void)
 bool	Thief::HyperArts(void)
 {
 	power = HYPER;
-	unrivaled = true;
+	SetParameterState(PARAMETER_STATE::UNRIVALED);
 	move = Vector3(0, 0 - GRAVITY, 0);	//åÇÇ¡ÇƒÇÈä‘ÇÕê√é~Ç≥ÇπÇÈ
 
 	static int time = 0;

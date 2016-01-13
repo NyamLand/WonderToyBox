@@ -185,7 +185,7 @@
 		power = POWER;
 
 		//	–³“G
-		unrivaled = true;
+		SetParameterState(PARAMETER_STATE::UNRIVALED);
 
 		//	î•ñæ“¾
 		Vector3	p_pos = GetPos();

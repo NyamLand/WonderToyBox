@@ -199,7 +199,7 @@
 			{
 				//	自分か相手が無敵状態だとつぎへ
 				if ( i == n )	continue;
-				if ( character[n]->GetUnrivaled() )	continue;
+				if ( character[n]->GetParameterState(PARAMETER_STATE::UNRIVALED) )	continue;
 
 				//	タイプ別当たり判定
 				switch ( attackParam )
@@ -248,11 +248,16 @@
 			}
 			
 			//	無敵にする
-			if ( bc2->GetUnrivaled() )	return;
-			bc2->SetUnrivaled( true );
+			if (bc2->GetParameterState(PARAMETER_STATE::UNRIVALED))	return;
+			bc2->SetParameterState(PARAMETER_STATE::UNRIVALED);
+
+
+			int addParam = bc1->GetAttack_addParam();
+			bc2->SetParameterState(addParam);
 
 			//	ライフ減らす
-			bc2->SubLife();
+			int power = bc1->GetPower();
+			FOR_LIST(0, power) bc2->SubLife();
 
 			//	エフェクトだす
 			float	effectScale = 1.0f;
@@ -274,7 +279,7 @@
 
 			//	プレイヤー番号取得とばらまきパワー設定
 			//float	power = 0.2f;
-			float	power = bc1->GetTotalPower()*0.1f;
+			float	totalpower = bc1->GetTotalPower()*0.1f;
 			int		dropCoin = bc1->GetTotalPower();
 			int		bc2_Num = bc2->GetPlayerNum();
 			int		bc2_coinNum = gameManager->GetCoinNum( bc2_Num );
@@ -283,7 +288,7 @@
 			for (int i = 0; i < dropCoin; i++)
 			{
 				if (bc2_coinNum <= 0) break;
-				coinManager->Append( bc2_top, vec, power );
+				coinManager->Append(bc2_top, vec, totalpower);
 				gameManager->SubCoin(bc2_Num);
 
 			}
@@ -316,11 +321,12 @@
 			if (bc1->GetMode() == MODE_STATE::HYPERARTS){};
 			
 			//	無敵状態取得・設定
-			if ( bc2->GetUnrivaled() )	return;
+			if (bc2->GetParameterState(PARAMETER_STATE::UNRIVALED))	return;
 			bc2->SetUnrivaled( true );
 
 			//	ライフ減らす
-			bc2->SubLife();
+			int power = bc1->GetPower();
+			FOR_LIST(0, power) bc2->SubLife();
 
 			//	エフェクトだす
 			float	effectScale = 1.0f;
@@ -343,7 +349,7 @@
 
 			//	プレイヤー番号取得とばらまきパワー設定
 			//float	power = 0.15f;
-			float	power = bc1->GetTotalPower()*0.1f;
+			float	totalpower = bc1->GetTotalPower()*0.1f;
 			int		dropCoin = bc1->GetTotalPower();
 			int		bc2_Num = bc2->GetPlayerNum();
 			int		bc2_coinNum = gameManager->GetCoinNum(bc2_Num);
@@ -352,7 +358,7 @@
 			for (int i = 0; i < dropCoin; i++)
 			{
 				if (bc2_coinNum <= 0) break;
-				coinManager->Append( bc2_top, vec, power );
+				coinManager->Append(bc2_top, vec, totalpower);
 				gameManager->SubCoin( bc2_Num );
 
 			}
@@ -594,7 +600,7 @@
 	//	無敵状態取得
 	bool		CharacterManager::GetUnrivaled( int player )const
 	{
-		return	character[player]->GetUnrivaled();
+		return	character[player]->GetParameterState(PARAMETER_STATE::UNRIVALED);
 	}
 
 	//	スリップ状態取得
