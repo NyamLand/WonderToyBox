@@ -36,6 +36,26 @@
 			};
 		}
 
+		namespace RESULT_MODE
+		{
+			enum
+			{
+				ROULETTE,
+				LASTBONUS,
+				RANK,
+				RANK_SKIP,
+			};
+		}
+
+		namespace SELECT_MODE
+		{
+			enum
+			{
+				DOWN,
+				SELECT,
+			};
+		}
+
 		namespace MENU
 		{
 			enum
@@ -476,6 +496,13 @@
 		back->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 1280, 720 );
 		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
 
+		//	プレイヤー描画
+		FOR( 0, PLAYER_MAX )
+		{
+			//	プレイヤー描画
+			obj[value]->Render( shader3D, "toon" );
+		}
+
 		//	リザルトシール描画
 		RenderImage( menuHead, menuHead.sx, menuHead.sy, menuHead.sw, menuHead.sh, IMAGE_MODE::ADOPTPARAM );
 
@@ -529,12 +556,6 @@
 		//	ステージ描画
 		bgStage->Render();
 
-		//	プレイヤー描画
-		FOR( 0, PLAYER_MAX )
-		{
-			//	プレイヤー描画
-			obj[value]->Render( shader3D, "toon" );
-		}
 
 		//	リザルト用
 
@@ -565,90 +586,25 @@
 	//	リザルト時の更新
 	void	sceneResult::ResultUpdate( void )
 	{
-		bool	isEnd = false;
-		bool	isFinViewRankInOrder = false; 
-		bool	isEndWave = false;
-
 		//	段階ごとの処理
 		switch ( step )
 		{
-		case 0:
-			//-----------------------------------------------------------------------------------
-			//	ルーレット
-			//-----------------------------------------------------------------------------------
-				isEnd = Roulette();
-
-				//	決定ボタンでスキップ
-				if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
-				{
-					FOR( 0, PLAYER_MAX )
-					{
-						SetNumberImageInfo( value, originInfo[value].num );
-						SetWave( rankImage[value], 1.5f );
-						rankImage[value].renderflag = true;
-					}	
-					step = 3;
-				}
-
-				//	回転が終了したら
-				if ( isEnd )		step = 2;
-				break;
+		case RESULT_MODE::ROULETTE:
+			ModeRoulette();
+			break;
 		
-		case 1:
-			//-----------------------------------------------------------------------------------
-			//	ラストボーナス演出
-			//-----------------------------------------------------------------------------------
-			isEnd = LastBonusUpdate();
-			if ( isEnd )	step++;
+		case RESULT_MODE::LASTBONUS:
+			ModeLastBonus();
 			break;
 			
-		case 2:
-			//-----------------------------------------------------------------------------------
-			//	順位発表
-			//-----------------------------------------------------------------------------------
-				isFinViewRankInOrder = ViewRankInOrder();
-				isEnd = RankWave();
+		case RESULT_MODE::RANK:
+			ModeRank();
+			break;
 
-				//	決定ボタンでスキップ
-				if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
-				{
-					FOR( 0, PLAYER_MAX )
-					{
-						SetNumberImageInfo( value, originInfo[value].num );
-						SetWave( rankImage[value], 1.5f );
-						rankImage[value].renderflag = true;
-					}
-					step = 3;
-				}
-
-				//	波紋終了後に選択可
-				if ( isFinViewRankInOrder && isEnd )
-				{
-					if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
-					{
-						step = 0;
-						mode = MOVE_MODE::SELECT;
-					}
-				}
-				break;
-
-		case 3:
-			//-----------------------------------------------------------------------------------
-			//	順位発表(スキップ用)
-			//-----------------------------------------------------------------------------------
-				FOR( 0, PLAYER_MAX )	isEnd = WaveUpdate( rankImage[value] );
-
-				//	波紋終了後に選択可
-				if ( isEnd )
-				{
-					if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
-					{
-						step = 0;
-						mode = MOVE_MODE::SELECT;
-					}
-				}
-				break;
-			}
+		case RESULT_MODE::RANK_SKIP:
+			ModeRankSkip();
+			break;
+		}
 	}
 
 	//	セレクト時の更新
@@ -658,39 +614,13 @@
 
 		switch ( step )
 		{
-		case 0:
-			menuInfo.t += 0.03f;
-			if ( menuInfo.t >= 1.0f )
-			{
-				menuInfo.t = 1.0f;
-				
-				//	メニュー項目描画
-				for ( int i = 0; i < 3; i++ )		menuImage[i].renderflag = true;
-			}
-			isEnd = Lerp( menuInfo.screenH, 0, static_cast<int>( iexSystem::ScreenHeight ), menuInfo.t );
-
+		case SELECT_MODE::DOWN:
+			isEnd = DownPolygon();
 			if ( isEnd )step++;
 			break;
 
-		case 1:
-			//	上下で選択
-			if ( input[0]->Get( KEY_UP ) == 3 )		menuInfo.select--;
-			if ( input[0]->Get( KEY_DOWN ) == 3 )	menuInfo.select++;
-			if ( menuInfo.select < 0 )						menuInfo.select = MENU::END - 1;
-			if ( menuInfo.select >= MENU::END )		menuInfo.select = MENU::RESTART;
-			
-			//	読み込み位置変更
-			for ( int i = 0; i < 3; i++ )
-			{
-				if ( i == menuInfo.select )	menuImage[i].sx = 512;
-				else										menuImage[i].sx = 0;
-			}
-
-			//	決定
-			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
-			{
-				changeScene = true;
-			}
+		case SELECT_MODE::SELECT:
+			ControlCursor();
 			break;
 		}
 	}
@@ -1570,5 +1500,145 @@
 		}
 
 		return	false;
+	}
+
+//----------------------------------------------------------------------------
+//	リザルトモード関数
+//----------------------------------------------------------------------------
+
+	//	ルーレット
+	void	sceneResult::ModeRoulette( void )
+	{
+		bool	isEnd = false;
+		//-----------------------------------------------------------------------------------
+		//	ルーレット
+		//-----------------------------------------------------------------------------------
+		isEnd = Roulette();
+
+		//	決定ボタンでスキップ
+		if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+		{
+			FOR( 0, PLAYER_MAX )
+			{
+				SetNumberImageInfo( value, originInfo[value].num );
+				SetWave( rankImage[value], 1.5f );
+				rankImage[value].renderflag = true;
+			}
+			step = RESULT_MODE::RANK_SKIP;
+		}
+
+		//	回転が終了したら
+		if ( isEnd )		step = RESULT_MODE::RANK;
+	}
+	
+	//	ラストボーナス発表
+	void	sceneResult::ModeLastBonus( void )
+	{
+		bool	isEnd = false;
+		//-----------------------------------------------------------------------------------
+		//	ラストボーナス演出
+		//-----------------------------------------------------------------------------------
+		isEnd = LastBonusUpdate();
+		if ( isEnd )	step++;
+	}
+
+	//	ランク発表
+	void	sceneResult::ModeRank( void )
+	{
+		bool	isEnd = false;
+		bool	isFinViewRankInOrder = false;
+		bool	isEndWave = false;
+		//-----------------------------------------------------------------------------------
+		//	順位発表
+		//-----------------------------------------------------------------------------------
+		isFinViewRankInOrder = ViewRankInOrder();
+		isEnd = RankWave();
+
+		//	決定ボタンでスキップ
+		if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+		{
+			FOR( 0, PLAYER_MAX )
+			{
+				SetNumberImageInfo( value, originInfo[value].num );
+				SetWave( rankImage[value], 1.5f );
+				rankImage[value].renderflag = true;
+			}
+			step = RESULT_MODE::RANK_SKIP;
+		}
+
+		//	波紋終了後に選択可
+		if ( isFinViewRankInOrder && isEnd )
+		{
+			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+			{
+				step = 0;
+				mode = MOVE_MODE::SELECT;
+			}
+		}
+	}
+
+	//	ランク発表スキップ
+	void	sceneResult::ModeRankSkip( void )
+	{
+		bool	isEnd = false;
+		//-----------------------------------------------------------------------------------
+		//	順位発表(スキップ用)
+		//-----------------------------------------------------------------------------------
+		FOR( 0, PLAYER_MAX )	isEnd = WaveUpdate( rankImage[value] );
+
+		//	波紋終了後に選択可
+		if ( isEnd )
+		{
+			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+			{
+				step = RESULT_MODE::ROULETTE;
+				mode = MOVE_MODE::SELECT;
+			}
+		}
+	}
+
+//----------------------------------------------------------------------------
+//	選択モード関数
+//----------------------------------------------------------------------------
+
+	//	幕下ろし
+	bool	sceneResult::DownPolygon( void )
+	{
+		bool	isEnd = false;
+		menuInfo.t += 0.03f;
+		if ( menuInfo.t >= 1.0f )
+		{
+			menuInfo.t = 1.0f;
+
+			//	メニュー項目描画
+			static	int	MENU_MAX = 3;	//	メニュー項目数
+			for ( int i = 0; i < MENU_MAX; i++ )		menuImage[i].renderflag = true;
+		}
+		isEnd = Lerp( menuInfo.screenH, 0, static_cast<int>( iexSystem::ScreenHeight ), menuInfo.t );
+
+		return	isEnd;
+	}
+
+	//	カーソル操作
+	void	sceneResult::ControlCursor( void )
+	{
+		//	上下で選択
+		if ( input[0]->Get( KEY_UP ) == 3 )		menuInfo.select--;
+		if ( input[0]->Get( KEY_DOWN ) == 3 )	menuInfo.select++;
+		if ( menuInfo.select < 0 )							menuInfo.select = MENU::END - 1;
+		if ( menuInfo.select >= MENU::END )		menuInfo.select = MENU::RESTART;
+
+		//	読み込み位置変更
+		for ( int i = 0; i < 3; i++ )
+		{
+			if ( i == menuInfo.select )	menuImage[i].sx = 512;
+			else										menuImage[i].sx = 0;
+		}
+
+		//	決定
+		if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+		{
+			changeScene = true;
+		}
 	}
 	

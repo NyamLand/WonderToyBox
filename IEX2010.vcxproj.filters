@@ -193,6 +193,9 @@
     <Filter Include="ソース ファイル\Item\BaseItem">
       <UniqueIdentifier>{94535d68-fd97-4911-8bf7-a8f704ae8d39}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\UI\AirPlane">
+      <UniqueIdentifier>{cc44b8b4-b304-4160-bcee-091738e112b7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -417,6 +420,9 @@
     <ClCompile Include="source\Item.cpp">
       <Filter>ソース ファイル\Item\BaseItem</Filter>
     </ClCompile>
+    <ClCompile Include="source\AirPlane.cpp">
+      <Filter>ソース ファイル\UI\AirPlane</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -595,6 +601,9 @@
     </ClInclude>
     <ClInclude Include="source\Item.h">
       <Filter>ソース ファイル\Item\BaseItem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\AirPlane.h">
+      <Filter>ソース ファイル\UI\AirPlane</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
