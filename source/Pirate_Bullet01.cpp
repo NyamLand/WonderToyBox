@@ -10,6 +10,7 @@
 #include	"BaseBullet.h"
 #include	"BulletManager.h"
 #include	"Pirate_Bullet01.h"
+#include	"Stage.h"
 
 Pirate_Bullet01::Pirate_Bullet01() :explosion(false)
 {
@@ -31,6 +32,8 @@ bool Pirate_Bullet01::Initialize()
 void	Pirate_Bullet01::Update(void)
 {
 
+	//	“®ì
+	Move();
 //	if (judgeTimer > 0)	judgeTimer--;
 //	else							activate = true;
 
@@ -40,7 +43,7 @@ void	Pirate_Bullet01::Update(void)
 
 	StageCollisionCheck();
 
-	if (PlayerCollisionCheck() || Collision::CheckWall(pos, move))	
+	if (PlayerCollisionCheck() || stage->CheckWall(pos, move))
 	{
 		enable = false;
 		explosion = true;
@@ -49,9 +52,8 @@ void	Pirate_Bullet01::Update(void)
 	if (explosion) Explode();
 
 
-	//	“®ì
-	Move();
 
+	pos += move;
 	obj->SetAngle(angle);
 	obj->SetPos(pos);
 	obj->SetScale(scale);
@@ -62,7 +64,6 @@ void	Pirate_Bullet01::Update(void)
 void	Pirate_Bullet01::Move(void)
 {
 	move.y += GRAVITY;
-	pos += move;
 }
 
 void	Pirate_Bullet01::Explode(void)

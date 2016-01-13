@@ -70,7 +70,7 @@ namespace
 	BaseChara::BaseChara( void ) : obj( nullptr ), input( nullptr ),		//	pointer
 		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ), angle( 0.0f, 0.0f, 0.0f ), objectMove( 0.0f, 0.0f, 0.0f ),	//	Vector3
 		scale(0.0f), speed(0.0f),	totalSpeed(0.0f), drag(0.0f), force( 0.0f ), moveVec( 0.0f ), jumpPower( 0.0f ), dt( 0.0f ),	//	float
-		unrivaled(false), isGround(false), isPlayer(false), jumpState( true ), checkWall(false), renderflag(true),//	bool
+		isGround(false), isPlayer(false), jumpState( true ), checkWall(false), renderflag(true),//	bool
 		mode(0), playerNum(0), power(0), totalPower(0), leanFrame(0), jumpStep(0),damageStep(0),rank(0), life( 0 )		//	int
 	{
 	
@@ -126,6 +126,7 @@ namespace
 				attackInfo.bottom = Vector3( 0.0f, 0.0f, 0.0f );
 				attackInfo.top = Vector3( 0.0f, 0.0f, 0.0f );
 				attackInfo.pos = Vector3( 0.0f, 0.0f, 0.0f );
+				attackInfo.addParam = -1;
 				attackInfo.r = 0.0f;
 				attackInfo.t = 0.0f;
 			}
@@ -194,6 +195,7 @@ namespace
 	//	パラメータ状態初期化
 	void	BaseChara::ParameterInfoInitialize( void )
 	{
+		ParameterInfoInitialize(unrivaled);
 		ParameterInfoInitialize( slip );
 		ParameterInfoInitialize( boost );
 		ParameterInfoInitialize( outrage );
@@ -204,7 +206,7 @@ namespace
 		ParameterInfoInitialize( magnet );
 		ParameterInfoInitialize( confusion );
 		ParameterInfoInitialize( respawn );
-		ParameterInfoInitialize( unrivaledItem );
+		ParameterInfoInitialize(unrivaledItem);
 	}
 
 	//	パラメータ状態初期化
@@ -367,7 +369,7 @@ namespace
 		case MODE_STATE::POWERARTS:
 		case MODE_STATE::HYPERARTS:
 		case MODE_STATE::QUICKARTS:
-			unrivaled = true;
+			SetParameterState(PARAMETER_STATE::UNRIVALED);
 			Attack( mode );
 			break;
 
@@ -458,7 +460,7 @@ namespace
 			if ( pos.y < work )					pos.y = height =work;
 			move.y = 0.0f;
 			isGround = true;
-			if ( jumpPower < 0.0f && mode == MODE_STATE::JUMP)
+			if ( jumpPower <= 0.0f && (mode == MODE_STATE::MOVE || mode == MODE_STATE::JUMP))
 			{
 				jumpState = true;
 				SetMode( MODE_STATE::MOVE );
@@ -570,14 +572,14 @@ namespace
 
 		SetMotion(MOTION_NUM::POSTURE);
 
-		unrivaled = true;
+		//SetParameterState(PARAMETER_STATE::UNRIVALED);
 		SetDrag(1.0f);
 		if (move.y <= 0.01f && isGround)
 		{
 			move = Vector3(0.0f, 0.0f, 0.0f);
 			damageStep = 0;
 			SetMode(MODE_STATE::MOVE);
-			unrivaled = false;
+			//SetUnrivaled(false);
 		}
 	}
 
@@ -606,7 +608,7 @@ namespace
 	{
 		static int branktime = 0;	//仮の仰け反り時間　後でモーションフレームからとる可能性大
 
-		unrivaled = true;
+		//SetParameterState(PARAMETER_STATE::UNRIVALED);
 		if ( branktime == 0 )  SetDamageColor( damageColor.catchColor );
 		branktime++;
 		SetMove( Vector3( 0.0f, move.y, 0.0f ) );
@@ -615,7 +617,7 @@ namespace
 		{
 			branktime = 0;
 			SetMode( MODE_STATE::MOVE );
-			unrivaled = false;
+			//SetUnrivaled(false);
 		}
 	}
 
@@ -671,8 +673,9 @@ namespace
 			attackInfo.r = 0.0f;
 			attackInfo.type = 0;
 			attackInfo.pos = Vector3(0.0f, 0.0f, 0.0f);
+			attackInfo.addParam = -1;
 			knockBackInfo.type = 0;
-			unrivaled = false;
+			SetUnrivaled(false);
 		}
 	}
 
@@ -697,7 +700,7 @@ namespace
 	void	BaseChara::Guard( void )
 	{
 		move.x = move.z = 0.0f;
-		unrivaled = true;
+		SetParameterState(PARAMETER_STATE::UNRIVALED);
 		SetMotion( MOTION_NUM::GUARD );
 
 		//	ボタンをはなすと戻る
@@ -705,7 +708,7 @@ namespace
 		{
 			SetMode( MODE_STATE::MOVE );
 			m_Effect->SetShield( GetPlayerNum(), false );
-			unrivaled = false;
+			SetUnrivaled(false);
 		}
 	}
 
@@ -723,7 +726,7 @@ namespace
 		static	float	moveAngle = 0.0f;
 		
 		//	死亡中無敵
-		unrivaled = true;
+		SetParameterState(PARAMETER_STATE::UNRIVALED);
 		SetMotion( MOTION_NUM::DEATH );
 
 		//	コイン全部ばらまき
@@ -888,6 +891,9 @@ namespace
 	{
 		//--------各イベント・アイテム効果処理を書く--------//
 
+		//一定時間無敵
+		Unrivaled();
+
 		//	攻撃力アップアイテム効果動作
 		AttackUp();
 
@@ -906,8 +912,31 @@ namespace
 		//	スピードアップ
 		SpeedUp();
 
-		//	一定時間無敵
-		Unrivaled();
+		//	一定時間無敵(アイテム)
+		ItemUnrivaled();
+	}
+
+	//	一定時間無敵
+	void	BaseChara::Unrivaled(void)
+	{
+		if (!unrivaled.state)
+		{
+			unrivaled.timer = 0;
+			return;
+		}
+
+		//	無敵にする
+		unrivaled.state = true;
+
+		//	タイマー減算
+		unrivaled.timer--;
+
+		//	時間が来たら効果取り消し
+		if (unrivaled.timer <= 0)
+		{
+			unrivaled.timer = 0;
+			unrivaled.state = false;
+		}
 	}
 
 	//	攻撃力Upアイテム効果動作
@@ -1017,7 +1046,7 @@ namespace
 		respawn.timer--;
 
 		//	無敵状態
-		unrivaled = true;
+		unrivaled.state = true;
 
 		//	描画フラグ切り替え
 		if ( respawn.timer % 10 == 0 )	renderflag = !renderflag;
@@ -1025,7 +1054,7 @@ namespace
 		//	時間が来たら効果取り消し
 		if ( respawn.timer <= 0 )
 		{
-			unrivaled = false;
+			unrivaled.state = false;
 			renderflag = true;
 			respawn.timer = 0;
 			respawn.state = false;
@@ -1033,13 +1062,13 @@ namespace
 		}
 	}
 
-	//	一定時間無敵
-	void	BaseChara::Unrivaled( void )
+	//	一定時間無敵(アイテム)
+	void	BaseChara::ItemUnrivaled(void)
 	{
-		if ( unrivaledItem.state )	return;
+		if ( !unrivaledItem.state )	return;
 
 		//	無敵にする
-		unrivaled = true;
+		unrivaled.state = true;
 
 		//	タイマー減算
 		unrivaledItem.timer--;
@@ -1049,7 +1078,7 @@ namespace
 		{
 			unrivaledItem.timer = 0;
 			unrivaledItem.state = false;
-			unrivaled = false;
+			unrivaled.state = false;
 		}
 	}
 
@@ -1332,12 +1361,12 @@ namespace
 	{
 		SetMotion(MOTION_NUM::GUARD);
 		move.x = move.z = 0.0f;
-		unrivaled = true;
+		SetParameterState(PARAMETER_STATE::UNRIVALED);
 		aiInfo.act_flag = true;
 		
 		if (aiInfo.count_guard <= 0)
 		{
-			unrivaled = false;
+			SetUnrivaled(false);
 			aiInfo.count_guard = 1 * SECOND;
 			aiInfo.act_flag = false;
 			SetMode(MODE_STATE::MOVE);
@@ -1495,6 +1524,13 @@ namespace
 		return	right;
 	}
 
+
+	//	攻撃追加効果取得(状態異常)
+	int		BaseChara::GetAttack_addParam(void)const
+	{
+		return	attackInfo.addParam;
+	}
+
 	//	攻撃判定半径取得
 	float		BaseChara::GetAttack_R( void )const
 	{
@@ -1543,11 +1579,11 @@ namespace
 		return	totalSpeed;
 	}
 
-	//	無敵状態取得
-	bool		BaseChara::GetUnrivaled( void )const
-	{
-		return	unrivaled;
-	}
+	////	無敵状態取得
+	//bool		BaseChara::GetUnrivaled( void )const
+	//{
+	//	return	unrivaled;
+	//}
 
 	//	ハイパー使用可否取得
 	bool		BaseChara::GetCanHyper( void )const
@@ -1562,6 +1598,10 @@ namespace
 
 		switch ( type )
 		{
+		case PARAMETER_STATE::UNRIVALED:
+			out = unrivaled.state;
+			break;
+
 		case PARAMETER_STATE::SLIP:
 			out = slip.state;
 			break;
@@ -1728,7 +1768,7 @@ namespace
 	//	ブースト状態設定
 	/*void	BaseChara::SetBoosting( bool boosting )
 	{
-		this->boosting = boosting;
+	this->boosting = boosting;
 	}*/
 
 	//	ノックバック方向設定
@@ -1740,14 +1780,19 @@ namespace
 	//	無敵状態設定
 	void	BaseChara::SetUnrivaled( bool state )
 	{
-		this->unrivaled = state;
+		unrivaled.state = state;
 	}
+
 
 	//	パラメータ状態設定
 	void	BaseChara::SetParameterState( int parameterState )
 	{
 		switch ( parameterState )
 		{
+		case	PARAMETER_STATE::UNRIVALED:
+			SetParameterState(unrivaled, 2 * SECOND);
+			break;
+
 		case PARAMETER_STATE::SLIP:
 			SetParameterState( slip, 11 * SECOND );
 			break;

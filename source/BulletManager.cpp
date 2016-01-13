@@ -65,7 +65,7 @@
 	//	更新
 	void	BulletManager::Update( void )
 	{
-		//	枚数カウント初期化
+		//	カウント初期化
 		bullet_num = 0;
 
 		for ( int i = 0; i < BULLET_MAX; i++ )

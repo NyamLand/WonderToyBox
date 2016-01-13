@@ -114,7 +114,7 @@ bool	Scavenger::QuickArts(void)
 
 	//無敵判定を切らないとそもそもコインを集められないので無敵切ってます。
 	//問題なら言ってください
-	unrivaled = false;
+	SetUnrivaled(false);
 
 	if (absorb_length < 15.0f) absorb_length += 0.1f;		//吸い込む範囲を徐々に拡大
 	Vector3 p_front = Vector3(sinf(this->angle.y), 0, cosf(this->angle.y));
@@ -162,7 +162,7 @@ bool	Scavenger::PowerArts( void )
 
 	//無敵判定を切らないとそもそもコインを集められないので無敵切ってます。
 	//問題なら言ってください
-	unrivaled = false;
+	SetUnrivaled(false);
 	absorb_length = 5.0f;
 	Vector3 p_front = Vector3(sinf(this->angle.y), 0, cosf(this->angle.y));
 	p_front.Normalize();
@@ -223,7 +223,7 @@ bool	Scavenger::HyperArts( void )
 
 	//無敵判定を切らないとそもそもコインを集められないので無敵切ってます。
 	//問題なら言ってください
-	unrivaled = false;
+	SetUnrivaled(false);
 	absorb_length = 10.0f;
 	stayTime++;
 

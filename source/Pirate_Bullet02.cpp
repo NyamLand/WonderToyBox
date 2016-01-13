@@ -10,6 +10,7 @@
 #include	"BaseBullet.h"
 #include	"BulletManager.h"
 #include	"Pirate_Bullet02.h"
+#include	"Stage.h"
 
 Pirate_Bullet02::Pirate_Bullet02()
 {
@@ -59,6 +60,6 @@ void	Pirate_Bullet02::Move(void)
 {	
 	// 反射( ステージ )	
 	static float rate = 0.4f;
-	Collision::GetReflect(pos, move, rate);
+	stage->GetReflect(pos, move, rate);
 	move.y += GRAVITY;
 }

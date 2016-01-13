@@ -22,8 +22,8 @@
 		enum OFFENSIVE_POWER
 		{
 			QUICK = 1,
-			POWER = 5,
-			HYPER = 15,
+			POWER = 2,
+			HYPER = 3,
 		};
 	}
 
@@ -94,10 +94,8 @@
 	//	クイックアーツ
 	bool	Princess::QuickArts( void )
 	{
-		power = QUICK;
+		power = 0;
 
-		//相手を仰け反らせる時間(適当)
-		leanFrame = 20;
 		//	行列から前方取得
 		Vector3	front = GetFront();
 		SetMove( Vector3( 0.0f, 0.0f, 0.0f ) );
@@ -117,9 +115,11 @@
 		//	エフェクト
 		particle->Flower( attackInfo.pos, attackInfo.r, Vector3( 1.0f, 0.4f, 0.4f ) );
 
+		//相手を混乱状態に
+		attackInfo.addParam = PARAMETER_STATE::CONFUSION;
 		//	無敵状態
-		if ( attackInfo.t <= 0.5f )	unrivaled = true;
-		else								unrivaled = false;
+		if (attackInfo.t <= 0.5f) SetParameterState(PARAMETER_STATE::UNRIVALED);
+		else					SetUnrivaled(false);
 
 		if ( attackInfo.t >= 1.0f )	return	true;
 		return	false;
@@ -143,8 +143,8 @@
 		particle->FlowerDisseminate( attackInfo.pos, attackInfo.r, 1.0f, Vector3( 1.0f, 0.4f, 0.4f ) );
 
 		//	無敵状態
-		if ( attackInfo.t <= 0.5f )		unrivaled = true;
-		else										unrivaled = false;
+		if (attackInfo.t <= 0.5f)		SetParameterState(PARAMETER_STATE::UNRIVALED);
+		else							SetUnrivaled(false);
 
 		if ( attackInfo.t >= 1.0f )	return	true;
 		return	false;
@@ -246,8 +246,7 @@
 		{
 		case MODE_STATE::QUICKARTS:
 			attackInfo.type = Collision::SPHEREVSCAPSULE;
-			if(attackInfo.t < 0.6) knockBackInfo.type = KNOCKBACK_TYPE::LEANBACKWARD;	//2Hitまでは仰け反りのみ
-			if (attackInfo.t >= 0.6) knockBackInfo.type = KNOCKBACK_TYPE::MIDDLE;		//3hit目からは吹き飛ばしあり
+			knockBackInfo.type = KNOCKBACK_TYPE::WEAK;
 			break;
 
 		case MODE_STATE::POWERARTS:
