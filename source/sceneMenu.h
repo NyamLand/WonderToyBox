@@ -55,6 +55,20 @@ private:
 		int		second;
 		int		step;
 	};
+
+	struct BGInfo{
+		Vector3 target;
+		Vector3 start;
+		Vector3 end;
+		Vector3	cpos;
+		Vector3 cspos;//カメラ移動用スタートポジション
+		Vector3 cepos;//カメラ移動用エンドポジション
+		float t;	//補間パラメータ
+		float mt;	//移動用補間パラメータ
+		bool moveflg;//移動用フラグ
+		bool targetflg;//ターゲット用フラグ
+		bool renderflg;//描画用フラグ
+	};
 private:	
 	//option設計中
 	iex2DObj*				Oimage;
@@ -100,6 +114,7 @@ private:
 	StageSelectInfo			stageSelectInfo;
 	CheckSelectInfo			checkSelectInfo;
 	OptionInfo				optionInfo;
+	BGInfo					bgInfo;
 
 	//	共通変数
 	int		mode;

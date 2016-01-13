@@ -429,6 +429,7 @@ public:
 	void SetAngle( float x, float y, float z );
 	void SetSlope( float slope );
 
+	void SetTarget(Vector3 target);
 	//	“Š‰e•½–Êİ’è
 	void SetViewport();
 	void SetViewport( int x, int y, int w, int h );
