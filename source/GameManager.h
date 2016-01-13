@@ -45,6 +45,16 @@ namespace
 			};
 		}
 	}
+
+	namespace Round
+	{
+		enum
+		{
+			ROUND1,
+			ROUND2,
+			ROUND_FINAL,
+		};
+	}
 }
 
 //	ƒNƒ‰ƒX
