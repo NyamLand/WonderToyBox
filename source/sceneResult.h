@@ -181,6 +181,16 @@ public:
 	bool	RankWave( void );
 	void	MoveScene( void );
 
+	//	選択モード関数
+	bool	DownPolygon( void );
+	void	ControlCursor( void );
+
+	//	リザルトモード
+	void	ModeRoulette( void );
+	void	ModeLastBonus( void );
+	void	ModeRank( void );
+	void	ModeRankSkip( void );
+
 	//	ラストボーナス用関数
 	bool	LastBonusUpdate( void );
 	bool	InBoard( void );

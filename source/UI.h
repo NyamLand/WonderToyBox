@@ -9,6 +9,7 @@
 //*********************************************************************************
 
 #include	"GameManager.h"
+#include	"AirPlane.h"
 
 namespace
 {
@@ -214,6 +215,8 @@ private:
 	//	コイン枚数情報
 	NUMBERIMAGE_INFO	coinNumInfo[PLAYER_MAX];
 	NUMBER_INFO			numInfo[PLAYER_MAX];
+
+	AirPlane*				airPlane;
 	
 	//	パラメータ
 	int		scene;

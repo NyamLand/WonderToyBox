@@ -191,17 +191,18 @@
 	//	タイトル用初期化
 	void	UI::TitleInitialize( void )
 	{
-		//	画像初期化
-		titleInfo.textImage.obj = new iex2DObj( "DATA/UI/menu/menu-int.png" );
+		airPlane = new AirPlane();
+		////	画像初期化
+		//titleInfo.textImage.obj = new iex2DObj( "DATA/UI/menu/menu-int.png" );
 
-		//	構造体初期化
-		int x = static_cast<int>( iexSystem::ScreenWidth * 1.01f );
-		int y = static_cast<int>( iexSystem::ScreenHeight * 1.04f );
-		int w = static_cast<int>( iexSystem::ScreenWidth * 0.6f );
-		int h = static_cast<int>( iexSystem::ScreenHeight * 0.14f );
-		ImageInitialize( titleInfo.textImage, x, y, w, h, TITLE_TEXT_SRCPOS_INFO::MENU_SRC_POS_X, TITLE_TEXT_SRCPOS_INFO::MENU_SRC_POS_Y, 1024, 128 );
-		titleInfo.textImage.renderflag = false;
-		
+		////	構造体初期化
+		//int x = static_cast<int>( iexSystem::ScreenWidth * 1.01f );
+		//int y = static_cast<int>( iexSystem::ScreenHeight * 1.04f );
+		//int w = static_cast<int>( iexSystem::ScreenWidth * 0.6f );
+		//int h = static_cast<int>( iexSystem::ScreenHeight * 0.14f );
+		//ImageInitialize( titleInfo.textImage, x, y, w, h, TITLE_TEXT_SRCPOS_INFO::MENU_SRC_POS_X, TITLE_TEXT_SRCPOS_INFO::MENU_SRC_POS_Y, 1024, 128 );
+		//titleInfo.textImage.renderflag = false;
+		//
 		//	変数初期化
 		titleInfo.mode = 0;
 		titleInfo.step = 0;
@@ -263,7 +264,8 @@
 	//	タイトル用解放
 	void	UI::TitleRelease( void )
 	{
-		SafeDelete( titleInfo.textImage.obj );
+		SafeDelete( airPlane );
+		//SafeDelete( titleInfo.textImage.obj );
 	}
 
 	//	メイン用解放
@@ -298,6 +300,8 @@
 	//	タイトル更新
 	void	UI::TitleUpdate( int mode )
 	{
+		Vector3 startPos(airPlaneInfo.IN_START_POS_X, airPlaneInfo.IN_START_POS_Y, 0.0f);
+		Vector3 endPos(airPlaneInfo.IN_END_POS_X, airPlaneInfo.IN_END_POS_Y, 0.0f);
 		//	画像設定
 		SetImageSrcPos( mode );
 
@@ -305,34 +309,46 @@
 		switch ( titleInfo.step ) 
 		{
 		case 0:
-			//	どっかからやってくる
-			isEnd = FlyingIn();
-			
-			//	処理が終わるとつぎへ
-			if ( isEnd )
-			{
-				titleInfo.step++;
-			}
+			////	どっかからやってくる
+			//isEnd = FlyingIn();
+			//
+			////	処理が終わるとつぎへ
+			//if ( isEnd )
+			//{
+			//	titleInfo.step++;
+			//}
+			airPlane->SetNext(startPos, endPos, AirPlane::FLYING_IN);
+			titleInfo.step++;
 			break;
 
 		case 1:
-			//	ふわふわさせる
-			titleInfo.textImage.y = airPlaneInfo.IN_END_POS_Y + static_cast<int>( 10.0f * sinf( titleInfo.t ) );
-			titleInfo.textImage.p = GetPoint( titleInfo.textImage.x - airPlaneInfo.ROLL_POINT_ADJUST_X, titleInfo.textImage.y  );
-			titleInfo.textImage.angle = 0.0f + ( D3DX_PI / 180.0f * -1.0f ) * cosf( titleInfo.t );
-			titleInfo.t += D3DX_PI / 180.0f * 1.0f;
-
-			if ( mode == TITLE_MODE::MOVE_MAIN )
+			airPlane->Update();
+			if (mode == TITLE_MODE::MOVE_MAIN)
 			{
-				titleInfo.textImage.t = 0.0f;
-				titleInfo.param = 0.0f;
-				titleInfo.savePos = titleInfo.textImage.y;
+				airPlaneInfo.OUT_END_POS_X;
+				airPlaneInfo.OUT_END_POS_Y;
+				Vector3 endPos( airPlaneInfo.OUT_END_POS_X, airPlaneInfo.OUT_END_POS_Y, 0.0f );
+				airPlane->SetNext( airPlane->GetPos(),endPos, AirPlane::FLYING_OUT );
 				titleInfo.step++;
 			}
+			////	ふわふわさせる
+			//titleInfo.textImage.y = airPlaneInfo.IN_END_POS_Y + static_cast<int>( 10.0f * sinf( titleInfo.t ) );
+			//titleInfo.textImage.p = GetPoint( titleInfo.textImage.x - airPlaneInfo.ROLL_POINT_ADJUST_X, titleInfo.textImage.y  );
+			//titleInfo.textImage.angle = 0.0f + ( D3DX_PI / 180.0f * -1.0f ) * cosf( titleInfo.t );
+			//titleInfo.t += D3DX_PI / 180.0f * 1.0f;
+
+			//if ( mode == TITLE_MODE::MOVE_MAIN )
+			//{
+			//	titleInfo.textImage.t = 0.0f;
+			//	titleInfo.param = 0.0f;
+			//	titleInfo.savePos = titleInfo.textImage.y;
+			//	titleInfo.step++;
+			//}
 			break;
 
 		case 2:
-			FlyingOut( titleInfo.savePos );
+			airPlane->Update();
+			//FlyingOut( titleInfo.savePos );
 			break;
 		}
 	}
@@ -393,7 +409,8 @@
 	//	タイトル描画
 	void	UI::TitleRender( int mode )
 	{
-		RenderImage( titleInfo.textImage, titleInfo.textImage.sx, titleInfo.textImage.sy, 1024, 128, IMAGE_MODE::ADOPTPARAM );
+		//RenderImage( titleInfo.textImage, titleInfo.textImage.sx, titleInfo.textImage.sy, 1024, 128, IMAGE_MODE::ADOPTPARAM );
+		airPlane->Render();
 	}
 
 	//	メイン描画
