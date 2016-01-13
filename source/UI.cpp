@@ -222,7 +222,7 @@
 		titleInfo.moveState = false;
 		titleInfo.savePos = 0;
 
-		AirPlaneInitialize(airPlaneInfo);
+		AirPlaneInitialize(airPlaneInfo );
 	}
 
 	//	ƒƒCƒ“—p‰Šú‰»
