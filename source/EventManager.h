@@ -43,8 +43,9 @@ class EventManager
 {
 	
 private:
-	int		eventflag;
-	
+	int		eventMode;
+	static bool	eventFlag;
+
 public:
 	//	‰Šú‰»E‰ğ•ú
 	bool	Initialize( void );
@@ -57,9 +58,11 @@ public:
 	//	î•ñæ“¾
 	static	EventManager*	GetInstance( void );
 	int		GetEvent( void )const;
+	bool	GetEventFlag( void )const;
 
 	//	î•ñİ’è
-	void	SetEvent( int eventflag );
+	void	SetEvent( int eventmode );
+	void	SetEventFlag( bool eventFlag );
 };
 
 #define	eventManager	( EventManager::GetInstance() )

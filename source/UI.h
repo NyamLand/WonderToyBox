@@ -137,6 +137,14 @@ private:
 		ImageObj	lifeImage[5];
 	};
 
+	//　イベント情報
+	struct EVENT_INFO
+	{
+		int mode;
+		ImageObj	texture;	//　飛行機
+		AIRPLANE_INFO		airPlane;
+	};
+
 private:
 	//	各画像
 	ImageObj	timer;
@@ -154,6 +162,7 @@ private:
 	iex2DObj*	pCoinNumImage;
 	iex2DObj*	life;
 	ImageObj		roundImage;
+	
 
 private:
 	//	システム
@@ -215,6 +224,9 @@ private:
 	NUMBERIMAGE_INFO	coinNumInfo[PLAYER_MAX];
 	NUMBER_INFO			numInfo[PLAYER_MAX];
 	
+	//　イベント情報
+	EVENT_INFO	eventInfo;
+
 	//	パラメータ
 	int		scene;
 	
@@ -252,7 +264,7 @@ public:
 	void	ResultRender( int mode );
 
 	//------------------------------タイトル処理------------------------------------//
-	void	AirPlaneInitialize( void );
+	void	AirPlaneInitialize( AIRPLANE_INFO out );
 	bool	FlyingIn( void );
 	bool	FlyingOut( int startPos );
 
@@ -270,6 +282,7 @@ public:
 	void	LifeInitialize( void );
 	void	CoinNumberInitialize( void );
 	void	RoundInitialize( void );
+	void	EventInitialize(void);
 
 	//	メイン動作更新
 	void	TimerUpdate( void );
@@ -286,6 +299,7 @@ public:
 	void	LifeUpdate( void );
 	void	CoinNumberUpdate( void );
 	void	CoinImageInfoUpdate(NUMBERIMAGE_INFO& numImageinfo, NUMBER_INFO& numinfo, const int& num);
+	void	EventUpdate( void );
 
 	//	メイン描画
 	void	TimerRender( void );
@@ -300,6 +314,7 @@ public:
 	void	PlayerNumberRender( void );
 	void	LifeRender( void );
 	void	CoinNumberRender( void );
+	void	EventRender(void);
 
 	//	メイン動作関数
 	void BarControl( void );

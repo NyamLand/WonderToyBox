@@ -78,17 +78,17 @@ public:
 	void	Render(void);
 
 	//	動作関数
-	void	Sack(void);
-	void	Fall(void);
-	void	Splash(void);
-	void	Juelbox(void);
-	void	Wave(void);
-	void	Dubble(void);
+	void	Sack(void);			//　コイン袋
+	void	Fall(void);			//　滝
+	void	Splash(void);		//　ワッシャァアア
+	void	Juelbox(void);		//　宝石
+	void	Wave(void);			//　隊列
+	void	Dubble(void);		//　２倍タイム
 
 	//	情報取得
 	static	Event_Coin*	GetInstance(void);
 	int		GetEvent(void)const;
-	DUBBLE	GetDubbleInst();
+	DUBBLE	GetDubbleInst(void)const;
 
 	//	情報設定
 	void	SetEvent(int eventflag);

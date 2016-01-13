@@ -70,9 +70,25 @@ void	Event_Coin::Release(void)
 void	Event_Coin::Update(void)
 {
 	//	コインの滝
-	if (m_Fall.eventflag)		Fall();
+	if (m_Fall.eventflag)
+	{
+		Fall();
+		eventManager->SetEventFlag(m_Fall.eventflag);
+	}
+
+	//　コインの隊列
+	if (m_Wave.eventflag)
+	{
+		Wave();
+		eventManager->SetEventFlag(m_Wave.eventflag);
+	}
+	
 	//　コイン２倍タイム
-	if (m_Dubble.eventflag)		Dubble();
+	if (m_Dubble.eventflag)
+	{
+		Dubble();
+		eventManager->SetEventFlag(m_Dubble.eventflag);
+	}
 }
 
 void	Event_Coin::Render(void)
@@ -88,6 +104,7 @@ void	Event_Coin::Sack(void)
 
 }
 
+//　滝
 void	Event_Coin::Fall(void)
 {
 	Vector3	pos = Vector3(Random::GetFloat(-20.0f, 20.0f), 50.0f, Random::GetFloat(-20.0f, 12.0f));
@@ -114,6 +131,7 @@ void	Event_Coin::Juelbox(void)
 
 }
 
+//　隊列
 void	Event_Coin::Wave(void)
 {
 
@@ -146,7 +164,7 @@ int		Event_Coin::GetEvent(void)const
 	return	eventflag;
 }
 
-Event_Coin::DUBBLE	Event_Coin::GetDubbleInst()
+Event_Coin::DUBBLE	Event_Coin::GetDubbleInst(void)const
 {
 	return m_Dubble;
 }
