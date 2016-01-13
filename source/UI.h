@@ -267,7 +267,7 @@ public:
 	void	ResultRender( int mode );
 
 	//------------------------------É^ÉCÉgÉãèàóù------------------------------------//
-	void	AirPlaneInitialize( AIRPLANE_INFO out );
+	void	AirPlaneInitialize( AIRPLANE_INFO& out );
 	bool	FlyingIn( void );
 	bool	FlyingOut( int startPos );
 

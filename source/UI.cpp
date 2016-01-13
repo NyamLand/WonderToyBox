@@ -486,7 +486,7 @@
 //------------------------------------------------------------------------------
 
 	//	îÚçsã@èâä˙âª
-	void	UI::AirPlaneInitialize(AIRPLANE_INFO out)
+	void	UI::AirPlaneInitialize(AIRPLANE_INFO& out)
 	{
 		out.IN_START_POS_X = static_cast<int>(iexSystem::ScreenWidth * 1.5f);
 		out.IN_START_POS_Y = static_cast<int>(iexSystem::ScreenHeight * -0.13f);
