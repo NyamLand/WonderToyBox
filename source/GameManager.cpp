@@ -204,10 +204,17 @@
 			イベントの各種設定後、
 			eventManagerでイベントを発生させる
 		*/
-		if (timer == 42 * SECOND)
+
+		//　演出開始
+		if (timer == 58 * SECOND)
 		{
 			//eventmode = Random::GetInt(0, EVENT_MODE::MAX - 1);
-			eventmode = EVENT_MODE::COIN_FALL;	//　仮 （本番：この行いらない、上の行のコメントはずす）
+			
+			//　↓ 仮 ↓
+			//eventmode = EVENT_MODE::COIN_FALL;	//　仮 （本番：この行いらない、上の行のコメントはずす）
+			eventmode = EVENT_MODE::COIN_DUBBLE;	//　仮 （本番：この行いらない、上の行のコメントはずす）
+			//　↑ 仮 ↑
+
 			if (eventmode <= EVENT_MODE::JAM_UFO)
 			{
 				alert_type = ALERT_TYPE_INFO::JAM;
@@ -228,7 +235,7 @@
 		}
 
 		//　イベント発生
-		if (timer == 40 * SECOND)
+		if (timer == 56 * SECOND)
 		{
 			eventManager->SetEvent(eventmode);
 		}

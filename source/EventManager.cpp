@@ -95,6 +95,6 @@
 	{
 		this->eventflag = eventflag;
 		if (EVENT_MODE::JAM_SLOPE_CAMERA <= eventflag && eventflag <= EVENT_MODE::JAM_UFO)	event_jamming->SetEvent(eventflag);
-		else if (EVENT_MODE::COIN_SACK <= eventflag && eventflag <= EVENT_MODE::COIN_DUBBLE)	event_jamming->SetEvent(eventflag);
+		else if (EVENT_MODE::COIN_SACK <= eventflag && eventflag <= EVENT_MODE::COIN_DUBBLE)	event_coin->SetEvent(eventflag);
 		else event_mission->SetEvent(eventflag);
 	}

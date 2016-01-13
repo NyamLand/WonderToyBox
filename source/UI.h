@@ -279,6 +279,7 @@ public:
 	void	FinishUpdate( void );
 	void	DonketsuDirectionUpdate( void );
 	void	AlertUpdate( void );
+	void	MissionDirectionUpdate( void );
 	void	HurryUpdate( void );
 	void	LastProduction( void );
 	void	PlayerNumberUpdate( void );

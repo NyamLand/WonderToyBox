@@ -937,24 +937,36 @@
 	}
 
 	//	åxçêââèo
-	void	UI::AlertUpdate( void )
+	void	UI::AlertUpdate(void)
 	{
-		alertInfo.param += D3DX_PI / 30.0f;
-		alertInfo.alpha = 0.1f + 0.1f * sinf( alertInfo.param );
-
-		alertInfo.timer++;
-		if (alertInfo.timer % 15 == 0)
+		if (alertInfo.type == ALERT_TYPE_INFO::MISSION)
 		{
-			alertImage.renderflag = !alertImage.renderflag;
-			alert_coinImage.renderflag = !alert_coinImage.renderflag;
+			MissionDirectionUpdate();
 		}
-
-		//	ìÒïbîºÇ≈èIóπ
-		if ( alertInfo.timer >= 120 )
+		else
 		{
-			alertInfo.flag = false;
-			alertInfo.alpha = 0.0f;
+			alertInfo.param += D3DX_PI / 30.0f;
+			alertInfo.alpha = 0.1f + 0.1f * sinf(alertInfo.param);
+
+			alertInfo.timer++;
+			if (alertInfo.timer % 15 == 0)
+			{
+				alertImage.renderflag = !alertImage.renderflag;
+				alert_coinImage.renderflag = !alert_coinImage.renderflag;
+			}
+
+			//	ìÒïbîºÇ≈èIóπ
+			if (alertInfo.timer >= 120)
+			{
+				alertInfo.flag = false;
+				alertInfo.alpha = 0.0f;
+			}
 		}
+	}
+
+	void	UI::MissionDirectionUpdate(void)
+	{
+
 	}
 
 	//	HurryUpââèo

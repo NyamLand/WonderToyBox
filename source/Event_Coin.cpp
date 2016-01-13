@@ -1,6 +1,8 @@
 #include	"../IEX/iextreme.h"
+#include	"GameManager.h"
 #include	"Random.h"
 #include	"CoinManager.h"
+#include	"Coin.h"
 #include	"EventManager.h"
 
 #include	"Event_Coin.h"
@@ -69,6 +71,8 @@ void	Event_Coin::Update(void)
 {
 	//	コインの滝
 	if (m_Fall.eventflag)		Fall();
+	//　コイン２倍タイム
+	if (m_Dubble.eventflag)		Dubble();
 }
 
 void	Event_Coin::Render(void)
@@ -115,9 +119,17 @@ void	Event_Coin::Wave(void)
 
 }
 
+//　コイン２倍タイム
 void	Event_Coin::Dubble(void)
 {
+	m_Dubble.count++;
 
+	if (m_Dubble.count >= 10*SECOND)
+	{
+		m_Dubble.eventflag = false;
+		m_Dubble.count = 0;
+		m_Dubble.step = 0;
+	}
 }
 
 //**************************************************************
@@ -132,6 +144,11 @@ Event_Coin*	Event_Coin::GetInstance(void)
 int		Event_Coin::GetEvent(void)const
 {
 	return	eventflag;
+}
+
+Event_Coin::DUBBLE	Event_Coin::GetDubbleInst()
+{
+	return m_Dubble;
 }
 
 void	Event_Coin::SetEvent(int eventflag)
