@@ -120,9 +120,6 @@
     <Filter Include="ソース ファイル\Scene\sceneMenu">
       <UniqueIdentifier>{6ceac51d-2266-4cc7-af1b-738f2d2e6708}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\ItemManager\Item">
-      <UniqueIdentifier>{6b7c4bd1-1fe5-4d77-a789-faba6e1d73a5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Script">
       <UniqueIdentifier>{6dfcd678-2542-4f1b-be0c-8df2244cbbb4}</UniqueIdentifier>
     </Filter>
@@ -189,6 +186,12 @@
     </Filter>
     <Filter Include="ソース ファイル\Events\EventManager">
       <UniqueIdentifier>{b3b0d18b-79b1-4ba7-9e23-b152e0b6ef51}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Item">
+      <UniqueIdentifier>{6b7c4bd1-1fe5-4d77-a789-faba6e1d73a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Item\BaseItem">
+      <UniqueIdentifier>{94535d68-fd97-4911-8bf7-a8f704ae8d39}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -290,9 +293,6 @@
     </ClCompile>
     <ClCompile Include="source\Effect.cpp">
       <Filter>ソース ファイル\Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Item.cpp">
-      <Filter>ソース ファイル\ItemManager\Item</Filter>
     </ClCompile>
     <ClCompile Include="source\ItemManager.cpp">
       <Filter>ソース ファイル\ItemManager</Filter>
@@ -414,6 +414,9 @@
     <ClCompile Include="source\Event_Coin.cpp">
       <Filter>ソース ファイル\Events</Filter>
     </ClCompile>
+    <ClCompile Include="source\Item.cpp">
+      <Filter>ソース ファイル\Item\BaseItem</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -469,9 +472,6 @@
     </ClInclude>
     <ClInclude Include="source\Effect.h">
       <Filter>ソース ファイル\Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Item.h">
-      <Filter>ソース ファイル\ItemManager\Item</Filter>
     </ClInclude>
     <ClInclude Include="source\ItemManager.h">
       <Filter>ソース ファイル\ItemManager</Filter>
@@ -592,6 +592,9 @@
     </ClInclude>
     <ClInclude Include="source\Event_Coin.h">
       <Filter>ソース ファイル\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Item.h">
+      <Filter>ソース ファイル\Item\BaseItem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

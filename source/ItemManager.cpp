@@ -17,7 +17,15 @@
 	//	‰Šú‰»
 	bool	ItemManager::Initialize( void )
 	{
-		org = new iexMesh( "DATA/Object/Item/Item.IMO" );
+		//	ƒIƒŠƒWƒiƒ‹‰Šú‰»
+		FOR( 0, ITEM_TYPE::MAX )
+		{
+			org[value] = nullptr;
+		}
+		org[ITEM_TYPE::ATTACK_UP] = new iexMesh( "DATA/Object/Item/Item.IMO" );
+		org[ITEM_TYPE::MAGNET] = new iexMesh( "DATA/Object/Item/Item04.IMO" );
+		org[ITEM_TYPE::SPEED_UP] = new iexMesh( "DATA/Object/Item/Item03.IMO" );
+		org[ITEM_TYPE::UNRIVALED] = new iexMesh();
 		itemList.clear();
 
 		return	true;
@@ -26,7 +34,11 @@
 	//	‰ð•ú
 	void	ItemManager::Release( void )
 	{
-		SafeDelete( org );
+		FOR( 0, ITEM_TYPE::MAX )
+		{
+			SafeDelete( org[value] );
+		}
+		
 		for ( auto it = itemList.begin(); it != itemList.end(); )
 		{
 			it = itemList.erase( it );
@@ -80,7 +92,7 @@
 		Item*	item = nullptr;
 		item = new Item();
 		item->Initialize();
-		item->SetMesh( org->Clone() );
+		item->SetMesh( org[type]->Clone() );
 		item->SetType( type );
 		item->SetPos( pos );
 		item->Update();

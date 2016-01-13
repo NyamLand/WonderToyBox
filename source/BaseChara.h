@@ -27,6 +27,7 @@ namespace
 			JUMP,
 			CONFUSION,
 			RESPAWN,
+			UNRIVALEDITEM,
 		};
 	}
 
@@ -266,6 +267,7 @@ protected:
 	PARAMETER_INFO		jump;
 	PARAMETER_INFO		confusion;
 	PARAMETER_INFO		respawn;
+	PARAMETER_INFO		unrivaledItem;
 
 private:
 	virtual	void	MotionManagement( int motion );
@@ -319,6 +321,9 @@ public:
 	void	BoostUp( void );
 	void	Confusion( void );
 	void	Respawn( void );
+	void	Magnet( void );
+	void	SpeedUp( void );
+	void	Unrivaled( void );
 
 	//	ŽqƒNƒ‰ƒX‚ÅŽÀ‘•
 	virtual	bool	QuickArts( void ) = 0;

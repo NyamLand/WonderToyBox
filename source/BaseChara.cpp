@@ -204,6 +204,7 @@ namespace
 		ParameterInfoInitialize( magnet );
 		ParameterInfoInitialize( confusion );
 		ParameterInfoInitialize( respawn );
+		ParameterInfoInitialize( unrivaledItem );
 	}
 
 	//	パラメータ状態初期化
@@ -830,12 +831,12 @@ namespace
 		if ( speedUp.state )	totalSpeed = speed + plusStatusInfo.speed;
 		
 		//　ブースト中
-		if (boost.state)
+		if ( boost.state )
 		{
 			totalPower = power + plusStatusInfo.boostPower;
 			totalSpeed = speed + plusStatusInfo.boostSpeed;
-			if (attackUp.state)	totalPower += plusStatusInfo.power;
-			if (speedUp.state)	totalSpeed += plusStatusInfo.speed;
+			if ( attackUp.state )	totalPower += plusStatusInfo.power;
+			if ( speedUp.state )	totalSpeed += plusStatusInfo.speed;
 		}
 	}
 
@@ -901,6 +902,12 @@ namespace
 
 		//	リスポーン
 		Respawn();
+
+		//	スピードアップ
+		SpeedUp();
+
+		//	一定時間無敵
+		Unrivaled();
 	}
 
 	//	攻撃力Upアイテム効果動作
@@ -966,6 +973,20 @@ namespace
 	//	暴走状態
 
 	//	スピードUpアイテム効果動作
+	void	BaseChara::SpeedUp( void )
+	{
+		if ( !speedUp.state )	return;
+
+		//	タイマー減算
+		speedUp.timer--;
+
+		//	時間が来たら効果取り消し
+		if ( speedUp.timer <= 0 )
+		{
+			speedUp.timer = 0;
+			speedUp.state = false;
+		}
+	}
 
 	//	ジャンプアイテム効果動作
 
@@ -1009,6 +1030,26 @@ namespace
 			respawn.timer = 0;
 			respawn.state = false;
 			SetMode( MODE_STATE::MOVE );
+		}
+	}
+
+	//	一定時間無敵
+	void	BaseChara::Unrivaled( void )
+	{
+		if ( unrivaledItem.state )	return;
+
+		//	無敵にする
+		unrivaled = true;
+
+		//	タイマー減算
+		unrivaledItem.timer--;
+
+		//	時間が来たら効果取り消し
+		if ( unrivaledItem.timer <= 0 )
+		{
+			unrivaledItem.timer = 0;
+			unrivaledItem.state = false;
+			unrivaled = false;
 		}
 	}
 
@@ -1587,7 +1628,6 @@ namespace
 		return	knockBackInfo.type;
 	}
 
-	
 	//　順位取得
 	int		BaseChara::GetRank( void )const
 	{
@@ -1742,6 +1782,14 @@ namespace
 
 		case PARAMETER_STATE::RESPAWN:
 			SetParameterState( respawn, 3 * SECOND );
+
+		case	PARAMETER_STATE::MAGNET:
+			SetParameterState( magnet, 5 * SECOND );
+			break;
+
+		case	PARAMETER_STATE::UNRIVALEDITEM:
+			SetParameterState( unrivaledItem, 5 * SECOND );
+			break;
 		}
 	}
 
@@ -1758,8 +1806,8 @@ namespace
 		parameterState.timer = time;
 	}
 
-
-	void BaseChara::SetForce(float force)
+	//	与力設定
+	void BaseChara::SetForce( float force )
 	{
 		this->force = force;
 	}

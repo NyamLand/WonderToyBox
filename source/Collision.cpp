@@ -360,7 +360,7 @@ iexMesh*	Collision::obj = NULL;
 		Vector3 p( pos.x, pos.y + 1.0f, pos.z - 5.0f );
 		Vector3 v( 0, 0, 1.0f );
 		Vector3 out = pos;
-		float dist = 50.0f;
+		float dist = 1000.0f;
 
 		// オブジェクトの逆行列を算出
 		org->Update();

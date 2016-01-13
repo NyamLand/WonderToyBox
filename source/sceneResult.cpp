@@ -6,7 +6,6 @@
 #include	"Random.h"
 #include	"GameManager.h"
 #include	"Collision.h"
-#include	"Camera.h"
 #include	"CharacterManager.h"
 #include	"sceneTitle.h"
 #include	"sceneMenu.h"
@@ -63,7 +62,7 @@
 	}
 
 //----------------------------------------------------------------------------
-//	初期化・解放
+//	全体初期化・全体解放
 //----------------------------------------------------------------------------
 	
 	//	コンストラクタ
@@ -99,6 +98,12 @@
 		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/プリンセス/prinsess1.IEM" ) );					//	姫
 		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Thief/Thief.IEM" ) );				//	リス
 		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/ECCMAN/ECCMAN.IEM" ) );					//	トラ
+
+		//	ステージ設定
+		bgStage = new iexMesh( "DATA/BG/MenuStage/menustage.IMO" );	//	ステージ
+		bgStage->SetScale( 0.1f );
+		bgStage->SetAngle( PI );
+		bgStage->Update();
 
 		//	オリジナルモデル情報初期化
 		org[CHARACTER_TYPE::SCAVENGER]->SetScale( 0.05f );	//	掃除屋
@@ -263,6 +268,16 @@
 			playerNumImage.obj = new iex2DObj( "DATA/UI/cursor.png" );
 			playerNumImage.renderflag = false;	
 		}
+
+		//	テクスチャ位置設定
+		float	dist = 1000.0f;
+		Collision::GetFront( bgStage, viewInfo.pos + Vector3( 0.0f, 2.9f, 0.0f ), viewInfo.texPos );
+		viewInfo.texPos.z -= 0.01f;
+		Vector3	texSize = Vector3( 30.0f, 20.0f, 0.0f );
+		SetVertex( viewInfo.v[0], viewInfo.texPos.x - texSize.x * 0.5f, viewInfo.texPos.y + texSize.y * 0.5f, viewInfo.texPos.z, 0, 0, 0xFFFFFFFF );
+		SetVertex( viewInfo.v[1], viewInfo.texPos.x + texSize.x * 0.5f, viewInfo.texPos.y + texSize.y * 0.5f, viewInfo.texPos.z, 1, 0, 0xFFFFFFFF );
+		SetVertex( viewInfo.v[2], viewInfo.texPos.x - texSize.x * 0.5f, viewInfo.texPos.y - texSize.y * 0.5f, viewInfo.texPos.z, 0, 1, 0xFFFFFFFF );
+		SetVertex( viewInfo.v[3], viewInfo.texPos.x + texSize.x * 0.5f, viewInfo.texPos.y - texSize.y * 0.5f, viewInfo.texPos.z, 1, 1, 0xFFFFFFFF );
 		return	true;
 	}
 
@@ -273,11 +288,13 @@
 		SafeDelete( originNumber );
 		SafeDelete( menuText );
 		SafeDelete( mainView );
+		SafeDelete( infoScreen );
 		SafeDelete( lastBonusText );
 		SafeDelete( faceImage.obj );
 		SafeDelete( playerNumImage.obj );
 		SafeDelete( waveCircleImage.obj );
 		SafeDelete( notApplicable.obj );
+		SafeDelete( bgStage );
 		Random::Release();
 	}
 
@@ -288,9 +305,25 @@
 	//	カメラ初期化
 	void	sceneResult::CameraInitialize( void )
 	{
+		//	バックバッファポインタ退避
+		iexSystem::GetDevice()->GetRenderTarget( 0, &backBuffer );
+
+		//	レンダーターゲットスクリーン
+		infoScreen = new iex2DObj( iexSystem::ScreenWidth, iexSystem::ScreenHeight, IEX2D_RENDERTARGET );
+
+		//	情報表示用カメラ
+		viewInfo.pos = Vector3( 0.0f, 5.2f, -70.0f );
+		viewInfo.target = Vector3( 0.0f, 5.2f, 0.0f );
+		view2D = make_unique<Camera>();
+		view2D->SetProjection( D3DXToRadian( 10.0f ), 1.0f, 1000.0f );
+		view2D->Set( viewInfo.pos, viewInfo.target );
+		view2D->Activate();
+
+		//	メインカメラ
+		viewInfo.pos = Vector3( 0.0f, 15.0f, -10.0f );
+		viewInfo.target = viewInfo.pos + Vector3( 0.0f, 0.0f, 1.0f );
 		mainView = new Camera();
-		mainView->SetProjection( D3DXToRadian( 10.0f ), 1.0f, 1000.0f );
-		mainView->Set( Vector3( 0.0f, 5.2f, -70.0f ), Vector3( 0.0f, 5.2f, 0.0f ) );
+		mainView->Set( viewInfo.pos, viewInfo.target );
 		mainView->Activate();
 	}
 
@@ -347,8 +380,9 @@
 
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
-			//	クライアント座標に変換
-			WorldToClient( obj[i]->GetPos(), out, matView * matProjection );
+			//	座標設定
+			out.x = iexSystem::ScreenWidth * 0.2f;
+			out.x += out.x * i;
 
 			//	中心座標・初期スケール設定
 			numberImageInfo[i].pos.x = static_cast<int>( out.x );
@@ -375,12 +409,13 @@
 	//	順位画像構造体初期化
 	void	sceneResult::RankImageInitialize( void )
 	{
+		Vector3	out;
+		
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
-			Vector3	out;
-
-			//	クライアント座標に変換
-			WorldToClient( obj[i]->GetPos(), out, matView * matProjection );
+			//	座標設定
+			out.x = iexSystem::ScreenWidth * 0.2f;
+			out.x += out.x * i;
 
 			//	構造体初期化
 			int 		x = static_cast<int>( out.x );
@@ -399,7 +434,7 @@
 	}
 
 //----------------------------------------------------------------------------
-//	更新・描画
+//	全体更新・全体描画
 //----------------------------------------------------------------------------
 
 	//	更新
@@ -429,8 +464,12 @@
 	//	描画
 	void	sceneResult::Render( void ) 
 	{
-		mainView->Activate();
-		mainView->Clear();
+		//	カメラ
+		view2D->Activate();
+		view2D->Clear();
+
+		//	レンダーターゲットを設定
+		infoScreen->RenderTarget( 0 );
 
 		//	背景描画
 		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
@@ -440,12 +479,6 @@
 		//	リザルトシール描画
 		RenderImage( menuHead, menuHead.sx, menuHead.sy, menuHead.sw, menuHead.sh, IMAGE_MODE::ADOPTPARAM );
 
-		//	プレイヤー描画
-		FOR( 0, PLAYER_MAX )
-		{
-			//	プレイヤー描画
-			obj[value]->Render( shader3D, "toon" );
-		}
 
 		//	数値描画
 		NumberImageRender();
@@ -488,12 +521,40 @@
 		sh = playerNumImage.sh;
 		RenderImage( playerNumImage, sx, sy, sw, sh, IMAGE_MODE::NORMAL );
 
+		//	フレームバッファへ切り替え
+		iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );
+		mainView->Activate();
+		mainView->Clear();
+
+		//	ステージ描画
+		bgStage->Render();
+
+		//	プレイヤー描画
+		FOR( 0, PLAYER_MAX )
+		{
+			//	プレイヤー描画
+			obj[value]->Render( shader3D, "toon" );
+		}
+
+		//	リザルト用
+
+
+		//	ポリゴン描画
+		iexPolygon::Render3D( viewInfo.v, 2, infoScreen, RS_COPY );
+
+		//	とりあえず中央に描画
+		//infoScreen->Render( 100, 100, iexSystem::ScreenWidth * 0.7f, iexSystem::ScreenHeight * 0.7f, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight );
+
 		//	メニュー用スクリーン描画
 		iexPolygon::Rect( 0, 0, iexSystem::ScreenWidth, menuInfo.screenH, RS_COPY, GetColor( 0.0f, 0.0f, 0.0f, menuInfo.alpha ) );
 
 		//	メニュー項目描画
 		SelectRender();
 	}
+
+//----------------------------------------------------------------------------
+//	更新・描画
+//----------------------------------------------------------------------------
 
 	//	中間結果発表
 	void	sceneResult::IntermediateResultsUpdate( void )
