@@ -80,9 +80,33 @@
 		case ITEM_TYPE::ATTACK_UP:
 			characterManager->SetParameterInfo( Num, PARAMETER_STATE::ATTACKUP );
 			break;
+
+		case	ITEM_TYPE::MAGNET:
+			characterManager->SetParameterInfo( Num, PARAMETER_STATE::MAGNET );
+			break;
+
+		case ITEM_TYPE::BOMB:
+			break;
+			
+		case	ITEM_TYPE::OTHERS_SPEED_DOWN:
+			break;
+
+		case	ITEM_TYPE::SEALED_ATTACK:
+			break;
+
+		case	ITEM_TYPE::SELFISHNESS_JUMP:
+			break;
+
+		case	ITEM_TYPE::SPEED_UP:
+			characterManager->SetParameterInfo( Num, PARAMETER_STATE::SPEEDUP );
+			break;
+
+		case	ITEM_TYPE::UNRIVALED:
+			characterManager->SetParameterInfo( Num, PARAMETER_STATE::UNRIVALEDITEM );
+			break;
 		}
-		float	effectScale = 0.2f;
-		particle->Spark(pos, effectScale);
+		static	float	effectScale = 0.2f;
+		particle->Spark( pos, effectScale );
 	
 		sound->PlaySE( SE::ITEM_SE );
 	}

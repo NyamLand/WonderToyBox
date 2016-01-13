@@ -20,7 +20,7 @@ private:
 	//	定数
 	static const int ITEM_MAX = 10;		//	アイテム最大数
 	std::list<Item*>	itemList;
-	iexMesh*	org;
+	iexMesh*	org[ITEM_TYPE::MAX];
 
 public:
 	//	初期化・解放

@@ -123,6 +123,7 @@
 		return true;
 	}
 
+	//	初期化（デバッグ用）
 	void	sceneMain::InitializeDebug(void)
 	{
 		gameManager->InitializeDebug();
@@ -360,14 +361,16 @@
 	void	sceneMain::Render( void )
 	{
 		//	プレイヤーの数　+　スクリーン
-		FOR(0, PLAYER_MAX + 1){
+		FOR( 0, PLAYER_MAX + 1 )
+		{
 		//************************************************************
 		//		レンダーターゲット処理
 		//************************************************************
 			//		スクリーン
-			if (value >= PLAYER_MAX)
+			if ( value >= PLAYER_MAX )
 			{
 				m_screen->RenderTarget();
+				
 				//	画面クリア
 				mainView->Activate();
 				mainView->Clear();
@@ -375,7 +378,7 @@
 			//		プレイヤー個人ワイプ
 			else
 			{
-				if (!playerWipe->GetCheck( value ))	continue;
+				if ( !playerWipe->GetCheck( value ) )	continue;
 				playerWipe->RenderTarget( value );
 			}
 
@@ -385,8 +388,7 @@
 
 			//	オブジェクト描画
 			stage->Render( shader3D, "full_s" );
- 			//stageManager->Render(shader3D, "full_s");
-			characterManager->Render(shader3D, "toon");
+ 			characterManager->Render(shader3D, "toon");
 			coinManager->Render(shader3D, "full");
 			m_BulletManager->Render();
 			itemManager->Render();

@@ -10,6 +10,7 @@
 
 //	include
 #include	<memory>
+#include	"Camera.h"
 using namespace std;
 
 //	class
@@ -85,6 +86,15 @@ private:
 		int		step;
 	};
 
+	//	カメラ情報
+	struct VIEW_INFO
+	{
+		Vector3	pos;
+		Vector3	target;
+		Vector3	texPos;		//	描画位置
+		LVERTEX	v[4];		//	描画用頂点
+	};
+
 private:
 	SORT_INFO						sortInfo[4];
 	ORIGINAL_INFO				originInfo[4];
@@ -96,6 +106,7 @@ private:
 	MENU_INFO						menuInfo;
 	VIEW_RANK_INORDER	viewRankInOrder;
 	LASTBONUS_INFO			lastBonusInfo;
+	VIEW_INFO						viewInfo;
 
 	//	ラストボーナス計算用
 	SORT_INFO						maxCoinNum[4];
@@ -105,8 +116,12 @@ private:
 	SORT_INFO						hitAttackNum[4];
 	
 	//	モデル・画像
+	Surface*							backBuffer;
+	unique_ptr<Camera>		view2D;
+	iex2DObj*						infoScreen;
 	unique_ptr<iex2DObj>	back;
 	unique_ptr<iex3DObj>	org[4];
+	iexMesh*							bgStage;
 	iex3DObj*						obj[4];
 	iex2DObj*						originNumber;
 	iex2DObj*						menuText;

@@ -26,6 +26,7 @@ namespace
 			SEALED_ATTACK,
 			SELFISHNESS_JUMP,
 			OTHERS_SPEED_DOWN,
+			MAX,
 		};
 	}
 }
@@ -52,7 +53,7 @@ public:
 	void	SetType( const int& type );
 
 	//	î•ñæ“¾
-	int		GetType( void );
+	int	GetType( void );
 	bool	GetState( void );
 };
 
