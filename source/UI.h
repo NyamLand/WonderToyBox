@@ -8,8 +8,11 @@
 //
 //*********************************************************************************
 
+#include	"iextreme.h"
 #include	"GameManager.h"
 #include	"AirPlane.h"
+#include	"Camera.h"
+#include	<memory>
 
 namespace
 {
@@ -171,13 +174,17 @@ private:
 	ImageObj		alertImage;
 	ImageObj		alert_coinImage;
 	iex2DObj*	playerNumber;
+	iex2DObj*	startNumber;
+	ImageObj		startNum[PLAYER_MAX];
 	ImageObj		pNumImage[PLAYER_MAX];
 	iex2DObj*	pCoinNumImage;
 	iex2DObj*	life;
 	ImageObj		roundImage;
-	
 
 private:
+	//	定数
+	Vector3 PAR_POS;
+
 	//	システム
 	bool	changeflag;
 
@@ -240,7 +247,16 @@ private:
 	//　イベント情報
 	EVENT_INFO	eventInfo;
 	
+	//	パーティクル用バックバッファ
+	unique_ptr<iex2DObj>	target_par;
 
+	//	パーティクル用
+	bool		coin_flg[PLAYER_MAX];
+	int			coin_timer[PLAYER_MAX];
+
+	//	パーティクル用カメラ
+	unique_ptr<Camera>		particle_camera;
+		
 	//	パラメータ
 	int		scene;
 	
@@ -287,6 +303,7 @@ public:
 	void	TimerInitialize( void );
 	void	NewsBarInitialize( void );
 	void	StartAndTimeUpInitialize( void );
+	void	StartPlayerNumInitialize( void );
 	void	DonketsuDirectionInitialize( void );
 	void	AlertInitialize( void );
 	void	HurryUpInitialize( void );
@@ -302,6 +319,7 @@ public:
 	void	CoinBarUpdate( void );
 	void	NewsBarUpdate( void );
 	void	StartUpdate( void );
+	void	StartPlayerNumUpdate( void );
 	void	FinishUpdate( void );
 	void	DonketsuDirectionUpdate( void );
 	void	AlertUpdate( void );
@@ -313,12 +331,14 @@ public:
 	void	CoinNumberUpdate( void );
 	void	CoinImageInfoUpdate(NUMBERIMAGE_INFO& numImageinfo, NUMBER_INFO& numinfo, const int& num);
 	void	EventUpdate( void );
+	void	ParticleUpdate( void );
 
 	//	メイン描画
 	void	TimerRender( void );
 	void	CoinBarRender( void );
 	void	NewsBarRender( void );
 	void	StartRender( void );
+	void	StartPlayerNumRender( void );
 	void	FinishRender( void );
 	void	DonketsuDirectionRender( void );
 	void	AlertRender( void );
@@ -328,6 +348,8 @@ public:
 	void	LifeRender( void );
 	void	CoinNumberRender( void );
 	void	EventRender(void);
+	void	ParticleRender( int value );
+	void	RenderTargetParticle( void );
 
 	//	メイン動作関数
 	void BarControl( void );
