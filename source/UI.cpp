@@ -5,7 +5,9 @@
 #include	"GlobalFunction.h"
 #include	"CharacterManager.h"
 #include	"GameManager.h"
+#include	"Camera.h"
 #include	"sceneTitle.h"
+#include	"Particle.h"
 #include	"UI.h"
 
 //****************************************************************************************
@@ -230,17 +232,32 @@
 		life = new iex2DObj( "DATA/UI/Life.png" );
 		pCoinNumImage = new iex2DObj("DATA/UI/number.png");
 		roundImage.obj = new iex2DObj( "DATA/UI/roundText.png" );
+		startNumber = new iex2DObj("DATA/UI/DonketuUI.png");
+
+		//	パーティクル用バッファ
+		PAR_POS = Vector3(100.0f, 100.0f, 100.0f);
+		target_par = make_unique<iex2DObj>(iexSystem::ScreenWidth, iexSystem::ScreenHeight, IEX2D_RENDERTARGET);
+		particle_camera = make_unique<Camera>();
+		particle_camera->SetPos(Vector3(0.0f, 10.0f, -5.0f) + PAR_POS);
+		
+
 
 		//	共通変数初期化 
 		changeflag = false;
-		for (int i = 0; i < PLAYER_MAX; i++)
-			charatype[i] = gameManager->GetCharacterType(i);
+		FOR(0,PLAYER_MAX)
+		{
+			charatype[value] = gameManager->GetCharacterType(value);
+			startNum[value].obj = startNumber;
+			coin_flg[value] = false;
+			coin_timer[value] = 0;
+		}
 
 		//	各UI情報初期化
 		//CoinBarInitialize();
 		CoinNumberInitialize();
 		TimerInitialize();
 		StartAndTimeUpInitialize();
+		StartPlayerNumInitialize();
 		NewsBarInitialize();
 		DonketsuDirectionInitialize();
 		AlertInitialize();
@@ -283,6 +300,7 @@
 		SafeDelete( life );
 		SafeDelete( pCoinNumImage );
 		SafeDelete( roundImage.obj );
+		SafeDelete( startNumber );
 	}
 
 	//	リザルト用解放
@@ -342,11 +360,13 @@
 	{
 		PlayerNumberUpdate();
 		LifeUpdate();
+		ParticleUpdate();
 
 		switch ( mode )
 		{
 		case GAME_MODE::GAMESTART:
 			StartUpdate();
+			StartPlayerNumUpdate();
 			break;
 
 		case GAME_MODE::MAINGAME:
@@ -399,13 +419,15 @@
 	//	メイン描画
 	void	UI::MainRender( int mode )
 	{
-		PlayerNumberRender();
+
+		//PlayerNumberRender();
 		LifeRender();
 		RoundRender();
 
 		switch ( mode )
 		{
 		case GAME_MODE::GAMESTART:
+			StartPlayerNumRender();
 			StartRender();
 			break;
 
@@ -431,6 +453,7 @@
 			//CoinBarRender();
 			CoinNumberRender();
 
+
 			break;
 
 		case GAME_MODE::TIMEUP:
@@ -439,6 +462,8 @@
 		}
 
 		if (alertInfo.flag)	AlertRender();
+	
+
 	}
 
 	//	リザルト描画
@@ -633,6 +658,27 @@
 		countImage.renderflag = true;
 		count = 0;
 		waitTimer = 0;
+	}
+
+	//	カウントダウン中プレイヤーの番号表示
+	void	UI::StartPlayerNumInitialize( void )
+	{
+		//	変数初期化
+		Vector3 imagePos = Vector3(0.0f, 0.0f, 0.0f);
+		Vector3	p_pos = Vector3(0.0f, 0.0f, 0.0f);
+		Vector3	out = Vector3(0.0f, 0.0f, 0.0f);
+		int sx, sy;
+		int w = static_cast<int>(iexSystem::ScreenWidth * 0.15f);
+		int h = static_cast<int>(iexSystem::ScreenHeight * 0.15f);
+
+		FOR(0, PLAYER_MAX)
+		{
+			//	構造体に情報設定
+			sx = 0 + 128 * value;
+			sy = 256;
+ 
+			ImageInitialize(startNum[value], 0, 0, w, h, sx, sy, 128, 128);
+		}
 	}
 
 	//	どんけつ演出初期化
@@ -894,6 +940,28 @@
 		WaveUpdate( countImage );
 	}
 
+	//	カウントダウン中プレイヤーの番号表示
+	void	UI::StartPlayerNumUpdate( void )
+	{
+		//	変数初期化
+		Vector3 imagePos = Vector3(0.0f, 0.0f, 0.0f);
+		Vector3	p_pos = Vector3(0.0f, 0.0f, 0.0f);
+		Vector3	out = Vector3(0.0f, 0.0f, 0.0f);
+		FOR(0, PLAYER_MAX)
+		{
+			//	画像を表示する場所を設定
+			p_pos = characterManager->GetPos(value);
+			imagePos = p_pos;
+
+			//	クライアント座標に変換
+			WorldToClient(imagePos, out, matView * matProjection);
+
+			//	構造体に情報設定
+			startNum[value].x = static_cast<int>(out.x);
+			startNum[value].y = static_cast<int>(out.y);
+		}
+	}
+
 	//	タイムアップ演出
 	void	UI::FinishUpdate( void )
 	{
@@ -983,20 +1051,10 @@
 	
 		
 		//	3秒～0秒
-		if (!timer.scalingFlag)	SetScaling(timer, 1.0f);
-		//timer.w = iexSystem::ScreenWidth / 6;	timer.h = iexSystem::ScreenHeight / 6;
-		ScalingAlphaUpdate(timer, 1000);
-		//last_t += D3DX_PI / 180 * 1.0f;
-		//
-		////	パラメータ上限設定
-		//if (last_t >= 1.0f)
-		//{
-		//	last_t = 1.0f;
-		//}
-		//
-		//Lerp(last_alpha, 1.0f, 0.0f, last_t);
+		if (!timer.scalingFlag && gameManager->GetTimer() % 60 == 0)	SetScaling(timer, 1.0f);
 
-		//if (gameManager->GetTimer() % SECOND == 0) last_t = 0.0f;
+
+		ScalingAlphaUpdate(timer, 1000);
 
 
 
@@ -1125,31 +1183,79 @@
 	//	コイン枚数描画
 	void	UI::CoinNumberRender( void )
 	{
-		FOR(0, PLAYER_MAX)
+		//	15秒まで数字表示
+		if (gameManager->GetTimer() / SECOND >= 15)
 		{
-			//	１００の位描画
-			int		sx = coinNumInfo[value].hundred.sx;
-			int		sy = coinNumInfo[value].hundred.sy;
-			int		sw = coinNumInfo[value].hundred.sw;
-			int		sh = coinNumInfo[value].hundred.sh;
+			FOR(0, PLAYER_MAX)
+			{
+				//	１００の位描画
+				int		sx = coinNumInfo[value].hundred.sx;
+				int		sy = coinNumInfo[value].hundred.sy;
+				int		sw = coinNumInfo[value].hundred.sw;
+				int		sh = coinNumInfo[value].hundred.sh;
 
-			if (coinNumInfo[value].hundredRenderFlag)
-				RenderImage(coinNumInfo[value].hundred, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM);
+				if (coinNumInfo[value].hundredRenderFlag)
+					RenderImage(coinNumInfo[value].hundred, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM);
 
-			//	１０の位描画
-			sx = coinNumInfo[value].ten.sx;
-			sy = coinNumInfo[value].ten.sy;
-			sw = coinNumInfo[value].ten.sw;
-			sh = coinNumInfo[value].ten.sh;
-			RenderImage(coinNumInfo[value].ten, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM);
+				//	１０の位描画
+				sx = coinNumInfo[value].ten.sx;
+				sy = coinNumInfo[value].ten.sy;
+				sw = coinNumInfo[value].ten.sw;
+				sh = coinNumInfo[value].ten.sh;
+				RenderImage(coinNumInfo[value].ten, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM);
 
-			//	１の位描画
-			sx = coinNumInfo[value].one.sx;
-			sy = coinNumInfo[value].one.sy;
-			sw = coinNumInfo[value].one.sw;
-			sh = coinNumInfo[value].one.sh;
-			RenderImage(coinNumInfo[value].one, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM);
+				//	１の位描画
+				sx = coinNumInfo[value].one.sx;
+				sy = coinNumInfo[value].one.sy;
+				sw = coinNumInfo[value].one.sw;
+				sh = coinNumInfo[value].one.sh;
+				RenderImage(coinNumInfo[value].one, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM);
+
+				ParticleRender(value);
+			}
 		}
+		//	ラスト15秒は自分の持ち枚数が分からなくなる
+		else
+		{
+			FOR(0, PLAYER_MAX)
+			{
+				//	１００の位描画
+				int		sx = 10 * 64;		//	×
+				int		sy = coinNumInfo[value].hundred.sy;
+				int		sw = coinNumInfo[value].hundred.sw;
+				int		sh = coinNumInfo[value].hundred.sh;
+
+				if (coinNumInfo[value].hundredRenderFlag)
+					RenderImage(coinNumInfo[value].hundred, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM);
+
+				//	１０の位描画
+				sy = coinNumInfo[value].ten.sy;
+				sw = coinNumInfo[value].ten.sw;
+				sh = coinNumInfo[value].ten.sh;
+				RenderImage(coinNumInfo[value].ten, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM);
+
+				//	１の位描画
+				sy = coinNumInfo[value].one.sy;
+				sw = coinNumInfo[value].one.sw;
+				sh = coinNumInfo[value].one.sh;
+				RenderImage(coinNumInfo[value].one, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM);
+			
+				ParticleRender(value);
+			}
+		}
+
+
+	}
+
+	//	パーティクル描画(コイン枚数)
+	void	UI::ParticleRender( int value )
+	{
+		if (!coin_flg[value]) return;
+
+		target_par->Render((int)(coinNumInfo[value].pos.x - coinNumInfo[value].scale * 1.5f ), (int)(coinNumInfo[value].pos.y - coinNumInfo[value].scale),// - (coinNumInfo[value].hundred.h + coinNumInfo[value].ten.h + coinNumInfo[value].one.h) / 2,
+			coinNumInfo[value].scale * 3, coinNumInfo[value].scale * 2,
+			0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, shader2D, "add");
+	
 	}
 
 	//	ニュース描画
@@ -1177,6 +1283,18 @@
 	{
 		RenderImage( countImage, countImage.sx, countImage.sy, countImage.sw, countImage.sh, IMAGE_MODE::NORMAL );
 		RenderImage( countImage, countImage.sx, countImage.sy, countImage.sw, countImage.sh, IMAGE_MODE::WAVE );
+	}
+
+	//	カウントダウン中プレイヤーの番号表示
+	void	UI::StartPlayerNumRender( void )
+	{
+		FOR(0,PLAYER_MAX)
+		{
+			RenderImage(startNum[value], startNum[value].sx, startNum[value].sy, startNum[value].sw, startNum[value].sh, IMAGE_MODE::NORMAL);
+		}
+
+		int a;
+		a = 2;
 	}
 
 	//	タイムアップ演出
@@ -1262,8 +1380,8 @@
 		}
 		else
 		{
-			//timer.alpha = last_alpha;
-			
+			if (!timer.scalingFlag) return;
+
 			timer.x = iexSystem::ScreenWidth / 2;	timer.y = iexSystem::ScreenHeight / 2;
 			RenderImage(timer, timer.sx * second[1], timer.sy, timer.sw, timer.sh, IMAGE_MODE::SCALING);
 		}
@@ -1299,6 +1417,18 @@
 		RenderImage( roundImage, roundImage.sx, roundImage.sy, roundImage.sw, roundImage.sh, IMAGE_MODE::ADOPTPARAM );
 	}
 
+	//	レンダーターゲットでパーティクル
+	void	UI::RenderTargetParticle( void )
+	{
+		//	バックバッファにパーティクル
+		target_par->RenderTarget(0);
+
+		particle_camera->Activate();
+		particle_camera->Clear();
+		particle->Render();
+
+	}
+
 //------------------------------------------------------------------------------
 //	動作関数
 //------------------------------------------------------------------------------
@@ -1306,7 +1436,7 @@
 	//	コイン枚数を1枚ずつカウントアップダウン
 	void	UI::CoinCounter( int coin, int num )
 	{
-		if (coinNum[num] == coin) return;
+		if (coinNum[num] == coin)	return;
 
 		//	コイン減少
 		if( coinNum[num] > coin )
@@ -1318,7 +1448,21 @@
 		if (coinNum[num] < coin)
 		{
 			coinNum[num]++;
+			coin_flg[num] = true;
+			particle->CoinGet(PAR_POS, 0.4f);
 		}
+
+		//Vector3 coin_pos;
+		//Vector3 c_pos = mainView->GetPos();
+		//Vector3 c_target = mainView->GetTarget();
+
+
+		//Vector3 front = c_target - c_pos;
+		//front.Normalize();
+
+
+		//coin_pos = c_pos + front * 10.0f;
+
 	}
 
 	//	バー動作
@@ -1740,6 +1884,27 @@
 			//	１の位設定
 			numImageInfo.one.x = numImageInfo.pos.x + numImageInfo.scale / 3;
 			numImageInfo.one.sx = numInfo.one * 64;
+		}
+	}
+
+	//	パーティクル更新
+	void	UI::ParticleUpdate( void )
+	{
+		particle_camera->Update(VIEW_MODE::FIX, PAR_POS);
+		particle->Update();
+
+		FOR(0, PLAYER_MAX)
+		{
+			//	パーティクルを30フレーム間だけ描画許可する
+			if (coin_flg[value])
+			{
+				coin_timer[value]++;
+				if (coin_timer[value] > 30)
+				{
+					coin_flg[value] = false;
+					coin_timer[value] = 0;
+				}
+			}
 		}
 	}
 

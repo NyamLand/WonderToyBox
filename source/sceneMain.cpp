@@ -359,6 +359,8 @@
 	//	描画
 	void	sceneMain::Render( void )
 	{
+		ui->RenderTargetParticle();
+
 		//	プレイヤーの数　+　スクリーン
 		FOR(0, PLAYER_MAX + 1){
 		//************************************************************
@@ -401,7 +403,7 @@
 		//-------------------
 		//	スクリーンへ描画
 		//-------------------
-		//UI	
+		//UI
 		ui->Render(gameManager->GetMode());
 
 

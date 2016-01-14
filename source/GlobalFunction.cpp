@@ -367,9 +367,9 @@
 	}
 
 	//	拡大縮小更新
-	void	ScalingAlphaUpdate(ImageObj& image, int max_scale)
+	bool	ScalingAlphaUpdate(ImageObj& image, int max_scale)
 	{
-		if (!image.scalingFlag) return;
+		if (!image.scalingFlag) return false;
 
 		//	パラメータ加算
 		image.t += D3DX_PI / 180 * image.scalingspeed;
@@ -384,12 +384,14 @@
 			image.t = 0.0f;
 			image.alpha = 1.0f;
 			image.scalingFlag = false;
+			return true;
 		}
 
 		Lerp(image.plusScaleX, 0, max_scale, image.t);
 		Lerp(image.plusScaleY, 0, max_scale, image.t);
 		
 		if (image.alpha <= 0.0f) image.alpha = 0.0f;
+		return false;
 	}
 
 
