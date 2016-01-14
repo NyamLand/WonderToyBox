@@ -36,7 +36,8 @@ using namespace std;
 	//	デストラクタ
 	sceneLoad::~sceneLoad( void )
 	{
-		SafeDelete( load );
+		SafeDelete( bgImage[0].obj );
+		SafeDelete( bgImage[1].obj );
 		SafeDelete( load_anykey.obj );	
 	}
 
@@ -49,13 +50,27 @@ using namespace std;
 
 		//	カメラ設定
 		mainView = new Camera();
-		load = new iex2DObj( "DATA/UI/Load/Lord-back.png" );
+
+		//	背景初期化
+		bgImage[0].obj = new iex2DObj( "DATA/UI/Load/Lord-back01.png" );
+		bgImage[1].obj = new iex2DObj( "DATA/UI/Load/Lord-back02.png" );
+		int x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
+		int y = static_cast<int>( iexSystem::ScreenHeight * 0.5f );
+		int w = static_cast<int>( iexSystem::ScreenWidth );
+		int h = static_cast<int>( iexSystem::ScreenHeight );
+		ImageInitialize( bgImage[0], x, y, w, h, 0, 0, 1280, 720 );
+
+		x = static_cast<int>( iexSystem::ScreenWidth * 1.5f );
+		ImageInitialize( bgImage[1], x, y, w, h, 0, 0, 1280, 720 );
+
+		//	PressSpace画像構造体設定
 		load_anykey.obj = new iex2DObj( "DATA/UI/pressspace.png" );
-		int x = static_cast<int>( iexSystem::ScreenWidth * 0.86f );
-		int y = static_cast<int>( iexSystem::ScreenHeight * 0.93f );
-		int w = static_cast<int>( iexSystem::ScreenWidth * 0.2f );
-		int h = static_cast<int>( iexSystem::ScreenHeight * 0.18f );
+		x = static_cast<int>( iexSystem::ScreenWidth * 0.86f );
+		y = static_cast<int>( iexSystem::ScreenHeight * 0.93f );
+		w = static_cast<int>( iexSystem::ScreenWidth * 0.2f );
+		h = static_cast<int>( iexSystem::ScreenHeight * 0.18f );
 		ImageInitialize( load_anykey, x, y, w, h, 0, 0, 256, 128 );
+		
 		//	別スレッド作成
 		_beginthread( Thread, 0, ( void* )newScene );
 		
@@ -94,7 +109,7 @@ using namespace std;
 		mainView->Clear();
 
 		//	背景描画
-		load->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 1280, 720 );
+		RenderImage( bgImage[0], bgImage[0].sx, bgImage[0].sy, bgImage[0].sw, bgImage[0].sh, IMAGE_MODE::NORMAL );
 
 		//	pressSpace描画
 		if ( threadState )
