@@ -8,9 +8,10 @@
 //*******************************************************************************
 
 //	include
+#include	"EventManager.h"
 
 //	class
-class Event_Mission
+class Event_Mission : public EventManager
 {
 private:
 	struct COLLECT

@@ -5,7 +5,6 @@
 #include	"CoinManager.h"
 #include	"CharacterManager.h"
 #include	"GameManager.h"
-#include	"EventManager.h"
 
 #include	"Event_Jamming.h"
 
