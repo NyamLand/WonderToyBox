@@ -50,7 +50,7 @@
 			Vector3 back(0.0f, 0.0f, 1.0f);
 			Vector3 right(-1.0f, 0.0f, 0.0f);
 			Vector3 left(1.0f, 0.0f, 0.0f);
-			Vector3 up(0.0f, 1.0f, 0.0f);
+			Vector3 up(0.0f, 30.0f, 0.0f);
 		}
 		namespace CHECK_MODE
 		{
@@ -86,16 +86,14 @@
 		bgInfo.t = 1.0f;
 		bgInfo.mt = 0.0f;
 		mainView = new Camera();
-		//mainView->SetProjection( D3DXToRadian( 45.0f ), 1.0f, 1000.0f );
-		bgInfo.cpos = Vector3(0.0f, 10.0f, 1.0f);
+		mainView->SetProjection( D3DXToRadian( 70.0f ), 1.0f, 1000.0f );
+		bgInfo.cpos = Vector3(0.0f, 10.0f, 0.0f);
 		bgInfo.cspos = bgInfo.cpos;
-		bgInfo.cepos = Vector3(0.0f, 30.0f, 1.0f);
+		bgInfo.cepos = Vector3(0.0f,11.0f, 0.0f);
 		bgInfo.target = bgInfo.cpos + CAMERA_TARGET::front;
 		bgInfo.start	= bgInfo.target;
 		bgInfo.end		= bgInfo.target;
 		bgInfo.moveflg = false;
-		bgInfo.targetflg = false;
-		bgInfo.renderflg = false;
 		mainView->Set(bgInfo.cpos, bgInfo.target);
 
 		//	random
@@ -226,7 +224,7 @@
 		}
 		bgInfo.t += 0.01f;
 		if (bgInfo.t >= 1.0f)bgInfo.t = 1.0f;
-		bgInfo.targetflg= CubicFunctionInterpolation(bgInfo.target, bgInfo.start, bgInfo.end, bgInfo.t);
+		CubicFunctionInterpolation(bgInfo.target, bgInfo.start, bgInfo.end, bgInfo.t);
 		mainView->SetTarget(bgInfo.target);
 		//	スクリーン更新
 		screen->Update();
@@ -274,7 +272,7 @@
 	{
 		//	camera
 		mainView->Activate();
-		mainView->Clear(0xFFFFFFFF);
+		mainView->Clear();
 
 		BG->Render();
 		////背景( 一番後ろに表示 )
@@ -312,6 +310,12 @@
 		}
 		//	スクリーン
 		screen->Render();
+
+		
+		printf( "target.x = %f ", bgInfo.target.x );
+		printf("target.y = %f ", bgInfo.target.y);
+		printf("target.z = %f\n", bgInfo.target.z);
+
 
 
 	}
@@ -528,7 +532,7 @@
 
 			//	ステージ選択へ
 			bgInfo.t = 0.0f;
-			bgInfo.start = bgInfo.cpos + CAMERA_TARGET::right;
+			bgInfo.start = bgInfo.end;
 			bgInfo.end = bgInfo.cpos + CAMERA_TARGET::back;
 			SetMode( MENU_MODE::SELECT_STAGE );
 		}
@@ -580,13 +584,13 @@
 	void	sceneMenu::SelectStageInitialize( void )
 	{
 		//	机モデル初期化
-		deskStage->SetPos( -5.0f, 3.0f, 0.0f );
+		deskStage->SetPos( -5.0f, 10.0f, 15.0f );
 		deskStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 		deskStage->SetScale( 0.1f );
 		deskStage->Update();
 
 		//	森モデル初期化
-		forestStage->SetPos( 5.0f, 4.0f, 0.0f );
+		forestStage->SetPos( 5.0f, 10.0f, 15.0f );
 		forestStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 		forestStage->SetScale( 0.04f );
 		forestStage->Update();
@@ -648,7 +652,7 @@
 
 			//	次のモードへ
 			bgInfo.t = 0.0f;
-			bgInfo.start = bgInfo.cpos + CAMERA_TARGET::back;
+			bgInfo.start = bgInfo.end;
 			bgInfo.end = bgInfo.cpos + CAMERA_TARGET::left;
 			SetMode( MENU_MODE::SELECT_CHECK );
 		}
@@ -657,7 +661,7 @@
 		if ( KEY( KEY_B ) == 3 )
 		{
 			bgInfo.t = 0.0f;
-			bgInfo.start = bgInfo.cpos + CAMERA_TARGET::back;
+			bgInfo.start = bgInfo.end;
 			bgInfo.end = bgInfo.cpos + CAMERA_TARGET::right;
 			SetMode( MENU_MODE::SELECT_CHARACTER );
 		}
@@ -695,7 +699,7 @@
 		FOR( 0, PLAYER_MAX )
 		{
 			obj[value] = org[gameManager->GetCharacterType( value )]->Clone();
-			obj[value]->SetPos( -7.0f + ( 14.0f / 3.0f * value ), 0.0f, 0.0f );
+			obj[value]->SetPos( 5.0f , 5.0f, 5.0f + ( 14.0f / 3.0f * value ) );
 			obj[value]->Update();
 			WorldToClient( obj[value]->GetPos(), cursorPos[value], matView * matProjection );
 		}
@@ -709,12 +713,12 @@
 
 		//	ステージ座標、向き設定
 		{
-			deskStage->SetPos( -5.0f, 5.0f, 5.0f );
-			deskStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
-			deskStage->SetScale( 0.08f );
+			deskStage->SetPos( 5.0f, 10.0f, 3.0f );
+			deskStage->SetAngle(D3DXToRadian(30.0f), D3DXToRadian(-100.0f), 0.0f);
+			deskStage->SetScale( 0.03f );
 			deskStage->Update();
-			forestStage->SetPos(-5.0f, 5.0f, 5.0f);
-			forestStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
+			forestStage->SetPos(5.0f, 10.0f, 3.0f);
+			forestStage->SetAngle(D3DXToRadian(30.0f), D3DXToRadian(-100.0f), 0.0f);
 			forestStage->SetScale( 0.03f );
 			forestStage->Update();
 		}
@@ -756,7 +760,6 @@
 				if ( !checkSelectInfo.select )	//	はい
 				{
 					bgInfo.t = 0.0f;
-					bgInfo.targetflg = false;
 					bgInfo.start = bgInfo.end;
 					bgInfo.end = bgInfo.cpos + CAMERA_TARGET::up;
 					checkSelectInfo.step = CHECK_MODE::MOVETARGET;
@@ -826,7 +829,7 @@
 	//	最終確認描画
 	void	sceneMenu::SelectCheckRender( void )
 	{
-		if (bgInfo.t < 1.0f/*||bgInfo.renderflg*/)return;
+		if (bgInfo.t < 1.0f)return;
 		//	ステージ描画
 		switch ( gameManager->GetStageType() )
 		{

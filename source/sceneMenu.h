@@ -66,8 +66,6 @@ private:
 		float t;	//補間パラメータ
 		float mt;	//移動用補間パラメータ
 		bool moveflg;//移動用フラグ
-		bool targetflg;//ターゲット用フラグ
-		bool renderflg;//描画用フラグ
 	};
 private:	
 	//option設計中
