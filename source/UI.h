@@ -135,7 +135,7 @@ private:
 	struct LIFE_INFO
 	{
 		int	life;
-		ImageObj	lifeImage[5];
+		ImageObj	lifeImage;
 	};
 
 	//　イベント情報
@@ -164,7 +164,6 @@ private:
 	iex2DObj*	life;
 	ImageObj		roundImage;
 	
-
 private:
 	//	システム
 	bool	changeflag;
@@ -225,6 +224,7 @@ private:
 	NUMBERIMAGE_INFO	coinNumInfo[PLAYER_MAX];
 	NUMBER_INFO			numInfo[PLAYER_MAX];
 
+	//	飛行機
 	AirPlane*				airPlane;
 	
 	//　イベント情報

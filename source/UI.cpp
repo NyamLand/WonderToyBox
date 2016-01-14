@@ -203,17 +203,7 @@
 	void	UI::TitleInitialize( void )
 	{
 		airPlane = new AirPlane();
-		////	画像初期化
-		//titleInfo.textImage.obj = new iex2DObj( "DATA/UI/menu/menu-int.png" );
 
-		////	構造体初期化
-		//int x = static_cast<int>( iexSystem::ScreenWidth * 1.01f );
-		//int y = static_cast<int>( iexSystem::ScreenHeight * 1.04f );
-		//int w = static_cast<int>( iexSystem::ScreenWidth * 0.6f );
-		//int h = static_cast<int>( iexSystem::ScreenHeight * 0.14f );
-		//ImageInitialize( titleInfo.textImage, x, y, w, h, TITLE_TEXT_SRCPOS_INFO::MENU_SRC_POS_X, TITLE_TEXT_SRCPOS_INFO::MENU_SRC_POS_Y, 1024, 128 );
-		//titleInfo.textImage.renderflag = false;
-		//
 		//	変数初期化
 		titleInfo.mode = 0;
 		titleInfo.step = 0;
@@ -239,7 +229,7 @@
 		alertImage.obj = new iex2DObj( "DATA/UI/alert.png" );
 		alert_coinImage.obj = new iex2DObj( "DATA/UI/coin_alert.png" );
 		playerNumber = new iex2DObj( "DATA/UI/number.png" );
-		life = new iex2DObj( "DATA/UI/Life.png" );
+		life = new iex2DObj( "DATA/UI/NLife.png" );
 		pCoinNumImage = new iex2DObj("DATA/UI/number.png");
 		roundImage.obj = new iex2DObj( "DATA/UI/roundText.png" );
 
@@ -340,7 +330,7 @@
 			{
 				airPlaneInfo.OUT_END_POS_X;
 				airPlaneInfo.OUT_END_POS_Y;
-				Vector3 endPos( airPlaneInfo.OUT_END_POS_X, airPlaneInfo.OUT_END_POS_Y, 0.0f );
+				Vector3 endPos( ( float )airPlaneInfo.OUT_END_POS_X, ( float )airPlaneInfo.OUT_END_POS_Y, 0.0f );
 				airPlane->SetNext( airPlane->GetPos(),endPos, AirPlane::FLYING_OUT );
 				titleInfo.step++;
 			}
@@ -766,11 +756,8 @@
 		FOR( 0, PLAYER_MAX )
 		{
 			lifeInfo[value].life = gameManager->GetStartLife( value );
-			for ( int i = 0; i < lifeInfo[value].life; i++ )
-			{
-				lifeInfo[value].lifeImage[i].obj = life;
-				ImageInitialize( lifeInfo[value].lifeImage[i], 0, 0, 30, 30, 0, 0, 256, 256 );
-			}
+			lifeInfo[value].lifeImage.obj = life;
+			ImageInitialize( lifeInfo[value].lifeImage, 0, 0, 50, 50, 0, 0, 64, 64 );
 		}
 	}
 
@@ -1098,6 +1085,7 @@
 		Vector3	p_Up;
 		Vector3	lifePos;
 		Vector3	out;
+		int			culLife;
 
 		FOR( 0, PLAYER_MAX )
 		{
@@ -1107,49 +1095,17 @@
 			lifePos = p_Pos + p_Up * 5.0f;
 			WorldToClient( lifePos, out, matView * matProjection );
 
-			//	構造体に設定
-			lifeInfo[value].life = characterManager->GetLife( value );
-			for ( int i = 0; i < lifeInfo[value].life; i++ )
-			{
-				switch ( lifeInfo[value].life )
-				{
-				case 1:
-					//	表示位置設定
-					lifeInfo[value].lifeImage[i].x = static_cast<int>( out.x );
-					lifeInfo[value].lifeImage[i].y = static_cast<int>( out.y - 30 );
-					break;
+			//	現在の体力取得
+			culLife = characterManager->GetLife( value );
 
-				case 2:
-					//	表示位置設定
-					lifeInfo[value].lifeImage[i].x = static_cast<int>( ( out.x - 15 ) + 30 * i );
-					lifeInfo[value].lifeImage[i].y = static_cast<int>( out.y - 30 );
-					break;
+			//	描画位置設定
+			lifeInfo[value].lifeImage.x = ( int )out.x;
+			lifeInfo[value].lifeImage.y = ( int )out.y;
 
-				case 3:
-					//	表示位置設定
-					lifeInfo[value].lifeImage[i].x = static_cast<int>( ( out.x - 30 ) + 30 * i );
-					lifeInfo[value].lifeImage[i].y = static_cast<int>( out.y - 30 * ( i % 2 ) );
-					break;
-
-				case 4:
-					//	表示位置設定
-					lifeInfo[value].lifeImage[i].x = static_cast<int>( out.x - 40 + ( 80 / 3 ) * i );
-					if ( i == 1 || i == 2 )	lifeInfo[value].lifeImage[i].y = static_cast<int>( out.y - 30 );
-					else								lifeInfo[value].lifeImage[i].y = static_cast<int>( out.y );
-					break;
-
-				case 5:
-					lifeInfo[value].lifeImage[i].x = static_cast<int>( out.x - 40 + ( 100 / 4 ) * i );
-					if ( i == 2 )							lifeInfo[value].lifeImage[i].y = static_cast<int>( out.y - 40 );
-					else	if ( i == 1 || i == 3 )	lifeInfo[value].lifeImage[i].y = static_cast<int>( out.y - 20 );
-					else										lifeInfo[value].lifeImage[i].y = static_cast<int>( out.y );
-					break;
-				}
-				
-				//	読み込み位置設定
-				if ( lifeInfo[value].life > i )	lifeInfo[value].lifeImage[i].sx = 256;
-				else										lifeInfo[value].lifeImage[i].sx = 0;
-			}
+			//	読み込み位置設定
+			lifeInfo[value].lifeImage.sx = lifeInfo[value].lifeImage.sw * ( ( lifeInfo[value].life - culLife ) % 4 );
+			lifeInfo[value].lifeImage.sy = lifeInfo[value].lifeImage.sh * ( ( lifeInfo[value].life - culLife ) / 4 );
+			int a = 0;
 		}
 	}
 
@@ -1366,10 +1322,7 @@
 	{
 		FOR( 0, PLAYER_MAX )
 		{
-			for ( int i = 0; i < lifeInfo[value].life; i++ )
-			{
-				RenderImage(lifeInfo[value].lifeImage[i], lifeInfo[value].lifeImage[i].sx, lifeInfo[value].lifeImage[i].sy, lifeInfo[value].lifeImage[i].sw, lifeInfo[value].lifeImage[i].sh, IMAGE_MODE::NORMAL );
-			}
+			RenderImage( lifeInfo[value].lifeImage, lifeInfo[value].lifeImage.sx, lifeInfo[value].lifeImage.sy, lifeInfo[value].lifeImage.sw, lifeInfo[value].lifeImage.sh, IMAGE_MODE::NORMAL );
 		}
 	}
 
@@ -1426,7 +1379,7 @@
 	}
 
 	//	バー動作２
-	void		UI::BarControl2( void )
+	void	UI::BarControl2( void )
 	{
 		//	プレイヤー情報登録
 		FOR( 0, PLAYER_MAX )
@@ -1469,7 +1422,7 @@
 	}
 
 	//	バー描画
-	void		UI::BarRender( void )
+	void	UI::BarRender( void )
 	{
 	}
 

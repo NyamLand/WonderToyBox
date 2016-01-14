@@ -95,6 +95,14 @@ private:
 		LVERTEX	v[4];		//	描画用頂点
 	};
 
+	//	ライフ情報
+	struct LIFE_INFO
+	{
+		float	scale;
+		int	maxW;
+		int	maxH;
+	};
+
 private:
 	SORT_INFO						sortInfo[4];
 	ORIGINAL_INFO				originInfo[4];
@@ -126,6 +134,7 @@ private:
 	iex2DObj*						originNumber;
 	iex2DObj*						menuText;
 	iex2DObj*						lastBonusText;
+	iex2DObj*						life;
 	ImageObj							menuHead;
 	ImageObj							originCoinImage[4];
 	ImageObj							rankImage[4];
@@ -134,6 +143,8 @@ private:
 	ImageObj							faceImage;
 	ImageObj							waveCircleImage;
 	ImageObj							notApplicable;		//	該当なし画像
+	ImageObj							lifeImage[4];		//	ライフ画像
+	LIFE_INFO						lifeInfo;
 
 	//	変数
 	int		mode;
@@ -155,6 +166,7 @@ public:
 	void	ResultInfoInitialize( void );
 	void	NumberImageInfoInitialize( void );
 	void	RankImageInitialize( void );
+	void	LifeImageInitialize( void );
 
 	//	全体更新・描画
 	void	Update( void );
@@ -169,6 +181,7 @@ public:
 	void	SelectRender( void );
 	void	NumberImageRender( void );
 	void	RankRender( void );
+	void	LifeRender( void );
 	
 	//	動作関数
 	void	SetLastBonus( void );
@@ -180,6 +193,8 @@ public:
 	bool	ViewRankInOrder( void );
 	bool	RankWave( void );
 	void	MoveScene( void );
+	bool	NextLifeAnnouncing( void );
+	void	ProductionSkip( void );
 
 	//	選択モード関数
 	bool	DownPolygon( void );

@@ -43,6 +43,7 @@
 				ROULETTE,
 				LASTBONUS,
 				RANK,
+				LIFE,
 				RANK_SKIP,
 			};
 		}
@@ -112,6 +113,7 @@
 		originNumber = new iex2DObj( "DATA/UI/number.png" );
 		menuText = new iex2DObj( "DATA/UI/result/result-cho.png" );
 		lastBonusText = new iex2DObj( "DATA/UI/Result/LastBonusText.png" );
+		life = new iex2DObj( "DATA/UI/Nlife.png" );
 
 		//	モデル読み込み
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Knight/Knight_Dammy.IEM" ) );			//	掃除屋
@@ -175,29 +177,20 @@
 		//	結果用情報構造体初期化
 		ResultInfoInitialize();
 
-		//	ソートかける
-		//Sort( maxCoinNum );
-		//Sort( fallStageNum );
-		//ReverseSort( coin77 );
-		//ReverseSort( minCoinNum );
-		//Sort( hitAttackNum );
-
-		////	ラストボーナス設定
-		//SetLastBonus();
-		//AddLastBonus();
+		//	合計情報をソート
 		Sort( sortInfo );
 		
 		//	ランキング設定
 		SetRank();
-
-		//	次回ライフ設定
-		SetNextLife();
 
 		//	数値構造体初期化
 		NumberImageInfoInitialize();
 		
 		//	順位画像構造体初期化
 		RankImageInitialize();
+
+		//	ライフ画像構造体初期化
+		LifeImageInitialize();
 
 		//	ルーレット情報初期化
 		{
@@ -304,6 +297,7 @@
 	//	解放
 	void	sceneResult::Release( void )
 	{
+		SafeDelete( life );
 		SafeDelete( menuHead.obj );
 		SafeDelete( originNumber );
 		SafeDelete( menuText );
@@ -453,6 +447,38 @@
 		}
 	}
 
+	//	ライフ画像構造体初期化
+	void	sceneResult::LifeImageInitialize( void )
+	{
+		int	culLife = 0;
+		int	x, y, w, h, sx, sy, sw, sh;
+
+		lifeInfo.maxW = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
+		lifeInfo.maxH = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
+		FOR( 0, PLAYER_MAX )
+		{
+			//	画像を登録
+			lifeImage[value].obj = life;
+
+			//	現在のライフ最大値を取得
+			culLife = gameManager->GetStartLife( value );
+
+			//	画像構造体に設定
+			x = rankImage[value].x;
+			y = rankImage[value].y;
+			w = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
+			h = w;
+			sw = 64;
+			sh = 64;
+			sx = sw * ( ( 5 - culLife ) % 4 );
+			sy = sh * ( ( 5 - culLife ) / 4 );
+			ImageInitialize( lifeImage[value], x, y, w, h, sx, sy, sw, sh );
+
+			//	最初は非表示
+			lifeImage[value].renderflag = false;
+		}
+	}
+
 //----------------------------------------------------------------------------
 //	全体更新・全体描画
 //----------------------------------------------------------------------------
@@ -484,17 +510,17 @@
 	//	描画
 	void	sceneResult::Render( void ) 
 	{
-		//	カメラ
-		view2D->Activate();
-		view2D->Clear();
-
 		//	レンダーターゲットを設定
 		infoScreen->RenderTarget( 0 );
+		
+		//	カメラ
+		view2D->Activate();
+		view2D->Clear( 0x00FFFFFF );
 
 		//	背景描画
-		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
-		back->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 1280, 720 );
-		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
+		//iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
+		//back->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 1280, 720 );
+		//iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
 
 		//	プレイヤー描画
 		FOR( 0, PLAYER_MAX )
@@ -506,47 +532,14 @@
 		//	リザルトシール描画
 		RenderImage( menuHead, menuHead.sx, menuHead.sy, menuHead.sw, menuHead.sh, IMAGE_MODE::ADOPTPARAM );
 
-
 		//	数値描画
 		NumberImageRender();
 
 		//	順位描画
 		RankRender();
 
-		//	ラストボーナス用ポリゴン描画
-		iexPolygon::Render2D( lastBonusInfo.v, 2, nullptr, RS_COPY );
-
-		//	ラストボーナステキスト描画
-		int	sx = lastBonusInfo.textImage.sx;
-		int	sy = lastBonusInfo.textImage.sy;
-		int	sw = lastBonusInfo.textImage.sw;
-		int	sh = lastBonusInfo.textImage.sh;
-		RenderImage( lastBonusInfo.textImage, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM );
-		RenderImage( lastBonusInfo.textImage, sx, sy, sw, sh, IMAGE_MODE::WAVE );
-
-		//	円虹描画
-		RenderImage( waveCircleImage, 0, 0, 512, 512, IMAGE_MODE::WAVE );
-
-		//	プレイヤー顔描画
-		sx = faceImage.sx;
-		sy = faceImage.sy;
-		sw = faceImage.sw;
-		sh = faceImage.sh;
-		RenderImage( faceImage, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM );
-
-		//	該当なし文字描画
-		sx = notApplicable.sx;
-		sy = notApplicable.sy;
-		sw = notApplicable.sw;
-		sh = notApplicable.sh;
-		RenderImage( notApplicable, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM );
-
-		//	プレイヤー番号描画
-		sx = playerNumImage.sx;
-		sy = playerNumImage.sy;
-		sw = playerNumImage.sw;
-		sh = playerNumImage.sh;
-		RenderImage( playerNumImage, sx, sy, sw, sh, IMAGE_MODE::NORMAL );
+		//	ライフ描画
+		LifeRender();
 
 		//	フレームバッファへ切り替え
 		iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );
@@ -556,9 +549,7 @@
 		//	ステージ描画
 		bgStage->Render();
 
-
 		//	リザルト用
-
 
 		//	ポリゴン描画
 		iexPolygon::Render3D( viewInfo.v, 2, infoScreen, RS_COPY );
@@ -599,6 +590,10 @@
 			
 		case RESULT_MODE::RANK:
 			ModeRank();
+			break;
+
+		case	RESULT_MODE::LIFE:
+			NextLifeAnnouncing();
 			break;
 
 		case RESULT_MODE::RANK_SKIP:
@@ -703,8 +698,23 @@
 			int		sy = rankImage[i].sy;
 			int		sw = rankImage[i].sw;
 			int		sh = rankImage[i].sh;
-			RenderImage( rankImage[i], sx, sy, sw, sh, IMAGE_MODE::NORMAL );
+			RenderImage( rankImage[i], sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM );
 			RenderImage( rankImage[i], sx, sy, sw, sh, IMAGE_MODE::WAVE );
+		}
+	}
+	
+	//	ライフ描画
+	void	sceneResult::LifeRender( void )
+	{
+		//	ランク描画
+		for ( int i = 0; i < PLAYER_MAX; i++ )
+		{
+			int		sx = lifeImage[i].sx;
+			int		sy = lifeImage[i].sy;
+			int		sw = lifeImage[i].sw;
+			int		sh = lifeImage[i].sh;
+			RenderImage( lifeImage[i], sx, sy, sw, sh, IMAGE_MODE::NORMAL );
+			RenderImage( lifeImage[i], sx, sy, sw, sh, IMAGE_MODE::WAVE );
 		}
 	}
 
@@ -1391,6 +1401,108 @@
 		return	false;
 	}
 
+	//	ライフ発表
+	bool	sceneResult::NextLifeAnnouncing( void )
+	{
+		//	変数準備
+		static	int	modeStep = 0;
+		static	float	rankAlpha = 1.0f;
+		bool		renderflag = true;
+		static	float	t = 0.0f;
+		static	int	waitTimer = 0;
+		bool		isEnd = false;
+		int		culLife = 0;
+
+		switch ( modeStep )
+		{
+		case 0:
+			t += 0.01f;
+			if ( t >= 1.0f ) t = 1.0f;
+
+			//	情報適用
+			FOR( 0, PLAYER_MAX )
+			{
+				Lerp( rankImage[value].alpha, 1.0f, 0.0f, t );
+			}
+
+			if ( t >= 1.0f )
+			{
+				//	順位非表示＆ライフ描画開始
+				FOR( 0, PLAYER_MAX )
+				{
+					rankImage[value].renderflag = false;
+					lifeImage[value].renderflag = true;
+				}
+				t = 0.0f;
+
+				//	つぎのステップへ
+				modeStep++;
+			}
+			break;
+
+		case 1:
+			t += 0.1f;
+			if ( t >= 1.0f )
+			{
+				t = 1.0f;
+				FOR( 0, PLAYER_MAX )	SetWave( lifeImage[value], 1.0f );
+				modeStep++;
+			}
+			//	ライフ出現
+			FOR( 0, PLAYER_MAX )
+			{
+				Lerp( lifeImage[value].w, 0, lifeInfo.maxW, t );
+				Lerp( lifeImage[value].h, 0, lifeInfo.maxH, t );
+			}
+			break;
+
+		case 2:
+			FOR( 0, PLAYER_MAX )
+			{
+				isEnd = WaveUpdate( lifeImage[value] );
+			}
+			if ( isEnd )	modeStep++;
+			break;
+
+		case 3:
+			SetNextLife();
+			//	ライフ情報更新
+			FOR( 0, PLAYER_MAX )
+			{
+				culLife = gameManager->GetStartLife( value );
+				lifeImage[value].sx = lifeImage[value].sw * ( ( 5 - culLife ) % 4 );
+				lifeImage[value].sy = lifeImage[value].sh * ( ( 5 - culLife ) / 4 );
+			}
+
+			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+			{
+				step = 0;
+				modeStep = 0;
+				rankAlpha = 1.0f;
+				renderflag = true;
+				t = 0.0f;
+				waitTimer = 0;
+				mode = MOVE_MODE::SELECT;
+			}
+			return	true;
+			break;
+		}
+
+		return	false;
+	}
+
+	//	演出スキップ
+	void	sceneResult::ProductionSkip( void )
+	{
+		FOR( 0, PLAYER_MAX )
+		{
+			SetNumberImageInfo( value, originInfo[value].num );
+			SetWave( rankImage[value], 1.5f );
+			rankImage[value].renderflag = true;
+		}
+		step = RESULT_MODE::RANK_SKIP;
+	}
+
 	//	ボーナス加算演出
 	bool	sceneResult::AddBonus( void )
 	{
@@ -1510,21 +1622,13 @@
 	void	sceneResult::ModeRoulette( void )
 	{
 		bool	isEnd = false;
-		//-----------------------------------------------------------------------------------
-		//	ルーレット
-		//-----------------------------------------------------------------------------------
+
 		isEnd = Roulette();
 
 		//	決定ボタンでスキップ
 		if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
 		{
-			FOR( 0, PLAYER_MAX )
-			{
-				SetNumberImageInfo( value, originInfo[value].num );
-				SetWave( rankImage[value], 1.5f );
-				rankImage[value].renderflag = true;
-			}
-			step = RESULT_MODE::RANK_SKIP;
+			ProductionSkip();
 		}
 
 		//	回転が終了したら
@@ -1554,25 +1658,21 @@
 		isFinViewRankInOrder = ViewRankInOrder();
 		isEnd = RankWave();
 
-		//	決定ボタンでスキップ
-		if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
-		{
-			FOR( 0, PLAYER_MAX )
-			{
-				SetNumberImageInfo( value, originInfo[value].num );
-				SetWave( rankImage[value], 1.5f );
-				rankImage[value].renderflag = true;
-			}
-			step = RESULT_MODE::RANK_SKIP;
-		}
 
 		//	波紋終了後に選択可
 		if ( isFinViewRankInOrder && isEnd )
 		{
 			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
 			{
-				step = 0;
-				mode = MOVE_MODE::SELECT;
+				step = RESULT_MODE::LIFE;
+			}
+		}
+		else
+		{
+			//	決定ボタンでスキップ
+			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+			{
+				ProductionSkip();
 			}
 		}
 	}
@@ -1581,9 +1681,7 @@
 	void	sceneResult::ModeRankSkip( void )
 	{
 		bool	isEnd = false;
-		//-----------------------------------------------------------------------------------
-		//	順位発表(スキップ用)
-		//-----------------------------------------------------------------------------------
+
 		FOR( 0, PLAYER_MAX )	isEnd = WaveUpdate( rankImage[value] );
 
 		//	波紋終了後に選択可
@@ -1591,8 +1689,7 @@
 		{
 			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
 			{
-				step = RESULT_MODE::ROULETTE;
-				mode = MOVE_MODE::SELECT;
+				mode = RESULT_MODE::LIFE;
 			}
 		}
 	}
