@@ -28,6 +28,7 @@ namespace
 			DUST,
 			SUCK,
 			FLOWER = 8,
+			COIN,
 		};
 	}
 
@@ -351,7 +352,7 @@ namespace
 	}
 
 	//	花
-	void	Particle::Flower( const Vector3& pos, float scale, const Vector3& color, const int& time )
+	void	Particle::Flower( const Vector3& pos, float scale, const Vector3& color)
 	{
 		Vector3	Pos, Move, Power;
 
@@ -394,6 +395,30 @@ namespace
 			Power *= ( 0.0005f * speed ) * scale;
 
 			pt->Set( FLOWER, 0, 0.5f, 60, 1.0f, 30, 0.5f, &Pos, &Move, &Power, color.x, color.y, color.z, scale * 0.1f, RS_COPY );
+		}
+	}
+
+	//	コインエフェクト
+	void	Particle::CoinGet(const Vector3& pos, const float& scale)
+	{
+		Vector3	Pos, Move, Power;
+
+		for (int j = 0; j<10; j++)
+		{
+			Pos.x = pos.x;
+			Pos.y = pos.y;
+			Pos.z = pos.z;
+
+			Move.x = Random::GetFloat(-50.0f, 50.0f) * (0.005f * scale);
+			Move.y = 0.8f * scale + (0.2f * scale * (j % 2));
+			Move.z = Random::GetFloat(-20.0f, 20.0f) * (0.02f * scale);
+
+			Power.x = 0.0f;
+			Power.y = -(scale * 0.05f);
+			Power.z = 0.0f;
+
+			//	画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
+			pt->Set(COIN, 0, 1.0f, 30, 1.0f, 15, 11.0f, &Pos, &Move, &Power, 0.8f, 0.8f, 0.0f, scale, RS_COPY);
 		}
 	}
 

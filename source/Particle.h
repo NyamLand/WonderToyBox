@@ -33,8 +33,10 @@ public:
 	void	Suck(const Vector3& pos, const Vector3& target, const Vector3& side, const float& length, const float& scale = 1.0f, const int& time = 60);					//	吸い込み
 	void	Dust(const Vector3& pos, const Vector3& back, const Vector3& side, const float& scale = 1.0f, const int& time = 1);
 	void	Bom(const Vector3& pos, const float& move, const float& scale = 1.0f, const int& time = 6);
-	void	Flower( const Vector3& pos, float scale, const Vector3& color, const int& time = 5 );
+	void	Flower( const Vector3& pos, float scale, const Vector3& color);
 	void	FlowerDisseminate( const Vector3& pos, float scale, float speed, const Vector3& color );
+	void	CoinGet(const Vector3& pos, const float& scale = 1.0f);										//	コインエフェクト
+
 
 
 
