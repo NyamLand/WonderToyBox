@@ -13,8 +13,8 @@ private:
 	Scene*		newScene;		//	次のシーン
 	static bool	threadState;	//	スレッドの状態
 	bool		loadflg;		
-	iex2DObj*	load;			//	ロード画像
 	ImageObj	load_anykey;	//	ボタン
+	ImageObj	bgImage[2];
 
 
 	//デバック用
