@@ -9,10 +9,31 @@
 
 //	include
 
+namespace AIRPLANE_POS_INFO
+{
+	
+}
+
 //	class
 class AirPlane
 {
+
+private:
+	
+
 public:
+	const int IN_START_POS_X = static_cast<int>(iexSystem::ScreenWidth * 1.01f);
+	const int IN_START_POS_Y = static_cast<int>(iexSystem::ScreenHeight * -0.13f);
+	const int STAY_POS_X = static_cast<int>(iexSystem::ScreenWidth * 0.5f);
+	const int STAY_POS_Y = static_cast<int>(iexSystem::ScreenHeight * 0.2f);
+	const int OUT_END_POS_X = static_cast<int>(iexSystem::ScreenWidth * -0.55f);
+	const int OUT_END_POS_Y = IN_START_POS_Y;
+	const int ROLL_POINT_ADJUST_X = 200;
+
+	const Vector3 IN_START_POS = Vector3(IN_START_POS_X, IN_START_POS_Y, 0.0f);
+	const Vector3 STAY_POS = Vector3(STAY_POS_X, STAY_POS_Y, 0.0f);
+	const Vector3 OUT_END_POS = Vector3(OUT_END_POS_X, OUT_END_POS_Y, 0.0f);
+
 	enum
 	{
 		FLYING_IN,

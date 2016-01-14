@@ -10,11 +10,10 @@
 #define	COIN_GETAWAY_COUNT_MAX	600
 
 // include
-
-//	data
+#include	"EventManager.h"
 
 //	class
-class Event_Jamming
+class Event_Jamming : public EventManager
 {
 private:
 	struct SLOPE

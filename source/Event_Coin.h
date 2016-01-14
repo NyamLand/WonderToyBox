@@ -8,9 +8,12 @@
 //*******************************************************************************
 
 //	include
+#include	"EventManager.h"
 
+#define		FALL_COUNT_MAX		3 * SECOND
+#define		DUBBLE_COUNT_MAX	10 * SECOND
 //	class
-class Event_Coin
+class Event_Coin : public EventManager
 {
 private:
 	
@@ -18,35 +21,30 @@ private:
 	{
 		iex3DObj*	sack;
 		bool	eventflag;
-		int		count;
 		int		step;
 	};
 
 	struct FALL
 	{
 		bool	eventflag;
-		int		count;
 		int		step;
 	};
 
 	struct SPLASH
 	{
 		bool	eventflag;
-		int		count;
 		int		step;
 	};
 
 	struct JUELBOX
 	{
 		bool	eventflag;
-		int		count;
 		int		step;
 	};
 
 	struct WAVE
 	{
 		bool	eventflag;
-		int		count;
 		int		step;
 	};
 
@@ -54,7 +52,6 @@ public:
 	struct DUBBLE
 	{
 		bool	eventflag;
-		int		count;
 		int		step;
 	};
 

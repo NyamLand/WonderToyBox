@@ -201,18 +201,18 @@
 
 		/*
 			ランダムでイベント決定、
-			イベントの各種設定後、
+			イベントの各種パラメータ設定後、
 			eventManagerでイベントを発生させる
 		*/
 
 		//　演出開始
-		if (timer == 58 * SECOND)
+		if (timer == 60 * SECOND)
 		{
 			//eventmode = Random::GetInt(0, EVENT_MODE::MAX - 1);
 			
 			//　↓ 仮 ↓
-			eventmode = EVENT_MODE::COIN_FALL;	//　仮 （本番：この行いらない、上の行のコメントはずす）
-			//eventmode = EVENT_MODE::COIN_DUBBLE;	//　仮 （本番：この行いらない、上の行のコメントはずす）
+			//eventmode = EVENT_MODE::COIN_FALL;	//　仮 （本番：この行いらない、上の行のコメントはずす）
+			eventmode = EVENT_MODE::COIN_DUBBLE;	//　仮 （本番：この行いらない、上の行のコメントはずす）
 			//　↑ 仮 ↑
 
 			if (eventmode <= EVENT_MODE::JAM_UFO)
@@ -230,12 +230,25 @@
 				alert_type = ALERT_TYPE_INFO::MISSION;
 				alert_sound = SE::EVENT_SE;		//　仮　ミッションイベント用に変更
 			}
+
+			//　画像用に設定
+			switch (eventmode)
+			{
+			case EVENT_MODE::COIN_FALL:			ui->SetEventInfoMode(EVENT_TEX_INFO::C_FALL);	break;
+			case EVENT_MODE::COIN_WAVE:			ui->SetEventInfoMode(EVENT_TEX_INFO::C_WAVE);	break;
+			case EVENT_MODE::COIN_DUBBLE:		ui->SetEventInfoMode(EVENT_TEX_INFO::C_DUBBLE);	break;
+			case EVENT_MODE::JAM_SLOPE_CAMERA:	ui->SetEventInfoMode(EVENT_TEX_INFO::J_CAMERA);	break;
+			case EVENT_MODE::JAM_SLIP:			ui->SetEventInfoMode(EVENT_TEX_INFO::J_SLIP);	break;
+			case EVENT_MODE::JAM_COIN_GETAWAY:	ui->SetEventInfoMode(EVENT_TEX_INFO::J_GETAWAY); break;
+			default:	break;
+			}
+
 			ui->SetAlertInfo(true, alert_type);
 			sound->PlaySE(alert_sound);
 		}
 
 		//　イベント発生
-		if (timer == 56 * SECOND)
+		if (timer == 58 * SECOND)
 		{
 			eventManager->SetEvent(eventmode);
 		}

@@ -3,10 +3,8 @@
 #include	"Random.h"
 #include	"CoinManager.h"
 #include	"Coin.h"
-#include	"EventManager.h"
 
 #include	"Event_Coin.h"
-
 
 //**************************************************************
 //　初期化・解放
@@ -16,42 +14,36 @@ bool	Event_Coin::Initialize()
 	//　コイン袋
 	{
 		m_Sack.eventflag = false;
-		m_Sack.count = 0;
 		m_Sack.step = 0;
 	}
 
 	//　コインの滝
 	{
 		m_Fall.eventflag = false;
-		m_Fall.count = 0;
 		m_Fall.step = 0;
 	}
 
 	//　コインワッシャァア
 	{
 		m_Splash.eventflag = false;
-		m_Splash.count = 0;
 		m_Splash.step = 0;
 	}
 
 	//　宝石箱
 	{
 		m_Juelbox.eventflag = false;
-		m_Juelbox.count = 0;
 		m_Juelbox.step = 0;
 	}
 
 	//　コインのウェーブ
 	{
 		m_Wave.eventflag = false;
-		m_Wave.count = 0;
 		m_Wave.step = 0;
 	}
 
 	//　コイン２倍
 	{
 		m_Dubble.eventflag = false;
-		m_Dubble.count = 0;
 		m_Dubble.step = 0;
 	}
 
@@ -107,17 +99,31 @@ void	Event_Coin::Sack(void)
 //　滝
 void	Event_Coin::Fall(void)
 {
-	Vector3	pos = Vector3(Random::GetFloat(-20.0f, 20.0f), 50.0f, Random::GetFloat(-20.0f, 12.0f));
+
+	count++;
+	
 	static	Vector3	vec = Vector3(0.0f, -1.0f, 0.0f);
 	static	float	power = 1.0f;
-	coinManager->Append(pos, vec, power);
-	m_Fall.count++;
 
-	if (m_Fall.count >= 50)
+	if (count % SECOND == 0)
+	{
+		for (int i = 0; i < 30; i++)
+		{
+			Vector3	pos = Vector3(Random::GetFloat(-20.0f, 20.0f), 50.0f, Random::GetFloat(-20.0f, 12.0f));
+			coinManager->Append(pos, vec, power);
+		}
+	}
+
+	if (count >= FLYING_COUNT)	state = EVENT_STATE::ACTIVE;
+	if (count >= FALL_COUNT_MAX - FLYING_COUNT)	state = EVENT_STATE::END;
+
+	if (count >= FALL_COUNT_MAX)
 	{
 		m_Fall.eventflag = false;
-		m_Fall.count = 0;
 		m_Fall.step = 0;
+
+		count = 0;
+		state = EVENT_STATE::INTRO;
 	}
 }
 
@@ -140,13 +146,18 @@ void	Event_Coin::Wave(void)
 //　コイン２倍タイム
 void	Event_Coin::Dubble(void)
 {
-	m_Dubble.count++;
+	count++;
 
-	if (m_Dubble.count >= 10*SECOND)
+	if (count >= FLYING_COUNT)	state = EVENT_STATE::ACTIVE;
+	if (count >= DUBBLE_COUNT_MAX - FLYING_COUNT)	state = EVENT_STATE::END;
+
+	if (count >= DUBBLE_COUNT_MAX)
 	{
 		m_Dubble.eventflag = false;
-		m_Dubble.count = 0;
 		m_Dubble.step = 0;
+
+		count = 0;
+		state = EVENT_STATE::INTRO;
 	}
 }
 

@@ -25,7 +25,8 @@
 //	グローバル
 //--------------------------------------------------------------------------------
 bool EventManager::eventFlag = false;
-
+int  EventManager::count = 0;
+int  EventManager::state = EVENT_STATE::INTRO;
 
 //--------------------------------------------------------------------------------
 //	初期化・解放
@@ -93,6 +94,12 @@ bool EventManager::eventFlag = false;
 	bool	EventManager::GetEventFlag(void)const
 	{
 		return	eventFlag;
+	}
+
+	//　状態取得
+	int		EventManager::GetState(void)const
+	{
+		return state;
 	}
 
 //--------------------------------------------------------------------------------

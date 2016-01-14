@@ -9,9 +9,12 @@
 
 //	include
 
+#define FLYING_COUNT 90
+
 //	data
 namespace
 {
+
 	namespace EVENT_MODE
 	{
 		enum
@@ -36,15 +39,26 @@ namespace
 			NONE
 		};
 	}
+
+	namespace EVENT_STATE
+	{
+		enum 
+		{
+			INTRO,
+			ACTIVE,
+			END
+		};
+	}
 }
 
 //	class
-class EventManager
+class EventManager 
 {
-	
-private:
+protected:
 	int		eventMode;
 	static bool	eventFlag;
+	static int	count;
+	static int  state;
 
 public:
 	//	‰Šú‰»E‰ğ•ú
@@ -59,6 +73,7 @@ public:
 	static	EventManager*	GetInstance( void );
 	int		GetEvent( void )const;
 	bool	GetEventFlag( void )const;
+	int		GetState( void )const;
 
 	//	î•ñİ’è
 	void	SetEvent( int eventmode );

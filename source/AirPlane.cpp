@@ -25,13 +25,16 @@
 		angle( 0.0f ), scale( 0.0f, 0.0f, 0.0f ), center( GetPoint( 0, 0 ) ), mode( STAY ), heightParam( 0.0f ), sideParam( 0.0f ),
 		renderflag(false), type(0)
 	{
-		int x = static_cast<int>( iexSystem::ScreenWidth * 1.01f );
-		int y = static_cast<int>( iexSystem::ScreenHeight * 1.04f );
+		//int x = static_cast<int>( iexSystem::ScreenWidth * 1.01f );
+		//int y = static_cast<int>( iexSystem::ScreenHeight * 1.04f );
+		int x = static_cast<int>(iexSystem::ScreenWidth * 1.01f);
+		int y = static_cast<int>(iexSystem::ScreenHeight * -0.13f);
 		int w = static_cast<int>( iexSystem::ScreenWidth * 0.6f );
 		int h = static_cast<int>( iexSystem::ScreenHeight * 0.14f );
+		pos = Vector3(x, y, 0.0f);
 		scale = Vector3( w, h, 0.0f );
 		ImageInitialize( obj, ( int )pos.x, ( int )pos.y, ( int )scale.x, ( int )scale.y, 0, 0, 1024, 128 );
-		obj.obj = new iex2DObj( "DATA/UI/menu/menu-int.png" );
+		obj.obj = new iex2DObj( "DATA/UI/Event-int.png" );
 	}
 
 	//	デストラクタ
