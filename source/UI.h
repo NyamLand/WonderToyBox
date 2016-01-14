@@ -33,6 +33,20 @@ namespace
 		};
 	}
 
+	//　イベントの種類
+	namespace EVENT_TEX_INFO
+	{
+		enum
+		{
+			C_FALL,
+			C_WAVE,
+			C_DUBBLE,
+			J_CAMERA,
+			J_SLIP,
+			J_GETAWAY
+		};
+	}
+
 }
 
 //	UIクラス
@@ -51,12 +65,8 @@ private:
 	struct TITLE_INFO
 	{
 		ImageObj	textImage;
-		float	param;
-		float	t;
 		int		step;
-		int		mode;
-		bool	moveState;
-		int		savePos;
+		AirPlane*	airPlane;
 	};
 
 	struct DONKETSU_DIRECT_INFO
@@ -90,7 +100,7 @@ private:
 		float	param;
 	};
 
-	struct AIRPLANE_INFO
+	/*struct AIRPLANE_INFO
 	{
 		int IN_START_POS_X;
 		int IN_START_POS_Y;
@@ -100,7 +110,7 @@ private:
 		int OUT_END_POS_X;
 		int OUT_END_POS_Y;
 		int ROLL_POINT_ADJUST_X;
-	};
+	};*/
 
 	//	コインバー情報
 	struct COINBAR_INFO
@@ -142,8 +152,10 @@ private:
 	struct EVENT_INFO
 	{
 		int mode;
+		int step;
+		int state;
 		ImageObj	texture;	//　飛行機
-		AIRPLANE_INFO		airPlane;
+		AirPlane*	airPlane;
 	};
 
 private:
@@ -164,6 +176,7 @@ private:
 	iex2DObj*	life;
 	ImageObj		roundImage;
 	
+
 private:
 	//	システム
 	bool	changeflag;
@@ -212,7 +225,7 @@ private:
 	HURRY_INFO	hurryInfo;
 
 	//	飛行機パラメータ
-	AIRPLANE_INFO		airPlaneInfo;
+	//AIRPLANE_INFO		airPlaneInfo;
 
 	//	コインバー情報
 	COINBAR_INFO	coinBarInfo;
@@ -224,11 +237,9 @@ private:
 	NUMBERIMAGE_INFO	coinNumInfo[PLAYER_MAX];
 	NUMBER_INFO			numInfo[PLAYER_MAX];
 
-	//	飛行機
-	AirPlane*				airPlane;
-	
 	//　イベント情報
 	EVENT_INFO	eventInfo;
+	
 
 	//	パラメータ
 	int		scene;
@@ -267,7 +278,6 @@ public:
 	void	ResultRender( int mode );
 
 	//------------------------------タイトル処理------------------------------------//
-	void	AirPlaneInitialize( AIRPLANE_INFO& out );
 	bool	FlyingIn( void );
 	bool	FlyingOut( int startPos );
 
@@ -343,6 +353,7 @@ public:
 	void	SetImageSrcPos( int sx, int sy );
 	void	SetCoinImageInfo(NUMBERIMAGE_INFO& numImageinfo, NUMBER_INFO& numinfo, const int& num);
 	void	SetNumberInfo(NUMBER_INFO& nomber, int coin);
+	void	SetEventInfoMode(int mode);
 
 	//	情報取得
 	bool	GetChangeFlag( void );

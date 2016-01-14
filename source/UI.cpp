@@ -67,18 +67,7 @@
 			const int FIGHT_LOCK	= FIGHT_START - 1 * SECOND - 30;
 		}
 
-		namespace EVENT_TEX_INFO
-		{
-			enum 
-			{
-				C_FALL,
-				C_WAVE,
-				C_DUBBLE,
-				J_CAMERA,
-				J_SLIP,
-				J_GETAWAY
-			};
-		}
+		
 	}
 
 	//	実体
@@ -202,17 +191,10 @@
 	//	タイトル用初期化
 	void	UI::TitleInitialize( void )
 	{
-		airPlane = new AirPlane();
-
 		//	変数初期化
-		titleInfo.mode = 0;
+		titleInfo.airPlane = new AirPlane();
 		titleInfo.step = 0;
-		titleInfo.param = 0.0f;
-		titleInfo.t = 0.0f;
-		titleInfo.moveState = false;
-		titleInfo.savePos = 0;
 
-		AirPlaneInitialize(airPlaneInfo );
 	}
 
 	//	メイン用初期化
@@ -266,8 +248,7 @@
 	//	タイトル用解放
 	void	UI::TitleRelease( void )
 	{
-		SafeDelete( airPlane );
-		//SafeDelete( titleInfo.textImage.obj );
+		SafeDelete( titleInfo.airPlane );
 	}
 
 	//	メイン用解放
@@ -287,7 +268,7 @@
 		SafeDelete( life );
 		SafeDelete( pCoinNumImage );
 		SafeDelete( roundImage.obj );
-
+		SafeDelete( eventInfo.airPlane );
 	}
 
 	//	リザルト用解放
@@ -303,8 +284,6 @@
 	//	タイトル更新
 	void	UI::TitleUpdate( int mode )
 	{
-		Vector3 startPos(airPlaneInfo.IN_START_POS_X, airPlaneInfo.IN_START_POS_Y, 0.0f);
-		Vector3 endPos(airPlaneInfo.IN_END_POS_X, airPlaneInfo.IN_END_POS_Y, 0.0f);
 		//	画像設定
 		SetImageSrcPos( mode );
 
@@ -313,45 +292,23 @@
 		{
 		case 0:
 			////	どっかからやってくる
-			//isEnd = FlyingIn();
-			//
-			////	処理が終わるとつぎへ
-			//if ( isEnd )
-			//{
-			//	titleInfo.step++;
-			//}
-			airPlane->SetNext(startPos, endPos, AirPlane::FLYING_IN);
 			titleInfo.step++;
 			break;
 
 		case 1:
-			airPlane->Update();
+			titleInfo.airPlane->Update();
 			if (mode == TITLE_MODE::MOVE_MAIN)
 			{
-				airPlaneInfo.OUT_END_POS_X;
-				airPlaneInfo.OUT_END_POS_Y;
-				Vector3 endPos( ( float )airPlaneInfo.OUT_END_POS_X, ( float )airPlaneInfo.OUT_END_POS_Y, 0.0f );
-				airPlane->SetNext( airPlane->GetPos(),endPos, AirPlane::FLYING_OUT );
+				
+				Vector3 endPos(titleInfo.airPlane->OUT_END_POS_X, titleInfo.airPlane->OUT_END_POS_Y, 0.0f);
+				titleInfo.airPlane->SetNext(titleInfo.airPlane->GetPos(), endPos, AirPlane::FLYING_OUT);
 				titleInfo.step++;
 			}
-			////	ふわふわさせる
-			//titleInfo.textImage.y = airPlaneInfo.IN_END_POS_Y + static_cast<int>( 10.0f * sinf( titleInfo.t ) );
-			//titleInfo.textImage.p = GetPoint( titleInfo.textImage.x - airPlaneInfo.ROLL_POINT_ADJUST_X, titleInfo.textImage.y  );
-			//titleInfo.textImage.angle = 0.0f + ( D3DX_PI / 180.0f * -1.0f ) * cosf( titleInfo.t );
-			//titleInfo.t += D3DX_PI / 180.0f * 1.0f;
-
-			//if ( mode == TITLE_MODE::MOVE_MAIN )
-			//{
-			//	titleInfo.textImage.t = 0.0f;
-			//	titleInfo.param = 0.0f;
-			//	titleInfo.savePos = titleInfo.textImage.y;
-			//	titleInfo.step++;
-			//}
+			
 			break;
 
 		case 2:
-			airPlane->Update();
-			//FlyingOut( titleInfo.savePos );
+			titleInfo.airPlane->Update();
 			break;
 		}
 	}
@@ -373,6 +330,7 @@
 			NewsBarUpdate();
 			//CoinBarUpdate();
 			CoinNumberUpdate();
+			AlertUpdate();
 			EventUpdate();
 			break;
 
@@ -386,6 +344,7 @@
 			//CoinBarUpdate();
 			CoinNumberUpdate();
 			LastProduction();
+			AlertUpdate();
 			EventUpdate();
 
 			//　どんけつの顔は「怒」に
@@ -397,8 +356,7 @@
 			break;
 		}
 
-		//	警告動作
-		if (alertInfo.flag)	AlertUpdate();
+		
 	}
 
 	//	リザルト更新
@@ -414,8 +372,7 @@
 	//	タイトル描画
 	void	UI::TitleRender( int mode )
 	{
-		//RenderImage( titleInfo.textImage, titleInfo.textImage.sx, titleInfo.textImage.sy, 1024, 128, IMAGE_MODE::ADOPTPARAM );
-		airPlane->Render();
+		titleInfo.airPlane->Render();
 	}
 
 	//	メイン描画
@@ -475,77 +432,7 @@
 //	タイトル動作初期化
 //------------------------------------------------------------------------------
 
-	//	飛行機初期化
-	void	UI::AirPlaneInitialize(AIRPLANE_INFO& out)
-	{
-		out.IN_START_POS_X = static_cast<int>(iexSystem::ScreenWidth * 1.5f);
-		out.IN_START_POS_Y = static_cast<int>(iexSystem::ScreenHeight * -0.13f);
-		out.IN_END_POS_X = static_cast<int>(iexSystem::ScreenWidth * 0.5f);
-		out.IN_END_POS_Y = static_cast<int>(iexSystem::ScreenHeight * 0.2f);
-		out.OUT_START_POS_X = static_cast<int>(iexSystem::ScreenWidth * 0.5f);
-		out.OUT_END_POS_X = static_cast<int>(iexSystem::ScreenWidth * -0.55f);
-		out.OUT_END_POS_Y = static_cast<int>(iexSystem::ScreenHeight * -0.13f);
-		out.ROLL_POINT_ADJUST_X = 200;
-	}
-
-	//	飛んでくる
-	bool	UI::FlyingIn( void )
-	{
-		if ( titleInfo.textImage.t >= 1.0f )	return	true;
-
-		//	パラメータ加算
-		titleInfo.textImage.t += 0.01f;
-		if ( titleInfo.textImage.t >= 1.0f )	titleInfo.textImage.t = 1.0f;
-
-		//	パラメータ調整
-		titleInfo.param = GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv5, titleInfo.textImage.t );
-
-		//	上移動
-		Lerp( titleInfo.textImage.y, airPlaneInfo.IN_START_POS_Y, airPlaneInfo.IN_END_POS_Y, titleInfo.param );
-
-		//	パラメータ調整
-		titleInfo.param = GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, titleInfo.textImage.t );
-
-		//	左移動
-		Lerp(titleInfo.textImage.x, airPlaneInfo.IN_START_POS_X, airPlaneInfo.IN_END_POS_X, titleInfo.param);
-
-		//	回転
-		titleInfo.textImage.p = GetPoint( titleInfo.textImage.x - airPlaneInfo.ROLL_POINT_ADJUST_X, titleInfo.textImage.y );
-		titleInfo.textImage.angle = 0.0f + ( D3DX_PI / 180.0f * -1.0f ) * sinf( D3DX_PI  / 2 * titleInfo.textImage.t );
-
-		if ( titleInfo.textImage.t >= 1.0f )	return	true;
-		return	false;
-	}
-
-	//	飛んでいく
-	bool	UI::FlyingOut( int startPos )
-	{
-		if ( titleInfo.textImage.t >= 1.0f )	return	true;
-
-		//	パラメータ加算
-		titleInfo.textImage.t += 0.01f;
-		if ( titleInfo.textImage.t >= 1.0f )	titleInfo.textImage.t = 1.0f;
-
-		//	パラメータ調整
-		titleInfo.param = GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv5, titleInfo.textImage.t );
-
-		//	上移動
-		Lerp( titleInfo.textImage.y, startPos, ( int )airPlaneInfo.OUT_END_POS_Y, titleInfo.param );
-
-		//	パラメータ調整
-		titleInfo.param = GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv3, titleInfo.textImage.t );
-
-		//	左移動
-		Lerp( titleInfo.textImage.x, airPlaneInfo.OUT_START_POS_X, airPlaneInfo.OUT_END_POS_X, titleInfo.param );
-
-		//	回転
-		titleInfo.textImage.p = GetPoint( titleInfo.textImage.x - airPlaneInfo.ROLL_POINT_ADJUST_X, titleInfo.textImage.y );
-		titleInfo.textImage.angle = 0.0f + ( D3DX_PI / 180.0f * - 1.0f ) * sinf( D3DX_PI / 2 * titleInfo.textImage.t );
-
-		if ( titleInfo.textImage.t >= 1.0f )	return	true;
-		return	false;
-	}
-
+	
 //------------------------------------------------------------------------------
 //	メイン動作初期化
 //------------------------------------------------------------------------------
@@ -780,11 +667,14 @@
 	void	UI::EventInitialize(void)
 	{
 		eventInfo.mode = 0;
+		eventInfo.step = 0;
+		eventInfo.state = 0;
+ 		eventInfo.airPlane = new AirPlane();
 		eventInfo.texture.obj = new iex2DObj("DATA/UI/Event-int.png");
-		AirPlaneInitialize(eventInfo.airPlane);
+
 		int w = static_cast<int>(iexSystem::ScreenWidth * 0.6f);
 		int h = static_cast<int>(iexSystem::ScreenHeight * 0.14f);
-		ImageInitialize(eventInfo.texture, eventInfo.airPlane.IN_START_POS_X, eventInfo.airPlane.IN_START_POS_Y, w, h, 0, 0, 1024, 128);
+		ImageInitialize(eventInfo.texture, eventInfo.airPlane->IN_START_POS_X, eventInfo.airPlane->IN_START_POS_Y, w, h, 0, 0, 1024, 128);
 	}
 	
 //------------------------------------------------------------------------------
@@ -971,6 +861,8 @@
 	//	警告演出
 	void	UI::AlertUpdate(void)
 	{
+		if (!alertInfo.flag) return;
+
 		if (alertInfo.type == ALERT_TYPE_INFO::MISSION)
 		{
 			MissionDirectionUpdate();
@@ -994,6 +886,19 @@
 				alertInfo.alpha = 0.0f;
 			}
 		}
+
+		//　飛行機やってくる
+		if (eventInfo.step == 0)
+		{
+			//	どっかからやってくる
+			eventInfo.airPlane->SetNext(eventInfo.airPlane->IN_START_POS, eventInfo.airPlane->STAY_POS, AirPlane::FLYING_IN);
+			eventInfo.step++;
+		}
+
+		eventInfo.airPlane->Update();
+		eventInfo.texture.x = eventInfo.airPlane->GetPos().x;
+		eventInfo.texture.y = eventInfo.airPlane->GetPos().y;
+		eventInfo.texture.sy = eventInfo.mode * 128;
 	}
 
 	void	UI::MissionDirectionUpdate(void)
@@ -1115,20 +1020,25 @@
 		bool isEnd = !eventManager->GetEventFlag();
 		if (isEnd)	return;
 
-		int eventmode = eventManager->GetEvent();
-		switch (eventmode)
+		switch (eventInfo.step)
 		{
-		case EVENT_MODE::COIN_FALL:			eventInfo.mode = EVENT_TEX_INFO::C_FALL;	break;
-		case EVENT_MODE::COIN_WAVE:			eventInfo.mode = EVENT_TEX_INFO::C_WAVE;	break;
-		case EVENT_MODE::COIN_DUBBLE:		eventInfo.mode = EVENT_TEX_INFO::C_DUBBLE;	break;
-		case EVENT_MODE::JAM_SLOPE_CAMERA:	eventInfo.mode = EVENT_TEX_INFO::J_CAMERA;	break;
-		case EVENT_MODE::JAM_SLIP:			eventInfo.mode = EVENT_TEX_INFO::J_SLIP;	break;
-		case EVENT_MODE::JAM_COIN_GETAWAY:	eventInfo.mode = EVENT_TEX_INFO::J_GETAWAY; break;
-		default:	break;
+		case 1:
+			eventInfo.airPlane->Update();
+			if (eventManager->GetState() == EVENT_STATE::END)
+			{
+				eventInfo.airPlane->SetNext(eventInfo.airPlane->GetPos(), eventInfo.airPlane->OUT_END_POS, AirPlane::FLYING_OUT);
+				eventInfo.step++;
+			}
+
+			break;
+
+		case 2:
+			eventInfo.airPlane->Update();
+			break;
 		}
 
-		eventInfo.texture.x = 100;
-		eventInfo.texture.y = 100;
+		eventInfo.texture.x = eventInfo.airPlane->GetPos().x;
+		eventInfo.texture.y = eventInfo.airPlane->GetPos().y;
 		eventInfo.texture.sy = eventInfo.mode * 128;
 	}
 
@@ -1277,6 +1187,8 @@
 		default:	break;
 		}
 
+		//　飛行機
+		EventRender();
 	}
 
 	//　ミッションイベント演出
@@ -1335,7 +1247,9 @@
 	//	イベント関連情報描画（飛行機表示）
 	void	UI::EventRender(void)
 	{
-		if (eventManager->GetEventFlag())
+		if (eventInfo.texture.x <= static_cast<int>(iexSystem::ScreenWidth) ||
+			eventInfo.texture.x + eventInfo.texture.sx >= 0)
+			//eventInfo.airPlane->Render();
 			RenderImage(eventInfo.texture, eventInfo.texture.sx, eventInfo.texture.sy, eventInfo.texture.sw, eventInfo.texture.sh, IMAGE_MODE::ADOPTPARAM);
 	}
 
@@ -1926,4 +1840,9 @@
 		number.hundred = coin / 100 % 10;
 		number.ten = coin / 10 % 10;
 		number.one = coin % 10;
+	}
+
+	void	UI::SetEventInfoMode(int mode)
+	{
+		this->eventInfo.mode = mode;
 	}
