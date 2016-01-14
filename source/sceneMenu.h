@@ -128,6 +128,8 @@ public:
 	//	更新・描画
 	void	Update( void );
 	void	Render( void );
+	void	CameraUpdate( void );
+	void	ChangeToOption( void );
 
 	//	プレイヤー人数選択関数
 	void	SelectPlayerNumInitialize( void );

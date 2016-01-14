@@ -50,7 +50,7 @@
 			Vector3 back(0.0f, 0.0f, 1.0f);
 			Vector3 right(-1.0f, 0.0f, 0.0f);
 			Vector3 left(1.0f, 0.0f, 0.0f);
-			Vector3 up(0.0f, 30.0f, 0.0f);
+			Vector3 up(0.0f, 1.0f, 0.0f);
 		}
 		namespace CHECK_MODE
 		{
@@ -89,12 +89,12 @@
 		mainView->SetProjection( D3DXToRadian( 70.0f ), 1.0f, 1000.0f );
 		bgInfo.cpos = Vector3(0.0f, 10.0f, 0.0f);
 		bgInfo.cspos = bgInfo.cpos;
-		bgInfo.cepos = Vector3(0.0f,11.0f, 0.0f);
-		bgInfo.target = bgInfo.cpos + CAMERA_TARGET::front;
+		bgInfo.cepos = Vector3( 1.0f,30.0f, 0.0f );
+		bgInfo.target = CAMERA_TARGET::front;
 		bgInfo.start	= bgInfo.target;
 		bgInfo.end		= bgInfo.target;
 		bgInfo.moveflg = false;
-		mainView->Set(bgInfo.cpos, bgInfo.target);
+		mainView->Set( bgInfo.cpos, bgInfo.target );
 
 		//	random
 		Random::Initialize();
@@ -213,21 +213,16 @@
 	//	更新
 	void	sceneMenu::Update( void )
 	{
-		if (KEY_Get(KEY_D) == 3||KEY_Get(KEY_B6)==3){
-			if (mode != MENU_MODE::OPTION){
-				tempmode = mode;
-				SetMode(MENU_MODE::OPTION);
-			}
-			else if (mode == MENU_MODE::OPTION){
-				SetMode(tempmode);
-			}
-		}
-		bgInfo.t += 0.01f;
-		if (bgInfo.t >= 1.0f)bgInfo.t = 1.0f;
-		CubicFunctionInterpolation(bgInfo.target, bgInfo.start, bgInfo.end, bgInfo.t);
-		mainView->SetTarget(bgInfo.target);
+		//	オプションとの切り替え
+		ChangeToOption();
+
+		//	カメラ更新
+		CameraUpdate();
+
 		//	スクリーン更新
 		screen->Update();
+
+		//	各モード更新
 		switch ( mode )
 		{
 		case MENU_MODE::INIT:
@@ -310,14 +305,39 @@
 		}
 		//	スクリーン
 		screen->Render();
+	}
 
-		
-		printf( "target.x = %f ", bgInfo.target.x );
-		printf("target.y = %f ", bgInfo.target.y);
-		printf("target.z = %f\n", bgInfo.target.z);
+	//	カメラ更新
+	void	sceneMenu::CameraUpdate( void )
+	{
+		//	カメラ用パラメータ加算
+		bgInfo.t += 0.01f;
+		if ( bgInfo.t >= 1.0f )	bgInfo.t = 1.0f;
 
+		//	回転補間
+		CubicFunctionInterpolation( bgInfo.target, bgInfo.start, bgInfo.end, bgInfo.t );
 
+		//	カメラ更新
+		mainView->Set( bgInfo.cpos, bgInfo.cpos + bgInfo.target );
+	}
 
+	//	オプションに切り替え＆その逆
+	void	sceneMenu::ChangeToOption( void )
+	{
+		if ( KEY_Get( KEY_D ) == 3 || KEY_Get( KEY_B6 ) == 3 )
+		{
+			//	現在のモードを保存してオプションへ移行
+			if ( mode != MENU_MODE::OPTION )
+			{
+				tempmode = mode;
+				SetMode( MENU_MODE::OPTION );
+			}
+			else
+			{
+				//	保存しておいたモードへ移行
+				SetMode( tempmode );
+			}
+		}
 	}
 
 //-------------------------------------------------------------------------------
@@ -381,8 +401,8 @@
 			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
 			{
 				gameManager->SetPlayerNum( playerNumSelectInfo.num + 1 );
-				bgInfo.start = bgInfo.cpos + CAMERA_TARGET::front;
-				bgInfo.end = bgInfo.cpos + CAMERA_TARGET::right;
+				bgInfo.start = CAMERA_TARGET::front;
+				bgInfo.end = CAMERA_TARGET::right;
 				bgInfo.t = 0.0f;
 				SetMode( MENU_MODE::SELECT_CHARACTER );
 			}
@@ -511,8 +531,8 @@
 			if ( KEY( KEY_B ) == 3 )
 			{
 				bgInfo.t = 0.0f;
-				bgInfo.start = bgInfo.cpos + CAMERA_TARGET::right;
-				bgInfo.end = bgInfo.cpos + CAMERA_TARGET::front;
+				bgInfo.start = CAMERA_TARGET::right;
+				bgInfo.end = CAMERA_TARGET::front;
 				SetMode( MENU_MODE::SELECT_PLAYERNUM );
 			}
 		}
@@ -533,7 +553,7 @@
 			//	ステージ選択へ
 			bgInfo.t = 0.0f;
 			bgInfo.start = bgInfo.end;
-			bgInfo.end = bgInfo.cpos + CAMERA_TARGET::back;
+			bgInfo.end = CAMERA_TARGET::back;
 			SetMode( MENU_MODE::SELECT_STAGE );
 		}
 
@@ -653,7 +673,7 @@
 			//	次のモードへ
 			bgInfo.t = 0.0f;
 			bgInfo.start = bgInfo.end;
-			bgInfo.end = bgInfo.cpos + CAMERA_TARGET::left;
+			bgInfo.end = CAMERA_TARGET::left;
 			SetMode( MENU_MODE::SELECT_CHECK );
 		}
 
@@ -662,7 +682,7 @@
 		{
 			bgInfo.t = 0.0f;
 			bgInfo.start = bgInfo.end;
-			bgInfo.end = bgInfo.cpos + CAMERA_TARGET::right;
+			bgInfo.end = CAMERA_TARGET::right;
 			SetMode( MENU_MODE::SELECT_CHARACTER );
 		}
 
@@ -742,6 +762,7 @@
 	//	最終確認
 	void	sceneMenu::SelectCheckUpdate( void )
 	{
+		Vector3	vec;	//	カメラから移動先へのベクトル保存用
 		if ( bgInfo.t < 1.0f )return;
 		switch (checkSelectInfo.step)
 		{
@@ -761,20 +782,20 @@
 				{
 					bgInfo.t = 0.0f;
 					bgInfo.start = bgInfo.end;
-					bgInfo.end = bgInfo.cpos + CAMERA_TARGET::up;
+					vec = bgInfo.cepos - bgInfo.cpos;
+					vec.Normalize();
+					bgInfo.end = vec;
 					checkSelectInfo.step = CHECK_MODE::MOVETARGET;
-						//SetMode(MENU_MODE::MOVE_MAIN);
-					
 				}				
 				else //いいえ
 				{
 					bgInfo.t = 0.0f;
-					bgInfo.start = bgInfo.cpos + CAMERA_TARGET::left;
-					bgInfo.end = bgInfo.cpos + CAMERA_TARGET::back;
+					bgInfo.start = CAMERA_TARGET::left;
+					bgInfo.end = CAMERA_TARGET::back;
 					if (bgInfo.t >= 1.0f){
 						bgInfo.t = 0.0f;
-						bgInfo.start = bgInfo.cpos + CAMERA_TARGET::back;
-						bgInfo.end = bgInfo.cpos + CAMERA_TARGET::right;
+						bgInfo.start = CAMERA_TARGET::back;
+						bgInfo.end = CAMERA_TARGET::right;
 						SetMode( MENU_MODE::SELECT_CHARACTER );
 					}
 				}
@@ -802,8 +823,8 @@
 			if ( input[0]->Get( KEY_B ) == 3 )
 			{
 				bgInfo.t = 0.0f;
-				bgInfo.start = bgInfo.cpos + CAMERA_TARGET::left;
-				bgInfo.end = bgInfo.cpos + CAMERA_TARGET::back;
+				bgInfo.start = CAMERA_TARGET::left;
+				bgInfo.end = CAMERA_TARGET::back;
 				SetMode( MENU_MODE::SELECT_STAGE );
 				return;
 			}
@@ -889,22 +910,31 @@
 	//	メイン移動初期化
 	void	sceneMenu::MoveMainInitialize( void )
 	{
-		screen->SetScreenMode( SCREEN_MODE::FADE_OUT, 1.5f );
+		screen->SetScreenMode( SCREEN_MODE::WHITE_OUT, 1.0f );
 	}
 
 	//	メインへ
-	void	sceneMenu::MoveMainUpdate( void )
+	void	sceneMenu::MoveMainUpdate( void ) 
 	{
-		if (bgInfo.t < 1.0)return;
-			bgInfo.mt += 0.01f;
-			if (bgInfo.mt >= 1.0f)bgInfo.mt = 1.0f;
-			if (CubicFunctionInterpolation(bgInfo.cpos.y, bgInfo.cspos.y, bgInfo.cepos.y, bgInfo.mt)){
-				if ( screen->GetScreenState() )
-				{
-					MainFrame->ChangeScene( new sceneLoad( new sceneMain() ) );
-					return;
-				}
+		//	回転が終了していなかったらスキップ
+		if ( bgInfo.t < 1.0f )return;
+
+		//	変数準備
+		bool	isEnd = false;
+
+		//	パラメータ加算
+		bgInfo.mt += 0.01f;
+		if ( bgInfo.mt >= 1.0f )	bgInfo.mt = 1.0f;
+
+		isEnd = CubicFunctionInterpolation( bgInfo.cpos, bgInfo.cspos, bgInfo.cepos, bgInfo.mt );
+		if ( isEnd )
+		{
+			if ( screen->GetScreenState() )
+			{
+				MainFrame->ChangeScene( new sceneLoad( new sceneMain() ) );
+				return;
 			}
+		}
 		
 	}
 
@@ -944,7 +974,7 @@
 //	オプション関数
 //-------------------------------------------------------------------------------
 	
-	//	オプション
+	//	オプション初期化
 	void	sceneMenu::OptionInitialize( void )
 	{
 		//　構造体初期化
@@ -958,6 +988,7 @@
 		gameManager->SetTime(optionInfo.minute, optionInfo.second);
 	}
 
+	//	オプション更新
 	void	sceneMenu::OptionUpdate( void )
 	{
 		if (KEY_Get(KEY_DOWN) == 3){
@@ -1019,7 +1050,8 @@
 			gameManager->SetTime(optionInfo.minute,optionInfo.second);
 	}
 
-	void	sceneMenu::OptionDUpdate(void)
+	//	??
+	void	sceneMenu::OptionDUpdate( void )
 	{
 		if (KEY_Get(KEY_DOWN) == 3){
 			if (optionInfo.step<3)
@@ -1079,6 +1111,8 @@
 		gameManager->SetCoinMax(optionInfo.coinMAX);
 		gameManager->SetTime(optionInfo.minute, optionInfo.second);
 	}
+
+	//	オプション描画
 	void	sceneMenu::OptionRender( void )
 	{
 		Oimage->Render(300, 150, 512, 128, 0, 128*2, 512, 128);
@@ -1103,7 +1137,9 @@
 
 		Omenu->Render(80, 50, 256, 128, 0, 64, 256, 128);
 	}
-	void	sceneMenu::TimerRender(void)
+
+	//	タイマー描画
+	void	sceneMenu::TimerRender( void )
 	{
 		OCmax->Render(930 , 550, 128, 128, optionInfo.minute*64, 64 * 0, 64, 64);
 		OCmax->Render(1140, 550, 128, 128, ((optionInfo.second / 10) % 10) * 64, 64 * 0, 64, 64);
@@ -1112,7 +1148,9 @@
 		Oimage->Render(1300, 550, 128, 128, 384, 128 * 1, 128, 128);
 
 	}
-	void	sceneMenu::OptionSelectRender()
+
+	//	項目描画
+	void	sceneMenu::OptionSelectRender( void )
 	{
 		
 		//項目描画
@@ -1138,7 +1176,9 @@
 		Oimage->Render(1140-40, 520, 64, 64, 256, 128 * 1, 128, 128);
 		Oimage->Render(1300-40, 520, 64, 64, 384, 128 * 1, 128, 128);
 	}
-	void	sceneMenu::ArrowRender()
+
+	//	矢印描画
+	void	sceneMenu::ArrowRender( void )
 	{
 		switch (optionInfo.step){
 		case 0:
@@ -1158,7 +1198,6 @@
 			break;
 		}
 	}
-
 
 //-------------------------------------------------------------------------------
 //	情報設定
