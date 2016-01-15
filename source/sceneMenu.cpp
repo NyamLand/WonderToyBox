@@ -120,10 +120,10 @@
 		selectCheckCursor = new iex2DObj("DATA/UI/menu/cursor.png");
 		
 		//	オプション関係画像読み込み
-		Oimage =		new iex2DObj( "DATA/UI/OptionText.png" );
-		Otime	=		new iex2DObj( "DATA/UI/number.png" );
-		OCmax	=		new iex2DObj( "DATA/UI/number.png" );
-		Omenu = new iex2DObj("DATA/UI/option-int.png");
+		optionImage =		new iex2DObj( "DATA/UI/OptionText.png" );
+		optionTime	=		new iex2DObj( "DATA/UI/number.png" );
+		optionLife	=		new iex2DObj( "DATA/UI/number.png" );
+		optionMenu = new iex2DObj("DATA/UI/option-int.png");
 
 		//	モデル読み込み
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Knight/Knight_Dammy.IEM" ) );		//	掃除屋
@@ -200,10 +200,10 @@
 		sound->AllStop();
 
 		//設計中
-		SafeDelete(Oimage);
-		SafeDelete(Otime);
-		SafeDelete(OCmax);
-		SafeDelete(Omenu);
+		SafeDelete(optionImage);
+		SafeDelete(optionTime);
+		SafeDelete(optionLife);
+		SafeDelete(optionMenu);
 	}
 
 //-------------------------------------------------------------------------------
@@ -301,7 +301,7 @@
 			break;
 		}
 		if (mode != MENU_MODE::OPTION){
-			Omenu->Render(80, 50, 256, 64, 0, 0, 256, 64);
+			optionMenu->Render(80, 50, 256, 64, 0, 0, 256, 64);
 		}
 		//	スクリーン
 		screen->Render();
@@ -979,12 +979,12 @@
 	{
 		//　構造体初期化
 		optionInfo.itemflg = true;
-		optionInfo.coinMAX = 200;
+		optionInfo.life = 5;
 		optionInfo.minute = 1;
 		optionInfo.second = 3;
 		optionInfo.step = 0;
 		gameManager->SetItemFlg(optionInfo.itemflg);
-		gameManager->SetCoinMax(optionInfo.coinMAX);
+		gameManager->SetMaxLife(optionInfo.life);
 		gameManager->SetTime(optionInfo.minute, optionInfo.second);
 	}
 
@@ -1014,13 +1014,13 @@
 			break;
 		case 1:
 			if (KEY_Get(KEY_RIGHT) == 3 ){
-				if (optionInfo.coinMAX<500){
-					optionInfo.coinMAX += 50;
+				if (optionInfo.life<5){
+					optionInfo.life ++;
 				}
 			}
 			else if (KEY_Get(KEY_LEFT) == 3){
-				if (optionInfo.coinMAX>200){
-					optionInfo.coinMAX -= 50;
+				if (optionInfo.life>2){
+					optionInfo.life --;
 				}
 			}
 			break;
@@ -1046,12 +1046,12 @@
 			break;
 		}
 			gameManager->SetItemFlg(optionInfo.itemflg);
-			gameManager->SetCoinMax(optionInfo.coinMAX);
+			gameManager->SetMaxLife(optionInfo.life);
 			gameManager->SetTime(optionInfo.minute,optionInfo.second);
 	}
 
 	//	??
-	void	sceneMenu::OptionDUpdate( void )
+/*void	sceneMenu::OptionDUpdate( void )
 	{
 		if (KEY_Get(KEY_DOWN) == 3){
 			if (optionInfo.step<3)
@@ -1076,8 +1076,8 @@
 			break;
 		case 1:
 			if (KEY_Get(KEY_RIGHT) == 3){
-				if (optionInfo.coinMAX<500){
-					optionInfo.coinMAX += 50;
+				if (optionInfo.life<5){
+					optionInfo.life ++;
 				}
 			}
 			else if (KEY_Get(KEY_D) == 3){
@@ -1111,41 +1111,39 @@
 		gameManager->SetCoinMax(optionInfo.coinMAX);
 		gameManager->SetTime(optionInfo.minute, optionInfo.second);
 	}
-
+	*/
 	//	オプション描画
 	void	sceneMenu::OptionRender( void )
 	{
-		Oimage->Render(300, 150, 512, 128, 0, 128*2, 512, 128);
-		Oimage->Render(300, 350, 512, 128, 0, 128*0, 512, 128);
-		Oimage->Render(400, 550, 256, 128, 0, 128*1, 256, 128);
+		optionImage->Render(300, 150, 512, 128, 0, 128*2, 512, 128);
+		optionImage->Render(300, 350, 512, 128, 0, 128*0, 512, 128);
+		optionImage->Render(400, 550, 256, 128, 0, 128*1, 256, 128);
 
 		//アイテムの有無描画
 		if (optionInfo.itemflg){
-			Oimage->Render(950, 150, 256, 128, 0, 128 * 3, 256, 128);
+			optionImage->Render(950, 150, 256, 128, 0, 128 * 3, 256, 128);
 		}
 		else{
-			Oimage->Render(950, 150, 256, 128, 256, 128 * 3, 256, 128);
+			optionImage->Render(950, 150, 256, 128, 256, 128 * 3, 256, 128);
 
 		}
 		//コインMAXの描画
-		OCmax->Render(940,			350, 128, 128,			(optionInfo.coinMAX/100)*64, 128 * 0, 64, 64);
-		OCmax->Render(950+80,		350, 128, 128,	((optionInfo.coinMAX / 10)%10) * 64, 128 * 0, 64, 64);
-		OCmax->Render(950+(80*2),	350, 128, 128,									  0, 128 * 0, 64, 64);
+		optionLife->Render(940,	350, 128, 128,optionInfo.life*64, 128 * 0, 64, 64);
 
 		TimerRender();
 		ArrowRender();
 
-		Omenu->Render(80, 50, 256, 128, 0, 64, 256, 128);
+		optionMenu->Render(80, 50, 256, 128, 0, 64, 256, 128);
 	}
 
 	//	タイマー描画
 	void	sceneMenu::TimerRender( void )
 	{
-		OCmax->Render(930 , 550, 128, 128, optionInfo.minute*64, 64 * 0, 64, 64);
-		OCmax->Render(1140, 550, 128, 128, ((optionInfo.second / 10) % 10) * 64, 64 * 0, 64, 64);
-		OCmax->Render(1220, 550, 128, 128, 0, 64*0, 64, 64);
-		Oimage->Render(1020, 550, 128, 128, 256, 128 * 1, 128, 128);
-		Oimage->Render(1300, 550, 128, 128, 384, 128 * 1, 128, 128);
+		optionLife->Render(930 , 550, 128, 128, optionInfo.minute*64, 64 * 0, 64, 64);
+		optionLife->Render(1140, 550, 128, 128, ((optionInfo.second / 10) % 10) * 64, 64 * 0, 64, 64);
+		optionLife->Render(1220, 550, 128, 128, 0, 64*0, 64, 64);
+		optionImage->Render(1020, 550, 128, 128, 256, 128 * 1, 128, 128);
+		optionImage->Render(1300, 550, 128, 128, 384, 128 * 1, 128, 128);
 
 	}
 
@@ -1154,27 +1152,25 @@
 	{
 		
 		//項目描画
-		Oimage->Render(800, 320, 256, 64, 0, 128 * 2, 512, 128);
-		Oimage->Render(800, 420, 256, 64, 0, 128 * 0, 512, 128);
-		Oimage->Render(800, 520, 128, 64, 0, 128 * 1, 256, 128);
+		optionImage->Render(800, 320, 256, 64, 0, 128 * 2, 512, 128);
+		optionImage->Render(800, 420, 256, 64, 0, 128 * 0, 512, 128);
+		optionImage->Render(800, 520, 128, 64, 0, 128 * 1, 256, 128);
 		//アイテムの有無描画
 		if (optionInfo.itemflg){
-			Oimage->Render(1100, 320, 128, 64, 0, 128 * 3, 256, 128);
+			optionImage->Render(1100, 320, 128, 64, 0, 128 * 3, 256, 128);
 		}
 		else{
-			Oimage->Render(1100, 320, 128, 64, 256, 128 * 3, 256, 128);
+			optionImage->Render(1100, 320, 128, 64, 256, 128 * 3, 256, 128);
 
 		}
 		//コインMAXの描画
-		OCmax->Render(1100, 420, 64, 64, (optionInfo.coinMAX / 100) * 64, 128 * 0, 64, 64);
-		OCmax->Render(1150, 420, 64, 64, ((optionInfo.coinMAX / 10) % 10) * 64, 128 * 0, 64, 64);
-		OCmax->Render(1200, 420, 64, 64, 0, 128 * 0, 64, 64);
+		optionLife->Render(1100, 420, 64, 64, optionInfo.life * 64, 128 * 0, 64, 64);
 		//タイム
-		OCmax->Render(1080-40, 520, 64, 64, optionInfo.minute * 64, 64 * 0, 64, 64);
-		OCmax->Render(1200-40, 520, 64, 64, ((optionInfo.second / 10) % 10) * 64, 64 * 0, 64, 64);
-		OCmax->Render(1240-40, 520, 64, 64, 0, 64 * 0, 64, 64);
-		Oimage->Render(1140-40, 520, 64, 64, 256, 128 * 1, 128, 128);
-		Oimage->Render(1300-40, 520, 64, 64, 384, 128 * 1, 128, 128);
+		optionLife->Render(1080-40, 520, 64, 64, optionInfo.minute * 64, 64 * 0, 64, 64);
+		optionLife->Render(1200-40, 520, 64, 64, ((optionInfo.second / 10) % 10) * 64, 64 * 0, 64, 64);
+		optionLife->Render(1240-40, 520, 64, 64, 0, 64 * 0, 64, 64);
+		optionImage->Render(1140 - 40, 520, 64, 64, 256, 128 * 1, 128, 128);
+		optionImage->Render(1300 - 40, 520, 64, 64, 384, 128 * 1, 128, 128);
 	}
 
 	//	矢印描画
@@ -1182,19 +1178,19 @@
 	{
 		switch (optionInfo.step){
 		case 0:
-			OCmax->Render(830, 150, 128, 128, 64*4, 64 * 3, 64, 64);
+			optionLife->Render(830, 150, 128, 128, 64*4, 64 * 3, 64, 64);
 			break;
 		case 1:
-			OCmax->Render(830, 350, 128, 128, 64 * 4, 64 * 3, 64, 64);
+			optionLife->Render(830, 350, 128, 128, 64 * 4, 64 * 3, 64, 64);
 			break;
 		case 2:
-			OCmax->Render(830, 550, 128, 128, 64 * 4, 64 * 3, 64, 64);
-			OCmax->Render(930, 550, 128, 128, optionInfo.minute * 64, 64 * 1, 64, 64);
+			optionLife->Render(830, 550, 128, 128, 64 * 4, 64 * 3, 64, 64);
+			optionLife->Render(930, 550, 128, 128, optionInfo.minute * 64, 64 * 1, 64, 64);
 			break;
 		case 3:
-			OCmax->Render(830, 550, 128, 128, 64 * 4, 64 * 3, 64, 64);
-			OCmax->Render(1140, 550, 128, 128, ((optionInfo.second / 10) % 10) * 64, 64 * 1, 64, 64);
-			OCmax->Render(1220, 550, 128, 128, 0, 64 * 1, 64, 64);
+			optionLife->Render(830, 550, 128, 128, 64 * 4, 64 * 3, 64, 64);
+			optionLife->Render(1140, 550, 128, 128, ((optionInfo.second / 10) % 10) * 64, 64 * 1, 64, 64);
+			optionLife->Render(1220, 550, 128, 128, 0, 64 * 1, 64, 64);
 			break;
 		}
 	}

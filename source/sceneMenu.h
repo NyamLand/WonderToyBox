@@ -50,7 +50,7 @@ private:
 	struct OptionInfo
 	{
 		bool	itemflg;
-		int		coinMAX;
+		int		life;
 		int		minute;
 		int		second;
 		int		step;
@@ -69,10 +69,10 @@ private:
 	};
 private:	
 	//optionê›åvíÜ
-	iex2DObj*				Oimage;
-	iex2DObj*				Otime;
-	iex2DObj*				OCmax;
-	iex2DObj*				Omenu;
+	iex2DObj*				optionImage;
+	iex2DObj*				optionTime;
+	iex2DObj*				optionLife;
+	iex2DObj*				optionMenu;
 	unique_ptr<iexMesh>		BG;
 	
 public:
@@ -83,7 +83,7 @@ public:
 	void	ArrowRender(void);
 	void	TimerRender(void);
 	void	OptionSelectRender(void);
-	void	OptionDUpdate(void);
+	//void	OptionDUpdate(void);
 
 private:
 	//	âÊëúÅEÉÇÉfÉã
