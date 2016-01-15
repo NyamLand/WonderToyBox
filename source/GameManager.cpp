@@ -65,9 +65,6 @@
 		lastBonus = Random::GetInt( 0, 3 );
 		timeStop = 0;
 		round = 0;
-
-		//	ゲームデータテキストを読み込む
-		//LoadTextData();
 		timer = 0;
 
 		//	ラストボーナス用カウント初期化

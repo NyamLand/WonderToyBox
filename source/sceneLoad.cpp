@@ -17,8 +17,11 @@ using namespace std;
 //----------------------------------------------------------------------------------
 //	グローバル
 //----------------------------------------------------------------------------------
-	
-	//	static宣言
+
+#define	INTERVAL	300		//	差し替えの間隔
+#define	INTERPOLATION_SPEED		0.01f	//	補間速度
+
+//	static宣言
 	bool	sceneLoad::threadState;
 
 //----------------------------------------------------------------------------------
@@ -26,7 +29,7 @@ using namespace std;
 //----------------------------------------------------------------------------------
 	
 	//	コンストラクタ
-	sceneLoad::sceneLoad( Scene*	nextScene ) : newScene( nextScene )
+	sceneLoad::sceneLoad( Scene*	nextScene ) : newScene( nextScene ), timer( 0 )
 	{
 		//	フラグ初期化
 		threadState = false;
@@ -59,8 +62,6 @@ using namespace std;
 		int w = static_cast<int>( iexSystem::ScreenWidth );
 		int h = static_cast<int>( iexSystem::ScreenHeight );
 		ImageInitialize( bgImage[0], x, y, w, h, 0, 0, 1280, 720 );
-
-		x = static_cast<int>( iexSystem::ScreenWidth * 1.5f );
 		ImageInitialize( bgImage[1], x, y, w, h, 0, 0, 1280, 720 );
 
 		//	PressSpace画像構造体設定
@@ -74,6 +75,12 @@ using namespace std;
 		//	別スレッド作成
 		_beginthread( Thread, 0, ( void* )newScene );
 		
+		//	変数初期化
+		timer = 0;
+		t = 0.0f;
+		reverseFlag = false;
+		isEnd = false;
+		changeSceneFlag = false;
 		return	true;
 	}
 
@@ -84,20 +91,28 @@ using namespace std;
 	//	更新
 	void	sceneLoad::Update( void )
 	{
+		//	背景画像差し替え
+		MoveBG();
 
 		//	点滅更新
 		FlashingUpdate( load_anykey, D3DX_PI / 180 * 4.0f );
 
-		//	シーン切り換え
+		//	読み込み完了後キー入力受付
 		if ( threadState ){
-			if ( KEY_Get( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 ){
-
+			if ( KEY_Get( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )
+			{
 				//	pressspace波紋
 				static	float	wavespeed = 1.5f;
 				SetWave( load_anykey, wavespeed );
-				MainFrame->ChangeScene( newScene, false );
-				return;
+				changeSceneFlag = true;
 			}
+		}
+
+		//	シーン切り替え
+		if ( changeSceneFlag )
+		{
+			MainFrame->ChangeScene( newScene, false );
+			return;
 		}
 	}
 
@@ -109,7 +124,16 @@ using namespace std;
 		mainView->Clear();
 
 		//	背景描画
-		RenderImage( bgImage[0], bgImage[0].sx, bgImage[0].sy, bgImage[0].sw, bgImage[0].sh, IMAGE_MODE::NORMAL );
+		if ( reverseFlag )
+		{
+			RenderImage( bgImage[0], bgImage[0].sx, bgImage[0].sy, bgImage[0].sw, bgImage[0].sh, IMAGE_MODE::NORMAL );
+			RenderImage( bgImage[1], bgImage[1].sx, bgImage[1].sy, bgImage[1].sw, bgImage[1].sh, IMAGE_MODE::NORMAL );
+		}
+		else
+		{
+			RenderImage( bgImage[1], bgImage[1].sx, bgImage[1].sy, bgImage[1].sw, bgImage[1].sh, IMAGE_MODE::NORMAL );
+			RenderImage( bgImage[0], bgImage[0].sx, bgImage[0].sy, bgImage[0].sw, bgImage[0].sh, IMAGE_MODE::NORMAL );
+		}
 
 		//	pressSpace描画
 		if ( threadState )
@@ -122,6 +146,37 @@ using namespace std;
 //----------------------------------------------------------------------------------
 //	動作関数
 //----------------------------------------------------------------------------------
+
+	//	背景移動
+	void	sceneLoad::MoveBG( void )
+	{
+		static	int	centerX = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
+
+		//	タイマー加算
+		timer++;
+
+		//	一定時間たったら差し替えスタート
+		if ( timer >= INTERVAL )
+		{
+			//	裏側の画像を元の位置に配置
+			bgImage[!reverseFlag].x = centerX;
+
+			//	補間パラメータ加算
+			t += INTERPOLATION_SPEED;
+			if ( t >= 1.0f )		t = 1.0f;
+
+			//	補間
+			isEnd = CubicFunctionInterpolation( bgImage[reverseFlag].x, centerX, -centerX, t );
+
+			//	補間終了後リセット
+			if ( isEnd )
+			{
+				timer = 0;
+				t = 0.0f;
+				reverseFlag = !reverseFlag;
+			}
+		}
+	}
 	
 	//	スレッド
 	void	sceneLoad::Thread( void* arg )

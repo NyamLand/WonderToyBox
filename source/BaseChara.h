@@ -389,12 +389,12 @@ public:
 	float		GetAngle( void )const;
 	float		GetAngle( Vector3 vec1, Vector3 vec2 )const;
 	float		GetScale( void )const;
-	int			GetAttack_addParam(void)const;
+	int		GetAttack_addParam(void)const;
 	float		GetAttack_R( void )const;
 	float		GetAttack_T( void )const;
 	//float	GetSpeed( void )const;
 	float		GetTotalSpeed( void )const;
-	//bool		GetUnrivaled( void )const;
+	//bool	GetUnrivaled( void )const;
 	bool		GetCanHyper( void )const;
 	bool		GetParameterState( int type )const;
 	int		GetPower( void )const;
