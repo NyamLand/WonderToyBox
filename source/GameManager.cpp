@@ -212,7 +212,8 @@
 			
 			//　↓ 仮 ↓
 			//eventmode = EVENT_MODE::COIN_FALL;	//　仮 （本番：この行いらない、上の行のコメントはずす）
-			eventmode = EVENT_MODE::COIN_DUBBLE;	//　仮 （本番：この行いらない、上の行のコメントはずす）
+			//eventmode = EVENT_MODE::COIN_DUBBLE;	//　仮 （本番：この行いらない、上の行のコメントはずす）
+			eventmode = EVENT_MODE::COIN_WAVE;		//　仮 （本番：この行いらない、上の行のコメントはずす）
 			//　↑ 仮 ↑
 
 			if (eventmode <= EVENT_MODE::JAM_UFO)

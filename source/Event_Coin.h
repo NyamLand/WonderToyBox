@@ -12,6 +12,10 @@
 
 #define		FALL_COUNT_MAX		3 * SECOND
 #define		DUBBLE_COUNT_MAX	10 * SECOND
+#define		WAVE_COUNT_MAX		6 * SECOND
+
+#define		COIN_APPEAR_HEIGHT	50.0f
+
 //	class
 class Event_Coin : public EventManager
 {
@@ -81,6 +85,7 @@ public:
 	void	Juelbox(void);		//　宝石
 	void	Wave(void);			//　隊列
 	void	Dubble(void);		//　２倍タイム
+	void	CommonSetting(bool& eventflag, int& step, int countMax);
 
 	//	情報取得
 	static	Event_Coin*	GetInstance(void);
