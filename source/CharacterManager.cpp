@@ -248,16 +248,15 @@
 			}
 			
 			//	無敵にする
-			if (bc2->GetParameterState(PARAMETER_STATE::UNRIVALED))	return;
-			bc2->SetParameterState(PARAMETER_STATE::UNRIVALED);
-
+			if ( bc2->GetParameterState( PARAMETER_STATE::UNRIVALED ) )	return;
+			bc2->SetParameterState( PARAMETER_STATE::UNRIVALED );
 
 			int addParam = bc1->GetAttack_addParam();
-			bc2->SetParameterState(addParam);
+			bc2->SetParameterState( addParam );
 
 			//	ライフ減らす
 			int power = bc1->GetPower();
-			FOR_LIST(0, power) bc2->SubLife();
+			FOR_LIST( 0, power ) bc2->SubLife();
 
 			//	エフェクトだす
 			float	effectScale = 1.0f;

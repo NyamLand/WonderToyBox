@@ -95,12 +95,17 @@ private:
 		LVERTEX	v[4];		//	描画用頂点
 	};
 
-	//	ライフ情報
+	//	ライフ発表情報
 	struct LIFE_INFO
 	{
-		float	scale;
-		int	maxW;
-		int	maxH;
+		int		step;
+		bool		renderflag;
+		float		t;
+		int		waitTimer;
+		bool		isEnd;
+		int		culLife;
+		int		maxW;
+		int		maxH;
 	};
 
 private:

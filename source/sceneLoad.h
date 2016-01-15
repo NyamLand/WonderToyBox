@@ -15,10 +15,12 @@ private:
 	bool		loadflg;		
 	ImageObj	load_anykey;	//	ボタン
 	ImageObj	bgImage[2];
+	int	timer;
+	float	t;
+	bool	reverseFlag;
+	bool	isEnd;
+	bool	changeSceneFlag;
 
-
-	//デバック用
-	char	stri[256];
 public:
 	//	初期化・解放
 	sceneLoad( Scene* nextScene );
@@ -30,6 +32,7 @@ public:
 	void	Render( void );
 
 	//	動作関数
+	void	MoveBG( void );
 	static	void	Thread( void* arg );
 };
 

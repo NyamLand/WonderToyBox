@@ -291,6 +291,17 @@
 		SetVertex( viewInfo.v[1], viewInfo.texPos.x + texSize.x * 0.5f, viewInfo.texPos.y + texSize.y * 0.5f, viewInfo.texPos.z, 1, 0, 0xFFFFFFFF );
 		SetVertex( viewInfo.v[2], viewInfo.texPos.x - texSize.x * 0.5f, viewInfo.texPos.y - texSize.y * 0.5f, viewInfo.texPos.z, 0, 1, 0xFFFFFFFF );
 		SetVertex( viewInfo.v[3], viewInfo.texPos.x + texSize.x * 0.5f, viewInfo.texPos.y - texSize.y * 0.5f, viewInfo.texPos.z, 1, 1, 0xFFFFFFFF );
+
+		//	ライフ発表用構造体設定
+		{
+			lifeInfo.step = 0;
+			lifeInfo.culLife = 0;
+			lifeInfo.renderflag = false;
+			lifeInfo.isEnd = false;
+			lifeInfo.t = 0.0f;
+			lifeInfo.waitTimer = 0;
+		}
+
 		return	true;
 	}
 
@@ -611,7 +622,7 @@
 		{
 		case SELECT_MODE::DOWN:
 			isEnd = DownPolygon();
-			if ( isEnd )step++;
+			if ( isEnd )	step++;
 			break;
 
 		case SELECT_MODE::SELECT:
@@ -1405,27 +1416,21 @@
 	bool	sceneResult::NextLifeAnnouncing( void )
 	{
 		//	変数準備
-		static	int	modeStep = 0;
-		static	float	rankAlpha = 1.0f;
-		bool		renderflag = true;
-		static	float	t = 0.0f;
-		static	int	waitTimer = 0;
-		bool		isEnd = false;
-		int		culLife = 0;
+		bool	isEnd = false;
 
-		switch ( modeStep )
+		switch ( lifeInfo.step )
 		{
 		case 0:
-			t += 0.01f;
-			if ( t >= 1.0f ) t = 1.0f;
+			lifeInfo.t += 0.01f;
+			if ( lifeInfo.t >= 1.0f ) lifeInfo.t = 1.0f;
 
 			//	情報適用
 			FOR( 0, PLAYER_MAX )
 			{
-				Lerp( rankImage[value].alpha, 1.0f, 0.0f, t );
+				Lerp( rankImage[value].alpha, 1.0f, 0.0f, lifeInfo.t );
 			}
 
-			if ( t >= 1.0f )
+			if ( lifeInfo.t >= 1.0f )
 			{
 				//	順位非表示＆ライフ描画開始
 				FOR( 0, PLAYER_MAX )
@@ -1433,26 +1438,26 @@
 					rankImage[value].renderflag = false;
 					lifeImage[value].renderflag = true;
 				}
-				t = 0.0f;
+				lifeInfo.t = 0.0f;
 
 				//	つぎのステップへ
-				modeStep++;
+				lifeInfo.step++;
 			}
 			break;
 
 		case 1:
-			t += 0.1f;
-			if ( t >= 1.0f )
+			lifeInfo.t += 0.1f;
+			if ( lifeInfo.t >= 1.0f )
 			{
-				t = 1.0f;
+				lifeInfo.t = 1.0f;
 				FOR( 0, PLAYER_MAX )	SetWave( lifeImage[value], 1.0f );
-				modeStep++;
+				lifeInfo.step++;
 			}
 			//	ライフ出現
 			FOR( 0, PLAYER_MAX )
 			{
-				Lerp( lifeImage[value].w, 0, lifeInfo.maxW, t );
-				Lerp( lifeImage[value].h, 0, lifeInfo.maxH, t );
+				Lerp( lifeImage[value].w, 0, lifeInfo.maxW, lifeInfo.t );
+				Lerp( lifeImage[value].h, 0, lifeInfo.maxH, lifeInfo.t );
 			}
 			break;
 
@@ -1461,7 +1466,7 @@
 			{
 				isEnd = WaveUpdate( lifeImage[value] );
 			}
-			if ( isEnd )	modeStep++;
+			if ( isEnd )	lifeInfo.step++;
 			break;
 
 		case 3:
@@ -1469,19 +1474,14 @@
 			//	ライフ情報更新
 			FOR( 0, PLAYER_MAX )
 			{
-				culLife = gameManager->GetStartLife( value );
-				lifeImage[value].sx = lifeImage[value].sw * ( ( 5 - culLife ) % 4 );
-				lifeImage[value].sy = lifeImage[value].sh * ( ( 5 - culLife ) / 4 );
+				lifeInfo.culLife = gameManager->GetStartLife( value );
+				lifeImage[value].sx = lifeImage[value].sw * ( ( 5 - lifeInfo.culLife ) % 4 );
+				lifeImage[value].sy = lifeImage[value].sh * ( ( 5 - lifeInfo.culLife ) / 4 );
 			}
 
 			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
 			{
 				step = 0;
-				modeStep = 0;
-				rankAlpha = 1.0f;
-				renderflag = true;
-				t = 0.0f;
-				waitTimer = 0;
 				mode = MOVE_MODE::SELECT;
 			}
 			return	true;

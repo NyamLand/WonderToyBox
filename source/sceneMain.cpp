@@ -82,7 +82,6 @@
 		gameStartCoinNum = 0;
 
 		//	ステージ
-		//stageManager->Initialize( dir );
 		stage = new Stage();
 		stage->LightInitialize( dir );
 		
@@ -112,13 +111,6 @@
 
 		//	BGM再生
 		sound->PlayBGM( BGM::MAIN_BGM );
-
-		/*
-			メインから始めるために無理やり呼び出しています。
-			本チャンに戻す場合はWinMainのシーン読み込みをタイトルに戻して、
-			この↓の関数をコメントアウトしてください。
-		*/
-		//InitializeDebug();
 
 		return true;
 	}
@@ -154,7 +146,6 @@
 
 		backBuffer->Release();
 		Random::Release();
-		//stageManager->Release();
 		particle->Release();
 		itemManager->Release();
 		characterManager->Release();
@@ -163,7 +154,7 @@
 	}
 
 	//	プレイヤー初期化
-	void    sceneMain::PlayerInitialize(void)
+	void    sceneMain::PlayerInitialize( void )
 	{
 		//　プレイヤー設定
 		for ( int i = 0; i < gameManager->GetPlayerNum(); i++ )

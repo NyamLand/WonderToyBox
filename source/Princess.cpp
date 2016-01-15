@@ -94,7 +94,7 @@
 	//	クイックアーツ
 	bool	Princess::QuickArts( void )
 	{
-		power = 0;
+		power = 1;
 
 		//	行列から前方取得
 		Vector3	front = GetFront();
