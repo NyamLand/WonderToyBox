@@ -101,7 +101,7 @@
 		timelimit = 32 * SECOND;
 
 		//　コイン最大
-		coinMax = 50;
+		maxlife = 5;
 
 		//　CPU初期化
 		for (int i = 1; i < PLAYER_MAX; i++)
@@ -276,7 +276,7 @@
 			{
 				if ( Random::PercentageRandom( 0.6f ) )
 				{
-					if ( coinNum[0] + coinNum[1] + coinNum[2] + coinNum[3] + coinManager->GetFreeCoinNum() < coinMax)
+					if ( coinNum[0] + coinNum[1] + coinNum[2] + coinNum[3] + coinManager->GetFreeCoinNum() < 300)
 					coinManager->Append( Vector3( Random::GetFloat( -20.0f, 20.0f ), 50.0f, Random::GetFloat( -20.0f, 12.0f ) ), Vector3( 0.0f, -1.0f, 0.0f ), 1.0f );
 				}
 			}
@@ -481,9 +481,9 @@
 	}
 
 	//コイン枚数取得
-	int		GameManager::GetCoinMax( void )const
+	int		GameManager::GetMaxLife( void )const
 	{
-		return coinMax;
+		return maxlife;
 	}
 
 	//アイテム有無取得
@@ -643,9 +643,9 @@
 	}
 
 	//コイン枚数設定
-	void	GameManager::SetCoinMax( int coinmax )
+	void	GameManager::SetMaxLife( int life )
 	{
-		this->coinMax = coinmax;
+		this->maxlife = life;
 	}
 
 	//アイテム有無設定

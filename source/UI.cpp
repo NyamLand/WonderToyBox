@@ -1420,7 +1420,7 @@
 
 	//	バー動作
 	void	UI::BarControl( void )
-	{
+	{/*
 		//static const int MAX_COIN = 201;
 
 		bar_x[1] = bar_x[0] + bar_sx[0];
@@ -1431,10 +1431,10 @@
 		for (int i = 0; i < 4; i++)
 		{
 			num_coin[i] = gameManager->GetCoinNum(i);
-			bar_sx[i] = backgauge.w * num_coin[i] / gameManager->GetCoinMax();
-		}
+			bar_sx[i] = backgauge.w * num_coin[i] / gameManager->GetLife();
+		}*/
 	}
-
+	
 	//	バー動作２
 	void	UI::BarControl2( void )
 	{

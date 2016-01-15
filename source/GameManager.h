@@ -17,7 +17,6 @@ namespace
 	const		int		PLAYER_MAX = 4;
 	const		float		GRAVITY = -0.01f;
 	const		int		CHARATYPE_MAX = 4;
-	//const		int		COIN_MAX = 50;
 
 	namespace GAME_MODE
 	{
@@ -62,7 +61,7 @@ class GameManager
 {
 private:
 	//オプション情報
-	int		coinMax;
+	int		maxlife;
 	bool	itemflg;
 
 	//	ゲーム設定用
@@ -138,7 +137,7 @@ public:
 	int		GetMode( void );
 	int		GetRank(int player);   
 	int		GetTimeStop(void);
-	int		GetCoinMax(void)const;
+	int		GetMaxLife(void)const;
 	int		GetStartLife( int player )const;
 	int		GetRound( void )const;
 	int		GetCoinTotal( int player )const;
@@ -163,7 +162,7 @@ public:
 	void	SetShakeCamera(float wide, int timer);
 	void	SetTimeStop(int time);
 	void	SetTime(int minute, int second);
-	void	SetCoinMax(int coinmax);
+	void	SetMaxLife(int life);
 	void	SetItemFlg(bool itemflg);
 	void	SetRound( int round );
 	void	SetStartLife( int player, int life );
