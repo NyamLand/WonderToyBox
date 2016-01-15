@@ -1066,9 +1066,8 @@
 			lifeInfo[value].lifeImage.y = ( int )out.y;
 
 			//	読み込み位置設定
-			lifeInfo[value].lifeImage.sx = lifeInfo[value].lifeImage.sw * ( ( lifeInfo[value].life - culLife ) % 4 );
-			lifeInfo[value].lifeImage.sy = lifeInfo[value].lifeImage.sh * ( ( lifeInfo[value].life - culLife ) / 4 );
-			int a = 0;
+			lifeInfo[value].lifeImage.sx = lifeInfo[value].lifeImage.sw * ( ( 5 - culLife ) % 4 );
+			lifeInfo[value].lifeImage.sy = lifeInfo[value].lifeImage.sh * ( ( 5 - culLife ) / 4 );
 		}
 	}
 
@@ -2006,6 +2005,7 @@
 		number.one = coin % 10;
 	}
 
+	//	イベント情報、モード設定
 	void	UI::SetEventInfoMode(int mode)
 	{
 		this->eventInfo.mode = mode;

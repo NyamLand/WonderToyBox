@@ -109,7 +109,7 @@
 	}
 
 	//　デバッグ
-	void	CharacterManager::DrawDebug()
+	void	CharacterManager::DrawDebug( void )
 	{
 		if (debug)
 		{

@@ -154,7 +154,7 @@
 	}
 
 	//	プレイヤー初期化
-	void    sceneMain::PlayerInitialize( void )
+	void	sceneMain::PlayerInitialize( void )
 	{
 		//　プレイヤー設定
 		for ( int i = 0; i < gameManager->GetPlayerNum(); i++ )
