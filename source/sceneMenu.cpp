@@ -979,7 +979,7 @@
 	{
 		//　構造体初期化
 		optionInfo.itemflg = true;
-		optionInfo.life = 5;
+		optionInfo.life = LIFE_MAX_NUM::LIFE_5;
 		optionInfo.minute = 1;
 		optionInfo.second = 3;
 		optionInfo.step = 0;
@@ -1013,15 +1013,16 @@
 			}
 			break;
 		case 1:
-			if (KEY_Get(KEY_RIGHT) == 3 ){
-				if (optionInfo.life<5){
-					optionInfo.life ++;
-				}
+			if ( KEY( KEY_RIGHT ) == 3 )
+			{
+				optionInfo.life++;
+				if ( optionInfo.life >= LIFE_MAX_NUM::END )		optionInfo.life = LIFE_MAX_NUM::LIFE_3;
 			}
-			else if (KEY_Get(KEY_LEFT) == 3){
-				if (optionInfo.life>2){
-					optionInfo.life --;
-				}
+
+			if ( KEY( KEY_LEFT ) == 3 )
+			{
+				optionInfo.life--;
+				if ( optionInfo.life < LIFE_MAX_NUM::LIFE_3 )	optionInfo.life = LIFE_MAX_NUM::LIFE_5;
 			}
 			break;
 		case 2:
@@ -1164,7 +1165,7 @@
 
 		}
 		//コインMAXの描画
-		optionLife->Render(1100, 420, 64, 64, optionInfo.life * 64, 128 * 0, 64, 64);
+		optionLife->Render(1100, 420, 64, 64, ( optionInfo.life + 3 ) * 64, 128 * 0, 64, 64);
 		//タイム
 		optionLife->Render(1080-40, 520, 64, 64, optionInfo.minute * 64, 64 * 0, 64, 64);
 		optionLife->Render(1200-40, 520, 64, 64, ((optionInfo.second / 10) % 10) * 64, 64 * 0, 64, 64);

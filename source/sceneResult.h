@@ -156,6 +156,8 @@ private:
 	int		step;
 	int		lastBonus;
 	int		bonusPlayer;
+	int		nextLife[3][4];	//	４人分３種類
+	bool		inputCheck[4];
 	bool		changeScene;
 
 public:
@@ -210,6 +212,8 @@ public:
 	void	ModeLastBonus( void );
 	void	ModeRank( void );
 	void	ModeRankSkip( void );
+	void	ModeLastResult( void );
+	void	ModeInputWait( void );
 
 	//	ラストボーナス用関数
 	bool	LastBonusUpdate( void );

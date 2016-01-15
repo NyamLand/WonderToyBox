@@ -31,8 +31,8 @@
 		int y = static_cast<int>(iexSystem::ScreenHeight * -0.13f);
 		int w = static_cast<int>( iexSystem::ScreenWidth * 0.6f );
 		int h = static_cast<int>( iexSystem::ScreenHeight * 0.14f );
-		pos = Vector3(x, y, 0.0f);
-		scale = Vector3( w, h, 0.0f );
+		pos = Vector3( static_cast<float>( x ), static_cast<float>( y ), 0.0f );
+		scale = Vector3( static_cast<float>( w ), static_cast<float>( h ), 0.0f );
 		ImageInitialize( obj, ( int )pos.x, ( int )pos.y, ( int )scale.x, ( int )scale.y, 0, 0, 1024, 128 );
 		obj.obj = new iex2DObj( "DATA/UI/Event-int.png" );
 	}
@@ -159,7 +159,7 @@
 
 		//	‚Ó‚í‚Ó‚í‚³‚¹‚é
 		pos.y = endPos.y + static_cast<int>( 10.0f * sinf( param ) );
-		center = GetPoint( pos.x - scale.x * 0.2f, pos.y );
+		center = GetPoint( static_cast<int>( pos.x - scale.x * 0.2f ), static_cast<int>( pos.y ) );
 		angle = ( D3DX_PI / 180.0f * -1.0f ) * cosf( param );
 		param += D3DX_PI / 180.0f;
 	}
@@ -168,7 +168,7 @@
 	void	AirPlane::FlyRoll( void )
 	{
 		//	‰ñ“]
-		center = GetPoint( pos.x - scale.x * 0.2f, pos.y );
+		center = GetPoint( static_cast<int>( pos.x - scale.x * 0.2f ), static_cast<int>( pos.y ) );
 		angle = ( D3DX_PI / 180.0f * -1.0f ) * sinf( D3DX_PI * 0.5f * param );
 	}
 

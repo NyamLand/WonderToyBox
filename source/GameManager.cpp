@@ -66,6 +66,7 @@
 		timeStop = 0;
 		round = 0;
 		timer = 0;
+		maxlife = LIFE_MAX_NUM::LIFE_5;
 
 		//	ラストボーナス用カウント初期化
 		FOR( 0, PLAYER_MAX )
@@ -98,7 +99,7 @@
 		timelimit = 32 * SECOND;
 
 		//　コイン最大
-		maxlife = 5;
+		maxlife = LIFE_MAX_NUM::LIFE_5;
 
 		//　CPU初期化
 		for (int i = 1; i < PLAYER_MAX; i++)

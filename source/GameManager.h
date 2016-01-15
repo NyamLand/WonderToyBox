@@ -54,6 +54,17 @@ namespace
 			ROUND_FINAL,
 		};
 	}
+
+	namespace LIFE_MAX_NUM
+	{
+		enum
+		{
+			LIFE_3,
+			LIFE_4,
+			LIFE_5,
+			END,
+		};
+	}
 }
 
 //	ƒNƒ‰ƒX

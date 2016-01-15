@@ -10,6 +10,8 @@
 #include	"sceneTitle.h"
 #include	"sceneMenu.h"
 #include	"sceneMain.h"
+#include	"sceneLoad.h"
+#include	"Screen.h"
 
 #include	"sceneResult.h"
 
@@ -44,7 +46,9 @@
 				LASTBONUS,
 				RANK,
 				LIFE,
+				LAST_RESULT,
 				RANK_SKIP,
+				INPUT_WAIT,
 			};
 		}
 
@@ -61,7 +65,7 @@
 		{
 			enum
 			{
-				RESTART,						//	再戦
+				//RESTART,							//	再戦
 				MOVE_MENU,					//	対戦設定へ	
 				MOVE_TITLE,					//	タイトルへ
 				END,								//	終端
@@ -124,7 +128,7 @@
 		//	ステージ設定
 		bgStage = new iexMesh( "DATA/BG/MenuStage/menustage.IMO" );	//	ステージ
 		bgStage->SetScale( 0.1f );
-		bgStage->SetAngle( PI );
+		bgStage->SetAngle( D3DX_PI );
 		bgStage->Update();
 
 		//	オリジナルモデル情報初期化
@@ -173,6 +177,12 @@
 		mode = MOVE_MODE::RESULT;
 		changeScene = false;
 		bonusPlayer = 0;
+		FOR( 0, PLAYER_MAX )	inputCheck[value] = false;
+
+		//	次回ライフ設定
+		nextLife[0][0] = 2; nextLife[0][1] = 2; nextLife[0][2] = 3; nextLife[0][3] = 3;
+		nextLife[1][0] = 2; nextLife[1][1] = 3; nextLife[1][2] = 3; nextLife[1][3] = 4;
+		nextLife[2][0] = 2; nextLife[2][1] = 3; nextLife[2][2] = 4; nextLife[2][3] = 5;
 
 		//	結果用情報構造体初期化
 		ResultInfoInitialize();
@@ -200,7 +210,7 @@
 
 		//	メニュー情報初期化
 		{
-			menuInfo.select = MENU::RESTART;
+			menuInfo.select = MENU::MOVE_MENU;
 			menuInfo.screenH = 0;
 			menuInfo.alpha = 0.5f;
 			menuInfo.t = 0.0f;
@@ -209,13 +219,13 @@
 		//	メニュー画像構造体初期化
 		{
 			//	メニューの項目数まわす
-			for ( int i = 0; i < 3; i++ )
+			for ( int i = 0; i < MENU::END; i++ )
 			{
 				x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
-				y = static_cast<int>( iexSystem::ScreenHeight * 0.28f );
+				y = static_cast<int>( iexSystem::ScreenHeight * 0.35f );
 				w = static_cast<int>( iexSystem::ScreenWidth * 0.55f );
-				h = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
-				ImageInitialize( menuImage[i], x, y + y * i, w, h, 0, 128 * i, 512, 128 );
+				h = static_cast<int>( iexSystem::ScreenHeight * 0.3f );
+				ImageInitialize( menuImage[i], x, y + y * i, w, h, 0, 128 + 128 * i, 512, 128 );
 				menuImage[i].obj = menuText;
 				menuImage[i].renderflag = false;
 			}
@@ -607,8 +617,16 @@
 			NextLifeAnnouncing();
 			break;
 
+		case	RESULT_MODE::LAST_RESULT:
+			ModeLastResult();
+			break;
+
 		case RESULT_MODE::RANK_SKIP:
 			ModeRankSkip();
+			break;
+
+		case	RESULT_MODE::INPUT_WAIT:
+			ModeInputWait();
 			break;
 		}
 	}
@@ -634,7 +652,7 @@
 	//	セレクト画面描画
 	void	sceneResult::SelectRender( void )
 	{
-		for ( int i = 0; i < 3; i++ )
+		for ( int i = 0; i < MENU::END; i++ )
 		{
 			RenderImage( menuImage[i], menuImage[i].sx, menuImage[i].sy, menuImage[i].sw, menuImage[i].sh, IMAGE_MODE::NORMAL );
 		}
@@ -1193,36 +1211,65 @@
 	{
 		if ( !changeScene )	return;
 
-		int	nextRound = gameManager->GetRound() + 1;
+		//	現在のラウンドを取得
+		int	round = gameManager->GetRound();
 
-		switch ( menuInfo.select )
+		if ( round != Round::ROUND_FINAL )
 		{
-		case MENU::RESTART:
-			//	ゲーム情報初期化
+			//	再戦用の設定
 			gameManager->RetryInitialize();
-			gameManager->SetRound( nextRound );
-			MainFrame->ChangeScene( new sceneMain() );
-			return;
-			break;
+			gameManager->SetRound( round + 1 );
 
-		case MENU::MOVE_MENU:
-			MainFrame->ChangeScene( new sceneMenu() );
+			//	メインへ
+			MainFrame->ChangeScene( new sceneLoad( new sceneMain() ) );
 			return;
-			break;
-
-		case MENU::MOVE_TITLE:
-			MainFrame->ChangeScene( new sceneTitle() );
-			return;
-			break;
 		}
+		else
+		{
+			switch ( menuInfo.select )
+			{
+			case MENU::MOVE_MENU:
+				MainFrame->ChangeScene( new sceneMenu() );
+				return;
+				break;
+
+			case	MENU::MOVE_TITLE:
+				MainFrame->ChangeScene( new sceneTitle() );
+				return;
+				break;
+			}
+		}
+		//switch ( menuInfo.select )
+		//{
+		//case MENU::RESTART:
+		//	//	ゲーム情報初期化
+		//	gameManager->RetryInitialize();
+		//	gameManager->SetRound( nextRound );
+		//	MainFrame->ChangeScene( new sceneMain() );
+		//	return;
+		//	break;
+
+		//case MENU::MOVE_MENU:
+		//	MainFrame->ChangeScene( new sceneMenu() );
+		//	return;
+		//	break;
+
+		//case MENU::MOVE_TITLE:
+		//	MainFrame->ChangeScene( new sceneTitle() );
+		//	return;
+		//	break;
+		//}
 	}
 
 	//	次回ライフ設定
 	void	sceneResult::SetNextLife( void )
 	{
+		int	rank;
+		int	maxLife = gameManager->GetMaxLife();
 		FOR( 0, PLAYER_MAX )
 		{
-			gameManager->SetStartLife( value, originInfo[value].rank + 1 );
+			rank = originInfo[value].rank;
+			gameManager->SetStartLife( value, nextLife[maxLife][rank] );
 		}
 	}
 
@@ -1481,8 +1528,7 @@
 
 			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
 			{
-				step = 0;
-				mode = MOVE_MODE::SELECT;
+				step = RESULT_MODE::INPUT_WAIT;
 			}
 			return	true;
 			break;
@@ -1652,19 +1698,24 @@
 		bool	isEnd = false;
 		bool	isFinViewRankInOrder = false;
 		bool	isEndWave = false;
+		int	round = gameManager->GetRound();
+
 		//-----------------------------------------------------------------------------------
 		//	順位発表
 		//-----------------------------------------------------------------------------------
 		isFinViewRankInOrder = ViewRankInOrder();
 		isEnd = RankWave();
 
-
 		//	波紋終了後に選択可
 		if ( isFinViewRankInOrder && isEnd )
 		{
 			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
 			{
-				step = RESULT_MODE::LIFE;
+				if ( round != Round::ROUND_FINAL )		step = RESULT_MODE::LIFE;
+				else
+				{
+					step = RESULT_MODE::LAST_RESULT;
+				}
 			}
 		}
 		else
@@ -1681,6 +1732,7 @@
 	void	sceneResult::ModeRankSkip( void )
 	{
 		bool	isEnd = false;
+		int	round = gameManager->GetRound();
 
 		FOR( 0, PLAYER_MAX )	isEnd = WaveUpdate( rankImage[value] );
 
@@ -1689,8 +1741,43 @@
 		{
 			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
 			{
-				mode = RESULT_MODE::LIFE;
+				if ( round != Round::ROUND_FINAL )		step = RESULT_MODE::LIFE;
+				else
+				{
+					step = RESULT_MODE::LAST_RESULT;
+				}
 			}
+		}
+	}
+
+	//	ラスト結果発表
+	void	sceneResult::ModeLastResult( void )
+	{
+		step = 0;
+		mode = MOVE_MODE::SELECT;
+	}
+
+	//	入力待ち
+	void	sceneResult::ModeInputWait( void )
+	{
+		FOR( 0, PLAYER_MAX )
+		{
+			//	入力を受け付けていたらスキップ
+			if ( inputCheck[value] )	continue;
+	
+			//	キー入力取得
+			int key_space = input[value]->Get( KEY_SPACE );
+			int key_a = input[value]->Get( KEY_A );
+
+			//	入力受付
+			if ( key_space == 3 || key_a == 3 )	inputCheck[value] = true;
+		}
+
+		//	全員の入力が終わっていたら
+		if ( inputCheck[0] && inputCheck[1] && inputCheck[2] && inputCheck[3] )
+		{
+			screen->SetScreenMode( SCREEN_MODE::FADE_OUT, 1.0f );
+			changeScene = true;
 		}
 	}
 
@@ -1723,10 +1810,10 @@
 		if ( input[0]->Get( KEY_UP ) == 3 )		menuInfo.select--;
 		if ( input[0]->Get( KEY_DOWN ) == 3 )	menuInfo.select++;
 		if ( menuInfo.select < 0 )							menuInfo.select = MENU::END - 1;
-		if ( menuInfo.select >= MENU::END )		menuInfo.select = MENU::RESTART;
+		if ( menuInfo.select >= MENU::END )		menuInfo.select = MENU::MOVE_MENU;
 
 		//	読み込み位置変更
-		for ( int i = 0; i < 3; i++ )
+		for ( int i = 0; i < 2; i++ )
 		{
 			if ( i == menuInfo.select )	menuImage[i].sx = 512;
 			else										menuImage[i].sx = 0;
