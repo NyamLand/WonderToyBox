@@ -242,6 +242,7 @@
 		//	当たっていたら
 		if ( isHit )
 		{
+			//sound->PlaySE(SE::HIT_SE);
 			if (bc1->GetMode() == MODE_STATE::HYPERARTS)
 			{
 				gameManager->SetShakeCamera( 1.0f, 30 );
@@ -475,6 +476,7 @@
 
 			if ( isHit )
 			{
+
 				//	エフェクト
 				particle->BlueFlame( hitPos, 1.0f );
 

@@ -25,6 +25,7 @@ namespace
 			SELECT_SE,
 			CANCEL_SE,
 			EVENT_SE,
+			HIT_SE,
 			END,
 		};
 	}
@@ -34,7 +35,9 @@ namespace
 		enum BGM_TYPE
 		{
 			TITLE_BGM,
+			MENU_BGM,
 			MAIN_BGM,
+			FAINLROUND_BGM,
 			RESULT_BGM,
 		};
 	}
