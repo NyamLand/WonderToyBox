@@ -10,6 +10,7 @@
 //	include
 #include	"EventManager.h"
 
+#define		SACK_COUNT_MAX		8 * SECOND
 #define		FALL_COUNT_MAX		3 * SECOND
 #define		DUBBLE_COUNT_MAX	10 * SECOND
 #define		WAVE_COUNT_MAX		6 * SECOND
