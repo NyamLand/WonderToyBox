@@ -12,6 +12,7 @@
 #include	"sceneMain.h"
 #include	"sceneLoad.h"
 #include	"Screen.h"
+#include	"Sound.h"
 
 #include	"sceneResult.h"
 
@@ -168,6 +169,7 @@
 		bonusPlayer = 0;
 		FOR( 0, PLAYER_MAX )	inputCheck[value] = false;
 
+		sound->PlayBGM(BGM::RESULT_BGM);
 		return	true;
 	}
 
@@ -188,6 +190,8 @@
 		SafeDelete( bgStage );
 		SafeDelete( check );
 		Random::Release();
+
+		sound->AllStop();
 	}
 
 //----------------------------------------------------------------------------
