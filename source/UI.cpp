@@ -319,7 +319,7 @@
 			if (mode == TITLE_MODE::MOVE_MAIN)
 			{
 				
-				Vector3 endPos(titleInfo.airPlane->OUT_END_POS_X, titleInfo.airPlane->OUT_END_POS_Y, 0.0f);
+				Vector3 endPos( static_cast<float>( titleInfo.airPlane->OUT_END_POS_X ), static_cast<float>( titleInfo.airPlane->OUT_END_POS_Y ), 0.0f );
 				titleInfo.airPlane->SetNext(titleInfo.airPlane->GetPos(), endPos, AirPlane::FLYING_OUT);
 				titleInfo.step++;
 			}
@@ -964,8 +964,8 @@
 		}
 
 		eventInfo.airPlane->Update();
-		eventInfo.texture.x = eventInfo.airPlane->GetPos().x;
-		eventInfo.texture.y = eventInfo.airPlane->GetPos().y;
+		eventInfo.texture.x = ( int )eventInfo.airPlane->GetPos().x;
+		eventInfo.texture.y = ( int )eventInfo.airPlane->GetPos().y;
 		eventInfo.texture.sy = eventInfo.mode * 128;
 	}
 
@@ -1094,8 +1094,8 @@
 			break;
 		}
 
-		eventInfo.texture.x = eventInfo.airPlane->GetPos().x;
-		eventInfo.texture.y = eventInfo.airPlane->GetPos().y;
+		eventInfo.texture.x = ( int )eventInfo.airPlane->GetPos().x;
+		eventInfo.texture.y = ( int )eventInfo.airPlane->GetPos().y;
 		eventInfo.texture.sy = eventInfo.mode * 128;
 	}
 

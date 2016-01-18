@@ -304,7 +304,7 @@
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			//	ゲーム終了時のデータを格納( ここでボーナスも設定しておく )
-			originInfo[i].num = gameManager->GetCoinTotal( i ) + gameManager->GetCoinNum( i );
+			originInfo[i].num = gameManager->GetCoinNum( i );
 			originInfo[i].rank = i;
 			originInfo[i].bonus = 0;
 
@@ -599,14 +599,13 @@
 	//	描画
 	void	sceneResult::Render( void ) 
 	{
+
 		switch ( mode )
 		{
+		case MOVE_MODE::SELECT:
 		case MOVE_MODE::RESULT:
 			ResultRender();
-			//	そのまま下へ
-
-		case MOVE_MODE::SELECT:
-			SelectRender();
+			if ( mode == MOVE_MODE::SELECT )	SelectRender();
 			break;
 
 		case MOVE_MODE::LAST_RESULT:
@@ -701,7 +700,7 @@
 
 		//	カメラ
 		view2D->Activate();
-		view2D->Clear(0x00FFFFFF);
+		view2D->Clear();
 
 		//	プレイヤー描画
 		FOR( 0, PLAYER_MAX )
@@ -1303,6 +1302,11 @@
 		if ( round != Round::ROUND_FINAL )
 		{
 			//	再戦用の設定
+			FOR( 0, PLAYER_MAX )
+			{
+				//	現ラウンドの獲得コイン枚数を設定
+				gameManager->SetTotalCoin( round, value, gameManager->GetCoinNum( value ) );
+			}
 			gameManager->RetryInitialize();
 			gameManager->SetRound( round + 1 );
 

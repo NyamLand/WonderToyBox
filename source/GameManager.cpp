@@ -56,7 +56,10 @@
 			charatype[i] = 0;		
 			coinNum[i] = 0;
 			startLife[i] = 5;
-			coinTotal[i] = 0;
+			FOR(0, PLAYER_MAX)
+			{
+				totalCoin[i][value] = 0;
+			}
 		}
 		playerNum = 0;
 		stageType = 1;
@@ -570,9 +573,9 @@
 	}
 
 	//	トータルコイン取得
-	int		GameManager::GetCoinTotal( int player )const
+	int		GameManager::GetTotalCoin( int round, int player )const
 	{
-		return	coinTotal[player];
+		return	totalCoin[round][player];
 	}
 
 	//	実体取得
@@ -666,7 +669,7 @@
 	}
 
 	//	トータルコイン設定
-	void	GameManager::SetCoinTotal( int player, int total )
+	void	GameManager::SetTotalCoin( int round, int player, int total )
 	{
-		coinTotal[player] = total;
+		totalCoin[round][player] = total;
 	}

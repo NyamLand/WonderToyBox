@@ -92,7 +92,7 @@ private:
 	bool	newsflag;    
 	int    timeStop;			//画面一時停止用
 	int	round;				//	ラウンド
-	int	coinTotal[4];	//	ラウンドごとのコイン合計値
+	int	totalCoin[3][4];	//	ラウンドごとのコイン合計値
 
 	//	ラストボーナス用カウント
 	int	maxCoinNum[4];
@@ -151,7 +151,7 @@ public:
 	int		GetMaxLife(void)const;
 	int		GetStartLife( int player )const;
 	int		GetRound( void )const;
-	int		GetCoinTotal( int player )const;
+	int		GetTotalCoin( int round, int player )const;
 	bool		GetItemFlg( void )const;
 	static	GameManager*	GetInstance( void );
 
@@ -177,7 +177,7 @@ public:
 	void	SetItemFlg(bool itemflg);
 	void	SetRound( int round );
 	void	SetStartLife( int player, int life );
-	void	SetCoinTotal( int player, int total );
+	void	SetTotalCoin( int round, int player, int total );
 };
 #define	gameManager ( GameManager::GetInstance() )
 
