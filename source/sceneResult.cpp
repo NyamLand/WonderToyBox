@@ -35,6 +35,7 @@
 			{
 				RESULT,
 				SELECT,
+				LAST_RESULT,
 			};
 		}
 
@@ -61,6 +62,15 @@
 			};
 		}
 
+		namespace LASTRESULT_MODE
+		{
+			enum
+			{
+				PRODUCTION,	//	演出
+				RESULT,			//	結果発表
+			};
+		}
+
 		namespace MENU
 		{
 			enum
@@ -82,8 +92,7 @@
 				MIN_TOTALCOIN,
 				HIT_ATTACK_NUM,
 			};
-		}
-	
+		}	
 	}
 
 //----------------------------------------------------------------------------
@@ -105,84 +114,21 @@
 	//	初期化
 	bool	sceneResult::Initialize( void )
 	{
+		//	スクリーン設定
+		screen->Initialize();
+		screen->SetScreenMode( SCREEN_MODE::FADE_IN , 1.5f );
+
 		//	乱数初期化
 		Random::Initialize();
 
 		//	カメラ設定
 		CameraInitialize();
 
-		//	画像読み込み
-		back = make_unique<iex2DObj>( LPSTR( "DATA/UI/back.png" ) );
-		menuHead.obj = new iex2DObj( "DATA/UI/menu/menu-head.png" );
-		originNumber = new iex2DObj( "DATA/UI/number.png" );
-		menuText = new iex2DObj( "DATA/UI/result/result-cho.png" );
-		lastBonusText = new iex2DObj( "DATA/UI/Result/LastBonusText.png" );
-		life = new iex2DObj( "DATA/UI/Nlife.png" );
-
-		//	モデル読み込み
-		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Knight/Knight_Dammy.IEM" ) );			//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/プリンセス/prinsess1.IEM" ) );					//	姫
-		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Thief/Thief.IEM" ) );				//	リス
-		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/ECCMAN/ECCMAN.IEM" ) );					//	トラ
-
-		//	ステージ設定
-		bgStage = new iexMesh( "DATA/BG/MenuStage/menustage.IMO" );	//	ステージ
-		bgStage->SetScale( 0.1f );
-		bgStage->SetAngle( D3DX_PI );
-		bgStage->Update();
-
-		//	オリジナルモデル情報初期化
-		org[CHARACTER_TYPE::SCAVENGER]->SetScale( 0.05f );	//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS]->SetScale( 0.04f );		//	姫
-		org[CHARACTER_TYPE::THIEF]->SetScale( 0.03f );				//	怪盗
-		org[CHARACTER_TYPE::PIRATE]->SetScale( 0.02f );				//	トラ
-
-		org[CHARACTER_TYPE::SCAVENGER]->SetAngle( D3DX_PI );	//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS]->SetAngle( D3DX_PI );		//	姫
-		org[CHARACTER_TYPE::THIEF]->SetAngle( D3DX_PI );				//	シーフ
-		org[CHARACTER_TYPE::PIRATE]->SetAngle( D3DX_PI );			//	トラ
-
-		org[CHARACTER_TYPE::SCAVENGER]->SetMotion( 2 );		//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS]->SetMotion( 1 );			//	姫
-		org[CHARACTER_TYPE::THIEF]->SetMotion( 0 );	 				//	シーフ
-		org[CHARACTER_TYPE::PIRATE]->SetMotion(0);					//	トラ
-
-		org[CHARACTER_TYPE::SCAVENGER]->Update();				//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS]->Update();					//	姫
-		org[CHARACTER_TYPE::THIEF]->Update();							//	シーフ
-		org[CHARACTER_TYPE::PIRATE]->Update();						//	トラ
+		//	読み込み
+		Load();
 
 		//	モデル初期化
 		ModelInitialize();
-
-		//	構造体初期化
-		int x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
-		int y = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
-		int w = static_cast<int>( iexSystem::ScreenWidth * 0.29f );
-		int h = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
-		ImageInitialize( menuHead, x, y, w, h, 0, 0, 512, 256 );
-		menuHead.angle = D3DXToRadian( 7.0f );
-		
-		//	数値構造体初期化
-		FOR( 0, PLAYER_MAX )
-		{
-			number[value].hundred = 0;
-			number[value].ten = 0;
-			number[value].one = 0;
-		}
-
-		//	変数初期化
-		lastBonus = 0;
-		step = 0;
-		mode = MOVE_MODE::RESULT;
-		changeScene = false;
-		bonusPlayer = 0;
-		FOR( 0, PLAYER_MAX )	inputCheck[value] = false;
-
-		//	次回ライフ設定
-		nextLife[0][0] = 2; nextLife[0][1] = 2; nextLife[0][2] = 3; nextLife[0][3] = 3;
-		nextLife[1][0] = 2; nextLife[1][1] = 3; nextLife[1][2] = 3; nextLife[1][3] = 4;
-		nextLife[2][0] = 2; nextLife[2][1] = 3; nextLife[2][2] = 4; nextLife[2][3] = 5;
 
 		//	結果用情報構造体初期化
 		ResultInfoInitialize();
@@ -200,117 +146,27 @@
 		RankImageInitialize();
 
 		//	ライフ画像構造体初期化
-		LifeImageInitialize();
+		LifeInfoInitialize();
+
+		//	ラストボーナス関連構造体初期化
+		LastBonusImageInitialize();
 
 		//	ルーレット情報初期化
-		{
-			rouletteInfo.step = 0;
-			rouletteInfo.timer = 0;
-		}
+		RouletteInfoInitialize();
 
-		//	メニュー情報初期化
-		{
-			menuInfo.select = MENU::MOVE_MENU;
-			menuInfo.screenH = 0;
-			menuInfo.alpha = 0.5f;
-			menuInfo.t = 0.0f;
-		}
+		//	メニュー関連初期化
+		MenuInfoInitialize();
 
-		//	メニュー画像構造体初期化
-		{
-			//	メニューの項目数まわす
-			for ( int i = 0; i < MENU::END; i++ )
-			{
-				x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
-				y = static_cast<int>( iexSystem::ScreenHeight * 0.35f );
-				w = static_cast<int>( iexSystem::ScreenWidth * 0.55f );
-				h = static_cast<int>( iexSystem::ScreenHeight * 0.3f );
-				ImageInitialize( menuImage[i], x, y + y * i, w, h, 0, 128 + 128 * i, 512, 128 );
-				menuImage[i].obj = menuText;
-				menuImage[i].renderflag = false;
-			}
-		}
+		//	レンダーターゲット関連初期化
+		RenderTargetTextureInitialize();
 
-		//	ランク表示用構造体初期化
-		{
-			viewRankInOrder.timer = 0;
-			viewRankInOrder.step = 3;
-		}
-
-		//	ラストボーナス関連初期化
-		{
-			FOR( 0, PLAYER_MAX )	lastBonusInfo.bonus[value];
-			lastBonusInfo.step = 0;
-			lastBonusInfo.t = 0.0f;
-			
-			//	テキスト初期化
-			int		x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
-			int		y = static_cast<int>( iexSystem::ScreenHeight * 0.4f );
-			int		w =static_cast<int>( iexSystem::ScreenWidth * 0.2f );
-			int		h = static_cast<int>( iexSystem::ScreenHeight * 0.1f );
-			ImageInitialize( lastBonusInfo.textImage, x, y, w, h, 0, lastBonus * 128, 512, 128 );
-			lastBonusInfo.textImage.renderflag = false;
-			lastBonusInfo.textImage.obj = lastBonusText;
-			
-			//	頂点設定
-			SetVertex( lastBonusInfo.v[0], static_cast<float>( iexSystem::ScreenWidth ), static_cast<float>( iexSystem::ScreenHeight * 0.2f ), 0.0f, 0.0f, 0.0f, 0x77333333 );
-			SetVertex( lastBonusInfo.v[1], static_cast<float>( iexSystem::ScreenWidth ), static_cast<float>( iexSystem::ScreenHeight * 0.2f ), 0.0f, 1.0f, 0.0f, 0x77333333 );
-			SetVertex( lastBonusInfo.v[2], static_cast<float>( iexSystem::ScreenWidth ), static_cast<float>( iexSystem::ScreenHeight * 0.6f ), 0.0f, 0.0f, 1.0f, 0x77333333 );
-			SetVertex( lastBonusInfo.v[3], static_cast<float>( iexSystem::ScreenWidth ), static_cast<float>( iexSystem::ScreenHeight * 0.6f ), 0.0f, 1.0f, 1.0f, 0x77333333 );
-
-			//	顔画像初期化
-			y = static_cast<int>( iexSystem::ScreenHeight * 0.6f );
-			w = 0;
-			h = 0;
-			ImageInitialize( faceImage, x, y, w, h, 0, 256 * bonusPlayer, 256, 256 );
-			faceImage.obj = new iex2DObj( "DATA/UI/chara_emotion.png" );
-			faceImage.renderflag = false;
-
-			//	虹円画像初期化
-			w = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
-			h = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
-			ImageInitialize( waveCircleImage, x, y, w, h, 0, 0, 512, 512 );
-			waveCircleImage.obj = new iex2DObj( "DATA/UI/Rainbow-circle.png" );
-			waveCircleImage.renderflag = false;
-			
-			//	該当なし画像初期化
-			w = static_cast<int>( iexSystem::ScreenWidth * 0.3f );
-			h = static_cast<int>( iexSystem::ScreenHeight * 0.3f );
-			ImageInitialize( notApplicable, x, y, w, h, 0, 0, 512, 256 );
-			notApplicable.obj = new iex2DObj( "DATA/UI/Result/resultText.png" );
-			notApplicable.renderflag = false;
-			notApplicable.alpha = 0.0f;
-			notApplicable.angle = -D3DX_PI * 0.035f;
-		
-			//	プレイヤー番号初期化
-			x = static_cast<int>( iexSystem::ScreenWidth * 0.45f );
-			y = static_cast<int>( iexSystem::ScreenHeight * 0.52f );
-			w = static_cast<int>( iexSystem::ScreenWidth * 0.05f );
-			h = static_cast<int>( iexSystem::ScreenHeight * 0.075f );
-			ImageInitialize( playerNumImage, x, y, w, h, 128 * ( bonusPlayer % 2 ), 128 * ( bonusPlayer / 2 ), 128, 128 );
-			playerNumImage.obj = new iex2DObj( "DATA/UI/cursor.png" );
-			playerNumImage.renderflag = false;	
-		}
-
-		//	テクスチャ位置設定
-		float	dist = 1000.0f;
-		Collision::GetFront( bgStage, viewInfo.pos + Vector3( 0.0f, 2.9f, 0.0f ), viewInfo.texPos );
-		viewInfo.texPos.z -= 0.01f;
-		Vector3	texSize = Vector3( 30.0f, 20.0f, 0.0f );
-		SetVertex( viewInfo.v[0], viewInfo.texPos.x - texSize.x * 0.5f, viewInfo.texPos.y + texSize.y * 0.5f, viewInfo.texPos.z, 0, 0, 0xFFFFFFFF );
-		SetVertex( viewInfo.v[1], viewInfo.texPos.x + texSize.x * 0.5f, viewInfo.texPos.y + texSize.y * 0.5f, viewInfo.texPos.z, 1, 0, 0xFFFFFFFF );
-		SetVertex( viewInfo.v[2], viewInfo.texPos.x - texSize.x * 0.5f, viewInfo.texPos.y - texSize.y * 0.5f, viewInfo.texPos.z, 0, 1, 0xFFFFFFFF );
-		SetVertex( viewInfo.v[3], viewInfo.texPos.x + texSize.x * 0.5f, viewInfo.texPos.y - texSize.y * 0.5f, viewInfo.texPos.z, 1, 1, 0xFFFFFFFF );
-
-		//	ライフ発表用構造体設定
-		{
-			lifeInfo.step = 0;
-			lifeInfo.culLife = 0;
-			lifeInfo.renderflag = false;
-			lifeInfo.isEnd = false;
-			lifeInfo.t = 0.0f;
-			lifeInfo.waitTimer = 0;
-		}
+		//	変数初期化
+		lastBonus = 0;
+		step = 0;
+		mode = MOVE_MODE::RESULT;
+		changeScene = false;
+		bonusPlayer = 0;
+		FOR( 0, PLAYER_MAX )	inputCheck[value] = false;
 
 		return	true;
 	}
@@ -330,12 +186,68 @@
 		SafeDelete( waveCircleImage.obj );
 		SafeDelete( notApplicable.obj );
 		SafeDelete( bgStage );
+		SafeDelete( check );
 		Random::Release();
 	}
 
 //----------------------------------------------------------------------------
 //	各種情報初期化
 //----------------------------------------------------------------------------
+
+	//	読み込み
+	void	sceneResult::Load( void )
+	{
+		//	画像読み込み
+		back = make_unique<iex2DObj>(LPSTR("DATA/UI/back.png"));
+		menuHead.obj = new iex2DObj("DATA/UI/menu/menu-head.png");
+		originNumber = new iex2DObj("DATA/UI/number.png");
+		menuText = new iex2DObj("DATA/UI/result/result-cho.png");
+		lastBonusText = new iex2DObj("DATA/UI/Result/LastBonusText.png");
+		life = new iex2DObj("DATA/UI/Nlife.png");
+		check = new iex2DObj( "DATA/UI/Result/check.png" );
+
+		//	構造体初期化
+		int x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
+		int y = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
+		int w = static_cast<int>( iexSystem::ScreenWidth * 0.29f );
+		int h = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
+		ImageInitialize( menuHead, x, y, w, h, 0, 0, 512, 256 );
+		menuHead.angle = D3DXToRadian( 7.0f );
+
+		//	モデル読み込み
+		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>(LPSTR("DATA/CHR/Knight/Knight_Dammy.IEM"));			//	掃除屋
+		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>(LPSTR("DATA/CHR/プリンセス/prinsess1.IEM"));					//	姫
+		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>(LPSTR("DATA/CHR/Thief/Thief.IEM"));				//	リス
+		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>(LPSTR("DATA/CHR/ECCMAN/ECCMAN.IEM"));					//	トラ
+
+		//	ステージ設定
+		bgStage = new iexMesh("DATA/BG/MenuStage/menustage.IMO");	//	ステージ
+		bgStage->SetScale(0.1f);
+		bgStage->SetAngle(D3DX_PI);
+		bgStage->Update();
+
+		//	オリジナルモデル情報初期化
+		org[CHARACTER_TYPE::SCAVENGER]->SetScale(0.05f);	//	掃除屋
+		org[CHARACTER_TYPE::PRINCESS]->SetScale(0.04f);		//	姫
+		org[CHARACTER_TYPE::THIEF]->SetScale(0.03f);				//	怪盗
+		org[CHARACTER_TYPE::PIRATE]->SetScale(0.02f);				//	トラ
+
+		org[CHARACTER_TYPE::SCAVENGER]->SetAngle(D3DX_PI);	//	掃除屋
+		org[CHARACTER_TYPE::PRINCESS]->SetAngle(D3DX_PI);		//	姫
+		org[CHARACTER_TYPE::THIEF]->SetAngle(D3DX_PI);				//	シーフ
+		org[CHARACTER_TYPE::PIRATE]->SetAngle(D3DX_PI);			//	トラ
+
+		org[CHARACTER_TYPE::SCAVENGER]->SetMotion(2);		//	掃除屋
+		org[CHARACTER_TYPE::PRINCESS]->SetMotion(1);			//	姫
+		org[CHARACTER_TYPE::THIEF]->SetMotion(0);	 				//	シーフ
+		org[CHARACTER_TYPE::PIRATE]->SetMotion(0);					//	トラ
+
+		org[CHARACTER_TYPE::SCAVENGER]->Update();				//	掃除屋
+		org[CHARACTER_TYPE::PRINCESS]->Update();					//	姫
+		org[CHARACTER_TYPE::THIEF]->Update();							//	シーフ
+		org[CHARACTER_TYPE::PIRATE]->Update();						//	トラ
+
+	}
 
 	//	カメラ初期化
 	void	sceneResult::CameraInitialize( void )
@@ -377,6 +289,14 @@
 	//	結果用構造体関連初期化
 	void	sceneResult::ResultInfoInitialize( void )
 	{
+		//	数値構造体初期化
+		FOR( 0, PLAYER_MAX )
+		{
+			number[value].hundred = 0;
+			number[value].ten = 0;
+			number[value].one = 0;
+		}
+
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			//	ゲーム終了時のデータを格納( ここでボーナスも設定しておく )
@@ -466,13 +386,24 @@
 			rankImage[i].obj = originNumber;
 			rankImage[i].renderflag = false;
 		}
+
+		//	ランク表示用構造体初期化
+		{
+			viewRankInOrder.timer = 0;
+			viewRankInOrder.step = 3;
+		}
 	}
 
 	//	ライフ画像構造体初期化
-	void	sceneResult::LifeImageInitialize( void )
+	void	sceneResult::LifeInfoInitialize( void )
 	{
 		int	culLife = 0;
 		int	x, y, w, h, sx, sy, sw, sh;
+
+		//	次回ライフ設定
+		nextLife[0][0] = 2; nextLife[0][1] = 2; nextLife[0][2] = 3; nextLife[0][3] = 3;
+		nextLife[1][0] = 2; nextLife[1][1] = 3; nextLife[1][2] = 3; nextLife[1][3] = 4;
+		nextLife[2][0] = 2; nextLife[2][1] = 3; nextLife[2][2] = 4; nextLife[2][3] = 5;
 
 		lifeInfo.maxW = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
 		lifeInfo.maxH = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
@@ -497,6 +428,132 @@
 
 			//	最初は非表示
 			lifeImage[value].renderflag = false;
+
+			//	ついでにOKの位置も設定
+			y = static_cast<int>( iexSystem::ScreenHeight * 0.7f );
+			checkImage[value].obj = check;
+			ImageInitialize( checkImage[value], x, y, w, h, 0, 0, 256, 128 );
+			checkImage[value].renderflag = false;
+		}
+
+		//	ライフ発表用構造体設定
+		{
+			lifeInfo.step = 0;
+			lifeInfo.culLife = 0;
+			lifeInfo.renderflag = false;
+			lifeInfo.isEnd = false;
+			lifeInfo.t = 0.0f;
+			lifeInfo.waitTimer = 0;
+		}
+	}
+
+	//	レンダーターゲット関連初期化
+	void	sceneResult::RenderTargetTextureInitialize( void )
+	{
+		//	テクスチャ位置設定
+		float	dist = 1000.0f;
+		Collision::GetFront( bgStage, viewInfo.pos + Vector3( 0.0f, 2.9f, 0.0f ), viewInfo.texPos );
+		viewInfo.texPos.z -= 0.01f;
+		Vector3	texSize = Vector3( 30.0f, 20.0f, 0.0f );
+		SetVertex( viewInfo.v[0], viewInfo.texPos.x - texSize.x * 0.5f, viewInfo.texPos.y + texSize.y * 0.5f, viewInfo.texPos.z, 0, 0, 0xFFFFFFFF );
+		SetVertex( viewInfo.v[1], viewInfo.texPos.x + texSize.x * 0.5f, viewInfo.texPos.y + texSize.y * 0.5f, viewInfo.texPos.z, 1, 0, 0xFFFFFFFF );
+		SetVertex( viewInfo.v[2], viewInfo.texPos.x - texSize.x * 0.5f, viewInfo.texPos.y - texSize.y * 0.5f, viewInfo.texPos.z, 0, 1, 0xFFFFFFFF );
+		SetVertex( viewInfo.v[3], viewInfo.texPos.x + texSize.x * 0.5f, viewInfo.texPos.y - texSize.y * 0.5f, viewInfo.texPos.z, 1, 1, 0xFFFFFFFF );
+
+	}
+
+	//	ラストボーナス関連構造体初期化
+	void	sceneResult::LastBonusImageInitialize( void )
+	{
+		//	ラストボーナス関連初期化
+		FOR( 0, PLAYER_MAX )	lastBonusInfo.bonus[value];
+		lastBonusInfo.step = 0;
+		lastBonusInfo.t = 0.0f;
+
+		//	テキスト初期化
+		int		x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
+		int		y = static_cast<int>( iexSystem::ScreenHeight * 0.4f );
+		int		w = static_cast<int>( iexSystem::ScreenWidth * 0.2f );
+		int		h = static_cast<int>( iexSystem::ScreenHeight * 0.1f );
+		ImageInitialize( lastBonusInfo.textImage, x, y, w, h, 0, lastBonus * 128, 512, 128 );
+		lastBonusInfo.textImage.renderflag = false;
+		lastBonusInfo.textImage.obj = lastBonusText;
+
+		//	頂点設定
+		SetVertex( lastBonusInfo.v[0], static_cast<float>( iexSystem::ScreenWidth ), static_cast<float>( iexSystem::ScreenHeight * 0.2f ), 0.0f, 0.0f, 0.0f, 0x77333333 );
+		SetVertex( lastBonusInfo.v[1], static_cast<float>( iexSystem::ScreenWidth ), static_cast<float>( iexSystem::ScreenHeight * 0.2f ), 0.0f, 1.0f, 0.0f, 0x77333333 );
+		SetVertex( lastBonusInfo.v[2], static_cast<float>( iexSystem::ScreenWidth ), static_cast<float>( iexSystem::ScreenHeight * 0.6f ), 0.0f, 0.0f, 1.0f, 0x77333333 );
+		SetVertex( lastBonusInfo.v[3], static_cast<float>( iexSystem::ScreenWidth ), static_cast<float>( iexSystem::ScreenHeight * 0.6f ), 0.0f, 1.0f, 1.0f, 0x77333333 );
+
+		//	顔画像初期化
+		y = static_cast<int>( iexSystem::ScreenHeight * 0.6f );
+		w = 0;
+		h = 0;
+		ImageInitialize( faceImage, x, y, w, h, 0, 256 * bonusPlayer, 256, 256 );
+		faceImage.obj = new iex2DObj( "DATA/UI/chara_emotion.png" );
+		faceImage.renderflag = false;
+
+		//	虹円画像初期化
+		w = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
+		h = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
+		ImageInitialize( waveCircleImage, x, y, w, h, 0, 0, 512, 512 );
+		waveCircleImage.obj = new iex2DObj( "DATA/UI/Rainbow-circle.png" );
+		waveCircleImage.renderflag = false;
+
+		//	該当なし画像初期化
+		w = static_cast<int>( iexSystem::ScreenWidth * 0.3f );
+		h = static_cast<int>( iexSystem::ScreenHeight * 0.3f );
+		ImageInitialize( notApplicable, x, y, w, h, 0, 0, 512, 256 );
+		notApplicable.obj = new iex2DObj( "DATA/UI/Result/resultText.png" );
+		notApplicable.renderflag = false;
+		notApplicable.alpha = 0.0f;
+		notApplicable.angle = -D3DX_PI * 0.035f;
+
+		//	プレイヤー番号初期化
+		x = static_cast<int>( iexSystem::ScreenWidth * 0.45f );
+		y = static_cast<int>( iexSystem::ScreenHeight * 0.52f );
+		w = static_cast<int>( iexSystem::ScreenWidth * 0.05f );
+		h = static_cast<int>( iexSystem::ScreenHeight * 0.075f );
+		ImageInitialize( playerNumImage, x, y, w, h, 128 * ( bonusPlayer % 2 ), 128 * ( bonusPlayer / 2 ), 128, 128 );
+		playerNumImage.obj = new iex2DObj( "DATA/UI/cursor.png" );
+		playerNumImage.renderflag = false;	
+	}
+
+	//	メニュー情報構造体
+	void	sceneResult::MenuInfoInitialize( void )
+	{
+		//	メニュー情報初期化
+		{
+			menuInfo.select = MENU::MOVE_MENU;
+			menuInfo.screenH = 0;
+			menuInfo.alpha = 0.5f;
+			menuInfo.t = 0.0f;
+		}
+
+		//	メニュー画像構造体初期化
+		{
+			//	メニューの項目数まわす
+			for ( int i = 0; i < MENU::END; i++ )
+			{
+				int x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
+				int y = static_cast<int>( iexSystem::ScreenHeight * 0.35f );
+				int w = static_cast<int>( iexSystem::ScreenWidth * 0.55f );
+				int h = static_cast<int>( iexSystem::ScreenHeight * 0.3f );
+				ImageInitialize( menuImage[i], x, y + y * i, w, h, 0, 128 + 128 * i, 512, 128 );
+				menuImage[i].obj = menuText;
+				menuImage[i].renderflag = false;
+			}
+		}
+	}
+
+	//	ルーレット構造体初期化
+	void	sceneResult::RouletteInfoInitialize( void )
+	{
+
+		//	ルーレット情報初期化
+		{
+			rouletteInfo.step = 0;
+			rouletteInfo.timer = 0;
 		}
 	}
 
@@ -507,6 +564,9 @@
 	//	更新
 	void	sceneResult::Update( void ) 
 	{
+		//	スクリーン更新
+		screen->Update();
+
 		//	各モデル更新
 		FOR( 0, PLAYER_MAX )
 		{
@@ -522,64 +582,32 @@
 		case MOVE_MODE::SELECT:
 			SelectUpdate();
 			break;
+
+		case MOVE_MODE::LAST_RESULT:
+			break;
 		}
 
 		//	シーン移動管理
 		MoveScene();
+
 	}
 
 	//	描画
 	void	sceneResult::Render( void ) 
 	{
-		//	レンダーターゲットを設定
-		infoScreen->RenderTarget( 0 );
-		
-		//	カメラ
-		view2D->Activate();
-		view2D->Clear( 0x00FFFFFF );
-
-		//	背景描画
-		//iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
-		//back->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 1280, 720 );
-		//iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
-
-		//	プレイヤー描画
-		FOR( 0, PLAYER_MAX )
+		switch ( mode )
 		{
-			//	プレイヤー描画
-			obj[value]->Render( shader3D, "toon" );
+		case MOVE_MODE::RESULT:
+			ResultRender();
+			//	そのまま下へ
+
+		case MOVE_MODE::SELECT:
+			SelectRender();
+			break;
+
+		case MOVE_MODE::LAST_RESULT:
+			break;
 		}
-
-		//	リザルトシール描画
-		RenderImage( menuHead, menuHead.sx, menuHead.sy, menuHead.sw, menuHead.sh, IMAGE_MODE::ADOPTPARAM );
-
-		//	数値描画
-		NumberImageRender();
-
-		//	順位描画
-		RankRender();
-
-		//	ライフ描画
-		LifeRender();
-
-		//	フレームバッファへ切り替え
-		iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );
-		mainView->Activate();
-		mainView->Clear();
-
-		//	ステージ描画
-		bgStage->Render();
-
-		//	リザルト用
-
-		//	ポリゴン描画
-		iexPolygon::Render3D( viewInfo.v, 2, infoScreen, RS_COPY );
-
-		//	とりあえず中央に描画
-		//infoScreen->Render( 100, 100, iexSystem::ScreenWidth * 0.7f, iexSystem::ScreenHeight * 0.7f, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight );
-
-		//	メニュー用スクリーン描画
-		iexPolygon::Rect( 0, 0, iexSystem::ScreenWidth, menuInfo.screenH, RS_COPY, GetColor( 0.0f, 0.0f, 0.0f, menuInfo.alpha ) );
 
 		//	メニュー項目描画
 		SelectRender();
@@ -588,12 +616,6 @@
 //----------------------------------------------------------------------------
 //	更新・描画
 //----------------------------------------------------------------------------
-
-	//	中間結果発表
-	void	sceneResult::IntermediateResultsUpdate( void )
-	{
-
-	}
 
 	//	リザルト時の更新
 	void	sceneResult::ResultUpdate( void )
@@ -649,13 +671,66 @@
 		}
 	}
 
+	//	ラスト発表更新
+	void	sceneResult::LastResultUpdate( void )
+	{
+
+	}
+
 	//	セレクト画面描画
 	void	sceneResult::SelectRender( void )
 	{
+		//	メニュー用スクリーン描画
+		iexPolygon::Rect( 0, 0, iexSystem::ScreenWidth, menuInfo.screenH, RS_COPY, GetColor( 0.0f, 0.0f, 0.0f, menuInfo.alpha ) );
+
 		for ( int i = 0; i < MENU::END; i++ )
 		{
 			RenderImage( menuImage[i], menuImage[i].sx, menuImage[i].sy, menuImage[i].sw, menuImage[i].sh, IMAGE_MODE::NORMAL );
 		}
+	}
+
+	//	リザルト描画
+	void	sceneResult::ResultRender( void )
+	{
+		//	レンダーターゲットを設定
+		infoScreen->RenderTarget( 0 );
+
+		//	カメラ
+		view2D->Activate();
+		view2D->Clear(0x00FFFFFF);
+
+		//	プレイヤー描画
+		FOR( 0, PLAYER_MAX )
+		{
+			//	プレイヤー描画
+			obj[value]->Render( shader3D, "toon" );
+		}
+
+		//	リザルトシール描画
+		RenderImage(menuHead, menuHead.sx, menuHead.sy, menuHead.sw, menuHead.sh, IMAGE_MODE::ADOPTPARAM);
+
+		//	数値描画
+		NumberImageRender();
+
+		//	順位描画
+		RankRender();
+
+		//	ライフ描画
+		LifeRender();
+
+		//	入力チェック描画
+		InputCheckRender();
+
+		//	フレームバッファへ切り替え
+		iexSystem::GetDevice()->SetRenderTarget(0, backBuffer);
+		mainView->Activate();
+		mainView->Clear();
+
+		//	ステージ描画
+		bgStage->Render();
+
+		//	ポリゴン描画
+		iexPolygon::Render3D(viewInfo.v, 2, infoScreen, shader3D, "alpha");
 	}
 
 	//	数値画像構造体描画
@@ -744,6 +819,15 @@
 			int		sh = lifeImage[i].sh;
 			RenderImage( lifeImage[i], sx, sy, sw, sh, IMAGE_MODE::NORMAL );
 			RenderImage( lifeImage[i], sx, sy, sw, sh, IMAGE_MODE::WAVE );
+		}
+	}
+
+	//	入力チェック描画
+	void	sceneResult::InputCheckRender( void )
+	{
+		FOR( 0, PLAYER_MAX )
+		{
+			RenderImage( checkImage[value], checkImage[value].sx, checkImage[value].sy, checkImage[value].sw, checkImage[value].sh, IMAGE_MODE::ADOPTPARAM );
 		}
 	}
 
@@ -1113,12 +1197,10 @@
 	bool	sceneResult::Roulette( void )
 	{
 		//	４人分確定してたらtrueをかえす
-		if ( rouletteInfo.step > PLAYER_MAX )
-		{
-			return	true;
-		}
+		if ( rouletteInfo.step > PLAYER_MAX )		return	true;
 
-		rouletteInfo.timer++;
+		//	画面切り替え終了後タイマー加算
+		if ( screen->GetScreenState() )	rouletteInfo.timer++;
 
 		for ( int i = rouletteInfo.step; i < PLAYER_MAX; i++ )
 		{
@@ -1770,7 +1852,11 @@
 			int key_a = input[value]->Get( KEY_A );
 
 			//	入力受付
-			if ( key_space == 3 || key_a == 3 )	inputCheck[value] = true;
+			if ( key_space == 3 || key_a == 3 )
+			{
+				checkImage[value].renderflag = true;
+				inputCheck[value] = true;
+			}
 		}
 
 		//	全員の入力が終わっていたら

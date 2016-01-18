@@ -132,6 +132,7 @@ private:
 	Surface*							backBuffer;
 	unique_ptr<Camera>		view2D;
 	iex2DObj*						infoScreen;
+	iex2DObj*						check;
 	unique_ptr<iex2DObj>	back;
 	unique_ptr<iex3DObj>	org[4];
 	iexMesh*							bgStage;
@@ -149,6 +150,7 @@ private:
 	ImageObj							waveCircleImage;
 	ImageObj							notApplicable;		//	該当なし画像
 	ImageObj							lifeImage[4];		//	ライフ画像
+	ImageObj							checkImage[4];
 	LIFE_INFO						lifeInfo;
 
 	//	変数
@@ -173,7 +175,12 @@ public:
 	void	ResultInfoInitialize( void );
 	void	NumberImageInfoInitialize( void );
 	void	RankImageInitialize( void );
-	void	LifeImageInitialize( void );
+	void	LifeInfoInitialize( void );
+	void	RenderTargetTextureInitialize( void );
+	void	LastBonusImageInitialize( void );
+	void	MenuInfoInitialize( void );
+	void RouletteInfoInitialize( void );
+	void	Load( void );
 
 	//	全体更新・描画
 	void	Update( void );
@@ -182,13 +189,15 @@ public:
 	//	各モード更新
 	void	ResultUpdate( void );
 	void	SelectUpdate( void );
-	void	IntermediateResultsUpdate( void );	//	中間結果
+	void	LastResultUpdate( void );
 
 	//	各画像描画
 	void	SelectRender( void );
 	void	NumberImageRender( void );
 	void	RankRender( void );
 	void	LifeRender( void );
+	void	InputCheckRender( void );
+	void	ResultRender( void );
 	
 	//	動作関数
 	void	SetLastBonus( void );
