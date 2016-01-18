@@ -113,6 +113,8 @@ namespace
 		MenuInitialize();
 		CreditInitialize();
 
+		//BGMİ’èÄ¶
+		sound->PlayBGM(BGM::TITLE_BGM);
 		return	true;
 	}
 
@@ -160,6 +162,8 @@ namespace
 		titleInfo.titleImage.renderflag = true;
 		titleInfo.step = 0;
 		titleInfo.nextMode = 0;
+
+
 	}
 
 	//	ƒƒjƒ…[‰Šú‰»

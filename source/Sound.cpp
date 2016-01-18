@@ -18,9 +18,11 @@
 		{
 			const		LPSTR	bgmfile[] =
 			{
-				"DATA/SOUND/BGM/MenuBGM.ogg",	//	Title
+				"DATA/SOUND/BGM/TitleBGM.ogg",	//	Title
+				"DATA/SOUND/BGM/MenuBGM.ogg",	//	Menu
 				"DATA/SOUND/BGM/FightBGM.ogg",	//	Main
-				"",	//	Result
+				"DATA/SOUND/BGM/FinalRoundBGM.ogg",	//	FAINALROUND
+				"DATA/SOUND/BGM/ResultBGM.ogg",	//	Result
 			};
 		}
 	}
@@ -52,6 +54,7 @@
 		IEX_SetWAV( SE::DECIDE_SE, "DATA/Sound/SE/decide.wav" );
 		IEX_SetWAV(SE::EVENT_SE, "DATA/Sound/SE/event.wav");
 		IEX_SetWAV( SE::NEWS_SE, "DATA/Sound/SE/decision3.wav" );
+		IEX_SetWAV(SE::HIT_SE, "DATA/Sound/SE/.wav");
 		isPlay = false;
 	}
 

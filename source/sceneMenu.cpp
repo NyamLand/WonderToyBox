@@ -178,7 +178,7 @@
 		SetMode( MENU_MODE::INIT );
 
 		//BGMİ’èÄ¶
-		sound->PlayBGM(BGM::TITLE_BGM);
+		sound->PlayBGM(BGM::MENU_BGM);
 
 
 
@@ -446,8 +446,9 @@
 		{
 			//	ƒ‚ƒfƒ‹“o˜^A‰Šú‰»
 			obj[value] = org[value]->Clone();
-			obj[value]->SetPos( -7.0f + ( 14.0f / 3.0f * value ), 0.0f, 0.0f );
+			obj[value]->SetPos( 5.0f , 10.0f, 0.0f/*+ ( 14.0f / 3.0f * value )*/ );
 			obj[value]->Update();
+
 
 			//	‘I‘ğî•ñ‰Šú‰»
 			characterSelectInfo.character[value] = value;

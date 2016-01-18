@@ -10,7 +10,7 @@
 #include	"sceneTitle.h"
 #include	"sceneMenu.h"
 #include	"sceneMain.h"
-
+#include	"Sound.h"
 #include	"sceneResult.h"
 
 //********************************************************************************
@@ -302,6 +302,7 @@
 			lifeInfo.waitTimer = 0;
 		}
 
+		sound->PlayBGM(BGM::RESULT_BGM);
 		return	true;
 	}
 
@@ -321,6 +322,8 @@
 		SafeDelete( notApplicable.obj );
 		SafeDelete( bgStage );
 		Random::Release();
+
+		sound->AllStop();
 	}
 
 //----------------------------------------------------------------------------
