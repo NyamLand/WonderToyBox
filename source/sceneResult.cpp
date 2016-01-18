@@ -602,8 +602,8 @@
 
 		switch ( mode )
 		{
-		case MOVE_MODE::SELECT:
 		case MOVE_MODE::RESULT:
+		case MOVE_MODE::SELECT:
 			ResultRender();
 			if ( mode == MOVE_MODE::SELECT )	SelectRender();
 			break;
