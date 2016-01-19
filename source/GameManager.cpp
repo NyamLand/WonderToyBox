@@ -160,13 +160,6 @@
 		if ( timeStop > 0 ) timeStop--;
 		else timer--;
 
-		//	残り時間３０秒でどんけつ演出へ
-		//if ( timer == 30 * SECOND )
-		//{
-		//	DecideWorst();
-		//	mode = GAME_MODE::DONKETSU_DIRECTION;
-		//}
-
 		//-------------------------------------------------------
 		//	時間切れ
 		//-------------------------------------------------------
@@ -176,12 +169,6 @@
 			mode = GAME_MODE::TIMEUP;
 			for ( int i = 0; i < PLAYER_MAX; i++ )	characterManager->SetMode( i, MODE_STATE::WAIT );
 		}
-
-		//-------------------------------------------------------
-		//	どんけつブースト設定
-		//-------------------------------------------------------
-		//if ( timer <= 30 * SECOND )		donketsuBoostState = true;
-		//else	donketsuBoostState = false;
 
 		//-------------------------------------------------------
 		//	クライマックスへ
@@ -266,9 +253,9 @@
 			{
 				if (itemflg)
 				{
-					if (Random::PercentageRandom(0.7f))
+					if ( Random::PercentageRandom( 0.7f ) )
 					{
-						itemManager->Append(Vector3(Random::GetFloat(-20.0f, 20.0f), 50.0f, Random::GetFloat(-20.0f, 15.0f)), ITEM_TYPE::ATTACK_UP);
+						itemManager->Append( Vector3( Random::GetFloat( -20.0f, 20.0f ), 50.0f, Random::GetFloat( -20.0f, 15.0f ) ), Random::GetInt( 0, ITEM_TYPE::MAX - 1 ) );
 					}
 				}
 			}

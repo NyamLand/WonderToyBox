@@ -23,9 +23,9 @@
 			org[value] = nullptr;
 		}
 		org[ITEM_TYPE::ATTACK_UP] = new iexMesh( "DATA/Object/Item/Item.IMO" );
+		org[ITEM_TYPE::UNRIVALED] = new iexMesh( "DATA/Object/Item/Item02.IMO" );
 		org[ITEM_TYPE::MAGNET] = new iexMesh( "DATA/Object/Item/Item04.IMO" );
 		org[ITEM_TYPE::SPEED_UP] = new iexMesh( "DATA/Object/Item/Item03.IMO" );
-		org[ITEM_TYPE::UNRIVALED] = new iexMesh();
 		itemList.clear();
 
 		return	true;

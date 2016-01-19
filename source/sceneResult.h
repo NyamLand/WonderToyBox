@@ -108,18 +108,42 @@ private:
 		int		maxH;
 	};
 
+	//	カーテン位置保存構造体
+	struct CurtainPosInfo
+	{
+		int			leftOutPosX;
+		int			rightOutPosX;
+		int			centerPosX;
+		int			upPosY;
+		int			underPosY;
+		int			leftPos;
+		int			rightPos;
+	};
+
+	//	カーテン用構造体
+	struct CurtainInfo
+	{
+		iex2DObj*	obj;
+		TLVERTEX	tlv[4];
+		float			t;
+	};
+
 private:
 	SORT_INFO						sortInfo[4];
 	ORIGINAL_INFO				originInfo[4];
 	NUMBER_INFO					number[4];
 	NUMBER_INFO					bonusNumber[4];
+	NUMBER_INFO					roundCoinNumber[3][4];
 	NUMBERIMAGE_INFO		numberImageInfo[4];
 	NUMBERIMAGE_INFO		bonusNumberImageInfo[4];
+	NUMBERIMAGE_INFO		roudCoinNumberImageInfo[3][4];
 	ROULETTE_INFO				rouletteInfo;
 	MENU_INFO						menuInfo;
 	VIEW_RANK_INORDER	viewRankInOrder;
 	LASTBONUS_INFO			lastBonusInfo;
 	VIEW_INFO						viewInfo;
+	CurtainPosInfo					curtainPosInfo;
+	CurtainInfo						curtainInfoR, curtainInfoL;
 
 	//	ラストボーナス計算用
 	SORT_INFO						maxCoinNum[4];
@@ -127,11 +151,12 @@ private:
 	SORT_INFO						coin77[4];
 	SORT_INFO						minCoinNum[4];
 	SORT_INFO						hitAttackNum[4];
-	
+
 	//	モデル・画像
 	Surface*							backBuffer;
-	unique_ptr<Camera>		view2D;
+	unique_ptr<Camera>		view2D, viewTest;
 	iex2DObj*						infoScreen;
+	iex2DObj*						lastResultTest;
 	iex2DObj*						check;
 	unique_ptr<iex2DObj>	back;
 	unique_ptr<iex3DObj>	org[4];
@@ -141,6 +166,8 @@ private:
 	iex2DObj*						menuText;
 	iex2DObj*						lastBonusText;
 	iex2DObj*						life;
+	iex2DObj*						orgRound;
+	iex2DObj*						orgCurtain;
 	ImageObj							menuHead;
 	ImageObj							originCoinImage[4];
 	ImageObj							rankImage[4];
@@ -151,6 +178,7 @@ private:
 	ImageObj							notApplicable;		//	該当なし画像
 	ImageObj							lifeImage[4];		//	ライフ画像
 	ImageObj							checkImage[4];
+	ImageObj							roundImage[3];	
 	LIFE_INFO						lifeInfo;
 
 	//	変数
@@ -159,8 +187,10 @@ private:
 	int		lastBonus;
 	int		bonusPlayer;
 	int		nextLife[3][4];	//	４人分３種類
-	bool		inputCheck[4];
+	float		curtainBrightness;		//	カーテン明るさ
+	bool		inputCheck[4];		
 	bool		changeScene;
+	bool		curtainDirection;
 
 public:
 	//	初期化・解放
@@ -180,6 +210,7 @@ public:
 	void	LastBonusImageInitialize( void );
 	void	MenuInfoInitialize( void );
 	void RouletteInfoInitialize( void );
+	void	CurtainInfoInitialize( void );
 	void	Load( void );
 
 	//	全体更新・描画
@@ -190,6 +221,7 @@ public:
 	void	ResultUpdate( void );
 	void	SelectUpdate( void );
 	void	LastResultUpdate( void );
+	void	CurtainUpdate( void );
 
 	//	各画像描画
 	void	SelectRender( void );
@@ -198,6 +230,8 @@ public:
 	void	LifeRender( void );
 	void	InputCheckRender( void );
 	void	ResultRender( void );
+	void	LastResultRender( void );
+	void	CurtainRender( void );
 	
 	//	動作関数
 	void	SetLastBonus( void );

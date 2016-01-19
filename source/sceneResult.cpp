@@ -176,12 +176,15 @@
 	//	解放
 	void	sceneResult::Release( void )
 	{
+		SafeDelete( orgCurtain );
+		SafeDelete( orgRound );
 		SafeDelete( life );
 		SafeDelete( menuHead.obj );
 		SafeDelete( originNumber );
 		SafeDelete( menuText );
 		SafeDelete( mainView );
 		SafeDelete( infoScreen );
+		SafeDelete( lastResultTest );
 		SafeDelete( lastBonusText );
 		SafeDelete( faceImage.obj );
 		SafeDelete( playerNumImage.obj );
@@ -202,13 +205,15 @@
 	void	sceneResult::Load( void )
 	{
 		//	画像読み込み
-		back = make_unique<iex2DObj>(LPSTR("DATA/UI/back.png"));
+		back = make_unique<iex2DObj>( LPSTR("DATA/UI/back.png") );
 		menuHead.obj = new iex2DObj("DATA/UI/menu/menu-head.png");
 		originNumber = new iex2DObj("DATA/UI/number.png");
 		menuText = new iex2DObj("DATA/UI/result/result-cho.png");
 		lastBonusText = new iex2DObj("DATA/UI/Result/LastBonusText.png");
 		life = new iex2DObj("DATA/UI/Nlife.png");
 		check = new iex2DObj( "DATA/UI/Result/check.png" );
+		orgRound = new iex2DObj( "DATA/UI/roundText.png" );
+		orgCurtain = new iex2DObj( "DATA/UI/curtain1.png" );
 
 		//	構造体初期化
 		int x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
@@ -261,6 +266,7 @@
 
 		//	レンダーターゲットスクリーン
 		infoScreen = new iex2DObj( iexSystem::ScreenWidth, iexSystem::ScreenHeight, IEX2D_RENDERTARGET );
+		lastResultTest = new iex2DObj( iexSystem::ScreenWidth, iexSystem::ScreenHeight, IEX2D_RENDERTARGET );
 
 		//	情報表示用カメラ
 		viewInfo.pos = Vector3( 0.0f, 5.2f, -70.0f );
@@ -269,6 +275,12 @@
 		view2D->SetProjection( D3DXToRadian( 10.0f ), 1.0f, 1000.0f );
 		view2D->Set( viewInfo.pos, viewInfo.target );
 		view2D->Activate();
+
+		//	テスト用カメラ
+		viewTest = make_unique<Camera>();
+		viewTest->SetProjection( D3DXToRadian( 10.0f ), 1.0f, 1000.0f );
+		viewTest->Set( viewInfo.pos, viewInfo.target );
+		viewTest->Activate();
 
 		//	メインカメラ
 		viewInfo.pos = Vector3( 0.0f, 15.0f, -10.0f );
@@ -561,6 +573,38 @@
 		}
 	}
 
+	//	カーテン情報初期化
+	void	sceneResult::CurtainInfoInitialize( void )
+	{
+		//	ポイント設定
+		curtainPosInfo.centerPosX = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
+		curtainPosInfo.leftOutPosX = static_cast<int>( iexSystem::ScreenWidth * -0.5f );
+		curtainPosInfo.rightOutPosX = static_cast<int>( iexSystem::ScreenWidth * 1.5f );
+		curtainPosInfo.underPosY = static_cast<int>( iexSystem::ScreenHeight );
+		curtainPosInfo.rightPos = static_cast<int>( iexSystem::ScreenWidth );
+		curtainPosInfo.upPosY = 0;
+		curtainPosInfo.leftPos = 0;
+
+		//	カーテン情報初期化
+		curtainInfoL.obj = orgCurtain;
+		curtainInfoR.obj = orgCurtain;
+		curtainInfoL.t = 1.0f;
+		curtainInfoR.t = 1.0f;
+		curtainDirection = true;
+		curtainBrightness = 1.0f;	
+
+		//	頂点設定
+		SetVertex( curtainInfoL.tlv[0], ( float )curtainPosInfo.leftPos, ( float )curtainPosInfo.upPosY, 0, 0, 0, 0xFFFFFFFF );
+		SetVertex( curtainInfoL.tlv[1], ( float )curtainPosInfo.centerPosX, ( float )curtainPosInfo.upPosY, 0, 1, 0, 0xFFFFFFFF );
+		SetVertex( curtainInfoL.tlv[2], ( float )curtainPosInfo.leftPos, ( float )curtainPosInfo.underPosY, 0, 0, 1, 0xFFFFFFFF );
+		SetVertex( curtainInfoL.tlv[3], ( float )curtainPosInfo.centerPosX, ( float )curtainPosInfo.underPosY, 0, 1, 1, 0xFFFFFFFF );
+														
+		SetVertex( curtainInfoR.tlv[0], ( float )curtainPosInfo.centerPosX, ( float )curtainPosInfo.upPosY, 0, 1, 0, 0xFFFFFFFF );
+		SetVertex( curtainInfoR.tlv[1], ( float )curtainPosInfo.rightPos, ( float )curtainPosInfo.upPosY, 0, 0, 0, 0xFFFFFFFF );
+		SetVertex( curtainInfoR.tlv[2], ( float )curtainPosInfo.centerPosX, ( float )curtainPosInfo.underPosY, 0, 1, 1, 0xFFFFFFFF );
+		SetVertex( curtainInfoR.tlv[3], ( float )curtainPosInfo.rightPos, ( float )curtainPosInfo.underPosY, 0, 0, 1, 0xFFFFFFFF );
+	}
+
 //----------------------------------------------------------------------------
 //	全体更新・全体描画
 //----------------------------------------------------------------------------
@@ -599,7 +643,6 @@
 	//	描画
 	void	sceneResult::Render( void ) 
 	{
-
 		switch ( mode )
 		{
 		case MOVE_MODE::RESULT:
@@ -609,8 +652,12 @@
 			break;
 
 		case MOVE_MODE::LAST_RESULT:
+			LastResultRender();
 			break;
 		}
+
+		//	カーテン描画
+		CurtainRender();
 
 		//	メニュー項目描画
 		SelectRender();
@@ -678,6 +725,39 @@
 	void	sceneResult::LastResultUpdate( void )
 	{
 
+	}
+
+	//	カーテン更新
+	void	sceneResult::CurtainUpdate( void )
+	{
+		//	カーテン移動方向を設定
+		float	curtainSpeed = 0.01f;
+		if ( curtainDirection )	curtainSpeed = 0.01f;
+		else								curtainSpeed = -0.01f;
+			
+		//	パラメータ更新
+		curtainInfoL.t += 0.01f;
+		curtainInfoR.t += 0.01f;
+
+		//	上限下限設定
+		if ( curtainInfoL.t >= 1.0f )	curtainInfoL.t = 1.0f;
+		else if ( curtainInfoL.t <= 0.0f )	curtainInfoL.t = 0.0f;
+		if ( curtainInfoR.t >= 1.0f )	curtainInfoR.t = 1.0f;
+		else if ( curtainInfoR.t <= 0.0f )	curtainInfoR.t = 0.0f;
+
+		//	各頂点移動
+
+		//	左カーテン
+		Lerp( curtainInfoL.tlv[0].sx, curtainPosInfo.leftPos, curtainPosInfo.leftOutPosX, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainInfoL.t ) );	//	左上
+		Lerp( curtainInfoL.tlv[1].sx, curtainPosInfo.centerPosX, curtainPosInfo.leftPos, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainInfoL.t ) );		//	右上
+		Lerp( curtainInfoL.tlv[2].sx, curtainPosInfo.leftPos, curtainPosInfo.leftOutPosX, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainInfoL.t ) );	//	左下
+		Lerp( curtainInfoL.tlv[3].sx, curtainPosInfo.centerPosX, curtainPosInfo.leftPos, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainInfoL.t ) );		//	右下
+		
+		//	右カーテン
+		Lerp( curtainInfoR.tlv[0].sx, curtainPosInfo.centerPosX, curtainPosInfo.rightPos, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainInfoR.t ) );		//	左上
+		Lerp( curtainInfoR.tlv[1].sx, curtainPosInfo.rightPos, curtainPosInfo.rightOutPosX, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainInfoR.t ) );	//	右上
+		Lerp( curtainInfoR.tlv[2].sx, curtainPosInfo.centerPosX, curtainPosInfo.rightPos, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainInfoR.t ) );		//	左下
+		Lerp( curtainInfoR.tlv[3].sx, curtainPosInfo.rightPos, curtainPosInfo.rightOutPosX, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainInfoR.t ) );	//	右下
 	}
 
 	//	セレクト画面描画
@@ -832,6 +912,32 @@
 		{
 			RenderImage( checkImage[value], checkImage[value].sx, checkImage[value].sy, checkImage[value].sw, checkImage[value].sh, IMAGE_MODE::ADOPTPARAM );
 		}
+	}
+
+	//	ラスト発表描画
+	void sceneResult::LastResultRender( void )
+	{
+		//-------------UI関連---------------//
+		//	別のテクスチャに書き出し
+		lastResultTest->RenderTarget();
+		viewTest->Activate();
+		viewTest->Clear();
+
+		//	背景描画
+		
+		//	ラウンド描画
+
+		//	数値描画
+
+	}
+
+	//	カーテン描画
+	void	sceneResult::CurtainRender( void )
+	{
+		LPSTR technique = "copy";
+
+		iexPolygon::Render2D( curtainInfoL.tlv, 2, curtainInfoL.obj, shader2D, technique );
+		iexPolygon::Render2D( curtainInfoR.tlv, 2, curtainInfoR.obj, shader2D,technique );
 	}
 
 //----------------------------------------------------------------------------
