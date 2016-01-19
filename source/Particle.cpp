@@ -422,6 +422,36 @@ namespace
 		}
 	}
 
+	//	引き寄せエフェクト
+	void	Particle::Magnet(const Vector3& pos, const float& length, const float& scale, const int& speed)
+	{
+		Vector3	Pos, Move, Power;
+		for (int j = 0; j < 1; j++)
+		{
+			Vector3 ran_pos, direction;
+			float	t_len;
+
+			direction.x = Random::GetFloat(-1.0f, 1.0f);
+			direction.y = Random::GetFloat(0.0f, 1.0f);
+			direction.z = Random::GetFloat(-1.0f, 1.0f);
+
+			direction.Normalize();
+			
+			Pos = pos + direction * length;
+
+			Move = -direction * length / (speed * length);
+
+			Power = Vector3(0.0f, 0.0f, 0.0f);
+			//Power = Move * (Random::GetFloat(0.0001f, 0.001f));
+
+			//	
+
+			//	画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
+			pt->Set(SUCK, 0, 1.0f, speed * (int)length, 0.0f, speed / 3, 1.0f, &Pos, &Move, &Power, 1.0f, 1.0f, 1.0f, scale, RS_COPY);
+
+		}
+	}
+
 //------------------------------------------------------------------------
 //	情報取得
 //------------------------------------------------------------------------

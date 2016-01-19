@@ -393,18 +393,15 @@
 			m_Effect->Render();
 
 		}
-		//-------------------
-		//	スクリーンへ描画
-		//-------------------
-		//UI
-		ui->Render(gameManager->GetMode());
-
 
 		//	フレームバッファへ切り替え
 		iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );
 
+		//	スクリーン描画
 		m_screen->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight );
 		playerWipe->Render();
+		//UI
+		ui->Render(gameManager->GetMode());
 	}
 
 	//	HDR描画

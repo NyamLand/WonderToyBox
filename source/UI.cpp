@@ -223,7 +223,7 @@
 		PAR_POS = Vector3(100.0f, 100.0f, 100.0f);
 		target_par = make_unique<iex2DObj>(iexSystem::ScreenWidth, iexSystem::ScreenHeight, IEX2D_RENDERTARGET);
 		particle_camera = make_unique<Camera>();
-		particle_camera->SetPos(Vector3(0.0f, 10.0f, -5.0f) + PAR_POS);
+		particle_camera->SetPos(Vector3(0.0f, 10.0f, -10.0f) + PAR_POS);
 		
 
 
@@ -476,11 +476,11 @@
 		h = static_cast<int>( iexSystem::ScreenHeight * 0.04f );
 		ImageInitialize(faceImage, 0, frame.y - (frame.h / 2), w, h, 256, 256, 256, 256);
 
-		for (int i = 0; i < NUM_BAR; i++)
+		FOR(0,NUM_BAR)
 		{
-			bar_x[i] = frame.x;
-			bar_sx[i] = backgauge.sx;
-			state_x[i] = 0;
+			bar_x[value] = frame.x;
+			bar_sx[value] = backgauge.sx;
+			state_x[value] = 0;
 		}
 	}
 
@@ -536,9 +536,9 @@
 		int h = static_cast<int>( iexSystem::ScreenHeight * 0.09f );
 		ImageInitialize( timer, x, y, w, h, 64, 0, 64, 64 );
 		minute = 0;
-		for ( int i = 0; i < 2; i++ )
+		FOR(0,2)
 		{
-			second[i] = 0;
+			second[value] = 0;
 		}
 	}
 
@@ -664,13 +664,13 @@
 	void	UI::PlayerNumberInitialize( void )
 	{
 		int rank = 0;
-		for ( int i = 0; i < PLAYER_MAX; i++ )
+		FOR(0,PLAYER_MAX)
 		{
-			rank = characterManager->GetRank( i );
-			pNumImage[i].obj = playerNumber;
+			rank = characterManager->GetRank( value );
+			pNumImage[value].obj = playerNumber;
 			int w = static_cast<int>( iexSystem::ScreenWidth * 0.04f );
 			int h = static_cast<int>( iexSystem::ScreenHeight * 0.07f );
-			ImageInitialize( pNumImage[i], 0, 0, w, h, rank * 128, 128, 128, 64 );
+			ImageInitialize( pNumImage[value], 0, 0, w, h, rank * 128, 128, 128, 64 );
 		}
 	}
 	
@@ -1018,19 +1018,19 @@
 		Vector3	up = Vector3( 0.0f, 0.0f, 0.0f );
 		Vector3	out = Vector3( 0.0f, 0.0f, 0.0f );
 
-		for ( int i = 0; i < PLAYER_MAX; i++ )
+		FOR(0,PLAYER_MAX)
 		{
 			//	âÊëúÇï\é¶Ç∑ÇÈèÍèäÇê›íË
-			up = characterManager->GetUp( i );
-			p_pos = characterManager->GetPos( i );
+			up = characterManager->GetUp( value );
+			p_pos = characterManager->GetPos( value );
 			imagePos = p_pos + up * 7.0f;
 
 			//	ÉNÉâÉCÉAÉìÉgç¿ïWÇ…ïœä∑
 			WorldToClient( imagePos, out, matView * matProjection );
 
 			//	ç\ë¢ëÃÇ…èÓïÒê›íË
-			pNumImage[i].x = static_cast<int>( out.x );
-			pNumImage[i].y = static_cast<int>( out.y );
+			pNumImage[value].x = static_cast<int>( out.x );
+			pNumImage[value].y = static_cast<int>( out.y );
 
 			int rank = 0;
 			for (int i = 0; i < PLAYER_MAX; i++)
@@ -1112,16 +1112,16 @@
 		//äDêFÇÃÉoÅ[
 		RenderImage(backgauge, backgauge.sx, backgauge.sy, backgauge.sw, backgauge.sh, IMAGE_MODE::NORMAL);
 
-		for (int i = 0; i < PLAYER_MAX; i++)
+		FOR(0, PLAYER_MAX)
 		{
 			//êFÇÃÉoÅ[
-			gauge.w = bar_sx[i];	gauge.sw = bar_sx[i];
+			gauge.w = bar_sx[value];	gauge.sw = bar_sx[value];
 
 			//	Åiç∂è„à íu - ÉQÅ[ÉWïùÇÃîºï™ÅjÇ≈íÜêSÅAÉQÅ[ÉWÇâEå¸Ç´Ç÷ëùÇ‚Ç∑ÇΩÇﬂ
-			RenderImage( gauge, gauge.sx, gauge.sy * i, gauge.sw, gauge.sh, IMAGE_MODE::NORMAL, static_cast<int>( bar_x[i] - (backgauge.w * 0.5f) + (gauge.sw * 0.5f ) ), gauge.y );
+			RenderImage( gauge, gauge.sx, gauge.sy * value, gauge.sw, gauge.sh, IMAGE_MODE::NORMAL, static_cast<int>( bar_x[value] - (backgauge.w * 0.5f) + (gauge.sw * 0.5f ) ), gauge.y );
 																					
 			//äÁ
-			RenderImage(faceImage, faceImage.sx * state_type[i], faceImage.sy * charatype[i], faceImage.sw, faceImage.sh, IMAGE_MODE::NORMAL, state_x[i] - (backgauge.w / 2), faceImage.y);
+			RenderImage( faceImage, faceImage.sx * state_type[value], faceImage.sy * charatype[value], faceImage.sw, faceImage.sh, IMAGE_MODE::NORMAL, state_x[value] - (backgauge.w / 2), faceImage.y );
 		}
 	}
 
@@ -1164,19 +1164,13 @@
 		{
 			FOR(0, PLAYER_MAX)
 			{
-				//	ÇPÇOÇOÇÃà ï`âÊ
-				int		sx = 10 * 64;		//	Å~
-				int		sy = coinNumInfo[value].hundred.sy;
-				int		sw = coinNumInfo[value].hundred.sw;
-				int		sh = coinNumInfo[value].hundred.sh;
-
-				if (coinNumInfo[value].hundredRenderFlag)
-					RenderImage(coinNumInfo[value].hundred, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM);
 
 				//	ÇPÇOÇÃà ï`âÊ
-				sy = coinNumInfo[value].ten.sy;
-				sw = coinNumInfo[value].ten.sw;
-				sh = coinNumInfo[value].ten.sh;
+				int		sx = 10 * 64;		//	Å~
+				int		sy = coinNumInfo[value].ten.sy;
+				int		sw = coinNumInfo[value].ten.sw;
+				int		sh = coinNumInfo[value].ten.sh;
+
 				RenderImage(coinNumInfo[value].ten, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM);
 
 				//	ÇPÇÃà ï`âÊ
@@ -1340,9 +1334,9 @@
 	//	ÉvÉåÉCÉÑÅ[î‘çÜï`âÊ
 	void	UI::PlayerNumberRender( void )
 	{
-		for ( int i = 0; i < PLAYER_MAX; i++ )
+		FOR(0,PLAYER_MAX)
 		{
-			RenderImage( pNumImage[i], pNumImage[i].sx, pNumImage[i].sy, pNumImage[i].sw, pNumImage[i].sh, IMAGE_MODE::NORMAL );
+			RenderImage( pNumImage[value], pNumImage[value].sx, pNumImage[value].sy, pNumImage[value].sw, pNumImage[value].sh, IMAGE_MODE::NORMAL );
 		}
 	}
 
@@ -1401,7 +1395,7 @@
 		{
 			coinNum[num]++;
 			coin_flg[num] = true;
-			particle->CoinGet(PAR_POS, 0.4f);
+			particle->CoinGet(PAR_POS , 0.5f);
 		}
 
 		//Vector3 coin_pos;
@@ -1427,6 +1421,7 @@
 		bar_x[3] = bar_x[2] + bar_sx[2];
 
 		int num_coin[4];
+		FOR(0,PLAYER_MAX)
 		for (int i = 0; i < 4; i++)
 		{
 			num_coin[i] = gameManager->GetCoinNum(i);
