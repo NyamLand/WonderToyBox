@@ -21,12 +21,12 @@ namespace
 			ATTACK_UP,
 			SPEED_UP,
 			MAGNET,
-			BOMB,
 			UNRIVALED,
+			MAX,
+			BOMB,
 			SEALED_ATTACK,
 			SELFISHNESS_JUMP,
 			OTHERS_SPEED_DOWN,
-			MAX,
 		};
 	}
 }
