@@ -393,7 +393,7 @@ namespace
 			Power.Normalize();
 			Power *= ( 0.0005f * speed ) * scale;
 
-			pt->Set( FLOWER, 0, 0.5f, 60, 1.0f, 30, 0.5f, &Pos, &Move, &Power, color.x, color.y, color.z, scale * 0.1f, RS_COPY );
+			pt->Set( FLOWER, 0, 0.5f, 30, 1.0f, 30, 0.5f, &Pos, &Move, &Power, color.x, color.y, color.z, scale * 0.1f, RS_COPY );
 		}
 	}
 

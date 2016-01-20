@@ -257,7 +257,7 @@
 
 			//	ライフ減らす
 			int power = bc1->GetPower();
-			FOR_LIST(0, power) bc2->SubLife();
+			FOR(0, power) bc2->SubLife();
 
 			//	エフェクトだす
 			float	effectScale = 1.0f;
@@ -326,7 +326,7 @@
 
 			//	ライフ減らす
 			int power = bc1->GetPower();
-			FOR_LIST(0, power) bc2->SubLife();
+			FOR(0, power) bc2->SubLife();
 
 			//	エフェクトだす
 			float	effectScale = 1.0f;
@@ -751,6 +751,10 @@
 	{
 		switch (bc1->GetKnockBackType())
 		{
+		case KNOCKBACK_TYPE::NONE:
+			bc2->SetMode(MODE_STATE::DAMAGE);
+			break;
+
 		case KNOCKBACK_TYPE::STRENGTH:
 			bc2->SetForce(1.5f);
 			bc2->SetMode(MODE_STATE::DAMAGE);

@@ -11,6 +11,7 @@
 #include	"BaseBullet.h"
 #include	"BulletManager.h"
 #include	"Thief_Bullet02.h"
+#include	"Stage.h"
 
 Thief_Bullet02::Thief_Bullet02() : holdCoinNum(0), range(0)
 {
@@ -52,7 +53,7 @@ void	Thief_Bullet02::Move(void)
 {
 	move.y += GRAVITY; 
 	StageCollisionCheck();
-	Collision::CheckWall(Vector3(pos.x,pos.y + 2.0f, pos.z), move);
+	stage->CheckWall(pos, move);
 	Vector3 vecBvsP = characterManager->GetPos(playerNum) - pos;	//打ち出したプレイヤーとのベクトル
 	vecBvsP.Normalize();
 

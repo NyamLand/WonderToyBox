@@ -11,6 +11,7 @@
 #include	"BaseBullet.h"
 #include	"BulletManager.h"
 #include	"Thief_Bullet04.h"
+#include	"Stage.h"
 
 Thief_Bullet04::Thief_Bullet04() :holdCoinNum(0), growSpeed(0.0f), checkMax(false), checkMin(false)
 {
@@ -73,7 +74,7 @@ void	Thief_Bullet04::Move(void)
 	float ToPlayerLength = ToPlayerVec.Length();
 
 
-	if(!Collision::CheckWall(pos, move)) pos += move;
+	if(!stage->CheckWall(pos, move)) pos += move;
 
 	//k‚ÝŽn‚ß‚½‚çÅ‘å‚Ü‚ÅL‚Ñ‚½‚à‚Ì‚Æ‚·‚é(k‚ÝŽn‚ß‚Ä‚¢‚é)
 	if (addLength <= 0)

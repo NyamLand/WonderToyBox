@@ -54,7 +54,8 @@ namespace
 	{
 		enum
 		{
-			STRENGTH = 1,		//	強
+			NONE = -1,
+			STRENGTH,		//	強
 			MIDDLE,				//	中
 			WEAK,					//	弱
 			LEANBACKWARD,			//	ノックバックなし、仰け反り
