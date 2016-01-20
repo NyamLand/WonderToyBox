@@ -301,7 +301,7 @@
 		image.plusScaleX = 0;
 		image.plusScaleY = 0;
 		image.t = 0;
-		image.scalingAlpha = 1.0f;
+		image.alpha = 1.0f;
 		image.scalingState = true;
 		image.scalingspeed = 0.0f;
 		image.scalingFlag = false;
@@ -309,12 +309,14 @@
 	}
 
 	//	Šg‘åk¬Ý’è
-	void	SetScaling(ImageObj& image, float speed)
+	void	SetScaling(ImageObj& image, float speed, bool state)
 	{
 		image.plusScaleX = 0;
 		image.plusScaleY = 0;
 		image.t = 0;
-		image.scalingAlpha = 1.0f;
+		if (state)	image.alpha = 1.0f;
+		if (!state)	image.alpha = 0.0f;
+		image.scalingAlphaFlag = state;
 		image.scalingState = true;
 		image.scalingspeed = speed;
 		image.scalingFlag = true;
@@ -371,27 +373,103 @@
 	{
 		if (!image.scalingFlag) return false;
 
+		switch (image.scalingAlphaFlag)
+		{
+		case true:
+			//	ƒpƒ‰ƒ[ƒ^‰ÁŽZ
+			image.t += D3DX_PI / 180 * image.scalingspeed;
+			image.alpha -= D3DX_PI / 180 * image.scalingspeed;
+
+			//-------------------------
+			//	Šg‘å
+			//-------------------------
+			//	ƒpƒ‰ƒ[ƒ^ãŒÀÝ’è
+			if (image.t >= 1.0f)
+			{
+				image.t = 0.0f;
+				image.alpha = 0.0f;
+				image.scalingFlag = false;
+				return true;
+			}
+
+			Lerp(image.plusScaleX, 0, max_scale, image.t);
+			Lerp(image.plusScaleY, 0, max_scale, image.t);
+
+			if (image.alpha <= 0.0f) image.alpha = 0.0f;
+			return false;
+
+		case false:
+			//	ƒpƒ‰ƒ[ƒ^‰ÁŽZ
+			image.t += D3DX_PI / 180 * image.scalingspeed;
+			image.alpha += D3DX_PI / 180 * image.scalingspeed;
+
+			//-------------------------
+			//	k¬
+			//-------------------------
+			//	ƒpƒ‰ƒ[ƒ^ãŒÀÝ’è
+			if (image.t >= 1.0f)
+			{
+				image.t = 0.0f;
+				image.alpha = 1.0f;
+				image.scalingFlag = false;
+				return true;
+			}
+
+			Lerp(image.plusScaleX, max_scale, 0, image.t);
+			Lerp(image.plusScaleY, max_scale, 0, image.t);
+
+			if (image.alpha >= 1.0f) image.alpha = 1.0f;
+			return false;
+
+		default:
+			return false;
+		}
+	}
+
+	//	‰¡Šg‘åck¬XV
+	void	ScalingLandingUpdate( ImageObj& image, int max_scale )
+	{
+		if (!image.scalingFlag) return;
+
 		//	ƒpƒ‰ƒ[ƒ^‰ÁŽZ
 		image.t += D3DX_PI / 180 * image.scalingspeed;
-		image.alpha -= D3DX_PI / 180 * image.scalingspeed;
-
+	
 		//-------------------------
 		//	Šg‘å
 		//-------------------------
-		//	ƒpƒ‰ƒ[ƒ^ãŒÀÝ’è
-		if (image.t >= 1.0f)
+		if (image.scalingState)
 		{
-			image.t = 0.0f;
-			image.alpha = 1.0f;
-			image.scalingFlag = false;
-			return true;
+			//	ƒpƒ‰ƒ[ƒ^ãŒÀÝ’è
+			if (image.t >= 1.0f)
+			{
+				image.t = 1.0f;
+				image.scalingState = false;
+			}
+
+			Lerp(image.plusScaleX, 0, max_scale, image.t);
+			Lerp(image.plusScaleY, 0, -max_scale, image.t);
+
 		}
 
-		Lerp(image.plusScaleX, 0, max_scale, image.t);
-		Lerp(image.plusScaleY, 0, max_scale, image.t);
-		
-		if (image.alpha <= 0.0f) image.alpha = 0.0f;
-		return false;
+		//-------------------------
+		//	k¬
+		//-------------------------
+		else
+		{
+			//	ƒpƒ‰ƒ[ƒ^ãŒÀÝ’è
+			if (image.t >= 1.0f)
+			{
+				image.t = 1.0f;
+				image.scalingState = true;
+				image.scalingFlag = false;
+			}
+
+			Lerp(image.plusScaleX, max_scale, 0, image.t);
+			Lerp(image.plusScaleY, -max_scale, 0, image.t);
+
+		}
+
+		if (image.t >= 1.0f)		image.t = 0.0f;
 	}
 
 

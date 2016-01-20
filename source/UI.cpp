@@ -210,7 +210,7 @@
 		frame.obj = coinbar;
 		face = new iex2DObj("DATA/UI/chara_emotion.png");
 		faceImage.obj = face;
-		countImage.obj = new iex2DObj( "DATA/UI/bfUI.png" );
+		countImage.obj = new iex2DObj( "DATA/UI/bfUI_02.png" );
 		alertImage.obj = new iex2DObj( "DATA/UI/alert.png" );
 		alert_coinImage.obj = new iex2DObj( "DATA/UI/coin_alert.png" );
 		playerNumber = new iex2DObj( "DATA/UI/number.png" );
@@ -565,10 +565,14 @@
 		int y = static_cast<int>( iexSystem::ScreenHeight * 0.5f );
 		int w = static_cast<int>( iexSystem::ScreenWidth * 0.27f );
 		int h = static_cast<int>( iexSystem::ScreenHeight * 0.49f );
-		ImageInitialize( countImage, x, y, w, h, 0, 0, 256, 256 );
+		ImageInitialize( countImage, x, y, w, h, 0, 0, 512, 512 );
 		countImage.renderflag = true;
 		count = 0;
 		waitTimer = 0;
+		start_pos = Vector3(countImage.x, -(countImage.h / 2) , 0);
+		finish_pos = Vector3(countImage.x, countImage.y, 0);
+		start_t = 0.0f;
+		start_step = 0;
 	}
 
 	//	カウントダウン中プレイヤーの番号表示
@@ -809,57 +813,100 @@
 	//	カウントダウン・スタート演出
 	void	UI::StartUpdate( void )
 	{
-		//	タイマー更新
-		waitTimer++;
-
-		//	一秒ごとに画像進める
-		if ( waitTimer % SECOND == 0 )
+		int round = gameManager->GetRound();
+		static int	waittime;
+		switch (start_step)
 		{
-			//	カウントダウン
-			count++;
-
-			//	読み込み位置・サイズ設定
-			switch ( count )
+		//	画面上部から移動
+		case 0:
+			if (StartMove())
 			{
-			case 1:
-				countImage.sx = 256;
-				countImage.sy = 0;
-				break;
-
-			case 2:
-				countImage.sx = 0;
-				countImage.sy = 256;
-				break;
-
-			case 3:
-				countImage.sx = 512;
-				countImage.sy = 0;
-				countImage.sw = 512;
-				countImage.sh = 512;
-				countImage.w = static_cast<int>( iexSystem::ScreenWidth * 0.59f );
-				countImage.h = static_cast<int>( iexSystem::ScreenHeight * 1.04f );
-				SetWave( countImage, 1.5f );
-				break;
-
-			case 4:
-				waitTimer = 2 * SECOND;
-				
-				//	画像読み込み位置・サイズ設定			
-				countImage.w = static_cast<int>( iexSystem::ScreenWidth * 0.47f );
-				countImage.h = static_cast<int>( iexSystem::ScreenHeight * 0.51f );
-				countImage.sx = 0;
-				countImage.sy = 512;
-				countImage.sw = 1024;
-				countImage.sh = 512;
-
-				//	メインゲームへ
-				changeflag = true;
+				SetScaling(countImage, 4.0f);
+				start_step++;
 				break;
 			}
+			break;
+		//	着地しながらフェードアウト
+		case 1:
+			if (!countImage.scalingFlag)
+			{
+				countImage.alpha -= 1.0f / 60.0f;
+				if (countImage.alpha <= 0.0f)
+				{
+					countImage.sx = 512;
+					countImage.sy = 512;
+					SetScaling(countImage, 3.0f, false);
+					start_step++;
+					break;
+				}
+			}
+			ScalingLandingUpdate(countImage, 100);
+			break;
+		//	GOがフェードイン
+		case 2:
+			if (!countImage.scalingFlag)
+			{
+				waittime = 90;		//	文字停止フレーム数
+				start_step++;
+				break;
+			}
+			ScalingAlphaUpdate(countImage, 300);
+			break;
+		//	文字停止フレーム数後、Goがフェードアウト
+		case 3:
+			//	タイマーの間はbreak;
+			waittime--;
+			if (waittime >= 0)	break;
 
+			changeflag = true;
+			waitTimer = 2 * SECOND;
+			break;
 		}
 
-		WaveUpdate( countImage );
+		//	FIGHT描画のためスキップ
+		if (start_step > 1) return;
+		//	読み込み位置・サイズ設定
+		switch (round)
+		{
+		case Round::ROUND1:
+			countImage.sx = 0;
+			countImage.sy = 0;
+			
+			break;
+
+		case Round::ROUND2:
+			countImage.sx = 512;
+			countImage.sy = 0;
+			break;
+
+		case Round::ROUND_FINAL:
+			countImage.sx = 0;
+			countImage.sy = 512;
+			break;
+		}
+
+	}
+
+	//	ラウンド文字移動
+	bool	UI::StartMove( void )
+	{
+		Vector3 pos;
+
+		//	パラメータ加算
+		start_t += 1.0f / 30.0f;
+
+		if (start_t >= 1.0f)
+		{
+			return true;
+		}
+
+		Lerp(pos, start_pos, finish_pos, start_t);
+		countImage.x = pos.x;
+		countImage.y = pos.y;
+
+		if (start_t >= 1.0f) start_t = 1.0f;
+
+		return false;
 	}
 
 	//	カウントダウン中プレイヤーの番号表示
@@ -1220,7 +1267,7 @@
 	//	カウントダウン・スタート演出
 	void	UI::StartRender( void )
 	{
-		RenderImage( countImage, countImage.sx, countImage.sy, countImage.sw, countImage.sh, IMAGE_MODE::NORMAL );
+		RenderImage( countImage, countImage.sx, countImage.sy, countImage.sw, countImage.sh, IMAGE_MODE::SCALING );
 		RenderImage( countImage, countImage.sx, countImage.sy, countImage.sw, countImage.sh, IMAGE_MODE::WAVE );
 	}
 

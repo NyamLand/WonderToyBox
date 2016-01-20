@@ -96,6 +96,7 @@
 		//	scaling用パラメータ
 		float	scalingspeed;
 		float	scalingAlpha;
+		bool	scalingAlphaFlag;
 		bool	scalingState;
 		bool	scalingFlag;
 		bool	scalingrenderflag;
@@ -152,9 +153,10 @@
 	void	SetWave( ImageObj& image, float speed );
 	bool	WaveUpdate( ImageObj& image, int max_scale = 140, float max_alpha = 1.0f );
 	void	FlashingUpdate( ImageObj& image, float speed = -1.0f );
-	void	SetScaling( ImageObj& image, float speed );
+	void	SetScaling( ImageObj& image, float speed, bool state = true );					//	state:	true = 拡大　false = 縮小
 	void	ScalingUpdate(ImageObj& image, int max_scale = 140);
 	bool	ScalingAlphaUpdate(ImageObj& image, int max_scale = 140);
+	void	ScalingLandingUpdate(ImageObj& image, int max_scale = 140);
 	void	StopScaling( ImageObj& image );
 	
 //----------------------------------------------------------------------

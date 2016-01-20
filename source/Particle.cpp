@@ -232,6 +232,7 @@ namespace
 	void	Particle::Suck(const Vector3& pos, const Vector3& target, const Vector3& side, const float& length, const float& scale, const int& time)
 	{
 		Vector3	Pos, Move, Power;
+		int speed = 5;
 		timer++;
 		if (timer % time != 0) return;
 		for (int j = 0; j < 1; j++)
@@ -254,12 +255,13 @@ namespace
 			Pos =  pos + v1 * t_len;
 
 			//	向きを逆に
-			Move = -v1 * scale;
+			//Move = -v1 * scale;
+			Move = -v1 * length / (speed * length);
 
 			Power = Move * (Random::GetFloat(0.0001f, 0.001f));
 
 			//	画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
-			pt->Set(SUCK, 0, 1.0f, 2 * (int)length, 1.0f, 0, 1.0f, &Pos, &Move, &Power, 1.0f, 1.0f, 1.0f, scale, RS_COPY);
+			pt->Set(SUCK, 0, 1.0f, speed * (int)length, 1.0f, 0, 1.0f, &Pos, &Move, &Power, 1.0f, 1.0f, 1.0f, scale, RS_COPY);
 		}
 	}
 
