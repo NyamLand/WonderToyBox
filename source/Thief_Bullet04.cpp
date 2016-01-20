@@ -119,6 +119,19 @@ bool	Thief_Bullet04::PlayerCollisionCheck(void)
 			particle->Spark(p_pos_top, effectScale);
 			Vector3	color = characterManager->GetDamageColor(i);
 			characterManager->SetPassColor(i, color);
+			//画面振動
+			gameManager->SetShakeCamera(1.0f, 30);
+
+
+			//	ノックバック
+			Vector3	knockBackVec = bulletPos - p_pos_bottom;
+			knockBackVec.y = p_pos_bottom.y;
+			knockBackVec.Normalize();
+			characterManager->SetKnockBackVec(i, -knockBackVec);
+			characterManager->SetLeanFrame(i, leanpower);
+			characterManager->SetForce(i, 2.0f);
+			characterManager->SetMode(i, MODE_STATE::DAMAGE);
+
 
 			//	プレイヤー番号取得
 			int		p2_Num = characterManager->GetPlayerNum(i);

@@ -318,10 +318,10 @@
 				gameManager->SetShakeCamera( 1.0f, 30 );
 			}
 			if (bc1->GetMode() == MODE_STATE::HYPERARTS){};
-			
-			//	–³“Gó‘ÔŽæ“¾EÝ’è
+
+			//	–³“G‚É‚·‚é
 			if (bc2->GetParameterState(PARAMETER_STATE::UNRIVALED))	return;
-			bc2->SetUnrivaled( true );
+			bc2->SetParameterState(PARAMETER_STATE::UNRIVALED);
 
 			//	ƒ‰ƒCƒtŒ¸‚ç‚·
 			int power = bc1->GetPower();

@@ -46,8 +46,8 @@
 		org[BULLET_TYPE::THIEF_03] = new iexMesh("DATA/Effect/k_arm/k_arm2.imo");
 		//org[BULLET_TYPE::THIEF_03] = new iexMesh("DATA/Effect/kq_arm/kq_arm.imo");
 		org[BULLET_TYPE::THIEF_04] = new iexMesh("DATA/Effect/kq_hand(‰¼)/hand.imo");
-		org[BULLET_TYPE::PIRATE_01] = new iexMesh("DATA/Effect/bomb/bomb.imo");
-		org[BULLET_TYPE::PIRATE_02] = new iexMesh("DATA/Effect/bomb/bomb.imo");
+		org[BULLET_TYPE::PIRATE_01] = new iexMesh("DATA/Effect/pirate-bullet/Bullet.imo");
+		org[BULLET_TYPE::PIRATE_02] = new iexMesh("DATA/Effect/pirate-bullet/Bullet.imo");
 		bullet_num = 0;
 
 		for ( int i = 0; i < BULLET_MAX; i++ )
