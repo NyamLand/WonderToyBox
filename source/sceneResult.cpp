@@ -67,8 +67,11 @@
 		{
 			enum
 			{
+				CLOSE_CURTAIN,		//	カーテン閉じる
+				LIGHT_PRODUCTION,	//	ライト演出
+				OPEN_CURTAIN,			//	カーテン開ける
 				PRODUCTION,	//	演出
-				RESULT,			//	結果発表
+				RESULT,			//	ラウンドごとのスコア
 			};
 		}
 
@@ -128,6 +131,9 @@
 		//	読み込み
 		Load();
 
+		//	カーテン情報初期化
+		CurtainInfoInitialize();
+
 		//	モデル初期化
 		ModelInitialize();
 
@@ -163,6 +169,7 @@
 
 		//	ラウンド関連初期化
 		RoundInfoInitialize();
+		SetRoundCoinNumber();
 
 		//	変数初期化
 		lastBonus = 0;
@@ -170,6 +177,7 @@
 		mode = MOVE_MODE::RESULT;
 		changeScene = false;
 		bonusPlayer = 0;
+		
 		FOR( 0, PLAYER_MAX )	inputCheck[value] = false;
 
 		sound->PlayBGM(BGM::RESULT_BGM);
@@ -296,11 +304,13 @@
 	//	モデル初期化
 	void	sceneResult::ModelInitialize( void )
 	{
+		float angle[PLAYER_MAX] = { D3DXToRadian( -15.0f ), D3DXToRadian( -10.0f ), D3DXToRadian( 10.0f ), D3DXToRadian( 15.0f ) };
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			//	モデル情報設定
 			obj[i] = org[gameManager->GetCharacterType( i )]->Clone();
-			obj[i]->SetPos( -7.0f + ( 14.0f / 3.0f * i ), 0.0f, 0.0f );
+			obj[i]->SetPos( -7.0f + ( 14.0f / 3.0f * i ), 10.0f, 10.0f );
+			obj[i]->SetAngle( D3DX_PI + angle[i] );
 			obj[i]->Update();
 		}
 	}
@@ -450,6 +460,7 @@
 
 			//	ついでにOKの位置も設定
 			y = static_cast<int>( iexSystem::ScreenHeight * 0.7f );
+			h = ( int )( w * 0.5f );
 			checkImage[value].obj = check;
 			ImageInitialize( checkImage[value], x, y, w, h, 0, 0, 256, 128 );
 			checkImage[value].renderflag = false;
@@ -471,7 +482,7 @@
 	{
 		//	テクスチャ位置設定
 		float	dist = 1000.0f;
-		Collision::GetFront( bgStage, viewInfo.pos + Vector3( 0.0f, 2.9f, 0.0f ), viewInfo.texPos );
+		Collision::GetFront( bgStage, viewInfo.pos + Vector3( 0.0f, 2.0f, 0.0f ), viewInfo.texPos );
 		viewInfo.texPos.z -= 0.01f;
 		Vector3	texSize = Vector3( 30.0f, 20.0f, 0.0f );
 		SetVertex( viewInfo.v[0], viewInfo.texPos.x - texSize.x * 0.5f, viewInfo.texPos.y + texSize.y * 0.5f, viewInfo.texPos.z, 0, 0, 0xFFFFFFFF );
@@ -595,6 +606,15 @@
 		curtainInfoR.t = 1.0f;
 		curtainDirection = true;
 		curtainBrightness = 1.0f;	
+		curtainState = false;
+
+		//	シェーダー用変数初期化
+		lightMoveNum = 0;
+		light_t = 0.0f;
+		lightPos[0] = Vector3( 0.0f, 0.0f, 0.0f );
+		lightPos[1] = Vector3( 0.0f, 0.0f, 0.0f );
+		lightPos[2] = Vector3( 0.0f, 0.0f, 0.0f );
+		lightPos[3] = Vector3( 0.0f, 0.0f, 0.0f );
 
 		//	頂点設定
 		SetVertex( curtainInfoL.tlv[0], ( float )curtainPosInfo.leftPos, ( float )curtainPosInfo.upPosY, 0, 0, 0, 0xFFFFFFFF );
@@ -614,7 +634,7 @@
 		int x = static_cast<int>( iexSystem::ScreenWidth * 0.2f );
 		int y = static_cast<int>( iexSystem::ScreenHeight * 0.3f );
 		int w = static_cast<int>( iexSystem::ScreenWidth * 0.2f );
-		int h = static_cast<int>( iexSystem::ScreenHeight * 0.15f );
+		int h = static_cast<int>( iexSystem::ScreenHeight * 0.1f );
 		int sx = 0;
 		int sy;
 		int sw = 512;
@@ -627,6 +647,33 @@
 			ImageInitialize( roundImage[value], x, y, w, h, sx, sy, sw, sh );
 			roundImage[value].obj = orgRound;
 		}
+
+		SetRoundCoinNumber();
+	}
+
+	//	ラウンドごとの数値を設定
+	void	sceneResult::SetRoundCoinNumber( void )
+	{
+		int	totalCoinNum;
+
+		//	各ラウンドのコイン枚数を取得
+		FOR( 0, PLAYER_MAX )
+		{
+			for ( int round = 0; round < Round::END; round++ ) 
+			{
+				//	座標を設定
+				roundCoinNumberImageInfo[round][value].pos.x = static_cast<int>( iexSystem::ScreenWidth * 0.4f ) + ( static_cast<int>( iexSystem::ScreenWidth * 0.15f ) * value );
+				roundCoinNumberImageInfo[round][value].pos.y = roundImage[round].y;
+				roundCoinNumberImageInfo[round][value].scale = 100;
+				roundCoinNumberImageInfo[round][value].one.obj = originNumber;
+				roundCoinNumberImageInfo[round][value].ten.obj = originNumber;
+				roundCoinNumberImageInfo[round][value].hundred.obj = originNumber;
+
+				//	数値を設定
+				totalCoinNum = gameManager->GetTotalCoin( round, value );
+				SetNumberImageInfo( roundCoinNumberImageInfo[round][value], roundCoinNumber[round][value], totalCoinNum );
+			}
+		}
 	}
 
 //----------------------------------------------------------------------------
@@ -636,6 +683,9 @@
 	//	更新
 	void	sceneResult::Update( void ) 
 	{
+		//	カーテン更新
+		CurtainUpdate();
+
 		//	スクリーン更新
 		screen->Update();
 
@@ -656,40 +706,41 @@
 			break;
 
 		case MOVE_MODE::LAST_RESULT:
+			LastResultUpdate();
 			break;
 		}
 
 		//	シーン移動管理
 		MoveScene();
-
 	}
 
 	//	描画
 	void	sceneResult::Render( void ) 
 	{
+
 		switch ( mode )
 		{
 		case MOVE_MODE::RESULT:
 		case MOVE_MODE::SELECT:
 			ResultRender();
+			break;
+		case MOVE_MODE::LAST_RESULT:
+			LastResultRender();
+			lastResultTest->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight );
 			if ( mode == MOVE_MODE::SELECT )	SelectRender();
 			break;
-
-		case MOVE_MODE::LAST_RESULT:
-			break;
 		}
-		LastResultRender();
+		//LastResultRender();
 
 		//	フレームバッファへ切り替え
-		iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );
-		mainView->Activate();
-		mainView->Clear();
+		//iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );
+		//mainView->Activate();
+		//mainView->Clear();
 
 		//	カーテン描画
 		CurtainRender();
 
 		//	最終結果テスト
-		lastResultTest->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight );
 	}
 
 //----------------------------------------------------------------------------
@@ -753,7 +804,33 @@
 	//	ラスト発表更新
 	void	sceneResult::LastResultUpdate( void )
 	{
+		bool	isEnd = false;
+		switch ( step )
+		{
+		case LASTRESULT_MODE::CLOSE_CURTAIN:
+			if ( curtainState ) SetWaitTimer( 30 );
+			break;
 
+		case LASTRESULT_MODE::LIGHT_PRODUCTION:
+			isEnd = WaitTimeUpdate();
+			if ( isEnd )
+			{
+				step = LASTRESULT_MODE::OPEN_CURTAIN;
+				SetCurtainState( true );
+			}
+			break;
+
+		case LASTRESULT_MODE::OPEN_CURTAIN:
+			if ( isEnd )
+			{
+				if (input[0]->Get(KEY_SPACE) == 3 || input[0]->Get(KEY_A))
+				{
+					step = 0;
+					mode = MOVE_MODE::SELECT;
+				}
+			}
+			break;
+		}
 	}
 
 	//	カーテン更新
@@ -787,6 +864,29 @@
 		Lerp( curtainInfoR.tlv[1].sx, curtainPosInfo.rightPos, curtainPosInfo.rightOutPosX, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainInfoR.t ) );	//	右上
 		Lerp( curtainInfoR.tlv[2].sx, curtainPosInfo.centerPosX, curtainPosInfo.rightPos, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainInfoR.t ) );		//	左下
 		Lerp( curtainInfoR.tlv[3].sx, curtainPosInfo.rightPos, curtainPosInfo.rightOutPosX, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainInfoR.t ) );	//	右下
+
+		if ( curtainDirection )
+		{
+			if ( curtainInfoL.t >= 1.0f || curtainInfoR.t >= 1.0f )
+			{
+				curtainState = true;
+			}
+			else
+			{
+				curtainState = false;
+			}
+		}
+		else
+		{
+			if (curtainInfoL.t <= 0.0f || curtainInfoR.t <= 0.0f)
+			{
+				curtainState = true;
+			}
+			else
+			{
+				curtainState = false;
+			}
+		}							
 	}
 
 	//	セレクト画面描画
@@ -816,12 +916,6 @@
 		back->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 1280, 720 );
 		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
 
-		//	プレイヤー描画
-		FOR( 0, PLAYER_MAX )
-		{
-			//	プレイヤー描画
-			obj[value]->Render( shader3D, "toon" );
-		}
 
 		//	リザルトシール描画
 		RenderImage(menuHead, menuHead.sx, menuHead.sy, menuHead.sw, menuHead.sh, IMAGE_MODE::ADOPTPARAM);
@@ -848,6 +942,13 @@
 
 		//	ポリゴン描画
 		iexPolygon::Render3D(viewInfo.v, 2, infoScreen, shader3D, "alpha");
+		
+		//	プレイヤー描画
+		FOR( 0, PLAYER_MAX )
+		{
+			//	プレイヤー描画
+			obj[value]->Render( shader3D, "toon" );
+		}
 	}
 
 	//	数値画像構造体描画
@@ -855,9 +956,6 @@
 	{
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
-			//-----------------------------------------------------------------------------------------------
-			//	コイン枚数描画
-			//-----------------------------------------------------------------------------------------------
 			//	１００の位描画
 			int		sx = numberImageInfo[i].hundred.sx;
 			int		sy = numberImageInfo[i].hundred.sy;
@@ -907,6 +1005,33 @@
 			sh = bonusNumberImageInfo[i].one.sh;
 			RenderImage( bonusNumberImageInfo[i].one, sx, sy, sw, sh, IMAGE_MODE::NORMAL );
 		}
+	}
+
+	//	数値画像構造体描画
+	void	sceneResult::NumberImageRender( sceneResult::NUMBERIMAGE_INFO numberImageInfo )
+	{
+		//	１００の位描画
+		int		sx = numberImageInfo.hundred.sx;
+		int		sy = numberImageInfo.hundred.sy;
+		int		sw = numberImageInfo.hundred.sw;
+		int		sh = numberImageInfo.hundred.sh;
+
+		if ( numberImageInfo.hundredRenderFlag )
+			RenderImage( numberImageInfo.hundred, sx, sy, sw, sh, IMAGE_MODE::NORMAL );
+
+		//	１０の位描画
+		sx = numberImageInfo.ten.sx;
+		sy = numberImageInfo.ten.sy;
+		sw = numberImageInfo.ten.sw;
+		sh = numberImageInfo.ten.sh;
+		RenderImage( numberImageInfo.ten, sx, sy, sw, sh, IMAGE_MODE::NORMAL );
+
+		//	１の位描画
+		sx = numberImageInfo.one.sx;
+		sy = numberImageInfo.one.sy;
+		sw = numberImageInfo.one.sw;
+		sh = numberImageInfo.one.sh;
+		RenderImage( numberImageInfo.one, sx, sy, sw, sh, IMAGE_MODE::NORMAL );
 	}
 
 	//	ランク描画
@@ -962,14 +1087,22 @@
 		back->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 1280, 720 );
 		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
 		
-		//	ラウンド描画
 		FOR( 0, Round::END )
 		{
+			//	ラウンド描画
 			RenderImage( roundImage[value], roundImage[value].sx, roundImage[value].sy, roundImage[value].sw, roundImage[value].sh, IMAGE_MODE::NORMAL );
+			
+			//	各ラウンド・プレイヤーのコイン枚数描画
+			for ( int player = 0; player < PLAYER_MAX; player++ )
+			{
+				NumberImageRender( roundCoinNumberImageInfo[value][player] );
+			}
 		}
 
-		//	数値描画
-
+		//	フレームバッファへ切り替え
+		iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );
+		mainView->Activate();
+		mainView->Clear();
 	}
 
 	//	カーテン描画
@@ -977,6 +1110,10 @@
 	{
 		LPSTR technique = "copy";
 
+		if ( step == LASTRESULT_MODE::LIGHT_PRODUCTION )
+		{
+			technique = "SpotLight";
+		}
 		iexPolygon::Render2D( curtainInfoL.tlv, 2, curtainInfoL.obj, shader2D, technique );
 		iexPolygon::Render2D( curtainInfoR.tlv, 2, curtainInfoR.obj, shader2D,technique );
 	}
@@ -984,6 +1121,17 @@
 //----------------------------------------------------------------------------
 //	動作関数
 //----------------------------------------------------------------------------
+
+	//	ライト移動
+	bool	sceneResult::LightUpdate( void )
+	{
+		bool isEnd = false;
+
+		//	パラメータ加算
+		light_t += 0.1f;
+		if ( light_t >= 1.0f )	light_t = 1.0f;
+		return	false;
+	}
 
 	//	ソート
 	void	sceneResult::Sort( SORT_INFO ( &sort_info )[4]  )
@@ -1189,7 +1337,7 @@
 	void	sceneResult::SetNumberImageInfo( const int& player, const int& coin )
 	{
 		//	桁数確認
-		if ( coin >= 100 )		numberImageInfo[player].hundredRenderFlag = true;
+		if ( coin >= 001 	)	numberImageInfo[player].hundredRenderFlag = true;
 		else							numberImageInfo[player].hundredRenderFlag = false;
 
 		if ( originInfo[player].bonus >= 100 )		bonusNumberImageInfo[player].hundredRenderFlag = true;
@@ -1508,6 +1656,31 @@
 			rank = originInfo[value].rank;
 			gameManager->SetStartLife( value, nextLife[maxLife][rank] );
 		}
+	}
+
+	//	カーテン状態設定
+	void	sceneResult::SetCurtainState( bool state )
+	{
+		curtainDirection = state;
+	}
+
+	//	待ちタイマー設定
+	void	sceneResult::SetWaitTimer( int time )
+	{
+		waitTimer = time;
+	}
+
+	//	待ちタイマー減算
+	bool	sceneResult::WaitTimeUpdate( void )
+	{
+		waitTimer--;
+		if ( waitTimer <= 0 )
+		{
+			waitTimer = 0;
+			return	true;
+		}
+
+		return	false;
 	}
 
 //----------------------------------------------------------------------------
@@ -1991,7 +2164,8 @@
 	void	sceneResult::ModeLastResult( void )
 	{
 		step = 0;
-		mode = MOVE_MODE::SELECT;
+		SetCurtainState( !curtainState );
+		mode = MOVE_MODE::LAST_RESULT;
 	}
 
 	//	入力待ち

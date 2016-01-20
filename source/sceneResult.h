@@ -16,7 +16,7 @@ using namespace std;
 //	class
 class sceneResult : public	Scene
 {
-private:
+public:
 	//	数字情報
 	struct NUMBER_INFO
 	{
@@ -187,10 +187,17 @@ private:
 	int		lastBonus;
 	int		bonusPlayer;
 	int		nextLife[3][4];	//	４人分３種類
+	int		culRound;
 	float		curtainBrightness;		//	カーテン明るさ
+
+	int	lightMoveNum;
+	float		light_t;
 	bool		inputCheck[4];		
 	bool		changeScene;
 	bool		curtainDirection;
+	bool		curtainState;
+	Vector3	lightPos[4];	//	シェーダー用ライト位置
+	int	waitTimer;
 
 public:
 	//	初期化・解放
@@ -227,6 +234,7 @@ public:
 	//	各画像描画
 	void	SelectRender( void );
 	void	NumberImageRender( void );
+	void	NumberImageRender( NUMBERIMAGE_INFO numberImageInfo );
 	void	RankRender( void );
 	void	LifeRender( void );
 	void	InputCheckRender( void );
@@ -235,6 +243,7 @@ public:
 	void	CurtainRender( void );
 	
 	//	動作関数
+	bool	LightUpdate( void );
 	void	SetLastBonus( void );
 	void	AddLastBonus( void );
 	void	SetBonusPlayer( void );
@@ -246,6 +255,8 @@ public:
 	void	MoveScene( void );
 	bool	NextLifeAnnouncing( void );
 	void	ProductionSkip( void );
+	void	SetRoundCoinNumber( void );
+	bool	WaitTimeUpdate( void );
 
 	//	選択モード関数
 	bool	DownPolygon( void );
@@ -273,6 +284,8 @@ public:
 	void	SetNumberImageInfo( const int& player, const int& coin );
 	void	SetNumberImageInfo( NUMBERIMAGE_INFO& numImageInfo, NUMBER_INFO& numInfo, const int& num );
 	void	SetNumberInfo( NUMBER_INFO& number, int coin );	//	コイン枚数引き渡し
+	void	SetCurtainState( bool state );
+	void	SetWaitTimer( int time );
 };
 
 //*******************************************************************************
