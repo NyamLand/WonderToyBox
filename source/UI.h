@@ -190,6 +190,10 @@ private:
 
 	//	カウントダウン・スタート・タイムアップ演出
 	int		count;
+	Vector3 start_pos;
+	Vector3 finish_pos;
+	float	start_t;
+	int		start_step;
 	int		waitTimer;
 
 	//	タイマー
@@ -319,6 +323,7 @@ public:
 	void	CoinBarUpdate( void );
 	void	NewsBarUpdate( void );
 	void	StartUpdate( void );
+	bool	StartMove( void );
 	void	StartPlayerNumUpdate( void );
 	void	FinishUpdate( void );
 	void	DonketsuDirectionUpdate( void );
