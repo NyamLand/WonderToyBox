@@ -62,6 +62,7 @@ public:
 	static	bool	CapsuleVSSphere( Vector3 p1, Vector3 p2, float r1, Vector3 c, float r2 );
 	static	bool	SphereVSSphere( Vector3 c1, float r1, Vector3 c2, float r2 );
 	static	void	CoinCollide( void );
+	static	bool	SphereVSCapsule( Vector3 center, float r1, Vector3 p1, Vector3 p2, float r2 );
 };
 
 

@@ -613,8 +613,8 @@
 	{
 		int x = static_cast<int>( iexSystem::ScreenWidth * 0.2f );
 		int y = static_cast<int>( iexSystem::ScreenHeight * 0.3f );
-		int w = static_cast<int>( iexSystem::ScreenWidth * 0.3f );
-		int h = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
+		int w = static_cast<int>( iexSystem::ScreenWidth * 0.2f );
+		int h = static_cast<int>( iexSystem::ScreenHeight * 0.15f );
 		int sx = 0;
 		int sy;
 		int sw = 512;
@@ -622,7 +622,7 @@
 
 		FOR( 0, Round::END ) 
 		{
-			y = static_cast<int>( iexSystem::ScreenHeight * 0.3f ) + ( static_cast<int>( iexSystem::ScreenHeight * 0.3f ) * value );
+			y = static_cast<int>( iexSystem::ScreenHeight * 0.3f ) + ( static_cast<int>( iexSystem::ScreenHeight * 0.2f ) * value );
 			sy = sh * value;
 			ImageInitialize( roundImage[value], x, y, w, h, sx, sy, sw, sh );
 			roundImage[value].obj = orgRound;
@@ -686,12 +686,10 @@
 		mainView->Clear();
 
 		//	カーテン描画
-		//CurtainRender();
+		CurtainRender();
 
+		//	最終結果テスト
 		lastResultTest->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight );
-
-		//	メニュー項目描画
-		//SelectRender();
 	}
 
 //----------------------------------------------------------------------------
