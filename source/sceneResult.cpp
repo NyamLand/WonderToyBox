@@ -216,7 +216,7 @@
 		life = new iex2DObj("DATA/UI/Nlife.png");
 		check = new iex2DObj( "DATA/UI/Result/check.png" );
 		orgRound = new iex2DObj( "DATA/UI/roundText.png" );
-		orgCurtain = new iex2DObj( "DATA/UI/curtain1.png" );
+		orgCurtain = new iex2DObj( "DATA/UI/title/curtain1.png" );
 
 		//	ç\ë¢ëÃèâä˙âª
 		int x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
