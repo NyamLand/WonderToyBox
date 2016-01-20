@@ -219,7 +219,7 @@
 		menuHead.angle = D3DXToRadian( 7.0f );
 
 		//	モデル読み込み
-		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>(LPSTR("DATA/CHR/Knight/Knight_Dammy.IEM"));			//	掃除屋
+		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>(LPSTR("DATA/CHR/majo/majo.IEM"));			//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>(LPSTR("DATA/CHR/プリンセス/prinsess1.IEM"));					//	姫
 		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>(LPSTR("DATA/CHR/Thief/Thief.IEM"));				//	リス
 		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>(LPSTR("DATA/CHR/ECCMAN/ECCMAN.IEM"));					//	トラ
@@ -231,7 +231,7 @@
 		bgStage->Update();
 
 		//	オリジナルモデル情報初期化
-		org[CHARACTER_TYPE::SCAVENGER]->SetScale(0.05f);	//	掃除屋
+		org[CHARACTER_TYPE::SCAVENGER]->SetScale(0.01f);	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->SetScale(0.04f);		//	姫
 		org[CHARACTER_TYPE::THIEF]->SetScale(0.03f);				//	怪盗
 		org[CHARACTER_TYPE::PIRATE]->SetScale(0.02f);				//	トラ

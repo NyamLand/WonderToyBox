@@ -27,7 +27,9 @@ namespace
 		{
 			DESK,
 			FOREST,
+			TOY,
 			BLOCK,
+
 		};
 	}
 }
@@ -65,6 +67,7 @@ Stage*	stage = nullptr;
 		org[OBJECT_TYPE::YELLOW_BLOCK] = new iexMesh("DATA/Object/Box/yellowBox.imo");
 		org[OBJECT_TYPE::DESK_BASE] = new iexMesh("DATA/BG/stage-desk/stage.IMO");
 		org[OBJECT_TYPE::FOREST_BASE] = new iexMesh("DATA/BG/Forest/model/forest_base.IMO");
+		org[OBJECT_TYPE::TOY_BASE] = new iexMesh("DATA/BG/stage_toy/stage_toy.IMO");
 		forestRiver = new iexMesh("DATA/BG/Forest/model/forest_river.IMO");
 
 		//	当たり判定用モデル読み込み
@@ -75,12 +78,13 @@ Stage*	stage = nullptr;
 		collisionObj[OBJECT_TYPE::YELLOW_BLOCK] = new iexMesh("DATA/Object/Box/yellowBox.imo");
 		collisionObj[OBJECT_TYPE::DESK_BASE] = new iexMesh("DATA/BG/stage-desk/Collision.IMO");
 		collisionObj[OBJECT_TYPE::FOREST_BASE] = new iexMesh("DATA/BG/Forest/Collision/collision_forest.IMO");
+		collisionObj[OBJECT_TYPE::TOY_BASE] = new iexMesh("DATA/BG/stage_toy/collision_stage_toy.IMO");
 
 		//	変数初期化
 		objectID = 0;
 		stageType = gameManager->GetStageType();
 
-		//	各ステージオブジェクトの生成・平行光設定
+		//	各ステージオブジェクトの生成
 		switch ( stageType )
 		{
 		case STAGE_TYPE::DESK:
@@ -91,6 +95,12 @@ Stage*	stage = nullptr;
 
 		case STAGE_TYPE::FOREST:
 			Append( Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 1.0f, 1.0f, 1.0f ), MOVE_TYPE::FIX_BOX, OBJECT_TYPE::FOREST_BASE );
+			break;
+
+		case STAGE_TYPE::TOY:
+			Append(Vector3(0.0f, 5.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.8f, 0.5f), MOVE_TYPE::FIX_BOX, OBJECT_TYPE::TOY_BASE);
+			Append(Vector3(10.0f, 20.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::BREAK_OBJECT, OBJECT_TYPE::RED_BLOCK);
+			Append(Vector3(-10.0f, 10.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::MOVE_BOX_HIEGHT, OBJECT_TYPE::RED_BLOCK);
 			break;
 
 		case STAGE_TYPE::BLOCK:
@@ -125,6 +135,10 @@ Stage*	stage = nullptr;
 			
 		case	STAGE_TYPE::FOREST:
 			lightColor = Vector3( 0.5f, 0.5f, 0.5f );
+			break;
+
+		case	STAGE_TYPE::TOY:
+			lightColor = Vector3(1.5f, 1.5f, 1.5f);
 			break;
 
 		case	STAGE_TYPE::BLOCK:
@@ -255,7 +269,10 @@ Stage*	stage = nullptr;
 			outType = object[value]->GetObjectType();
 
 			//	ベース以外との当たり判定
-			if ( outType != OBJECT_TYPE::BASE && outType != OBJECT_TYPE::FOREST_BASE && outType != OBJECT_TYPE::DESK_BASE )
+			if (outType != OBJECT_TYPE::BASE 
+				&& outType != OBJECT_TYPE::TOY_BASE 
+				&& outType != OBJECT_TYPE::FOREST_BASE 
+				&& outType != OBJECT_TYPE::DESK_BASE)
 			{
 				//	距離計算
 				v = object[value]->GetPos() - pos;
@@ -304,7 +321,10 @@ Stage*	stage = nullptr;
 			objType= object[value]->GetObjectType();
 			
 			//	ベースとの当たり判定
-			if ( objType == OBJECT_TYPE::BASE || objType == OBJECT_TYPE::DESK_BASE || objType == OBJECT_TYPE::FOREST_BASE ) 
+			if (objType == OBJECT_TYPE::BASE 
+				|| objType == OBJECT_TYPE::DESK_BASE 
+				|| objType == OBJECT_TYPE::FOREST_BASE 
+				|| objType == OBJECT_TYPE::DESK_BASE)
 			{
 				out = Collision::CheckWall( object[value]->GetMesh(), pos, vec );
 			}
@@ -386,7 +406,10 @@ Stage*	stage = nullptr;
 			objType = object[value]->GetObjectType();
 
 			//	ベース意外
-			if ( objType != OBJECT_TYPE::BASE && objType != OBJECT_TYPE::DESK_BASE && objType != OBJECT_TYPE::FOREST_BASE )
+			if ( objType != OBJECT_TYPE::BASE 
+				&& objType != OBJECT_TYPE::DESK_BASE 
+				&& objType != OBJECT_TYPE::FOREST_BASE
+				&& objType != OBJECT_TYPE::TOY_BASE)
 			{
 				//	距離計算
 				v = object[value]->GetPos() - pos;
@@ -433,7 +456,10 @@ Stage*	stage = nullptr;
 			objType = object[value]->GetObjectType();
 
 			//	ベース意外
-			if ( objType != OBJECT_TYPE::BASE && objType != OBJECT_TYPE::DESK_BASE && objType != OBJECT_TYPE::FOREST_BASE )
+			if ( objType != OBJECT_TYPE::BASE 
+				&& objType != OBJECT_TYPE::DESK_BASE 
+				&& objType != OBJECT_TYPE::FOREST_BASE
+				&& objType != OBJECT_TYPE::TOY_BASE)
 			{
 				//	距離計算
 				v = object[value]->GetPos() - pos;
@@ -480,7 +506,10 @@ Stage*	stage = nullptr;
 			objType = object[value]->GetObjectType();
 
 			//	ベース意外
-			if ( objType != OBJECT_TYPE::BASE && objType != OBJECT_TYPE::DESK_BASE && objType != OBJECT_TYPE::FOREST_BASE )
+			if ( objType != OBJECT_TYPE::BASE 
+				&& objType != OBJECT_TYPE::DESK_BASE 
+				&& objType != OBJECT_TYPE::FOREST_BASE
+				&& objType != OBJECT_TYPE::TOY_BASE)
 			{
 				//	距離計算
 				v = object[value]->GetPos() - pos;
@@ -527,7 +556,10 @@ Stage*	stage = nullptr;
 			objType = object[value]->GetObjectType();
 
 			//	ベース意外
-			if ( objType != OBJECT_TYPE::BASE && objType != OBJECT_TYPE::DESK_BASE && objType != OBJECT_TYPE::FOREST_BASE )
+			if ( objType != OBJECT_TYPE::BASE 
+				&& objType != OBJECT_TYPE::DESK_BASE 
+				&& objType != OBJECT_TYPE::FOREST_BASE
+				&& objType != OBJECT_TYPE::TOY_BASE)
 			{
 				//	距離計算
 				v = object[value]->GetPos() - pos;
@@ -574,7 +606,10 @@ Stage*	stage = nullptr;
 			objType = object[value]->GetObjectType();
 
 			//	ベース意外
-			if ( objType != OBJECT_TYPE::BASE && objType != OBJECT_TYPE::DESK_BASE && objType != OBJECT_TYPE::FOREST_BASE )
+			if ( objType != OBJECT_TYPE::BASE 
+				&& objType != OBJECT_TYPE::DESK_BASE 
+				&& objType != OBJECT_TYPE::FOREST_BASE
+				&& objType != OBJECT_TYPE::TOY_BASE)
 			{
 				//	距離計算
 				v = object[value]->GetPos() - pos;
@@ -620,7 +655,10 @@ Stage*	stage = nullptr;
 			objType = object[value]->GetObjectType();
 
 			//	ベースのみ当たり判定
-			if ( objType == OBJECT_TYPE::BASE || objType == OBJECT_TYPE::DESK_BASE || objType == OBJECT_TYPE::FOREST_BASE )
+			if ( objType == OBJECT_TYPE::BASE 
+				|| objType == OBJECT_TYPE::DESK_BASE 
+				|| objType == OBJECT_TYPE::FOREST_BASE
+				|| objType == OBJECT_TYPE::TOY_BASE)
 			{
 				out = Collision::GetHeight( object[value]->GetMesh(), pos );
 			}
@@ -646,7 +684,10 @@ Stage*	stage = nullptr;
 			objType = object[value]->GetObjectType();
 
 			//	ベースのみ当たり判定
-			if ( objType == OBJECT_TYPE::BASE || objType == OBJECT_TYPE::DESK_BASE || objType == OBJECT_TYPE::FOREST_BASE )
+			if ( objType == OBJECT_TYPE::BASE 
+				|| objType == OBJECT_TYPE::DESK_BASE 
+				|| objType == OBJECT_TYPE::FOREST_BASE
+				|| objType == OBJECT_TYPE::TOY_BASE)
 			{
 				out = Collision::GetFront( object[value]->GetMesh(), pos );
 			}
@@ -672,7 +713,10 @@ Stage*	stage = nullptr;
 			objType = object[value]->GetObjectType();
 
 			//	ベースのみ当たり判定
-			if ( objType == OBJECT_TYPE::BASE || objType == OBJECT_TYPE::DESK_BASE || objType == OBJECT_TYPE::FOREST_BASE )
+			if ( objType == OBJECT_TYPE::BASE 
+				|| objType == OBJECT_TYPE::DESK_BASE 
+				|| objType == OBJECT_TYPE::FOREST_BASE
+				|| objType == OBJECT_TYPE::TOY_BASE)
 			{
 				out = Collision::GetBack( object[value]->GetMesh(), pos );
 			}
@@ -697,7 +741,10 @@ Stage*	stage = nullptr;
 			objType = object[value]->GetObjectType();
 
 			//	ベースのみ当たり判定
-			if ( objType == OBJECT_TYPE::BASE || objType == OBJECT_TYPE::DESK_BASE || objType == OBJECT_TYPE::FOREST_BASE )
+			if ( objType == OBJECT_TYPE::BASE 
+				|| objType == OBJECT_TYPE::DESK_BASE 
+				|| objType == OBJECT_TYPE::FOREST_BASE
+				|| objType == OBJECT_TYPE::TOY_BASE)
 			{
 				out = Collision::GetRight( object[value]->GetMesh(), pos );
 			}
@@ -723,7 +770,10 @@ Stage*	stage = nullptr;
 			objType = object[value]->GetObjectType();
 
 			//	ベースのみ当たり判定
-			if ( objType == OBJECT_TYPE::BASE || objType == OBJECT_TYPE::DESK_BASE || objType == OBJECT_TYPE::FOREST_BASE )
+			if ( objType == OBJECT_TYPE::BASE 
+				|| objType == OBJECT_TYPE::DESK_BASE 
+				|| objType == OBJECT_TYPE::FOREST_BASE
+				|| objType == OBJECT_TYPE::TOY_BASE)
 			{
 				out = Collision::GetLeft( object[value]->GetMesh(), pos );
 			}
