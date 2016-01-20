@@ -42,7 +42,7 @@
 	{
 		org[BULLET_TYPE::SQUIRREL_01] = new iexMesh("DATA/BG/Bullet/bulletEx.imo");
 		org[BULLET_TYPE::THIEF_01] = new iexMesh("DATA/Effect/kq_tramp/tramp.imo");
-		org[BULLET_TYPE::THIEF_02] = new iexMesh("DATA/Effect/kq_hat/k_arm.imo");
+		org[BULLET_TYPE::THIEF_02] = new iexMesh("DATA/Effect/kq_hat/hat.imo");
 		org[BULLET_TYPE::THIEF_03] = new iexMesh("DATA/Effect/k_arm/k_arm2.imo");
 		//org[BULLET_TYPE::THIEF_03] = new iexMesh("DATA/Effect/kq_arm/kq_arm.imo");
 		org[BULLET_TYPE::THIEF_04] = new iexMesh("DATA/Effect/kq_hand(‰¼)/hand.imo");
