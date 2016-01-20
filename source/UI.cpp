@@ -651,7 +651,7 @@
 		int h = static_cast<int>( iexSystem::ScreenHeight * 0.27f );
 		ImageInitialize( alertImage, x, y, w, h, 0, 0, 256, 256 );
 		alertImage.renderflag = true;
-		ImageInitialize(alert_coinImage, x, y, w, h, 0, 0, 256, 256);
+		ImageInitialize(alert_coinImage, x, y, w, h, 0, 0, 512, 512);
 		alert_coinImage.renderflag = true;
 	}
 
@@ -694,7 +694,7 @@
 		{
 			lifeInfo[value].life = gameManager->GetStartLife( value );
 			lifeInfo[value].lifeImage.obj = life;
-			ImageInitialize( lifeInfo[value].lifeImage, 0, 0, 50, 50, 0, 0, 64, 64 );
+			ImageInitialize( lifeInfo[value].lifeImage, 0, 0, 75, 75, 0, 0, 64, 64 );
 		}
 	}
 
@@ -1213,7 +1213,7 @@
 			{
 
 				//	１０の位描画
-				int		sx = 10 * 64;		//	×
+				int		sx = 12 * 64;		//	？
 				int		sy = coinNumInfo[value].ten.sy;
 				int		sw = coinNumInfo[value].ten.sw;
 				int		sh = coinNumInfo[value].ten.sh;
@@ -1328,13 +1328,13 @@
 			//　フィルタ色設定、フィルタ描画、警告画像描画
 			color = GetColor(1.0f, 0.0f, 0.0f, alertInfo.alpha);	//　赤
 			iexPolygon::Rect(0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, RS_COPY, color);
-			RenderImage(alertImage, 0, 0, 256, 256, IMAGE_MODE::NORMAL);
+			RenderImage(alertImage, alert_coinImage.sx, alert_coinImage.sy, alertImage.sw, alertImage.sh, IMAGE_MODE::NORMAL);
 			break;
 
 		case ALERT_TYPE_INFO::COIN:
 			color = GetColor(1.0f, 1.0f, 0.0f, alertInfo.alpha);	//　黄
 			iexPolygon::Rect(0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, RS_COPY, color);
-			RenderImage(alert_coinImage, 0, 0, 256, 256, IMAGE_MODE::NORMAL);
+			RenderImage(alert_coinImage, alert_coinImage.sx, alert_coinImage.sy, alert_coinImage.sw, alert_coinImage.sh, IMAGE_MODE::NORMAL);
 			break;
 
 			//　ミッションイベント演出
