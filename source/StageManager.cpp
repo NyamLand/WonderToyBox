@@ -14,7 +14,8 @@
 		enum
 		{
 			TYPE_DESK,
-			TYPE_FOREST
+			TYPE_FOREST,
+			TYPE_TOY
 		};
 	}
 	
@@ -60,6 +61,14 @@
 			obj_ex1->SetScale( STAGE_DATA::SCALE_FOREST );
 			iexLight::DirLight(shader3D, 0, &dir, 0.5f, 0.5f, 0.5f);
 			break;
+
+		case STAGE_DATA::TYPE_TOY:	//	おもちゃステージ
+			obj_collision = new iexMesh("DATA/BG/stage_toy/Collision_stage_toy.IMO");
+			obj_stage = new iexMesh("DATA/BG/stage_toy/stage_toy.IMO");
+			obj_ex1 = nullptr;
+			obj_stage->SetAngle(D3DX_PI);
+			iexLight::DirLight(shader3D, 0, &dir, 1.5f, 1.5f, 1.5f);
+			break;
 		}
 
 		//　読み込みチェック
@@ -103,6 +112,10 @@
 		case STAGE_DATA::TYPE_FOREST:
 			StageForestUpdate();
 			break;
+
+		case STAGE_DATA::TYPE_TOY:
+			StageToyUpdate();
+			break;
 		}
 		
 		//　モデルの通常更新
@@ -122,6 +135,12 @@
 	{
 		//　川の流れ（UVアニメ）
 		_adjustV -= 0.001f;
+
+	}
+
+	//　おもちゃ
+	void StageManager::StageToyUpdate(void)
+	{
 
 	}
 

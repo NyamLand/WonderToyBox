@@ -35,6 +35,7 @@ namespace
 			YELLOW_BLOCK,
 			DESK_BASE,
 			FOREST_BASE,
+			TOY_BASE,
 			END,
 		};
 	}

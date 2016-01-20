@@ -27,7 +27,8 @@ public:
 	//　更新
 	void Update();
 	void StageDeskUpdate();
-	void StageForestUpdate();	
+	void StageForestUpdate();
+	void StageToyUpdate();
 
 	//　描画
 	void Render( iexShader* shader = nullptr, LPSTR technique = nullptr );
