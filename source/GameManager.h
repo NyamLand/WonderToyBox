@@ -52,6 +52,7 @@ namespace
 			ROUND1,
 			ROUND2,
 			ROUND_FINAL,
+			END,
 		};
 	}
 

@@ -126,13 +126,13 @@
 		optionMenu = new iex2DObj("DATA/UI/option-int.png");
 
 		//	モデル読み込み
-		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/Knight/Knight_Dammy.IEM" ) );		//	掃除屋
+		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/majo/majo.IEM" ) );		//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/プリンセス/prinsess.IEM" ) );					//	姫
 		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>(LPSTR("DATA/CHR/SQUIRREL/SQUIRREL.IEM"));		//	リス
 		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>(LPSTR("DATA/CHR/ECCMAN/ECCMAN.IEM"));				//	海賊
 
 		//	オリジナルモデル情報初期化
-		org[CHARACTER_TYPE::SCAVENGER]->SetScale( 0.05f );	//	掃除屋
+		org[CHARACTER_TYPE::SCAVENGER]->SetScale( 0.01f );	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->SetScale( 0.02f );		//	姫
 		org[CHARACTER_TYPE::THIEF]->SetScale(0.04f);		//	リス
 		org[CHARACTER_TYPE::PIRATE]->SetScale(0.02f);			//	海賊
@@ -154,6 +154,7 @@
 
 		deskStage = make_unique<iexMesh>( LPSTR( "DATA/BG/stage-desk/stage.IMO" ) );
 		forestStage = make_unique<iexMesh>( LPSTR( "DATA/BG/Forest/model/forest.IMO" ) );
+		toyStage = make_unique<iexMesh>(LPSTR("DATA/BG/stage_toy/stage_toy.IMO"));
 		BG = make_unique<iexMesh>( LPSTR( "DATA/BG/MenuStage/menustage.IMO" ) );
 
 		//	机モデル初期化
@@ -605,16 +606,22 @@
 	void	sceneMenu::SelectStageInitialize( void )
 	{
 		//	机モデル初期化
-		deskStage->SetPos( -5.0f, 10.0f, 15.0f );
+		deskStage->SetPos( -10.0f, 9.0f, 15.0f );
 		deskStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 		deskStage->SetScale( 0.1f );
 		deskStage->Update();
 
 		//	森モデル初期化
-		forestStage->SetPos( 5.0f, 10.0f, 15.0f );
+		forestStage->SetPos( 0.0f, 10.0f, 15.0f );
 		forestStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 		forestStage->SetScale( 0.04f );
 		forestStage->Update();
+
+		//　おもちゃモデル初期化
+		toyStage->SetPos(10.0f, 9.0f, 15.0f);
+		toyStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
+		toyStage->SetScale(0.025f);
+		toyStage->Update();
 
 		//	パラメータ初期化
 		stageSelectInfo.angle = D3DX_PI;
@@ -634,11 +641,19 @@
 		case 0:
 			deskStage->SetAngle( D3DXToRadian( 30.0f ), stageSelectInfo.angle, 0.0f );
 			forestStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
+			toyStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
 			break;
 
 		case 1:
 			deskStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 			forestStage->SetAngle( D3DXToRadian( 30.0f ), stageSelectInfo.angle, 0.0f );
+			toyStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
+			break;
+
+		case 2:
+			deskStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
+			forestStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
+			toyStage->SetAngle(D3DXToRadian(30.0f), stageSelectInfo.angle, 0.0f);
 			break;
 		}
 
@@ -657,8 +672,8 @@
 			}
 
 			//	上限・下限設定
-			if ( stageSelectInfo.stage >= 2 )	stageSelectInfo.stage = 0;
-			if ( stageSelectInfo.stage < 0 )		stageSelectInfo.stage = 1;
+			if ( stageSelectInfo.stage >= 3 )	stageSelectInfo.stage = 0;
+			if ( stageSelectInfo.stage < 0 )		stageSelectInfo.stage = 2;
 		}
 
 		//	決定
@@ -668,8 +683,9 @@
 			gameManager->SetStageType( stageSelectInfo.stage );
 
 			//	モデルの角度を戻す
-			forestStage->SetAngle( D3DXToRadian( 5.0f ), D3DX_PI, 0.0f );
 			deskStage->SetAngle( D3DXToRadian( 5.0f ), D3DX_PI, 0.0f );
+			forestStage->SetAngle( D3DXToRadian( 5.0f ), D3DX_PI, 0.0f );
+			toyStage->SetAngle(D3DXToRadian(5.0f), D3DX_PI, 0.0f);
 
 			//	次のモードへ
 			bgInfo.t = 0.0f;
@@ -690,6 +706,7 @@
 		//	ステージ更新
 		deskStage->Update();
 		forestStage->Update();
+		toyStage->Update();
 	}
 
 	//	ステージ選択描画
@@ -703,6 +720,7 @@
 
 		deskStage->Render();
 		forestStage->Render();
+		toyStage->Render();
 	}
 
 //-------------------------------------------------------------------------------
@@ -742,6 +760,10 @@
 			forestStage->SetAngle(D3DXToRadian(30.0f), D3DXToRadian(-100.0f), 0.0f);
 			forestStage->SetScale( 0.03f );
 			forestStage->Update();
+			toyStage->SetPos(5.0f, 10.0f, 3.0f);
+			toyStage->SetAngle(D3DXToRadian(30.0f), D3DXToRadian(-100.0f), 0.0f);
+			toyStage->SetScale(0.015f);
+			toyStage->Update();
 		}
 
 		//	カーソル初期化
@@ -857,6 +879,7 @@
 		{
 		case 0:		deskStage->Render();		break;
 		case 1:		forestStage->Render();		break;
+		case 2:		toyStage->Render();		break;
 		}
 
 		//	プレイヤー描画

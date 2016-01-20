@@ -11,6 +11,7 @@
 #include	"BaseBullet.h"
 #include	"Thief_Bullet03.h"
 #include	"BulletManager.h"
+#include	"Stage.h"
 
 Thief_Bullet03::Thief_Bullet03() :growSpeed(0.0f), checkMax(false), checkMin(false)
 {
@@ -61,7 +62,7 @@ void	Thief_Bullet03::ControlScale(void)
 	move = front * addLength;
 
 
-	if (!Collision::CheckWall(pos, move))
+	if (!stage->CheckWall(pos,move))
 	{
 		pos += move;;
 		scale.z += addLength * 0.005f;

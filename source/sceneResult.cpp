@@ -161,6 +161,9 @@
 		//	レンダーターゲット関連初期化
 		RenderTargetTextureInitialize();
 
+		//	ラウンド関連初期化
+		RoundInfoInitialize();
+
 		//	変数初期化
 		lastBonus = 0;
 		step = 0;
@@ -205,7 +208,7 @@
 	void	sceneResult::Load( void )
 	{
 		//	画像読み込み
-		back = make_unique<iex2DObj>( LPSTR("DATA/UI/back.png") );
+		back = make_unique<iex2DObj>( LPSTR( "DATA/UI/back.png" ) );
 		menuHead.obj = new iex2DObj("DATA/UI/menu/menu-head.png");
 		originNumber = new iex2DObj("DATA/UI/number.png");
 		menuText = new iex2DObj("DATA/UI/result/result-cho.png");
@@ -213,7 +216,7 @@
 		life = new iex2DObj("DATA/UI/Nlife.png");
 		check = new iex2DObj( "DATA/UI/Result/check.png" );
 		orgRound = new iex2DObj( "DATA/UI/roundText.png" );
-		orgCurtain = new iex2DObj( "DATA/UI/curtain1.png" );
+		orgCurtain = new iex2DObj( "DATA/UI/title/curtain1.png" );
 
 		//	構造体初期化
 		int x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
@@ -224,7 +227,7 @@
 		menuHead.angle = D3DXToRadian( 7.0f );
 
 		//	モデル読み込み
-		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>(LPSTR("DATA/CHR/Knight/Knight_Dammy.IEM"));			//	掃除屋
+		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>(LPSTR("DATA/CHR/majo/majo.IEM"));			//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>(LPSTR("DATA/CHR/プリンセス/prinsess1.IEM"));					//	姫
 		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>(LPSTR("DATA/CHR/Thief/Thief.IEM"));				//	リス
 		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>(LPSTR("DATA/CHR/ECCMAN/ECCMAN.IEM"));					//	トラ
@@ -236,7 +239,7 @@
 		bgStage->Update();
 
 		//	オリジナルモデル情報初期化
-		org[CHARACTER_TYPE::SCAVENGER]->SetScale(0.05f);	//	掃除屋
+		org[CHARACTER_TYPE::SCAVENGER]->SetScale(0.01f);	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->SetScale(0.04f);		//	姫
 		org[CHARACTER_TYPE::THIEF]->SetScale(0.03f);				//	怪盗
 		org[CHARACTER_TYPE::PIRATE]->SetScale(0.02f);				//	トラ
@@ -605,6 +608,27 @@
 		SetVertex( curtainInfoR.tlv[3], ( float )curtainPosInfo.rightPos, ( float )curtainPosInfo.underPosY, 0, 0, 1, 0xFFFFFFFF );
 	}
 
+	//	ラウンド関連初期化
+	void	sceneResult::RoundInfoInitialize( void )
+	{
+		int x = static_cast<int>( iexSystem::ScreenWidth * 0.2f );
+		int y = static_cast<int>( iexSystem::ScreenHeight * 0.3f );
+		int w = static_cast<int>( iexSystem::ScreenWidth * 0.3f );
+		int h = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
+		int sx = 0;
+		int sy;
+		int sw = 512;
+		int sh = 128;
+
+		FOR( 0, Round::END ) 
+		{
+			y = static_cast<int>( iexSystem::ScreenHeight * 0.3f ) + ( static_cast<int>( iexSystem::ScreenHeight * 0.3f ) * value );
+			sy = sh * value;
+			ImageInitialize( roundImage[value], x, y, w, h, sx, sy, sw, sh );
+			roundImage[value].obj = orgRound;
+		}
+	}
+
 //----------------------------------------------------------------------------
 //	全体更新・全体描画
 //----------------------------------------------------------------------------
@@ -652,15 +676,22 @@
 			break;
 
 		case MOVE_MODE::LAST_RESULT:
-			LastResultRender();
 			break;
 		}
+		LastResultRender();
+
+		//	フレームバッファへ切り替え
+		iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );
+		mainView->Activate();
+		mainView->Clear();
 
 		//	カーテン描画
-		CurtainRender();
+		//CurtainRender();
+
+		lastResultTest->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight );
 
 		//	メニュー項目描画
-		SelectRender();
+		//SelectRender();
 	}
 
 //----------------------------------------------------------------------------
@@ -781,6 +812,11 @@
 		//	カメラ
 		view2D->Activate();
 		view2D->Clear();
+
+		//	背景( 一番後ろに表示 )
+		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
+		back->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 1280, 720 );
+		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
 
 		//	プレイヤー描画
 		FOR( 0, PLAYER_MAX )
@@ -924,8 +960,15 @@
 		viewTest->Clear();
 
 		//	背景描画
+		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
+		back->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 1280, 720 );
+		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
 		
 		//	ラウンド描画
+		FOR( 0, Round::END )
+		{
+			RenderImage( roundImage[value], roundImage[value].sx, roundImage[value].sy, roundImage[value].sw, roundImage[value].sh, IMAGE_MODE::NORMAL );
+		}
 
 		//	数値描画
 

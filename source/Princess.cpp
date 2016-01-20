@@ -4,6 +4,8 @@
 #include	"Collision.h"
 #include	"Particle.h"
 #include	"Princess.h"
+#include	"CoinManager.h"
+#include	"GameManager.h"
 
 //*********************************************************************************
 //
@@ -15,7 +17,7 @@
 //	グローバル
 //-----------------------------------------------------------------------------------
 
-#define	POWER_ARTS_RADIUS	6.0f
+#define	POWER_ARTS_RADIUS	8.0f
 
 	namespace
 	{
@@ -128,7 +130,7 @@
 	//	パワーアーツ
 	bool	Princess::PowerArts( void )
 	{
-		power = POWER;
+		power = 0;
 		Vector3	p_pos = GetPos();
 		attackInfo.pos = Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z );
 		SetMove( Vector3( 0.0f, 0.0f, 0.0f ) );
@@ -140,7 +142,25 @@
 		attackInfo.t += 0.02f;
 
 		//	エフェクト
-		particle->FlowerDisseminate( attackInfo.pos, attackInfo.r, 1.0f, Vector3( 1.0f, 0.4f, 0.4f ) );
+		particle->FlowerDisseminate( attackInfo.pos, attackInfo.r, 0.7f, Vector3( 1.0f, 0.4f, 0.4f ) );
+
+		//範囲内にあるコインを取得
+		list<Coin*>	coinList = coinManager->GetList();
+		FOR_LIST(coinList.begin(), coinList.end())
+		{
+			bool	state = (*it)->GetState();
+			if (state)
+			{
+				if (Collision::DistCheck(attackInfo.pos, (*it)->GetPos(), attackInfo.r))
+				{
+					(*it)->SetState(false);
+					gameManager->SubCoin(playerNum);
+				}
+			}
+		}
+
+		//相手を混乱状態に
+		attackInfo.addParam = PARAMETER_STATE::CONFUSION;
 
 		//	無敵状態
 		if (attackInfo.t <= 0.5f)		SetParameterState(PARAMETER_STATE::UNRIVALED);
@@ -251,11 +271,11 @@
 
 		case MODE_STATE::POWERARTS:
 			attackInfo.type = Collision::SPHEREVSCAPSULE;
-			knockBackInfo.type = KNOCKBACK_TYPE::STRENGTH;
+			knockBackInfo.type = KNOCKBACK_TYPE::NONE;
 			break;
 
 		case MODE_STATE::HYPERARTS:
-			attackInfo.type = Collision::SPHEREVSCYRINDER;
+			attackInfo.type = Collision::SPHEREVSCAPSULE;
 			knockBackInfo.type = KNOCKBACK_TYPE::STRENGTH;
 			break;
 		}

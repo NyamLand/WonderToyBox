@@ -11,6 +11,7 @@
 #include	"BaseBullet.h"
 #include	"BulletManager.h"
 #include	"Thief_Bullet01.h"
+#include	"Stage.h"
 
 
 
@@ -44,7 +45,7 @@ void	Thief_Bullet01::Update(void)
 
 	liveTime++;
 
-	if (!StageCollisionCheck() && !Collision::CheckWall(pos,move))	PlayerCollisionCheck();	//壁にも地面にも触れていないときプレイヤーとあたり判定を取る
+	if (move.Length() > 0.0f )	PlayerCollisionCheck();	//壁にも地面にも触れていないときプレイヤーとあたり判定を取る
 
 
 	obj->SetAngle(angle);
@@ -84,7 +85,7 @@ void	Thief_Bullet01::Move(void)
 		break;
 	}
 
-	if (StageCollisionCheck() || Collision::CheckWall(pos, move))	move = Vector3(0, 0, 0);	//壁か地面に触れると停止
+	if (StageCollisionCheck()/* || stage->CheckWall(pos, move)*/)	move = Vector3(0, 0, 0);	//壁か地面に触れると停止
 	pos += move;
 }
 
