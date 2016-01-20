@@ -136,7 +136,7 @@ private:
 	NUMBER_INFO					roundCoinNumber[3][4];
 	NUMBERIMAGE_INFO		numberImageInfo[4];
 	NUMBERIMAGE_INFO		bonusNumberImageInfo[4];
-	NUMBERIMAGE_INFO		roudCoinNumberImageInfo[3][4];
+	NUMBERIMAGE_INFO		roundCoinNumberImageInfo[3][4];
 	ROULETTE_INFO				rouletteInfo;
 	MENU_INFO						menuInfo;
 	VIEW_RANK_INORDER	viewRankInOrder;
@@ -211,6 +211,7 @@ public:
 	void	MenuInfoInitialize( void );
 	void RouletteInfoInitialize( void );
 	void	CurtainInfoInitialize( void );
+	void	RoundInfoInitialize( void );
 	void	Load( void );
 
 	//	全体更新・描画

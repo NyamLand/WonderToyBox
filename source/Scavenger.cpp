@@ -224,7 +224,7 @@ bool	Scavenger::HyperArts( void )
 	//–³“G”»’è‚ðØ‚ç‚È‚¢‚Æ‚»‚à‚»‚àƒRƒCƒ“‚ðW‚ß‚ç‚ê‚È‚¢‚Ì‚Å–³“GØ‚Á‚Ä‚Ü‚·B
 	//–â‘è‚È‚çŒ¾‚Á‚Ä‚­‚¾‚³‚¢
 	SetUnrivaled(false);
-	absorb_length = 10.0f;
+	absorb_length = 20.0f;
 	stayTime++;
 
 	m_Effect->StormSet(this->pos + Vector3(0.0f, 2.0f, 0.0f) , 2 * SECOND);
@@ -236,7 +236,7 @@ bool	Scavenger::HyperArts( void )
 		{
 			Vector3 vec = ( *it )->GetPos() - this->pos;
 			
-			vec.Normalize();
+			//vec.Normalize();
 			float length = vec.Length();
 			if ( length < absorb_length )
 			{
