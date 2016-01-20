@@ -136,7 +136,7 @@ void	Event_Coin::Wave(void)
 	const float power = 0.2f;
 	const Vector3	vec = Vector3(0.0f, -0.1f, 0.0f);
 	const int POINT_MAX = 5;
-	const const Vector3 point[] = {
+	const Vector3 point[] = {
 		Vector3(-STAGE_X_MAX, COIN_APPEAR_HEIGHT, 10.0f),
 		Vector3( STAGE_X_MAX, COIN_APPEAR_HEIGHT, 10.0f - STAGE_POINTS_DIST_Z * 1),
 		Vector3(-STAGE_X_MAX, COIN_APPEAR_HEIGHT, 10.0f - STAGE_POINTS_DIST_Z * 2),
