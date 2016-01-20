@@ -271,13 +271,7 @@
 			OptionUpdate();
 			break;
 		}
-		Vector3 out, pos, vec;
-		float dist;
-		pos = bgInfo.cpos;
-		vec = CAMERA_TARGET::right;
-		dist = 1000.0f;
-		BG->RayPick(&out, &pos, &vec, &dist);
-		printf("%f,%f,%f\n", out.x, out.y, out.z);
+		
 	}
 
 	//	•`‰æ
