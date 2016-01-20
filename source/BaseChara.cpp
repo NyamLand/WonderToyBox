@@ -573,8 +573,8 @@ namespace
 		SetMotion(MOTION_NUM::POSTURE);
 
 		//SetParameterState(PARAMETER_STATE::UNRIVALED);
-		SetDrag(1.0f);
-		if (move.y <= 0.01f && isGround)
+		SetDrag(1.0f);	//ˆêŽž“I‚ÉR—Í‚È‚­‚·
+		if (/*move.y <= 0.01f && */isGround)
 		{
 			move = Vector3(0.0f, 0.0f, 0.0f);
 			damageStep = 0;
@@ -674,6 +674,8 @@ namespace
 			attackInfo.type = 0;
 			attackInfo.pos = Vector3(0.0f, 0.0f, 0.0f);
 			attackInfo.addParam = -1;
+			attackInfo.top = Vector3(0.0f, 0.0f, 0.0f);
+			attackInfo.bottom = Vector3(0.0f, 0.0f, 0.0f);
 			knockBackInfo.type = 0;
 			SetUnrivaled(false);
 		}

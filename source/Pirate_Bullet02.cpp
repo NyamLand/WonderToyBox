@@ -16,7 +16,7 @@ Pirate_Bullet02::Pirate_Bullet02()
 {
 	radius		=	BULLET_RADIUS		[	BULLET_TYPE::PIRATE_02	];
 	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::PIRATE_02	];
-	scale		=	Vector3(0.05f, 0.05f, 0.05f);
+	scale		=	Vector3(0.01f, 0.01f, 0.01f);
 	leanpower	=	0;
 	for (int i = 0; i < PLAYER_MAX; i++)
 	{

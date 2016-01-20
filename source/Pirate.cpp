@@ -148,23 +148,32 @@ bool	Pirate::QuickArts(void)
 bool	Pirate::PowerArts(void)
 {
 	float run_speed = 0.5f;
+	SetUnrivaled(false);
 
 	//	行列から前方取得
 	SetMove(Vector3(0.0f, 0.0f, 0.0f));
 	Vector3	front = GetFront();
-	Vector3	p_pos = GetPos();
+	Vector3	right = GetRight();
+	Vector3	p_pos = GetPos() + front * 2.0f;
 
 	//	あたり判定のパラメータを与える
-	attackInfo.r = 1.0f;
+	attackInfo.r = 2.0f;
 	attackInfo.bottom = p_pos;
 	attackInfo.top = attackInfo.bottom + Vector3(0.0f,3.0f,0.0f);
+
+	attackInfo.bottom = p_pos - right * 2.0f;
+	attackInfo.top = attackInfo.bottom + right * 4.0f;
+
+
+	static	float adjustSpeed = 0.02f;
+	AngleAdjust(adjustSpeed);
 
 	//	パラメータ加算
 	attackInfo.t += 0.015f;
 
-	move = front * run_speed;
+	if (attackInfo.t < 1.0f)move = front * run_speed;
 
-	if (attackInfo.t >= 1.0f)	return	true;
+	if (attackInfo.t >= 1.5f)	return	true;
 	return	false;
 }
 
@@ -255,8 +264,6 @@ void	Pirate::SetAttackParam(int attackKind)
 	{
 	case MODE_STATE::QUICKARTS:
 		attackInfo.type = Collision::SPHEREVSCAPSULE;
-		if (attackInfo.t < 0.6) knockBackInfo.type = KNOCKBACK_TYPE::LEANBACKWARD;	//2Hitまでは仰け反りのみ
-		if (attackInfo.t >= 0.6) knockBackInfo.type = KNOCKBACK_TYPE::WEAK;		//3hit目からは吹き飛ばしあり
 		break;
 
 	case MODE_STATE::POWERARTS:
