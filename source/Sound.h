@@ -26,6 +26,11 @@ namespace
 			CANCEL_SE,
 			EVENT_SE,
 			HIT_SE,
+
+			GAMESET_SE,
+			CHOICE_SE,
+			GUARD_SE,
+
 			END,
 		};
 	}
