@@ -1,11 +1,22 @@
 attack-h	→ハイパーヒット時
 attack-p	→パワーヒット時
 attack-q	→クイックヒット時
+[NEW]choice	→メニュー選択時
 coin		→コイン獲得
 decide		→決定
-item-get	→アイテム獲得
+[NEW]dramroll	→リザルト時ドラムロール
 event		→イベント発生
+GameSet		→ゲーム終了時
+GameStart	→ゲームスタート時
+guard		→ガード時
+hyper-attack	→必殺技発動時
+item-get	→アイテム獲得
+result-jan	→リザルト数値発表時
 
 
-BattleBGM	→戦闘用BGM
+
+FightBGM	→戦闘用BGM
+FinalRoundBGM	→最終ラウンド限定BGM
 MenuBGM		→メニュー用BGM
+ResultBGM	→リザルト用BGM
+TitleBGM	→タイトル用BGM

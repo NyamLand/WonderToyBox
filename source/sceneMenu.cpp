@@ -52,6 +52,16 @@
 			Vector3 left(1.0f, 0.0f, 0.0f);
 			Vector3 up(0.0f, 1.0f, 0.0f);
 		}
+		namespace CHARA_ANGLE
+		{
+			float Player_ANGLE[4] = {
+				(D3DXToRadian(60.0f)),
+				(D3DXToRadian(90.0f)),
+				(D3DXToRadian(90.0f)),
+				(D3DXToRadian(120.0f)),
+			};
+
+		}
 		namespace CHECK_MODE
 		{
 			enum
@@ -260,6 +270,13 @@
 			OptionUpdate();
 			break;
 		}
+		Vector3 out, pos, vec;
+		float dist;
+		pos = bgInfo.cpos;
+		vec = CAMERA_TARGET::right;
+		dist = 1000.0f;
+		BG->RayPick(&out, &pos, &vec, &dist);
+		printf("%f,%f,%f\n", out.x, out.y, out.z);
 	}
 
 	//	描画
@@ -367,6 +384,7 @@
 			//	選択
 			if ( input[0]->Get( KEY_DOWN ) == 1 )
 			{
+				sound->PlaySE(SE::CHOICE_SE);
 				//	元の座標を保存
 				playerNumSelectInfo.saveY =  128 * playerNumSelectInfo.num;
 				playerNumSelectInfo.num++;
@@ -383,6 +401,7 @@
 
 			if ( input[0]->Get( KEY_UP ) == 1 )
 			{
+				sound->PlaySE(SE::CHOICE_SE);
 				//	元の座標を保存
 				playerNumSelectInfo.saveY = 128 * playerNumSelectInfo.num;
 				playerNumSelectInfo.num--;
@@ -446,16 +465,20 @@
 		{
 			//	モデル登録、初期化
 			obj[value] = org[value]->Clone();
-			obj[value]->SetPos( 5.0f , 10.0f, 0.0f/*+ ( 14.0f / 3.0f * value )*/ );
+			obj[value]->SetAngle(0.0f, D3DXToRadian(100.0f), 0.0f);
+			//obj[value]->SetPos( -10.0f , 5.0f,-7.0f + 5.0f * value  );
 			obj[value]->Update();
 
 
 			//	選択情報初期化
 			characterSelectInfo.character[value] = value;
 			characterSelectInfo.select[value] = false;
-			int w = static_cast<int>( iexSystem::ScreenWidth * 0.04f );
-			int h = static_cast<int>( iexSystem::ScreenHeight * 0.07f );
-			ImageInitialize( cursorImage[value], 0, 0, w, h, 0, 0, 0, 0 );
+			
+		
+				int w = static_cast<int>(iexSystem::ScreenWidth * (0.04f));
+				int h = static_cast<int>(iexSystem::ScreenHeight * (0.07f));
+				ImageInitialize(cursorImage[value], 0, 0, w, h, 0, 0, 0, 0);
+			
 			cursorImage[value].obj = cursor;
 
 			if ( value >= gameManager->GetPlayerNum() )
@@ -501,8 +524,14 @@
 			if ( characterSelectInfo.select[value] )	continue;
 
 			//	カーソル移動
-			if ( input[value]->Get( KEY_RIGHT ) == 3 )	characterSelectInfo.character[value]++;
-			if ( input[value]->Get( KEY_LEFT ) == 3 )		characterSelectInfo.character[value]--;
+			if (input[value]->Get(KEY_RIGHT) == 3)	{
+				sound->PlaySE(SE::CHOICE_SE);
+				characterSelectInfo.character[value]++;
+			}
+			if (input[value]->Get(KEY_LEFT) == 3){
+				sound->PlaySE(SE::CHOICE_SE);
+				characterSelectInfo.character[value]--;
+			}
 
 			//	上限・下限設定
 			if ( characterSelectInfo.character[value] < 0 )	characterSelectInfo.character[value] = CHARACTER_TYPE::MAX - 1;
@@ -562,8 +591,10 @@
 		FOR( 0, PLAYER_MAX )
 		{
 			obj[value]->Animation();
-			obj[value]->SetPos( -7.0f + ( 14.0f / 3.0f * value ), 0.0f, 0.0f );
+			obj[value]->SetPos(-10.0f, 5.0f, -7.0f + 5.0f * value);
+			obj[value]->SetAngle(0.0f, CHARA_ANGLE::Player_ANGLE[value], 0.0f);
 			obj[value]->Update();
+
 		}
 	}
 
@@ -589,10 +620,11 @@
 			//	カーソル描画
 		FOR( 0, PLAYER_MAX )
 		{
-			cursorImage[value].x = faceImage[characterSelectInfo.character[value]].x;
+			cursorImage[value].x = faceImage[characterSelectInfo.character[value]].x-faceImage[characterSelectInfo.character[value]].w/2;
 			cursorImage[value].y = faceImage[characterSelectInfo.character[value]].y - faceImage[characterSelectInfo.character[value]].h / 2;
 			if ( characterSelectInfo.select[value] )	cursorImage[value].color = Vector3( 0.5f, 0.5f, 0.5f );	//	決定時明度下げる
 			RenderImage( cursorImage[value], 128 * ( value % 2 ), 128 * ( value / 2 ), 128, 128, IMAGE_MODE::NORMAL );
+			//RenderImage(cursorImage[value], 128 * ( value % 2 ), 128 * value, 128, 128, IMAGE_MODE::NORMAL);
 		}
 
 	}
@@ -646,12 +678,14 @@
 		{
 			if ( KEY( KEY_RIGHT ) == 3 )
 			{
+				sound->PlaySE(SE::CHOICE_SE);
 				stageSelectInfo.angle = D3DX_PI;
 				stageSelectInfo.stage++;
 			}
 
 			if ( KEY( KEY_LEFT ) == 3 )
 			{
+				sound->PlaySE(SE::CHOICE_SE);
 				stageSelectInfo.angle = D3DX_PI;
 				stageSelectInfo.stage--;
 			}
@@ -720,7 +754,7 @@
 		FOR( 0, PLAYER_MAX )
 		{
 			obj[value] = org[gameManager->GetCharacterType( value )]->Clone();
-			obj[value]->SetPos( 5.0f , 5.0f, 5.0f + ( 14.0f / 3.0f * value ) );
+			obj[value]->SetPos(5.0f, 5.0f, 4.0f - 2.5f * value);
 			obj[value]->Update();
 			WorldToClient( obj[value]->GetPos(), cursorPos[value], matView * matProjection );
 		}
@@ -771,6 +805,7 @@
 		//	決定（はい：メインへ、いいえ：キャラ選択へ）
 		if ( input[0]->Get( KEY_A ) == 3 || input[0]->Get( KEY_SPACE ) == 3 )
 		{
+			
 			//	確認表示
 			if ( !checkSelectInfo.check )
 			{
@@ -793,12 +828,7 @@
 					bgInfo.t = 0.0f;
 					bgInfo.start = CAMERA_TARGET::left;
 					bgInfo.end = CAMERA_TARGET::back;
-					if (bgInfo.t >= 1.0f){
-						bgInfo.t = 0.0f;
-						bgInfo.start = CAMERA_TARGET::back;
-						bgInfo.end = CAMERA_TARGET::right;
-						SetMode( MENU_MODE::SELECT_CHARACTER );
-					}
+					SetMode( MENU_MODE::SELECT_STAGE );
 				}
 			}
 		}
@@ -809,6 +839,7 @@
 		{
 			if ( input[0]->Get( KEY_RIGHT ) == 3 || input[0]->Get( KEY_LEFT ) == 3 )
 			{
+				sound->PlaySE(SE::CHOICE_SE);
 				checkSelectInfo.select = !checkSelectInfo.select;
 			}
 
@@ -835,6 +866,7 @@
 		FOR( 0, PLAYER_MAX )
 		{
 			obj[value]->Animation();
+			obj[value]->SetAngle(0.0f, D3DXToRadian(-100.0f), 0.0f);
 			obj[value]->Update();
 		}
 		break;
@@ -993,10 +1025,12 @@
 	void	sceneMenu::OptionUpdate( void )
 	{
 		if (KEY_Get(KEY_DOWN) == 3){
+			sound->PlaySE(SE::DECIDE_SE);
 			if (optionInfo.step<3)
 			optionInfo.step++;
 		}
 		if (KEY_Get(KEY_UP) == 3){
+			sound->PlaySE(SE::DECIDE_SE);
 			if (optionInfo.step>0){
 				optionInfo.step--;
 			}
@@ -1005,6 +1039,7 @@
 		switch (optionInfo.step){
 		case 0:
 			if (KEY_Get(KEY_RIGHT) == 3 || KEY_Get(KEY_LEFT) == 3){
+				sound->PlaySE(SE::CHOICE_SE);
 				if (optionInfo.itemflg == false){
 					optionInfo.itemflg = true;
 				}
@@ -1016,12 +1051,14 @@
 		case 1:
 			if ( KEY( KEY_RIGHT ) == 3 )
 			{
+				sound->PlaySE(SE::CHOICE_SE);
 				optionInfo.life++;
 				if ( optionInfo.life >= LIFE_MAX_NUM::END )		optionInfo.life = LIFE_MAX_NUM::LIFE_3;
 			}
 
 			if ( KEY( KEY_LEFT ) == 3 )
 			{
+				sound->PlaySE(SE::CHOICE_SE);
 				optionInfo.life--;
 				if ( optionInfo.life < LIFE_MAX_NUM::LIFE_3 )	optionInfo.life = LIFE_MAX_NUM::LIFE_5;
 			}
@@ -1029,20 +1066,24 @@
 		case 2:
 			if (KEY_Get(KEY_RIGHT) == 3){
 				if (optionInfo.minute<5){
+					sound->PlaySE(SE::CHOICE_SE);
 					optionInfo.minute++;
 				}
 			}
 			else if (KEY_Get(KEY_LEFT) == 3){
 				if (optionInfo.minute>1){
+					sound->PlaySE(SE::CHOICE_SE);
 					optionInfo.minute--;
 				}
 			}
 			break;
 		case 3:
 			if (KEY_Get(KEY_RIGHT) == 3){
+				sound->PlaySE(SE::CHOICE_SE);
 				optionInfo.second = 30;
 			}
 			else if (KEY_Get(KEY_LEFT) == 3){
+				sound->PlaySE(SE::CHOICE_SE);
 				optionInfo.second = 0;
 			}
 			break;
@@ -1052,68 +1093,7 @@
 			gameManager->SetTime(optionInfo.minute,optionInfo.second);
 	}
 
-	//	??
-/*void	sceneMenu::OptionDUpdate( void )
-	{
-		if (KEY_Get(KEY_DOWN) == 3){
-			if (optionInfo.step<3)
-				optionInfo.step++;
-		}
-		if (KEY_Get(KEY_UP) == 3){
-			if (optionInfo.step>0){
-				optionInfo.step--;
-			}
-		}
 
-		switch (optionInfo.step){
-		case 0:
-			if (KEY_Get(KEY_RIGHT) == 3 || KEY_Get(KEY_D) == 3){
-				if (optionInfo.itemflg == false){
-					optionInfo.itemflg = true;
-				}
-				else{
-					optionInfo.itemflg = false;
-				}
-			}
-			break;
-		case 1:
-			if (KEY_Get(KEY_RIGHT) == 3){
-				if (optionInfo.life<5){
-					optionInfo.life ++;
-				}
-			}
-			else if (KEY_Get(KEY_D) == 3){
-				if (optionInfo.coinMAX>200){
-					optionInfo.coinMAX -= 50;
-				}
-			}
-			break;
-		case 2:
-			if (KEY_Get(KEY_RIGHT) == 3){
-				if (optionInfo.minute<5){
-					optionInfo.minute++;
-				}
-			}
-			else if (KEY_Get(KEY_D) == 3){
-				if (optionInfo.minute>1){
-					optionInfo.minute--;
-				}
-			}
-			break;
-		case 3:
-			if (KEY_Get(KEY_RIGHT) == 3){
-				optionInfo.second = 30;
-			}
-			else if (KEY_Get(KEY_D) == 3){
-				optionInfo.second = 0;
-			}
-			break;
-		}
-		gameManager->SetItemFlg(optionInfo.itemflg);
-		gameManager->SetCoinMax(optionInfo.coinMAX);
-		gameManager->SetTime(optionInfo.minute, optionInfo.second);
-	}
-	*/
 	//	オプション描画
 	void	sceneMenu::OptionRender( void )
 	{
@@ -1129,8 +1109,8 @@
 			optionImage->Render(950, 150, 256, 128, 256, 128 * 3, 256, 128);
 
 		}
-		//コインMAXの描画
-		optionLife->Render(940,	350, 128, 128,optionInfo.life*64, 128 * 0, 64, 64);
+		//lifeMAXの描画
+		optionLife->Render(940,	350, 128, 128,(optionInfo.life+3)*64, 128 * 0, 64, 64);
 
 		TimerRender();
 		ArrowRender();
