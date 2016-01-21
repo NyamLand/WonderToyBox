@@ -70,6 +70,7 @@
 		round = 0;
 		timer = 0;
 		maxlife = LIFE_MAX_NUM::LIFE_5;
+		coinCollision = false;
 
 		//	ラストボーナス用カウント初期化
 		FOR( 0, PLAYER_MAX )
@@ -565,6 +566,12 @@
 		return	totalCoin[round][player];
 	}
 
+	//	コインとの当たり判定のON,OFF
+	bool		GameManager::GetCoinCollision( void )const
+	{
+		return	coinCollision;
+	}
+
 	//	実体取得
 	GameManager*	GameManager::GetInstance( void )
 	{
@@ -659,4 +666,10 @@
 	void	GameManager::SetTotalCoin( int round, int player, int total )
 	{
 		totalCoin[round][player] = total;
+	}
+
+	//	コイン当たり判定の状態習得
+	void	GameManager::SetCoinCollision( bool state )
+	{
+		coinCollision = state;
 	}

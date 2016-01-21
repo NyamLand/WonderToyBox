@@ -12,14 +12,20 @@ class sceneLoad : public	Scene
 private:
 	Scene*		newScene;		//	次のシーン
 	static bool	threadState;	//	スレッドの状態
-	bool		loadflg;		
-	ImageObj	load_anykey;	//	ボタン
+	
+	//	演出系
 	ImageObj	bgImage[2];
+	ImageObj	nowLoadingImage;
+	iex2DObj*	nowLoading;
 	int	timer;
+
 	float	t;
+	bool	loadflg;
 	bool	reverseFlag;
 	bool	isEnd;
 	bool	changeSceneFlag;
+	int	loadingTimer;
+	int	renderCount;
 
 public:
 	//	初期化・解放
@@ -30,8 +36,9 @@ public:
 	//	更新・描画
 	void	Update( void );
 	void	Render( void );
-
+	void	RenderNowLoading( void );
 	//	動作関数
+	void	MoveNowLoading( void );
 	void	MoveBG( void );
 	static	void	Thread( void* arg );
 };

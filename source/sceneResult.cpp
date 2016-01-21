@@ -1658,7 +1658,7 @@
 		}
 	}
 
-	//	カーテン状態設定
+	//	カーテン状態設定( trueで開ける, falseで閉める )
 	void	sceneResult::SetCurtainState( bool state )
 	{
 		curtainDirection = state;
@@ -2125,6 +2125,7 @@
 				else
 				{
 					step = RESULT_MODE::LAST_RESULT;
+					SetCurtainState( false );
 				}
 			}
 		}

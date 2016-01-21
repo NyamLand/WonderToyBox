@@ -210,11 +210,13 @@
 
 		switch ( gameManager->GetMode() )
 		{
-		case GAME_MODE::GAMESTART:		
+		case GAME_MODE::GAMESTART:
+			gameManager->SetCoinCollision( false );
 			StartUpdate();
 			break;
 
 		case GAME_MODE::MAINGAME:
+			gameManager->SetCoinCollision( true );
 			MainGameUpdate();
 			break;
 
@@ -227,6 +229,7 @@
 			break;
 
 		case GAME_MODE::TIMEUP:
+			gameManager->SetCoinCollision( false );
 			FinishUpdate();
 			break;
 		}

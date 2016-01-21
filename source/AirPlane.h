@@ -25,7 +25,7 @@ public:
 	const int IN_START_POS_X = static_cast<int>(iexSystem::ScreenWidth * 1.01f);
 	const int IN_START_POS_Y = static_cast<int>(iexSystem::ScreenHeight * -0.13f);
 	const int STAY_POS_X = static_cast<int>(iexSystem::ScreenWidth * 0.5f);
-	const int STAY_POS_Y = static_cast<int>(iexSystem::ScreenHeight * 0.2f);
+	const int STAY_POS_Y = static_cast<int>(iexSystem::ScreenHeight * 0.9f);
 	const int OUT_END_POS_X = static_cast<int>(iexSystem::ScreenWidth * -0.55f);
 	const int OUT_END_POS_Y = IN_START_POS_Y;
 	const int ROLL_POINT_ADJUST_X = 200;

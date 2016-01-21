@@ -23,6 +23,8 @@ using namespace std;
 
 //	static宣言
 	bool	sceneLoad::threadState;
+	int	x = 0, y = 0;
+
 
 //----------------------------------------------------------------------------------
 //	初期化・解放	
@@ -41,7 +43,7 @@ using namespace std;
 	{
 		SafeDelete( bgImage[0].obj );
 		SafeDelete( bgImage[1].obj );
-		SafeDelete( load_anykey.obj );	
+		SafeDelete( nowLoading );	
 	}
 
 	//	初期化
@@ -64,13 +66,8 @@ using namespace std;
 		ImageInitialize( bgImage[0], x, y, w, h, 0, 0, 1280, 720 );
 		ImageInitialize( bgImage[1], x, y, w, h, 0, 0, 1280, 720 );
 
-		//	PressSpace画像構造体設定
-		load_anykey.obj = new iex2DObj( "DATA/UI/pressspace.png" );
-		x = static_cast<int>( iexSystem::ScreenWidth * 0.86f );
-		y = static_cast<int>( iexSystem::ScreenHeight * 0.93f );
-		w = static_cast<int>( iexSystem::ScreenWidth * 0.2f );
-		h = static_cast<int>( iexSystem::ScreenHeight * 0.18f );
-		ImageInitialize( load_anykey, x, y, w, h, 0, 0, 256, 128 );
+		//	NowLoading初期化
+		nowLoading = new iex2DObj( "DATA/UI/Loading.png" );
 		
 		//	別スレッド作成
 		_beginthread( Thread, 0, ( void* )newScene );
@@ -81,6 +78,13 @@ using namespace std;
 		reverseFlag = false;
 		isEnd = false;
 		changeSceneFlag = false;
+		loadingTimer = 0;
+		renderCount = 0;
+		x = 0;
+		y = 0;
+		
+
+
 		return	true;
 	}
 
@@ -94,16 +98,13 @@ using namespace std;
 		//	背景画像差し替え
 		MoveBG();
 
-		//	点滅更新
-		FlashingUpdate( load_anykey, D3DX_PI / 180 * 4.0f );
+		//	NowLoading更新
+		MoveNowLoading();
 
 		//	読み込み完了後キー入力受付
 		if ( threadState ){
 			if ( KEY_Get( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )
 			{
-				//	pressspace波紋
-				static	float	wavespeed = 1.5f;
-				SetWave( load_anykey, wavespeed );
 				changeSceneFlag = true;
 			}
 		}
@@ -114,6 +115,11 @@ using namespace std;
 			MainFrame->ChangeScene( newScene, false );
 			return;
 		}
+
+		if (KEY(KEY_RIGHT) == 1)	x += 10;
+		if (KEY(KEY_LEFT) == 1)		x -= 10;
+		if (KEY(KEY_UP) == 1)		y -= 10;
+		if (KEY(KEY_DOWN) == 1)	y += 10;
 	}
 
 	//	描画
@@ -135,17 +141,37 @@ using namespace std;
 			RenderImage( bgImage[0], bgImage[0].sx, bgImage[0].sy, bgImage[0].sw, bgImage[0].sh, IMAGE_MODE::NORMAL );
 		}
 
-		//	pressSpace描画
-		if ( threadState )
-		{
-			RenderImage( load_anykey, 0, 0, 256, 128, IMAGE_MODE::FLASH );
-			RenderImage( load_anykey, 0, 0, 256, 128, IMAGE_MODE::WAVE );
-		}
+		RenderNowLoading();
+
+		char	str[256];
+		sprintf_s( str, "x = %d\ny = %d\n", x, y );
+		DrawString( str, 50, 300 );
+	}
+
+	//	NowLoading描画
+	void	sceneLoad::RenderNowLoading( void )
+	{
+		//	時間がないので座標直打ち
+		int	plusSw[4] = { 0, 25, 55, 97 };
+
+		nowLoading->Render( 1230, 790, 300 + plusSw[renderCount], 150, 0, 0, 415 + plusSw[renderCount], 128 );
 	}
 
 //----------------------------------------------------------------------------------
 //	動作関数
 //----------------------------------------------------------------------------------
+
+	//	NowLoading動作
+	void	sceneLoad::MoveNowLoading( void )
+	{
+		loadingTimer++;
+
+		if ( loadingTimer % 10 == 0 )
+		{
+			renderCount++;
+			if ( renderCount > 3 )	renderCount = 0;
+		}
+	}
 
 	//	背景移動
 	void	sceneLoad::MoveBG( void )
