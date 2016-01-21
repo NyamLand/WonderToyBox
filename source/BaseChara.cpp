@@ -985,6 +985,8 @@ namespace
 	{
 		if ( !magnet.state )	return;
 
+		particle->Magnet( pos, 6.0f, 0.25f, 5 );
+
 		//	タイマー減算
 		magnet.timer--;
 
@@ -1012,6 +1014,8 @@ namespace
 	void	BaseChara::SpeedUp( void )
 	{
 		if ( !speedUp.state )	return;
+
+		particle->SpeedUp( pos );
 
 		//	タイマー減算
 		speedUp.timer--;
