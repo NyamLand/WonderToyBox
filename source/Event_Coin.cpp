@@ -130,20 +130,22 @@ void	Event_Coin::Wave(void)
 {
 	//　いろいろ定義（マクロてきなやつ）
 	const float STAGE_X_MAX = 20.0f;
-	const float STAGE_POINTS_DIST_Z = 8.0f;
+	const float STAGE_Z_MAX = 20.0f;
 	const float COIN_SPACE_RATE = 0.5f;
 	const float distZ = 1.5f;
 	const float power = 0.2f;
 	const Vector3	vec = Vector3(0.0f, -0.1f, 0.0f);
-	const int POINT_MAX = 5;
+	const int POINT_MAX = 8;
 	const Vector3 point[] = {
-		Vector3(-STAGE_X_MAX, COIN_APPEAR_HEIGHT, 10.0f),
-		Vector3( STAGE_X_MAX, COIN_APPEAR_HEIGHT, 10.0f - STAGE_POINTS_DIST_Z * 1),
-		Vector3(-STAGE_X_MAX, COIN_APPEAR_HEIGHT, 10.0f - STAGE_POINTS_DIST_Z * 2),
-		Vector3( STAGE_X_MAX, COIN_APPEAR_HEIGHT, 10.0f - STAGE_POINTS_DIST_Z * 3),
-		Vector3(-STAGE_X_MAX, COIN_APPEAR_HEIGHT, 10.0f - STAGE_POINTS_DIST_Z * 4),
-		//Vector3( STAGE_X_MAX, COIN_APPEAR_HEIGHT, 10.0f - STAGE_POINTS_DIST_Z * 5),
-		//Vector3(-STAGE_X_MAX, COIN_APPEAR_HEIGHT, 10.0f - STAGE_POINTS_DIST_Z * 6),
+		Vector3(-STAGE_X_MAX, COIN_APPEAR_HEIGHT, STAGE_Z_MAX),		//　左上
+		Vector3( STAGE_X_MAX, COIN_APPEAR_HEIGHT, STAGE_Z_MAX),		//　右上
+		Vector3(-STAGE_X_MAX, COIN_APPEAR_HEIGHT, -STAGE_Z_MAX),	//　左下
+		Vector3( STAGE_X_MAX, COIN_APPEAR_HEIGHT, -STAGE_Z_MAX),	//　右下
+		Vector3(-STAGE_X_MAX, COIN_APPEAR_HEIGHT, STAGE_Z_MAX),		//　左上
+		Vector3( STAGE_X_MAX, COIN_APPEAR_HEIGHT, STAGE_Z_MAX),		//　右上
+		Vector3( STAGE_X_MAX, COIN_APPEAR_HEIGHT, -STAGE_Z_MAX),	//　右下
+		Vector3(-STAGE_X_MAX, COIN_APPEAR_HEIGHT, -STAGE_Z_MAX),	//　左下
+		Vector3(-STAGE_X_MAX, COIN_APPEAR_HEIGHT, STAGE_Z_MAX),		//　左上
 	};
 
 	//---------------------------------------------
@@ -155,13 +157,13 @@ void	Event_Coin::Wave(void)
 	pos2.z += distZ;
 	
 	//　適用
-	switch (count % 4)
+	switch (count % 8)
 	{
 	case 0:
 		coinManager->Append(pos1, vec, power);
 		break;
 
-	case 3:
+	case 1:
 		coinManager->Append(pos2, vec, power);
 		break;
 
@@ -169,6 +171,7 @@ void	Event_Coin::Wave(void)
 	}
 
 	//　降らす位置更新
+	if ((point[index + 1] - pos1).LengthSq() < 1.0f)	index++;
 	Vector3 addVec = (index < POINT_MAX) ? (point[index + 1] - pos1) : (point[0] - pos1);
 	addVec.Normalize();
 	addVec *= COIN_SPACE_RATE;
@@ -177,8 +180,7 @@ void	Event_Coin::Wave(void)
 
 	//　いろいろセット・リセット
 	CommonSetting(m_Wave.eventflag, m_Wave.step, WAVE_COUNT_MAX);
-	if ((point[index + 1] - pos1).LengthSq() < 1.0f)	index++;
-	if (count >= WAVE_COUNT_MAX) index = 0;
+	if (count >= WAVE_COUNT_MAX || index >= POINT_MAX) index = 0;
 }
 
 //　コイン２倍タイム

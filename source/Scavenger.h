@@ -17,9 +17,9 @@ class Scavenger : public		BaseChara
 private:
 	enum MOTION_DATA
 	{
-		STAND = 1,			//	—§‚¿
+		STAND,				//	—§‚¿
+		RUN,				//	‘–‚è
 		POSTURE,				//	\‚¦
-		RUN = 4,				//	‘–‚è
 		ATTACK1,				//	UŒ‚‚P’iŠK–Ú
 		ATTACK2,				//	UŒ‚‚Q’iŠK–Ú
 		ATTACK3,				//	UŒ‚‚R’iŠK–Ú
