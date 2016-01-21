@@ -12,6 +12,7 @@
 #include	"BulletManager.h"
 #include	"Thief_Bullet04.h"
 #include	"Stage.h"
+#include	"Effect.h"
 
 Thief_Bullet04::Thief_Bullet04() :holdCoinNum(0), growSpeed(0.0f), checkMax(false), checkMin(false)
 {
@@ -115,12 +116,14 @@ bool	Thief_Bullet04::PlayerCollisionCheck(void)
 		{
 			isPlayerCheck[i] = true;
 			//	エフェクトだす
-			float	effectScale = 0.2f;
-			particle->Spark(p_pos_top, effectScale);
+			float	effectScale = 2.2f;
+			particle->Spark(pos, effectScale);
 			Vector3	color = characterManager->GetDamageColor(i);
 			characterManager->SetPassColor(i, color);
+			//画面停止
+			gameManager->SetTimeStop(SCREEN_STOPTIME);
 			//画面振動
-			gameManager->SetShakeCamera(1.0f, 30);
+			gameManager->SetShakeCamera(SHAKE_POWER, SHAKE_TIME);
 
 
 			//	ノックバック

@@ -12,7 +12,7 @@
 #include	"Pirate_Bullet01.h"
 #include	"Stage.h"
 
-Pirate_Bullet01::Pirate_Bullet01() :explosion(false)
+Pirate_Bullet01::Pirate_Bullet01() :explosion(false), power(1)
 {
 	radius		=	BULLET_RADIUS		[	BULLET_TYPE::PIRATE_01	];
 	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::PIRATE_01	];
@@ -105,6 +105,10 @@ bool	Pirate_Bullet01::PlayerCollisionCheck(void)
 			float	effectScale = 0.2f;
 			particle->Spark(p_pos_top, effectScale);
 
+
+			//	ライフ減らす
+			FOR(0, power) characterManager->SubLife(i);
+
 			//	ノックバック
 			Vector3	knockBackVec = bulletPos - p_pos_bottom;
 			knockBackVec.y = p_pos_bottom.y;
@@ -120,6 +124,7 @@ bool	Pirate_Bullet01::PlayerCollisionCheck(void)
 			std::uniform_real_distribution<float>	vecrand(-1.0f, 1.0f);
 			Vector3	vec = Vector3(Random::GetFloat(-1.0f, 1.0f), 1.0f, Random::GetFloat(-1.0f, 1.0f));
 			vec.Normalize();
+
 
 			//	プレイヤー番号取得とばらまきパワー設定
 			float	power = 0.2f;

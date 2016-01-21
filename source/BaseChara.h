@@ -46,6 +46,7 @@ namespace
 			GUARD,
 			DAMAGE,
 			DAMAGE_LEANBACKWARD,
+			KNOCKBACK,
 			DEATH,
 		};
 	}

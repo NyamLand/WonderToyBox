@@ -17,6 +17,9 @@ namespace
 	const		int		PLAYER_MAX = 4;
 	const		float		GRAVITY = -0.01f;
 	const		int		CHARATYPE_MAX = 4;
+	const		int		SHAKE_TIME = 30;
+	const		float	SHAKE_POWER = 1.5f;
+	const		int		SCREEN_STOPTIME = 40;
 
 	namespace GAME_MODE
 	{

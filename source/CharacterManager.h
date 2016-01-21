@@ -62,6 +62,10 @@ public:
 	void	HitCheckObjectCapsule( BaseChara* bc );
 	void	HitCheckObjectSphere( BaseChara* bc );
 
+	//ƒ‰ƒCƒtˆ—
+	void	AddLife(int player )const;
+	void	SubLife(int player )const;
+
 	//	î•ñæ“¾
 	Matrix	GetMatrix( int player )const;
 	Vector3	GetPos( int player )const;
