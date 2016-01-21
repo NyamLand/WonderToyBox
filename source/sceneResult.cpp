@@ -27,6 +27,7 @@
 //----------------------------------------------------------------------------
 
 #define	NO_BONUS	-1
+#define	CURTAIN_SPEED	0.02f
 
 	namespace
 	{
@@ -67,6 +68,7 @@
 		{
 			enum
 			{
+				SET_CLOSE_CURTAIN,
 				CLOSE_CURTAIN,		//	カーテン閉じる
 				LIGHT_PRODUCTION,	//	ライト演出
 				OPEN_CURTAIN,			//	カーテン開ける
@@ -97,6 +99,15 @@
 				HIT_ATTACK_NUM,
 			};
 		}	
+
+		namespace CURTAIN_MODE
+		{
+			enum
+			{
+				OPEN,
+				CLOSE,
+			};
+		}
 	}
 
 //----------------------------------------------------------------------------
@@ -181,6 +192,7 @@
 		FOR( 0, PLAYER_MAX )	inputCheck[value] = false;
 
 		sound->PlayBGM(BGM::RESULT_BGM);
+		screen->SetScreenMode( SCREEN_MODE::FADE_IN, 1.0f );
 		return	true;
 	}
 
@@ -238,7 +250,7 @@
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>(LPSTR("DATA/CHR/majo/majo.IEM"));			//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>(LPSTR("DATA/CHR/プリンセス/prinsess1.IEM"));					//	姫
 		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>(LPSTR("DATA/CHR/Thief/Thief.IEM"));				//	リス
-		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>(LPSTR("DATA/CHR/ECCMAN/ECCMAN.IEM"));					//	トラ
+		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>(LPSTR("DATA/CHR/Pirate/Pirate.IEM"));					//	トラ
 
 		//	ステージ設定
 		bgStage = new iexMesh("DATA/BG/MenuStage/menustage.IMO");	//	ステージ
@@ -337,23 +349,6 @@
 			sortInfo[i].num = originInfo[i].num;
 			sortInfo[i].rank = i;
 			sortInfo[i].sortRank = i;
-
-			//	ラストボーナスの情報も設定
-			maxCoinNum[i].num = gameManager->GetMaxCoinNum( i );
-			maxCoinNum[i].rank = i;
-			maxCoinNum[i].sortRank = i;
-			fallStageNum[i].num = gameManager->GetFallStageNum( i );
-			fallStageNum[i].rank = i;
-			fallStageNum[i].sortRank = i;
-			coin77[i].num = gameManager->GetSubCoin77( i );
-			coin77[i].rank = i;
-			coin77[i].sortRank = i;
-			minCoinNum[i].num = gameManager->GetTotalCoinNum( i );
-			minCoinNum[i].rank = i;
-			minCoinNum[i].sortRank = i;
-			hitAttackNum[i].num = gameManager->GetHitAttackNum( i );
-			hitAttackNum[i].rank = i;
-			hitAttackNum[i].sortRank = i;
 		}
 	}
 
@@ -372,21 +367,14 @@
 			numberImageInfo[i].pos.x = static_cast<int>( out.x );
 			numberImageInfo[i].pos.y = static_cast<int>( iexSystem::ScreenHeight * 0.38f );
 			numberImageInfo[i].scale = 100;
-			bonusNumberImageInfo[i].pos.x = static_cast<int>( out.x + ( iexSystem::ScreenWidth * 0.05f ) );
-			bonusNumberImageInfo[i].pos.y = static_cast<int>( iexSystem::ScreenHeight * 0.45f );
-			bonusNumberImageInfo[i].scale = 70;
 
 			//	各位画像設定
 			numberImageInfo[i].one.obj = originNumber;
 			numberImageInfo[i].ten.obj = originNumber;
 			numberImageInfo[i].hundred.obj = originNumber;
-			bonusNumberImageInfo[i].one.obj = originNumber;
-			bonusNumberImageInfo[i].ten.obj = originNumber;
-			bonusNumberImageInfo[i].hundred.obj = originNumber;
-		
+			
 			//	数値画像構造体初期化
 			SetNumberImageInfo( numberImageInfo[i], number[i], originInfo[i].num );
-			SetNumberImageInfo( bonusNumberImageInfo[i], bonusNumber[i], originInfo[i].bonus );
 		}
 	}
 
@@ -583,7 +571,7 @@
 		//	ルーレット情報初期化
 		{
 			rouletteInfo.step = 0;
-			rouletteInfo.timer = 0;
+			rouletteInfo.timer = 1;
 		}
 	}
 
@@ -602,11 +590,12 @@
 		//	カーテン情報初期化
 		curtainInfoL.obj = orgCurtain;
 		curtainInfoR.obj = orgCurtain;
-		curtainInfoL.t = 1.0f;
-		curtainInfoR.t = 1.0f;
-		curtainDirection = true;
+		curtainInfoL.t = 0.0f;
+		curtainInfoR.t = 0.0f;
+		curtain_t = 1.0f;
 		curtainBrightness = 1.0f;	
 		curtainState = false;
+		curtainMode = CURTAIN_MODE::OPEN;
 
 		//	シェーダー用変数初期化
 		lightMoveNum = 0;
@@ -684,7 +673,7 @@
 	void	sceneResult::Update( void ) 
 	{
 		//	カーテン更新
-		CurtainUpdate();
+		curtainState = CurtainUpdate();
 
 		//	スクリーン更新
 		screen->Update();
@@ -727,20 +716,14 @@
 		case MOVE_MODE::LAST_RESULT:
 			LastResultRender();
 			lastResultTest->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight );
-			if ( mode == MOVE_MODE::SELECT )	SelectRender();
 			break;
 		}
-		//LastResultRender();
-
-		//	フレームバッファへ切り替え
-		//iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );
-		//mainView->Activate();
-		//mainView->Clear();
 
 		//	カーテン描画
 		CurtainRender();
 
 		//	最終結果テスト
+		SelectRender();
 	}
 
 //----------------------------------------------------------------------------
@@ -807,8 +790,14 @@
 		bool	isEnd = false;
 		switch ( step )
 		{
+		case LASTRESULT_MODE::SET_CLOSE_CURTAIN:
+			SetCurtainMode( CURTAIN_MODE::CLOSE );
+			step++;
+			break;
+
 		case LASTRESULT_MODE::CLOSE_CURTAIN:
-			if ( curtainState ) SetWaitTimer( 30 );
+			if ( curtainState ) SetWaitTimer( 60 );
+			step = LASTRESULT_MODE::LIGHT_PRODUCTION;
 			break;
 
 		case LASTRESULT_MODE::LIGHT_PRODUCTION:
@@ -816,14 +805,14 @@
 			if ( isEnd )
 			{
 				step = LASTRESULT_MODE::OPEN_CURTAIN;
-				SetCurtainState( true );
+				SetCurtainMode( CURTAIN_MODE::OPEN );
 			}
 			break;
 
 		case LASTRESULT_MODE::OPEN_CURTAIN:
-			if ( isEnd )
+			if ( curtainState )
 			{
-				if (input[0]->Get(KEY_SPACE) == 3 || input[0]->Get(KEY_A))
+				if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) )
 				{
 					step = 0;
 					mode = MOVE_MODE::SELECT;
@@ -834,59 +823,53 @@
 	}
 
 	//	カーテン更新
-	void	sceneResult::CurtainUpdate( void )
+	bool	sceneResult::CurtainUpdate( void )
 	{
-		//	カーテン移動方向を設定
-		float	curtainSpeed = 0.01f;
-		if ( curtainDirection )	curtainSpeed = 0.01f;
-		else								curtainSpeed = -0.01f;
-			
+		bool	out = false;
+
 		//	パラメータ更新
-		curtainInfoL.t += 0.01f;
-		curtainInfoR.t += 0.01f;
+		curtain_t += CURTAIN_SPEED;
 
 		//	上限下限設定
-		if ( curtainInfoL.t >= 1.0f )	curtainInfoL.t = 1.0f;
-		else if ( curtainInfoL.t <= 0.0f )	curtainInfoL.t = 0.0f;
-		if ( curtainInfoR.t >= 1.0f )	curtainInfoR.t = 1.0f;
-		else if ( curtainInfoR.t <= 0.0f )	curtainInfoR.t = 0.0f;
-
-		//	各頂点移動
-
-		//	左カーテン
-		Lerp( curtainInfoL.tlv[0].sx, curtainPosInfo.leftPos, curtainPosInfo.leftOutPosX, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainInfoL.t ) );	//	左上
-		Lerp( curtainInfoL.tlv[1].sx, curtainPosInfo.centerPosX, curtainPosInfo.leftPos, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainInfoL.t ) );		//	右上
-		Lerp( curtainInfoL.tlv[2].sx, curtainPosInfo.leftPos, curtainPosInfo.leftOutPosX, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainInfoL.t ) );	//	左下
-		Lerp( curtainInfoL.tlv[3].sx, curtainPosInfo.centerPosX, curtainPosInfo.leftPos, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainInfoL.t ) );		//	右下
-		
-		//	右カーテン
-		Lerp( curtainInfoR.tlv[0].sx, curtainPosInfo.centerPosX, curtainPosInfo.rightPos, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainInfoR.t ) );		//	左上
-		Lerp( curtainInfoR.tlv[1].sx, curtainPosInfo.rightPos, curtainPosInfo.rightOutPosX, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtainInfoR.t ) );	//	右上
-		Lerp( curtainInfoR.tlv[2].sx, curtainPosInfo.centerPosX, curtainPosInfo.rightPos, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainInfoR.t ) );		//	左下
-		Lerp( curtainInfoR.tlv[3].sx, curtainPosInfo.rightPos, curtainPosInfo.rightOutPosX, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtainInfoR.t ) );	//	右下
-
-		if ( curtainDirection )
+		if ( curtain_t >= 1.0f )
 		{
-			if ( curtainInfoL.t >= 1.0f || curtainInfoR.t >= 1.0f )
-			{
-				curtainState = true;
-			}
-			else
-			{
-				curtainState = false;
-			}
+			curtain_t = 1.0f;
+			out = true;
 		}
-		else
+
+		//	カーテンのモードでスタート位置と終了位置を変更
+		switch ( curtainMode )
 		{
-			if (curtainInfoL.t <= 0.0f || curtainInfoR.t <= 0.0f)
-			{
-				curtainState = true;
-			}
-			else
-			{
-				curtainState = false;
-			}
-		}							
+		case CURTAIN_MODE::OPEN:
+			//	左カーテン
+			Lerp( curtainInfoL.tlv[0].sx, curtainPosInfo.leftPos, curtainPosInfo.leftOutPosX, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtain_t ) );	//	左上
+			Lerp( curtainInfoL.tlv[1].sx, curtainPosInfo.centerPosX, curtainPosInfo.leftPos, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtain_t ) );		//	右上
+			Lerp( curtainInfoL.tlv[2].sx, curtainPosInfo.leftPos, curtainPosInfo.leftOutPosX, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtain_t ) );	//	左下
+			Lerp( curtainInfoL.tlv[3].sx, curtainPosInfo.centerPosX, curtainPosInfo.leftPos, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtain_t ) );		//	右下
+
+			//	右カーテン
+			Lerp( curtainInfoR.tlv[0].sx, curtainPosInfo.centerPosX, curtainPosInfo.rightPos, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtain_t ) );		//	左上
+			Lerp( curtainInfoR.tlv[1].sx, curtainPosInfo.rightPos, curtainPosInfo.rightOutPosX, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtain_t ) );	//	右上
+			Lerp( curtainInfoR.tlv[2].sx, curtainPosInfo.centerPosX, curtainPosInfo.rightPos, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtain_t ) );		//	左下
+			Lerp( curtainInfoR.tlv[3].sx, curtainPosInfo.rightPos, curtainPosInfo.rightOutPosX, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtain_t ) );	//	右下	
+			break;
+
+		case CURTAIN_MODE::CLOSE:
+			//	左カーテン
+			Lerp( curtainInfoL.tlv[0].sx, curtainPosInfo.leftOutPosX, curtainPosInfo.leftPos, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtain_t ) );	//	左上
+			Lerp( curtainInfoL.tlv[1].sx, curtainPosInfo.leftPos, curtainPosInfo.centerPosX, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtain_t ) );		//	右上
+			Lerp( curtainInfoL.tlv[2].sx, curtainPosInfo.leftOutPosX, curtainPosInfo.leftPos, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtain_t ) );	//	左下
+			Lerp( curtainInfoL.tlv[3].sx, curtainPosInfo.leftPos, curtainPosInfo.centerPosX, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtain_t ) );		//	右下
+
+			//	右カーテン
+			Lerp( curtainInfoR.tlv[0].sx, curtainPosInfo.rightPos, curtainPosInfo.centerPosX, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtain_t ) );		//	左上
+			Lerp( curtainInfoR.tlv[1].sx, curtainPosInfo.rightOutPosX, curtainPosInfo.rightPos, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, curtain_t ) );	//	右上
+			Lerp( curtainInfoR.tlv[2].sx, curtainPosInfo.rightPos, curtainPosInfo.centerPosX, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtain_t ) );		//	左下
+			Lerp( curtainInfoR.tlv[3].sx, curtainPosInfo.rightOutPosX, curtainPosInfo.rightPos, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, curtain_t ) );	//	右下	
+			break;
+		}
+
+		return	out;
 	}
 
 	//	セレクト画面描画
@@ -915,7 +898,6 @@
 		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
 		back->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 1280, 720 );
 		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
-
 
 		//	リザルトシール描画
 		RenderImage(menuHead, menuHead.sx, menuHead.sy, menuHead.sw, menuHead.sh, IMAGE_MODE::ADOPTPARAM);
@@ -962,8 +944,11 @@
 			int		sw = numberImageInfo[i].hundred.sw;
 			int		sh = numberImageInfo[i].hundred.sh;
 
-			if ( numberImageInfo[i].hundredRenderFlag )
+			if (numberImageInfo[i].hundredRenderFlag)
+			{
 				RenderImage( numberImageInfo[i].hundred, sx, sy, sw, sh, IMAGE_MODE::NORMAL );
+
+			}
 
 			//	１０の位描画
 			sx = numberImageInfo[i].ten.sx;
@@ -978,32 +963,6 @@
 			sw = numberImageInfo[i].one.sw;
 			sh = numberImageInfo[i].one.sh;
 			RenderImage( numberImageInfo[i].one, sx, sy, sw, sh, IMAGE_MODE::NORMAL );
-
-			//-----------------------------------------------------------------------------------------------
-			//	ボーナス数値描画
-			//-----------------------------------------------------------------------------------------------
-			//	１００の位描画
-			sx = bonusNumberImageInfo[i].hundred.sx;
-			sy = bonusNumberImageInfo[i].hundred.sy;
-			sw = bonusNumberImageInfo[i].hundred.sw;
-			sh = bonusNumberImageInfo[i].hundred.sh;
-
-			if ( bonusNumberImageInfo[i].hundredRenderFlag )
-				RenderImage( bonusNumberImageInfo[i].hundred, sx, sy, sw, sh, IMAGE_MODE::NORMAL );
-
-			//	１０の位描画
-			sx = bonusNumberImageInfo[i].ten.sx;
-			sy = bonusNumberImageInfo[i].ten.sy;
-			sw = bonusNumberImageInfo[i].ten.sw;
-			sh = bonusNumberImageInfo[i].ten.sh;
-			RenderImage( bonusNumberImageInfo[i].ten, sx, sy, sw, sh, IMAGE_MODE::NORMAL );
-
-			//	１の位描画
-			sx = bonusNumberImageInfo[i].one.sx;
-			sy = bonusNumberImageInfo[i].one.sy;
-			sw = bonusNumberImageInfo[i].one.sw;
-			sh = bonusNumberImageInfo[i].one.sh;
-			RenderImage( bonusNumberImageInfo[i].one, sx, sy, sw, sh, IMAGE_MODE::NORMAL );
 		}
 	}
 
@@ -1017,7 +976,9 @@
 		int		sh = numberImageInfo.hundred.sh;
 
 		if ( numberImageInfo.hundredRenderFlag )
+		{
 			RenderImage( numberImageInfo.hundred, sx, sy, sw, sh, IMAGE_MODE::NORMAL );
+		}
 
 		//	１０の位描画
 		sx = numberImageInfo.ten.sx;
@@ -1333,110 +1294,6 @@
 		}
 	}
 
-	//	数値にあわせて数値構造体情報を設定,１００以上かで配置も変更
-	void	sceneResult::SetNumberImageInfo( const int& player, const int& coin )
-	{
-		//	桁数確認
-		if ( coin >= 001 	)	numberImageInfo[player].hundredRenderFlag = true;
-		else							numberImageInfo[player].hundredRenderFlag = false;
-
-		if ( originInfo[player].bonus >= 100 )		bonusNumberImageInfo[player].hundredRenderFlag = true;
-		else														bonusNumberImageInfo[player].hundredRenderFlag = false;
-
-		//	数字構造体設定
-		SetNumberInfo( number[player], coin );
-		SetNumberInfo( bonusNumber[player], originInfo[player].bonus );
-
-		//	各位画像構造体初期化
-		int		x, y, w, h, sx, sy, sw, sh;
-		//------------------------------------------------------------------------------------------------
-		//	総数用構造体設定
-		//------------------------------------------------------------------------------------------------
-		if ( numberImageInfo[player].hundredRenderFlag )
-		{
-			//	１０の位設定
-			x = numberImageInfo[player].pos.x;
-			y = numberImageInfo[player].pos.y;
-			w = h = numberImageInfo[player].scale;
-			sx = number[player].ten * 64;
-			sy = 0;
-			sw = sh = 64;
-			ImageInitialize( numberImageInfo[player].ten, x, y, w, h, sx, sy, sw, sh );
-
-			//	１００の位設定
-			x = numberImageInfo[player].pos.x - static_cast<int>( numberImageInfo[player].ten.w / 1.5f );
-			sx = number[player].hundred * 64;
-			ImageInitialize( numberImageInfo[player].hundred, x, y, w, h, sx, sy, sw, sh );
-
-			//	１の位設定
-			x = numberImageInfo[player].pos.x + static_cast<int>( numberImageInfo[player].ten.w / 1.5f );
-			sx = number[player].one * 64;
-			ImageInitialize( numberImageInfo[player].one, x, y, w, h, sx, sy, sw, sh );
-		}
-		else
-		{
-			//	１０の位設定
-			w = h = numberImageInfo[player].scale;
-			x = numberImageInfo[player].pos.x - w / 3;
-			y = numberImageInfo[player].pos.y;
-			sx = number[player].ten * 64;
-			sy = 0;
-			sw = sh = 64;
-			ImageInitialize( numberImageInfo[player].ten, x, y, w, h, sx, sy, sw, sh );
-
-			//	１の位設定
-			x = numberImageInfo[player].pos.x + w / 3;
-			sx = number[player].one * 64;
-			ImageInitialize( numberImageInfo[player].one, x, y, w, h, sx, sy, sw, sh );
-		}
-
-		//------------------------------------------------------------------------------------------------
-		//	ボーナス用構造体設定
-		//------------------------------------------------------------------------------------------------
-		if ( bonusNumberImageInfo[player].hundredRenderFlag )
-		{
-			//	１０の位設定
-			x = bonusNumberImageInfo[player].pos.x;
-			y = bonusNumberImageInfo[player].pos.y;
-			w = h = bonusNumberImageInfo[player].scale;
-			sx = bonusNumber[player].ten * 64;
-			sy = 0;
-			sw = sh = 64;
-			ImageInitialize( bonusNumberImageInfo[player].ten, x, y, w, h, sx, sy, sw, sh );
-
-			//	１００の位設定
-			x = bonusNumberImageInfo[player].pos.x - static_cast<int>( bonusNumberImageInfo[player].ten.w / 1.5f );
-			sx = bonusNumber[player].hundred * 64;
-			ImageInitialize( bonusNumberImageInfo[player].hundred, x, y, w, h, sx, sy, sw, sh );
-
-			//	１の位設定
-			x = bonusNumberImageInfo[player].pos.x + static_cast<int>( bonusNumberImageInfo[player].ten.w / 1.5f );
-			sx = bonusNumber[player].one * 64;
-			ImageInitialize( bonusNumberImageInfo[player].one, x, y, w, h, sx, sy, sw, sh );
-		}
-		else
-		{
-			//	１０の位設定
-			w = h = bonusNumberImageInfo[player].scale;
-			x = bonusNumberImageInfo[player].pos.x - w / 3;
-			y = bonusNumberImageInfo[player].pos.y;
-			sx = bonusNumber[player].ten * 64;
-			sy = 0;
-			sw = sh = 64;
-			ImageInitialize( bonusNumberImageInfo[player].ten, x, y, w, h, sx, sy, sw, sh );
-
-			//	１の位設定
-			x = bonusNumberImageInfo[player].pos.x + w / 3;
-			sx = bonusNumber[player].one * 64;
-			ImageInitialize( bonusNumberImageInfo[player].one, x, y, w, h, sx, sy, sw, sh );
-		}
-
-		//	非表示にする
-		bonusNumberImageInfo[player].one.renderflag = false;
-		bonusNumberImageInfo[player].ten.renderflag = false;
-		bonusNumberImageInfo[player].hundred.renderflag = false;
-	}
-
 	//	設定した数値にあわせて構造体情報を設定、１００以上かで配置も変更
 	void	sceneResult::SetNumberImageInfo( NUMBERIMAGE_INFO& numImageInfo, NUMBER_INFO& numInfo, const int& num )
 	{
@@ -1503,7 +1360,7 @@
 		for ( int i = rouletteInfo.step; i < PLAYER_MAX; i++ )
 		{
 			//	適当な数値を入れる
-			SetNumberImageInfo( i, Random::GetInt( 100, 999 ) );
+			SetNumberImageInfo( numberImageInfo[i], number[i], Random::GetInt( 100, 999 ) );
 		}
 
 		//	初回だけ回転時間ちょっと長く
@@ -1512,7 +1369,7 @@
 			if ( rouletteInfo.timer % 90 == 0 )
 			{
 				rouletteInfo.step++;
-				rouletteInfo.timer = 0;
+				rouletteInfo.timer = 1;
 			}
 		}
 		else
@@ -1520,7 +1377,7 @@
 			if ( rouletteInfo.timer % 50 == 0 )
 			{
 				rouletteInfo.step++;
-				rouletteInfo.timer = 0;
+				rouletteInfo.timer = 1;
 			}
 		}
 
@@ -1529,7 +1386,7 @@
 		{
 			if ( i < rouletteInfo.step )
 			{
-				SetNumberImageInfo( i, originInfo[i].num );
+				SetNumberImageInfo( numberImageInfo[i], number[i], originInfo[i].num );
 			}
 		}
 
@@ -1658,10 +1515,11 @@
 		}
 	}
 
-	//	カーテン状態設定( trueで開ける, falseで閉める )
-	void	sceneResult::SetCurtainState( bool state )
+	//	カーテン状態設定
+	void	sceneResult::SetCurtainMode( int mode )
 	{
-		curtainDirection = state;
+		curtainMode = mode;
+		curtain_t = 0.0f;
 	}
 
 	//	待ちタイマー設定
@@ -1952,7 +1810,7 @@
 	{
 		FOR( 0, PLAYER_MAX )
 		{
-			SetNumberImageInfo( value, originInfo[value].num );
+			SetNumberImageInfo( numberImageInfo[value], number[value], originInfo[value].num );
 			SetWave( rankImage[value], 1.5f );
 			rankImage[value].renderflag = true;
 		}
@@ -2122,11 +1980,7 @@
 			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
 			{
 				if ( round != Round::ROUND_FINAL )		step = RESULT_MODE::LIFE;
-				else
-				{
-					step = RESULT_MODE::LAST_RESULT;
-					SetCurtainState( false );
-				}
+				else															step = RESULT_MODE::LAST_RESULT;
 			}
 		}
 		else
@@ -2165,7 +2019,6 @@
 	void	sceneResult::ModeLastResult( void )
 	{
 		step = 0;
-		SetCurtainState( !curtainState );
 		mode = MOVE_MODE::LAST_RESULT;
 	}
 

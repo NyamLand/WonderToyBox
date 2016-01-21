@@ -244,7 +244,7 @@
 		{
 			if (bc1->GetMode() == MODE_STATE::HYPERARTS)
 			{
-				gameManager->SetShakeCamera( 1.0f, 30 );
+				gameManager->SetShakeCamera( 1.5f, 30 );
 			}
 			
 			//	–³“G‚É‚·‚é
@@ -315,7 +315,7 @@
 		{
 			if (bc1->GetMode() == MODE_STATE::HYPERARTS)
 			{
-				gameManager->SetShakeCamera( 1.0f, 30 );
+				gameManager->SetShakeCamera( 1.5f, 30 );
 			}
 			if (bc1->GetMode() == MODE_STATE::HYPERARTS){};
 
@@ -543,6 +543,20 @@
 			}
 		}
 	}
+
+
+
+//-------------------------------------------------------------------------------------
+//	ƒ‰ƒCƒtˆ—
+//-------------------------------------------------------------------------------------
+void	CharacterManager::AddLife(int player)const
+{
+	character[player]->AddLife();
+}
+void	CharacterManager::SubLife(int player)const
+{
+	character[player]->SubLife();
+}
 
 //-------------------------------------------------------------------------------------
 //	î•ñæ“¾

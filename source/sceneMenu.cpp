@@ -54,11 +54,18 @@
 		}
 		namespace CHARA_ANGLE
 		{
-			float Player_ANGLE[4] = {
+			float CharaSelectPlayer_ANGLE[4] = {
 				(D3DXToRadian(60.0f)),
 				(D3DXToRadian(90.0f)),
 				(D3DXToRadian(90.0f)),
 				(D3DXToRadian(120.0f)),
+			};
+
+			float SelectCheckPlayer_ANGLE[4] = {
+				(D3DXToRadian(-120.0f)),
+				(D3DXToRadian(-90.0f)),
+				(D3DXToRadian(-90.0f)),
+				(D3DXToRadian(-60.0f)),
 			};
 
 		}
@@ -138,32 +145,31 @@
 		//	モデル読み込み
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/majo/majo.IEM" ) );		//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/プリンセス/prinsess.IEM" ) );					//	姫
-		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>(LPSTR("DATA/CHR/SQUIRREL/SQUIRREL.IEM"));		//	リス
-		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>(LPSTR("DATA/CHR/ECCMAN/ECCMAN.IEM"));				//	海賊
+		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>(LPSTR("DATA/CHR/Thief/Thief.IEM"));		//	怪盗
+		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>(LPSTR("DATA/CHR/Pirate/Pirate.IEM"));				//	海賊
 
 		//	オリジナルモデル情報初期化
-		org[CHARACTER_TYPE::SCAVENGER]->SetScale( 0.01f );	//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS]->SetScale( 0.02f );		//	姫
-		org[CHARACTER_TYPE::THIEF]->SetScale(0.04f);		//	リス
-		org[CHARACTER_TYPE::PIRATE]->SetScale(0.02f);			//	海賊
+		org[CHARACTER_TYPE::SCAVENGER]->SetScale( 0.015f );	//	掃除屋
+		org[CHARACTER_TYPE::PRINCESS]->SetScale( 0.04f );		//	姫
+		org[CHARACTER_TYPE::THIEF]->SetScale(0.025f);		//	怪盗
+		org[CHARACTER_TYPE::PIRATE]->SetScale(0.04f);			//	海賊
 
 		org[CHARACTER_TYPE::SCAVENGER]->SetAngle( D3DX_PI );	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->SetAngle( D3DX_PI );	//	姫
-		org[CHARACTER_TYPE::THIEF]->SetAngle( D3DX_PI );	//	リス
+		org[CHARACTER_TYPE::THIEF]->SetAngle( D3DX_PI );	//	怪盗
 		org[CHARACTER_TYPE::PIRATE]->SetAngle( D3DX_PI );			//	海賊
 
 		org[CHARACTER_TYPE::SCAVENGER]->SetMotion( 2 );	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->SetMotion( 1 );		//	姫
-		org[CHARACTER_TYPE::THIEF]->SetMotion( 0 );		//	リス
+		org[CHARACTER_TYPE::THIEF]->SetMotion( 0 );		//	怪盗
 		org[CHARACTER_TYPE::PIRATE]->SetMotion( 0 );			//	海賊
 
 		org[CHARACTER_TYPE::SCAVENGER]->Update();	//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS]->Update();		//	姫
-		org[CHARACTER_TYPE::THIEF ]->Update();		//	リス
+		org[CHARACTER_TYPE::THIEF ]->Update();		//	怪盗
 		org[CHARACTER_TYPE::PIRATE]->Update();			//	海賊
 
 		deskStage = make_unique<iexMesh>( LPSTR( "DATA/BG/stage-desk/stage.IMO" ) );
-		forestStage = make_unique<iexMesh>( LPSTR( "DATA/BG/Forest/model/forest.IMO" ) );
 		toyStage = make_unique<iexMesh>(LPSTR("DATA/BG/stage_toy/stage_toy.IMO"));
 		BG = make_unique<iexMesh>( LPSTR( "DATA/BG/MenuStage/menustage.IMO" ) );
 
@@ -497,7 +503,7 @@
 		{
 			int left = static_cast<int>( iexSystem::ScreenWidth / 5 );
 			int x = left + left * value;
-			int y = static_cast<int>( iexSystem::ScreenHeight * 0.45f );
+			int y = static_cast<int>( iexSystem::ScreenHeight * 0.75f );
 			int w = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
 			int h = static_cast<int>( iexSystem::ScreenHeight * 0.155f );
 			ImageInitialize( faceImage[value], x, y, w, h, 0, 256 * value, 256, 256 );
@@ -586,8 +592,8 @@
 		FOR( 0, PLAYER_MAX )
 		{
 			obj[value]->Animation();
-			obj[value]->SetPos(-10.0f, 5.0f, -7.0f + 5.0f * value);
-			obj[value]->SetAngle(0.0f, CHARA_ANGLE::Player_ANGLE[value], 0.0f);
+			obj[value]->SetPos(-10.0f, 14.0f, -7.0f + 5.0f * value);
+			obj[value]->SetAngle(0.0f, CHARA_ANGLE::CharaSelectPlayer_ANGLE[value], 0.0f);
 			obj[value]->Update();
 
 		}
@@ -613,15 +619,40 @@
 			RenderImage( faceImage[value], 0, 256 * value, 256, 256, IMAGE_MODE::NORMAL );
 		}
 			//	カーソル描画
-		FOR( 0, PLAYER_MAX )
-		{
-			cursorImage[value].x = faceImage[characterSelectInfo.character[value]].x-faceImage[characterSelectInfo.character[value]].w/2;
-			cursorImage[value].y = faceImage[characterSelectInfo.character[value]].y - faceImage[characterSelectInfo.character[value]].h / 2;
-			if ( characterSelectInfo.select[value] )	cursorImage[value].color = Vector3( 0.5f, 0.5f, 0.5f );	//	決定時明度下げる
-			RenderImage( cursorImage[value], 128 * ( value % 2 ), 128 * ( value / 2 ), 128, 128, IMAGE_MODE::NORMAL );
-			//RenderImage(cursorImage[value], 128 * ( value % 2 ), 128 * value, 128, 128, IMAGE_MODE::NORMAL);
-		}
+		//FOR( 0, PLAYER_MAX )
+		//{
+		//	cursorImage[value].x = faceImage[characterSelectInfo.character[value]].x-faceImage[characterSelectInfo.character[value]].w/2;
+		//	cursorImage[value].y = faceImage[characterSelectInfo.character[value]].y - faceImage[characterSelectInfo.character[value]].h / 2;
+		//	if ( characterSelectInfo.select[value] )	cursorImage[value].color = Vector3( 0.5f, 0.5f, 0.5f );	//	決定時明度下げる
+		//	RenderImage( cursorImage[value], 128 * ( value % 2 ), 128 * ( value / 2 ), 128, 128, IMAGE_MODE::NORMAL );
+		//	//RenderImage(cursorImage[value], 128 * ( value % 2 ), 128 * value, 128, 128, IMAGE_MODE::NORMAL);
+		//}
+		//プレイヤー1
+		cursorImage[0].x = faceImage[characterSelectInfo.character[0]].x - faceImage[characterSelectInfo.character[0]].w / 2;
+		cursorImage[0].y = faceImage[characterSelectInfo.character[0]].y - faceImage[characterSelectInfo.character[0]].h / 2;
+		if (characterSelectInfo.select[0])	cursorImage[0].color = Vector3(0.5f, 0.5f, 0.5f);	//	決定時明度下げる
+		
 
+		//プレイヤー2
+		cursorImage[1].x = faceImage[characterSelectInfo.character[1]].x + faceImage[characterSelectInfo.character[1]].w / 2;
+		cursorImage[1].y = faceImage[characterSelectInfo.character[1]].y - faceImage[characterSelectInfo.character[1]].h / 2;
+		if (characterSelectInfo.select[1])	cursorImage[1].color = Vector3(0.5f, 0.5f, 0.5f);	//	決定時明度下げる
+
+
+		//プレイヤー3
+		cursorImage[2].x = faceImage[characterSelectInfo.character[2]].x - faceImage[characterSelectInfo.character[2]].w / 2;
+		cursorImage[2].y = faceImage[characterSelectInfo.character[2]].y + faceImage[characterSelectInfo.character[2]].h / 2;
+		if (characterSelectInfo.select[2])	cursorImage[2].color = Vector3(0.5f, 0.5f, 0.5f);	//	決定時明度下げる
+
+		//プレイヤー4
+		cursorImage[3].x = faceImage[characterSelectInfo.character[3]].x + faceImage[characterSelectInfo.character[3]].w / 2;
+		cursorImage[3].y = faceImage[characterSelectInfo.character[3]].y + faceImage[characterSelectInfo.character[3]].h / 2;
+		if (characterSelectInfo.select[3])	cursorImage[3].color = Vector3(0.5f, 0.5f, 0.5f);	//	決定時明度下げる
+
+		FOR(0, PLAYER_MAX){
+			RenderImage(cursorImage[value], 128 * (value % 2), 128 * (value / 2), 128, 128, IMAGE_MODE::NORMAL);
+		}
+		
 	}
 
 //-------------------------------------------------------------------------------
@@ -632,19 +663,14 @@
 	void	sceneMenu::SelectStageInitialize( void )
 	{
 		//	机モデル初期化
-		deskStage->SetPos( -10.0f, 9.0f, 15.0f );
+		deskStage->SetPos( -10.0f, 19.0f, 15.0f );
 		deskStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 		deskStage->SetScale( 0.1f );
 		deskStage->Update();
 
-		//	森モデル初期化
-		forestStage->SetPos( 0.0f, 10.0f, 15.0f );
-		forestStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
-		forestStage->SetScale( 0.04f );
-		forestStage->Update();
-
+		
 		//　おもちゃモデル初期化
-		toyStage->SetPos(10.0f, 9.0f, 15.0f);
+		toyStage->SetPos(10.0f, 19.0f, 15.0f);
 		toyStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
 		toyStage->SetScale(0.025f);
 		toyStage->Update();
@@ -666,19 +692,11 @@
 		{
 		case 0:
 			deskStage->SetAngle( D3DXToRadian( 30.0f ), stageSelectInfo.angle, 0.0f );
-			forestStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 			toyStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
 			break;
 
 		case 1:
-			deskStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
-			forestStage->SetAngle( D3DXToRadian( 30.0f ), stageSelectInfo.angle, 0.0f );
-			toyStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
-			break;
-
-		case 2:
 			deskStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
-			forestStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
 			toyStage->SetAngle(D3DXToRadian(30.0f), stageSelectInfo.angle, 0.0f);
 			break;
 		}
@@ -700,8 +718,8 @@
 			}
 
 			//	上限・下限設定
-			if ( stageSelectInfo.stage >= 3 )	stageSelectInfo.stage = 0;
-			if ( stageSelectInfo.stage < 0 )		stageSelectInfo.stage = 2;
+			if ( stageSelectInfo.stage >= 2 )	stageSelectInfo.stage = 0;
+			if ( stageSelectInfo.stage < 0 )		stageSelectInfo.stage = 1;
 		}
 
 		//	決定
@@ -712,7 +730,6 @@
 
 			//	モデルの角度を戻す
 			deskStage->SetAngle( D3DXToRadian( 5.0f ), D3DX_PI, 0.0f );
-			forestStage->SetAngle( D3DXToRadian( 5.0f ), D3DX_PI, 0.0f );
 			toyStage->SetAngle(D3DXToRadian(5.0f), D3DX_PI, 0.0f);
 
 			//	次のモードへ
@@ -733,7 +750,6 @@
 
 		//	ステージ更新
 		deskStage->Update();
-		forestStage->Update();
 		toyStage->Update();
 	}
 
@@ -747,7 +763,6 @@
 		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
 
 		deskStage->Render();
-		forestStage->Render();
 		toyStage->Render();
 	}
 
@@ -766,7 +781,7 @@
 		FOR( 0, PLAYER_MAX )
 		{
 			obj[value] = org[gameManager->GetCharacterType( value )]->Clone();
-			obj[value]->SetPos(5.0f, 5.0f, 4.0f - 2.5f * value);
+			obj[value]->SetPos(10.0f, 14.0f, 4.0f - 3.0f * value);
 			obj[value]->Update();
 			WorldToClient( obj[value]->GetPos(), cursorPos[value], matView * matProjection );
 		}
@@ -780,15 +795,12 @@
 
 		//	ステージ座標、向き設定
 		{
-			deskStage->SetPos( 5.0f, 10.0f, 3.0f );
+			deskStage->SetPos( 5.0f, 21.0f, 3.0f );
 			deskStage->SetAngle(D3DXToRadian(30.0f), D3DXToRadian(-100.0f), 0.0f);
 			deskStage->SetScale( 0.03f );
 			deskStage->Update();
-			forestStage->SetPos(5.0f, 10.0f, 3.0f);
-			forestStage->SetAngle(D3DXToRadian(30.0f), D3DXToRadian(-100.0f), 0.0f);
-			forestStage->SetScale( 0.03f );
-			forestStage->Update();
-			toyStage->SetPos(5.0f, 10.0f, 3.0f);
+		
+			toyStage->SetPos(5.0f, 21.0f, 3.0f);
 			toyStage->SetAngle(D3DXToRadian(30.0f), D3DXToRadian(-100.0f), 0.0f);
 			toyStage->SetScale(0.015f);
 			toyStage->Update();
@@ -882,7 +894,8 @@
 		FOR( 0, PLAYER_MAX )
 		{
 			obj[value]->Animation();
-			obj[value]->SetAngle(0.0f, D3DXToRadian(-100.0f), 0.0f);
+			obj[value]->SetPos(9.0f, 14.0f, 5.0f - 4.0f * value);
+			obj[value]->SetAngle(0.0f, CHARA_ANGLE::SelectCheckPlayer_ANGLE[value], 0.0f);
 			obj[value]->Update();
 		}
 		break;
@@ -904,8 +917,7 @@
 		switch ( gameManager->GetStageType() )
 		{
 		case 0:		deskStage->Render();		break;
-		case 1:		forestStage->Render();		break;
-		case 2:		toyStage->Render();		break;
+		case 1:		toyStage->Render();		break;
 		}
 
 		//	プレイヤー描画
@@ -1031,7 +1043,7 @@
 		optionInfo.itemflg = true;
 		optionInfo.life = LIFE_MAX_NUM::LIFE_5;
 		optionInfo.minute = 1;
-		optionInfo.second = 3;
+		optionInfo.second = 0;
 		optionInfo.step = 0;
 		gameManager->SetItemFlg(optionInfo.itemflg);
 		gameManager->SetMaxLife(optionInfo.life);

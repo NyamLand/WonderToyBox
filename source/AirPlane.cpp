@@ -48,7 +48,7 @@
 //--------------------------------------------------------------------------------
 
 	//	更新
-	void	AirPlane::Update( void )
+	bool	AirPlane::Update( void )
 	{
 		//	終了判定用
 		bool	isEnd = false;
@@ -75,7 +75,7 @@
 			break;
 		}
 
-
+		return isEnd;
 	}
 
 	//	描画

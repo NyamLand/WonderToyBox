@@ -39,7 +39,7 @@
 		//	ƒpƒ‰ƒ[ƒ^‰Šú‰»
 		power = 2;/*‰¼*/
 		speed = 0.25f;
-		scale = 0.04f;
+		scale = 0.06f;
 		diffence = -1;
 		isGround = true;
 	}

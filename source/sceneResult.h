@@ -194,8 +194,9 @@ private:
 	float		light_t;
 	bool		inputCheck[4];		
 	bool		changeScene;
-	bool		curtainDirection;
+	int		curtainMode;
 	bool		curtainState;
+	float		curtain_t;
 	Vector3	lightPos[4];	//	シェーダー用ライト位置
 	int	waitTimer;
 
@@ -229,7 +230,7 @@ public:
 	void	ResultUpdate( void );
 	void	SelectUpdate( void );
 	void	LastResultUpdate( void );
-	void	CurtainUpdate( void );
+	bool	CurtainUpdate( void );
 
 	//	各画像描画
 	void	SelectRender( void );
@@ -281,10 +282,9 @@ public:
 	//	情報設定
 	void	SetNextLife( void );
 	void	SetRank( void );
-	void	SetNumberImageInfo( const int& player, const int& coin );
 	void	SetNumberImageInfo( NUMBERIMAGE_INFO& numImageInfo, NUMBER_INFO& numInfo, const int& num );
 	void	SetNumberInfo( NUMBER_INFO& number, int coin );	//	コイン枚数引き渡し
-	void	SetCurtainState( bool state );
+	void	SetCurtainMode( int mode );
 	void	SetWaitTimer( int time );
 };
 

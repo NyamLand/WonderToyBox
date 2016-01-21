@@ -17,6 +17,7 @@ namespace
 	{
 		enum 
 		{
+			BASE,
 			FIX_BOX,
 			BREAK_OBJECT,
 			MOVE_BOX_SIDE,

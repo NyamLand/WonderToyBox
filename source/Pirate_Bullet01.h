@@ -10,6 +10,7 @@
 class Pirate_Bullet01 : public BaseBullet
 {
 protected:
+	int	power;
 	bool explosion;
 	bool isPlayerCheck[4];	//‚”Ô–Ú‚ÌƒvƒŒƒCƒ„[‚ÉG‚ê‚½‚©‚Ç‚¤‚© = false;
 public:
@@ -23,7 +24,8 @@ public:
 
 	void Explode();
 
-	bool PlayerCollisionCheck(void);
+protected:
+	virtual bool PlayerCollisionCheck(void);
 };
 
 //*****************************************************************************

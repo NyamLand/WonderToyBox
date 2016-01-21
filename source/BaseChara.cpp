@@ -382,7 +382,11 @@ namespace
 			break;
 
 		case MODE_STATE::DAMAGE:
-			AddKnockBackForce(force);
+			Damage();
+			break;
+
+		case MODE_STATE::KNOCKBACK:
+			KnockBack();
 			break;
 
 		case MODE_STATE::DAMAGE_LEANBACKWARD:
@@ -574,7 +578,7 @@ namespace
 
 		//SetParameterState(PARAMETER_STATE::UNRIVALED);
 		SetDrag(1.0f);	//一時的に抗力なくす
-		if (/*move.y <= 0.01f && */isGround)
+		if (move.y < 0 && isGround)
 		{
 			move = Vector3(0.0f, 0.0f, 0.0f);
 			damageStep = 0;
@@ -586,21 +590,22 @@ namespace
 	//	ノックバック与力
 	void	BaseChara::AddKnockBackForce( float force )
 	{
-		switch (damageStep)
-		{
-		case 0:
+		//switch (damageStep)
+		//{
+		//case 0:
 			isGround = false;
 			SetDamageColor(damageColor.catchColor);
 			move = knockBackInfo.vec * (force / 4);
 			move.y = force / 4;
 
-			damageStep++;
-			break;
+			SetMode(MODE_STATE::KNOCKBACK);
+			//damageStep++;
+			//break;
 
-		case 1:
-			Damage();
-			break;
-		}
+		//case 1:
+			//Damage();
+			//break;
+		//}
 	}
 
 	//	ノックバック	仰け反りのみ
@@ -717,7 +722,7 @@ namespace
 	//	ダメージ
 	void	BaseChara::Damage( void )
 	{
-		KnockBack();
+		AddKnockBackForce(force);
 	}
 
 	//	死亡
@@ -946,7 +951,7 @@ namespace
 	{
 		if ( !attackUp.state )	return;
 
-		particle->Arrow_UP( pos );
+		particle->PowerUp( pos );
 
 		//	タイマー減算
 		attackUp.timer--;
@@ -1098,7 +1103,14 @@ namespace
 		if ( input->Get( KEY_C ) == 3 )		mode = MODE_STATE::POWERARTS;
 		if ( canHyper )
 		{
-			if ( input->Get( KEY_A ) == 3 )	mode = MODE_STATE::HYPERARTS;
+			if (input->Get(KEY_A) == 3)
+			{
+				if (GetLife() > 1)
+				{
+					SubLife();
+					mode = MODE_STATE::HYPERARTS;
+				}
+			}
 		}
 	
 		if ( input->Get( KEY_B ) == 3 )

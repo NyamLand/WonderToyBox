@@ -31,8 +31,6 @@ namespace
 		Vector3	pos[] =
 		{
 			Vector3( 3.0f, height, -100.0f ),		//門番
-			Vector3( 45.0f, height, -14.0f ),	//	オプション
-			Vector3( -41.0f, height, -20.0f ),	//	クレジット
 			Vector3( 3.0f, 200.0f, 60.0f ),		//	上へ移動
 			Vector3( 3.0f, 4.0f, 95.0f ),	//	メインへ
 		};
@@ -41,8 +39,6 @@ namespace
 		Vector3	target[] =
 		{
 			Vector3( 3.0f, 3.0f, -70.0f ),
-			Vector3( 53.0f, 3.0f, -5.0f ),
-			Vector3( -50.0f, 3.0f, -14.0f ),
 			Vector3( 3.0f, 60.0f, 95.0f ),		//	上へ移動
 			Vector3( 3.0f, 10.0f, 95.0f ),
 		};
@@ -53,8 +49,8 @@ namespace
 		enum
 		{
 			PLAY,
-			OPTION,
-			CREDIT,
+			//OPTION,
+			//CREDIT,
 			MOVE_MENU_UP,
 			MOVE_MENU_IN,
 			END,

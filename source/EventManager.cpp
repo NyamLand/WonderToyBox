@@ -36,6 +36,7 @@ int  EventManager::state = EVENT_STATE::INTRO;
 	bool	EventManager::Initialize( void )
 	{
 		//	変数初期化
+		count = 0;
 		eventMode = EVENT_MODE::NONE;
 		eventFlag = false;
 		
@@ -71,6 +72,29 @@ int  EventManager::state = EVENT_STATE::INTRO;
 		
 		//RenderImage()
 
+	}
+
+//--------------------------------------------------------------------------------
+//	動作関数
+//--------------------------------------------------------------------------------
+	//　フラグ・状態などを設定
+	void	EventManager::CommonSetting(bool& eventflag, int& step, int countMax)
+	{
+		if (count >= FLYING_COUNT)	state = EVENT_STATE::ACTIVE;
+		if (count >= countMax - FLYING_COUNT)	state = EVENT_STATE::END;
+
+		//　リセット
+		if (count >= countMax)
+		{
+			eventflag = false;
+			step = 0;
+
+			count = 0;
+			state = EVENT_STATE::INTRO;
+			return;
+		}
+
+		count++;
 	}
 
 //--------------------------------------------------------------------------------
@@ -110,8 +134,8 @@ int  EventManager::state = EVENT_STATE::INTRO;
 	void	EventManager::SetEvent( int eventMode )
 	{
 		this->eventMode = eventMode;
-		if (EVENT_MODE::JAM_SLOPE_CAMERA <= eventMode && eventMode <= EVENT_MODE::JAM_UFO)	event_jamming->SetEvent(eventMode);
-		else if (EVENT_MODE::COIN_SACK <= eventMode && eventMode <= EVENT_MODE::COIN_DUBBLE)	event_coin->SetEvent(eventMode);
+		if (EVENT_MODE::JAM_SLOPE_CAMERA <= eventMode && eventMode <= EVENT_MODE::JAM_SLIP)	event_jamming->SetEvent(eventMode);
+		else if (EVENT_MODE::COIN_FALL <= eventMode && eventMode <= EVENT_MODE::COIN_DUBBLE)	event_coin->SetEvent(eventMode);
 		else event_mission->SetEvent(eventMode);
 	}
 

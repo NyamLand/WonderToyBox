@@ -93,7 +93,6 @@ private:
 	unique_ptr<iex2DObj>	checkCursor;
 	unique_ptr<iex2DObj>	playerNumText;
 	unique_ptr<iexMesh>		deskStage;
-	unique_ptr<iexMesh>		forestStage;
 	unique_ptr<iexMesh>		toyStage;
 	unique_ptr<iex2DObj>	playerNum;
 	unique_ptr<iex3DObj>	org[4];
