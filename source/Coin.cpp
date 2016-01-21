@@ -195,6 +195,9 @@
 	//	プレイヤーとのあたりチェック
 	void	Coin::PlayerCollisionCheck( void )
 	{
+		//	コインのコリジョンの有効無効を取得
+		if ( !gameManager->GetCoinCollision() )	return;
+
 		Vector3	p_pos[4];
 		for ( int i = 0; i < 4; i++ )
 		{
@@ -328,7 +331,6 @@
 		this->absorbedflg = flag;
 	}
 	
-
 	//状態設定
 	void	Coin::SetState(bool state)
 	{

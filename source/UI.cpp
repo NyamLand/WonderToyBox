@@ -42,9 +42,6 @@
 			};
 		}
 
-		//	タイトルテキスト座標情報
-
-
 		//	タイトルテキスト読み込み座標情報
 		namespace TITLE_TEXT_SRCPOS_INFO
 		{
@@ -53,11 +50,7 @@
 				MENU_SRC_POS_X,
 				MENU_SRC_POS_Y,
 			};
-		}
-
-		
-
-		
+		}	
 
 		//　どんけつ演出用
 		namespace DD_TIMING
@@ -225,8 +218,6 @@
 		particle_camera = make_unique<Camera>();
 		particle_camera->SetPos(Vector3(0.0f, 10.0f, -10.0f) + PAR_POS);
 		
-
-
 		//	共通変数初期化 
 		changeflag = false;
 		FOR(0,PLAYER_MAX)
@@ -647,11 +638,11 @@
 		//	画像構造体初期化
 		int x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
 		int y = static_cast<int>( iexSystem::ScreenHeight * 0.5f );
-		int w = static_cast<int>( iexSystem::ScreenWidth * 0.15f );
-		int h = static_cast<int>( iexSystem::ScreenHeight * 0.27f );
+		int w = static_cast<int>( iexSystem::ScreenWidth * 0.2f );
+		int h = w;
 		ImageInitialize( alertImage, x, y, w, h, 0, 0, 256, 256 );
 		alertImage.renderflag = true;
-		ImageInitialize(alert_coinImage, x, y, w, h, 0, 0, 512, 512);
+		ImageInitialize(alert_coinImage, x, y, w, h, 0, 0, 256, 256);
 		alert_coinImage.renderflag = true;
 	}
 
@@ -701,10 +692,10 @@
 	//	ラウンド初期化
 	void	UI::RoundInitialize( void )
 	{
-		int	x = static_cast<int>( iexSystem::ScreenWidth * 0.07f );
+		int	x = static_cast<int>( iexSystem::ScreenWidth * 0.12f );
 		int	y = static_cast<int>( iexSystem::ScreenHeight * 0.9f );
-		int	w = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
-		int	h = static_cast<int>( iexSystem::ScreenHeight * 0.05f );
+		int	w = static_cast<int>( iexSystem::ScreenWidth * 0.2f );
+		int	h = static_cast<int>( iexSystem::ScreenHeight * 0.1f );
 		int	sx = 0;
 		int	sy = gameManager->GetRound() * 128;
 		int	sw = 512;
