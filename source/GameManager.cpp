@@ -395,76 +395,76 @@
 //-------------------------------------------------------------------------
 
 	//	プレイヤー人数取得
-	int		GameManager::GetPlayerNum( void )
+	int		GameManager::GetPlayerNum( void )const
 	{
 		return	playerNum;
 	}
 
 	//	プレイヤータイプ取得
-	int		GameManager::GetCharacterType( int num )
+	int		GameManager::GetCharacterType( int num )const
 	{
 		int		out = charatype[num];
 		return	out;
 	}
 
 	//	ステージタイプ取得
-	int		GameManager::GetStageType( void )
+	int		GameManager::GetStageType( void )const
 	{
 		int		out = stageType;
 		return	out;
 	}
-
+	
 	//	コイン情報取得
-	int		GameManager::GetCoinNum( int num )
+	int		GameManager::GetCoinNum( int num )const
 	{
 		int		out = coinNum[num];
 		return out;
 	}
 
 	//　どんけつ中かどうかを取得
-	bool	GameManager::GetDonketsuBoostState( void )
+	bool	GameManager::GetDonketsuBoostState( void )const
 	{
 		bool	out = donketsuBoostState;
 		return	out;
 	}
 
 	//	ラストボーナス取得
-	int		GameManager::GetLastBonus( void )
+	int		GameManager::GetLastBonus( void )const
 	{
 		int		out = lastBonus;
 		return	out;
 	}
 
 	//	タイマー取得
-	int		GameManager::GetTimer( void )
+	int		GameManager::GetTimer( void )const
 	{
 		int		out = timer;
 		return	out;
 	}
 
 	//	ニュースフラグ取得
-	bool		GameManager::GetNewsFlag( void )
+	bool		GameManager::GetNewsFlag( void )const
 	{
 		bool	out = newsflag;
 		return	out;
 	}
 
 	//	最下位取得
-	int		GameManager::GetWorst( void )
+	int		GameManager::GetWorst( void )const
 	{
 		int		out = worst;
 		return	worst;
 	}
 
 	//	モード取得
-	int		GameManager::GetMode( void )
+	int		GameManager::GetMode( void )const
 	{
 		int		out = mode;
 		return	out;
 	}
 
 	//画面一時停止残り秒数取得
-	int		GameManager::GetTimeStop( void )
+	int		GameManager::GetTimeStop( void )const
 	{
 		int out = this->timeStop;
 		return out;
@@ -483,7 +483,7 @@
 	}
 	
 	//　順位更新
-	int		GameManager::GetRank( int player )
+	int		GameManager::GetRank( int player )const
 	{
 		int num_coin[PLAYER_MAX], temp_coin[PLAYER_MAX];
 		for (int i = 0; i < PLAYER_MAX; i++)

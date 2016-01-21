@@ -37,7 +37,7 @@
 		t = 0.0f;
 		moveState = false;
 		target = nextTarget = TITLE_MOVE_INFO::target[TITLE_TARGET::PLAY];
-		speed = 0.0035f;
+		speed = 0.005f;
 
 		FOR(0, PLAYER_NUM)
 		{

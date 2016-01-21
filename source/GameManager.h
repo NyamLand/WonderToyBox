@@ -138,18 +138,18 @@ public:
 	void	AddHitAttackCount( int player );
 
 	//	î•ñæ“¾
-	int		GetCharacterType( int num );
-	int		GetPlayerNum( void );
-	int		GetStageType( void );
-	int		GetCoinNum( int num );
-	bool		GetDonketsuBoostState( void );
-	int		GetLastBonus( void );
-	int		GetTimer( void );
-	bool		GetNewsFlag( void );
-	int		GetWorst( void );
-	int		GetMode( void );
-	int		GetRank(int player);   
-	int		GetTimeStop(void);
+	int		GetCharacterType( int num )const;
+	int		GetPlayerNum( void )const;
+	int		GetStageType( void )const;
+	int		GetCoinNum( int num )const;
+	bool		GetDonketsuBoostState( void )const;
+	int		GetLastBonus( void )const;
+	int		GetTimer( void )const;
+	bool		GetNewsFlag( void )const;
+	int		GetWorst( void )const;
+	int		GetMode( void )const;
+	int		GetRank(int player)const;   
+	int		GetTimeStop(void)const;
 	int		GetMaxLife(void)const;
 	int		GetStartLife( int player )const;
 	int		GetRound( void )const;
