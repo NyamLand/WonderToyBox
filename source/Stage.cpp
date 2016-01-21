@@ -29,7 +29,6 @@ namespace
 			FOREST,
 			TOY,
 			BLOCK,
-
 		};
 	}
 }
@@ -78,7 +77,7 @@ Stage*	stage = nullptr;
 		collisionObj[OBJECT_TYPE::YELLOW_BLOCK] = new iexMesh("DATA/Object/Box/yellowBox.imo");
 		collisionObj[OBJECT_TYPE::DESK_BASE] = new iexMesh("DATA/BG/stage-desk/Collision.IMO");
 		collisionObj[OBJECT_TYPE::FOREST_BASE] = new iexMesh("DATA/BG/Forest/Collision/collision_forest.IMO");
-		collisionObj[OBJECT_TYPE::TOY_BASE] = new iexMesh("DATA/BG/stage_toy/collision_stage_toy.IMO");
+		collisionObj[OBJECT_TYPE::TOY_BASE] = new iexMesh( "DATA/BG/stage_toy/collision_stage_toy.IMO" );
 
 		//	ïœêîèâä˙âª
 		objectID = 0;
