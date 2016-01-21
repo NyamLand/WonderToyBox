@@ -78,7 +78,7 @@ Stage*	stage = nullptr;
 		collisionObj[OBJECT_TYPE::YELLOW_BLOCK] = new iexMesh("DATA/Object/Box/yellowBox.imo");
 		collisionObj[OBJECT_TYPE::DESK_BASE] = new iexMesh("DATA/BG/stage-desk/Collision.IMO");
 		collisionObj[OBJECT_TYPE::FOREST_BASE] = new iexMesh("DATA/BG/Forest/Collision/collision_forest.IMO");
-		collisionObj[OBJECT_TYPE::TOY_BASE] = new iexMesh("DATA/BG/stage_toy/collision_stage_toy.IMO");
+		collisionObj[OBJECT_TYPE::TOY_BASE] = new iexMesh( "DATA/BG/stage_toy/stage_toy.IMO" );
 
 		//	変数初期化
 		objectID = 0;
@@ -94,17 +94,17 @@ Stage*	stage = nullptr;
 			break;
 
 		case STAGE_TYPE::FOREST:
-			Append( Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 1.0f, 1.0f, 1.0f ), MOVE_TYPE::FIX_BOX, OBJECT_TYPE::FOREST_BASE );
+			Append( Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 1.0f, 1.0f, 1.0f ), MOVE_TYPE::BASE, OBJECT_TYPE::FOREST_BASE );
 			break;
 
 		case STAGE_TYPE::TOY:
-			Append(Vector3(0.0f, 5.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.8f, 0.5f), MOVE_TYPE::FIX_BOX, OBJECT_TYPE::TOY_BASE);
+			Append(Vector3(0.0f, 5.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.8f, 0.5f), MOVE_TYPE::BASE, OBJECT_TYPE::TOY_BASE);
 			Append(Vector3(10.0f, 20.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::BREAK_OBJECT, OBJECT_TYPE::RED_BLOCK);
 			Append(Vector3(-10.0f, 10.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::MOVE_BOX_HIEGHT, OBJECT_TYPE::RED_BLOCK);
 			break;
 
 		case STAGE_TYPE::BLOCK:
-			Append( Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 1.0f, 1.0f, 1.0f ), MOVE_TYPE::FIX_BOX, OBJECT_TYPE::BASE );
+			Append( Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 1.0f, 1.0f, 1.0f ), MOVE_TYPE::BASE, OBJECT_TYPE::BASE );
 			Append( Vector3( 20.0f, 0.0f, 0.0f ), Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 0.5f, 0.5f, 0.5f ), MOVE_TYPE::FIX_BOX, OBJECT_TYPE::BLUE_BLOCK );
 			Append( Vector3( -10.0f, 2.5f, 0.0f ), Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 0.5f, 0.5f, 0.5f ), MOVE_TYPE::MOVE_BOX_HIEGHT, OBJECT_TYPE::RED_BLOCK );
 			Append( Vector3( -10.0f, 20.0f, 0.0f ), Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 0.5f, 0.5f, 0.5f ), MOVE_TYPE::BREAK_OBJECT, OBJECT_TYPE::RED_BLOCK );
@@ -266,13 +266,10 @@ Stage*	stage = nullptr;
 			if ( !object[value]->GetState() )	continue;
 			
 			//	オブジェクトのタイプ取得
-			outType = object[value]->GetObjectType();
+			outType = object[value]->GetMoveType();
 
 			//	ベース以外との当たり判定
-			if (outType != OBJECT_TYPE::BASE 
-				&& outType != OBJECT_TYPE::TOY_BASE 
-				&& outType != OBJECT_TYPE::FOREST_BASE 
-				&& outType != OBJECT_TYPE::DESK_BASE)
+			if ( outType != MOVE_TYPE::BASE )			
 			{
 				//	距離計算
 				v = object[value]->GetPos() - pos;
@@ -318,13 +315,10 @@ Stage*	stage = nullptr;
 			if ( !object[value]->GetState() )	continue;
 
 			//	オブジェクトのタイプを取得
-			objType= object[value]->GetObjectType();
+			objType= object[value]->GetMoveType();
 			
 			//	ベースとの当たり判定
-			if (objType == OBJECT_TYPE::BASE 
-				|| objType == OBJECT_TYPE::DESK_BASE 
-				|| objType == OBJECT_TYPE::FOREST_BASE 
-				|| objType == OBJECT_TYPE::DESK_BASE)
+			if (objType == MOVE_TYPE::BASE )
 			{
 				out = Collision::CheckWall( object[value]->GetMesh(), pos, vec );
 			}
@@ -403,13 +397,10 @@ Stage*	stage = nullptr;
 			
 			//	自分対自分はスルー
 			if ( id != 0 && object[value]->GetID() == id )	continue;
-			objType = object[value]->GetObjectType();
+			objType = object[value]->GetMoveType();
 
 			//	ベース意外
-			if ( objType != OBJECT_TYPE::BASE 
-				&& objType != OBJECT_TYPE::DESK_BASE 
-				&& objType != OBJECT_TYPE::FOREST_BASE
-				&& objType != OBJECT_TYPE::TOY_BASE)
+			if ( objType != MOVE_TYPE::BASE )
 			{
 				//	距離計算
 				v = object[value]->GetPos() - pos;
@@ -453,13 +444,10 @@ Stage*	stage = nullptr;
 
 			//	自分対自分はスルー
 			if ( id != 0 && object[value]->GetID() == id )	continue;
-			objType = object[value]->GetObjectType();
+			objType = object[value]->GetMoveType();
 
 			//	ベース意外
-			if ( objType != OBJECT_TYPE::BASE 
-				&& objType != OBJECT_TYPE::DESK_BASE 
-				&& objType != OBJECT_TYPE::FOREST_BASE
-				&& objType != OBJECT_TYPE::TOY_BASE)
+			if ( objType != MOVE_TYPE::BASE )
 			{
 				//	距離計算
 				v = object[value]->GetPos() - pos;
@@ -503,13 +491,10 @@ Stage*	stage = nullptr;
 
 			//	自分対自分はスルー
 			if ( id != 0 && object[value]->GetID() == id )	continue;
-			objType = object[value]->GetObjectType();
+			objType = object[value]->GetMoveType();
 
 			//	ベース意外
-			if ( objType != OBJECT_TYPE::BASE 
-				&& objType != OBJECT_TYPE::DESK_BASE 
-				&& objType != OBJECT_TYPE::FOREST_BASE
-				&& objType != OBJECT_TYPE::TOY_BASE)
+			if ( objType != MOVE_TYPE::BASE )
 			{
 				//	距離計算
 				v = object[value]->GetPos() - pos;
@@ -553,13 +538,10 @@ Stage*	stage = nullptr;
 
 			//	自分対自分はスルー
 			if ( id != 0 && object[value]->GetID() == id )	continue;
-			objType = object[value]->GetObjectType();
+			objType = object[value]->GetMoveType();
 
 			//	ベース意外
-			if ( objType != OBJECT_TYPE::BASE 
-				&& objType != OBJECT_TYPE::DESK_BASE 
-				&& objType != OBJECT_TYPE::FOREST_BASE
-				&& objType != OBJECT_TYPE::TOY_BASE)
+			if ( objType != MOVE_TYPE::BASE )
 			{
 				//	距離計算
 				v = object[value]->GetPos() - pos;
@@ -603,13 +585,10 @@ Stage*	stage = nullptr;
 
 			//	自分対自分はスルー
 			if ( id != 0 && object[value]->GetID() == id )	continue;
-			objType = object[value]->GetObjectType();
+			objType = object[value]->GetMoveType();
 
 			//	ベース意外
-			if ( objType != OBJECT_TYPE::BASE 
-				&& objType != OBJECT_TYPE::DESK_BASE 
-				&& objType != OBJECT_TYPE::FOREST_BASE
-				&& objType != OBJECT_TYPE::TOY_BASE)
+			if ( objType != MOVE_TYPE::BASE )
 			{
 				//	距離計算
 				v = object[value]->GetPos() - pos;
@@ -652,13 +631,10 @@ Stage*	stage = nullptr;
 			if ( !object[value]->GetState() )	continue;
 
 			//	オブジェクトのタイプを取得
-			objType = object[value]->GetObjectType();
+			objType = object[value]->GetMoveType();
 
 			//	ベースのみ当たり判定
-			if ( objType == OBJECT_TYPE::BASE 
-				|| objType == OBJECT_TYPE::DESK_BASE 
-				|| objType == OBJECT_TYPE::FOREST_BASE
-				|| objType == OBJECT_TYPE::TOY_BASE)
+			if ( objType == MOVE_TYPE::BASE )
 			{
 				out = Collision::GetHeight( object[value]->GetMesh(), pos );
 			}
@@ -681,13 +657,10 @@ Stage*	stage = nullptr;
 			if ( !object[value]->GetState() )	continue;
 
 			//	オブジェクトのタイプを取得
-			objType = object[value]->GetObjectType();
+			objType = object[value]->GetMoveType();
 
 			//	ベースのみ当たり判定
-			if ( objType == OBJECT_TYPE::BASE 
-				|| objType == OBJECT_TYPE::DESK_BASE 
-				|| objType == OBJECT_TYPE::FOREST_BASE
-				|| objType == OBJECT_TYPE::TOY_BASE)
+			if ( objType == MOVE_TYPE::BASE )
 			{
 				out = Collision::GetFront( object[value]->GetMesh(), pos );
 			}
@@ -710,13 +683,10 @@ Stage*	stage = nullptr;
 			if ( !object[value]->GetState() )	continue;
 
 			//	オブジェクトのタイプを取得
-			objType = object[value]->GetObjectType();
+			objType = object[value]->GetMoveType();
 
 			//	ベースのみ当たり判定
-			if ( objType == OBJECT_TYPE::BASE 
-				|| objType == OBJECT_TYPE::DESK_BASE 
-				|| objType == OBJECT_TYPE::FOREST_BASE
-				|| objType == OBJECT_TYPE::TOY_BASE)
+			if ( objType == MOVE_TYPE::BASE )
 			{
 				out = Collision::GetBack( object[value]->GetMesh(), pos );
 			}
@@ -738,13 +708,10 @@ Stage*	stage = nullptr;
 			if ( !object[value]->GetState() )	continue;
 
 			//	オブジェクトのタイプを取得
-			objType = object[value]->GetObjectType();
+			objType = object[value]->GetMoveType();
 
 			//	ベースのみ当たり判定
-			if ( objType == OBJECT_TYPE::BASE 
-				|| objType == OBJECT_TYPE::DESK_BASE 
-				|| objType == OBJECT_TYPE::FOREST_BASE
-				|| objType == OBJECT_TYPE::TOY_BASE)
+			if ( objType == MOVE_TYPE::BASE )
 			{
 				out = Collision::GetRight( object[value]->GetMesh(), pos );
 			}
@@ -767,13 +734,10 @@ Stage*	stage = nullptr;
 			if ( !object[value]->GetState() )	continue;
 
 			//	オブジェクトのタイプを取得
-			objType = object[value]->GetObjectType();
+			objType = object[value]->GetMoveType();
 
 			//	ベースのみ当たり判定
-			if ( objType == OBJECT_TYPE::BASE 
-				|| objType == OBJECT_TYPE::DESK_BASE 
-				|| objType == OBJECT_TYPE::FOREST_BASE
-				|| objType == OBJECT_TYPE::TOY_BASE)
+			if ( objType == MOVE_TYPE::BASE )
 			{
 				out = Collision::GetLeft( object[value]->GetMesh(), pos );
 			}
