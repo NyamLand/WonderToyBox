@@ -68,6 +68,10 @@ using namespace std;
 
 		//	NowLoading初期化
 		nowLoading = new iex2DObj( "DATA/UI/Loading.png" );
+
+		//	pressAnyKey初期化
+		pressAnyKeyImage.obj = nowLoading;
+		ImageInitialize( pressAnyKeyImage,  1380, 865, 350, 150, 0, 128, 512, 128 );
 		
 		//	別スレッド作成
 		_beginthread( Thread, 0, ( void* )newScene );
@@ -107,6 +111,7 @@ using namespace std;
 			{
 				changeSceneFlag = true;
 			}
+			FlashingUpdate( pressAnyKeyImage, 0.1f );
 		}
 
 		//	シーン切り替え
@@ -141,8 +146,8 @@ using namespace std;
 			RenderImage( bgImage[0], bgImage[0].sx, bgImage[0].sy, bgImage[0].sw, bgImage[0].sh, IMAGE_MODE::NORMAL );
 		}
 
-		RenderNowLoading();
-
+		if ( !threadState )	RenderNowLoading();
+		else						RenderImage( pressAnyKeyImage, pressAnyKeyImage.sx, pressAnyKeyImage.sy, pressAnyKeyImage.sw, pressAnyKeyImage.sh, IMAGE_MODE::FLASH );
 		char	str[256];
 		sprintf_s( str, "x = %d\ny = %d\n", x, y );
 		DrawString( str, 50, 300 );
@@ -153,8 +158,9 @@ using namespace std;
 	{
 		//	時間がないので座標直打ち
 		int	plusSw[4] = { 0, 25, 55, 97 };
+		int	plusW[4] = { 0, 18, 40, 70 };
 
-		nowLoading->Render( 1230, 790, 300 + 30 * renderCount, 150, 0, 0, 415 + plusSw[renderCount], 128 );
+		nowLoading->Render( 1230, 790, 300 + plusW[renderCount], 150, 0, 0, 415 + plusSw[renderCount], 128 );
 	}
 
 //----------------------------------------------------------------------------------
@@ -166,10 +172,10 @@ using namespace std;
 	{
 		loadingTimer++;
 
-		if ( loadingTimer % 10 == 0 )
+		if ( loadingTimer % 30 == 0 )
 		{
 			renderCount++;
-			if ( renderCount > 3 )	renderCount = 0;
+			if ( renderCount > 3 )	renderCount = 1;
 		}
 	}
 

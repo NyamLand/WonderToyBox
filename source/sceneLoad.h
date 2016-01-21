@@ -15,7 +15,7 @@ private:
 	
 	//	ââèoån
 	ImageObj	bgImage[2];
-	ImageObj	nowLoadingImage;
+	ImageObj	pressAnyKeyImage;
 	iex2DObj*	nowLoading;
 	int	timer;
 
