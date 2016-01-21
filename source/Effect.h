@@ -60,6 +60,11 @@ private:
 	Vector3		pow_pos;
 	int			pow_time;
 
+	ImageObj	itemEffect;
+	Vector3		item_pos;
+	Vector3		item_start;
+	Vector3		item_finish;
+
 	SHIELD_INFO	shieldInfo;
 	
 public:
@@ -75,6 +80,8 @@ public:
 	void	AuraUpdate( void );
 	void	StormSet( Vector3 pos, int time );
 	void	StormTimer( void );
+	void	ItemEffectUpdate( void );
+	void	ItemEffectSet( int num, int state );
 	void	Render( void );
 	void	RenderShield( void );
 
