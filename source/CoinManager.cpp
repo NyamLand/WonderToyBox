@@ -112,7 +112,6 @@
 		Vector3	moveParam = v * speed;
 		obj->SetPos( pos );
 		obj->SetMove( moveParam );
-		obj->SetScale( COIN_SIZE );
 		obj->SetState( true );
 		obj->Update();
 

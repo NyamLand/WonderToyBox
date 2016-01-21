@@ -785,8 +785,8 @@ namespace
 			AngleAdjust( adjustSpeed );
 			if ( !slip.state )
 			{
-				move.x = sinf( moveVec ) * speed;
-				move.z = cosf( moveVec ) * speed;
+				move.x = sinf( moveVec ) * totalSpeed;
+				move.z = cosf( moveVec ) * totalSpeed;
 			}
 			else
 			{
@@ -1646,6 +1646,17 @@ namespace
 
 		case PARAMETER_STATE::JUMP:
 			out = jump.state;
+
+		case	PARAMETER_STATE::MAGNET:
+			out = magnet.state;
+			break;
+
+		case	PARAMETER_STATE::CONFUSION:
+			out = confusion.state;
+			break;
+
+		case	PARAMETER_STATE::UNRIVALEDITEM:
+			out = unrivaledItem.state;
 			break;
 		}
 
