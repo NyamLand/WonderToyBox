@@ -179,15 +179,15 @@
 	{
 		ScalingAlphaUpdate(itemEffect, 100);	
 		Lerp(item_pos, item_start, item_finish, itemEffect.t);
-		itemEffect.x = item_pos.x;	itemEffect.y = item_pos.y;
+		itemEffect.x = (int)item_pos.x;	itemEffect.y = (int)item_pos.y;
 	}
 
 	//	プレイヤー番号でその場所にエフェクト(アイテム用)
 	void	Effect::ItemEffectSet( int num ,int state)
 	{
 		WorldToClient(characterManager->GetPos(num), item_pos, matView * matProjection);
-		item_start = item_pos + Vector3(2.0f, 0.0f, 0.0f);
-		item_finish = item_pos + Vector3(2.0f, -100.0f, 0.0f);
+		item_start = item_pos + Vector3(0.0f, 0.0f, 0.0f);
+		item_finish = item_pos + Vector3(0.0f, -100.0f, 0.0f);
 		SetScaling(itemEffect, 1.0f, true);
 
 		switch (state)
