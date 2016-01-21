@@ -765,7 +765,50 @@ iexMesh*	Collision::obj = NULL;
 	}
 
 	//	カプセルと球の当たり判定
-	bool	Collision::CapsuleVSSphere( Vector3 p1, Vector3 p2, float r1, Vector3 c, float r2 )
+	//bool	Collision::CapsuleVSSphere( const Vector3& p1, const Vector3& p2, float r1, const Vector3& c, float r2 )
+	//{
+	//	//	線分の始点から終点までのベクトルを求める
+	//	Vector3	v1 = p2 - p1;
+	//	float			l1 = v1.Length();
+	//	v1.Normalize();
+
+	//	//	線分の始点から球の中心へのベクトルを求める
+	//	Vector3	v2 = c - p1;
+	//	float			l2 = v2.Length();
+
+	//	//	内積を求める
+	//	float	dot = Vector3Dot( v2, v1 );
+
+	//	//	カプセルの半径と球の半径の和を求める
+	//	float	rr = r1 + r2;
+
+	//	//	内積の結果が始点より後ろだったら距離を計算
+	//	if ( dot < 0.0f )
+	//	{
+	//		if ( l2 <= rr )	return	true;
+	//	}
+	//	else
+	//	{
+	//		//	内積の結果が線分の長さより短かったら距離を計算
+	//		if ( l1 > dot )
+	//		{
+	//			Vector3	v3 = v1 * dot;
+	//			Vector3	v4 = v3 - c;
+	//			if ( v4.Length() <= rr )	return	true;
+	//		}
+	//		else
+	//		{
+	//			Vector3	v5 = p2 - c;
+	//			float	l5 = v5.Length();
+	//			if ( l5 <= rr )	return	true;
+	//		}
+	//	}
+
+	//	return	false;
+	//}
+
+	//	カプセルと球の当たり判定
+	bool	Collision::CapsuleVSSphere( const Vector3& p1, const Vector3& p2, float r1, const Vector3& c, float r2 )
 	{
 		float length = DistancePointSegmentSq( c, p1, p2 );
 
@@ -780,55 +823,6 @@ iexMesh*	Collision::obj = NULL;
 		float length = dist.Length();
 
 		if ( length <= r1 + r2 )	return true;
-		return	false;
-	}
-
-	//	球とカプセルの当たり判定
-	bool	Collision::SphereVSCapsule( Vector3 center, float r1, Vector3 p1, Vector3 p2, float r2 )
-	{
-		//	線分の始点から終点へのベクトルをv
-		Vector3	v = p2 - p1;
-
-		//	線分の始点から球の中心へのベクトルをc
-		Vector3	c = center - p1;
-
-		//	v・cを求める
-		float dot = Vector3Dot( v, c );
-
-		if ( dot < 0 )
-		{
-			//	v・c < 0の時球の中心が線分の始点よりも線分から遠くにあるので
-			//	cの長さが球の半径よりも小さければ交差
-			if ( c.Length() <= r1 + r2 )	return	true;
-		}
-		else
-		{
-			//	v・c >= ０の時 v・cとv*vの長さを比べる
-			float	vv = Vector3( v.x * v.x, v.y * v.y, v.z * v.z ).Length();
-			
-			if ( dot > vv )
-			{
-				//	線分の終点と球の中心の距離の２乗を求める
-				Vector3	vec = center - p2;
-				float vecLength = vec.Length();
-				float result = vecLength * vecLength;
-
-				//	球の半径の合計の２乗を求める
-				float rr = r1 + r2;
-				float resultR = rr * rr;
-
-				if ( result <= resultR )	return	true;
-			}
-			else
-			{
-				v.Normalize();
-				Vector3 vec1 = v * dot;
-				Vector3 vec2 = vec1 - c;
-				float length = vec2.Length();
-				if ( length <= r1 + r2 )	return	true;
-			}
-		}
-
 		return	false;
 	}
 

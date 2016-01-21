@@ -93,19 +93,19 @@
 	{
 		BaseChara::Render( shader, technique );
 
-		//	デバッグ用
-		if ( !debug ) 	return;
-		char	str[256];
-		DrawSphere( attackInfo.pos, attackInfo.r, 0xFFFFFFFF );
+		////	デバッグ用
+		//if ( !debug ) 	return;
+		//char	str[256];
+		//DrawSphere( attackInfo.pos, attackInfo.r, 0xFFFFFFFF );
 	
-		Vector3	stringPos;
-		Vector3	p_pos = GetPos();
-		WorldToClient( p_pos, stringPos, matView* matProjection );
-		stringPos.y -= 100.0f;
-		sprintf_s( str, "り\nす\n↓" );
-		DrawString( str, ( int )stringPos.x, ( int )stringPos.y );
-		sprintf_s(str, "x = %f\ny = %f\nz = %f\n", p_pos.x, p_pos.y, p_pos.z);
-		DrawString( str, 20, 400 );
+		//Vector3	stringPos;
+		//Vector3	p_pos = GetPos();
+		//WorldToClient( p_pos, stringPos, matView* matProjection );
+		//stringPos.y -= 100.0f;
+		//sprintf_s( str, "り\nす\n↓" );
+		//DrawString( str, ( int )stringPos.x, ( int )stringPos.y );
+		//sprintf_s(str, "x = %f\ny = %f\nz = %f\n", p_pos.x, p_pos.y, p_pos.z);
+		//DrawString( str, 20, 400 );
 	}
 
 //-----------------------------------------------------------------------------------

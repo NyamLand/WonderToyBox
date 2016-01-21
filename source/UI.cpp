@@ -559,11 +559,13 @@
 		int w = static_cast<int>( iexSystem::ScreenWidth * 0.27f );
 		int h = static_cast<int>( iexSystem::ScreenHeight * 0.49f );
 		ImageInitialize( countImage, x, y, w, h, 0, 0, 512, 512 );
+		w = static_cast<int>(iexSystem::ScreenWidth * 0.49f);
+		h = static_cast<int>(iexSystem::ScreenHeight * 0.27f);
 		ImageInitialize( finishImage, x, y, w, h, 0, 512, 1024, 512 );
 		count = 0;
 		waitTimer = 0;
-		start_pos = Vector3(countImage.x, -(countImage.h / 2) , 0);
-		finish_pos = Vector3(countImage.x, countImage.y, 0);
+		start_pos = Vector3((float)countImage.x, -((float)countImage.h / 2.0f), 0.0f);
+		finish_pos = Vector3((float)countImage.x, (float)countImage.y, 0.0f);
 		start_t = 0.0f;
 		start_step = 0;
 	}
@@ -894,8 +896,8 @@
 		}
 
 		Lerp(pos, start_pos, finish_pos, start_t);
-		countImage.x = pos.x;
-		countImage.y = pos.y;
+		countImage.x = (int)pos.x;
+		countImage.y = (int)pos.y;
 
 		if (start_t >= 1.0f) start_t = 1.0f;
 

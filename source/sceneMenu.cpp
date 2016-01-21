@@ -104,7 +104,7 @@
 		bgInfo.mt = 0.0f;
 		mainView = new Camera();
 		mainView->SetProjection( D3DXToRadian( 70.0f ), 1.0f, 1000.0f );
-		bgInfo.cpos = Vector3(0.0f, 10.0f, 0.0f);
+		bgInfo.cpos = Vector3(0.0f, 15.0f, 0.0f);
 		bgInfo.cspos = bgInfo.cpos;
 		bgInfo.cepos = Vector3( 1.0f,30.0f, 0.0f );
 		bgInfo.target = CAMERA_TARGET::front;
@@ -182,7 +182,7 @@
 		{
 			textImage.obj = new iex2DObj( "DATA/UI/menu/menu-head.png" );
 			int x = static_cast<int>( iexSystem::ScreenWidth / 2 );
-			int y = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
+			int y = static_cast<int>( iexSystem::ScreenHeight * 0.15f );
 			int w = static_cast<int>( iexSystem::ScreenWidth * 0.29f );
 			int h = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
 			ImageInitialize( textImage, x, y, w, h, 512, 0, 512, 256 );
@@ -503,7 +503,7 @@
 		{
 			int left = static_cast<int>( iexSystem::ScreenWidth / 5 );
 			int x = left + left * value;
-			int y = static_cast<int>( iexSystem::ScreenHeight * 0.75f );
+			int y = static_cast<int>( iexSystem::ScreenHeight * 0.37f );
 			int w = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
 			int h = static_cast<int>( iexSystem::ScreenHeight * 0.155f );
 			ImageInitialize( faceImage[value], x, y, w, h, 0, 256 * value, 256, 256 );
@@ -592,7 +592,7 @@
 		FOR( 0, PLAYER_MAX )
 		{
 			obj[value]->Animation();
-			obj[value]->SetPos(-10.0f, 14.0f, -7.0f + 5.0f * value);
+			obj[value]->SetPos(-12.0f, 10.0f, -7.0f + 5.0f * value);
 			obj[value]->SetAngle(0.0f, CHARA_ANGLE::CharaSelectPlayer_ANGLE[value], 0.0f);
 			obj[value]->Update();
 
@@ -663,14 +663,14 @@
 	void	sceneMenu::SelectStageInitialize( void )
 	{
 		//	Š÷ƒ‚ƒfƒ‹‰Šú‰»
-		deskStage->SetPos( -10.0f, 19.0f, 15.0f );
+		deskStage->SetPos( -5.0f, 12.0f, 15.0f );
 		deskStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 		deskStage->SetScale( 0.1f );
 		deskStage->Update();
 
 		
 		//@‚¨‚à‚¿‚áƒ‚ƒfƒ‹‰Šú‰»
-		toyStage->SetPos(10.0f, 19.0f, 15.0f);
+		toyStage->SetPos(5.0f, 12.0f, 15.0f);
 		toyStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
 		toyStage->SetScale(0.025f);
 		toyStage->Update();

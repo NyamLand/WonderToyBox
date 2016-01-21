@@ -263,7 +263,7 @@
 				{
 					if ( Random::PercentageRandom( 0.7f ) )
 					{
-						itemManager->Append( Vector3( Random::GetFloat( -20.0f, 20.0f ), 50.0f, Random::GetFloat( -20.0f, 15.0f ) ), Random::GetInt( 0, ITEM_TYPE::MAX - 1 ) );
+						itemManager->Append(Vector3(Random::GetFloat(-20.0f, 20.0f), 50.0f, Random::GetFloat(-20.0f, 15.0f)), Random::GetInt(0, ITEM_TYPE::MAX));
 					}
 				}
 			}
