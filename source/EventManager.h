@@ -22,18 +22,18 @@ namespace
 			JAM_SLOPE_CAMERA,
 			JAM_COIN_GETAWAY,
 			JAM_SLIP,
-			JAM_FALL_BOMB,
-			JAM_UFO,
+			//JAM_FALL_BOMB,
+			//JAM_UFO,
 
-			COIN_SACK,
+			//COIN_SACK,
 			COIN_FALL,
-			COIN_SPLASH,
-			COIN_JUELBOX,
+			//COIN_SPLASH,
+			//COIN_JUELBOX,
 			COIN_WAVE,
 			COIN_DUBBLE,
 
-			MISSION_COLLECT,
-			MISSION_STAY,
+			//MISSION_COLLECT,
+			//MISSION_STAY,
 
 			MAX,
 			NONE
@@ -68,6 +68,9 @@ public:
 	//	更新・描画
 	void	Update( void );
 	void	Render( void );
+
+	//　動作関数
+	void	CommonSetting(bool& eventflag, int& step, int countMax);
 
 	//	情報取得
 	static	EventManager*	GetInstance( void );

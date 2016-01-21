@@ -238,7 +238,7 @@
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>(LPSTR("DATA/CHR/majo/majo.IEM"));			//	掃除屋
 		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>(LPSTR("DATA/CHR/プリンセス/prinsess1.IEM"));					//	姫
 		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>(LPSTR("DATA/CHR/Thief/Thief.IEM"));				//	リス
-		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>(LPSTR("DATA/CHR/ECCMAN/ECCMAN.IEM"));					//	トラ
+		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>(LPSTR("DATA/CHR/Pirate/Pirate.IEM"));					//	トラ
 
 		//	ステージ設定
 		bgStage = new iexMesh("DATA/BG/MenuStage/menustage.IMO");	//	ステージ

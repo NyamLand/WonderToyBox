@@ -39,7 +39,7 @@ Pirate::Pirate(void) : BaseChara()
 	//	パラメータ初期化
 	power = 2;/*仮*/
 	speed = 0.25f;
-	scale = 0.02f;
+	scale = 0.045f;
 	diffence = -1;
 	isGround = true;
 }
@@ -58,7 +58,7 @@ bool	Pirate::Initialize(int playerNum, Vector3 pos)
 
 	//	モデル読み込み
 	if (obj == nullptr)
-		obj = new iex3DObj("DATA/CHR/Y2009/Y2009.IEM");
+		obj = new iex3DObj("DATA/CHR/Pirate/Pirate.IEM");
 
 	//	スケール設定
 	obj->SetScale(0.02f);

@@ -64,22 +64,22 @@ void	Event_Coin::Update(void)
 	//	コインの滝
 	if (m_Fall.eventflag)
 	{
-		Fall();
 		eventManager->SetEventFlag(m_Fall.eventflag);
+		Fall();
 	}
 
 	//　コインの隊列
 	if (m_Wave.eventflag)
 	{
-		Wave();
 		eventManager->SetEventFlag(m_Wave.eventflag);
+		Wave();
 	}
 	
 	//　コイン２倍タイム
 	if (m_Dubble.eventflag)
 	{
-		Dubble();
 		eventManager->SetEventFlag(m_Dubble.eventflag);
+		Dubble();
 	}
 }
 
@@ -130,11 +130,11 @@ void	Event_Coin::Wave(void)
 {
 	//　いろいろ定義（マクロてきなやつ）
 	const float STAGE_X_MAX = 20.0f;
-	const float STAGE_Z_MAX = 20.0f;
-	const float COIN_SPACE_RATE = 0.5f;
+	const float STAGE_Z_MAX = 10.0f;
 	const float distZ = 1.5f;
 	const float power = 0.2f;
 	const Vector3	vec = Vector3(0.0f, -0.1f, 0.0f);
+	const int COIN_INVERS_RATE = 5;	//　大きい方が少なくなる
 	const int POINT_MAX = 8;
 	const Vector3 point[] = {
 		Vector3(-STAGE_X_MAX, COIN_APPEAR_HEIGHT, STAGE_Z_MAX),		//　左上
@@ -153,28 +153,31 @@ void	Event_Coin::Wave(void)
 	//---------------------------------------------
 	static  int index = 0;	
 	static  Vector3 pos1 = point[index];
-	Vector3 pos2 = pos1;
-	pos2.z += distZ;
+	//Vector3 pos2 = pos1;
+	//pos2.z += distZ;
 	
+	//　発生
+	if (count % COIN_INVERS_RATE == 0)	 coinManager->Append(pos1, vec, power);
+
 	//　適用
-	switch (count % 8)
-	{
-	case 0:
-		coinManager->Append(pos1, vec, power);
-		break;
-
-	case 1:
-		coinManager->Append(pos2, vec, power);
-		break;
-
-	default:	break;
-	}
+	//switch (count % COIN_INVERS_RATE)
+	//{
+	//case 0:
+	//	coinManager->Append(pos1, vec, power);
+	//	break;
+	//
+	////　二列横隊
+	////case 1:
+	////	coinManager->Append(pos2, vec, power);
+	////	break;
+	//
+	//default:	break;
+	//}
 
 	//　降らす位置更新
 	if ((point[index + 1] - pos1).LengthSq() < 1.0f)	index++;
 	Vector3 addVec = (index < POINT_MAX) ? (point[index + 1] - pos1) : (point[0] - pos1);
 	addVec.Normalize();
-	addVec *= COIN_SPACE_RATE;
 	pos1 += addVec;
 
 
@@ -186,28 +189,19 @@ void	Event_Coin::Wave(void)
 //　コイン２倍タイム
 void	Event_Coin::Dubble(void)
 {
-	//　いろいろセット・リセット
-	CommonSetting(m_Dubble.eventflag, m_Dubble.step, DUBBLE_COUNT_MAX);
-}
-
-//　フラグ・状態などを設定
-void	Event_Coin::CommonSetting(bool& eventflag,int& step, int countMax)
-{
-	if (count >= FLYING_COUNT)	state = EVENT_STATE::ACTIVE;
-	if (count >= countMax - FLYING_COUNT)	state = EVENT_STATE::END;
-
-	//　リセット
-	if (count >= countMax)
+	if (count == 10)
 	{
-		eventflag = false;
-		step = 0;
-
-		count = 0;
-		state = EVENT_STATE::INTRO;
-		return;
+		for (int i = 0; i < 50; i++)
+		{
+			Vector3	pos = Vector3(Random::GetFloat(-20.0f, 20.0f), COIN_APPEAR_HEIGHT, Random::GetFloat(-20.0f, 12.0f));
+			static	Vector3	vec = Vector3(0.0f, -1.0f, 0.0f);
+			static	float	power = 1.0f;
+			coinManager->Append(pos, vec, power);
+		}
 	}
 
-	count++;
+	//　いろいろセット・リセット
+	CommonSetting(m_Dubble.eventflag, m_Dubble.step, DUBBLE_COUNT_MAX);
 }
 
 //**************************************************************
@@ -233,21 +227,21 @@ void	Event_Coin::SetEvent(int eventflag)
 {
 	switch (eventflag)
 	{
-	case EVENT_MODE::COIN_SACK:
-		m_Sack.eventflag = true;
-		break;
+	//case EVENT_MODE::COIN_SACK:
+	//	m_Sack.eventflag = true;
+	//	break;
 
 	case EVENT_MODE::COIN_FALL:
 		m_Fall.eventflag = true;
 		break;
 
-	case EVENT_MODE::COIN_SPLASH:
-		m_Sack.eventflag = true;
-		break;
+	//case EVENT_MODE::COIN_SPLASH:
+	//	m_Sack.eventflag = true;
+	//	break;
 
-	case EVENT_MODE::COIN_JUELBOX:
-		m_Juelbox.eventflag = true;
-		break;
+	//case EVENT_MODE::COIN_JUELBOX:
+	//	m_Juelbox.eventflag = true;
+	//	break;
 
 	case EVENT_MODE::COIN_WAVE:
 		m_Wave.eventflag = true;

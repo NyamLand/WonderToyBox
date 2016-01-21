@@ -324,7 +324,7 @@ Stage*	stage = nullptr;
 			if (objType == OBJECT_TYPE::BASE 
 				|| objType == OBJECT_TYPE::DESK_BASE 
 				|| objType == OBJECT_TYPE::FOREST_BASE 
-				|| objType == OBJECT_TYPE::DESK_BASE)
+				|| objType == OBJECT_TYPE::TOY_BASE)
 			{
 				out = Collision::CheckWall( object[value]->GetMesh(), pos, vec );
 			}

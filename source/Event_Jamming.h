@@ -8,6 +8,7 @@
 
 #define	SLOPE_COUNT_MAX	300
 #define	COIN_GETAWAY_COUNT_MAX	600
+#define	SLIP_COUNT_MAX	600
 
 // include
 #include	"EventManager.h"
@@ -19,7 +20,6 @@ private:
 	struct SLOPE
 	{
 		bool	eventFlag;
-		int		count;
 		float	param;
 		float	slope;
 		int		step;
@@ -28,14 +28,12 @@ private:
 	struct COINGETAWAY
 	{
 		bool	eventflag;
-		int		count;
 		int		step;
 	};
 
 	struct SLIP
 	{
 		bool	eventflag;
-		int		count;
 		int		step;
 	};
 

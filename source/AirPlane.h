@@ -69,7 +69,7 @@ public:
 	~AirPlane( void );
 
 	//	XVE•`‰æ
-	void	Update( void );
+	bool	Update( void );
 	void	Render( void );
 
 	//	“®ìŠÖ”

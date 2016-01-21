@@ -651,7 +651,7 @@
 		int h = static_cast<int>( iexSystem::ScreenHeight * 0.27f );
 		ImageInitialize( alertImage, x, y, w, h, 0, 0, 256, 256 );
 		alertImage.renderflag = true;
-		ImageInitialize(alert_coinImage, x, y, w, h, 0, 0, 512, 512);
+		ImageInitialize(alert_coinImage, x, y, w, h, 0, 0, 256, 256);
 		alert_coinImage.renderflag = true;
 	}
 
@@ -694,7 +694,7 @@
 		{
 			lifeInfo[value].life = gameManager->GetStartLife( value );
 			lifeInfo[value].lifeImage.obj = life;
-			ImageInitialize( lifeInfo[value].lifeImage, 0, 0, 75, 75, 0, 0, 64, 64 );
+			ImageInitialize( lifeInfo[value].lifeImage, 0, 10, 75, 75, 0, 0, 64, 64 );
 		}
 	}
 
@@ -999,6 +999,7 @@
 			{
 				alertInfo.flag = false;
 				alertInfo.alpha = 0.0f;
+				alertInfo.timer = 0;
 			}
 		}
 
@@ -1137,7 +1138,7 @@
 			break;
 
 		case 2:
-			eventInfo.airPlane->Update();
+			if (eventInfo.airPlane->Update()) eventInfo.step = 0;
 			break;
 		}
 

@@ -19,7 +19,6 @@ bool	Event_Jamming::Initialize()
 	//	画面傾きイベント初期化
 	{
 		m_Slope.step = 0;
-		m_Slope.count = 0;
 		m_Slope.param = 0.0f;
 		m_Slope.slope = 0.0f;
 		m_Slope.eventFlag = false;
@@ -28,14 +27,12 @@ bool	Event_Jamming::Initialize()
 	//	コイン逃走イベント初期化
 	{
 		m_CoinGetAway.step = 0;
-		m_CoinGetAway.count = 0;
 		m_CoinGetAway.eventflag = false;
 	}
 	
 	//　スリップイベント初期化
 	{
 		m_Slip.eventflag = 0;
-		m_Slip.count = 0;
 		m_Slip.step = 0;
 	}
 
@@ -56,22 +53,22 @@ void	Event_Jamming::Update(void)
 	//	カメラ傾き
 	if (m_Slope.eventFlag)
 	{
-		Slope();
 		eventManager->SetEventFlag(m_Slope.eventFlag);
+		Slope();
 	}
 
 	//	コイン逃走
 	if (m_CoinGetAway.eventflag)
 	{
-		CoinGetAway();
 		eventManager->SetEventFlag(m_CoinGetAway.eventflag);
+		CoinGetAway();
 	}
 
 	//	スリップ
 	if (m_Slip.eventflag)
 	{
-		Slip();
 		eventManager->SetEventFlag(m_Slip.eventflag);
+		Slip();
 	}
 }
 
@@ -122,11 +119,11 @@ void	Event_Jamming::Slope(void)
 
 	case 2:
 		//	数秒待つ
-		m_Slope.count++;
+		count++;
 
-		if (m_Slope.count >= SLOPE_COUNT_MAX)
+		if (count >= SLOPE_COUNT_MAX)
 		{
-			m_Slope.count = 0;
+			count = 0;
 			m_Slope.param = 0.0f;
 			m_Slope.step++;
 		}
@@ -158,6 +155,8 @@ void	Event_Jamming::Slope(void)
 		}
 		break;
 	}
+
+	CommonSetting(m_Slope.eventFlag, m_Slope.step, SLOPE_COUNT_MAX);
 }
 
 void	Event_Jamming::CoinGetAway(void)
@@ -171,11 +170,11 @@ void	Event_Jamming::CoinGetAway(void)
 		break;
 
 	case 1:
-		m_CoinGetAway.count++;
-		if (m_CoinGetAway.count >= COIN_GETAWAY_COUNT_MAX)
+		count++;
+		if (count >= COIN_GETAWAY_COUNT_MAX)
 		{
 			m_CoinGetAway.step++;
-			m_CoinGetAway.count = 0;
+			count = 0;
 		}
 		break;
 
@@ -186,6 +185,8 @@ void	Event_Jamming::CoinGetAway(void)
 		eventflag = EVENT_MODE::NONE;
 		break;
 	}
+
+	CommonSetting(m_CoinGetAway.eventflag, m_CoinGetAway.step, COIN_GETAWAY_COUNT_MAX);
 }
 
 void	Event_Jamming::Slip(void)
@@ -202,10 +203,12 @@ void	Event_Jamming::Slip(void)
 
 	case 1:
 		m_Slip.eventflag = false;
-		m_Slip.count = 0;
+		count = 0;
 		m_Slip.step = 0;
 		break;
 	}
+
+	CommonSetting(m_Slip.eventflag, m_Slip.step, SLIP_COUNT_MAX);
 }
 
 
@@ -237,11 +240,11 @@ void	Event_Jamming::SetEvent(int eventflag)
 		m_Slip.eventflag = true;
 		break;
 
-	case EVENT_MODE::JAM_FALL_BOMB:
-		break;
-
-	case EVENT_MODE::JAM_UFO:
-		break;
+	//case EVENT_MODE::JAM_FALL_BOMB:
+	//	break;
+	//
+	//case EVENT_MODE::JAM_UFO:
+	//	break;
 
 	case EVENT_MODE::JAM_COIN_GETAWAY:
 		m_CoinGetAway.eventflag = true;
