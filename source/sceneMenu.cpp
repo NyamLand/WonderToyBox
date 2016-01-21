@@ -56,15 +56,15 @@
 		{
 			float CharaSelectPlayer_ANGLE[4] = {
 				(D3DXToRadian(60.0f)),
-				(D3DXToRadian(90.0f)),
-				(D3DXToRadian(90.0f)),
+				(D3DXToRadian(80.0f)),
+				(D3DXToRadian(100.0f)),
 				(D3DXToRadian(120.0f)),
 			};
 
 			float SelectCheckPlayer_ANGLE[4] = {
 				(D3DXToRadian(-120.0f)),
-				(D3DXToRadian(-90.0f)),
-				(D3DXToRadian(-90.0f)),
+				(D3DXToRadian(-100.0f)),
+				(D3DXToRadian(-80.0f)),
 				(D3DXToRadian(-60.0f)),
 			};
 
@@ -133,6 +133,7 @@
 		playerNum = make_unique<iex2DObj>( LPSTR( "DATA/UI/menu/playerNum.png" ) );
 		face = new iex2DObj( "DATA/UI/chara_emotion.png" );
 		cursor = new iex2DObj( "DATA/UI/cursor.png" );
+		decidecursor = new iex2DObj("DATA/UI/decide-cursor.png");
 		cpuCursor = new iex2DObj( "DATA/UI/cpuIcon.png" );
 		selectCheckCursor = new iex2DObj("DATA/UI/menu/cursor.png");
 		
@@ -211,6 +212,7 @@
 		SafeDelete( textImage.obj );
 		SafeDelete( face );
 		SafeDelete( cursor );
+		SafeDelete(decidecursor);
 		SafeDelete( selectCheckCursor );
 		SafeDelete( cpuCursor );
 		Random::Release();
@@ -236,9 +238,7 @@
 		//	カメラ更新
 		CameraUpdate();
 
-		//	スクリーン更新
-		screen->Update();
-
+		
 		//	各モード更新
 		switch ( mode )
 		{
@@ -277,6 +277,9 @@
 			OptionUpdate();
 			break;
 		}
+		//	スクリーン更新
+		screen->Update();
+
 		
 	}
 
@@ -479,8 +482,10 @@
 				int w = static_cast<int>(iexSystem::ScreenWidth * (0.04f));
 				int h = static_cast<int>(iexSystem::ScreenHeight * (0.07f));
 				ImageInitialize(cursorImage[value], 0, 0, w, h, 0, 0, 0, 0);
+				ImageInitialize(decidecursorImage[value], 0, 0, w, h, 0, 0, 0, 0);
 			
 			cursorImage[value].obj = cursor;
+			decidecursorImage[value].obj = decidecursor;
 
 			if ( value >= gameManager->GetPlayerNum() )
 			{
@@ -592,7 +597,7 @@
 		FOR( 0, PLAYER_MAX )
 		{
 			obj[value]->Animation();
-			obj[value]->SetPos(-12.0f, 10.0f, -7.0f + 5.0f * value);
+			obj[value]->SetPos(-12.0f, 10.0f, -9.0f + 6.0f * value);
 			obj[value]->SetAngle(0.0f, CHARA_ANGLE::CharaSelectPlayer_ANGLE[value], 0.0f);
 			obj[value]->Update();
 
@@ -630,27 +635,45 @@
 		//プレイヤー1
 		cursorImage[0].x = faceImage[characterSelectInfo.character[0]].x - faceImage[characterSelectInfo.character[0]].w / 2;
 		cursorImage[0].y = faceImage[characterSelectInfo.character[0]].y - faceImage[characterSelectInfo.character[0]].h / 2;
-		if (characterSelectInfo.select[0])	cursorImage[0].color = Vector3(0.5f, 0.5f, 0.5f);	//	決定時明度下げる
+		if (characterSelectInfo.select[0])	{
+			decidecursorImage[0].x = cursorImage[0].x;	//	決定時明度下げる
+			decidecursorImage[0].y = cursorImage[0].y;
+		}
 		
 
 		//プレイヤー2
 		cursorImage[1].x = faceImage[characterSelectInfo.character[1]].x + faceImage[characterSelectInfo.character[1]].w / 2;
 		cursorImage[1].y = faceImage[characterSelectInfo.character[1]].y - faceImage[characterSelectInfo.character[1]].h / 2;
-		if (characterSelectInfo.select[1])	cursorImage[1].color = Vector3(0.5f, 0.5f, 0.5f);	//	決定時明度下げる
+		if (characterSelectInfo.select[1])	{
+			decidecursorImage[1].x = cursorImage[1].x;	//	決定時明度下げる
+			decidecursorImage[1].y = cursorImage[1].y;
+		}
 
 
 		//プレイヤー3
 		cursorImage[2].x = faceImage[characterSelectInfo.character[2]].x - faceImage[characterSelectInfo.character[2]].w / 2;
 		cursorImage[2].y = faceImage[characterSelectInfo.character[2]].y + faceImage[characterSelectInfo.character[2]].h / 2;
-		if (characterSelectInfo.select[2])	cursorImage[2].color = Vector3(0.5f, 0.5f, 0.5f);	//	決定時明度下げる
+		if (characterSelectInfo.select[2])	{
+			decidecursorImage[2].x = cursorImage[2].x;	//	決定時明度下げる
+			decidecursorImage[2].y = cursorImage[2].y;
+		}
 
 		//プレイヤー4
 		cursorImage[3].x = faceImage[characterSelectInfo.character[3]].x + faceImage[characterSelectInfo.character[3]].w / 2;
 		cursorImage[3].y = faceImage[characterSelectInfo.character[3]].y + faceImage[characterSelectInfo.character[3]].h / 2;
-		if (characterSelectInfo.select[3])	cursorImage[3].color = Vector3(0.5f, 0.5f, 0.5f);	//	決定時明度下げる
+		if (characterSelectInfo.select[3])	{
+			decidecursorImage[3].x = cursorImage[3].x;	//	決定時明度下げる
+			decidecursorImage[3].y = cursorImage[3].y;
+		}
 
 		FOR(0, PLAYER_MAX){
-			RenderImage(cursorImage[value], 128 * (value % 2), 128 * (value / 2), 128, 128, IMAGE_MODE::NORMAL);
+			if (characterSelectInfo.select[value]){
+				RenderImage(decidecursorImage[value], 128 * (value % 2), 128 * (value / 2), 128, 128, IMAGE_MODE::NORMAL);
+			}
+			else
+			{
+				RenderImage(cursorImage[value], 128 * (value % 2), 128 * (value / 2), 128, 128, IMAGE_MODE::NORMAL);
+			}
 		}
 		
 	}
@@ -663,14 +686,14 @@
 	void	sceneMenu::SelectStageInitialize( void )
 	{
 		//	机モデル初期化
-		deskStage->SetPos( -5.0f, 12.0f, 15.0f );
+		deskStage->SetPos( 0.0f,0.0f,0.0f );
 		deskStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 		deskStage->SetScale( 0.1f );
 		deskStage->Update();
 
 		
 		//　おもちゃモデル初期化
-		toyStage->SetPos(5.0f, 12.0f, 15.0f);
+		toyStage->SetPos(0.0f,0.0f,0.0f);
 		toyStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
 		toyStage->SetScale(0.025f);
 		toyStage->Update();
@@ -685,17 +708,27 @@
 	{
 		if (bgInfo.t < 1.0f)return;
 		//	ステージ回転
-		stageSelectInfo.angle += 0.01f;
+		static float atai = 0.01f;
+		stageSelectInfo.angle += atai;
+		if (stageSelectInfo.angle>3.8f || stageSelectInfo.angle < 2.4f)
+		{
+			atai *= -1.0f;
+		}//stageSelectInfo.angle = 3.5f;
+		//stageSelectInfo.angle = 1.8f;
 
 		//	ステージの向きを設定(選択中回転)
 		switch ( stageSelectInfo.stage )
 		{
 		case 0:
+			deskStage->SetPos(-2.0f, 15.0f, 8.0f);
+			toyStage->SetPos(7.0f, 15.0f, 15.0f);
 			deskStage->SetAngle( D3DXToRadian( 30.0f ), stageSelectInfo.angle, 0.0f );
 			toyStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
 			break;
 
 		case 1:
+			deskStage->SetPos(-7.0f, 15.0f, 15.0f);
+			toyStage->SetPos(2.0f, 15.0f, 8.0f);
 			deskStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
 			toyStage->SetAngle(D3DXToRadian(30.0f), stageSelectInfo.angle, 0.0f);
 			break;
@@ -795,14 +828,14 @@
 
 		//	ステージ座標、向き設定
 		{
-			deskStage->SetPos( 6.0f, 15.0f, 3.0f );
-			deskStage->SetAngle(D3DXToRadian(30.0f), D3DXToRadian(-100.0f), 0.0f);
+			deskStage->SetPos( 7.0f, 15.5f, 2.5f );
+			deskStage->SetAngle(D3DXToRadian(45.0f), D3DXToRadian(-90.0f), 0.0f);
 			deskStage->SetScale( 0.03f );
 			deskStage->Update();
 		
-			toyStage->SetPos(6.0f, 15.0f, 3.0f);
-			toyStage->SetAngle(D3DXToRadian(30.0f), D3DXToRadian(-100.0f), 0.0f);
-			toyStage->SetScale(0.015f);
+			toyStage->SetPos(7.0f, 15.5f, 2.5f);
+			toyStage->SetAngle(D3DXToRadian(45.0f), D3DXToRadian(-90.0f), 0.0f);
+			toyStage->SetScale(0.01f);
 			toyStage->Update();
 		}
 
@@ -894,7 +927,7 @@
 		FOR( 0, PLAYER_MAX )
 		{
 			obj[value]->Animation();
-			obj[value]->SetPos(12.0f, 10.0f, 5.0f - 4.0f * value);
+			obj[value]->SetPos(12.0f, 10.0f, 8.0f - 6.0f * value);
 			obj[value]->SetAngle(0.0f, CHARA_ANGLE::SelectCheckPlayer_ANGLE[value], 0.0f);
 			obj[value]->Update();
 		}
@@ -1177,11 +1210,11 @@
 		//コインMAXの描画
 		optionLife->Render(1100, 420, 64, 64, ( optionInfo.life + 3 ) * 64, 128 * 0, 64, 64);
 		//タイム
-		optionLife->Render(1080-40, 520, 64, 64, optionInfo.minute * 64, 64 * 0, 64, 64);
-		optionLife->Render(1200-40, 520, 64, 64, ((optionInfo.second / 10) % 10) * 64, 64 * 0, 64, 64);
-		optionLife->Render(1240-40, 520, 64, 64, 0, 64 * 0, 64, 64);
-		optionImage->Render(1140 - 40, 520, 64, 64, 256, 128 * 1, 128, 128);
-		optionImage->Render(1300 - 40, 520, 64, 64, 384, 128 * 1, 128, 128);
+		optionLife->Render(1100, 520, 64, 64, optionInfo.minute * 64, 64 * 0, 64, 64);
+		optionLife->Render(1220, 520, 64, 64, ((optionInfo.second / 10) % 10) * 64, 64 * 0, 64, 64);
+		optionLife->Render(1260, 520, 64, 64, 0, 64 * 0, 64, 64);
+		optionImage->Render(1160, 520, 64, 64, 256, 128 * 1, 128, 128);
+		optionImage->Render(1320, 520, 64, 64, 384, 128 * 1, 128, 128);
 	}
 
 	//	矢印描画

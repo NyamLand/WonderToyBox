@@ -100,10 +100,12 @@ private:
 	iex2DObj*				face;
 	iex2DObj*				cursor;
 	iex2DObj*				cpuCursor;
+	iex2DObj*				decidecursor;
 	iex2DObj*				selectCheckCursor;
 	ImageObj				textImage;
 	ImageObj				faceImage[CHARACTER_TYPE::MAX];
 	ImageObj				cursorImage[4];
+	ImageObj				decidecursorImage[4];
 
 
 	//	äeÉÇÅ[ÉhèÓïÒ
