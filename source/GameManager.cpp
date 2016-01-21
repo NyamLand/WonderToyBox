@@ -158,7 +158,11 @@
 	void	GameManager::Update( void )
 	{
 		//	タイマー更新
-		if ( timeStop > 0 ) timeStop--;
+		if (timeStop > 0)
+		{
+			timeStop--;
+			return;
+		}
 		else timer--;
 
 		//-------------------------------------------------------
