@@ -795,12 +795,12 @@
 
 		//	ステージ座標、向き設定
 		{
-			deskStage->SetPos( 5.0f, 21.0f, 3.0f );
+			deskStage->SetPos( 6.0f, 15.0f, 3.0f );
 			deskStage->SetAngle(D3DXToRadian(30.0f), D3DXToRadian(-100.0f), 0.0f);
 			deskStage->SetScale( 0.03f );
 			deskStage->Update();
 		
-			toyStage->SetPos(5.0f, 21.0f, 3.0f);
+			toyStage->SetPos(6.0f, 15.0f, 3.0f);
 			toyStage->SetAngle(D3DXToRadian(30.0f), D3DXToRadian(-100.0f), 0.0f);
 			toyStage->SetScale(0.015f);
 			toyStage->Update();
@@ -894,7 +894,7 @@
 		FOR( 0, PLAYER_MAX )
 		{
 			obj[value]->Animation();
-			obj[value]->SetPos(9.0f, 14.0f, 5.0f - 4.0f * value);
+			obj[value]->SetPos(12.0f, 10.0f, 5.0f - 4.0f * value);
 			obj[value]->SetAngle(0.0f, CHARA_ANGLE::SelectCheckPlayer_ANGLE[value], 0.0f);
 			obj[value]->Update();
 		}

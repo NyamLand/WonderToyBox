@@ -26,7 +26,6 @@ namespace
 		enum
 		{
 			DESK,
-			FOREST,
 			TOY,
 			BLOCK,
 
@@ -93,10 +92,6 @@ Stage*	stage = nullptr;
 			Append( Vector3( -10.0f, 10.0f, 0.0f ), Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 0.5f, 0.5f, 0.5f ), MOVE_TYPE::MOVE_BOX_HIEGHT, OBJECT_TYPE::RED_BLOCK );
 			break;
 
-		case STAGE_TYPE::FOREST:
-			Append( Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 1.0f, 1.0f, 1.0f ), MOVE_TYPE::FIX_BOX, OBJECT_TYPE::FOREST_BASE );
-			break;
-
 		case STAGE_TYPE::TOY:
 			Append(Vector3(0.0f, 5.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.8f, 0.5f), MOVE_TYPE::FIX_BOX, OBJECT_TYPE::TOY_BASE);
 			Append(Vector3(10.0f, 20.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::BREAK_OBJECT, OBJECT_TYPE::RED_BLOCK);
@@ -133,10 +128,6 @@ Stage*	stage = nullptr;
 			lightColor = Vector3( 1.5f, 1.5f, 1.5f );
 			break;
 			
-		case	STAGE_TYPE::FOREST:
-			lightColor = Vector3( 0.5f, 0.5f, 0.5f );
-			break;
-
 		case	STAGE_TYPE::TOY:
 			lightColor = Vector3(1.5f, 1.5f, 1.5f);
 			break;
@@ -180,12 +171,6 @@ Stage*	stage = nullptr;
 	{
 		bool	state = true;
 
-		//	UVアニメーション
-		if ( stageType == STAGE_TYPE::FOREST )
-		{
-			//　川の流れ（UVアニメ）
-			adjustV -= 0.001f;
-		}
 
 		FOR( 0, OBJ_MAX )
 		{
@@ -198,12 +183,6 @@ Stage*	stage = nullptr;
 	//	描画
 	void	Stage::Render( iexShader* shader, LPSTR technique )
 	{
-		//	森ステージ川
-		if ( stageType == STAGE_TYPE::FOREST )
-		{
-			shader3D->SetValue( "adjustV", adjustV );
-			forestRiver->Render( shader, "effect_add" );
-		}
 
 		FOR( 0, OBJ_MAX )
 		{
