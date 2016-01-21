@@ -23,8 +23,8 @@ namespace
 			SPARK,
 			STAR,
 			SMOKE,
-			ARROW_UP,
-			ARROW_DOWN,
+			POWER_UP,
+			SPEED_UP,
 			DUST,
 			SUCK,
 			FLOWER = 8,
@@ -176,8 +176,8 @@ namespace
 	}
 
 
-	//		矢印アップ
-	void	Particle::Arrow_UP(const Vector3& pos, const float& scale , const int move, const int& time)
+	//		パワーアップ
+	void	Particle::PowerUp(const Vector3& pos, const float& scale , const int move, const int& time)
 	{
 		Vector3	Pos, Move, Power;
 		timer++;
@@ -198,24 +198,24 @@ namespace
 
 
 			//	画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
-			pt->Set(ARROW_UP, 0, 1.0f, 45, 0.0f, 20, 0.5f, &Pos, &Move, &Power, 1.0f, 1.0f, 1.0f, scale, RS_COPY);
+			pt->Set(POWER_UP, 0, 1.0f, 45, 0.0f, 20, 0.5f, &Pos, &Move, &Power, 1.0f, 1.0f, 1.0f, scale, RS_COPY);
 		}
 	}
 
-	//	矢印ダウン
-	void	Particle::Arrow_DOWN(const Vector3& pos, const float& scale, const int move, const int& time)
+	//	スピードアップ
+	void	Particle::SpeedUp(const Vector3& pos, const float& scale, const int move, const int& time)
 	{
 		Vector3	Pos, Move, Power;
 		timer++;
 		if (timer % time != 0) return;
-		for (int j = 0; j < 1; j++)
+		for (int j = 0; j<1; j++)
 		{
 			Pos.x = pos.x + (Random::GetInt(-move, move)	 * (0.01f * scale));
-			Pos.y = pos.y + 3.0f * scale;
+			Pos.y = pos.y;
 			Pos.z = pos.z + (Random::GetInt(-move, move)	 * (0.01f * scale));
 
 			Move.x = 0.0f;
-			Move.y = Random::GetFloat(-100.0f, -50.0f)	 * (0.0007f * scale);
+			Move.y = Random::GetFloat(50.0f, 100.0f)	 * (0.001f * scale);
 			Move.z = 0.0f;
 
 			Power.x = 0.0f;
@@ -224,7 +224,7 @@ namespace
 
 
 			//	画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
-			pt->Set(ARROW_DOWN, 0, 1.0f, 60, 0.0f, 40, 0.5f, &Pos, &Move, &Power, 1.0f, 1.0f, 1.0f, scale, RS_COPY);
+			pt->Set(SPEED_UP, 0, 1.0f, 45, 0.0f, 20, 0.5f, &Pos, &Move, &Power, 1.0f, 1.0f, 1.0f, scale, RS_COPY);
 		}
 	}
 
@@ -431,7 +431,6 @@ namespace
 		for (int j = 0; j < 1; j++)
 		{
 			Vector3 ran_pos, direction;
-			float	t_len;
 
 			direction.x = Random::GetFloat(-1.0f, 1.0f);
 			direction.y = Random::GetFloat(0.0f, 1.0f);

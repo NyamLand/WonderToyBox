@@ -951,7 +951,7 @@ namespace
 	{
 		if ( !attackUp.state )	return;
 
-		particle->Arrow_UP( pos );
+		particle->PowerUp( pos );
 
 		//	タイマー減算
 		attackUp.timer--;

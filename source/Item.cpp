@@ -7,6 +7,7 @@
 #include	"Particle.h"
 #include	"CharacterManager.h"
 #include	"GameManager.h"
+#include	"Effect.h"
 
 #include	"Item.h"
 
@@ -109,6 +110,8 @@
 		particle->Spark( pos, effectScale );
 	
 		sound->PlaySE( SE::ITEM_SE );
+
+		m_Effect->ItemEffectSet(Num, type);
 	}
 
 //-------------------------------------------------------------------------------

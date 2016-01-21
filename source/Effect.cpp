@@ -6,6 +6,7 @@
 #include	"CharacterManager.h"
 #include	"Particle.h"
 
+#include	"Item.h"
 #include	"Effect.h"
 
 //*******************************************************************************
@@ -66,7 +67,9 @@
 
 		pow_up.obj = new iex2DObj( "DATA/Effect/ol-r.png" );
 		shieldInfo.obj = new iex2DObj( "DATA/Effect/state/Guard-ef.png" );
+		itemEffect.obj = new iex2DObj("DATA/UI/item-state.png");
 		ImageInitialize(pow_up, 0, 0, 90, 90, 0, 0, 0, 0);
+		ImageInitialize(itemEffect, 0, 0, 90, 90, 0, 0, 256, 256);
 
 		for (int i = 0; i < 4; i++){
 			for (int j = 0; j < 4; j++){
@@ -81,6 +84,8 @@
 		c_angle = 0.0f;
 		pow_pos = Vector3(0, 0, 0);
 		pow_time = 0;
+
+		item_pos = Vector3(0, 0, 0);
 		
 		//	シールド初期化
 		ShieldInitialize();
@@ -148,6 +153,9 @@
 		//	シールド更新
 		Shield();
 
+		//	アイテムエフェクト更新
+		ItemEffectUpdate();
+
 
 	}
 
@@ -161,8 +169,51 @@
 			aura->SetPos(p);
 			aura->SetScale(0.02f);
 			aura->SetAngle(0.0f);
+
 			aura->Update();
 		}
+	}
+
+	//	アイテムエフェクト
+	void	Effect::ItemEffectUpdate( void )
+	{
+		ScalingAlphaUpdate(itemEffect, 100);	
+		Lerp(item_pos, item_start, item_finish, itemEffect.t);
+		itemEffect.x = item_pos.x;	itemEffect.y = item_pos.y;
+	}
+
+	//	プレイヤー番号でその場所にエフェクト(アイテム用)
+	void	Effect::ItemEffectSet( int num ,int state)
+	{
+		WorldToClient(characterManager->GetPos(num), item_pos, matView * matProjection);
+		item_start = item_pos + Vector3(2.0f, 0.0f, 0.0f);
+		item_finish = item_pos + Vector3(2.0f, -100.0f, 0.0f);
+		SetScaling(itemEffect, 1.0f, true);
+
+		switch (state)
+		{
+		case ITEM_TYPE::ATTACK_UP:
+			itemEffect.sx = 0;
+			itemEffect.sy = 0;
+			break;
+
+		case ITEM_TYPE::UNRIVALED:
+			itemEffect.sx = 256;
+			itemEffect.sy = 0;
+			break;
+
+		case ITEM_TYPE::SPEED_UP:
+			itemEffect.sx = 0;
+			itemEffect.sy = 256;
+			break;
+
+		case ITEM_TYPE::MAGNET:
+			itemEffect.sx = 256;
+			itemEffect.sy = 256;
+			break;
+				
+		}
+
 	}
 
 	//	竜巻
@@ -225,16 +276,16 @@
 		RenderShield();
 
 		for ( int i = 0; i < 4; i++ ){
-			//	プレイヤーのポジションより2つ高い位置を取る
+			//	プレイヤーのポジションより2高い位置を取る
 			WorldToClient(circle_out[i].c_pos + Vector3(0, 2.0f, 0), pow_pos, matView* matProjection);
 			pow_up.x = (int)pow_pos.x;	pow_up.y = (int)pow_pos.y;
 			
 			//	ベース（NORMAL）のパラメータ用
 			pow_up.renderflag = true;	pow_up.alpha = 0.3f;
 
-		//	RenderImage(pow_up, 0, 0, 512, 512, IMAGE_MODE::ADOPTPARAM);
-		//	RenderImage(pow_up, 0, 0, 512, 512, IMAGE_MODE::WAVE);
 		}
+
+		RenderImage(itemEffect, itemEffect.sx, itemEffect.sy, itemEffect.sw, itemEffect.sh, IMAGE_MODE::SCALING);
 	}
 
 	//	シールド描画
