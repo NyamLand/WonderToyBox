@@ -1823,7 +1823,7 @@ namespace
 			break;
 
 		case PARAMETER_STATE::SLIP:
-			SetParameterState( slip, 11 * SECOND );
+			SetParameterState( slip, 1 * SECOND );
 			break;
 
 		case PARAMETER_STATE::BOOST:

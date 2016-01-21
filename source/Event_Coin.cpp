@@ -19,9 +19,9 @@ bool	Event_Coin::Initialize()
 
 	//　コインの滝
 	{
-		m_Fall.eventflag = false;
-		m_Fall.step = 0;
-	}
+	m_Fall.eventflag = false;
+	m_Fall.step = 0;
+}
 
 	//　コインワッシャァア
 	{
@@ -74,7 +74,7 @@ void	Event_Coin::Update(void)
 		eventManager->SetEventFlag(m_Wave.eventflag);
 		Wave();
 	}
-	
+
 	//　コイン２倍タイム
 	if (m_Dubble.eventflag)
 	{
@@ -101,15 +101,18 @@ void	Event_Coin::Sack(void)
 void	Event_Coin::Fall(void)
 {
 	//　コイン落下
-	if (count % SECOND == 0)
+	switch (count % SECOND)
 	{
-		for (int i = 0; i < 50; i++)
+	case 0:
+	case 30:
+		for (int i = 0; i < 10; i++)
 		{
 			Vector3	pos = Vector3(Random::GetFloat(-20.0f, 20.0f), COIN_APPEAR_HEIGHT, Random::GetFloat(-20.0f, 12.0f));
 			static	Vector3	vec = Vector3(0.0f, -1.0f, 0.0f);
 			static	float	power = 1.0f;
 			coinManager->Append(pos, vec, power);
 		}
+		break;
 	}
 
 	CommonSetting(m_Fall.eventflag, m_Fall.step, FALL_COUNT_MAX);
@@ -138,12 +141,12 @@ void	Event_Coin::Wave(void)
 	const int POINT_MAX = 8;
 	const Vector3 point[] = {
 		Vector3(-STAGE_X_MAX, COIN_APPEAR_HEIGHT, STAGE_Z_MAX),		//　左上
-		Vector3( STAGE_X_MAX, COIN_APPEAR_HEIGHT, STAGE_Z_MAX),		//　右上
+		Vector3(STAGE_X_MAX, COIN_APPEAR_HEIGHT, STAGE_Z_MAX),		//　右上
 		Vector3(-STAGE_X_MAX, COIN_APPEAR_HEIGHT, -STAGE_Z_MAX),	//　左下
-		Vector3( STAGE_X_MAX, COIN_APPEAR_HEIGHT, -STAGE_Z_MAX),	//　右下
+		Vector3(STAGE_X_MAX, COIN_APPEAR_HEIGHT, -STAGE_Z_MAX),	//　右下
 		Vector3(-STAGE_X_MAX, COIN_APPEAR_HEIGHT, STAGE_Z_MAX),		//　左上
-		Vector3( STAGE_X_MAX, COIN_APPEAR_HEIGHT, STAGE_Z_MAX),		//　右上
-		Vector3( STAGE_X_MAX, COIN_APPEAR_HEIGHT, -STAGE_Z_MAX),	//　右下
+		Vector3(STAGE_X_MAX, COIN_APPEAR_HEIGHT, STAGE_Z_MAX),		//　右上
+		Vector3(STAGE_X_MAX, COIN_APPEAR_HEIGHT, -STAGE_Z_MAX),	//　右下
 		Vector3(-STAGE_X_MAX, COIN_APPEAR_HEIGHT, -STAGE_Z_MAX),	//　左下
 		Vector3(-STAGE_X_MAX, COIN_APPEAR_HEIGHT, STAGE_Z_MAX),		//　左上
 	};
@@ -151,11 +154,11 @@ void	Event_Coin::Wave(void)
 	//---------------------------------------------
 	//　波のように隊列を組んで降ってくる
 	//---------------------------------------------
-	static  int index = 0;	
+	static  int index = 0;
 	static  Vector3 pos1 = point[index];
 	//Vector3 pos2 = pos1;
 	//pos2.z += distZ;
-	
+
 	//　発生
 	if (count % COIN_INVERS_RATE == 0)	 coinManager->Append(pos1, vec, power);
 
@@ -227,21 +230,21 @@ void	Event_Coin::SetEvent(int eventflag)
 {
 	switch (eventflag)
 	{
-	//case EVENT_MODE::COIN_SACK:
-	//	m_Sack.eventflag = true;
-	//	break;
+		//case EVENT_MODE::COIN_SACK:
+		//	m_Sack.eventflag = true;
+		//	break;
 
 	case EVENT_MODE::COIN_FALL:
 		m_Fall.eventflag = true;
 		break;
 
-	//case EVENT_MODE::COIN_SPLASH:
-	//	m_Sack.eventflag = true;
-	//	break;
+		//case EVENT_MODE::COIN_SPLASH:
+		//	m_Sack.eventflag = true;
+		//	break;
 
-	//case EVENT_MODE::COIN_JUELBOX:
-	//	m_Juelbox.eventflag = true;
-	//	break;
+		//case EVENT_MODE::COIN_JUELBOX:
+		//	m_Juelbox.eventflag = true;
+		//	break;
 
 	case EVENT_MODE::COIN_WAVE:
 		m_Wave.eventflag = true;
