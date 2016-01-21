@@ -100,7 +100,7 @@
 		stageType = 1;	//　森
 
 		//　時間
-		timelimit = 32 * SECOND;
+		//timelimit = 32 * SECOND;
 
 		//　コイン最大
 		maxlife = LIFE_MAX_NUM::LIFE_5;
@@ -195,22 +195,24 @@
 		*/
 
 		//　演出開始
-		if (timer == 60 * SECOND)
+		if (timer == 58 * SECOND || timer == 38 * SECOND || timer == 18 * SECOND)
+		//if (timer % (20 * SECOND) == 0 || timer == 60 * SECOND - 2)
 		{
 			//eventmode = Random::GetInt(0, EVENT_MODE::MAX - 1);
+			eventmode = Random::GetInt(EVENT_MODE::COIN_FALL, EVENT_MODE::COIN_DUBBLE);
 			
 			//　↓ 仮 ↓
 			//eventmode = EVENT_MODE::COIN_FALL;	//　仮 （本番：この行いらない、上の行のコメントはずす）
 			//eventmode = EVENT_MODE::COIN_DUBBLE;	//　仮 （本番：この行いらない、上の行のコメントはずす）
-			eventmode = EVENT_MODE::COIN_WAVE;		//　仮 （本番：この行いらない、上の行のコメントはずす）
+			//eventmode = EVENT_MODE::COIN_WAVE;		//　仮 （本番：この行いらない、上の行のコメントはずす）
 			//　↑ 仮 ↑
 
-			if (eventmode <= EVENT_MODE::JAM_UFO)
+			if (eventmode <= EVENT_MODE::JAM_SLIP)
 			{
 				alert_type = ALERT_TYPE_INFO::JAM;
 				alert_sound = SE::EVENT_SE;
 			}
-			else if (EVENT_MODE::COIN_SACK <= eventmode  && eventmode <= EVENT_MODE::COIN_DUBBLE)
+			else if (EVENT_MODE::COIN_FALL <= eventmode  && eventmode <= EVENT_MODE::COIN_DUBBLE)
 			{
 				alert_type = ALERT_TYPE_INFO::COIN;
 				alert_sound = SE::EVENT_SE;		//　仮　コインイベント用に変更
@@ -238,8 +240,9 @@
 		}
 
 		//　イベント発生
-		if (timer == 58 * SECOND)
+		if (timer == 56 * SECOND || timer == 36 * SECOND || timer == 16 * SECOND)
 		{
+			//ui->SetAlertInfo(false, alert_type);
 			eventManager->SetEvent(eventmode);
 		}
 		

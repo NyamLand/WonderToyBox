@@ -231,7 +231,7 @@ namespace
 		stage->Render();
 
 		//	パーティクル描画
-		particle->Render();
+		//particle->Render();
 
 		switch ( mode )
 		{
@@ -442,46 +442,23 @@ namespace
 		void	sceneTitle::MenuUpdate( void )
 		{
 			//	移動先をかえる
-			if ( mainView->GetMoveState() )	//	移動が終了してたら
+			if (mainView->GetMoveState())	//	移動が終了してたら
 			{
-				//	C,Vキーで選択
-				if ( KEY( KEY_LEFT ) == 3 )
-				{
-					menuInfo.menu_num--;
-					if ( menuInfo.menu_num < 0 )		menuInfo.menu_num = TITLE_TARGET::CREDIT;
-					mainView->SetNextPoint( menuInfo.menu_num, 0.01f );
-				}
-				if ( KEY( KEY_RIGHT ) == 3 )
-				{
-					menuInfo.menu_num++;
-					if ( menuInfo.menu_num > TITLE_TARGET::CREDIT )	menuInfo.menu_num = 0;
-					mainView->SetNextPoint( menuInfo.menu_num, 0.01f );
-				}
-
 				//	決定
-				if ( KEY( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )
+				if (KEY(KEY_SPACE) == 3 || KEY(KEY_A) == 3)
 				{
-					switch ( menuInfo.menu_num )
+					if (menuInfo.menu_num == TITLE_TARGET::PLAY)
 					{
-					case TITLE_TARGET::PLAY:
 						mode = TITLE_MODE::PLAY;
-						if ( mainView->GetMoveState() )
+						if (mainView->GetMoveState())
 						{
-							mainView->SetNextPoint( TITLE_TARGET::MOVE_MENU_UP, 0.008f );
+							mainView->SetNextPoint(TITLE_TARGET::MOVE_MENU_UP, 0.008f);
 							//sound->PlaySE(SE::DECIDE_SE);
-							
+
 						}
-						break;
 
-					case TITLE_TARGET::OPTION:
-						mode = TITLE_MODE::OPTION;
-						break;
-
-					case TITLE_TARGET::CREDIT:
-						mode = TITLE_MODE::CREDIT;
-						break;
-					}	
-					sound->PlaySE( SE::DECIDE_SE );
+					}
+					sound->PlaySE(SE::DECIDE_SE);
 				}
 			}
 
@@ -489,45 +466,15 @@ namespace
 			mainView->Update( VIEW_MODE::TITLE );
 
 			//	UI更新
-			switch ( menuInfo.menu_num )
+			if (menuInfo.menu_num == TITLE_TARGET::PLAY)
 			{
-			case TITLE_TARGET::PLAY:
 				ui->Update(TITLE_MODE::MENU);
-				break;
-
-			case TITLE_TARGET::OPTION:
-				ui->Update(TITLE_MODE::OPTION);
-				break;
-
-			case TITLE_TARGET::CREDIT:
-				ui->Update(TITLE_MODE::CREDIT);
-				break;
 			}
 		}
 
 		//	描画
 		void	sceneTitle::MenuRender( void )
 		{
-			DrawString( "メニュー画面だよ", 50, 50 );
-			DrawString( "C・Vでどれか選んでね", 300, 400, 0xFFFFFF00 );
-
-			switch ( menuInfo.menu_num )
-			{
-			case TITLE_TARGET::PLAY:
-				DrawString( "みんなであそぶモード！", 50, 100 );
-				DrawString( "[SPACE]：キャラ選択へ", 300, 200, 0xFFFFFF00 );
-				break;
-
-			case TITLE_TARGET::OPTION:
-				DrawString( "オプション", 50, 100 );
-				DrawString( "[SPACE]：オプションへ", 300, 200, 0xFFFFFF00 );
-				break;
-
-			case TITLE_TARGET::CREDIT:
-				DrawString( "つくった戦士たち！", 50, 100 );
-				DrawString( "[SPACE]：クレジットへ", 300, 200, 0xFFFFFF00 );
-				break;
-			}
 			ui->Render( 0 );
 		}
 
