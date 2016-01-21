@@ -154,7 +154,7 @@ using namespace std;
 		//	ŠÔ‚ª‚È‚¢‚Ì‚ÅÀ•W’¼‘Å‚¿
 		int	plusSw[4] = { 0, 25, 55, 97 };
 
-		nowLoading->Render( 1230, 790, 300 + plusSw[renderCount], 150, 0, 0, 415 + plusSw[renderCount], 128 );
+		nowLoading->Render( 1230, 790, 300 + 30 * renderCount, 150, 0, 0, 415 + plusSw[renderCount], 128 );
 	}
 
 //----------------------------------------------------------------------------------
