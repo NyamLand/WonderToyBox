@@ -77,20 +77,20 @@ void	Pirate::Render(iexShader* shader, LPSTR technique)
 {
 	BaseChara::Render(shader, technique);
 
-	//	デバッグ用
-	if (!debug)	return;
-	DrawCapsule(attackInfo.bottom, attackInfo.top, attackInfo.r, 0xFFFFFFFF);
-	particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z - attackInfo.r), 0.3f);
-	particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z + attackInfo.r), 0.3f);
-	particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z), 0.3f);
-	particle->BlueFlame(Vector3(attackInfo.pos.x - attackInfo.r, attackInfo.pos.y, attackInfo.pos.z), 0.3f);
+	////	デバッグ用
+	//if (!debug)	return;
+	//DrawCapsule(attackInfo.bottom, attackInfo.top, attackInfo.r, 0xFFFFFFFF);
+	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z - attackInfo.r), 0.3f);
+	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z + attackInfo.r), 0.3f);
+	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z), 0.3f);
+	//particle->BlueFlame(Vector3(attackInfo.pos.x - attackInfo.r, attackInfo.pos.y, attackInfo.pos.z), 0.3f);
 
-	char	str[256];
-	Vector3	stringPos;
-	WorldToClient(pos, stringPos, matView* matProjection);
-	stringPos.y -= 150.0f;
-	sprintf_s(str, "海\n賊\n↓");
-	DrawString(str, (int)stringPos.x, (int)stringPos.y);
+	//char	str[256];
+	//Vector3	stringPos;
+	//WorldToClient(pos, stringPos, matView* matProjection);
+	//stringPos.y -= 150.0f;
+	//sprintf_s(str, "海\n賊\n↓");
+	//DrawString(str, (int)stringPos.x, (int)stringPos.y);
 }
 
 //-----------------------------------------------------------------------------------
