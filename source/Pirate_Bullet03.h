@@ -17,6 +17,7 @@ public:
 
 	void Move();
 	void Update();
+	bool PlayerCollisionCheck(void);
 };
 
 //*****************************************************************************

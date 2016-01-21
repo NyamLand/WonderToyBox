@@ -28,8 +28,8 @@ public:
 	void	Spark( const Vector3& pos, const float& scale = 1.0f );			//	âŒâ‘
 	void	Hit( const Vector3& pos, const float& scale = 1.0f, const int& time = 5 );										//	êØ
 	void	Smoke( const Vector3& pos, const float& scale = 1.0f, const int& time = 20 );										//	âå
-	void	Arrow_UP(const Vector3& pos, const float& scale = 1.0f, const int move = 100, const int& time = 10);				//	ñÓàÛUP
-	void	Arrow_DOWN(const Vector3& pos, const float& scale = 1.0f, const int move = 100, const int& time =11);				//	ñÓàÛDOWN
+	void	PowerUp(const Vector3& pos, const float& scale = 1.0f, const int move = 100, const int& time = 10);				//	ñÓàÛUP
+	void	SpeedUp(const Vector3& pos, const float& scale = 1.0f, const int move = 100, const int& time = 11);				//	ñÓàÛDOWN
 	void	Suck(const Vector3& pos, const Vector3& target, const Vector3& side, const float& length, const float& scale = 1.0f, const int& time = 60);					//	ãzÇ¢çûÇ›
 	void	Dust(const Vector3& pos, const Vector3& back, const Vector3& side, const float& scale = 1.0f, const int& time = 1);
 	void	Bom(const Vector3& pos, const float& move, const float& scale = 1.0f, const int& time = 6);

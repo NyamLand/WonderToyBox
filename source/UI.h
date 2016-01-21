@@ -180,6 +180,7 @@ private:
 	iex2DObj*	pCoinNumImage;
 	iex2DObj*	life;
 	ImageObj		roundImage;
+	ImageObj	finishImage;
 
 private:
 	//	’è”

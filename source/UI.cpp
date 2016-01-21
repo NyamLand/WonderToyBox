@@ -203,6 +203,7 @@
 		frame.obj = coinbar;
 		face = new iex2DObj("DATA/UI/chara_emotion.png");
 		faceImage.obj = face;
+		finishImage.obj = new iex2DObj( "DATA/UI/bfUI.png");
 		countImage.obj = new iex2DObj( "DATA/UI/bfUI_02.png" );
 		alertImage.obj = new iex2DObj( "DATA/UI/alert.png" );
 		alert_coinImage.obj = new iex2DObj( "DATA/UI/coin_alert.png" );
@@ -271,6 +272,7 @@
 		SafeDelete( ddInfo.fight.obj );
 		SafeDelete( face );
 		SafeDelete( countImage.obj );
+		SafeDelete( finishImage.obj );
 		SafeDelete( alertImage.obj );
 		SafeDelete( alert_coinImage.obj );
 		SafeDelete( playerNumber );
@@ -557,7 +559,7 @@
 		int w = static_cast<int>( iexSystem::ScreenWidth * 0.27f );
 		int h = static_cast<int>( iexSystem::ScreenHeight * 0.49f );
 		ImageInitialize( countImage, x, y, w, h, 0, 0, 512, 512 );
-		countImage.renderflag = true;
+		ImageInitialize( finishImage, x, y, w, h, 0, 512, 1024, 512 );
 		count = 0;
 		waitTimer = 0;
 		start_pos = Vector3(countImage.x, -(countImage.h / 2) , 0);
@@ -1260,7 +1262,6 @@
 	void	UI::StartRender( void )
 	{
 		RenderImage( countImage, countImage.sx, countImage.sy, countImage.sw, countImage.sh, IMAGE_MODE::SCALING );
-		RenderImage( countImage, countImage.sx, countImage.sy, countImage.sw, countImage.sh, IMAGE_MODE::WAVE );
 	}
 
 	//	カウントダウン中プレイヤーの番号表示
@@ -1278,7 +1279,7 @@
 	//	タイムアップ演出
 	void	UI::FinishRender( void )
 	{
-		RenderImage(countImage, countImage.sx, countImage.sy, countImage.sw, countImage.sh, IMAGE_MODE::NORMAL );
+		RenderImage(finishImage, finishImage.sx, finishImage.sy, finishImage.sw, finishImage.sh, IMAGE_MODE::NORMAL);
 	}
 
 	//	どんけつ演出

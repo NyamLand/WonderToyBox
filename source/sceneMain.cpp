@@ -278,7 +278,7 @@
 		gameManager->Update();
 
 		//	全体更新
-		AllUpdate();
+		if(gameManager->GetTimeStop() <= 0) AllUpdate();
 	}
 
 	//	どんけつ更新
@@ -302,7 +302,7 @@
 		gameManager->Update();
 
 		//	全体更新
-		AllUpdate();
+		if (gameManager->GetTimeStop() <= 0) AllUpdate();
 	}
 
 	//	タイムアップ更新
@@ -312,7 +312,7 @@
 		gameManager->Update();
 
 		//	全体更新
-		AllUpdate();
+		if (gameManager->GetTimeStop() <= 0) AllUpdate();
 	}
 
 	//	全体更新
