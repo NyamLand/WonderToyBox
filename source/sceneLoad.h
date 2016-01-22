@@ -26,6 +26,9 @@ private:
 	int	reverseFlag;
 	int	loadingTimer;
 	int	renderCount;
+	int	order;
+	int	num;
+	int	orderSet[4][4];
 
 public:
 	//	‰Šú‰»E‰ğ•ú

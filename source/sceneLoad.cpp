@@ -21,8 +21,10 @@ using namespace std;
 #define	INTERVAL	300		//	ç∑Çµë÷Ç¶ÇÃä‘äu
 #define	INTERPOLATION_SPEED		0.01f	//	ï‚ä‘ë¨ìx
 
-	//	staticêÈåæ
+//	staticêÈåæ
 	bool	sceneLoad::threadState;
+	int	x = 0, y = 0;
+
 
 //----------------------------------------------------------------------------------
 //	èâä˙âªÅEâï˙	
@@ -41,6 +43,8 @@ using namespace std;
 	{
 		SafeDelete( bgImage[0].obj );
 		SafeDelete( bgImage[1].obj );
+		SafeDelete( bgImage[2].obj );
+		SafeDelete( bgImage[3].obj );
 		SafeDelete( nowLoading );	
 	}
 
@@ -57,8 +61,8 @@ using namespace std;
 		//	îwåièâä˙âª
 		bgImage[0].obj = new iex2DObj( "DATA/UI/Load/Lord-back01.png" );
 		bgImage[1].obj = new iex2DObj( "DATA/UI/Load/Lord-back02.png" );
-		bgImage[2].obj = new iex2DObj( "DATA/UI/Load/Lord-back03.png" );
-		bgImage[3].obj = new iex2DObj( "DATA/UI/Load/Lord-back04.png" );
+		bgImage[2].obj = new iex2DObj( "DATA/UI/Load/Lord-back01.png" );
+		bgImage[3].obj = new iex2DObj( "DATA/UI/Load/Lord-back02.png" );
 		int x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
 		int y = static_cast<int>( iexSystem::ScreenHeight * 0.5f );
 		int w = static_cast<int>( iexSystem::ScreenWidth );
@@ -84,6 +88,11 @@ using namespace std;
 		changeSceneFlag = false;
 		loadingTimer = 0;
 		renderCount = 0;
+		x = 0;
+		y = 0;
+		
+
+
 		return	true;
 	}
 
@@ -116,6 +125,10 @@ using namespace std;
 			return;
 		}
 
+		if (KEY(KEY_RIGHT) == 1)	x += 10;
+		if (KEY(KEY_LEFT) == 1)		x -= 10;
+		if (KEY(KEY_UP) == 1)		y -= 10;
+		if (KEY(KEY_DOWN) == 1)	y += 10;
 	}
 
 	//	ï`âÊ
@@ -139,6 +152,9 @@ using namespace std;
 
 		if ( !threadState )	RenderNowLoading();
 		else						RenderImage( pressAnyKeyImage, pressAnyKeyImage.sx, pressAnyKeyImage.sy, pressAnyKeyImage.sw, pressAnyKeyImage.sh, IMAGE_MODE::FLASH );
+		char	str[256];
+		sprintf_s( str, "x = %d\ny = %d\n", x, y );
+		DrawString( str, 50, 300 );
 	}
 
 	//	NowLoadingï`âÊ
