@@ -209,7 +209,7 @@
 	}
 
 	//	ƒ‚[ƒVƒ‡ƒ“ŠÇ—
-	void	Princess::MotionManagement( int motion )
+/*	void	Princess::MotionManagement( int motion )
 	{
 		switch ( motion )
 		{
@@ -253,7 +253,7 @@
 			SetMotion( MOTION_DATA::KNOCKBACK );
 			break;
 		}
-	}
+	}*/
 
 //-----------------------------------------------------------------------------------
 //	î•ñİ’è

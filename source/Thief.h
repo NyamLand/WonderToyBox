@@ -36,7 +36,7 @@ private:
 private:
 	int		stayTime;	//技関連の硬直経過時間
 	float	absorb_length;		//コインを吸い込める距離
-	void	MotionManagement(int motion)override;
+//	void	MotionManagement(int motion)override;
 
 public:
 	//	初期化・解放

@@ -92,7 +92,7 @@ namespace
 		//	パラメータ初期化
 		Initialize( playerNum, pos );
 
-		SetMotion( MOTION_NUM::POSTURE );
+//		SetMotion( MOTION_NUM::POSTURE );
 		obj->SetPos( pos );
 		obj->SetAngle( angle );
 		obj->SetScale( scale );
@@ -311,7 +311,7 @@ namespace
 //----------------------------------------------------------------------------
 
 	//	モーション管理
-	void	BaseChara::MotionManagement( int motion )
+/*	void	BaseChara::MotionManagement( int motion )
 	{
 		switch ( motion )
 		{
@@ -351,7 +351,7 @@ namespace
 			obj->SetMotion( ATTACK3 );
 			break;
 		}
-	}
+	}*/
 
 	//	モード管理
 	void	BaseChara::ModeManagement( void )
@@ -573,8 +573,16 @@ namespace
 	//	ノックバック
 	void	BaseChara::KnockBack( void )
 	{
-
-		SetMotion(MOTION_NUM::POSTURE);
+		//モーションアトデナオス
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::SCAVENGER)
+		{
+			if (obj->GetFrame() >= 278) obj->SetFrame(278);
+		}
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
+		{
+			if (obj->GetFrame() >= 286) obj->SetFrame(286);
+		}
+//		SetMotion(MOTION_NUM::POSTURE);
 
 		//SetParameterState(PARAMETER_STATE::UNRIVALED);
 		SetDrag(1.0f);	//一時的に抗力なくす
@@ -583,6 +591,10 @@ namespace
 			move = Vector3(0.0f, 0.0f, 0.0f);
 			damageStep = 0;
 			SetMode(MODE_STATE::MOVE);
+
+			//モーションアトデナオス
+			SetMotion(0);
+
 			//SetUnrivaled(false);
 		}
 	}
@@ -617,7 +629,7 @@ namespace
 		if ( branktime == 0 )  SetDamageColor( damageColor.catchColor );
 		branktime++;
 		SetMove( Vector3( 0.0f, move.y, 0.0f ) );
-		SetMotion( MOTION_NUM::POSTURE );
+//		SetMotion( MOTION_NUM::POSTURE );
 		if ( branktime >= leanFrame )
 		{
 			branktime = 0;
@@ -629,7 +641,7 @@ namespace
 	//	待機
 	void	BaseChara::Wait( void )
 	{
-		SetMotion( MOTION_NUM::POSTURE );
+//		SetMotion( MOTION_NUM::POSTURE );
 		SetDrag( 0.8f );
 	}
 
@@ -647,7 +659,7 @@ namespace
 	//	攻撃
 	void	BaseChara::Attack( int attackKind )
 	{
-		SetMotion( MOTION_NUM::ATTACK1 );
+//		SetMotion( MOTION_NUM::ATTACK1 );
 
 		bool	isEnd = false;
 
@@ -708,7 +720,7 @@ namespace
 	{
 		move.x = move.z = 0.0f;
 		SetParameterState(PARAMETER_STATE::UNRIVALED);
-		SetMotion( MOTION_NUM::GUARD );
+//		SetMotion( MOTION_NUM::GUARD );
 
 		//	ボタンをはなすと戻る
 		if ( input->Get( KEY_B6 ) == 2 )
@@ -722,6 +734,16 @@ namespace
 	//	ダメージ
 	void	BaseChara::Damage( void )
 	{
+		//モーションアトデナオス
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::SCAVENGER)
+		{
+			if (obj->GetFrame() <= 250) SetMotion(9);
+		}
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
+		{
+			SetMotion(7);
+		}
+
 		AddKnockBackForce(force);
 	}
 
@@ -734,7 +756,7 @@ namespace
 		
 		//	死亡中無敵
 		SetParameterState(PARAMETER_STATE::UNRIVALED);
-		SetMotion( MOTION_NUM::DEATH );
+//		SetMotion( MOTION_NUM::DEATH );
 
 		//	コイン全部ばらまき
 		if ( !initflag )
@@ -780,7 +802,9 @@ namespace
 
 		if ( length > MIN_INPUT_STATE )
 		{
-			SetMotion( MOTION_NUM::RUN );
+			//モーションアトデナオス
+			SetMotion( 1 );
+			//SetMotion( MOTION_NUM::RUN );
 			static	float adjustSpeed = 0.3f;
 			AngleAdjust( adjustSpeed );
 			if ( !slip.state )
@@ -799,7 +823,9 @@ namespace
 		}
 		else
 		{
-			SetMotion( MOTION_NUM::POSTURE );
+			//モーションアトデナオス
+			SetMotion(0);
+//			SetMotion( MOTION_NUM::POSTURE );
 			SetDrag( 0.8f );
 		}
 	}
@@ -1254,7 +1280,7 @@ namespace
 		if (existence)
 		{
 			particle->BlueFlame(target, 1.0f);
-			SetMotion(MOTION_NUM::RUN);
+//			SetMotion(MOTION_NUM::RUN);
 			AutoAngleAdjust(adjustSpeed, target);
 			if (!slip.state)
 			{
@@ -1314,7 +1340,7 @@ namespace
 	//　逃げる
 	void	BaseChara::RunAway( void )
 	{
-		SetMotion( MOTION_NUM::RUN );
+//		SetMotion( MOTION_NUM::RUN );
 
 		aiInfo.act_flag = true;
 
@@ -1377,7 +1403,7 @@ namespace
 	//　オートガード(引数：フレーム数)
 	void	BaseChara::AutoGuard()
 	{
-		SetMotion(MOTION_NUM::GUARD);
+//		SetMotion(MOTION_NUM::GUARD);
 		move.x = move.z = 0.0f;
 		SetParameterState(PARAMETER_STATE::UNRIVALED);
 		aiInfo.act_flag = true;
@@ -1395,7 +1421,7 @@ namespace
 	//　立ち止まり
 	void	BaseChara::AutoWait()
 	{
-		SetMotion(MOTION_NUM::STAND);
+//		SetMotion(MOTION_NUM::STAND);
 		SetDrag(0.8f);
 		move.x = move.z = 0.0f;
 		aiInfo.act_flag = true;
@@ -1718,7 +1744,7 @@ namespace
 	{
 		if ( obj->GetMotion() != motion )
 		{
-			MotionManagement( motion );
+			obj->SetMotion(motion);
 		}
 	}
 
