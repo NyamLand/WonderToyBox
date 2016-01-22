@@ -255,7 +255,8 @@
 
 			int addParam = bc1->GetAttack_addParam();
 			bc2->SetParameterState( addParam );
-
+			//サウンド再生
+			sound->PlaySE(SE::HIT_SE);
 			//	ライフ減らす
 			int power = bc1->GetPower();
 			FOR(0, power) bc2->SubLife();
@@ -324,7 +325,8 @@
 			//	無敵にする
 			if (bc2->GetParameterState(PARAMETER_STATE::UNRIVALED))	return;
 			bc2->SetParameterState(PARAMETER_STATE::UNRIVALED);
-
+			//サウンド再生
+			sound->PlaySE(SE::HIT_SE);
 			//	ライフ減らす
 			int power = bc1->GetPower();
 			FOR(0, power) bc2->SubLife();

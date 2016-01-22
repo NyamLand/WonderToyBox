@@ -10,6 +10,7 @@
 #include	"BaseBullet.h"
 #include	"BulletManager.h"
 #include	"Pirate_Bullet01.h"
+#include	"Sound.h"
 #include	"Stage.h"
 
 Pirate_Bullet01::Pirate_Bullet01() :explosion(false), power(1)
@@ -104,8 +105,8 @@ bool	Pirate_Bullet01::PlayerCollisionCheck(void)
 			//state = false;
 			float	effectScale = 0.2f;
 			particle->Spark(p_pos_top, effectScale);
-
-
+			//サウンド再生
+			sound->PlaySE(SE::HIT_SE);
 			//	ライフ減らす
 			FOR(0, power) characterManager->SubLife(i);
 

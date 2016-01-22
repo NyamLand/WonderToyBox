@@ -9,6 +9,7 @@
 #include	"CoinManager.h"
 #include	"BaseBullet.h"
 #include	"BulletManager.h"
+#include	"Sound.h"
 #include	"Pirate_Bullet03.h"
 
 Pirate_Bullet03::Pirate_Bullet03()
@@ -96,7 +97,8 @@ bool	Pirate_Bullet03::PlayerCollisionCheck(void)
 			gameManager->SetTimeStop(SCREEN_STOPTIME);
 			//画面振動
 			gameManager->SetShakeCamera(SHAKE_POWER, SHAKE_TIME);
-
+			//サウンド再生
+			sound->PlaySE(SE::HIT_SE);
 			//	ノックバック
 			Vector3	knockBackVec = bulletPos - p_pos_bottom;
 			knockBackVec.y = p_pos_bottom.y;

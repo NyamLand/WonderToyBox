@@ -9,6 +9,7 @@
 #include	"Particle.h"
 #include	"CoinManager.h"
 #include	"Stage.h"
+#include	"Sound.h"
 
 #include	"BaseBullet.h"
 
@@ -121,6 +122,8 @@ state(true), activate(true)
 
 			if ( isHit )
 			{
+				//サウンド再生
+				sound->PlaySE(SE::HIT_SE);
 				//	エフェクトだす
 				state = false;
 				float	effectScale = 0.2f;
