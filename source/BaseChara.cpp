@@ -1170,28 +1170,28 @@ namespace
 	//	AI操作
 	void	BaseChara::ControlAI( void )
 	{
-		//switch (aiInfo.mode)
-		//{
-		//case AI_MODE_STATE::ATTACK:
-		//	AutoAttack();
-		//	break;
+		switch (aiInfo.mode)
+		{
+		case AI_MODE_STATE::ATTACK:
+			AutoAttack();
+			break;
 
-		//case AI_MODE_STATE::RUN:		//　コインを取りに行く
-		//	AutoRun();
-		//	break;
+		case AI_MODE_STATE::RUN:		//　コインを取りに行く
+			AutoRun();
+			break;
 
-		//case AI_MODE_STATE::RUNAWAY:
-		//	RunAway();
-		//	break;
+		case AI_MODE_STATE::RUNAWAY:
+			RunAway();
+			break;
 
-		//case AI_MODE_STATE::GUARD:
-		//	AutoGuard();
-		//	break;
+		case AI_MODE_STATE::GUARD:
+			AutoGuard();
+			break;
 
-		//case AI_MODE_STATE::WAIT:
-		//	AutoWait();
-		//	break;
-		//}
+		case AI_MODE_STATE::WAIT:
+			AutoWait();
+			break;
+		}
 
 		//--------------------------------------------
 		//　ここでは各モードになるための条件を実装
@@ -1287,7 +1287,7 @@ namespace
 		//	対象が存在していたら対象に向かって走る
 		if (existence)
 		{
-			particle->BlueFlame(target, 1.0f);
+			//particle->BlueFlame(target, 1.0f);
 //			SetMotion(MOTION_NUM::RUN);
 			AutoAngleAdjust(adjustSpeed, target);
 			if (!slip.state)

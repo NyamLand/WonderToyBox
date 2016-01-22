@@ -11,19 +11,17 @@
 //	include
 #include	"BaseChara.h"
 
-namespace MOTION_FRAME
+namespace SCAVENGER
 {
-	const int SUCK = 92;
-	const int POWER_FINISH = 169;
-	const int POWER_TO_WAIT = 200;
-	const int HYPER_BEGIN = 201;
-	const int HYPER_FINISH = 240;
-}
+	namespace MOTION_FRAME
+	{
+		const int SUCK = 92;
+		const int POWER_FINISH = 169;
+		const int POWER_TO_WAIT = 200;
+		const int HYPER_BEGIN = 201;
+		const int HYPER_FINISH = 240;
+	}
 
-//	class
-class Scavenger : public		BaseChara
-{
-private:
 	//Å@ñÇèóÉÇÅ[ÉVÉáÉì
 	enum MOTION_DATA
 	{
@@ -40,6 +38,15 @@ private:
 		WIN,
 		LOSE
 	};
+}
+
+
+//	class
+class Scavenger : public		BaseChara
+{
+private:
+	
+	
 	const float DEFAULT_ABSORB_LENGTH = 3.0f;
 
 private:

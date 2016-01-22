@@ -11,16 +11,14 @@
 //	include
 #include	"BaseChara.h"
 
-namespace MOTION_FRAME
+namespace PIRATE
 {
-	const int SHOT = 113;
-	const int SHOT_STOP = 131;
-}
-
-//	class
-class Pirate : public		BaseChara
-{
-private:
+	namespace MOTION_FRAME
+	{
+		const int SHOT = 113;
+		const int SHOT_STOP = 131;
+	}
+	
 	enum MOTION_DATA
 	{
 		WAIT,
@@ -34,6 +32,14 @@ private:
 		WIN,
 		LOSE
 	};
+}
+
+
+//	class
+class Pirate : public		BaseChara
+{
+private:
+	
 
 	enum QuickArts_DATA
 	{

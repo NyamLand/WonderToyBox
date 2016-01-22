@@ -109,8 +109,8 @@ bool	Scavenger::QuickArts(void)
 	////平行移動
 	ShiftMove();
 
-	if (obj->GetFrame() < MOTION_FRAME::SUCK)	SetMotion(MOTION_DATA::QUICK_START);
-	if (obj->GetFrame() >= MOTION_FRAME::SUCK)	SetMotion(MOTION_DATA::QUICK);
+	if (obj->GetFrame() < SCAVENGER::MOTION_FRAME::SUCK)	SetMotion(SCAVENGER::MOTION_DATA::QUICK_START);
+	if (obj->GetFrame() >= SCAVENGER::MOTION_FRAME::SUCK)	SetMotion(SCAVENGER::MOTION_DATA::QUICK);
 
 	//その場回転
 	//RollAngle();
@@ -165,13 +165,13 @@ bool	Scavenger::PowerArts( void )
 
 	if (stayTime == 0)
 	{
-		SetMotion(MOTION_DATA::POWER_START);
-		if (obj->GetFrame() >= MOTION_FRAME::POWER_FINISH) obj->SetFrame(MOTION_FRAME::POWER_FINISH);
+		SetMotion(SCAVENGER::MOTION_DATA::POWER_START);
+		if (obj->GetFrame() >= SCAVENGER::MOTION_FRAME::POWER_FINISH) obj->SetFrame(SCAVENGER::MOTION_FRAME::POWER_FINISH);
 	}
 	if (stayTime > 0)
 	{
-		SetMotion(MOTION_DATA::POWER_END);
-		if (obj->GetFrame() >= MOTION_FRAME::POWER_TO_WAIT) obj->SetFrame(MOTION_FRAME::POWER_TO_WAIT);
+		SetMotion(SCAVENGER::MOTION_DATA::POWER_END);
+		if (obj->GetFrame() >= SCAVENGER::MOTION_FRAME::POWER_TO_WAIT) obj->SetFrame(SCAVENGER::MOTION_FRAME::POWER_TO_WAIT);
 	}
 
 
@@ -236,8 +236,8 @@ bool	Scavenger::HyperArts( void )
 {
 	power = HYPER;
 
-	if (obj->GetFrame() <= MOTION_FRAME::HYPER_BEGIN) SetMotion(MOTION_DATA::HYPER_START);
-	if (obj->GetFrame() >= MOTION_FRAME::HYPER_FINISH) obj->SetFrame(MOTION_FRAME::HYPER_FINISH);
+	if (obj->GetFrame() <= SCAVENGER::MOTION_FRAME::HYPER_BEGIN) SetMotion(SCAVENGER::MOTION_DATA::HYPER_START);
+	if (obj->GetFrame() >= SCAVENGER::MOTION_FRAME::HYPER_FINISH) obj->SetFrame(SCAVENGER::MOTION_FRAME::HYPER_FINISH);
 
 	//無敵判定を切らないとそもそもコインを集められないので無敵切ってます。
 	//問題なら言ってください
