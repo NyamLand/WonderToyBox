@@ -147,7 +147,7 @@
 
 		//	モデル読み込み
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/majo/majo.IEM" ) );		//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/プリンセス/prinsess.IEM" ) );					//	姫
+		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/プリンセス/prin2.IEM" ) );					//	姫
 		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>(LPSTR("DATA/CHR/Thief/Thief.IEM"));		//	怪盗
 		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>(LPSTR("DATA/CHR/Pirate/Pirate.IEM"));				//	海賊
 
@@ -476,7 +476,7 @@
 	void	sceneMenu::SelectCharacterInitialize( void )
 	{
 		org[CHARACTER_TYPE::SCAVENGER]->SetMotion(0);	//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS]->SetMotion(1);		//	姫
+		org[CHARACTER_TYPE::PRINCESS]->SetMotion(0);		//	姫
 		org[CHARACTER_TYPE::THIEF]->SetMotion(0);		//	怪盗
 		org[CHARACTER_TYPE::PIRATE]->SetMotion(0);			//	海賊
 		//	モデル、選択情報初期化
@@ -823,7 +823,7 @@
 	void	sceneMenu::SelectCheckInitialize( void )
 	{
 		//	キャラ別モーション設定
-		org[CHARACTER_TYPE::PRINCESS]->SetMotion( 1 );
+		org[CHARACTER_TYPE::PRINCESS]->SetMotion( 0 );
 		
 		//	各プレイヤーモデル初期化
 		static	Vector3	cursorPos[4];
