@@ -584,8 +584,7 @@ namespace
 		}
 		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::THIEF)
 		{
-			/*いい感じのフレームで停止させる
-			if (obj->GetFrame() >= ○○) obj->SetFrame(○○);*/
+			if (obj->GetFrame() >= 408) obj->SetFrame(408);
 		}
 //		SetMotion(MOTION_NUM::POSTURE);
 
@@ -750,8 +749,7 @@ namespace
 		}
 		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
 		{
-			/*ダメージのモーションに変える
-			SetMotion(7);*/
+			SetMotion(8);
 		}
 
 		AddKnockBackForce(force);
