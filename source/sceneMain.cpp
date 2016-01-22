@@ -111,7 +111,8 @@
 		ui->Initialize( UI_MODE::MAIN );
 
 		//	BGMÄ¶
-		sound->PlayBGM( BGM::MAIN_BGM );
+		if (gameManager->GetRound()!=2)	sound->PlayBGM( BGM::MAIN_BGM );
+		else sound->PlayBGM(BGM::FAINLROUND_BGM);
 
 		return true;
 	}
