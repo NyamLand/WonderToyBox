@@ -191,13 +191,16 @@ private:
 	float		curtainBrightness;		//	カーテン明るさ
 
 	int	lightMoveNum;
-	float		light_t;
 	bool		inputCheck[4];		
 	bool		changeScene;
 	int		curtainMode;
 	bool		curtainState;
 	float		curtain_t;
 	Vector3	lightPos[4];	//	シェーダー用ライト位置
+	Vector3 lightMove_start[4];
+	Vector3 lightMove_finish[4];
+	float	lightSize[4];
+	float	light_t[4];
 	int	waitTimer;
 
 public:
@@ -258,6 +261,9 @@ public:
 	void	ProductionSkip( void );
 	void	SetRoundCoinNumber( void );
 	bool	WaitTimeUpdate( void );
+	void	MoveLight( void );
+	bool	MoveLightSet( int num );
+	bool	WallLightCheck( int num );
 
 	//	選択モード関数
 	bool	DownPolygon( void );
