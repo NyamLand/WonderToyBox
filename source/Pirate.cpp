@@ -99,12 +99,12 @@ bool	Pirate::QuickArts(void)
 	//	行列から情報取得
 	Vector3	front = GetFront();
 	front.Normalize();
-	Vector3	p_pos = GetPos();
+	Vector3	c_pos = Vector3(cannon->TransMatrix._41, cannon->TransMatrix._42, cannon->TransMatrix._43); //弾を飛ばす位置を大砲の位置に設定
 	SetMove(Vector3(0.0f, move.y, 0.0f));
 	Vector3 vec = front;
 
 	//弾を発射するときの情報を決定
-	p_pos.y += 1.0f;
+	c_pos.y -= 1.0f;
 	float	 bulletSpeed = 0.5f;
 	int leanpower = 30;
 	int playerNum = GetPlayerNum();
@@ -121,10 +121,10 @@ bool	Pirate::QuickArts(void)
 		switch (pattern)
 		{
 		case QuickArts_DATA::NORMAL_SHOT:
-			m_BulletManager->Set(BULLET_TYPE::PIRATE_01, new Pirate_Bullet01, p_pos, vec, bulletSpeed, playerNum);
+			m_BulletManager->Set(BULLET_TYPE::PIRATE_01, new Pirate_Bullet01, c_pos, vec, bulletSpeed, playerNum);
 			break;
 		case QuickArts_DATA::TIMER_SHOT:
-			m_BulletManager->Set(BULLET_TYPE::PIRATE_02, new Pirate_Bullet02, p_pos, vec, bulletSpeed, playerNum);
+			m_BulletManager->Set(BULLET_TYPE::PIRATE_02, new Pirate_Bullet02, c_pos, vec, bulletSpeed, playerNum);
 			break;
 		}
 	}
@@ -185,16 +185,19 @@ bool	Pirate::PowerArts(void)
 bool	Pirate::HyperArts(void)
 {
 	//大砲の砲弾発射位置決定（画面上側）
-	Vector3 b_pos;	
+	Vector3 b_pos;
 	b_pos = Vector3(
 		Random::GetFloat(-20.0f, -20.0f),
 		30.0f,
 		Random::GetFloat(-20.0f, 20.0f)
 		);
 
+	//モーションアトデナオス
+	SetMotion(6);
+
 	//自分以外のプレイヤー三人を着弾地点にする
 	Vector3 target[3];
-	for (int i = 0,n = 0; i < 4; i++)
+	for (int i = 0, n = 0; i < 4; i++)
 	{
 		if (i == playerNum) continue;	//自分は除外
 		target[n] = characterManager->GetPos(i);
@@ -203,13 +206,20 @@ bool	Pirate::HyperArts(void)
 
 	float bulletSpeed = 0.5f;
 	Vector3 vec[3];
-	for (int i = 0; i < 3; i++)
-	{
-		Parabola(vec[i], b_pos, target[i], bulletSpeed, GRAVITY);
-		m_BulletManager->Set(BULLET_TYPE::PIRATE_01, new Pirate_Bullet03, b_pos, vec[i], bulletSpeed, playerNum);
-	}
 
-	return true;
+
+	//モーションアトデナオス
+	if (obj->GetFrame() == 255)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			Parabola(vec[i], b_pos, target[i], bulletSpeed, GRAVITY);
+			m_BulletManager->Set(BULLET_TYPE::PIRATE_01, new Pirate_Bullet03, b_pos, vec[i], bulletSpeed, playerNum);
+		}
+		return true;
+	}
+		
+	return false;
 }
 
 //	モーション管理

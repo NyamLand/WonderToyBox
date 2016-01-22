@@ -573,7 +573,7 @@ namespace
 	//	ノックバック
 	void	BaseChara::KnockBack( void )
 	{
-		//モーションアトデナオス
+		//モーションアトデナオス(余力があれば関数化)
 		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::SCAVENGER)
 		{
 			if (obj->GetFrame() >= 278) obj->SetFrame(278);
@@ -581,6 +581,11 @@ namespace
 		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
 		{
 			if (obj->GetFrame() >= 286) obj->SetFrame(286);
+		}
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::THIEF)
+		{
+			/*いい感じのフレームで停止させる
+			if (obj->GetFrame() >= ○○) obj->SetFrame(○○);*/
 		}
 //		SetMotion(MOTION_NUM::POSTURE);
 
@@ -734,7 +739,7 @@ namespace
 	//	ダメージ
 	void	BaseChara::Damage( void )
 	{
-		//モーションアトデナオス
+		//モーションアトデナオス(余力があれば関数化)
 		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::SCAVENGER)
 		{
 			if (obj->GetFrame() <= 250) SetMotion(9);
@@ -742,6 +747,11 @@ namespace
 		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
 		{
 			SetMotion(7);
+		}
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
+		{
+			/*ダメージのモーションに変える
+			SetMotion(7);*/
 		}
 
 		AddKnockBackForce(force);
