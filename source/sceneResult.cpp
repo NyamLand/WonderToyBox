@@ -347,8 +347,8 @@
 
 			//	ランキング計算用に総計データを格納( ボーナス数値が整い次第、元のコイン枚数にボーナスを足す、ランクはソートにかけるため適当に代入 )
 			sortInfo[i].num = originInfo[i].num;
-			sortInfo[i].rank = i;
 			sortInfo[i].sortRank = i;
+			sortInfo[i].rank = i;
 		}
 	}
 
