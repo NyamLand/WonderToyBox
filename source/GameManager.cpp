@@ -312,7 +312,8 @@
 	//	コイン減算
 	void	GameManager::SubCoin( int playerNum )
 	{
-		coinNum[playerNum]--;
+		if ( coinNum[playerNum] > 0 )
+			coinNum[playerNum]--;
 	}
 
 	//　ビリが誰かを決定

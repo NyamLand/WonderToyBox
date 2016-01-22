@@ -191,6 +191,14 @@
 		
 		FOR( 0, PLAYER_MAX )	inputCheck[value] = false;
 
+		//	現在のラウンドを取得
+		int	round = gameManager->GetRound();
+		//	再戦用の設定
+		FOR( 0, PLAYER_MAX )
+		{
+			//	現ラウンドの獲得コイン枚数を設定
+			gameManager->SetTotalCoin( round, value, gameManager->GetCoinNum( value ) );
+		}
 		sound->PlayBGM(BGM::RESULT_BGM);
 		screen->SetScreenMode( SCREEN_MODE::FADE_IN, 1.0f );
 		return	true;

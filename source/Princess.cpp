@@ -17,7 +17,7 @@
 //	グローバル
 //-----------------------------------------------------------------------------------
 
-#define	POWER_ARTS_RADIUS	8.0f
+#define	POWER_ARTS_RADIUS	15.0f
 
 	namespace
 	{
@@ -109,7 +109,7 @@
 		//	当たり判定位置移動&範囲拡大
 		float t = GetBezier( ePrm_t::eRapid_Lv3, ePrm_t::eSlow_Lv5, attackInfo.t );
 		Lerp( attackInfo.pos, startPos, finPos, t );
-		attackInfo.r = 3.0f * t;
+		attackInfo.r = 6.0f * t;
 
 		//	パラメータ加算
 		attackInfo.t += 0.015f;
@@ -149,12 +149,12 @@
 		FOR_LIST(coinList.begin(), coinList.end())
 		{
 			bool	state = (*it)->GetState();
-			if (state)
+			if ( state )
 			{
-				if (Collision::DistCheck(attackInfo.pos, (*it)->GetPos(), attackInfo.r))
+				if ( Collision::DistCheck( attackInfo.pos, (*it)->GetPos(), attackInfo.r ) )
 				{
-					(*it)->SetState(false);
-					gameManager->SubCoin(playerNum);
+					(*it)->SetState( false );
+					gameManager->AddCoin( playerNum );
 				}
 			}
 		}
