@@ -246,7 +246,7 @@ void	Pirate::MotionManagement(int motion)
 void	Pirate::SetCannonPos( void )
 {
 	Matrix	mat;
-	mat = *obj->GetBone( 8 ) * obj->TransMatrix;
+	mat = *obj->GetBone( 6 ) * obj->TransMatrix;
 	cannon->TransMatrix = mat;
 	particle->BlueFlame( Vector3( mat._41, mat._42, mat._43 ), 0.1f );
 }
