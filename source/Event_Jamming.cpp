@@ -119,11 +119,8 @@ void	Event_Jamming::Slope(void)
 
 	case 2:
 		//	数秒待つ
-		count++;
-
 		if (count >= SLOPE_COUNT_MAX)
 		{
-			count = 0;
 			m_Slope.param = 0.0f;
 			m_Slope.step++;
 		}
@@ -148,14 +145,13 @@ void	Event_Jamming::Slope(void)
 		//	傾き終わると次のステップへ
 		if (isEnd)
 		{
-			m_Slope.step = 0;
-			m_Slope.eventFlag = false;
 			m_Slope.slope = 0.0f;
-			eventflag = EVENT_MODE::NONE;
+			m_Slope.param = 0.0f;
 		}
 		break;
 	}
 
+	
 	CommonSetting(m_Slope.eventFlag, m_Slope.step, SLOPE_COUNT_MAX);
 }
 
@@ -170,19 +166,10 @@ void	Event_Jamming::CoinGetAway(void)
 		break;
 
 	case 1:
-		count++;
 		if (count >= COIN_GETAWAY_COUNT_MAX)
 		{
-			m_CoinGetAway.step++;
-			count = 0;
+			coinManager->SetCoinGetAwayFlag(false);
 		}
-		break;
-
-	case 2:
-		coinManager->SetCoinGetAwayFlag(false);
-		m_CoinGetAway.step = 0;
-		m_CoinGetAway.eventflag = false;
-		eventflag = EVENT_MODE::NONE;
 		break;
 	}
 
@@ -191,21 +178,9 @@ void	Event_Jamming::CoinGetAway(void)
 
 void	Event_Jamming::Slip(void)
 {
-	switch (m_Slip.step)
+	for (int i = 0; i < PLAYER_MAX; i++)
 	{
-	case 0:
-		for (int i = 0; i < PLAYER_MAX; i++)
-		{
-			characterManager->SetParameterInfo(i, PARAMETER_STATE::SLIP);
-		}
-		m_Slip.step++;
-		break;
-
-	case 1:
-		m_Slip.eventflag = false;
-		count = 0;
-		m_Slip.step = 0;
-		break;
+		characterManager->SetParameterInfo(i, PARAMETER_STATE::SLIP);
 	}
 
 	CommonSetting(m_Slip.eventflag, m_Slip.step, SLIP_COUNT_MAX);

@@ -202,10 +202,13 @@
 		if (timer == 58 * SECOND || timer == 38 * SECOND || timer == 18 * SECOND)
 		//if (timer % (20 * SECOND) == 0 || timer == 60 * SECOND - 2)
 		{
-			//eventmode = Random::GetInt(0, EVENT_MODE::MAX - 1);
-			eventmode = Random::GetInt(EVENT_MODE::COIN_FALL, EVENT_MODE::COIN_DUBBLE);
+			eventmode = Random::GetInt(0, EVENT_MODE::MAX - 1);
+			//eventmode = Random::GetInt(EVENT_MODE::COIN_FALL, EVENT_MODE::COIN_DUBBLE);
 			
 			//　↓ 仮 ↓
+			//eventmode = EVENT_MODE::JAM_SLOPE_CAMERA;
+			//eventmode = EVENT_MODE::JAM_COIN_GETAWAY;
+			//eventmode = EVENT_MODE::JAM_SLIP;
 			//eventmode = EVENT_MODE::COIN_FALL;	//　仮 （本番：この行いらない、上の行のコメントはずす）
 			//eventmode = EVENT_MODE::COIN_DUBBLE;	//　仮 （本番：この行いらない、上の行のコメントはずす）
 			//eventmode = EVENT_MODE::COIN_WAVE;		//　仮 （本番：この行いらない、上の行のコメントはずす）
@@ -257,16 +260,16 @@
 		if ( timer != 0 )
 		{
 			//	5秒ごとにアイテムを３割の確率ででランダムに配置
-			if ( timer % ( 5* SECOND ) == 0 )
-			{
-				if (itemflg)
-				{
-					if ( Random::PercentageRandom( 0.7f ) )
-					{
-						itemManager->Append( Vector3( Random::GetFloat( -20.0f, 20.0f ), 50.0f, Random::GetFloat( -20.0f, 15.0f ) ), Random::GetInt( 0, ITEM_TYPE::MAX - 1 ) );
-					}
-				}
-			}
+			//if ( timer % ( 5* SECOND ) == 0 )
+			//{
+			//	if (itemflg)
+			//	{
+			//		if ( Random::PercentageRandom( 0.7f ) )
+			//		{
+			//			itemManager->Append(Vector3(Random::GetFloat(-20.0f, 20.0f), 50.0f, Random::GetFloat(-20.0f, 15.0f)), Random::GetInt(0, ITEM_TYPE::MAX));
+			//		}
+			//	}
+			//}
 
 			//	２秒ごとにコインを４割の確率でランダムに配置
 			if ( timer % ( 1 * SECOND ) == 0 )

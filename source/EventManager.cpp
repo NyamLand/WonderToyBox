@@ -91,6 +91,7 @@ int  EventManager::state = EVENT_STATE::INTRO;
 
 			count = 0;
 			state = EVENT_STATE::INTRO;
+			this->eventMode = EVENT_MODE::NONE;
 			return;
 		}
 

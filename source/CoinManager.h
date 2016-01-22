@@ -25,6 +25,7 @@ protected:
 	iexMesh*		org;			//	オリジナルモデル
 	list<Coin*>	coinList;
 
+
 	//	変数
 	int				coin_num;	//	コイン枚数
 

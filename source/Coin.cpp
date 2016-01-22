@@ -25,6 +25,7 @@
 
 #define	GETAWAY_LENGTH		3.0f	//	逃げる判定距離
 #define	MAX_HEIGHT					50.0f	//	想定している高さ最大値
+#define	SCALE								3.0f	//	コイン大きさ
 #define	MASS							10.0f;	//	質量
 //#define	MAX_SHADOW_SIZE		1.5f	//	影最大サイズ
 
@@ -33,7 +34,7 @@
 //-------------------------------------------------------------------------------
 
 	//	コンストラクタ
-	Coin::Coin( void ) : obj( nullptr ), moveCheck(true)
+	Coin::Coin( void ) : obj( nullptr ), moveCheck( true )
 	{
 		shadow.obj = new iex2DObj( "DATA/Effect/shadow.png" );	
 	}
@@ -52,7 +53,7 @@
 		angle = 0.0f;
 		pos = Vector3( 0.0f, 0.0f, 0.0f );
 		move = Vector3( 0.0f, 0.0f, 0.0f );
-		scale = 1.0f;
+		scale = SCALE;
 		judgeTimer = 0;
 		activate = false;
 		state = false;
@@ -86,6 +87,10 @@
 	//	更新
 	void	Coin::Update( void )
 	{
+		//	判定無効時間減算
+		if ( judgeTimer > 0 )		judgeTimer--;
+		else							activate = true;
+
 		//	動作
 		Move();
 
@@ -94,10 +99,6 @@
 
 		//	マグネット
 		Magnet();
-
-		//	判定無効時間減算
-		if ( judgeTimer > 0 )	judgeTimer--;
-		else							activate = true;
 
 		//	移動値加算
 		pos += move;
@@ -154,7 +155,7 @@
 		else
 			obj->Render( shader, technique );
 
-		printf( "%3f\n", move.Length() );
+		//DrawSphere( pos + Vector3( 0.0f, 1.5f, 0.0f ), scale * 0.5f );
 	}
 
 //-------------------------------------------------------------------------------
@@ -198,17 +199,17 @@
 		//	コインのコリジョンの有効無効を取得
 		if ( !gameManager->GetCoinCollision() )	return;
 
-		Vector3	p_pos[4];
-		for ( int i = 0; i < 4; i++ )
+		Vector3	p_pos;
+		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			if ( !activate )	continue;
-			if ( characterManager->GetUnrivaled( i ) )	continue;
-			p_pos[i] = characterManager->GetPos( i );
-			bool isHit = Collision::CapsuleVSSphere( p_pos[i],Vector3( p_pos[i].x, p_pos[i].y + 3.0f, p_pos[i].z ), 1.0f, Vector3( pos.x, pos.y + 0.5f, pos.z ), 0.5f );
+			//if ( characterManager->GetUnrivaled( i ) )	continue;
+			p_pos = characterManager->GetPos( i );
+			bool isHit = Collision::CapsuleVSSphere( p_pos, Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z ), 1.5f, Vector3( pos.x, pos.y + ( scale * 0.5f ), pos.z ), scale * 0.8f );
 
 			if ( isHit )
 			{
-				Hitduringtheoperation(p_pos[i],i);
+				Hitduringtheoperation(p_pos,i);
 			}
 		}
 	}
@@ -225,7 +226,7 @@
 
 		// 反射( ステージ )	
 		static float rate = 0.4f;
-		if( moveCheck )	stage->GetReflect( pos, move, rate );
+		stage->GetReflect( pos, move, rate );
 
 		//	落下したら再配置
 		if ( GetPos().y <= -3.0f )
@@ -284,10 +285,10 @@
 			float	length = vec.Length();
 
 			//	近ければ吸い寄せられる
-			if ( length <= GETAWAY_LENGTH )
+			if ( length <= 6.0f )
 			{
 				vec.Normalize();
-				move = vec * 0.01f;
+				move = vec * 0.1f;
 			}
 		}
 	}
