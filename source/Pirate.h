@@ -34,24 +34,27 @@ private:
 	};
 
 private:
-	void	MotionManagement(int motion)override;
+	void	MotionManagement( int motion )override;
+	iexMesh*	cannon;
 
 public:
 	//	初期化・解放
-	Pirate(void);
-	~Pirate(void);
-	bool	Initialize(int playerNum, Vector3 pos)override;
+	Pirate( void );
+	~Pirate( void );
+	bool	Initialize( int playerNum, Vector3 pos )override;
 
 	//	更新・描画
-	void	Render(iexShader* shader = nullptr, LPSTR technique = nullptr)override;
+	void	Render( iexShader* shader = nullptr, LPSTR technique = nullptr )override;
 
 	//	動作関数
-	bool	QuickArts(void)override;
-	bool	PowerArts(void)override;
-	bool	HyperArts(void)override;
-
+	bool	QuickArts( void )override;
+	bool	PowerArts( void )override;
+	bool	HyperArts( void )override;
+	void	SetCannonPos( void );
 	//	情報設定
-	void	SetAttackParam(int attackKind)override;
+	void	SetAttackParam( int attackKind )override;
+
+
 };
 
 //*********************************************************************************

@@ -45,9 +45,9 @@ Pirate::Pirate(void) : BaseChara()
 }
 
 //	デストラクタ
-Pirate::~Pirate(void)
+Pirate::~Pirate( void )
 {
-
+	SafeDelete( cannon );
 }
 
 //	初期化
@@ -63,6 +63,10 @@ bool	Pirate::Initialize(int playerNum, Vector3 pos)
 	//	スケール設定
 	obj->SetScale(0.02f);
 	obj->Update();
+	cannon = new iexMesh( "DATA/CHR/Pirate/PirateCannon.IMO" );
+	//cannon->SetScale( 0.02f );
+
+
 
 	if (obj == nullptr)	return	false;
 	return	true;
@@ -75,22 +79,9 @@ bool	Pirate::Initialize(int playerNum, Vector3 pos)
 //	描画
 void	Pirate::Render(iexShader* shader, LPSTR technique)
 {
+	SetCannonPos();
 	BaseChara::Render(shader, technique);
-
-	////	デバッグ用
-	//if (!debug)	return;
-	//DrawCapsule(attackInfo.bottom, attackInfo.top, attackInfo.r, 0xFFFFFFFF);
-	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z - attackInfo.r), 0.3f);
-	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z + attackInfo.r), 0.3f);
-	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z), 0.3f);
-	//particle->BlueFlame(Vector3(attackInfo.pos.x - attackInfo.r, attackInfo.pos.y, attackInfo.pos.z), 0.3f);
-
-	//char	str[256];
-	//Vector3	stringPos;
-	//WorldToClient(pos, stringPos, matView* matProjection);
-	//stringPos.y -= 150.0f;
-	//sprintf_s(str, "海\n賊\n↓");
-	//DrawString(str, (int)stringPos.x, (int)stringPos.y);
+	cannon->Render();
 }
 
 //-----------------------------------------------------------------------------------
@@ -208,8 +199,6 @@ bool	Pirate::HyperArts(void)
 	return true;
 }
 
-
-
 //	モーション管理
 void	Pirate::MotionManagement(int motion)
 {
@@ -251,6 +240,15 @@ void	Pirate::MotionManagement(int motion)
 		obj->SetMotion(MOTION_DATA::ATTACK3);
 		break;
 	}
+}
+
+//	大砲位置設定
+void	Pirate::SetCannonPos( void )
+{
+	Matrix	mat;
+	mat = *obj->GetBone( 8 ) * obj->TransMatrix;
+	cannon->TransMatrix = mat;
+	particle->BlueFlame( Vector3( mat._41, mat._42, mat._43 ), 0.1f );
 }
 
 //-----------------------------------------------------------------------------------
