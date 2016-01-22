@@ -208,7 +208,7 @@
 	//--------------------------------------------------------------------------------
 	//	パラメータ
 	//--------------------------------------------------------------------------------
-		float		light_size[4] = { 200.0f, 150.0f, 200.0f, 150.0f };
+		float		light_Size[4] = { 200.0f, 150.0f, 200.0f, 150.0f };
 		float		lightPower = 1.0f;
 		float3	spotLightColor = float3( 0.4f, 0.4f, 0.4f );
 		float3	lightPos[4] =
@@ -243,7 +243,7 @@
 				p2 = pPos.y - ( lightPos[i].y );
 												 
 				//　ライトのサイズを設定
-				renderSize = light_size[i] * light_size[i];
+				renderSize = light_Size[i] * light_Size[i];
 				lightSize = p1 * p1 + p2 * p2;
 
 				//	ライトサイズ内の明るさを上げる

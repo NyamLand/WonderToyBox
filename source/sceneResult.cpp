@@ -306,7 +306,7 @@
 		viewTest->Activate();
 
 		//	メインカメラ
-		viewInfo.pos = Vector3( 0.0f, 15.0f, -10.0f );
+		viewInfo.pos = Vector3( 0.0f, 10.0f, -10.0f );
 		viewInfo.target = viewInfo.pos + Vector3( 0.0f, 0.0f, 1.0f );
 		mainView = new Camera();
 		mainView->Set( viewInfo.pos, viewInfo.target );
@@ -321,7 +321,7 @@
 		{
 			//	モデル情報設定
 			obj[i] = org[gameManager->GetCharacterType( i )]->Clone();
-			obj[i]->SetPos( -7.0f + ( 14.0f / 3.0f * i ), 10.0f, 10.0f );
+			obj[i]->SetPos( -9.0f + ( 19.0f / 3.0f * i ), 3.0f, 10.0f );
 			obj[i]->SetAngle( D3DX_PI + angle[i] );
 			obj[i]->Update();
 		}
@@ -599,11 +599,28 @@
 
 		//	シェーダー用変数初期化
 		lightMoveNum = 0;
-		light_t = 0.0f;
 		lightPos[0] = Vector3( 0.0f, 0.0f, 0.0f );
-		lightPos[1] = Vector3( 0.0f, 0.0f, 0.0f );
-		lightPos[2] = Vector3( 0.0f, 0.0f, 0.0f );
-		lightPos[3] = Vector3( 0.0f, 0.0f, 0.0f );
+		lightPos[1] = Vector3( iexSystem::ScreenWidth, 0.0f, 0.0f );
+		lightPos[2] = Vector3( 0.0f, iexSystem::ScreenHeight, 0.0f );
+		lightPos[3] = Vector3( iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0.0f );
+
+		lightSize[0] = 200.0f;
+		lightSize[1] = 150.0f;
+		lightSize[2] = 200.0f;
+		lightSize[3] = 150.0f;
+
+		shader2D->SetValue("light_Size[0]", lightSize[0]);
+		shader2D->SetValue("light_Size[1]", lightSize[1]);
+		shader2D->SetValue("light_Size[2]", lightSize[2]);
+		shader2D->SetValue("light_Size[3]", lightSize[3]);
+
+		FOR(0, 4)
+		{
+			lightMove_start[value] = Vector3(0.0f, 0.0f, 0.0f);
+			lightMove_finish[value] = Vector3(0.0f, 0.0f, 0.0f);
+			light_t[value] = 0.0f;
+
+		}
 
 		//	頂点設定
 		SetVertex( curtainInfoL.tlv[0], ( float )curtainPosInfo.leftPos, ( float )curtainPosInfo.upPosY, 0, 0, 0, 0xFFFFFFFF );
@@ -672,8 +689,6 @@
 	//	更新
 	void	sceneResult::Update( void ) 
 	{
-		//	カーテン更新
-		curtainState = CurtainUpdate();
 
 		//	スクリーン更新
 		screen->Update();
@@ -699,6 +714,9 @@
 			break;
 		}
 
+		//	カーテン更新
+		curtainState = CurtainUpdate();
+	
 		//	シーン移動管理
 		MoveScene();
 	}
@@ -710,9 +728,9 @@
 		switch ( mode )
 		{
 		case MOVE_MODE::RESULT:
-		case MOVE_MODE::SELECT:
 			ResultRender();
 			break;
+		case MOVE_MODE::SELECT:
 		case MOVE_MODE::LAST_RESULT:
 			LastResultRender();
 			lastResultTest->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight );
@@ -790,18 +808,28 @@
 		bool	isEnd = false;
 		switch ( step )
 		{
-		case LASTRESULT_MODE::SET_CLOSE_CURTAIN:
-			SetCurtainMode( CURTAIN_MODE::CLOSE );
-			step++;
-			break;
+		//case LASTRESULT_MODE::SET_CLOSE_CURTAIN:
+		//	SetCurtainMode( CURTAIN_MODE::CLOSE );
+		//	step++;
+		//	break;
 
-		case LASTRESULT_MODE::CLOSE_CURTAIN:
-			if ( curtainState ) SetWaitTimer( 60 );
+		//case LASTRESULT_MODE::CLOSE_CURTAIN:
+		//	if ( curtainState )
+		//	{
+		//		SetWaitTimer( 60 );
+		//		step = LASTRESULT_MODE::LIGHT_PRODUCTION;
+		//	}
+		//	break;
+
+		case LASTRESULT_MODE::SET_CLOSE_CURTAIN:
 			step = LASTRESULT_MODE::LIGHT_PRODUCTION;
 			break;
 
 		case LASTRESULT_MODE::LIGHT_PRODUCTION:
 			isEnd = WaitTimeUpdate();
+			LightUpdate();
+			MoveLight();
+
 			if ( isEnd )
 			{
 				step = LASTRESULT_MODE::OPEN_CURTAIN;
@@ -872,6 +900,42 @@
 		return	out;
 	}
 
+	void	sceneResult::MoveLight( void )
+	{
+		
+		FOR(0, 4)
+		{
+
+			if (WallLightCheck(value) == true || light_t[value] >= 1.0f)
+			{
+				MoveLightSet(value);
+			}
+			
+		}
+	}
+
+	bool	sceneResult::MoveLightSet( int num )
+	{
+		light_t[num] = 0.0f;
+		lightMove_start[num] = lightPos[num];
+		lightMove_finish[num] = Vector3(Random::GetFloat(0, iexSystem::ScreenWidth), Random::GetFloat(0, iexSystem::ScreenHeight), 0);
+
+		return false;
+	}
+	
+	bool	sceneResult::WallLightCheck( int num )
+	{
+		if (lightPos[num].x - lightSize[num] <= 0.0f ||		//	左
+			lightPos[num].x + lightSize[num] >= iexSystem::ScreenWidth ||		//	右
+			lightPos[num].y - lightSize[num] <= 0.0f ||		//	上
+			lightPos[num].y + lightSize[num] >= iexSystem::ScreenHeight)		//	下
+		{
+			return true;
+		}
+			return false;
+
+	}
+
 	//	セレクト画面描画
 	void	sceneResult::SelectRender( void )
 	{
@@ -888,16 +952,26 @@
 	void	sceneResult::ResultRender( void )
 	{
 		//	レンダーターゲットを設定
-		infoScreen->RenderTarget( 0 );
+		//infoScreen->RenderTarget( 0 );
 
 		//	カメラ
-		view2D->Activate();
-		view2D->Clear();
+		mainView->Activate();
+		mainView->Clear();
 
 		//	背景( 一番後ろに表示 )
 		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
 		back->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 1280, 720 );
 		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
+
+		//	ステージ描画
+		//	bgStage->Render();
+
+		//	プレイヤー描画
+		FOR( 0, PLAYER_MAX )
+		{
+			//	プレイヤー描画
+			obj[value]->Render( shader3D, "toon" );
+		}
 
 		//	リザルトシール描画
 		RenderImage(menuHead, menuHead.sx, menuHead.sy, menuHead.sw, menuHead.sh, IMAGE_MODE::ADOPTPARAM);
@@ -914,23 +988,15 @@
 		//	入力チェック描画
 		InputCheckRender();
 
-		//	フレームバッファへ切り替え
-		iexSystem::GetDevice()->SetRenderTarget(0, backBuffer);
-		mainView->Activate();
-		mainView->Clear();
+//		//	フレームバッファへ切り替え
+//		iexSystem::GetDevice()->SetRenderTarget(0, backBuffer);
+//		mainView->Activate();
+//		mainView->Clear();
 
-		//	ステージ描画
-		bgStage->Render();
 
 		//	ポリゴン描画
-		iexPolygon::Render3D(viewInfo.v, 2, infoScreen, shader3D, "alpha");
+		//iexPolygon::Render3D(viewInfo.v, 2, infoScreen, shader3D, "alpha");
 		
-		//	プレイヤー描画
-		FOR( 0, PLAYER_MAX )
-		{
-			//	プレイヤー描画
-			obj[value]->Render( shader3D, "toon" );
-		}
 	}
 
 	//	数値画像構造体描画
@@ -1071,9 +1137,13 @@
 	{
 		LPSTR technique = "copy";
 
-		if ( step == LASTRESULT_MODE::LIGHT_PRODUCTION )
+		if (step == LASTRESULT_MODE::LIGHT_PRODUCTION)
 		{
 			technique = "SpotLight";
+			shader2D->SetValue("lightPos[0]", lightPos[0]);
+			shader2D->SetValue("lightPos[1]", lightPos[1]);
+			shader2D->SetValue("lightPos[2]", lightPos[2]);
+			shader2D->SetValue("lightPos[3]", lightPos[3]);
 		}
 		iexPolygon::Render2D( curtainInfoL.tlv, 2, curtainInfoL.obj, shader2D, technique );
 		iexPolygon::Render2D( curtainInfoR.tlv, 2, curtainInfoR.obj, shader2D,technique );
@@ -1086,11 +1156,12 @@
 	//	ライト移動
 	bool	sceneResult::LightUpdate( void )
 	{
-		bool isEnd = false;
+		FOR(0, 4){
+			//	パラメータ加算
+			light_t[value] += 1.0f / 20.0f;
 
-		//	パラメータ加算
-		light_t += 0.1f;
-		if ( light_t >= 1.0f )	light_t = 1.0f;
+			if (light_t[value] >= 1.0f)	light_t[value] = 1.0f;
+		}
 		return	false;
 	}
 
@@ -2018,8 +2089,26 @@
 	//	ラスト結果発表
 	void	sceneResult::ModeLastResult( void )
 	{
-		step = 0;
-		mode = MOVE_MODE::LAST_RESULT;
+		static int result_step = 0;
+		//step = 0;
+		//mode = MOVE_MODE::LAST_RESULT;
+
+		switch (result_step)
+		{
+		case LASTRESULT_MODE::SET_CLOSE_CURTAIN:
+			SetCurtainMode(CURTAIN_MODE::CLOSE);
+			result_step++;
+			break;
+
+		case LASTRESULT_MODE::CLOSE_CURTAIN:
+			if (curtainState)
+			{
+				SetWaitTimer(60);
+				step = 0;
+				mode = MOVE_MODE::LAST_RESULT;
+			}
+			break;
+		}
 	}
 
 	//	入力待ち
