@@ -109,11 +109,8 @@ bool	Scavenger::QuickArts(void)
 	////平行移動
 	ShiftMove();
 
-
-	//モーションアトデナオス
-	if (obj->GetFrame() < 92)SetMotion(2);
-	if (obj->GetFrame() >= 92)
-		SetMotion(3);
+	if (obj->GetFrame() < MOTION_FRAME::SUCK)	SetMotion(MOTION_DATA::QUICK_START);
+	if (obj->GetFrame() >= MOTION_FRAME::SUCK)	SetMotion(MOTION_DATA::QUICK);
 
 	//その場回転
 	//RollAngle();
@@ -166,17 +163,15 @@ bool	Scavenger::PowerArts( void )
 {	
 	power = POWER;
 
-
-	//モーションアトデナオス
 	if (stayTime == 0)
 	{
-		SetMotion(5);
-		if (obj->GetFrame() >= 169) obj->SetFrame(169);
+		SetMotion(MOTION_DATA::POWER_START);
+		if (obj->GetFrame() >= MOTION_FRAME::POWER_FINISH) obj->SetFrame(MOTION_FRAME::POWER_FINISH);
 	}
 	if (stayTime > 0)
 	{
-		SetMotion(6);
-		if (obj->GetFrame() >= 200) obj->SetFrame(200);
+		SetMotion(MOTION_DATA::POWER_END);
+		if (obj->GetFrame() >= MOTION_FRAME::POWER_TO_WAIT) obj->SetFrame(MOTION_FRAME::POWER_TO_WAIT);
 	}
 
 
@@ -241,16 +236,8 @@ bool	Scavenger::HyperArts( void )
 {
 	power = HYPER;
 
-	//モーションアトデナオス
-	if(obj->GetFrame() <= 201) SetMotion(7);
-	if (obj->GetFrame() >= 240) obj->SetFrame(240);
-	//	if (obj->GetFrame() >= 169) obj->SetFrame(169);
-	//}
-	//if (stayTime > 0)
-	//{
-	//	SetMotion(6);
-	//	if (obj->GetFrame() >= 200) obj->SetFrame(200);
-	//}
+	if (obj->GetFrame() <= MOTION_FRAME::HYPER_BEGIN) SetMotion(MOTION_DATA::HYPER_START);
+	if (obj->GetFrame() >= MOTION_FRAME::HYPER_FINISH) obj->SetFrame(MOTION_FRAME::HYPER_FINISH);
 
 	//無敵判定を切らないとそもそもコインを集められないので無敵切ってます。
 	//問題なら言ってください
