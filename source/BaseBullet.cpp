@@ -71,7 +71,7 @@ state(true), activate(true)
 	void	BaseBullet::Render(void)
 	{
 		if(enable) obj->Render();
-		DrawSphere( Vector3( pos.x, pos.y, pos.z ), radius / 5, 0xFFFF0000 );
+		//DrawSphere( Vector3( pos.x, pos.y, pos.z ), radius / 5, 0xFFFF0000 );
 	}
 
 	//	シェーダー付き描画
