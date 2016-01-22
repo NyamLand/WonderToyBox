@@ -11,20 +11,28 @@
 //	include
 #include	"BaseChara.h"
 
+namespace MOTION_FRAME
+{
+	const int SHOT = 113;
+	const int SHOT_STOP = 131;
+}
+
 //	class
 class Pirate : public		BaseChara
 {
 private:
 	enum MOTION_DATA
 	{
-		STAND = 1,			//	—§‚¿
-		POSTURE,				//	\‚¦
-		RUN = 4,				//	‘–‚è
-		ATTACK1,				//	UŒ‚‚P’iŠK–Ú
-		ATTACK2,				//	UŒ‚‚Q’iŠK–Ú
-		ATTACK3,				//	UŒ‚‚R’iŠK–Ú
-		JUMP,
-		GUARD,
+		WAIT,
+		RUN,
+		QUICK,
+		POWER_START,
+		POWER,
+		POWER_END,
+		HYPER,
+		DAMAGE,
+		WIN,
+		LOSE
 	};
 
 	enum QuickArts_DATA

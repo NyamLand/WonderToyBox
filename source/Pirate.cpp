@@ -93,9 +93,7 @@ bool	Pirate::QuickArts(void)
 {
 	static int time = 0;
 
-	//モーションアトデナオス
-	SetMotion(2);
-
+	SetMotion(MOTION_DATA::QUICK);
 	//	行列から情報取得
 	Vector3	front = GetFront();
 	front.Normalize();
@@ -115,8 +113,7 @@ bool	Pirate::QuickArts(void)
 	if (0 <= rnd && rnd < 70)	pattern = QuickArts_DATA::NORMAL_SHOT;
 	if (70 <= rnd && rnd < 100)	pattern = QuickArts_DATA::TIMER_SHOT;
 
-	//モーションアトデナオス
-	if (/*time == 0 &&*/ obj->GetFrame() == 113)
+	if (obj->GetFrame() == MOTION_FRAME::SHOT)
 	{
 		switch (pattern)
 		{
@@ -130,8 +127,8 @@ bool	Pirate::QuickArts(void)
 	}
 	time++;
 
-	//一秒間硬直	//モーションアトデナオス
-	if (/*time >= 1 * SECOND*/ obj->GetFrame()==131)
+	//一秒間硬直
+	if (obj->GetFrame() == MOTION_FRAME::SHOT_STOP)
 	{
 		time = 0;
 		return true;
@@ -142,14 +139,9 @@ bool	Pirate::QuickArts(void)
 //	パワーアーツ
 bool	Pirate::PowerArts(void)
 {	
-	//モーションアトデナオス
-	if(attackInfo.t == 0) SetMotion(3);
-	//if (obj->GetFrame() >= 169) obj->SetFrame(169);
+	if (attackInfo.t == 0) SetMotion(MOTION_DATA::POWER_START);
 	
-	if (attackInfo.t > 1.0) SetMotion(5);
-	//SetMotion(6);
-	//if (obj->GetFrame() >= 200) obj->SetFrame(200);
-	
+	if (attackInfo.t > 1.0) SetMotion(MOTION_DATA::POWER_END);
 
 	float run_speed = 0.5f;
 	SetUnrivaled(false);
