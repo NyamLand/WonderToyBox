@@ -205,7 +205,7 @@
 			if ( !activate )	continue;
 			//if ( characterManager->GetUnrivaled( i ) )	continue;
 			p_pos = characterManager->GetPos( i );
-			bool isHit = Collision::CapsuleVSSphere( p_pos, Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z ), 1.5f, Vector3( pos.x, pos.y + ( scale * 0.5f ), pos.z ), scale * 0.8f );
+			bool isHit = Collision::CapsuleVSSphere( p_pos, Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z ), 2.0f, Vector3( pos.x, pos.y + ( scale * 0.5f ), pos.z ), scale * 0.8f );
 
 			if ( isHit )
 			{

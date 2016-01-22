@@ -133,6 +133,15 @@
 		screen->Initialize();
 		screen->SetScreenMode( SCREEN_MODE::FADE_IN , 1.5f );
 
+		//	Œ»Ý‚Ìƒ‰ƒEƒ“ƒh‚ðŽæ“¾
+		culRound = gameManager->GetRound();
+		//	Äí—p‚ÌÝ’è
+		FOR(0, PLAYER_MAX)
+		{
+			//	Œ»ƒ‰ƒEƒ“ƒh‚ÌŠl“¾ƒRƒCƒ“–‡”‚ðÝ’è
+			gameManager->SetTotalCoin(culRound, value, gameManager->GetCoinNum(value));
+		}
+
 		//	—”‰Šú‰»
 		Random::Initialize();
 
@@ -191,14 +200,7 @@
 		
 		FOR( 0, PLAYER_MAX )	inputCheck[value] = false;
 
-		//	Œ»Ý‚Ìƒ‰ƒEƒ“ƒh‚ðŽæ“¾
-		int	round = gameManager->GetRound();
-		//	Äí—p‚ÌÝ’è
-		FOR( 0, PLAYER_MAX )
-		{
-			//	Œ»ƒ‰ƒEƒ“ƒh‚ÌŠl“¾ƒRƒCƒ“–‡”‚ðÝ’è
-			gameManager->SetTotalCoin( round, value, gameManager->GetCoinNum( value ) );
-		}
+
 		sound->PlayBGM(BGM::RESULT_BGM);
 		screen->SetScreenMode( SCREEN_MODE::FADE_IN, 1.0f );
 		return	true;
@@ -267,25 +269,25 @@
 		bgStage->Update();
 
 		//	ƒIƒŠƒWƒiƒ‹ƒ‚ƒfƒ‹î•ñ‰Šú‰»
-		org[CHARACTER_TYPE::SCAVENGER]->SetScale(0.01f);	//	‘|œ‰®
+		org[CHARACTER_TYPE::SCAVENGER]->SetScale(0.015f);	//	‘|œ‰®
 		org[CHARACTER_TYPE::PRINCESS]->SetScale(0.04f);		//	•P
-		org[CHARACTER_TYPE::THIEF]->SetScale(0.03f);				//	‰ö“
-		org[CHARACTER_TYPE::PIRATE]->SetScale(0.02f);				//	ƒgƒ‰
+		org[CHARACTER_TYPE::THIEF]->SetScale(0.025f);				//	‰ö“
+		org[CHARACTER_TYPE::PIRATE]->SetScale(0.04f);				//	ŠC‘¯
 
 		org[CHARACTER_TYPE::SCAVENGER]->SetAngle(D3DX_PI);	//	‘|œ‰®
 		org[CHARACTER_TYPE::PRINCESS]->SetAngle(D3DX_PI);		//	•P
 		org[CHARACTER_TYPE::THIEF]->SetAngle(D3DX_PI);				//	ƒV[ƒt
-		org[CHARACTER_TYPE::PIRATE]->SetAngle(D3DX_PI);			//	ƒgƒ‰
+		org[CHARACTER_TYPE::PIRATE]->SetAngle(D3DX_PI);			//	ŠC‘¯
 
 		org[CHARACTER_TYPE::SCAVENGER]->SetMotion(2);		//	‘|œ‰®
 		org[CHARACTER_TYPE::PRINCESS]->SetMotion(1);			//	•P
 		org[CHARACTER_TYPE::THIEF]->SetMotion(0);	 				//	ƒV[ƒt
-		org[CHARACTER_TYPE::PIRATE]->SetMotion(0);					//	ƒgƒ‰
+		org[CHARACTER_TYPE::PIRATE]->SetMotion(0);					//	ŠC‘¯
 
 		org[CHARACTER_TYPE::SCAVENGER]->Update();				//	‘|œ‰®
 		org[CHARACTER_TYPE::PRINCESS]->Update();					//	•P
 		org[CHARACTER_TYPE::THIEF]->Update();							//	ƒV[ƒt
-		org[CHARACTER_TYPE::PIRATE]->Update();						//	ƒgƒ‰
+		org[CHARACTER_TYPE::PIRATE]->Update();						//	ŠC‘¯
 
 	}
 

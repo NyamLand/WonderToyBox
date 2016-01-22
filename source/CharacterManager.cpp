@@ -235,15 +235,13 @@
 		//	çUåÇÇ≥ÇÍÇÈï˚
 		Vector3	bc2_bottom = bc2->GetPos();
 		Vector3	bc2_top = Vector3( bc2_bottom.x, bc2_bottom.y + 3.0f, bc2_bottom.z );
-		float		bc2_r = 1.0f;
+		float		bc2_r = 2.0f;
 
 		//	çUåÇîªíË
 		bool	isHit = Collision::CapsuleVSSphere( bc2_bottom, bc2_top, bc2_r, bc1_attackPos, bc1_attack_r );
 		//	ìñÇΩÇ¡ÇƒÇ¢ÇΩÇÁ
 		if ( isHit )
 		{
-
-
 			if (bc1->GetMode() == MODE_STATE::HYPERARTS)
 			{
 				gameManager->SetShakeCamera( 1.5f, 30 );
@@ -308,7 +306,7 @@
 		//	çUåÇÇ≥ÇÍÇÈï˚
 		Vector3	bc2_bottom = bc2->GetPos();
 		Vector3	bc2_top = Vector3( bc2_bottom.x, bc2_bottom.y + 3.0f, bc2_bottom.z );
-		float		bc2_r = 1.0f;
+		float		bc2_r = 2.0f;
 
 		//	çUåÇîªíË
 		bool	isHit = Collision::CapsuleVSCapsule( bc1_attack_bottom, bc1_attack_top, bc1_attack_r, bc2_bottom, bc2_top, bc2_r );
