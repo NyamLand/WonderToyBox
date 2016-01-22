@@ -221,7 +221,7 @@ bool	Thief::HyperArts(void)
 
 
 //	ÉÇÅ[ÉVÉáÉìä«óù
-void	Thief::MotionManagement(int motion)
+/*void	Thief::MotionManagement(int motion)
 {
 	switch (motion)
 	{
@@ -261,7 +261,7 @@ void	Thief::MotionManagement(int motion)
 		obj->SetMotion(MOTION_DATA::HYPER);
 		break;
 	}
-}
+}*/
 
 //-----------------------------------------------------------------------------------
 //	èÓïÒê›íË

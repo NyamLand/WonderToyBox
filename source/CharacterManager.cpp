@@ -242,6 +242,8 @@
 		//	“–‚½‚Á‚Ä‚¢‚½‚ç
 		if ( isHit )
 		{
+
+
 			if (bc1->GetMode() == MODE_STATE::HYPERARTS)
 			{
 				gameManager->SetShakeCamera( 1.5f, 30 );

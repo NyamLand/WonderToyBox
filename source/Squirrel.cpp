@@ -240,7 +240,7 @@
 
 	
 	//	ÉÇÅ[ÉVÉáÉìä«óù
-	void	Squirrel::MotionManagement(int motion)
+/*	void	Squirrel::MotionManagement(int motion)
 	{
 		switch (motion)
 		{
@@ -280,7 +280,7 @@
 			obj->SetMotion(MOTION_DATA::ATTACK3);
 			break;
 		}
-	}
+	}*/
 
 //-----------------------------------------------------------------------------------
 //	èÓïÒê›íË
