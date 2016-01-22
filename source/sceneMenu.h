@@ -119,6 +119,7 @@ private:
 	//	‹¤’Ê•Ï”
 	int		mode;
 	int		tempmode;
+	Vector3 dir;
 	
 public:
 	//	‰Šú‰»E‰ğ•ú

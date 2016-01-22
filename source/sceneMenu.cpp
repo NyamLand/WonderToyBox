@@ -124,6 +124,8 @@
 		gameManager->Initialize();
 		OptionInitialize();
 		
+		
+
 		//	画像読み込み
 		back = make_unique<iex2DObj>( LPSTR( "DATA/UI/back.png" ) );
 		frame = make_unique<iex2DObj>( LPSTR( "DATA/UI/frame.png" ) );
@@ -160,8 +162,8 @@
 		org[CHARACTER_TYPE::THIEF]->SetAngle( D3DX_PI );	//	怪盗
 		org[CHARACTER_TYPE::PIRATE]->SetAngle( D3DX_PI );			//	海賊
 
-		org[CHARACTER_TYPE::SCAVENGER]->SetMotion( 2 );	//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS]->SetMotion( 1 );		//	姫
+		org[CHARACTER_TYPE::SCAVENGER]->SetMotion( 0 );	//	掃除屋
+		org[CHARACTER_TYPE::PRINCESS]->SetMotion( 0 );		//	姫
 		org[CHARACTER_TYPE::THIEF]->SetMotion( 0 );		//	怪盗
 		org[CHARACTER_TYPE::PIRATE]->SetMotion( 0 );			//	海賊
 
@@ -232,13 +234,15 @@
 	//	更新
 	void	sceneMenu::Update( void )
 	{
-		//	オプションとの切り替え
-		ChangeToOption();
-
+		if (screen->GetScreenState()){
+			//	オプションとの切り替え
+			ChangeToOption();
+		}
 		//	カメラ更新
 		CameraUpdate();
 
-		
+	
+
 		//	各モード更新
 		switch ( mode )
 		{
@@ -290,6 +294,7 @@
 		mainView->Activate();
 		mainView->Clear();
 
+		
 		BG->Render();
 		////背景( 一番後ろに表示 )
 		//iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
@@ -324,6 +329,13 @@
 		if (mode != MENU_MODE::OPTION){
 			optionMenu->Render(80, 50, 256, 64, 0, 0, 256, 64);
 		}
+
+		//	ライト設定
+		dir = bgInfo.target;
+		dir.Normalize();
+		shader3D->SetValue("DirLightVec", dir);
+		iexLight::DirLight(shader, 0, &dir, 1.0f, 1.0f, 1.0f);
+
 		//	スクリーン
 		screen->Render();
 	}
@@ -332,7 +344,7 @@
 	void	sceneMenu::CameraUpdate( void )
 	{
 		//	カメラ用パラメータ加算
-		bgInfo.t += 0.01f;
+		bgInfo.t += 0.02f;
 		if ( bgInfo.t >= 1.0f )	bgInfo.t = 1.0f;
 
 		//	回転補間
@@ -345,7 +357,7 @@
 	//	オプションに切り替え＆その逆
 	void	sceneMenu::ChangeToOption( void )
 	{
-		if ( KEY_Get( KEY_D ) == 3 || KEY_Get( KEY_B6 ) == 3 )
+		if ( KEY_Get( KEY_B6 ) == 3 )
 		{
 			//	現在のモードを保存してオプションへ移行
 			if ( mode != MENU_MODE::OPTION )
@@ -464,6 +476,10 @@
 	//	キャラクター選択初期化
 	void	sceneMenu::SelectCharacterInitialize( void )
 	{
+		org[CHARACTER_TYPE::SCAVENGER]->SetMotion(0);	//	掃除屋
+		org[CHARACTER_TYPE::PRINCESS]->SetMotion(1);		//	姫
+		org[CHARACTER_TYPE::THIEF]->SetMotion(0);		//	怪盗
+		org[CHARACTER_TYPE::PIRATE]->SetMotion(0);			//	海賊
 		//	モデル、選択情報初期化
 		FOR( 0, PLAYER_MAX )
 		{
@@ -493,6 +509,7 @@
 			}
 		}
 
+		
 		//	変数初期化
 		characterSelectInfo.imagePos = 0;
 		characterSelectInfo.step = 0;
@@ -695,7 +712,7 @@
 		//　おもちゃモデル初期化
 		toyStage->SetPos(0.0f,0.0f,0.0f);
 		toyStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
-		toyStage->SetScale(0.025f);
+		toyStage->SetScale(0.05f);
 		toyStage->Update();
 
 		//	パラメータ初期化
@@ -720,15 +737,15 @@
 		switch ( stageSelectInfo.stage )
 		{
 		case 0:
-			deskStage->SetPos(-2.0f, 15.0f, 8.0f);
-			toyStage->SetPos(7.0f, 15.0f, 15.0f);
+			deskStage->SetPos(-2.0f, 14.0f, 8.0f);
+			toyStage->SetPos(7.0f, 14.0f, 15.0f);
 			deskStage->SetAngle( D3DXToRadian( 30.0f ), stageSelectInfo.angle, 0.0f );
 			toyStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
 			break;
 
 		case 1:
-			deskStage->SetPos(-7.0f, 15.0f, 15.0f);
-			toyStage->SetPos(2.0f, 15.0f, 8.0f);
+			deskStage->SetPos(-7.0f, 14.0f, 15.0f);
+			toyStage->SetPos(2.0f, 14.0f, 8.0f);
 			deskStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
 			toyStage->SetAngle(D3DXToRadian(30.0f), stageSelectInfo.angle, 0.0f);
 			break;
@@ -807,7 +824,7 @@
 	void	sceneMenu::SelectCheckInitialize( void )
 	{
 		//	キャラ別モーション設定
-		org[CHARACTER_TYPE::PRINCESS]->SetMotion( 2 );
+		org[CHARACTER_TYPE::PRINCESS]->SetMotion( 1 );
 		
 		//	各プレイヤーモデル初期化
 		static	Vector3	cursorPos[4];
@@ -835,7 +852,7 @@
 		
 			toyStage->SetPos(7.0f, 15.5f, 2.5f);
 			toyStage->SetAngle(D3DXToRadian(45.0f), D3DXToRadian(-90.0f), 0.0f);
-			toyStage->SetScale(0.01f);
+			toyStage->SetScale(0.02f);
 			toyStage->Update();
 		}
 
