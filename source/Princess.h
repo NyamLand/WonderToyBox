@@ -11,26 +11,35 @@
 //	include
 #include	"BaseChara.h"
 
+namespace PRINCESS
+{
+	namespace MOTION_FRAME
+	{
+
+	}
+
+	enum MOTION_DATA
+	{
+		WAIT,
+		RUN,
+		JUMP,
+		QUICK,
+		POWER,
+		GUARD,
+		DAMAGE,
+		KNOCKBACK,
+		FALL,
+		WAKEUP,
+		WIN,
+		LOSE
+	};
+}
+
 //	class
 class Princess : public		BaseChara
 {
 private:
-	enum MOTION_DATA
-	{
-		STAND = 0,			//	立ち
-		POSTURE = 0,		//	構え
-		RUN,					//	走り
-		JUMP,					//	ジャンプ
-		ATTACK1,				//	攻撃１段階目
-		ATTACK2,				//	攻撃２段階目
-		GUARD,				//	ガード
-		DAMAGE,				//	ダメージ
-		KNOCKBACK,		//	吹っ飛び
-		FALLTOGROUND,	//	地面に落下
-		GETUP,				//	起き上がる
-		WIN,					//	勝利
-		DEFEAT,				//	敗北
-	};
+	
 
 private:
 //	void	MotionManagement( int motion )override;

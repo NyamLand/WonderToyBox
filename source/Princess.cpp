@@ -98,6 +98,8 @@
 	{
 		power = 1;
 
+		//SetMotion(PRINCESS::MOTIO_DATA::QUICK);
+
 		//	s—ñ‚©‚ç‘O•ûæ“¾
 		Vector3	front = GetFront();
 		SetMove( Vector3( 0.0f, 0.0f, 0.0f ) );
