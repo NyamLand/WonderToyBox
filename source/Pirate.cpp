@@ -63,7 +63,7 @@ bool	Pirate::Initialize(int playerNum, Vector3 pos)
 	//	ƒXƒP[ƒ‹Ý’è
 	obj->SetScale(0.02f);
 	obj->Update();
-	cannon = new iexMesh( "DATA/CHR/Pirate/PirateCannon.IMO" );
+	cannon = new iexMesh( "DATA/CHR/Pirate/pirate_cannon.IMO" );
 	//cannon->SetScale( 0.02f );
 
 
@@ -246,9 +246,17 @@ void	Pirate::MotionManagement(int motion)
 void	Pirate::SetCannonPos( void )
 {
 	Matrix	mat;
-	mat = *obj->GetBone( 6 ) * obj->TransMatrix;
+	mat = *obj->GetBone( 7 ) * obj->TransMatrix;
 	cannon->TransMatrix = mat;
-	particle->BlueFlame( Vector3( mat._41, mat._42, mat._43 ), 0.1f );
+	Matrix	cannonMat = cannon->TransMatrix;
+	Vector3	up = Vector3( mat._21, mat._22, mat._23 );
+	Vector3	cannonPos = Vector3( 0.0f, 0.0f, 0.0f );
+	up.Normalize();
+	cannonPos = Vector3( cannon->TransMatrix._41, cannon->TransMatrix._42, cannon->TransMatrix._43 );
+	cannonPos += up * 0.5f;
+	cannon->TransMatrix._41 = cannonPos.x;
+	cannon->TransMatrix._42 = cannonPos.y;
+	cannon->TransMatrix._43 = cannonPos.z;
 }
 
 //-----------------------------------------------------------------------------------
