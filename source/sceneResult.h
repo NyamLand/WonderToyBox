@@ -203,6 +203,9 @@ private:
 	float	light_t[4];
 	int	waitTimer;
 
+	//	定数用
+	Vector3	LIGHT_POS[4];
+
 public:
 	//	初期化・解放
 	sceneResult( void );
@@ -262,7 +265,8 @@ public:
 	void	SetRoundCoinNumber( void );
 	bool	WaitTimeUpdate( void );
 	void	MoveLight( void );
-	bool	MoveLightSet( int num );
+	bool	MoveLightSet( int num, Vector3 pos );
+	Vector3 RandomPos( void );
 	bool	WallLightCheck( int num );
 
 	//	選択モード関数

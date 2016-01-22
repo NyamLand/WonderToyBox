@@ -599,10 +599,10 @@
 
 		//	シェーダー用変数初期化
 		lightMoveNum = 0;
-		lightPos[0] = Vector3( 0.0f, 0.0f, 0.0f );
-		lightPos[1] = Vector3( iexSystem::ScreenWidth, 0.0f, 0.0f );
-		lightPos[2] = Vector3( 0.0f, iexSystem::ScreenHeight, 0.0f );
-		lightPos[3] = Vector3( iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0.0f );
+		LIGHT_POS[0] = Vector3( 0.0f, 0.0f, 0.0f );
+		LIGHT_POS[1] = Vector3( iexSystem::ScreenWidth, 0.0f, 0.0f );
+		LIGHT_POS[2] = Vector3( 0.0f, iexSystem::ScreenHeight, 0.0f );
+		LIGHT_POS[3] = Vector3( iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0.0f );
 
 		lightSize[0] = 200.0f;
 		lightSize[1] = 150.0f;
@@ -616,10 +616,8 @@
 
 		FOR(0, 4)
 		{
-			lightMove_start[value] = Vector3(0.0f, 0.0f, 0.0f);
-			lightMove_finish[value] = Vector3(0.0f, 0.0f, 0.0f);
-			light_t[value] = 0.0f;
-
+			lightPos[value] = LIGHT_POS[value];
+			MoveLightSet(value, RandomPos());
 		}
 
 		//	頂点設定
@@ -827,6 +825,7 @@
 
 		case LASTRESULT_MODE::LIGHT_PRODUCTION:
 			isEnd = WaitTimeUpdate();
+			//	ライト
 			LightUpdate();
 			MoveLight();
 
@@ -900,29 +899,39 @@
 		return	out;
 	}
 
+	//	ライトの移動
 	void	sceneResult::MoveLight( void )
 	{
-		
 		FOR(0, 4)
 		{
-
-			if (WallLightCheck(value) == true || light_t[value] >= 1.0f)
+			Lerp(lightPos[value], lightMove_start[value], lightMove_finish[value], light_t[value]);
+			if ((WallLightCheck(value) == true || light_t[value] >= 1.0f) && waitTimer > 30)
 			{
-				MoveLightSet(value);
+				MoveLightSet(value, RandomPos());
 			}
-			
 		}
+		//	残り30秒に初期位置へ移動
+		if (waitTimer == 30)
+		{
+			MoveLightSet(0, LIGHT_POS[0]);
+			MoveLightSet(1, LIGHT_POS[1]);
+			MoveLightSet(2, LIGHT_POS[2]);
+			MoveLightSet(3, LIGHT_POS[3]);
+		}
+
 	}
 
-	bool	sceneResult::MoveLightSet( int num )
+	//	ライトの情報設定
+	bool	sceneResult::MoveLightSet( int num, Vector3 pos )
 	{
 		light_t[num] = 0.0f;
 		lightMove_start[num] = lightPos[num];
-		lightMove_finish[num] = Vector3(Random::GetFloat(0, iexSystem::ScreenWidth), Random::GetFloat(0, iexSystem::ScreenHeight), 0);
+		lightMove_finish[num] = pos;
 
 		return false;
 	}
 	
+	//	ライトと画面のあたり判定
 	bool	sceneResult::WallLightCheck( int num )
 	{
 		if (lightPos[num].x - lightSize[num] <= 0.0f ||		//	左
@@ -934,6 +943,12 @@
 		}
 			return false;
 
+	}
+
+	//	画面上のランダムポジションを獲得
+	Vector3	sceneResult::RandomPos( void )
+	{
+		return Vector3(Random::GetFloat(0, iexSystem::ScreenWidth), Random::GetFloat(0, iexSystem::ScreenHeight), 0);
 	}
 
 	//	セレクト画面描画
@@ -1158,7 +1173,7 @@
 	{
 		FOR(0, 4){
 			//	パラメータ加算
-			light_t[value] += 1.0f / 20.0f;
+			light_t[value] += 1.0f / 30.0f;
 
 			if (light_t[value] >= 1.0f)	light_t[value] = 1.0f;
 		}
@@ -2103,7 +2118,7 @@
 		case LASTRESULT_MODE::CLOSE_CURTAIN:
 			if (curtainState)
 			{
-				SetWaitTimer(60);
+				SetWaitTimer(150);
 				step = 0;
 				mode = MOVE_MODE::LAST_RESULT;
 			}
