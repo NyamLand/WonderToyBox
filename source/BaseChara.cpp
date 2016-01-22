@@ -299,7 +299,7 @@ namespace
 			
 			//	‰e•`‰æ
 			iexPolygon::Render3D( shadow.v, 2, shadow.obj, shader3D, "alpha" );
-			particle->BlueFlame( Vector3( pos.x, pos.y + 1.5f, pos.z ), 0.1f );
+			//particle->BlueFlame( Vector3( pos.x, pos.y + 1.5f, pos.z ), 0.1f );
 			
 			if ( renderflag )
 			obj->Render( shader, technique );
