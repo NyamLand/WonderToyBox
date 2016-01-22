@@ -106,6 +106,7 @@ bool	Thief::QuickArts(void)
 
 	//モーションアトデナオス
 	SetMotion(4);
+	//if (obj->GetFrame() >= 237) obj->SetMotion(237);
 
 	//	情報設定
 	Vector3	vec[3] =
@@ -129,8 +130,8 @@ bool	Thief::QuickArts(void)
 	}
 	time++;
 
-	//一秒間硬直			//モーションアトデナオス(終わりのモーションが来たら終了)
-	if (time >= 1 * SECOND /* obj->GetFrame() == ○○ */)
+	//モーションアトデナオス(終わりのモーションが来たら終了)
+	if (obj->GetFrame() == 237)
 	{
 		time = 0;
 		return true;
@@ -142,6 +143,11 @@ bool	Thief::QuickArts(void)
 bool	Thief::PowerArts(void)
 {
 	static int time = 0;
+
+
+	//モーションアトデナオス
+	SetMotion(5);
+	//if (obj->GetFrame() >= 277) obj->SetFrame(277);
 
 	//	行列から情報取得
 	Vector3	front = GetFront();
@@ -163,8 +169,8 @@ bool	Thief::PowerArts(void)
 	}
 		time++;
 
-		//モーションアトデナオス(終わりのモーションが来たら終了)
-		if (time >= 1 * SECOND/* obj->GetFrame() == ○○ */)
+		//モーションアトデナオス
+		if (obj->GetFrame() == 277)
 		{
 			time = 0;
 			return true;
@@ -175,6 +181,11 @@ bool	Thief::PowerArts(void)
 //	ハイパーアーツ
 bool	Thief::HyperArts(void)
 {
+
+	//モーションアトデナオス
+	SetMotion(6);
+
+
 	power = HYPER;
 	SetParameterState(PARAMETER_STATE::UNRIVALED);
 	move = Vector3(0, 0 - GRAVITY, 0);	//撃ってる間は静止させる
@@ -208,7 +219,9 @@ bool	Thief::HyperArts(void)
 	int playerNum = GetPlayerNum();
 
 	//モーションアトデナオス(ちょうどいい感じのフレームが来たら弾発射)
-	if (time == 0/* obj->GetFrame() == ○○ */)
+	int a;
+	a = obj->GetFrame();
+	if (obj->GetFrame() == 339)
 	{
 		for (int i = 0; i < 5; i++)
 		{
@@ -218,7 +231,7 @@ bool	Thief::HyperArts(void)
 	time++;
 
 	//モーションアトデナオス(終わりのモーションが来たら終了)
-	if (time >= 150/* obj->GetFrame() == ○○ */)
+	if (obj->GetFrame() == 399)
 	{
 		time = 0;
 		return true;
