@@ -234,14 +234,13 @@
 	//	更新
 	void	sceneMenu::Update( void )
 	{
-		if (screen->GetScreenState()){
+		if ( screen->GetScreenState() )
+		{
 			//	オプションとの切り替え
 			ChangeToOption();
 		}
 		//	カメラ更新
-		CameraUpdate();
-
-	
+		CameraUpdate();	
 
 		//	各モード更新
 		switch ( mode )
@@ -294,7 +293,13 @@
 		mainView->Activate();
 		mainView->Clear();
 
-		
+		//	ライト設定
+		dir = bgInfo.target;
+		shader3D->SetValue("DirLightVec", dir);
+		iexLight::DirLight(shader, 0, &dir, 1.0f, 1.0f, 1.0f);
+		dir.Normalize();
+
+		//	背景描画
 		BG->Render();
 		////背景( 一番後ろに表示 )
 		//iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
@@ -329,13 +334,7 @@
 		if (mode != MENU_MODE::OPTION){
 			optionMenu->Render(80, 50, 256, 64, 0, 0, 256, 64);
 		}
-
-		//	ライト設定
-		dir = bgInfo.target;
-		dir.Normalize();
-		shader3D->SetValue("DirLightVec", dir);
-		iexLight::DirLight(shader, 0, &dir, 1.0f, 1.0f, 1.0f);
-
+		
 		//	スクリーン
 		screen->Render();
 	}
@@ -1171,7 +1170,6 @@
 			gameManager->SetMaxLife(optionInfo.life);
 			gameManager->SetTime(optionInfo.minute,optionInfo.second);
 	}
-
 
 	//	オプション描画
 	void	sceneMenu::OptionRender( void )
