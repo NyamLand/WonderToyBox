@@ -236,9 +236,6 @@
 		//	カメラ更新
 		CameraUpdate();
 
-		//	スクリーン更新
-		screen->Update();
-
 		//	各モード更新
 		switch ( mode )
 		{
@@ -277,6 +274,9 @@
 			OptionUpdate();
 			break;
 		}
+
+		//	スクリーン更新
+		screen->Update();
 		
 	}
 
