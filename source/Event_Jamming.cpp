@@ -119,6 +119,8 @@ void	Event_Jamming::Slope(void)
 
 	case 2:
 		//	数秒待つ
+
+		//count++;
 		if (count >= SLOPE_COUNT_MAX)
 		{
 			m_Slope.param = 0.0f;
@@ -145,14 +147,20 @@ void	Event_Jamming::Slope(void)
 		//	傾き終わると次のステップへ
 		if (isEnd)
 		{
+			count = 0;
+			state = EVENT_STATE::INTRO;
+			this->eventMode = EVENT_MODE::NONE;
+			m_Slope.eventFlag = false;
 			m_Slope.slope = 0.0f;
 			m_Slope.param = 0.0f;
+			m_Slope.step = 0;
 		}
 		break;
 	}
 
-	
-	CommonSetting(m_Slope.eventFlag, m_Slope.step, SLOPE_COUNT_MAX);
+	if (count >= FLYING_COUNT)	state = EVENT_STATE::ACTIVE;
+	if (count >= SLOPE_COUNT_MAX - FLYING_COUNT)	state = EVENT_STATE::END;
+	count++;
 }
 
 void	Event_Jamming::CoinGetAway(void)
@@ -198,10 +206,10 @@ Event_Jamming*	Event_Jamming::GetInstance(void)
 	return	&out;
 }
 
-int		Event_Jamming::GetEvent(void)const
-{
-	return	eventflag;
-}
+//int		Event_Jamming::GetEvent(void)const
+//{
+//	return	eventflag;
+//}
 
 void	Event_Jamming::SetEvent(int eventflag)
 {
