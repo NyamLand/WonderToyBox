@@ -16,7 +16,9 @@ protected:
 public:
 	//	‰Šú‰»E‰ğ•ú
 	Pirate_Bullet01(void);
-	~Pirate_Bullet01(void){};
+	~Pirate_Bullet01(void){
+	
+	};
 	bool Initialize();
 
 	void Move();
