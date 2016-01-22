@@ -34,7 +34,7 @@ private:
 	};
 
 private:
-	void	MotionManagement( int motion )override;
+	//void	MotionManagement( int motion )override;
 	iexMesh*	cannon;
 
 public:
