@@ -23,7 +23,7 @@
 //	グローバル
 //-------------------------------------------------------------------------------
 
-#define	GETAWAY_LENGTH		3.0f	//	逃げる判定距離
+#define	GETAWAY_LENGTH		5.0f	//	逃げる判定距離
 #define	MAX_HEIGHT					50.0f	//	想定している高さ最大値
 #define	SCALE								3.0f	//	コイン大きさ
 #define	MASS							10.0f;	//	質量
@@ -254,7 +254,7 @@
 		{
 			if ( !activate )	continue;
 			p_pos[i] = characterManager->GetPos( i );
-			p_pos[i].y = pos.y;
+			//p_pos[i].y = pos.y;
 
 			//	プレイヤーへのベクトル取得
 			Vector3	vec = p_pos[i] - pos;
@@ -272,16 +272,16 @@
 	//	マグネット
 	void	Coin::Magnet( void )
 	{
-		Vector3	p_pos[4];
+		Vector3	p_pos;
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			if ( !activate )	continue;
 			if ( !characterManager->GetParameterState( i, PARAMETER_STATE::MAGNET ) )	continue;
-			p_pos[i] = characterManager->GetPos( i );
-			p_pos[i].y = pos.y;
+			p_pos = characterManager->GetPos( i );
+			//p_pos.y = pos.y;
 
 			//	プレイヤーへのベクトル取得
-			Vector3	vec = p_pos[i] - pos;
+			Vector3	vec = p_pos - pos;
 			float	length = vec.Length();
 
 			//	近ければ吸い寄せられる

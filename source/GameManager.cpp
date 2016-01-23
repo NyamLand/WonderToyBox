@@ -260,16 +260,16 @@
 		if ( timer != 0 )
 		{
 			//	5秒ごとにアイテムを３割の確率ででランダムに配置
-			//if ( timer % ( 5* SECOND ) == 0 )
-			//{
-			//	if (itemflg)
-			//	{
-			//		if ( Random::PercentageRandom( 0.7f ) )
-			//		{
-			//			itemManager->Append(Vector3(Random::GetFloat(-20.0f, 20.0f), 50.0f, Random::GetFloat(-20.0f, 15.0f)), Random::GetInt(0, ITEM_TYPE::MAX));
-			//		}
-			//	}
-			//}
+			if ( timer % ( 5* SECOND ) == 0 )
+			{
+				if (itemflg)
+				{
+					if ( Random::PercentageRandom( 0.7f ) )
+					{
+						itemManager->Append(Vector3(Random::GetFloat(-20.0f, 20.0f), 50.0f, Random::GetFloat(-20.0f, 15.0f)), Random::GetInt( 0, ITEM_TYPE::MAX - 1 ) );
+					}
+				}
+			}
 
 			//	２秒ごとにコインを４割の確率でランダムに配置
 			if ( timer % ( 1 * SECOND ) == 0 )
