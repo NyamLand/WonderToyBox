@@ -74,6 +74,7 @@
 				OPEN_CURTAIN,			//	カーテン開ける
 				PRODUCTION,	//	演出
 				RESULT,			//	ラウンドごとのスコア
+				FINALRESULT,
 			};
 		}
 
@@ -87,18 +88,6 @@
 				END,								//	終端
 			};
 		}
-
-		namespace LASTBONUS
-		{
-			enum
-			{
-				MAX_COIN,
-				FALL_STAGE,
-				COIN77,
-				MIN_TOTALCOIN,
-				HIT_ATTACK_NUM,
-			};
-		}	
 
 		namespace CURTAIN_MODE
 		{
@@ -135,8 +124,9 @@
 
 		//	現在のラウンドを取得
 		culRound = gameManager->GetRound();
+		
 		//	再戦用の設定
-		FOR(0, PLAYER_MAX)
+		FOR( 0, PLAYER_MAX )
 		{
 			//	現ラウンドの獲得コイン枚数を設定
 			gameManager->SetTotalCoin(culRound, value, gameManager->GetCoinNum(value));
@@ -175,9 +165,6 @@
 		//	ライフ画像構造体初期化
 		LifeInfoInitialize();
 
-		//	ラストボーナス関連構造体初期化
-		LastBonusImageInitialize();
-
 		//	ルーレット情報初期化
 		RouletteInfoInitialize();
 
@@ -191,17 +178,19 @@
 		RoundInfoInitialize();
 		SetRoundCoinNumber();
 
+		//	優勝者設定
+		SetWinner();
+
 		//	変数初期化
 		lastBonus = 0;
 		step = 0;
 		mode = MOVE_MODE::RESULT;
 		changeScene = false;
-		bonusPlayer = 0;
-		
+		bonusPlayer = 0;		
 		FOR( 0, PLAYER_MAX )	inputCheck[value] = false;
 
-
-		sound->PlayBGM(BGM::RESULT_BGM);
+		//	スクリーン、サウンド初期化
+		sound->PlayBGM( BGM::RESULT_BGM );
 		screen->SetScreenMode( SCREEN_MODE::FADE_IN, 1.0f );
 		return	true;
 	}
@@ -209,6 +198,11 @@
 	//	解放
 	void	sceneResult::Release( void )
 	{
+		SafeDelete( pressButtonImage.obj );
+		SafeDelete( waveImage.obj );
+		SafeDelete( playerNumImage.obj );
+		SafeDelete( faceImage.obj );
+		SafeDelete( lifeAnnounceImage.obj );
 		SafeDelete( orgCurtain );
 		SafeDelete( orgRound );
 		SafeDelete( life );
@@ -218,11 +212,6 @@
 		SafeDelete( mainView );
 		SafeDelete( infoScreen );
 		SafeDelete( lastResultTest );
-		SafeDelete( lastBonusText );
-		SafeDelete( faceImage.obj );
-		SafeDelete( playerNumImage.obj );
-		SafeDelete( waveCircleImage.obj );
-		SafeDelete( notApplicable.obj );
 		SafeDelete( bgStage );
 		SafeDelete( check );
 		Random::Release();
@@ -242,19 +231,33 @@
 		menuHead.obj = new iex2DObj("DATA/UI/menu/menu-head.png");
 		originNumber = new iex2DObj("DATA/UI/number.png");
 		menuText = new iex2DObj("DATA/UI/result/result-cho.png");
-		lastBonusText = new iex2DObj("DATA/UI/Result/LastBonusText.png");
 		life = new iex2DObj("DATA/UI/Nlife.png");
 		check = new iex2DObj( "DATA/UI/Result/check.png" );
 		orgRound = new iex2DObj( "DATA/UI/roundText.png" );
 		orgCurtain = new iex2DObj( "DATA/UI/title/curtain1.png" );
+		lifeAnnounceImage.obj = new iex2DObj( "DATA/UI/result/resultText.png" );
+		faceImage.obj = new iex2DObj( "DATA/UI/chara_emotion.png" );
+		playerNumImage.obj = new iex2DObj( "DATA/UI/DonketuUI.png" );
+		waveImage.obj = new iex2DObj( "DATA/UI/Rainbow-circle.png" );
+		pressButtonImage.obj = new iex2DObj( "DATA/UI/pressspace.png" );
 
-		//	構造体初期化
+		//	ライフ発表テキスト画像初期化
+		ImageInitialize( lifeAnnounceImage, static_cast<int>( iexSystem::ScreenWidth * 0.5f ), static_cast<int>( iexSystem::ScreenHeight * 0.35f ), 300, 200, 0, 0, 512, 256 );
+		lifeAnnounceImage.alpha = 0.0f;
+		lifeAnnounceImage.renderflag = false;
+
+		//	メニューヘッド画像構造体初期化
 		int x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
 		int y = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
 		int w = static_cast<int>( iexSystem::ScreenWidth * 0.29f );
 		int h = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
 		ImageInitialize( menuHead, x, y, w, h, 0, 0, 512, 256 );
-		menuHead.angle = D3DXToRadian( 7.0f );
+
+		//	PressButtonImage初期化
+		x = static_cast<int>( iexSystem::ScreenWidth * 0.8f );
+		y = static_cast<int>( iexSystem::ScreenHeight * 0.8f );
+		ImageInitialize( pressButtonImage, x, y, w, h, 0, 0, 256, 128 );
+		pressButtonImage.flashingRenderflag = false;
 
 		//	モデル読み込み
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>(LPSTR("DATA/CHR/majo/majo.IEM"));			//	掃除屋
@@ -359,6 +362,10 @@
 			sortInfo[i].num = originInfo[i].num;
 			sortInfo[i].sortRank = i;
 			sortInfo[i].rank = i;
+
+			totalSortInfo[i].num = 0;
+			totalSortInfo[i].rank = i;
+			totalSortInfo[i].sortRank = i;
 		}
 	}
 
@@ -445,8 +452,8 @@
 			//	画像構造体に設定
 			x = rankImage[value].x;
 			y = rankImage[value].y;
-			w = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
-			h = w;
+			w = 0;
+			h = 0;
 			sw = 64;
 			sh = 64;
 			sx = sw * ( ( 5 - culLife ) % 4 );
@@ -457,6 +464,8 @@
 			lifeImage[value].renderflag = false;
 
 			//	ついでにOKの位置も設定
+			w = 300;
+			h = 200;
 			y = static_cast<int>( iexSystem::ScreenHeight * 0.7f );
 			h = ( int )( w * 0.5f );
 			checkImage[value].obj = check;
@@ -487,64 +496,6 @@
 		SetVertex( viewInfo.v[1], viewInfo.texPos.x + texSize.x * 0.5f, viewInfo.texPos.y + texSize.y * 0.5f, viewInfo.texPos.z, 1, 0, 0xFFFFFFFF );
 		SetVertex( viewInfo.v[2], viewInfo.texPos.x - texSize.x * 0.5f, viewInfo.texPos.y - texSize.y * 0.5f, viewInfo.texPos.z, 0, 1, 0xFFFFFFFF );
 		SetVertex( viewInfo.v[3], viewInfo.texPos.x + texSize.x * 0.5f, viewInfo.texPos.y - texSize.y * 0.5f, viewInfo.texPos.z, 1, 1, 0xFFFFFFFF );
-
-	}
-
-	//	ラストボーナス関連構造体初期化
-	void	sceneResult::LastBonusImageInitialize( void )
-	{
-		//	ラストボーナス関連初期化
-		FOR( 0, PLAYER_MAX )	lastBonusInfo.bonus[value];
-		lastBonusInfo.step = 0;
-		lastBonusInfo.t = 0.0f;
-
-		//	テキスト初期化
-		int		x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
-		int		y = static_cast<int>( iexSystem::ScreenHeight * 0.4f );
-		int		w = static_cast<int>( iexSystem::ScreenWidth * 0.2f );
-		int		h = static_cast<int>( iexSystem::ScreenHeight * 0.1f );
-		ImageInitialize( lastBonusInfo.textImage, x, y, w, h, 0, lastBonus * 128, 512, 128 );
-		lastBonusInfo.textImage.renderflag = false;
-		lastBonusInfo.textImage.obj = lastBonusText;
-
-		//	頂点設定
-		SetVertex( lastBonusInfo.v[0], static_cast<float>( iexSystem::ScreenWidth ), static_cast<float>( iexSystem::ScreenHeight * 0.2f ), 0.0f, 0.0f, 0.0f, 0x77333333 );
-		SetVertex( lastBonusInfo.v[1], static_cast<float>( iexSystem::ScreenWidth ), static_cast<float>( iexSystem::ScreenHeight * 0.2f ), 0.0f, 1.0f, 0.0f, 0x77333333 );
-		SetVertex( lastBonusInfo.v[2], static_cast<float>( iexSystem::ScreenWidth ), static_cast<float>( iexSystem::ScreenHeight * 0.6f ), 0.0f, 0.0f, 1.0f, 0x77333333 );
-		SetVertex( lastBonusInfo.v[3], static_cast<float>( iexSystem::ScreenWidth ), static_cast<float>( iexSystem::ScreenHeight * 0.6f ), 0.0f, 1.0f, 1.0f, 0x77333333 );
-
-		//	顔画像初期化
-		y = static_cast<int>( iexSystem::ScreenHeight * 0.6f );
-		w = 0;
-		h = 0;
-		ImageInitialize( faceImage, x, y, w, h, 0, 256 * bonusPlayer, 256, 256 );
-		faceImage.obj = new iex2DObj( "DATA/UI/chara_emotion.png" );
-		faceImage.renderflag = false;
-
-		//	虹円画像初期化
-		w = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
-		h = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
-		ImageInitialize( waveCircleImage, x, y, w, h, 0, 0, 512, 512 );
-		waveCircleImage.obj = new iex2DObj( "DATA/UI/Rainbow-circle.png" );
-		waveCircleImage.renderflag = false;
-
-		//	該当なし画像初期化
-		w = static_cast<int>( iexSystem::ScreenWidth * 0.3f );
-		h = static_cast<int>( iexSystem::ScreenHeight * 0.3f );
-		ImageInitialize( notApplicable, x, y, w, h, 0, 0, 512, 256 );
-		notApplicable.obj = new iex2DObj( "DATA/UI/Result/resultText.png" );
-		notApplicable.renderflag = false;
-		notApplicable.alpha = 0.0f;
-		notApplicable.angle = -D3DX_PI * 0.035f;
-
-		//	プレイヤー番号初期化
-		x = static_cast<int>( iexSystem::ScreenWidth * 0.45f );
-		y = static_cast<int>( iexSystem::ScreenHeight * 0.52f );
-		w = static_cast<int>( iexSystem::ScreenWidth * 0.05f );
-		h = static_cast<int>( iexSystem::ScreenHeight * 0.075f );
-		ImageInitialize( playerNumImage, x, y, w, h, 128 * ( bonusPlayer % 2 ), 128 * ( bonusPlayer / 2 ), 128, 128 );
-		playerNumImage.obj = new iex2DObj( "DATA/UI/cursor.png" );
-		playerNumImage.renderflag = false;	
 	}
 
 	//	メニュー情報構造体
@@ -610,9 +561,9 @@
 		//	シェーダー用変数初期化
 		lightMoveNum = 0;
 		LIGHT_POS[0] = Vector3( 0.0f, 0.0f, 0.0f );
-		LIGHT_POS[1] = Vector3( iexSystem::ScreenWidth, 0.0f, 0.0f );
-		LIGHT_POS[2] = Vector3( 0.0f, iexSystem::ScreenHeight, 0.0f );
-		LIGHT_POS[3] = Vector3( iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0.0f );
+		LIGHT_POS[1] = Vector3( static_cast<float>( iexSystem::ScreenWidth ), 0.0f, 0.0f );
+		LIGHT_POS[2] = Vector3( 0.0f, static_cast<float>( iexSystem::ScreenHeight ), 0.0f );
+		LIGHT_POS[3] = Vector3( static_cast<float>( iexSystem::ScreenWidth ), static_cast<float>( iexSystem::ScreenHeight ), 0.0f );
 
 		lightSize[0] = 200.0f;
 		lightSize[1] = 150.0f;
@@ -690,6 +641,58 @@
 		}
 	}
 
+	//	優勝者決定
+	void	sceneResult::SetWinner( void )
+	{
+		FOR( 0, PLAYER_MAX )
+		{
+			for ( int round = 0; round < PLAYER_MAX; round++ )
+			{
+				//	各ラウンドのコインの合計を求める
+				totalSortInfo[value].num += gameManager->GetTotalCoin( round, value );
+			}
+		}
+
+		Sort( totalSortInfo );
+		
+		//	顔画像構造体初期化
+		int x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
+		int y = static_cast<int>( iexSystem::ScreenHeight * 0.55f );
+		int w = 0;
+		int h = 0;
+		int sw = 256;
+		int sh = 256;
+		int sx = 0;
+		int sy = gameManager->GetCharacterType( totalSortInfo[0].rank ) * h;
+		ImageInitialize( faceImage, x, y, w, h, sx, sy, sw, sh );
+		faceImage.renderflag = false;
+
+		//	波紋画像初期化
+		w = 900;
+		h = 900;
+		sx = 0;
+		sy = 0;
+		sw = 512;
+		sh = 512;
+		ImageInitialize( waveImage, x, y, w, h, sx, sy, sw, sh );
+
+		//	プレイヤー番号画像構造体初期化
+		x = static_cast<int>( iexSystem::ScreenWidth * 0.3f );
+		y = static_cast<int>( iexSystem::ScreenHeight * 0.7f );
+		w = 0;
+		h = 0;
+		sw = 128;
+		sh = 128;
+		sx = totalSortInfo[0].rank * sw;
+		sy = 256;
+		ImageInitialize( playerNumImage, x, y, w, h, sx, sy, sw, sh );
+		playerNumImage.renderflag = false;
+
+		//	ラスト発表構造体初期化
+		lastAnnounceInfo.step = 0;
+		lastAnnounceInfo.t = 0.0f;
+	}
+
 //----------------------------------------------------------------------------
 //	全体更新・全体描画
 //----------------------------------------------------------------------------
@@ -697,10 +700,6 @@
 	//	更新
 	void	sceneResult::Update( void ) 
 	{
-
-		//	スクリーン更新
-		screen->Update();
-
 		//	各モデル更新
 		FOR( 0, PLAYER_MAX )
 		{
@@ -724,50 +723,57 @@
 
 		//	カーテン更新
 		curtainState = CurtainUpdate();
+
+		//	pressButton更新
+		PressButtonUpdate();
 	
 		//	シーン移動管理
 		MoveScene();
+		
+		//	スクリーン更新
+		screen->Update();
 	}
 
 	//	描画
 	void	sceneResult::Render( void ) 
 	{
-
 		switch ( mode )
 		{
 		case MOVE_MODE::RESULT:
 			ResultRender();
 			break;
+
 		case MOVE_MODE::SELECT:
 		case MOVE_MODE::LAST_RESULT:
 			LastResultRender();
-			lastResultTest->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight );
 			break;
 		}
+		//	pressButton描画
+		PressButtonImageRender();
 
 		//	カーテン描画
 		CurtainRender();
 
 		//	最終結果テスト
 		SelectRender();
+
+		screen->Render();
 	}
 
 //----------------------------------------------------------------------------
-//	更新・描画
+//	更新
 //----------------------------------------------------------------------------
 
 	//	リザルト時の更新
 	void	sceneResult::ResultUpdate( void )
 	{
+		if ( changeScene )	return;
+		
 		//	段階ごとの処理
 		switch ( step )
 		{
 		case RESULT_MODE::ROULETTE:
 			ModeRoulette();
-			break;
-		
-		case RESULT_MODE::LASTBONUS:
-			ModeLastBonus();
 			break;
 			
 		case RESULT_MODE::RANK:
@@ -778,7 +784,7 @@
 			NextLifeAnnouncing();
 			break;
 
-		case	RESULT_MODE::LAST_RESULT:
+		case RESULT_MODE::LAST_RESULT:
 			ModeLastResult();
 			break;
 
@@ -816,19 +822,6 @@
 		bool	isEnd = false;
 		switch ( step )
 		{
-		//case LASTRESULT_MODE::SET_CLOSE_CURTAIN:
-		//	SetCurtainMode( CURTAIN_MODE::CLOSE );
-		//	step++;
-		//	break;
-
-		//case LASTRESULT_MODE::CLOSE_CURTAIN:
-		//	if ( curtainState )
-		//	{
-		//		SetWaitTimer( 60 );
-		//		step = LASTRESULT_MODE::LIGHT_PRODUCTION;
-		//	}
-		//	break;
-
 		case LASTRESULT_MODE::SET_CLOSE_CURTAIN:
 			step = LASTRESULT_MODE::LIGHT_PRODUCTION;
 			break;
@@ -839,16 +832,22 @@
 			LightUpdate();
 			MoveLight();
 
+			//	演出終了後カーテンを開き優勝者発表へ
 			if ( isEnd )
 			{
-				step = LASTRESULT_MODE::OPEN_CURTAIN;
+				step = LASTRESULT_MODE::RESULT;
 				SetCurtainMode( CURTAIN_MODE::OPEN );
 			}
 			break;
 
-		case LASTRESULT_MODE::OPEN_CURTAIN:
-			if ( curtainState )
+		case LASTRESULT_MODE::RESULT:
+			if ( curtainState )		LastRank();
+			break;
+
+		case LASTRESULT_MODE::FINALRESULT:
+			if ( screen->GetScreenState() )
 			{
+				pressButtonImage.flashingRenderflag = true;
 				if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) )
 				{
 					step = 0;
@@ -909,58 +908,43 @@
 		return	out;
 	}
 
-	//	ライトの移動
-	void	sceneResult::MoveLight( void )
+	//	ライト移動
+	bool	sceneResult::LightUpdate( void )
 	{
-		FOR(0, 4)
-		{
-			Lerp(lightPos[value], lightMove_start[value], lightMove_finish[value], light_t[value]);
-			if ((WallLightCheck(value) == true || light_t[value] >= 1.0f) && waitTimer > 30)
-			{
-				MoveLightSet(value, RandomPos());
-			}
-		}
-		//	残り30秒に初期位置へ移動
-		if (waitTimer == 30)
-		{
-			MoveLightSet(0, LIGHT_POS[0]);
-			MoveLightSet(1, LIGHT_POS[1]);
-			MoveLightSet(2, LIGHT_POS[2]);
-			MoveLightSet(3, LIGHT_POS[3]);
-		}
+		FOR(0, 4){
+			//	パラメータ加算
+			light_t[value] += 1.0f / 30.0f;
 
+			if (light_t[value] >= 1.0f)	light_t[value] = 1.0f;
+		}
+		return	false;
 	}
 
-	//	ライトの情報設定
-	bool	sceneResult::MoveLightSet( int num, Vector3 pos )
+	//	入力チェック画像更新
+	bool	sceneResult::InputCheckImageUpdate( void )
 	{
-		light_t[num] = 0.0f;
-		lightMove_start[num] = lightPos[num];
-		lightMove_finish[num] = pos;
+		bool	isEnd[PLAYER_MAX] = { false, false, false, false };
 
-		return false;
+		FOR( 0, PLAYER_MAX )
+		{
+			if ( !inputCheck[value] )	continue;
+			isEnd[value] = WaveUpdate( checkImage[value] );
+		}
+
+		if ( isEnd[0] && isEnd[1] && isEnd[2] && isEnd[3] )	return	true;
+		return	false;
 	}
+
+	//	PressButton更新
+	void	sceneResult::PressButtonUpdate( void )
+	{
+		FlashingUpdate( pressButtonImage, 0.1f );
+	}
+
+//----------------------------------------------------------------------------
+//	描画
+//----------------------------------------------------------------------------
 	
-	//	ライトと画面のあたり判定
-	bool	sceneResult::WallLightCheck( int num )
-	{
-		if (lightPos[num].x - lightSize[num] <= 0.0f ||		//	左
-			lightPos[num].x + lightSize[num] >= iexSystem::ScreenWidth ||		//	右
-			lightPos[num].y - lightSize[num] <= 0.0f ||		//	上
-			lightPos[num].y + lightSize[num] >= iexSystem::ScreenHeight)		//	下
-		{
-			return true;
-		}
-			return false;
-
-	}
-
-	//	画面上のランダムポジションを獲得
-	Vector3	sceneResult::RandomPos( void )
-	{
-		return Vector3(Random::GetFloat(0, iexSystem::ScreenWidth), Random::GetFloat(0, iexSystem::ScreenHeight), 0);
-	}
-
 	//	セレクト画面描画
 	void	sceneResult::SelectRender( void )
 	{
@@ -976,9 +960,6 @@
 	//	リザルト描画
 	void	sceneResult::ResultRender( void )
 	{
-		//	レンダーターゲットを設定
-		//infoScreen->RenderTarget( 0 );
-
 		//	カメラ
 		mainView->Activate();
 		mainView->Clear();
@@ -988,18 +969,14 @@
 		back->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 1280, 720 );
 		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
 
-		//	ステージ描画
-		//	bgStage->Render();
-
 		//	プレイヤー描画
 		FOR( 0, PLAYER_MAX )
 		{
-			//	プレイヤー描画
 			obj[value]->Render( shader3D, "toon" );
 		}
 
 		//	リザルトシール描画
-		RenderImage(menuHead, menuHead.sx, menuHead.sy, menuHead.sw, menuHead.sh, IMAGE_MODE::ADOPTPARAM);
+		RenderImage( menuHead, menuHead.sx, menuHead.sy, menuHead.sw, menuHead.sh, IMAGE_MODE::ADOPTPARAM );
 
 		//	数値描画
 		NumberImageRender();
@@ -1011,17 +988,7 @@
 		LifeRender();
 
 		//	入力チェック描画
-		InputCheckRender();
-
-//		//	フレームバッファへ切り替え
-//		iexSystem::GetDevice()->SetRenderTarget(0, backBuffer);
-//		mainView->Activate();
-//		mainView->Clear();
-
-
-		//	ポリゴン描画
-		//iexPolygon::Render3D(viewInfo.v, 2, infoScreen, shader3D, "alpha");
-		
+		InputCheckRender();		
 	}
 
 	//	数値画像構造体描画
@@ -1038,7 +1005,6 @@
 			if (numberImageInfo[i].hundredRenderFlag)
 			{
 				RenderImage( numberImageInfo[i].hundred, sx, sy, sw, sh, IMAGE_MODE::NORMAL );
-
 			}
 
 			//	１０の位描画
@@ -1104,7 +1070,10 @@
 	//	ライフ描画
 	void	sceneResult::LifeRender( void )
 	{
-		//	ランク描画
+		//	テキスト描画
+		RenderImage( lifeAnnounceImage, lifeAnnounceImage.sx, lifeAnnounceImage.sy, lifeAnnounceImage.sw, lifeAnnounceImage.sh, IMAGE_MODE::ADOPTPARAM );
+
+		//	ライフ描画
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			int		sx = lifeImage[i].sx;
@@ -1121,7 +1090,8 @@
 	{
 		FOR( 0, PLAYER_MAX )
 		{
-			RenderImage( checkImage[value], checkImage[value].sx, checkImage[value].sy, checkImage[value].sw, checkImage[value].sh, IMAGE_MODE::ADOPTPARAM );
+			RenderImage( checkImage[value], checkImage[value].sx, checkImage[value].sy, checkImage[value].sw, checkImage[value].sh, IMAGE_MODE::NORMAL );
+			RenderImage( checkImage[value], checkImage[value].sx, checkImage[value].sy, checkImage[value].sw, checkImage[value].sh, IMAGE_MODE::WAVE );
 		}
 	}
 
@@ -1129,16 +1099,21 @@
 	void sceneResult::LastResultRender( void )
 	{
 		//-------------UI関連---------------//
-		//	別のテクスチャに書き出し
-		lastResultTest->RenderTarget();
-		viewTest->Activate();
-		viewTest->Clear();
+		mainView->Activate();
+		mainView->Clear();
+
+		if ( step == LASTRESULT_MODE::RESULT )
+		{
+			WinnerRender();
+			return;
+		}
 
 		//	背景描画
 		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
 		back->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 1280, 720 );
 		iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
 		
+		//	ラウンドごとの
 		FOR( 0, Round::END )
 		{
 			//	ラウンド描画
@@ -1150,11 +1125,6 @@
 				NumberImageRender( roundCoinNumberImageInfo[value][player] );
 			}
 		}
-
-		//	フレームバッファへ切り替え
-		iexSystem::GetDevice()->SetRenderTarget( 0, backBuffer );
-		mainView->Activate();
-		mainView->Clear();
 	}
 
 	//	カーテン描画
@@ -1165,29 +1135,88 @@
 		if (step == LASTRESULT_MODE::LIGHT_PRODUCTION)
 		{
 			technique = "SpotLight";
-			shader2D->SetValue("lightPos[0]", lightPos[0]);
-			shader2D->SetValue("lightPos[1]", lightPos[1]);
-			shader2D->SetValue("lightPos[2]", lightPos[2]);
-			shader2D->SetValue("lightPos[3]", lightPos[3]);
+			shader2D->SetValue( "lightPos[0]", lightPos[0] );
+			shader2D->SetValue( "lightPos[1]", lightPos[1] );
+			shader2D->SetValue( "lightPos[2]", lightPos[2] );
+			shader2D->SetValue( "lightPos[3]", lightPos[3] );
 		}
 		iexPolygon::Render2D( curtainInfoL.tlv, 2, curtainInfoL.obj, shader2D, technique );
 		iexPolygon::Render2D( curtainInfoR.tlv, 2, curtainInfoR.obj, shader2D,technique );
+	}
+
+	//	優勝者関連描画
+	void	sceneResult::WinnerRender( void )
+	{
+		//	波紋描画
+		RenderImage( waveImage, waveImage.sx, waveImage.sy, waveImage.sw, waveImage.sh, IMAGE_MODE::WAVE );
+
+		//	顔画像描画
+		RenderImage( faceImage, faceImage.sx, faceImage.sy, faceImage.sw, faceImage.sh, IMAGE_MODE::ADOPTPARAM );
+
+		//	プレイヤー番号描画
+		RenderImage( playerNumImage, playerNumImage.sx, playerNumImage.sy, playerNumImage.sw, playerNumImage.sh, IMAGE_MODE::ADOPTPARAM );
+	}
+
+	//	PressButtonRender
+	void	sceneResult::PressButtonImageRender( void )
+	{
+		RenderImage( pressButtonImage, pressButtonImage.sx, pressButtonImage.sy, pressButtonImage.sw, pressButtonImage.sh, IMAGE_MODE::FLASH );
 	}
 
 //----------------------------------------------------------------------------
 //	動作関数
 //----------------------------------------------------------------------------
 
-	//	ライト移動
-	bool	sceneResult::LightUpdate( void )
+	//	ライトと画面のあたり判定
+	bool	sceneResult::WallLightCheck( int num )
 	{
-		FOR(0, 4){
-			//	パラメータ加算
-			light_t[value] += 1.0f / 30.0f;
-
-			if (light_t[value] >= 1.0f)	light_t[value] = 1.0f;
+		if (lightPos[num].x - lightSize[num] <= 0.0f ||		//	左
+			lightPos[num].x + lightSize[num] >= iexSystem::ScreenWidth ||		//	右
+			lightPos[num].y - lightSize[num] <= 0.0f ||		//	上
+			lightPos[num].y + lightSize[num] >= iexSystem::ScreenHeight)		//	下
+		{
+			return true;
 		}
-		return	false;
+			return false;
+
+	}
+
+	//	画面上のランダムポジションを獲得
+	Vector3	sceneResult::RandomPos( void )
+	{
+		return Vector3( Random::GetFloat( 0, static_cast<float>( iexSystem::ScreenWidth ) ), Random::GetFloat( 0, static_cast<float>( iexSystem::ScreenHeight ) ), 0 );
+	}
+
+	//	ライトの情報設定
+	bool	sceneResult::MoveLightSet( int num, Vector3 pos )
+	{
+		light_t[num] = 0.0f;
+		lightMove_start[num] = lightPos[num];
+		lightMove_finish[num] = pos;
+
+		return false;
+	}
+
+	//	ライトの移動
+	void	sceneResult::MoveLight( void )
+	{
+		FOR(0, 4)
+		{
+			Lerp(lightPos[value], lightMove_start[value], lightMove_finish[value], light_t[value]);
+			if ((WallLightCheck(value) == true || light_t[value] >= 1.0f) && waitTimer > 30)
+			{
+				MoveLightSet(value, RandomPos());
+			}
+		}
+		//	残り30秒に初期位置へ移動
+		if (waitTimer == 30)
+		{
+			MoveLightSet(0, LIGHT_POS[0]);
+			MoveLightSet(1, LIGHT_POS[1]);
+			MoveLightSet(2, LIGHT_POS[2]);
+			MoveLightSet(3, LIGHT_POS[3]);
+		}
+
 	}
 
 	//	ソート
@@ -1220,146 +1249,6 @@
 		{
 			if ( sort_info[value].num == sort_info[value - 1].num )
 				sort_info[value].sortRank = sort_info[value - 1].sortRank;
-		}
-	}
-
-	//	逆向きソート
-	void	sceneResult::ReverseSort( SORT_INFO ( &sort_info )[4] )
-	{
-		//	退避用
-		SORT_INFO temp;
-
-		for (int i = 0; i < PLAYER_MAX; ++i)
-		{
-			//	後ろから順番にチェックしていく
-			for ( int s = PLAYER_MAX - 1; s > i; --s )
-			{
-				//	一つ下の要素と比較
-				if ( sort_info[s].num <	sort_info[s - 1].num ) 
-				{
-					//	一時的に退避
-					temp = sort_info[s - 1];
-
-					//	交換
-					sort_info[s - 1] = sort_info[s];
-
-					//	退避してたやつを戻す
-					sort_info[s] = temp;
-				}
-			}
-		}
-
-		FOR( 1, PLAYER_MAX )
-		{
-			if ( sort_info[value].num == sort_info[value - 1].num ) 
-				sort_info[value].sortRank = sort_info[value - 1].sortRank;
-		}
-	}
-
-	//	ラストボーナス設定
-	void	sceneResult::SetLastBonus( void )
-	{
-		if ( Random::PercentageRandom( 0.3f ) )
-		{
-			//	ラストボーナスを設定
-			lastBonus = gameManager->GetLastBonus();
-		}
-		else
-		{
-			//	違う結果が出るまでループ
-			while ( lastBonus == gameManager->GetLastBonus() )
-			{
-				lastBonus = Random::GetInt( 0, 3 );
-			}
-		}
-	}
-
-	//	ラストボーナス数値加算、全員同じ値　or　０だった場合ボーナスに最終値を入れ該当なしにする
-	void	sceneResult::AddLastBonus( void )
-	{
-		int	bonus = 0;
-		int	result = 0;
-		switch ( lastBonus )
-		{
-		case LASTBONUS::MAX_COIN:
-			//	該当なしかチェック
-			FOR( 0, PLAYER_MAX ) 	result += maxCoinNum[value].num;
-			if ( result == 0 )
-			{
-				bonusPlayer = NO_BONUS;
-				return;
-			}
-
-			//	最大コイン枚数
-			bonus = Random::GetInt( 10, 30 );
-			sortInfo[maxCoinNum[0].rank].num += bonus;
-			originInfo[maxCoinNum[0].rank].bonus = bonus;
-			bonusPlayer = maxCoinNum[0].rank;
-			break;
-
-		case LASTBONUS::FALL_STAGE:
-			//	該当なしかチェック
-			FOR( 0, PLAYER_MAX ) 	result += fallStageNum[value].num;
-			if ( result == 0 )
-			{
-				bonusPlayer = NO_BONUS;
-				return;
-			}
-
-			//	ステージからの落下回数
-			bonus = Random::GetInt( 10, 30 );
-			sortInfo[fallStageNum[0].rank].num += bonus;
-			originInfo[maxCoinNum[0].rank].bonus = bonus;
-			bonusPlayer = maxCoinNum[0].rank;
-			break;
-
-		case LASTBONUS::COIN77:
-			//	該当なしかチェック
-			FOR( 0, PLAYER_MAX ) 	result += coin77[value].num;
-			if ( result == 0 )
-			{
-				bonusPlayer = NO_BONUS;
-				return;
-			}
-			
-			//	７７枚とコイン枚数の差
-			bonus = Random::GetInt( 10, 30 );
-			sortInfo[coin77[0].rank].num += bonus;
-			originInfo[coin77[0].rank].bonus = bonus;
-			bonusPlayer = coin77[0].rank;
-			break;
-
-		case LASTBONUS::MIN_TOTALCOIN:
-			//	該当なしかチェック
-			FOR( 0, PLAYER_MAX ) 	result += minCoinNum[value].num;
-			if ( result == 0 )
-			{
-				bonusPlayer = NO_BONUS;
-				return;
-			}
-
-			//	取得コイン総数が一番少ない
-			bonus = Random::GetInt( 10, 30 );
-			sortInfo[minCoinNum[0].rank].num += bonus;
-			originInfo[minCoinNum[0].rank].bonus = bonus;
-			bonusPlayer = minCoinNum[0].rank;
-			break;
-
-		case LASTBONUS::HIT_ATTACK_NUM:
-			//	該当なしかチェック
-			FOR( 0, PLAYER_MAX ) 	result += hitAttackNum[value].num;
-			if ( result == 0 )
-			{
-				bonusPlayer = NO_BONUS;
-				return;
-			}
-
-			//	攻撃を当てた回数
-			bonus = Random::GetInt( 10, 30 );
-			sortInfo[hitAttackNum[0].rank].num += bonus;
-			originInfo[hitAttackNum[0].rank].bonus = bonus;
-			bonusPlayer = hitAttackNum[0].rank;
-			break;
 		}
 	}
 
@@ -1543,6 +1432,8 @@
 	void	sceneResult::MoveScene( void )
 	{
 		if ( !changeScene )	return;
+		bool	screenState = screen->GetScreenState();
+		if ( !screenState )	return;
 
 		//	現在のラウンドを取得
 		int	round = gameManager->GetRound();
@@ -1577,26 +1468,6 @@
 				break;
 			}
 		}
-		//switch ( menuInfo.select )
-		//{
-		//case MENU::RESTART:
-		//	//	ゲーム情報初期化
-		//	gameManager->RetryInitialize();
-		//	gameManager->SetRound( nextRound );
-		//	MainFrame->ChangeScene( new sceneMain() );
-		//	return;
-		//	break;
-
-		//case MENU::MOVE_MENU:
-		//	MainFrame->ChangeScene( new sceneMenu() );
-		//	return;
-		//	break;
-
-		//case MENU::MOVE_TITLE:
-		//	MainFrame->ChangeScene( new sceneTitle() );
-		//	return;
-		//	break;
-		//}
 	}
 
 	//	次回ライフ設定
@@ -1637,205 +1508,35 @@
 		return	false;
 	}
 
-//----------------------------------------------------------------------------
-//	ラストボーナス関数( ボード出現→文字→コイン枚数更新→ボード退却 )
-//----------------------------------------------------------------------------
-
-	//	ラストボーナス動作更新
-	bool	sceneResult::LastBonusUpdate( void )
-	{
-		bool	isEnd = false;
-		bool	isEndWave = false;
-
-		switch ( lastBonusInfo.step )
-		{
-		case 0:
-			//	黒ボード出現
-			isEnd = InBoard();
-
-			//	黒ボードの動作終了後ラストボーナスのテキストの描画をONにする
-			if ( isEnd )
-			{
-				lastBonusInfo.textImage.renderflag = true;
-				lastBonusInfo.t = 0.0f;
-				lastBonusInfo.step++;
-			}
-			break;
-
-		case 1:
-			//	ラストボーナス発表
-			isEnd = BonusAnnouncing();
-			
-			//	発表直後波紋設定
-			if ( isEnd )		isEndWave = WaveUpdate( lastBonusInfo.textImage );
-
-			//	波紋終了後対象プレイヤーの描画をONにして次のステップへ
-			if ( isEndWave )
-			{
-				if ( bonusPlayer != NO_BONUS )		faceImage.renderflag = true;
-				else								notApplicable.renderflag = true;
-				lastBonusInfo.t = 0.0f;
-				lastBonusInfo.step++;
-			}
-			break;
-
-		case 2:
-			//	対象プレイヤー発表
-			isEnd = PlayerAnnouncing();
-
-			//	プレイヤー発表後、波紋を設定
-			if ( isEnd )
-			{
-				if ( bonusPlayer != NO_BONUS )		isEndWave = WaveUpdate( waveCircleImage, 140 );
-				else	isEndWave = true;
-			}
-			
-			//	波紋動作終了後プレイヤー番号表示
-			if ( isEndWave )
-			{
-				if ( bonusPlayer != NO_BONUS )		playerNumImage.renderflag = true;
-				lastBonusInfo.t = 0.0f;
-				lastBonusInfo.step++;
-			}
-			break;
-
-		case 3:
-			//	ボーナス加算演出
-			isEnd = AddBonus();
-
-			if ( isEnd )
-			{
-				lastBonusInfo.t = 0.0f;
-				lastBonusInfo.step++;
-			}
-			break;
-		case 4:
-				return	true;
-			break;
-		}
-		return	false;
-	}
-	
-	//	ボード出現
-	bool	sceneResult::InBoard( void )
-	{
-		//	パラメータ更新
-		lastBonusInfo.t += 0.07f;
-		if ( lastBonusInfo.t >= 1.0f )	lastBonusInfo.t = 1.0f;
-		
-		//	頂点移動
-		CubicFunctionInterpolation( lastBonusInfo.v[0].sx, static_cast<int>( iexSystem::ScreenWidth ), 0, lastBonusInfo.t );
-		CubicFunctionInterpolation( lastBonusInfo.v[2].sx, static_cast<int>( iexSystem::ScreenWidth ), 0, lastBonusInfo.t );
-		CubicFunctionInterpolation( lastBonusInfo.v[0].sy, static_cast<int>( iexSystem::ScreenHeight * 0.2f ), static_cast<int>( iexSystem::ScreenHeight * 0.4f ), lastBonusInfo.t );
-		CubicFunctionInterpolation( lastBonusInfo.v[2].sy, static_cast<int>( iexSystem::ScreenHeight * 0.6f ), static_cast<int>( iexSystem::ScreenHeight * 0.8f ), lastBonusInfo.t );
-
-		//	処理が終了してたらtrueをかえす
-		if ( lastBonusInfo.t >= 1.0f )	return	true;
-		return	false;
-	}
-
-	//	ボード退却
-	bool	sceneResult::OutBoard( void )
-	{		
-		//	パラメータ更新
-		lastBonusInfo.t += 0.07f;
-		if ( lastBonusInfo.t >= 1.0f )	lastBonusInfo.t = 1.0f;
-
-		//	頂点移動
-		Lerp( lastBonusInfo.v[1].sx, static_cast<int>( iexSystem::ScreenWidth ), 0, lastBonusInfo.t );
-		Lerp( lastBonusInfo.v[3].sx, static_cast<int>( iexSystem::ScreenWidth ), 0, lastBonusInfo.t );
-		Lerp( lastBonusInfo.v[1].sy, static_cast<int>( iexSystem::ScreenHeight * 0.2f ), static_cast<int>( iexSystem::ScreenHeight * 0.4f ), lastBonusInfo.t );
-		Lerp( lastBonusInfo.v[3].sy, static_cast<int>( iexSystem::ScreenHeight * 0.6f ), static_cast<int>( iexSystem::ScreenHeight * 0.8f ), lastBonusInfo.t );
-
-		//	処理が終了してたらtrueをかえす
-		if ( lastBonusInfo.t >= 1.0f )	return	true;
-		return	false;
-	}
-
-	//	ボーナス発表
-	bool	sceneResult::BonusAnnouncing( void )
-	{
-		if ( lastBonusInfo.t >= 1.0f )	return	true;
-
-		//	パラメータ更新
-		lastBonusInfo.t += 0.01f;
-		if ( lastBonusInfo.t >= 1.0f )	lastBonusInfo.t = 1.0f;
-
-		//	文字回転
-		static	float startAngle = -D3DX_PI * 0.035f;
-		static	float	endAngle = startAngle + ( ( D3DX_PI * 2 ) * 10.0f );
-		Lerp( lastBonusInfo.textImage.angle, startAngle, endAngle, lastBonusInfo.t );
-
-		//	文字サイズ変更
-		static	int		startWidth = static_cast<int>( iexSystem::ScreenWidth * 0.35f );
-		static	int		maxWidth = startWidth + static_cast<int>( iexSystem::ScreenWidth * 0.2f );
-		static	int		startHeight = static_cast<int>( iexSystem::ScreenHeight * 0.1f );
-		static	int		maxHeight = startHeight + static_cast<int>( iexSystem::ScreenHeight * 0.05f );
-		CubicFunctionInterpolation( lastBonusInfo.textImage.w, startWidth, maxWidth, lastBonusInfo.t * 1.5f );
-		CubicFunctionInterpolation( lastBonusInfo.textImage.h, startHeight, maxHeight, lastBonusInfo.t * 1.5f );
-		if ( lastBonusInfo.t >= 1.0f )
-		{
-			SetWave( lastBonusInfo.textImage, 1.0f );
-			return	true;
-		}
-		return	false;
-	}
-
-	//	プレイヤー発表
-	bool	sceneResult::PlayerAnnouncing( void )
-	{
-		if ( lastBonusInfo.t >= 1.0f )	return	true;
-
-		//	顔画像拡大
-		if ( bonusPlayer != NO_BONUS )
-		{
-			//	パラメータ更新
-			lastBonusInfo.t += 0.1f;
-			if ( lastBonusInfo.t >= 1.0f )	lastBonusInfo.t = 1.0f;
-			float	t = GetBezier( ePrm_t::eRapid_Lv3, ePrm_t::eSlow_Lv5, lastBonusInfo.t );
-			int		startWidth = static_cast<int>( iexSystem::ScreenWidth * 0.08f );
-			int		startHeight = static_cast<int>( iexSystem::ScreenHeight * 0.15f );
-			int		endWidth = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
-			int		endHeight = static_cast<int>( iexSystem::ScreenHeight * 0.18f );
-			CubicFunctionInterpolation( faceImage.w, startWidth, endWidth, lastBonusInfo.t );
-			CubicFunctionInterpolation( faceImage.h, startHeight, endHeight, lastBonusInfo.t );
-		}
-		else
-		{
-			//	該当なし
-			//	パラメータ更新
-			lastBonusInfo.t += 0.01f;
-			if ( lastBonusInfo.t >= 1.0f )	lastBonusInfo.t = 1.0f;
-
-			float	t = GetBezier( ePrm_t::eRapid_Lv3, ePrm_t::eSlow_Lv5, lastBonusInfo.t );
-			int	startPos = static_cast<int>( iexSystem::ScreenHeight * 0.5f );
-			int	endPos = static_cast<int>( iexSystem::ScreenHeight * 0.55f );
-			Lerp( notApplicable.alpha, 0.0f, 1.0f, lastBonusInfo.t );
-			Lerp( notApplicable.y, startPos, endPos, lastBonusInfo.t );
-		}
-
-		//	処理が終了してたらtrueをかえす
-		if ( lastBonusInfo.t >= 1.0f )
-		{
-			if ( bonusPlayer != NO_BONUS )	SetWave( waveCircleImage, 2.0f );
-			return	true;
-		}
-		return	false;
-	}
-
 	//	ライフ発表
 	bool	sceneResult::NextLifeAnnouncing( void )
 	{
 		//	変数準備
 		bool	isEnd = false;
 
+		//	パラメータ更新
+		lifeInfo.t += 0.03f;
+		if ( lifeInfo.t >= 1.0f )	lifeInfo.t = 1.0f;
+
 		switch ( lifeInfo.step )
 		{
+		//	ライフ発表テキスト表示
 		case 0:
-			lifeInfo.t += 0.01f;
-			if ( lifeInfo.t >= 1.0f ) lifeInfo.t = 1.0f;
+			lifeAnnounceImage.renderflag = true;
+			isEnd = Lerp( lifeAnnounceImage.alpha, 0.0f, 1.0f, lifeInfo.t );
+			Lerp( lifeAnnounceImage.w, 0, 500, lifeInfo.t );
+			Lerp( lifeAnnounceImage.h, 0, 400, lifeInfo.t );
 
-			//	情報適用
+			if ( isEnd )
+			{
+				lifeInfo.step++;
+				lifeInfo.t = 0.0f;
+			}
+			break;
+
+		//	ランク消去
+		case 1:
+			//	透明度更新
 			FOR( 0, PLAYER_MAX )
 			{
 				Lerp( rankImage[value].alpha, 1.0f, 0.0f, lifeInfo.t );
@@ -1856,11 +1557,9 @@
 			}
 			break;
 
-		case 1:
-			lifeInfo.t += 0.1f;
+		case 2:
 			if ( lifeInfo.t >= 1.0f )
 			{
-				lifeInfo.t = 1.0f;
 				FOR( 0, PLAYER_MAX )	SetWave( lifeImage[value], 1.0f );
 				lifeInfo.step++;
 			}
@@ -1872,7 +1571,7 @@
 			}
 			break;
 
-		case 2:
+		case 3:
 			FOR( 0, PLAYER_MAX )
 			{
 				isEnd = WaveUpdate( lifeImage[value] );
@@ -1880,7 +1579,7 @@
 			if ( isEnd )	lifeInfo.step++;
 			break;
 
-		case 3:
+		case 4:
 			SetNextLife();
 			//	ライフ情報更新
 			FOR( 0, PLAYER_MAX )
@@ -1913,117 +1612,6 @@
 		step = RESULT_MODE::RANK_SKIP;
 	}
 
-	//	ボーナス加算演出
-	bool	sceneResult::AddBonus( void )
-	{
-		static	const		int WAIT_TIME	=	90;		//	カウント時間
-		static	int			addBonusStep	=	0;			//	switch文用ステップ
-		static	int			waitTimer			=	0;			//	待機時間カウント
-		static	int			temp[4] = { 0, 0, 0, 0 };	//	退避用
-		bool					isEnd					=	false;	//	終了チェック用変数
-
-		switch ( addBonusStep )
-		{
-		case	0:
-			//	一定時間でボーナスを非表示にする
-			waitTimer++;
-			if ( waitTimer == WAIT_TIME )
-			{
-				waitTimer = 0;
-				faceImage.renderflag = false;
-				playerNumImage.renderflag = false;
-				notApplicable.renderflag = false;
-				lastBonusInfo.textImage.renderflag = false;
-				addBonusStep++;
-			}
-			break;
-
-		case 1:
-			//	ボード退避
-			isEnd = OutBoard();
-
-			//	ボード退避終了後、ボーナスの数値の描画をONにする
-			if ( isEnd )
-			{
-				FOR( 0, PLAYER_MAX )
-				{
-					//	退避用変数にボーナスをコピー
-					temp[value] = originInfo[value].bonus;
-
-					//	ボーナスがあれば表示
-					if ( originInfo[value].bonus > 0 )
-					{
-						if ( bonusNumberImageInfo[value].hundredRenderFlag )	bonusNumberImageInfo[value].hundred.renderflag = true;
-						bonusNumberImageInfo[value].one.renderflag = true;
-						bonusNumberImageInfo[value].ten.renderflag = true;
-					}
-				}
-				addBonusStep++;
-			}
-			break;
-
-		case 2:
-			//	待機
-			waitTimer++;
-			if ( waitTimer == WAIT_TIME )
-			{
-				waitTimer = 0;
-				FOR( 0, PLAYER_MAX )
-				{
-					//	ボーナス非表示
-					bonusNumberImageInfo[value].hundred.renderflag = false;
-					bonusNumberImageInfo[value].one.renderflag = false;
-					bonusNumberImageInfo[value].ten.renderflag = false;
-				}
-
-				addBonusStep++;
-			}
-			break;
-
-		case	3:
-			//	数値にボーナス分を加算する
-			FOR( 0, PLAYER_MAX )
-			{
-				if ( temp[value] == 0 )	continue;
-				
-				//	元の数値に加算して退避用から減算
-				originInfo[value].num++;
-				temp[value]--;
-
-				SetNumberImageInfo( numberImageInfo[value], number[value], originInfo[value].num );
-				SetNumberImageInfo( bonusNumberImageInfo[value], bonusNumber[value], temp[value] );
-			}
-
-			if ( temp[0] + temp[1] + temp[2] + temp[3] == 0 )		addBonusStep++;
-			break;
-
-		case	4:
-			//	待機
-			waitTimer++;
-			if ( waitTimer == WAIT_TIME )
-			{
-				waitTimer = 0;	
-				FOR( 0, PLAYER_MAX )
-				{
-					//	ボーナス非表示
-					bonusNumberImageInfo[value].hundred.renderflag = true;
-					bonusNumberImageInfo[value].one.renderflag = false;
-					bonusNumberImageInfo[value].ten.renderflag = false;
-				}
-				
-				addBonusStep++;
-			}
-			break;
-
-		case	5:
-			addBonusStep = 0;
-			return	true;
-			break;
-		}
-
-		return	false;
-	}
-
 //----------------------------------------------------------------------------
 //	リザルトモード関数
 //----------------------------------------------------------------------------
@@ -2043,17 +1631,6 @@
 
 		//	回転が終了したら
 		if ( isEnd )		step = RESULT_MODE::RANK;
-	}
-	
-	//	ラストボーナス発表
-	void	sceneResult::ModeLastBonus( void )
-	{
-		bool	isEnd = false;
-		//-----------------------------------------------------------------------------------
-		//	ラストボーナス演出
-		//-----------------------------------------------------------------------------------
-		isEnd = LastBonusUpdate();
-		if ( isEnd )	step++;
 	}
 
 	//	ランク発表
@@ -2089,6 +1666,67 @@
 		}
 	}
 
+	//	最終ランク発表
+	void	sceneResult::LastRank( void )
+	{
+		bool	isEnd = false;
+
+		faceImage.renderflag = true;
+		playerNumImage.renderflag = true;
+
+		lastAnnounceInfo.t += 0.03f;
+		if ( lastAnnounceInfo.t >= 1.0f )	lastAnnounceInfo.t = 1.0f;
+
+		switch ( lastAnnounceInfo.step )
+		{
+		case 0:
+			//	拡大
+			CubicFunctionInterpolation( faceImage.w, 0, 700, lastAnnounceInfo.t );
+			isEnd = CubicFunctionInterpolation( faceImage.h, 0, 700, lastAnnounceInfo.t );
+			if ( isEnd )
+			{
+				SetWave( waveImage, 1.0f );
+				lastAnnounceInfo.t = 0.0f;
+				lastAnnounceInfo.step++;
+			}
+			break;
+
+		case 1:
+			isEnd = WaveUpdate( waveImage );
+			if ( isEnd )
+			{
+				lastAnnounceInfo.t = 0.0f;
+				lastAnnounceInfo.step++;
+			}
+			break;
+
+		case 2:
+			//	拡大
+			Lerp( playerNumImage.w, 0, 200, lastAnnounceInfo.t );
+			isEnd = Lerp( playerNumImage.h, 0, 200, lastAnnounceInfo.t );
+			if ( isEnd )
+			{
+				pressButtonImage.flashingRenderflag = true;
+				if ( input[0]->Get( KEY_A ) == 3 || input[0]->Get( KEY_SPACE ) == 3 )
+				{
+					screen->SetScreenMode( SCREEN_MODE::FADE_OUT, 2.0f );
+					pressButtonImage.flashingRenderflag = false;
+					lastAnnounceInfo.step++;
+				}
+			}
+			break;
+
+		case 3:
+			if ( screen->GetScreenState() )
+			{
+				step = LASTRESULT_MODE::FINALRESULT;
+				screen->SetScreenMode( SCREEN_MODE::FADE_IN, 2.0f );
+			}
+			break;
+		}
+
+	}
+
 	//	ランク発表スキップ
 	void	sceneResult::ModeRankSkip( void )
 	{
@@ -2115,8 +1753,6 @@
 	void	sceneResult::ModeLastResult( void )
 	{
 		static int result_step = 0;
-		//step = 0;
-		//mode = MOVE_MODE::LAST_RESULT;
 
 		switch (result_step)
 		{
@@ -2139,6 +1775,7 @@
 	//	入力待ち
 	void	sceneResult::ModeInputWait( void )
 	{
+		bool	isEnd = false;
 		FOR( 0, PLAYER_MAX )
 		{
 			//	入力を受け付けていたらスキップ
@@ -2151,13 +1788,16 @@
 			//	入力受付
 			if ( key_space == 3 || key_a == 3 )
 			{
-				checkImage[value].renderflag = true;
 				inputCheck[value] = true;
+				checkImage[value].renderflag = true;
+				SetWave( checkImage[value], 1.0f );
 			}
 		}
 
+		isEnd = InputCheckImageUpdate();
+
 		//	全員の入力が終わっていたら
-		if ( inputCheck[0] && inputCheck[1] && inputCheck[2] && inputCheck[3] )
+		if ( isEnd )
 		{
 			screen->SetScreenMode( SCREEN_MODE::FADE_OUT, 1.0f );
 			changeScene = true;
@@ -2190,21 +1830,36 @@
 	void	sceneResult::ControlCursor( void )
 	{
 		//	上下で選択
-		if ( input[0]->Get( KEY_UP ) == 3 )		menuInfo.select--;
-		if ( input[0]->Get( KEY_DOWN ) == 3 )	menuInfo.select++;
+		int	keyUp = input[0]->Get( KEY_UP );
+		int	keyDown = input[0]->Get( KEY_DOWN );
+		if ( keyUp == 3 )		menuInfo.select--;
+		if ( keyDown == 3 )	menuInfo.select++;
 		if ( menuInfo.select < 0 )							menuInfo.select = MENU::END - 1;
 		if ( menuInfo.select >= MENU::END )		menuInfo.select = MENU::MOVE_MENU;
 
 		//	読み込み位置変更
-		for ( int i = 0; i < 2; i++ )
+		int	textMax = 2;
+		FOR( 0, textMax )
 		{
-			if ( i == menuInfo.select )	menuImage[i].sx = 512;
-			else										menuImage[i].sx = 0;
+			if ( value == menuInfo.select )	menuImage[value].sx = 512;
+			else												menuImage[value].sx = 0;
 		}
 
-		//	決定
-		if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+		// 決定ボタンでシーン移行フラグを立てる
+		int keySpace = input[0]->Get( KEY_SPACE );
+		int keyA = input[0]->Get( KEY_A );
+		if ( keySpace == 3 || keyA == 3 )
 		{
+			switch ( menuInfo.select )
+			{
+			case MENU::MOVE_MENU:
+				screen->SetScreenMode( SCREEN_MODE::WIPE_OUT, 1.0f );
+				break;
+
+			case MENU::MOVE_TITLE:
+				screen->SetScreenMode( SCREEN_MODE::FADE_OUT, 1.0f );
+				break;
+			}
 			changeScene = true;
 		}
 	}

@@ -128,29 +128,28 @@ public:
 		float			t;
 	};
 
+	//	ラスト発表構造体
+	struct LastAnnounceInfo
+	{
+		int	step;
+		float	t;
+	};
+
 private:
 	SORT_INFO						sortInfo[4];
+	SORT_INFO						totalSortInfo[4];
 	ORIGINAL_INFO				originInfo[4];
 	NUMBER_INFO					number[4];
-	NUMBER_INFO					bonusNumber[4];
 	NUMBER_INFO					roundCoinNumber[3][4];
 	NUMBERIMAGE_INFO		numberImageInfo[4];
-	NUMBERIMAGE_INFO		bonusNumberImageInfo[4];
 	NUMBERIMAGE_INFO		roundCoinNumberImageInfo[3][4];
 	ROULETTE_INFO				rouletteInfo;
 	MENU_INFO						menuInfo;
 	VIEW_RANK_INORDER	viewRankInOrder;
-	LASTBONUS_INFO			lastBonusInfo;
 	VIEW_INFO						viewInfo;
 	CurtainPosInfo					curtainPosInfo;
 	CurtainInfo						curtainInfoR, curtainInfoL;
-
-	//	ラストボーナス計算用
-	SORT_INFO						maxCoinNum[4];
-	SORT_INFO						fallStageNum[4];
-	SORT_INFO						coin77[4];
-	SORT_INFO						minCoinNum[4];
-	SORT_INFO						hitAttackNum[4];
+	LastAnnounceInfo			lastAnnounceInfo;
 
 	//	モデル・画像
 	Surface*							backBuffer;
@@ -164,7 +163,6 @@ private:
 	iex3DObj*						obj[4];
 	iex2DObj*						originNumber;
 	iex2DObj*						menuText;
-	iex2DObj*						lastBonusText;
 	iex2DObj*						life;
 	iex2DObj*						orgRound;
 	iex2DObj*						orgCurtain;
@@ -172,13 +170,14 @@ private:
 	ImageObj							originCoinImage[4];
 	ImageObj							rankImage[4];
 	ImageObj							menuImage[3];
-	ImageObj							playerNumImage;
-	ImageObj							faceImage;
-	ImageObj							waveCircleImage;
-	ImageObj							notApplicable;		//	該当なし画像
 	ImageObj							lifeImage[4];		//	ライフ画像
 	ImageObj							checkImage[4];
-	ImageObj							roundImage[3];	
+	ImageObj							roundImage[3];
+	ImageObj							lifeAnnounceImage;
+	ImageObj							faceImage;
+	ImageObj							playerNumImage;
+	ImageObj							waveImage;
+	ImageObj							pressButtonImage;
 	LIFE_INFO						lifeInfo;
 
 	//	変数
@@ -190,7 +189,7 @@ private:
 	int		culRound;
 	float		curtainBrightness;		//	カーテン明るさ
 
-	int	lightMoveNum;
+	int		lightMoveNum;
 	bool		inputCheck[4];		
 	bool		changeScene;
 	int		curtainMode;
@@ -221,11 +220,11 @@ public:
 	void	RankImageInitialize( void );
 	void	LifeInfoInitialize( void );
 	void	RenderTargetTextureInitialize( void );
-	void	LastBonusImageInitialize( void );
 	void	MenuInfoInitialize( void );
 	void RouletteInfoInitialize( void );
 	void	CurtainInfoInitialize( void );
 	void	RoundInfoInitialize( void );
+	void	SetWinner( void );
 	void	Load( void );
 
 	//	全体更新・描画
@@ -248,6 +247,9 @@ public:
 	void	ResultRender( void );
 	void	LastResultRender( void );
 	void	CurtainRender( void );
+	void	LastRank( void );
+	void	WinnerRender( void );
+	void	PressButtonImageRender( void );
 	
 	//	動作関数
 	bool	LightUpdate( void );
@@ -268,6 +270,8 @@ public:
 	bool	MoveLightSet( int num, Vector3 pos );
 	Vector3 RandomPos( void );
 	bool	WallLightCheck( int num );
+	bool	InputCheckImageUpdate( void );
+	void	PressButtonUpdate( void );
 
 	//	選択モード関数
 	bool	DownPolygon( void );
@@ -275,19 +279,10 @@ public:
 
 	//	リザルトモード
 	void	ModeRoulette( void );
-	void	ModeLastBonus( void );
 	void	ModeRank( void );
 	void	ModeRankSkip( void );
 	void	ModeLastResult( void );
 	void	ModeInputWait( void );
-
-	//	ラストボーナス用関数
-	bool	LastBonusUpdate( void );
-	bool	InBoard( void );
-	bool	BonusAnnouncing( void );
-	bool	PlayerAnnouncing( void );
-	bool	OutBoard( void );
-	bool	AddBonus( void );
 
 	//	情報設定
 	void	SetNextLife( void );
