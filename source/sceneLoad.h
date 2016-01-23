@@ -16,6 +16,8 @@ private:
 	//	‰‰oŒn
 	ImageObj	bgImage[4];
 	ImageObj	pressAnyKeyImage;
+	ImageObj	moveImage;
+	ImageObj	backImage;
 	iex2DObj*	nowLoading;
 	int	timer;
 
@@ -28,7 +30,6 @@ private:
 	int	renderCount;
 	int	order;
 	int	num;
-	int	orderSet[4][4];
 
 public:
 	//	‰Šú‰»E‰ğ•ú
