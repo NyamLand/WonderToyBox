@@ -98,7 +98,6 @@
 	//	初期化
 	bool	sceneMenu::Initialize( void )
 	{
-		//	camera
 		//背景用構造体初期化
 		bgInfo.t = 1.0f;
 		bgInfo.mt = 0.0f;
@@ -123,9 +122,7 @@
 		//	ゲームマネージャ初期化
 		gameManager->Initialize();
 		OptionInitialize();
-		
-		
-
+	
 		//	画像読み込み
 		back = make_unique<iex2DObj>( LPSTR( "DATA/UI/back.png" ) );
 		frame = make_unique<iex2DObj>( LPSTR( "DATA/UI/frame.png" ) );
@@ -172,6 +169,14 @@
 		org[CHARACTER_TYPE::THIEF ]->Update();		//	怪盗
 		org[CHARACTER_TYPE::PIRATE]->Update();			//	海賊
 
+		FOR( 0, PLAYER_MAX )
+		{
+			modelPos[value] = Vector3( 0.0f, 0.0f, 0.0f );
+			modelAngle[value] = Vector3( 0.0f, 0.0f, 0.0f );
+			modelScale[value] = Vector3( 0.0f, 0.0f, 0.0f );
+			obj[value] = org[value]->Clone();
+		}
+
 		deskStage = make_unique<iexMesh>( LPSTR( "DATA/BG/stage-desk/stage.IMO" ) );
 		toyStage = make_unique<iexMesh>(LPSTR("DATA/BG/stage_toy/stage_toy.IMO"));
 		BG = make_unique<iexMesh>( LPSTR( "DATA/BG/MenuStage/menustage.IMO" ) );
@@ -199,8 +204,6 @@
 
 		//BGM設定再生
 		sound->PlayBGM(BGM::MENU_BGM);
-
-
 
 		//	全体更新
 		Update();
@@ -280,6 +283,10 @@
 			OptionUpdate();
 			break;
 		}
+
+		//	モデル更新
+		ModelUpdate();
+
 		//	スクリーン更新
 		screen->Update();
 
@@ -370,6 +377,20 @@
 				SetMode( tempmode );
 			}
 		}
+	}
+
+	//	モデル更新
+	void	sceneMenu::ModelUpdate( void )
+	{
+		FOR( 0, PLAYER_MAX )
+		{
+			obj[value]->SetPos( modelPos[value] );
+			obj[value]->SetAngle( modelAngle[value] );
+			obj[value]->Animation();
+			obj[value]->Update();
+		}
+
+		printf("1 frame = %d, 2 frame = %d, 3 frame = %d, 4 frame = %d\n", obj[0]->GetFrame(), obj[1]->GetFrame(), obj[2]->GetFrame(), obj[3]->GetFrame());
 	}
 
 //-------------------------------------------------------------------------------
@@ -484,31 +505,25 @@
 		{
 			//	モデル登録、初期化
 			obj[value] = org[value]->Clone();
-			obj[value]->SetAngle(0.0f, D3DXToRadian(100.0f), 0.0f);
-			//obj[value]->SetPos( -10.0f , 5.0f,-7.0f + 5.0f * value  );
-			obj[value]->Update();
-
+			modelAngle[value] = Vector3( 0.0f, D3DXToRadian( 100.0f ), 0.0f );
 
 			//	選択情報初期化
 			characterSelectInfo.character[value] = value;
 			characterSelectInfo.select[value] = false;
 			
-		
-				int w = static_cast<int>(iexSystem::ScreenWidth * (0.04f));
-				int h = static_cast<int>(iexSystem::ScreenHeight * (0.07f));
-				ImageInitialize(cursorImage[value], 0, 0, w, h, 0, 0, 0, 0);
-				ImageInitialize(decidecursorImage[value], 0, 0, w, h, 0, 0, 0, 0);
-			
+			//	カーソル初期化
+			int w = static_cast<int>(iexSystem::ScreenWidth * (0.04f));
+			int h = static_cast<int>(iexSystem::ScreenHeight * (0.07f));
+			ImageInitialize(cursorImage[value], 0, 0, w, h, 0, 0, 0, 0);
+			ImageInitialize(decidecursorImage[value], 0, 0, w, h, 0, 0, 0, 0);
 			cursorImage[value].obj = cursor;
 			decidecursorImage[value].obj = decidecursor;
-
 			if ( value >= gameManager->GetPlayerNum() )
 			{
 				cursorImage[value].renderflag = false;
 			}
 		}
-
-		
+	
 		//	変数初期化
 		characterSelectInfo.imagePos = 0;
 		characterSelectInfo.step = 0;
@@ -546,18 +561,25 @@
 			if ( characterSelectInfo.select[value] )	continue;
 
 			//	カーソル移動
-			if (input[value]->Get(KEY_RIGHT) == 3)	{
-				sound->PlaySE(SE::CHOICE_SE);
+			if ( input[value]->Get( KEY_RIGHT ) == 3 )	
+			{
+				sound->PlaySE( SE::CHOICE_SE );
 				characterSelectInfo.character[value]++;
+				//	下限設定
+				if ( characterSelectInfo.character[value] >= CHARACTER_TYPE::MAX )	characterSelectInfo.character[value] = 0;
+				//	モデル差し替え
+				obj[value] = org[characterSelectInfo.character[value]]->Clone();
 			}
-			if (input[value]->Get(KEY_LEFT) == 3){
-				sound->PlaySE(SE::CHOICE_SE);
+			if ( input[value]->Get( KEY_LEFT ) == 3 )
+			{
+				sound->PlaySE( SE::CHOICE_SE );
 				characterSelectInfo.character[value]--;
+				//	上限設定
+				if ( characterSelectInfo.character[value] < 0 )	characterSelectInfo.character[value] = CHARACTER_TYPE::MAX - 1;
+				//	モデル差し替え
+				obj[value] = org[characterSelectInfo.character[value]]->Clone();
 			}
 
-			//	上限・下限設定
-			if ( characterSelectInfo.character[value] < 0 )	characterSelectInfo.character[value] = CHARACTER_TYPE::MAX - 1;
-			if ( characterSelectInfo.character[value] >= CHARACTER_TYPE::MAX )	characterSelectInfo.character[value] = 0;
 
 			//	決定
 			if ( input[value]->Get( KEY_SPACE ) == 3 || input[value]->Get( KEY_A ) == 3 )
@@ -566,8 +588,7 @@
 				characterSelectInfo.select[value] = true;
 			}
 
-			//	モデル差し替え
-			obj[value] = org[characterSelectInfo.character[value]]->Clone();
+
 		}
 
 		//	選択済み人数をカウント
@@ -612,11 +633,8 @@
 		//	モデルデータ更新
 		FOR( 0, PLAYER_MAX )
 		{
-			obj[value]->Animation();
-			obj[value]->SetPos(-12.0f, 10.0f, -9.0f + 6.0f * value);
-			obj[value]->SetAngle(0.0f, CHARA_ANGLE::CharaSelectPlayer_ANGLE[value], 0.0f);
-			obj[value]->Update();
-
+			modelPos[value] = Vector3( -12.0f, 10.0f, -9.0f + 6.0f * value );
+			modelAngle[value] = Vector3( 0.0f, CHARA_ANGLE::CharaSelectPlayer_ANGLE[value], 0.0f );
 		}
 	}
 

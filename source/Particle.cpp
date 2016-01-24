@@ -107,9 +107,9 @@ namespace
 		Vector3	Pos, Move, Power;
 		for ( int j = 0; j<10; j++ )
 		{
-			Pos.x = pos.x;
+			Pos.x = pos.x + sinf( Random::GetFloat( 0.0f, 2.0f * D3DX_PI ) ) * 2.0f * scale;
 			Pos.y = pos.y;
-			Pos.z = pos.z;
+			Pos.z = pos.z + cosf( Random::GetFloat( 0.0f, 2.0f * D3DX_PI ) ) * 2.0f * scale;
 
 			Move.x = Random::GetFloat(-100.0f, 100.0f) *(0.002f * scale);
 			Move.y = 1.0f * scale;
@@ -120,7 +120,7 @@ namespace
 			Power.z = 0.0f;
 
 			//	画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
-			pt->Set( STAR, 0, 0.0f, 30, 0.0f, 20, 1.0f, &Pos, &Move, &Power, 0.8f, 0.8f, 0.0f, scale, RS_COPY );
+			pt->Set( STAR, 0, 0.0f, 30, 0.0f, 20, 1.0f, &Pos, &Move, &Power, 0.8f, 0.8f, 0.0f, scale * 2.0f, RS_COPY );
 		}
 	}
 

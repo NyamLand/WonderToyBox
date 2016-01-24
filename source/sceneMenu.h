@@ -120,6 +120,9 @@ private:
 	int		mode;
 	int		tempmode;
 	Vector3 dir;
+	Vector3 modelPos[4];
+	Vector3 modelAngle[4];
+	Vector3 modelScale[4];
 	
 public:
 	//	初期化・解放
@@ -133,6 +136,7 @@ public:
 	void	Render( void );
 	void	CameraUpdate( void );
 	void	ChangeToOption( void );
+	void	ModelUpdate( void );
 
 	//	プレイヤー人数選択関数
 	void	SelectPlayerNumInitialize( void );
