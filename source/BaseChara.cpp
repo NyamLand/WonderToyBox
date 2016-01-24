@@ -440,7 +440,6 @@ namespace
 		float		objectWork = 0.0f;
 		objectMove = Vector3( 0.0f, 0.0f, 0.0f );
 		Vector3	tempPos = Vector3( 0.0f, 0.0f, 0.0f );
-		//checkWall = false;
 
 		//	•Ç”»’è
 		checkWall = stage->CheckWall( pos, move );
@@ -461,10 +460,13 @@ namespace
 				pos.y = height = objectWork;
 				pos += objectMove;
 			}
-			if ( pos.y < work )					pos.y = height =work;
+			if ( pos.y < work )
+			{
+				pos.y = height = work;
+			}
 			move.y = 0.0f;
 			isGround = true;
-			if ( jumpPower <= 0.0f && (mode == MODE_STATE::MOVE || mode == MODE_STATE::JUMP))
+			if ( jumpPower <= 0.0f && ( mode == MODE_STATE::MOVE || mode == MODE_STATE::JUMP ) )
 			{
 				jumpState = true;
 				SetMode( MODE_STATE::MOVE );

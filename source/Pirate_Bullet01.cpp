@@ -71,7 +71,8 @@ void	Pirate_Bullet01::Explode(void)
 {
 	radius += 1.0f;
 	move = Vector3(0, 0, 0);
-	particle->Bom(this->pos, radius, 1.0f);
+	particle->Bomb( pos, radius * 0.01f, Vector3(0.7f, 0.2f, 0.1f) );
+	//particle->Bom(this->pos, radius, 1.0f);
 	//”š”­”ÍˆÍ‚ªˆê’èˆÈã‚É‚È‚Á‚½‚çÁ‹
 	if (radius > 40.0f) state = false;
 }

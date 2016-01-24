@@ -1776,6 +1776,7 @@
 	void	sceneResult::ModeInputWait( void )
 	{
 		bool	isEnd = false;
+		waveImage.flashingRenderflag = true;
 		FOR( 0, PLAYER_MAX )
 		{
 			//	入力を受け付けていたらスキップ

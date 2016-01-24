@@ -400,6 +400,28 @@ namespace
 		}
 	}
 
+	//	爆発エフェクト
+	void	Particle::Bomb( const Vector3& pos, float scale, const Vector3& color )
+	{
+		Vector3	Pos, Move, Power;
+		for ( int j = 0; j<10; j++ )
+		{
+			Pos.x = pos.x + sinf( Random::GetFloat( 0.0f, 2 * D3DX_PI ) ) * ( Random::GetInt( 0, 100 ) - 50 ) * 0.001f * scale;
+			Pos.y = pos.y + sinf( Random::GetFloat( 0.0f, 2 * D3DX_PI ) ) * ( Random::GetInt( 0, 100 ) - 50 ) * 0.001f * scale;
+			Pos.z = pos.z + cosf( Random::GetFloat( 0.0f, 2 * D3DX_PI ) ) * ( Random::GetInt( 0, 100 ) - 50 ) * 0.001f * scale;
+
+			Move.x = 0.0f;
+			Move.y = 0.0f;
+			Move.z = 0.0f;
+
+			Vector3	vec = Pos - pos;
+			vec.Normalize();
+			Power = vec* 0.01f;
+
+			pt->Set( DUST, 0, 1.0f, 30, 1.0f, 60, 0.1f, &Pos, &Move, &Power, color.x, color.y, color.z, scale * 15, RS_COPY);
+		}
+	}
+
 	//	コインエフェクト
 	void	Particle::CoinGet(const Vector3& pos, const float& scale)
 	{
