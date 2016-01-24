@@ -119,6 +119,7 @@ private:
 	//	‹¤’Ê•Ï”
 	int		mode;
 	int		tempmode;
+	bool	changeScene;
 	Vector3 dir;
 	Vector3 modelPos[4];
 	Vector3 modelAngle[4];

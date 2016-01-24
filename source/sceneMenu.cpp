@@ -112,6 +112,8 @@
 		bgInfo.moveflg = false;
 		mainView->Set( bgInfo.cpos, bgInfo.target );
 
+		changeScene = false;
+
 		//	random
 		Random::Initialize();
 
@@ -273,10 +275,21 @@
 
 		case MENU_MODE::MOVE_MAIN:
 			MoveMainUpdate();
+			if ( changeScene )
+			{
+				MainFrame->ChangeScene( new sceneLoad( new sceneMain() ) );
+				return;
+			}
+
 			break;
 
 		case MENU_MODE::MOVE_TITLE:
 			MoveTitleUpdate();
+			if ( changeScene )
+			{
+				MainFrame->ChangeScene( new sceneLoad( new sceneTitle() ) );
+				return;
+			}
 			break;
 
 		case MENU_MODE::OPTION:
@@ -289,8 +302,6 @@
 
 		//	スクリーン更新
 		screen->Update();
-
-		
 	}
 
 	//	描画
@@ -848,7 +859,8 @@
 		FOR( 0, PLAYER_MAX )
 		{
 			obj[value] = org[gameManager->GetCharacterType( value )]->Clone();
-			obj[value]->SetPos(10.0f, 14.0f, 4.0f - 3.0f * value);
+			modelPos[value] = Vector3( 10.0f, 14.0f, 4.0f - 3.0f * value );
+			obj[value]->SetPos( modelPos[value] );
 			obj[value]->Update();
 			WorldToClient( obj[value]->GetPos(), cursorPos[value], matView * matProjection );
 		}
@@ -960,10 +972,8 @@
 		//	モデル更新
 		FOR( 0, PLAYER_MAX )
 		{
-			obj[value]->Animation();
-			obj[value]->SetPos(12.0f, 10.0f, 8.0f - 6.0f * value);
-			obj[value]->SetAngle(0.0f, CHARA_ANGLE::SelectCheckPlayer_ANGLE[value], 0.0f);
-			obj[value]->Update();
+			modelPos[value] = Vector3( 12.0f, 10.0f, 8.0f - 6.0f * value );
+			modelAngle[value] = Vector3( 0.0f, CHARA_ANGLE::SelectCheckPlayer_ANGLE[value], 0.0f );
 		}
 		break;
 
@@ -1060,8 +1070,9 @@
 		{
 			if ( screen->GetScreenState() )
 			{
-				MainFrame->ChangeScene( new sceneLoad( new sceneMain() ) );
-				return;
+				changeScene = true;
+				//MainFrame->ChangeScene( new sceneLoad( new sceneMain() ) );
+				//return;
 			}
 		}
 		
@@ -1088,8 +1099,9 @@
 	{
 		if ( screen->GetScreenState() )
 		{
-			MainFrame->ChangeScene( new sceneLoad( new sceneTitle() ) );
-			return;
+			changeScene = true;
+			//MainFrame->ChangeScene( new sceneLoad( new sceneTitle() ) );
+			//return;
 		}
 	}
 
