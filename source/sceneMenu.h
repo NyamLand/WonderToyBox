@@ -102,6 +102,7 @@ private:
 	iex2DObj*				cpuCursor;
 	iex2DObj*				decidecursor;
 	iex2DObj*				selectCheckCursor;
+	iex2DObj*				triangleCursor;
 	ImageObj				textImage;
 	ImageObj				faceImage[CHARACTER_TYPE::MAX];
 	ImageObj				cursorImage[4];
