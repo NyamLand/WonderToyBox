@@ -1892,6 +1892,7 @@ namespace
 
 		case PARAMETER_STATE::RESPAWN:
 			SetParameterState( respawn, 3 * SECOND );
+			break;
 
 		case	PARAMETER_STATE::MAGNET:
 			SetParameterState( magnet, 5 * SECOND );
