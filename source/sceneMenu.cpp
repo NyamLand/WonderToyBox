@@ -137,6 +137,7 @@
 		decidecursor = new iex2DObj("DATA/UI/decide-cursor.png");
 		cpuCursor = new iex2DObj( "DATA/UI/cpuIcon.png" );
 		selectCheckCursor = new iex2DObj("DATA/UI/menu/cursor.png");
+		triangleCursor = new iex2DObj("DATA/UI/tryangle.png");
 		
 		//	オプション関係画像読み込み
 		optionImage =		new iex2DObj( "DATA/UI/OptionText.png" );
@@ -222,6 +223,7 @@
 		SafeDelete(decidecursor);
 		SafeDelete( selectCheckCursor );
 		SafeDelete( cpuCursor );
+		SafeDelete(triangleCursor);
 		Random::Release();
 		sound->AllStop();
 
@@ -493,11 +495,17 @@
 		int h = static_cast<int>( iexSystem::ScreenHeight * 0.15f );
 		playerNum->Render( x, y, w, h, 0, playerNumSelectInfo.sy, 128, 128 );
 
+		triangleCursor->Render(x+10.0f, y - 130.0f, 128, 128, 0, 0, 256, 256);
+		triangleCursor->Render(x + 10.0f, y + 140.0f, 128, 128, 256, 0, 256, 256);
+
 		x = static_cast<int>( iexSystem::ScreenWidth * 0.35f );
 		y = static_cast<int>( iexSystem::ScreenHeight * 0.41f );
 		w = static_cast<int>( iexSystem::ScreenWidth * 0.39f );
 		h = static_cast<int>( iexSystem::ScreenHeight * 0.138f );
 		playerNumText->Render( x, y, w, h, 0, 0, 512, 128 );
+
+		
+
 	}
 
 //-------------------------------------------------------------------------------
@@ -1132,21 +1140,24 @@
 	//	オプション更新
 	void	sceneMenu::OptionUpdate( void )
 	{
-		if (KEY_Get(KEY_DOWN) == 3){
+		if (input[0]->Get(KEY_DOWN) == 3)
+		{
 			sound->PlaySE(SE::DECIDE_SE);
 			if (optionInfo.step<3)
 			optionInfo.step++;
 		}
-		if (KEY_Get(KEY_UP) == 3){
+		if (input[0]->Get(KEY_UP) == 3)
+		{
 			sound->PlaySE(SE::DECIDE_SE);
 			if (optionInfo.step>0){
 				optionInfo.step--;
 			}
 		}
 
-		switch (optionInfo.step){
+		switch (optionInfo.step)
+		{
 		case 0:
-			if (KEY_Get(KEY_RIGHT) == 3 || KEY_Get(KEY_LEFT) == 3){
+			if (input[0]->Get(KEY_RIGHT) == 3 || input[0]->Get(KEY_LEFT) == 3){
 				sound->PlaySE(SE::CHOICE_SE);
 				if (optionInfo.itemflg == false){
 					optionInfo.itemflg = true;
