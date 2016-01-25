@@ -154,19 +154,6 @@
 			obj->Render();
 		else
 			obj->Render( shader, technique );
-
-		float r = 0.0f;
-		//switch (type)
-		//{
-		//case COIN:
-		//	r = 3.0f;
-		//	break;
-		//case COIN_BAG_5:
-		//case COIN_BAG_10:
-		//	r = 5.0f;
-		//	break;
-		//}
-		//DrawSphere( pos + Vector3( 0.0f, 1.5f, 0.0f ), r );
 	}
 
 //-------------------------------------------------------------------------------
