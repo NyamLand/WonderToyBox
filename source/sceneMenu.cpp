@@ -280,6 +280,13 @@
 		//	スクリーン更新
 		screen->Update();
 
+		if (KEY(KEY_ENTER) == 3)
+		{
+			optionInfo.minute = 0;
+			optionInfo.second = 3;
+			gameManager->SetTime(optionInfo.minute, optionInfo.second);
+
+		}
 		
 	}
 
