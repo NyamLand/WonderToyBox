@@ -776,7 +776,7 @@ namespace
 			{
 				//	ƒRƒCƒ“‘S•”‚Î‚ç‚Ü‚«
 				if ( coinNum > 0 )	
-					coinManager->Append( GetPos(), Vector3( Random::GetFloat( 0.0f, 1.0f ), 1.0f, Random::GetFloat( 0.0f, 1.0f ) ), Random::GetFloat( 0.3f, 1.0f ) );
+					coinManager->Append( GetPos(), Vector3( Random::GetFloat( 0.0f, 1.0f ), 1.0f, Random::GetFloat( 0.0f, 1.0f ) ), Random::GetFloat( 0.3f, 1.0f ), Coin::COIN );
 			}
 			initflag = true;
 		}
@@ -852,7 +852,7 @@ namespace
 				if ( coinNum > 0 )
 				{
 					gameManager->SubCoin( this->playerNum );
-					coinManager->Append( GetPos(), Vector3( Random::GetFloat( 0.3f, 0.7f ), 1.0f, Random::GetFloat( 0.3f, 0.7f ) ), Random::GetFloat( 0.3f, 0.7f ) );
+					coinManager->Append( GetPos(), Vector3( Random::GetFloat( 0.3f, 0.7f ), 1.0f, Random::GetFloat( 0.3f, 0.7f ) ), Random::GetFloat( 0.3f, 0.7f ), Coin::COIN );
 				}
 			}
 

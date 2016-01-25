@@ -110,7 +110,7 @@ void	Event_Coin::Fall(void)
 			Vector3	pos = Vector3(Random::GetFloat(-20.0f, 20.0f), COIN_APPEAR_HEIGHT, Random::GetFloat(-20.0f, 12.0f));
 			static	Vector3	vec = Vector3(0.0f, -1.0f, 0.0f);
 			static	float	power = 1.0f;
-			coinManager->Append(pos, vec, power);
+			coinManager->Append(pos, vec, power, Coin::COIN );
 		}
 		break;
 	}
@@ -160,7 +160,7 @@ void	Event_Coin::Wave(void)
 	//pos2.z += distZ;
 
 	//　発生
-	if (count % COIN_INVERS_RATE == 0)	 coinManager->Append(pos1, vec, power);
+	if (count % COIN_INVERS_RATE == 0)	 coinManager->Append(pos1, vec, power, Coin::COIN );
 
 	//　適用
 	//switch (count % COIN_INVERS_RATE)
@@ -199,7 +199,7 @@ void	Event_Coin::Dubble(void)
 			Vector3	pos = Vector3(Random::GetFloat(-20.0f, 20.0f), COIN_APPEAR_HEIGHT, Random::GetFloat(-20.0f, 12.0f));
 			static	Vector3	vec = Vector3(0.0f, -1.0f, 0.0f);
 			static	float	power = 1.0f;
-			coinManager->Append(pos, vec, power);
+			coinManager->Append(pos, vec, power, Coin::COIN );
 		}
 	}
 

@@ -25,7 +25,6 @@
 
 #define	GETAWAY_LENGTH		5.0f	//	逃げる判定距離
 #define	MAX_HEIGHT					50.0f	//	想定している高さ最大値
-#define	SCALE								3.0f	//	コイン大きさ
 #define	MASS							10.0f;	//	質量
 //#define	MAX_SHADOW_SIZE		1.5f	//	影最大サイズ
 
@@ -53,8 +52,9 @@
 		angle = 0.0f;
 		pos = Vector3( 0.0f, 0.0f, 0.0f );
 		move = Vector3( 0.0f, 0.0f, 0.0f );
-		scale = SCALE;
+		scale = 3.0f;
 		judgeTimer = 0;
+		type = 0;
 		activate = false;
 		state = false;
 		getAwayflag = false;
@@ -155,7 +155,18 @@
 		else
 			obj->Render( shader, technique );
 
-		//DrawSphere( pos + Vector3( 0.0f, 1.5f, 0.0f ), scale * 0.5f );
+		float r = 0.0f;
+		//switch (type)
+		//{
+		//case COIN:
+		//	r = 3.0f;
+		//	break;
+		//case COIN_BAG_5:
+		//case COIN_BAG_10:
+		//	r = 5.0f;
+		//	break;
+		//}
+		//DrawSphere( pos + Vector3( 0.0f, 1.5f, 0.0f ), r );
 	}
 
 //-------------------------------------------------------------------------------
@@ -200,12 +211,23 @@
 		if ( !gameManager->GetCoinCollision() )	return;
 
 		Vector3	p_pos;
+		float r = 0.0f;
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			if ( !activate )	continue;
 			//if ( characterManager->GetUnrivaled( i ) )	continue;
 			p_pos = characterManager->GetPos( i );
-			bool isHit = Collision::CapsuleVSSphere( p_pos, Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z ), 2.0f, Vector3( pos.x, pos.y + ( scale * 0.5f ), pos.z ), scale * 0.8f );
+			switch ( type )
+			{
+			case COIN:
+				r = 3.0f;
+				break;
+			case COIN_BAG_5:
+			case COIN_BAG_10:
+				r = 5.0f;
+				break;
+			}
+			bool isHit = Collision::CapsuleVSSphere( p_pos, Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z ), 2.0f, Vector3( pos.x, pos.y + ( scale * 0.5f ), pos.z ), r );
 
 			if ( isHit )
 			{
@@ -241,8 +263,29 @@
 		state = false;
 		float	effectScale = 0.4f;
 		particle->Spark( pos, effectScale );
-		gameManager->AddCoin( Num );
-		if (event_coin->GetDubbleInst().eventflag) gameManager->AddCoin(Num);
+		switch ( type )
+		{
+		case COIN:
+			gameManager->AddCoin( Num );
+			if (event_coin->GetDubbleInst().eventflag) gameManager->AddCoin( Num );
+			break;
+
+		case COIN_BAG_5:
+			FOR( 0, 5 )
+			{
+				gameManager->AddCoin(Num);
+				if (event_coin->GetDubbleInst().eventflag) gameManager->AddCoin(Num);
+			}
+			break;
+
+		case COIN_BAG_10:
+			FOR( 0, 10 )
+			{
+				gameManager->AddCoin( Num );
+				if ( event_coin->GetDubbleInst().eventflag )	gameManager->AddCoin( Num );
+			}
+			break;
+		}
 		sound->PlaySE( SE::COIN_SE );
 	}
 
@@ -308,6 +351,7 @@
 	{
 		this->move = move;
 	}
+	
 	//	向き設定
 	void	Coin::SetAngle( const float& angle )
 	{

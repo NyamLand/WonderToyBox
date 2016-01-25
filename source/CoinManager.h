@@ -22,7 +22,7 @@ private:
 
 protected:
 	//	オブジェクト
-	iexMesh*		org;			//	オリジナルモデル
+	iexMesh*		org[Coin::MAX];			//	オリジナルモデル
 	list<Coin*>	coinList;
 
 
@@ -39,7 +39,7 @@ public:
 	void	Render( iexShader* shader = nullptr, LPSTR technique = nullptr );
 
 	//	動作関数
-	void	Append( const Vector3& pos, const Vector3& vec, const float& speed );
+	void	Append( const Vector3& pos, const Vector3& vec, const float& speed, int type );
 	void	DistCheck( int n );
 
 	//	情報設定

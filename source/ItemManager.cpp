@@ -21,9 +21,7 @@
 		FOR( 0, ITEM_TYPE::MAX )
 		{
 			org[value] = nullptr;
-			obj = nullptr;
 		}
-		obj = new Item();
 		org[ITEM_TYPE::ATTACK_UP] = new iexMesh( "DATA/Object/Item/Item.IMO" );
 		org[ITEM_TYPE::UNRIVALED] = new iexMesh( "DATA/Object/Item/Item02.IMO" );
 		org[ITEM_TYPE::MAGNET] = new iexMesh( "DATA/Object/Item/Item04.IMO" );
@@ -40,7 +38,6 @@
 		{
 			SafeDelete( org[value] );
 		}
-		SafeDelete( obj );
 		
 		for ( auto it = itemList.begin(); it != itemList.end(); )
 		{
@@ -92,6 +89,7 @@
 	//	ƒŠƒXƒg’Ç‰Á
 	void	ItemManager::Append( const Vector3& pos, const int& type )
 	{
+		Item*	obj = new Item();
 		obj->Initialize();
 		obj->SetMesh( org[type]->Clone() );
 		obj->SetType( type );

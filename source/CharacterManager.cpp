@@ -288,7 +288,7 @@
 			for (int i = 0; i < dropCoin; i++)
 			{
 				if (bc2_coinNum <= 0) break;
-				coinManager->Append(bc2_top, vec, totalpower);
+				coinManager->Append(bc2_top, vec, totalpower, Coin::COIN );
 				gameManager->SubCoin(bc2_Num);
 
 			}
@@ -359,7 +359,7 @@
 			for (int i = 0; i < dropCoin; i++)
 			{
 				if (bc2_coinNum <= 0) break;
-				coinManager->Append(bc2_top, vec, totalpower);
+				coinManager->Append(bc2_top, vec, totalpower, Coin::COIN );
 				gameManager->SubCoin( bc2_Num );
 
 			}
