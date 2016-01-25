@@ -20,11 +20,10 @@ using namespace std;
 
 #define	INTERVAL	300		//	差し替えの間隔
 #define	INTERPOLATION_SPEED		0.01f	//	補間速度
+#define	IMAGE_MAX		4		//	画像最大数
 
 //	static宣言
 	bool	sceneLoad::threadState;
-	int	x = 0, y = 0;
-
 
 //----------------------------------------------------------------------------------
 //	初期化・解放	
@@ -41,8 +40,10 @@ using namespace std;
 	//	デストラクタ
 	sceneLoad::~sceneLoad( void )
 	{
-		SafeDelete( bgImage[0].obj );
-		SafeDelete( bgImage[1].obj );
+		FOR( 0, IMAGE_MAX )
+		{
+			SafeDelete( bgImage[value].obj );
+		}
 		SafeDelete( nowLoading );	
 	}
 
@@ -59,12 +60,19 @@ using namespace std;
 		//	背景初期化
 		bgImage[0].obj = new iex2DObj( "DATA/UI/Load/Lord-back01.png" );
 		bgImage[1].obj = new iex2DObj( "DATA/UI/Load/Lord-back02.png" );
+		bgImage[2].obj = new iex2DObj( "DATA/UI/Load/Lord-back03.png" );
+		bgImage[3].obj = new iex2DObj( "DATA/UI/Load/Lord-back04.png" );
 		int x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
 		int y = static_cast<int>( iexSystem::ScreenHeight * 0.5f );
 		int w = static_cast<int>( iexSystem::ScreenWidth );
 		int h = static_cast<int>( iexSystem::ScreenHeight );
-		ImageInitialize( bgImage[0], x, y, w, h, 0, 0, 1280, 720 );
-		ImageInitialize( bgImage[1], x, y, w, h, 0, 0, 1280, 720 );
+		FOR( 0, IMAGE_MAX )
+		{
+			ImageInitialize( bgImage[value], x, y, w, h, 0, 0, 1280, 720 );
+		}
+
+		moveImage = bgImage[0];
+		backImage = bgImage[1];
 
 		//	NowLoading初期化
 		nowLoading = new iex2DObj( "DATA/UI/Loading.png" );
@@ -84,11 +92,7 @@ using namespace std;
 		changeSceneFlag = false;
 		loadingTimer = 0;
 		renderCount = 0;
-		x = 0;
-		y = 0;
-		
-
-
+		order = 1;
 		return	true;
 	}
 
@@ -120,11 +124,6 @@ using namespace std;
 			MainFrame->ChangeScene( newScene, false );
 			return;
 		}
-
-		if (KEY(KEY_RIGHT) == 1)	x += 10;
-		if (KEY(KEY_LEFT) == 1)		x -= 10;
-		if (KEY(KEY_UP) == 1)		y -= 10;
-		if (KEY(KEY_DOWN) == 1)	y += 10;
 	}
 
 	//	描画
@@ -135,22 +134,11 @@ using namespace std;
 		mainView->Clear();
 
 		//	背景描画
-		if ( reverseFlag )
-		{
-			RenderImage( bgImage[0], bgImage[0].sx, bgImage[0].sy, bgImage[0].sw, bgImage[0].sh, IMAGE_MODE::NORMAL );
-			RenderImage( bgImage[1], bgImage[1].sx, bgImage[1].sy, bgImage[1].sw, bgImage[1].sh, IMAGE_MODE::NORMAL );
-		}
-		else
-		{
-			RenderImage( bgImage[1], bgImage[1].sx, bgImage[1].sy, bgImage[1].sw, bgImage[1].sh, IMAGE_MODE::NORMAL );
-			RenderImage( bgImage[0], bgImage[0].sx, bgImage[0].sy, bgImage[0].sw, bgImage[0].sh, IMAGE_MODE::NORMAL );
-		}
+		RenderImage( backImage, backImage.sx, backImage.sy, backImage.sw, backImage.sh, IMAGE_MODE::NORMAL );
+		RenderImage( moveImage, moveImage.sx, moveImage.sy, moveImage.sw, moveImage.sh, IMAGE_MODE::NORMAL );
 
 		if ( !threadState )	RenderNowLoading();
 		else						RenderImage( pressAnyKeyImage, pressAnyKeyImage.sx, pressAnyKeyImage.sy, pressAnyKeyImage.sw, pressAnyKeyImage.sh, IMAGE_MODE::FLASH );
-		char	str[256];
-		sprintf_s( str, "x = %d\ny = %d\n", x, y );
-		DrawString( str, 50, 300 );
 	}
 
 	//	NowLoading描画
@@ -182,6 +170,7 @@ using namespace std;
 	//	背景移動
 	void	sceneLoad::MoveBG( void )
 	{
+		isEnd = false;
 		static	int	centerX = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
 
 		//	タイマー加算
@@ -190,22 +179,24 @@ using namespace std;
 		//	一定時間たったら差し替えスタート
 		if ( timer >= INTERVAL )
 		{
-			//	裏側の画像を元の位置に配置
-			bgImage[!reverseFlag].x = centerX;
+			//	パラメータ更新
+			t += 0.01f;
+			if ( t >= 1.0f )
+			{
+				t = 1.0f;
+			}
 
-			//	補間パラメータ加算
-			t += INTERPOLATION_SPEED;
-			if ( t >= 1.0f )		t = 1.0f;
+			isEnd = Lerp( moveImage.x, centerX, -centerX, t );
 
-			//	補間
-			isEnd = CubicFunctionInterpolation( bgImage[reverseFlag].x, centerX, -centerX, t );
-
-			//	補間終了後リセット
 			if ( isEnd )
 			{
-				timer = 0;
+				if ( order == IMAGE_MAX - 1 )	backImage = bgImage[0];
+				else backImage = bgImage[order + 1];
+				moveImage = bgImage[order];
+				order++;
+				if ( order >= IMAGE_MAX )	order = 0;
 				t = 0.0f;
-				reverseFlag = !reverseFlag;
+				timer = 0;
 			}
 		}
 	}

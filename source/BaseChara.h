@@ -67,37 +67,11 @@ namespace
 	{
 		enum
 		{
-			//KNIGHT,		//	騎士
 			SCAVENGER,		//掃除屋
 			PRINCESS,	//	姫
-			//SQUIRREL,	//	リス
 			THIEF,		//　怪盗
-			//TIGER,			//	トラ
 			PIRATE,
 			MAX,
-		};
-	}
-	
-	namespace MOTION_NUM
-	{
-		enum 
-		{
-			STAND,					//	立ち
-			RUN,					//	走り
-			ATTACK1,				//	攻撃１段階目
-			POSTURE,				//	構え
-			JUMP,					//	ジャンプ
-			LANDING,				//	着地
-			ATTACK2,				//	攻撃２段階目
-			ATTACK3,				//	攻撃３段階目
-			GUARD,					//	ガード
-			DAMAGE,				//	ダメージ
-			KNOCKBACK,		//	吹っ飛び
-			FALLTOGROUND,	//	地面に落下
-			GETUP,				//	起き上がる
-			WIN,					//	勝利
-			DEFEAT,				//	敗北,
-			DEATH,				//	死亡
 		};
 	}
 
@@ -107,11 +81,8 @@ namespace
 		//	キャラクター名文字列
 		const		LPSTR	characterName[CHARACTER_TYPE::MAX] =
 		{
-			//"ナイト",
 			"掃除屋"
 			"プリンセス",
-			//"リス",
-			//"とら",
 			"怪盗",
 			"海賊"
 		};
@@ -122,26 +93,6 @@ namespace
 class BaseChara
 {
 private:
-	//	モーション情報
-	enum MOTION_DATA
-	{
-		STAND,					//	立ち
-		RUN,					//	走り
-		ATTACK1,				//	攻撃１段階目
-		POSTURE,				//	構え
-		JUMP,					//	ジャンプ
-		LANDING,				//	着地
-		ATTACK2,				//	攻撃２段階目
-		ATTACK3,				//	攻撃３段階目
-		GUARD,					//	ガード
-		DAMAGE,				//	ダメージ
-		KNOCKBACK,		//	吹っ飛び
-		FALLTOGROUND,	//	地面に落下
-		GETUP,				//	起き上がる
-		WIN,					//	勝利
-		DEFEAT,				//	敗北
-	};
-
 protected:
 	//	ダメージ時色情報
 	struct DAMAGECOLOR_INFO
@@ -236,7 +187,7 @@ protected:
 	float				dt;
 	bool				isGround;
 	bool				canHyper;
-	//bool			boosting;	//　→ PARAMETER_INFO型の boost
+	bool				inUseHyper;
 	bool				isPlayer;
 	bool				jumpState;
 	bool				checkWall;
@@ -275,7 +226,7 @@ protected:
 	PARAMETER_INFO		unrivaledItem;
 
 private:
-	virtual	void	MotionManagement( int motion );
+	//virtual	void	MotionManagement( int motion );
 	virtual	void	ModeManagement( void );
 	void	ParameterInfoInitialize( void );
 	void	ParameterInfoInitialize( PARAMETER_INFO& ps );

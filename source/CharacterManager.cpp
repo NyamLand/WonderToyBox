@@ -235,7 +235,7 @@
 		//	UŒ‚‚³‚ê‚é•û
 		Vector3	bc2_bottom = bc2->GetPos();
 		Vector3	bc2_top = Vector3( bc2_bottom.x, bc2_bottom.y + 3.0f, bc2_bottom.z );
-		float		bc2_r = 1.0f;
+		float		bc2_r = 2.0f;
 
 		//	UŒ‚”»’è
 		bool	isHit = Collision::CapsuleVSSphere( bc2_bottom, bc2_top, bc2_r, bc1_attackPos, bc1_attack_r );
@@ -253,7 +253,8 @@
 
 			int addParam = bc1->GetAttack_addParam();
 			bc2->SetParameterState( addParam );
-
+			//ƒTƒEƒ“ƒhÄ¶
+			sound->PlaySE(SE::HIT_SE);
 			//	ƒ‰ƒCƒtŒ¸‚ç‚·
 			int power = bc1->GetPower();
 			FOR(0, power) bc2->SubLife();
@@ -305,7 +306,7 @@
 		//	UŒ‚‚³‚ê‚é•û
 		Vector3	bc2_bottom = bc2->GetPos();
 		Vector3	bc2_top = Vector3( bc2_bottom.x, bc2_bottom.y + 3.0f, bc2_bottom.z );
-		float		bc2_r = 1.0f;
+		float		bc2_r = 2.0f;
 
 		//	UŒ‚”»’è
 		bool	isHit = Collision::CapsuleVSCapsule( bc1_attack_bottom, bc1_attack_top, bc1_attack_r, bc2_bottom, bc2_top, bc2_r );
@@ -322,7 +323,8 @@
 			//	–³“G‚É‚·‚é
 			if (bc2->GetParameterState(PARAMETER_STATE::UNRIVALED))	return;
 			bc2->SetParameterState(PARAMETER_STATE::UNRIVALED);
-
+			//ƒTƒEƒ“ƒhÄ¶
+			sound->PlaySE(SE::HIT_SE);
 			//	ƒ‰ƒCƒtŒ¸‚ç‚·
 			int power = bc1->GetPower();
 			FOR(0, power) bc2->SubLife();

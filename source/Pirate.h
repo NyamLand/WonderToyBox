@@ -11,21 +11,35 @@
 //	include
 #include	"BaseChara.h"
 
+namespace PIRATE
+{
+	namespace MOTION_FRAME
+	{
+		const int SHOT = 113;
+		const int SHOT_STOP = 131;
+	}
+	
+	enum MOTION_DATA
+	{
+		WAIT,
+		RUN,
+		QUICK,
+		POWER_START,
+		POWER,
+		POWER_END,
+		HYPER,
+		DAMAGE,
+		WIN,
+		LOSE
+	};
+}
+
+
 //	class
 class Pirate : public		BaseChara
 {
 private:
-	enum MOTION_DATA
-	{
-		STAND = 1,			//	—§‚¿
-		POSTURE,				//	\‚¦
-		RUN = 4,				//	‘–‚è
-		ATTACK1,				//	UŒ‚‚P’iŠK–Ú
-		ATTACK2,				//	UŒ‚‚Q’iŠK–Ú
-		ATTACK3,				//	UŒ‚‚R’iŠK–Ú
-		JUMP,
-		GUARD,
-	};
+	
 
 	enum QuickArts_DATA
 	{
@@ -34,24 +48,27 @@ private:
 	};
 
 private:
-	void	MotionManagement(int motion)override;
+	//void	MotionManagement( int motion )override;
+	iexMesh*	cannon;
 
 public:
 	//	‰Šú‰»E‰ğ•ú
-	Pirate(void);
-	~Pirate(void);
-	bool	Initialize(int playerNum, Vector3 pos)override;
+	Pirate( void );
+	~Pirate( void );
+	bool	Initialize( int playerNum, Vector3 pos )override;
 
 	//	XVE•`‰æ
-	void	Render(iexShader* shader = nullptr, LPSTR technique = nullptr)override;
+	void	Render( iexShader* shader = nullptr, LPSTR technique = nullptr )override;
 
 	//	“®ìŠÖ”
-	bool	QuickArts(void)override;
-	bool	PowerArts(void)override;
-	bool	HyperArts(void)override;
-
+	bool	QuickArts( void )override;
+	bool	PowerArts( void )override;
+	bool	HyperArts( void )override;
+	void	SetCannonPos( void );
 	//	î•ñİ’è
-	void	SetAttackParam(int attackKind)override;
+	void	SetAttackParam( int attackKind )override;
+
+
 };
 
 //*********************************************************************************

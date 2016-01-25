@@ -32,7 +32,7 @@ private:
 	float	lance_r;
 
 private:
-	void	MotionManagement( int motion )override;
+	//void	MotionManagement( int motion )override;
 
 public:
 	//	‰Šú‰»E‰ğ•ú

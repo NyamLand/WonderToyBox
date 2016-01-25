@@ -20,6 +20,7 @@ private:
 	//	’è”
 	static const int ITEM_MAX = 10;		//	ƒAƒCƒeƒ€Å‘å”
 	std::list<Item*>	itemList;
+	Item*	obj;
 	iexMesh*	org[ITEM_TYPE::MAX];
 
 public:

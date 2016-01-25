@@ -39,7 +39,6 @@ private:
 
 	
 private:
-	int		eventflag;
 	SLOPE			m_Slope;
 	COINGETAWAY		m_CoinGetAway;
 	SLIP			m_Slip;
@@ -58,7 +57,7 @@ public:
 	void	CoinGetAway(void);
 	void	Slip(void);
 	
-	int		GetEvent(void)const;
+	//int		GetEvent(void)const;
 
 	//	î•ñİ’è
 	static	Event_Jamming*	GetInstance(void);

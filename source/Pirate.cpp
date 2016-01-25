@@ -45,9 +45,9 @@ Pirate::Pirate(void) : BaseChara()
 }
 
 //	デストラクタ
-Pirate::~Pirate(void)
+Pirate::~Pirate( void )
 {
-
+	SafeDelete( cannon );
 }
 
 //	初期化
@@ -63,6 +63,10 @@ bool	Pirate::Initialize(int playerNum, Vector3 pos)
 	//	スケール設定
 	obj->SetScale(0.02f);
 	obj->Update();
+	cannon = new iexMesh( "DATA/CHR/Pirate/pirate_cannon.IMO" );
+	//cannon->SetScale( 0.02f );
+
+
 
 	if (obj == nullptr)	return	false;
 	return	true;
@@ -75,22 +79,9 @@ bool	Pirate::Initialize(int playerNum, Vector3 pos)
 //	描画
 void	Pirate::Render(iexShader* shader, LPSTR technique)
 {
+	SetCannonPos();
 	BaseChara::Render(shader, technique);
-
-	////	デバッグ用
-	//if (!debug)	return;
-	//DrawCapsule(attackInfo.bottom, attackInfo.top, attackInfo.r, 0xFFFFFFFF);
-	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z - attackInfo.r), 0.3f);
-	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z + attackInfo.r), 0.3f);
-	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z), 0.3f);
-	//particle->BlueFlame(Vector3(attackInfo.pos.x - attackInfo.r, attackInfo.pos.y, attackInfo.pos.z), 0.3f);
-
-	//char	str[256];
-	//Vector3	stringPos;
-	//WorldToClient(pos, stringPos, matView* matProjection);
-	//stringPos.y -= 150.0f;
-	//sprintf_s(str, "海\n賊\n↓");
-	//DrawString(str, (int)stringPos.x, (int)stringPos.y);
+	cannon->Render();
 }
 
 //-----------------------------------------------------------------------------------
@@ -102,15 +93,16 @@ bool	Pirate::QuickArts(void)
 {
 	static int time = 0;
 
+	SetMotion(PIRATE::MOTION_DATA::QUICK);
 	//	行列から情報取得
 	Vector3	front = GetFront();
 	front.Normalize();
-	Vector3	p_pos = GetPos();
+	Vector3	c_pos = Vector3(cannon->TransMatrix._41, cannon->TransMatrix._42, cannon->TransMatrix._43); //弾を飛ばす位置を大砲の位置に設定
 	SetMove(Vector3(0.0f, move.y, 0.0f));
 	Vector3 vec = front;
 
 	//弾を発射するときの情報を決定
-	p_pos.y += 1.0f;
+	c_pos.y -= 1.0f;
 	float	 bulletSpeed = 0.5f;
 	int leanpower = 30;
 	int playerNum = GetPlayerNum();
@@ -121,22 +113,22 @@ bool	Pirate::QuickArts(void)
 	if (0 <= rnd && rnd < 70)	pattern = QuickArts_DATA::NORMAL_SHOT;
 	if (70 <= rnd && rnd < 100)	pattern = QuickArts_DATA::TIMER_SHOT;
 
-	if (time == 0)
+	if (obj->GetFrame() == PIRATE::MOTION_FRAME::SHOT)
 	{
 		switch (pattern)
 		{
 		case QuickArts_DATA::NORMAL_SHOT:
-			m_BulletManager->Set(BULLET_TYPE::PIRATE_01, new Pirate_Bullet01, p_pos, vec, bulletSpeed, playerNum);
+			m_BulletManager->Set(BULLET_TYPE::PIRATE_01, new Pirate_Bullet01, c_pos, vec, bulletSpeed, playerNum);
 			break;
 		case QuickArts_DATA::TIMER_SHOT:
-			m_BulletManager->Set(BULLET_TYPE::PIRATE_02, new Pirate_Bullet02, p_pos, vec, bulletSpeed, playerNum);
+			m_BulletManager->Set(BULLET_TYPE::PIRATE_02, new Pirate_Bullet02, c_pos, vec, bulletSpeed, playerNum);
 			break;
 		}
 	}
 	time++;
 
 	//一秒間硬直
-	if (time >= 1 * SECOND)
+	if (obj->GetFrame() == PIRATE::MOTION_FRAME::SHOT_STOP)
 	{
 		time = 0;
 		return true;
@@ -146,7 +138,11 @@ bool	Pirate::QuickArts(void)
 
 //	パワーアーツ
 bool	Pirate::PowerArts(void)
-{
+{	
+	if (attackInfo.t == 0) SetMotion(PIRATE::MOTION_DATA::POWER_START);
+	
+	if (attackInfo.t > 1.0) SetMotion(PIRATE::MOTION_DATA::POWER_END);
+
 	float run_speed = 0.5f;
 	SetUnrivaled(false);
 
@@ -173,7 +169,7 @@ bool	Pirate::PowerArts(void)
 
 	if (attackInfo.t < 1.0f)move = front * run_speed;
 
-	if (attackInfo.t >= 1.5f)	return	true;
+	if (attackInfo.t >= 1.3f)	return	true;
 	return	false;
 }
 
@@ -181,16 +177,19 @@ bool	Pirate::PowerArts(void)
 bool	Pirate::HyperArts(void)
 {
 	//大砲の砲弾発射位置決定（画面上側）
-	Vector3 b_pos;	
+	Vector3 b_pos;
 	b_pos = Vector3(
 		Random::GetFloat(-20.0f, -20.0f),
 		30.0f,
 		Random::GetFloat(-20.0f, 20.0f)
 		);
 
+	//モーションアトデナオス
+	SetMotion(6);
+
 	//自分以外のプレイヤー三人を着弾地点にする
 	Vector3 target[3];
-	for (int i = 0,n = 0; i < 4; i++)
+	for (int i = 0, n = 0; i < 4; i++)
 	{
 		if (i == playerNum) continue;	//自分は除外
 		target[n] = characterManager->GetPos(i);
@@ -199,19 +198,24 @@ bool	Pirate::HyperArts(void)
 
 	float bulletSpeed = 0.5f;
 	Vector3 vec[3];
-	for (int i = 0; i < 3; i++)
-	{
-		Parabola(vec[i], b_pos, target[i], bulletSpeed, GRAVITY);
-		m_BulletManager->Set(BULLET_TYPE::PIRATE_01, new Pirate_Bullet03, b_pos, vec[i], bulletSpeed, playerNum);
-	}
 
-	return true;
+
+	//モーションアトデナオス
+	if (obj->GetFrame() == 255)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			Parabola(vec[i], b_pos, target[i], bulletSpeed, GRAVITY);
+			m_BulletManager->Set(BULLET_TYPE::PIRATE_01, new Pirate_Bullet03, b_pos, vec[i], bulletSpeed, playerNum);
+		}
+		return true;
+	}
+		
+	return false;
 }
 
-
-
 //	モーション管理
-void	Pirate::MotionManagement(int motion)
+/*void	Pirate::MotionManagement(int motion)
 {
 	switch (motion)
 	{
@@ -251,6 +255,23 @@ void	Pirate::MotionManagement(int motion)
 		obj->SetMotion(MOTION_DATA::ATTACK3);
 		break;
 	}
+}*/
+
+//	大砲位置設定
+void	Pirate::SetCannonPos( void )
+{
+	Matrix	mat;
+	mat = *obj->GetBone( 7 ) * obj->TransMatrix;
+	cannon->TransMatrix = mat;
+	Matrix	cannonMat = cannon->TransMatrix;
+	Vector3	up = Vector3( mat._21, mat._22, mat._23 );
+	Vector3	cannonPos = Vector3( 0.0f, 0.0f, 0.0f );
+	up.Normalize();
+	cannonPos = Vector3( cannon->TransMatrix._41, cannon->TransMatrix._42, cannon->TransMatrix._43 );
+	cannonPos += up * 0.5f;
+	cannon->TransMatrix._41 = cannonPos.x;
+	cannon->TransMatrix._42 = cannonPos.y;
+	cannon->TransMatrix._43 = cannonPos.z;
 }
 
 //-----------------------------------------------------------------------------------

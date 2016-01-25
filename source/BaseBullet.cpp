@@ -9,6 +9,7 @@
 #include	"Particle.h"
 #include	"CoinManager.h"
 #include	"Stage.h"
+#include	"Sound.h"
 
 #include	"BaseBullet.h"
 
@@ -71,7 +72,7 @@ state(true), activate(true)
 	void	BaseBullet::Render(void)
 	{
 		if(enable) obj->Render();
-		DrawSphere( Vector3( pos.x, pos.y, pos.z ), radius / 5, 0xFFFF0000 );
+		//DrawSphere( Vector3( pos.x, pos.y, pos.z ), radius / 5, 0xFFFF0000 );
 	}
 
 	//	シェーダー付き描画
@@ -121,6 +122,8 @@ state(true), activate(true)
 
 			if ( isHit )
 			{
+				//サウンド再生
+				sound->PlaySE(SE::HIT_SE);
 				//	エフェクトだす
 				state = false;
 				float	effectScale = 0.2f;

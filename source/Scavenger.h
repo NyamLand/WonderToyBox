@@ -11,27 +11,48 @@
 //	include
 #include	"BaseChara.h"
 
+namespace SCAVENGER
+{
+	namespace MOTION_FRAME
+	{
+		const int SUCK = 92;
+		const int POWER_FINISH = 169;
+		const int POWER_TO_WAIT = 200;
+		const int HYPER_BEGIN = 201;
+		const int HYPER_FINISH = 240;
+	}
+
+	//　魔女モーション
+	enum MOTION_DATA
+	{
+		WAIT,
+		RUN,
+		QUICK_START,
+		QUICK,
+		QUICK_END,
+		POWER_START,
+		POWER_END,
+		HYPER_START,
+		HYPER_END,
+		DAMAGE,
+		WIN,
+		LOSE
+	};
+}
+
+
 //	class
 class Scavenger : public		BaseChara
 {
 private:
-	enum MOTION_DATA
-	{
-		STAND,				//	立ち
-		RUN,				//	走り
-		POSTURE,				//	構え
-		ATTACK1,				//	攻撃１段階目
-		ATTACK2,				//	攻撃２段階目
-		ATTACK3,				//	攻撃３段階目
-		JUMP,
-		GUARD,
-	};
+	
+	
 	const float DEFAULT_ABSORB_LENGTH = 3.0f;
 
 private:
 	int		stayTime;	//技関連の硬直経過時間
 	float	absorb_length;		//コインを吸い込める距離
-	void	MotionManagement(int motion)override;
+//	void	MotionManagement(int motion)override;
 
 public:
 	//	初期化・解放

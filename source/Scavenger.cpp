@@ -109,6 +109,9 @@ bool	Scavenger::QuickArts(void)
 	////平行移動
 	ShiftMove();
 
+	if (obj->GetFrame() < SCAVENGER::MOTION_FRAME::SUCK)	SetMotion(SCAVENGER::MOTION_DATA::QUICK_START);
+	if (obj->GetFrame() >= SCAVENGER::MOTION_FRAME::SUCK)	SetMotion(SCAVENGER::MOTION_DATA::QUICK);
+
 	//その場回転
 	//RollAngle();
 
@@ -160,6 +163,18 @@ bool	Scavenger::PowerArts( void )
 {	
 	power = POWER;
 
+	if (stayTime == 0)
+	{
+		SetMotion(SCAVENGER::MOTION_DATA::POWER_START);
+		if (obj->GetFrame() >= SCAVENGER::MOTION_FRAME::POWER_FINISH) obj->SetFrame(SCAVENGER::MOTION_FRAME::POWER_FINISH);
+	}
+	if (stayTime > 0)
+	{
+		SetMotion(SCAVENGER::MOTION_DATA::POWER_END);
+		if (obj->GetFrame() >= SCAVENGER::MOTION_FRAME::POWER_TO_WAIT) obj->SetFrame(SCAVENGER::MOTION_FRAME::POWER_TO_WAIT);
+	}
+
+
 	//無敵判定を切らないとそもそもコインを集められないので無敵切ってます。
 	//問題なら言ってください
 	SetUnrivaled(false);
@@ -208,7 +223,7 @@ bool	Scavenger::PowerArts( void )
 		stayTime++;
 	}
 	
-	if (stayTime >= 2 * SECOND)
+	if (stayTime >= 1 * SECOND)
 	{
 		stayTime = 0;
 		return	true;
@@ -220,6 +235,9 @@ bool	Scavenger::PowerArts( void )
 bool	Scavenger::HyperArts( void )
 {
 	power = HYPER;
+
+	if (obj->GetFrame() <= SCAVENGER::MOTION_FRAME::HYPER_BEGIN) SetMotion(SCAVENGER::MOTION_DATA::HYPER_START);
+	if (obj->GetFrame() >= SCAVENGER::MOTION_FRAME::HYPER_FINISH) obj->SetFrame(SCAVENGER::MOTION_FRAME::HYPER_FINISH);
 
 	//無敵判定を切らないとそもそもコインを集められないので無敵切ってます。
 	//問題なら言ってください
@@ -317,7 +335,7 @@ void	Scavenger::RollAngle(void)
 	}
 }
 //	モーション管理
-void	Scavenger::MotionManagement(int motion)
+/*void	Scavenger::MotionManagement(int motion)
 {
 	switch (motion)
 	{
@@ -357,7 +375,7 @@ void	Scavenger::MotionManagement(int motion)
 		obj->SetMotion( MOTION_DATA::ATTACK3 );
 		break;
 	}
-}
+}*/
 
 //-----------------------------------------------------------------------------------
 //	情報設定

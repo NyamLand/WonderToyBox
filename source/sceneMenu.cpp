@@ -98,7 +98,6 @@
 	//	初期化
 	bool	sceneMenu::Initialize( void )
 	{
-		//	camera
 		//背景用構造体初期化
 		bgInfo.t = 1.0f;
 		bgInfo.mt = 0.0f;
@@ -113,6 +112,8 @@
 		bgInfo.moveflg = false;
 		mainView->Set( bgInfo.cpos, bgInfo.target );
 
+		changeScene = false;
+
 		//	random
 		Random::Initialize();
 
@@ -123,7 +124,7 @@
 		//	ゲームマネージャ初期化
 		gameManager->Initialize();
 		OptionInitialize();
-		
+	
 		//	画像読み込み
 		back = make_unique<iex2DObj>( LPSTR( "DATA/UI/back.png" ) );
 		frame = make_unique<iex2DObj>( LPSTR( "DATA/UI/frame.png" ) );
@@ -136,6 +137,7 @@
 		decidecursor = new iex2DObj("DATA/UI/decide-cursor.png");
 		cpuCursor = new iex2DObj( "DATA/UI/cpuIcon.png" );
 		selectCheckCursor = new iex2DObj("DATA/UI/menu/cursor.png");
+		triangleCursor = new iex2DObj("DATA/UI/tryangle.png");
 		
 		//	オプション関係画像読み込み
 		optionImage =		new iex2DObj( "DATA/UI/OptionText.png" );
@@ -145,7 +147,7 @@
 
 		//	モデル読み込み
 		org[CHARACTER_TYPE::SCAVENGER] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/majo/majo.IEM" ) );		//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/プリンセス/prinsess.IEM" ) );					//	姫
+		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/プリンセス/prin2.IEM" ) );					//	姫
 		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>(LPSTR("DATA/CHR/Thief/Thief.IEM"));		//	怪盗
 		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>(LPSTR("DATA/CHR/Pirate/Pirate.IEM"));				//	海賊
 
@@ -160,8 +162,8 @@
 		org[CHARACTER_TYPE::THIEF]->SetAngle( D3DX_PI );	//	怪盗
 		org[CHARACTER_TYPE::PIRATE]->SetAngle( D3DX_PI );			//	海賊
 
-		org[CHARACTER_TYPE::SCAVENGER]->SetMotion( 2 );	//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS]->SetMotion( 1 );		//	姫
+		org[CHARACTER_TYPE::SCAVENGER]->SetMotion( 0 );	//	掃除屋
+		org[CHARACTER_TYPE::PRINCESS]->SetMotion( 0 );		//	姫
 		org[CHARACTER_TYPE::THIEF]->SetMotion( 0 );		//	怪盗
 		org[CHARACTER_TYPE::PIRATE]->SetMotion( 0 );			//	海賊
 
@@ -169,6 +171,14 @@
 		org[CHARACTER_TYPE::PRINCESS]->Update();		//	姫
 		org[CHARACTER_TYPE::THIEF ]->Update();		//	怪盗
 		org[CHARACTER_TYPE::PIRATE]->Update();			//	海賊
+
+		FOR( 0, PLAYER_MAX )
+		{
+			modelPos[value] = Vector3( 0.0f, 0.0f, 0.0f );
+			modelAngle[value] = Vector3( 0.0f, 0.0f, 0.0f );
+			modelScale[value] = Vector3( 0.0f, 0.0f, 0.0f );
+			obj[value] = org[value]->Clone();
+		}
 
 		deskStage = make_unique<iexMesh>( LPSTR( "DATA/BG/stage-desk/stage.IMO" ) );
 		toyStage = make_unique<iexMesh>(LPSTR("DATA/BG/stage_toy/stage_toy.IMO"));
@@ -198,8 +208,6 @@
 		//BGM設定再生
 		sound->PlayBGM(BGM::MENU_BGM);
 
-
-
 		//	全体更新
 		Update();
 		return	true;
@@ -215,6 +223,7 @@
 		SafeDelete(decidecursor);
 		SafeDelete( selectCheckCursor );
 		SafeDelete( cpuCursor );
+		SafeDelete(triangleCursor);
 		Random::Release();
 		sound->AllStop();
 
@@ -232,13 +241,14 @@
 	//	更新
 	void	sceneMenu::Update( void )
 	{
-		//	オプションとの切り替え
-		ChangeToOption();
-
+		if ( screen->GetScreenState() )
+		{
+			//	オプションとの切り替え
+			ChangeToOption();
+		}
 		//	カメラ更新
-		CameraUpdate();
+		CameraUpdate();	
 
-		
 		//	各モード更新
 		switch ( mode )
 		{
@@ -267,27 +277,33 @@
 
 		case MENU_MODE::MOVE_MAIN:
 			MoveMainUpdate();
+			if ( changeScene )
+			{
+				MainFrame->ChangeScene( new sceneLoad( new sceneMain() ) );
+				return;
+			}
+
 			break;
 
 		case MENU_MODE::MOVE_TITLE:
 			MoveTitleUpdate();
+			if ( changeScene )
+			{
+				MainFrame->ChangeScene( new sceneLoad( new sceneTitle() ) );
+				return;
+			}
 			break;
 
 		case MENU_MODE::OPTION:
 			OptionUpdate();
 			break;
 		}
+
+		//	モデル更新
+		ModelUpdate();
+
 		//	スクリーン更新
 		screen->Update();
-
-		if (KEY(KEY_ENTER) == 3)
-		{
-			optionInfo.minute = 0;
-			optionInfo.second = 3;
-			gameManager->SetTime(optionInfo.minute, optionInfo.second);
-
-		}
-		
 	}
 
 	//	描画
@@ -297,6 +313,13 @@
 		mainView->Activate();
 		mainView->Clear();
 
+		//	ライト設定
+		dir = bgInfo.target;
+		shader3D->SetValue("DirLightVec", dir);
+		iexLight::DirLight(shader, 0, &dir, 1.0f, 1.0f, 1.0f);
+		dir.Normalize();
+
+		//	背景描画
 		BG->Render();
 		////背景( 一番後ろに表示 )
 		//iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
@@ -331,6 +354,7 @@
 		if (mode != MENU_MODE::OPTION){
 			optionMenu->Render(80, 50, 256, 64, 0, 0, 256, 64);
 		}
+		
 		//	スクリーン
 		screen->Render();
 	}
@@ -339,7 +363,7 @@
 	void	sceneMenu::CameraUpdate( void )
 	{
 		//	カメラ用パラメータ加算
-		bgInfo.t += 0.01f;
+		bgInfo.t += 0.02f;
 		if ( bgInfo.t >= 1.0f )	bgInfo.t = 1.0f;
 
 		//	回転補間
@@ -352,7 +376,7 @@
 	//	オプションに切り替え＆その逆
 	void	sceneMenu::ChangeToOption( void )
 	{
-		if ( KEY_Get( KEY_D ) == 3 || KEY_Get( KEY_B6 ) == 3 )
+		if ( KEY_Get( KEY_B6 ) == 3 )
 		{
 			//	現在のモードを保存してオプションへ移行
 			if ( mode != MENU_MODE::OPTION )
@@ -366,6 +390,20 @@
 				SetMode( tempmode );
 			}
 		}
+	}
+
+	//	モデル更新
+	void	sceneMenu::ModelUpdate( void )
+	{
+		FOR( 0, PLAYER_MAX )
+		{
+			obj[value]->SetPos( modelPos[value] );
+			obj[value]->SetAngle( modelAngle[value] );
+			obj[value]->Animation();
+			obj[value]->Update();
+		}
+
+		printf("1 frame = %d, 2 frame = %d, 3 frame = %d, 4 frame = %d\n", obj[0]->GetFrame(), obj[1]->GetFrame(), obj[2]->GetFrame(), obj[3]->GetFrame());
 	}
 
 //-------------------------------------------------------------------------------
@@ -457,11 +495,17 @@
 		int h = static_cast<int>( iexSystem::ScreenHeight * 0.15f );
 		playerNum->Render( x, y, w, h, 0, playerNumSelectInfo.sy, 128, 128 );
 
+		triangleCursor->Render(x+10.0f, y - 130.0f, 128, 128, 0, 0, 256, 256);
+		triangleCursor->Render(x + 10.0f, y + 140.0f, 128, 128, 256, 0, 256, 256);
+
 		x = static_cast<int>( iexSystem::ScreenWidth * 0.35f );
 		y = static_cast<int>( iexSystem::ScreenHeight * 0.41f );
 		w = static_cast<int>( iexSystem::ScreenWidth * 0.39f );
 		h = static_cast<int>( iexSystem::ScreenHeight * 0.138f );
 		playerNumText->Render( x, y, w, h, 0, 0, 512, 128 );
+
+		
+
 	}
 
 //-------------------------------------------------------------------------------
@@ -471,35 +515,34 @@
 	//	キャラクター選択初期化
 	void	sceneMenu::SelectCharacterInitialize( void )
 	{
+		org[CHARACTER_TYPE::SCAVENGER]->SetMotion(0);	//	掃除屋
+		org[CHARACTER_TYPE::PRINCESS]->SetMotion(0);		//	姫
+		org[CHARACTER_TYPE::THIEF]->SetMotion(0);		//	怪盗
+		org[CHARACTER_TYPE::PIRATE]->SetMotion(0);			//	海賊
 		//	モデル、選択情報初期化
 		FOR( 0, PLAYER_MAX )
 		{
 			//	モデル登録、初期化
 			obj[value] = org[value]->Clone();
-			obj[value]->SetAngle(0.0f, D3DXToRadian(100.0f), 0.0f);
-			//obj[value]->SetPos( -10.0f , 5.0f,-7.0f + 5.0f * value  );
-			obj[value]->Update();
-
+			modelAngle[value] = Vector3( 0.0f, D3DXToRadian( 100.0f ), 0.0f );
 
 			//	選択情報初期化
 			characterSelectInfo.character[value] = value;
 			characterSelectInfo.select[value] = false;
 			
-		
-				int w = static_cast<int>(iexSystem::ScreenWidth * (0.04f));
-				int h = static_cast<int>(iexSystem::ScreenHeight * (0.07f));
-				ImageInitialize(cursorImage[value], 0, 0, w, h, 0, 0, 0, 0);
-				ImageInitialize(decidecursorImage[value], 0, 0, w, h, 0, 0, 0, 0);
-			
+			//	カーソル初期化
+			int w = static_cast<int>(iexSystem::ScreenWidth * (0.04f));
+			int h = static_cast<int>(iexSystem::ScreenHeight * (0.07f));
+			ImageInitialize(cursorImage[value], 0, 0, w, h, 0, 0, 0, 0);
+			ImageInitialize(decidecursorImage[value], 0, 0, w, h, 0, 0, 0, 0);
 			cursorImage[value].obj = cursor;
 			decidecursorImage[value].obj = decidecursor;
-
 			if ( value >= gameManager->GetPlayerNum() )
 			{
 				cursorImage[value].renderflag = false;
 			}
 		}
-
+	
 		//	変数初期化
 		characterSelectInfo.imagePos = 0;
 		characterSelectInfo.step = 0;
@@ -537,18 +580,25 @@
 			if ( characterSelectInfo.select[value] )	continue;
 
 			//	カーソル移動
-			if (input[value]->Get(KEY_RIGHT) == 3)	{
-				sound->PlaySE(SE::CHOICE_SE);
+			if ( input[value]->Get( KEY_RIGHT ) == 3 )	
+			{
+				sound->PlaySE( SE::CHOICE_SE );
 				characterSelectInfo.character[value]++;
+				//	下限設定
+				if ( characterSelectInfo.character[value] >= CHARACTER_TYPE::MAX )	characterSelectInfo.character[value] = 0;
+				//	モデル差し替え
+				obj[value] = org[characterSelectInfo.character[value]]->Clone();
 			}
-			if (input[value]->Get(KEY_LEFT) == 3){
-				sound->PlaySE(SE::CHOICE_SE);
+			if ( input[value]->Get( KEY_LEFT ) == 3 )
+			{
+				sound->PlaySE( SE::CHOICE_SE );
 				characterSelectInfo.character[value]--;
+				//	上限設定
+				if ( characterSelectInfo.character[value] < 0 )	characterSelectInfo.character[value] = CHARACTER_TYPE::MAX - 1;
+				//	モデル差し替え
+				obj[value] = org[characterSelectInfo.character[value]]->Clone();
 			}
 
-			//	上限・下限設定
-			if ( characterSelectInfo.character[value] < 0 )	characterSelectInfo.character[value] = CHARACTER_TYPE::MAX - 1;
-			if ( characterSelectInfo.character[value] >= CHARACTER_TYPE::MAX )	characterSelectInfo.character[value] = 0;
 
 			//	決定
 			if ( input[value]->Get( KEY_SPACE ) == 3 || input[value]->Get( KEY_A ) == 3 )
@@ -557,8 +607,7 @@
 				characterSelectInfo.select[value] = true;
 			}
 
-			//	モデル差し替え
-			obj[value] = org[characterSelectInfo.character[value]]->Clone();
+
 		}
 
 		//	選択済み人数をカウント
@@ -603,11 +652,8 @@
 		//	モデルデータ更新
 		FOR( 0, PLAYER_MAX )
 		{
-			obj[value]->Animation();
-			obj[value]->SetPos(-12.0f, 10.0f, -9.0f + 6.0f * value);
-			obj[value]->SetAngle(0.0f, CHARA_ANGLE::CharaSelectPlayer_ANGLE[value], 0.0f);
-			obj[value]->Update();
-
+			modelPos[value] = Vector3( -12.0f, 10.0f, -9.0f + 6.0f * value );
+			modelAngle[value] = Vector3( 0.0f, CHARA_ANGLE::CharaSelectPlayer_ANGLE[value], 0.0f );
 		}
 	}
 
@@ -702,7 +748,7 @@
 		//　おもちゃモデル初期化
 		toyStage->SetPos(0.0f,0.0f,0.0f);
 		toyStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
-		toyStage->SetScale(0.025f);
+		toyStage->SetScale(0.05f);
 		toyStage->Update();
 
 		//	パラメータ初期化
@@ -727,15 +773,15 @@
 		switch ( stageSelectInfo.stage )
 		{
 		case 0:
-			deskStage->SetPos(-2.0f, 15.0f, 8.0f);
-			toyStage->SetPos(7.0f, 15.0f, 15.0f);
+			deskStage->SetPos(-2.0f, 14.0f, 8.0f);
+			toyStage->SetPos(7.0f, 14.0f, 15.0f);
 			deskStage->SetAngle( D3DXToRadian( 30.0f ), stageSelectInfo.angle, 0.0f );
 			toyStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
 			break;
 
 		case 1:
-			deskStage->SetPos(-7.0f, 15.0f, 15.0f);
-			toyStage->SetPos(2.0f, 15.0f, 8.0f);
+			deskStage->SetPos(-7.0f, 14.0f, 15.0f);
+			toyStage->SetPos(2.0f, 14.0f, 8.0f);
 			deskStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
 			toyStage->SetAngle(D3DXToRadian(30.0f), stageSelectInfo.angle, 0.0f);
 			break;
@@ -814,14 +860,15 @@
 	void	sceneMenu::SelectCheckInitialize( void )
 	{
 		//	キャラ別モーション設定
-		org[CHARACTER_TYPE::PRINCESS]->SetMotion( 2 );
+		org[CHARACTER_TYPE::PRINCESS]->SetMotion( 0 );
 		
 		//	各プレイヤーモデル初期化
 		static	Vector3	cursorPos[4];
 		FOR( 0, PLAYER_MAX )
 		{
 			obj[value] = org[gameManager->GetCharacterType( value )]->Clone();
-			obj[value]->SetPos(10.0f, 14.0f, 4.0f - 3.0f * value);
+			modelPos[value] = Vector3( 10.0f, 14.0f, 4.0f - 3.0f * value );
+			obj[value]->SetPos( modelPos[value] );
 			obj[value]->Update();
 			WorldToClient( obj[value]->GetPos(), cursorPos[value], matView * matProjection );
 		}
@@ -842,7 +889,7 @@
 		
 			toyStage->SetPos(7.0f, 15.5f, 2.5f);
 			toyStage->SetAngle(D3DXToRadian(45.0f), D3DXToRadian(-90.0f), 0.0f);
-			toyStage->SetScale(0.01f);
+			toyStage->SetScale(0.02f);
 			toyStage->Update();
 		}
 
@@ -933,10 +980,8 @@
 		//	モデル更新
 		FOR( 0, PLAYER_MAX )
 		{
-			obj[value]->Animation();
-			obj[value]->SetPos(12.0f, 10.0f, 8.0f - 6.0f * value);
-			obj[value]->SetAngle(0.0f, CHARA_ANGLE::SelectCheckPlayer_ANGLE[value], 0.0f);
-			obj[value]->Update();
+			modelPos[value] = Vector3( 12.0f, 10.0f, 8.0f - 6.0f * value );
+			modelAngle[value] = Vector3( 0.0f, CHARA_ANGLE::SelectCheckPlayer_ANGLE[value], 0.0f );
 		}
 		break;
 
@@ -1033,8 +1078,9 @@
 		{
 			if ( screen->GetScreenState() )
 			{
-				MainFrame->ChangeScene( new sceneLoad( new sceneMain() ) );
-				return;
+				changeScene = true;
+				//MainFrame->ChangeScene( new sceneLoad( new sceneMain() ) );
+				//return;
 			}
 		}
 		
@@ -1061,8 +1107,9 @@
 	{
 		if ( screen->GetScreenState() )
 		{
-			MainFrame->ChangeScene( new sceneLoad( new sceneTitle() ) );
-			return;
+			changeScene = true;
+			//MainFrame->ChangeScene( new sceneLoad( new sceneTitle() ) );
+			//return;
 		}
 	}
 
@@ -1093,21 +1140,24 @@
 	//	オプション更新
 	void	sceneMenu::OptionUpdate( void )
 	{
-		if (KEY_Get(KEY_DOWN) == 3){
+		if (input[0]->Get(KEY_DOWN) == 3)
+		{
 			sound->PlaySE(SE::DECIDE_SE);
 			if (optionInfo.step<3)
 			optionInfo.step++;
 		}
-		if (KEY_Get(KEY_UP) == 3){
+		if (input[0]->Get(KEY_UP) == 3)
+		{
 			sound->PlaySE(SE::DECIDE_SE);
 			if (optionInfo.step>0){
 				optionInfo.step--;
 			}
 		}
 
-		switch (optionInfo.step){
+		switch (optionInfo.step)
+		{
 		case 0:
-			if (KEY_Get(KEY_RIGHT) == 3 || KEY_Get(KEY_LEFT) == 3){
+			if (input[0]->Get(KEY_RIGHT) == 3 || input[0]->Get(KEY_LEFT) == 3){
 				sound->PlaySE(SE::CHOICE_SE);
 				if (optionInfo.itemflg == false){
 					optionInfo.itemflg = true;
@@ -1161,7 +1211,6 @@
 			gameManager->SetMaxLife(optionInfo.life);
 			gameManager->SetTime(optionInfo.minute,optionInfo.second);
 	}
-
 
 	//	オプション描画
 	void	sceneMenu::OptionRender( void )

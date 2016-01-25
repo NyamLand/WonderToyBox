@@ -10,6 +10,7 @@
 #include	"BaseBullet.h"
 #include	"BulletManager.h"
 #include	"Pirate_Bullet01.h"
+#include	"Sound.h"
 #include	"Stage.h"
 
 Pirate_Bullet01::Pirate_Bullet01() :explosion(false), power(1)
@@ -70,7 +71,8 @@ void	Pirate_Bullet01::Explode(void)
 {
 	radius += 1.0f;
 	move = Vector3(0, 0, 0);
-	particle->Bom(this->pos, radius, 1.0f);
+	particle->Bomb( pos, radius * 0.01f, Vector3(0.7f, 0.2f, 0.1f) );
+	//particle->Bom(this->pos, radius, 1.0f);
 	//爆発範囲が一定以上になったら消去
 	if (radius > 40.0f) state = false;
 }
@@ -104,8 +106,8 @@ bool	Pirate_Bullet01::PlayerCollisionCheck(void)
 			//state = false;
 			float	effectScale = 0.2f;
 			particle->Spark(p_pos_top, effectScale);
-
-
+			//サウンド再生
+			sound->PlaySE(SE::HIT_SE);
 			//	ライフ減らす
 			FOR(0, power) characterManager->SubLife(i);
 

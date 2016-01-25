@@ -66,6 +66,7 @@
 		dir = Vector3( 1.0f, -2.0f, -1.0f );
 		dir.Normalize();
 		iexLight::DirLight( shader3D, 0, &dir, 0.5f, 0.5f, 0.5f );
+		shader3D->SetValue("DirLightVec", Vector3( 1.0f, 0.0f, 1.0f ) );
 
 		//	ƒJƒƒ‰Ý’è
 		mainView = new Camera();
@@ -110,7 +111,8 @@
 		ui->Initialize( UI_MODE::MAIN );
 
 		//	BGMÄ¶
-		sound->PlayBGM( BGM::MAIN_BGM );
+		if (gameManager->GetRound()!=2)	sound->PlayBGM( BGM::MAIN_BGM );
+		else sound->PlayBGM(BGM::FAINLROUND_BGM);
 
 		return true;
 	}

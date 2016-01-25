@@ -247,7 +247,7 @@
 	}
 
 	//	ÉÇÅ[ÉVÉáÉìä«óù
-	void	Knight::MotionManagement( int motion )
+/*	void	Knight::MotionManagement( int motion )
 	{
 		switch ( motion )
 		{
@@ -287,7 +287,7 @@
 			obj->SetMotion(MOTION_DATA::POSTURE);
 			break;
 		}
-	}
+	}*/
 
 //-----------------------------------------------------------------------------------
 //	èÓïÒê›íË

@@ -14,18 +14,22 @@ private:
 	static bool	threadState;	//	スレッドの状態
 	
 	//	演出系
-	ImageObj	bgImage[2];
+	ImageObj	bgImage[4];
 	ImageObj	pressAnyKeyImage;
+	ImageObj	moveImage;
+	ImageObj	backImage;
 	iex2DObj*	nowLoading;
 	int	timer;
 
 	float	t;
 	bool	loadflg;
-	bool	reverseFlag;
 	bool	isEnd;
 	bool	changeSceneFlag;
+	int	reverseFlag;
 	int	loadingTimer;
 	int	renderCount;
+	int	order;
+	int	num;
 
 public:
 	//	初期化・解放

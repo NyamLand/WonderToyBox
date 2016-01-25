@@ -65,7 +65,7 @@ Stage*	stage = nullptr;
 		org[OBJECT_TYPE::YELLOW_BLOCK] = new iexMesh("DATA/Object/Box/yellowBox.imo");
 		org[OBJECT_TYPE::DESK_BASE] = new iexMesh("DATA/BG/stage-desk/stage.IMO");
 		org[OBJECT_TYPE::FOREST_BASE] = new iexMesh("DATA/BG/Forest/model/forest_base.IMO");
-		org[OBJECT_TYPE::TOY_BASE] = new iexMesh("DATA/BG/stage_toy/stage_toy.IMO");
+		org[OBJECT_TYPE::TOY_BASE] = new iexMesh("DATA/BG/stage_toy/stageToy.IMO" );
 		forestRiver = new iexMesh("DATA/BG/Forest/model/forest_river.IMO");
 
 		//	ìñÇΩÇËîªíËópÉÇÉfÉãì«Ç›çûÇ›
@@ -76,7 +76,7 @@ Stage*	stage = nullptr;
 		collisionObj[OBJECT_TYPE::YELLOW_BLOCK] = new iexMesh("DATA/Object/Box/yellowBox.imo");
 		collisionObj[OBJECT_TYPE::DESK_BASE] = new iexMesh("DATA/BG/stage-desk/Collision.IMO");
 		collisionObj[OBJECT_TYPE::FOREST_BASE] = new iexMesh("DATA/BG/Forest/Collision/collision_forest.IMO");
-		collisionObj[OBJECT_TYPE::TOY_BASE] = new iexMesh( "DATA/BG/stage_toy/collision_stage_toy.IMO" );
+		collisionObj[OBJECT_TYPE::TOY_BASE] = new iexMesh( "DATA/BG/stage_toy/stageToy.IMO" );
 
 		//	ïœêîèâä˙âª
 		objectID = 0;
@@ -87,21 +87,14 @@ Stage*	stage = nullptr;
 		{
 		case STAGE_TYPE::DESK:
 			Append( Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 1.0f, 1.0f, 1.0f ), MOVE_TYPE::FIX_BOX, OBJECT_TYPE::DESK_BASE );
-			Append( Vector3( 10.0f, 20.0f, 0.0f ), Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 0.5f, 0.5f, 0.5f ), MOVE_TYPE::BREAK_OBJECT, OBJECT_TYPE::RED_BLOCK );
-			Append( Vector3( -10.0f, 10.0f, 0.0f ), Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 0.5f, 0.5f, 0.5f ), MOVE_TYPE::MOVE_BOX_HIEGHT, OBJECT_TYPE::RED_BLOCK );
+			//Append( Vector3( 10.0f, 20.0f, 0.0f ), Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 0.5f, 0.5f, 0.5f ), MOVE_TYPE::BREAK_OBJECT, OBJECT_TYPE::RED_BLOCK );
+			//Append( Vector3( -10.0f, 10.0f, 0.0f ), Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 0.5f, 0.5f, 0.5f ), MOVE_TYPE::MOVE_BOX_HIEGHT, OBJECT_TYPE::RED_BLOCK );
 			break;
 
 		case STAGE_TYPE::TOY:
-			Append(Vector3(0.0f, 5.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.8f, 0.5f), MOVE_TYPE::FIX_BOX, OBJECT_TYPE::TOY_BASE);
+			Append(Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 1.0f), MOVE_TYPE::FIX_BOX, OBJECT_TYPE::TOY_BASE);
 			Append(Vector3(10.0f, 20.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::BREAK_OBJECT, OBJECT_TYPE::RED_BLOCK);
 			Append(Vector3(-10.0f, 10.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::MOVE_BOX_HIEGHT, OBJECT_TYPE::RED_BLOCK);
-			break;
-
-		case STAGE_TYPE::BLOCK:
-			Append( Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 1.0f, 1.0f, 1.0f ), MOVE_TYPE::FIX_BOX, OBJECT_TYPE::BASE );
-			Append( Vector3( 20.0f, 0.0f, 0.0f ), Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 0.5f, 0.5f, 0.5f ), MOVE_TYPE::FIX_BOX, OBJECT_TYPE::BLUE_BLOCK );
-			Append( Vector3( -10.0f, 2.5f, 0.0f ), Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 0.5f, 0.5f, 0.5f ), MOVE_TYPE::MOVE_BOX_HIEGHT, OBJECT_TYPE::RED_BLOCK );
-			Append( Vector3( -10.0f, 20.0f, 0.0f ), Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 0.5f, 0.5f, 0.5f ), MOVE_TYPE::BREAK_OBJECT, OBJECT_TYPE::RED_BLOCK );
 			break;
 		}
 	}

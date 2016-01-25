@@ -35,6 +35,7 @@ public:
 	void	Bom(const Vector3& pos, const float& move, const float& scale = 1.0f, const int& time = 6);
 	void	Flower( const Vector3& pos, float scale, const Vector3& color);
 	void	FlowerDisseminate( const Vector3& pos, float scale, float speed, const Vector3& color );
+	void	Bomb( const Vector3& pos, float scale, const Vector3& color );
 	void	CoinGet(const Vector3& pos, const float& scale = 1.0f);										//	コインエフェクト
 	void	Magnet(const Vector3& pos, const float& length, const float& scale = 1.0f, const int& speed = 10);					//	引き寄せエフェクト
 

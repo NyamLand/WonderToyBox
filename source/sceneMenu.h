@@ -102,6 +102,7 @@ private:
 	iex2DObj*				cpuCursor;
 	iex2DObj*				decidecursor;
 	iex2DObj*				selectCheckCursor;
+	iex2DObj*				triangleCursor;
 	ImageObj				textImage;
 	ImageObj				faceImage[CHARACTER_TYPE::MAX];
 	ImageObj				cursorImage[4];
@@ -119,6 +120,11 @@ private:
 	//	共通変数
 	int		mode;
 	int		tempmode;
+	bool	changeScene;
+	Vector3 dir;
+	Vector3 modelPos[4];
+	Vector3 modelAngle[4];
+	Vector3 modelScale[4];
 	
 public:
 	//	初期化・解放
@@ -132,6 +138,7 @@ public:
 	void	Render( void );
 	void	CameraUpdate( void );
 	void	ChangeToOption( void );
+	void	ModelUpdate( void );
 
 	//	プレイヤー人数選択関数
 	void	SelectPlayerNumInitialize( void );

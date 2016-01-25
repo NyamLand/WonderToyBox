@@ -23,7 +23,7 @@
 //	グローバル
 //-------------------------------------------------------------------------------
 
-#define	GETAWAY_LENGTH		3.0f	//	逃げる判定距離
+#define	GETAWAY_LENGTH		5.0f	//	逃げる判定距離
 #define	MAX_HEIGHT					50.0f	//	想定している高さ最大値
 #define	SCALE								3.0f	//	コイン大きさ
 #define	MASS							10.0f;	//	質量
@@ -205,7 +205,7 @@
 			if ( !activate )	continue;
 			//if ( characterManager->GetUnrivaled( i ) )	continue;
 			p_pos = characterManager->GetPos( i );
-			bool isHit = Collision::CapsuleVSSphere( p_pos, Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z ), 1.5f, Vector3( pos.x, pos.y + ( scale * 0.5f ), pos.z ), scale * 0.8f );
+			bool isHit = Collision::CapsuleVSSphere( p_pos, Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z ), 2.0f, Vector3( pos.x, pos.y + ( scale * 0.5f ), pos.z ), scale * 0.8f );
 
 			if ( isHit )
 			{
@@ -239,7 +239,7 @@
 	void	Coin::Hitduringtheoperation( const Vector3& pos, const int& Num )
 	{
 		state = false;
-		float	effectScale = 0.2f;
+		float	effectScale = 0.4f;
 		particle->Spark( pos, effectScale );
 		gameManager->AddCoin( Num );
 		if (event_coin->GetDubbleInst().eventflag) gameManager->AddCoin(Num);
@@ -254,7 +254,7 @@
 		{
 			if ( !activate )	continue;
 			p_pos[i] = characterManager->GetPos( i );
-			p_pos[i].y = pos.y;
+			//p_pos[i].y = pos.y;
 
 			//	プレイヤーへのベクトル取得
 			Vector3	vec = p_pos[i] - pos;
@@ -272,16 +272,16 @@
 	//	マグネット
 	void	Coin::Magnet( void )
 	{
-		Vector3	p_pos[4];
+		Vector3	p_pos;
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			if ( !activate )	continue;
 			if ( !characterManager->GetParameterState( i, PARAMETER_STATE::MAGNET ) )	continue;
-			p_pos[i] = characterManager->GetPos( i );
-			p_pos[i].y = pos.y;
+			p_pos = characterManager->GetPos( i );
+			//p_pos.y = pos.y;
 
 			//	プレイヤーへのベクトル取得
-			Vector3	vec = p_pos[i] - pos;
+			Vector3	vec = p_pos - pos;
 			float	length = vec.Length();
 
 			//	近ければ吸い寄せられる

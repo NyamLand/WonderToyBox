@@ -293,7 +293,7 @@
 	}
 
 	//	ÉÇÅ[ÉVÉáÉìä«óù
-	void	Tiger::MotionManagement(int motion)
+/*	void	Tiger::MotionManagement(int motion)
 	{
 		switch (motion)
 		{
@@ -333,7 +333,7 @@
 			obj->SetMotion(MOTION_DATA::ATTACK3);
 			break;
 		}
-	}
+	}*/
 
 //-----------------------------------------------------------------------------------
 //	èÓïÒê›íË
