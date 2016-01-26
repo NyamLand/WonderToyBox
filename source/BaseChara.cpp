@@ -465,10 +465,10 @@ namespace
 			}
 			move.y = 0.0f;
 			isGround = true;
-			if ( jumpPower <= 0.0f && ( mode == MODE_STATE::MOVE || mode == MODE_STATE::JUMP ) )
+			if ( jumpPower <= 0.0f/* && ( mode == MODE_STATE::MOVE || mode == MODE_STATE::JUMP ) */)
 			{
 				jumpState = true;
-				SetMode( MODE_STATE::MOVE );
+				//SetMode( MODE_STATE::MOVE );
 			}
 		}
 		//	前方レイ判定
@@ -709,16 +709,22 @@ namespace
 	{
 		if ( jumpState )
 		{
-			jumpPower = JUMP_POWER;
-			jumpState = false;
+			if ( isPlayer )
+			{
+				if ( input->Get( KEY_B ) == 3 )
+				{
+					jumpPower = JUMP_POWER;
+					jumpState = false;
+				}
+			}
 		}
 		else
 		{
 			if ( jumpPower > 0.0f )		move.y += jumpPower;
 			jumpPower -= JUMP_POWER * 0.1f;
 		}
-		if ( isPlayer )		Control();
-		else					ControlAI();
+		//if ( isPlayer )		Control();
+		//else					ControlAI();
 	}
 
 	//	ガード
@@ -1102,6 +1108,8 @@ namespace
 		//	描画フラグ切り替え
 		if ( respawn.timer % 10 == 0 )	renderflag = !renderflag;
 
+		if ( respawn.timer <= 3 * SECOND - 30 )	SetMode( MODE_STATE::MOVE );
+
 		//	時間が来たら効果取り消し
 		if ( respawn.timer <= 0 )
 		{
@@ -1157,20 +1165,22 @@ namespace
 			}
 		}
 	
-		if ( input->Get( KEY_B ) == 3 )
-		{
-			if ( jumpState )
-			{
-				Jump();
-				mode = MODE_STATE::JUMP;
-			}
-		}
-		
+		//if ( input->Get( KEY_B ) == 3 )
+		//{
+		//	if ( jumpState )
+		//	{
+		//		mode = MODE_STATE::JUMP;
+		//	}
+		//}
+		Jump();
+
 		if ( input->Get( KEY_B6 ) == 3 )
 		{
 			m_Effect->SetShield( GetPlayerNum(), true );
 			mode = MODE_STATE::GUARD;
 		}
+
+
 	}
 
 	//	AI操作
@@ -1269,8 +1279,15 @@ namespace
 		//	壁を感知したらジャンプ
 		if ( checkWall )
 		{
-			if ( jumpState )		mode = MODE_STATE::JUMP;
+			if ( jumpState )
+			{
+				//mode = MODE_STATE::JUMP;
+				jumpPower = JUMP_POWER;
+				jumpState = false;
+			}
 		}
+
+		Jump();
 
 	}
 
