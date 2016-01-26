@@ -99,13 +99,6 @@ private:
 	int	totalCoin[3][4];	//	ラウンドごとのコイン合計値
 	bool	coinCollision;	//	trueでON,falseでOFF
 
-	//	ラストボーナス用カウント
-	int	maxCoinNum[4];
-	int	fallStageNum[4];
-	int	coin77[4]; 
-	int	minCoinNum[4];
-	int	hitAttackNum[4];
-
 public:	
 		Vector3	InitPos[4];
 public:
@@ -132,13 +125,6 @@ public:
 	void	SubCoin( int playerNum );
 	void	DecideWorst( void );
 	void	LoadTextData( void );
-	
-	//	ラストボーナス用カウント
-	void	CalcMaxCoin( int player );
-	void	CalcSubCoin77( int player );
-	void	AddFallStage( int player );
-	void	AddTotalCoinNum( int player );
-	void	AddHitAttackCount( int player );
 
 	//	情報取得
 	int		GetCharacterType( int num )const;
@@ -160,13 +146,6 @@ public:
 	bool		GetItemFlg( void )const;
 	bool		GetCoinCollision( void )const;
 	static	GameManager*	GetInstance( void );
-
-	//	ラストボーナス用情報取得
-	int	GetMaxCoinNum( int player )const;
-	int	GetFallStageNum( int player )const;
-	int	GetSubCoin77( int player )const;
-	int	GetTotalCoinNum( int player )const;
-	int	GetHitAttackNum( int player )const;
 
 	//	情報設定
 	void	SetCharacterType( int num, int type );

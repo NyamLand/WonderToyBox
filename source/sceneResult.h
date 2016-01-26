@@ -141,8 +141,10 @@ private:
 	ORIGINAL_INFO				originInfo[4];
 	NUMBER_INFO					number[4];
 	NUMBER_INFO					roundCoinNumber[3][4];
+	NUMBER_INFO					totalNumber[4];
 	NUMBERIMAGE_INFO		numberImageInfo[4];
 	NUMBERIMAGE_INFO		roundCoinNumberImageInfo[3][4];
+	NUMBERIMAGE_INFO		totalNumberImageInfo[4];
 	ROULETTE_INFO				rouletteInfo;
 	MENU_INFO						menuInfo;
 	VIEW_RANK_INORDER	viewRankInOrder;

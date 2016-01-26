@@ -871,9 +871,6 @@ namespace
 			pos = gameManager->InitPos[this->playerNum];
 			SetMode( MODE_STATE::WAIT );
 			SetParameterState( PARAMETER_STATE::RESPAWN );
-
-			//	ステージ落下回数加算
-			gameManager->AddFallStage( GetPlayerNum() );
 		}
 	} 
 

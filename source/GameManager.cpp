@@ -56,10 +56,6 @@
 			charatype[i] = 0;		
 			coinNum[i] = 0;
 			startLife[i] = 5;
-			FOR(0, PLAYER_MAX)
-			{
-				totalCoin[i][value] = 0;
-			}
 		}
 		playerNum = 0;
 		stageType = 1;
@@ -72,14 +68,12 @@
 		maxlife = LIFE_MAX_NUM::LIFE_5;
 		coinCollision = false;
 
-		//	ラストボーナス用カウント初期化
-		FOR( 0, PLAYER_MAX )
+		FOR( 0, Round::END )
 		{
-			maxCoinNum[value] = 0;
-			fallStageNum[value] = 0;
-			coin77[value] = 0;
-			minCoinNum[value] = 0;
-			hitAttackNum[value] = 0;
+			for ( int i = 0; i < PLAYER_MAX; i++ )
+			{
+				totalCoin[value][i] = 0;
+			}
 		}
 
 		return	true;
@@ -286,15 +280,6 @@
 				}
 			}
 		}
-
-		//-------------------------------------------------------
-		//	ラストボーナス計算
-		//-------------------------------------------------------
-		FOR( 0, PLAYER_MAX )
-		{
-			CalcMaxCoin( value );
-			CalcSubCoin77( value );
-		}
 	}
 
 	//	描画
@@ -311,7 +296,6 @@
 	void	GameManager::AddCoin( int playerNum )
 	{
 		coinNum[playerNum]++;
-		AddTotalCoinNum( playerNum );
 	}
 
 	//	コイン減算
@@ -367,43 +351,6 @@
 
 		//	合計値をタイムリミット変数へ代入
 		timelimit = minute * MINUTE + second * SECOND;
-	}
-
-//-------------------------------------------------------------------------
-//	ラストボーナスカウント
-//-------------------------------------------------------------------------
-	
-	//	最大コイン枚数計算
-	void	GameManager::CalcMaxCoin( int player )
-	{
-		if (maxCoinNum[player] <= coinNum[player])
-		{
-			maxCoinNum[player] = coinNum[player];
-		}
-	}
-
-	//	ステージからの落下回数加算
-	void	GameManager::AddFallStage( int player )
-	{
-		fallStageNum[player]++;
-	}
-
-	//	７７枚からのコイン差
-	void	GameManager::CalcSubCoin77( int player )
-	{
-		coin77[player] = 77 - coinNum[player];
-	}
-
-	//	総計獲得コイン枚数加算
-	void	GameManager::AddTotalCoinNum( int player )
-	{
-		minCoinNum[player]++;
-	}
-
-	//	攻撃を当てた回数加算
-	void	GameManager::AddHitAttackCount( int player )
-	{
-		hitAttackNum[player]++;
 	}
 
 //-------------------------------------------------------------------------
@@ -532,36 +479,6 @@
 		}
 
 		return	0;
-	}
-
-	//	最大コイン枚数取得
-	int		GameManager::GetMaxCoinNum( int player )const 
-	{
-		return	maxCoinNum[player];
-	}
-
-	//	ステージからの落下回数取得
-	int		GameManager::GetFallStageNum( int player )const
-	{
-		return	fallStageNum[player];
-	}
-
-	//	７７からのコイン差取得
-	int		GameManager::GetSubCoin77( int player )const
-	{
-		return	coin77[player];
-	}
-
-	//	攻撃を当てた回数取得
-	int		GameManager::GetHitAttackNum( int player )const
-	{
-		return	hitAttackNum[player];
-	}
-
-	//	コイン総数取得
-	int		GameManager::GetTotalCoinNum( int player )const
-	{
-		return	minCoinNum[player];
 	}
 
 	//	プレイヤー初期体力取得
