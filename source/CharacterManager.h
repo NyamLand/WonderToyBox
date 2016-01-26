@@ -78,6 +78,8 @@ public:
 	bool		GetUnrivaled( int player )const;
 	bool		GetCanHyper( int player )const;
 	bool		GetParameterState( int player, int type )const;
+	bool		GetJumpState( int player )const;
+
 	int		GetAttackParam( int player )const;
 	int		GetPlayerNum( int playerNum )const;
 	int		GetPower( int playerNum )const;

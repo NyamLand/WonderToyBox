@@ -103,7 +103,13 @@
 		{
 			character[i]->Render( shader, technique );	
 		}
+		bool	coin[4];
+		FOR( 0, PLAYER_MAX )
+		{
+			coin[value] = GetJumpState( value );
+		}
 
+		printf( "p1 = %d, p2 = %d, p3 = %d, p4 = %d\n", coin[0], coin[1], coin[2], coin[3] );
 		//　デバッグ表示
 		//DrawDebug();
 	}
@@ -622,6 +628,12 @@ void	CharacterManager::SubLife(int player)const
 	bool		CharacterManager::GetParameterState( int player, int type )const
 	{
 		return	character[player]->GetParameterState( type );
+	}
+
+	//	ジャンプフラグ
+	bool		CharacterManager::GetJumpState( int player )const
+	{
+		return	character[player]->GetJumpFlag();
 	}
 
 	//	攻撃種類取得

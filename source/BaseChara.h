@@ -350,6 +350,7 @@ public:
 	//bool	GetUnrivaled( void )const;
 	bool		GetCanHyper( void )const;
 	bool		GetParameterState( int type )const;
+	bool		GetJumpFlag( void )const;
 	int		GetPower( void )const;
 	int		GetTotalPower( void )const;
 	int		GetMode( void )const;

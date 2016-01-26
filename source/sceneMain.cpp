@@ -327,7 +327,6 @@
 		characterManager->Update();
 
 		//　ステージ更新
-		//stageManager->Update();
 		stage->Update();
 
 		//	パーティクル更新
