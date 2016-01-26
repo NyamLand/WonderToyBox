@@ -760,59 +760,16 @@ iexMesh*	Collision::obj = NULL;
 	{
 		float length = DistanceSegmentSegmentSq( p1, p2, p3, p4 );
 
-		if ( length <= r1 + r2 )	return	true;
+		if ( length <= ( r1 + r2) * ( r1 + r2 ) )	return	true;
 		return	false;
 	}
-
-	//	カプセルと球の当たり判定
-	//bool	Collision::CapsuleVSSphere( const Vector3& p1, const Vector3& p2, float r1, const Vector3& c, float r2 )
-	//{
-	//	//	線分の始点から終点までのベクトルを求める
-	//	Vector3	v1 = p2 - p1;
-	//	float			l1 = v1.Length();
-	//	v1.Normalize();
-
-	//	//	線分の始点から球の中心へのベクトルを求める
-	//	Vector3	v2 = c - p1;
-	//	float			l2 = v2.Length();
-
-	//	//	内積を求める
-	//	float	dot = Vector3Dot( v2, v1 );
-
-	//	//	カプセルの半径と球の半径の和を求める
-	//	float	rr = r1 + r2;
-
-	//	//	内積の結果が始点より後ろだったら距離を計算
-	//	if ( dot < 0.0f )
-	//	{
-	//		if ( l2 <= rr )	return	true;
-	//	}
-	//	else
-	//	{
-	//		//	内積の結果が線分の長さより短かったら距離を計算
-	//		if ( l1 > dot )
-	//		{
-	//			Vector3	v3 = v1 * dot;
-	//			Vector3	v4 = v3 - c;
-	//			if ( v4.Length() <= rr )	return	true;
-	//		}
-	//		else
-	//		{
-	//			Vector3	v5 = p2 - c;
-	//			float	l5 = v5.Length();
-	//			if ( l5 <= rr )	return	true;
-	//		}
-	//	}
-
-	//	return	false;
-	//}
 
 	//	カプセルと球の当たり判定
 	bool	Collision::CapsuleVSSphere( const Vector3& p1, const Vector3& p2, float r1, const Vector3& c, float r2 )
 	{
 		float length = DistancePointSegmentSq( c, p1, p2 );
 
-		if ( length <= r1 + r2 )	return	true;
+		if ( length <= ( r1 + r2 ) * ( r1 + r2 ) )	return	true;
 		return	false;
 	}
 

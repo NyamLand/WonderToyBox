@@ -102,16 +102,8 @@
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			character[i]->Render( shader, technique );	
+			//DrawCapsule( character[i]->GetPos(), Vector3( character[i]->GetPos().x, character[i]->GetPos().y + 3.0f, character[i]->GetPos().z ), 2.0f );
 		}
-		bool	coin[4];
-		FOR( 0, PLAYER_MAX )
-		{
-			coin[value] = GetJumpState( value );
-		}
-
-		printf( "p1 = %d, p2 = %d, p3 = %d, p4 = %d\n", coin[0], coin[1], coin[2], coin[3] );
-		//　デバッグ表示
-		//DrawDebug();
 	}
 
 	//　デバッグ
@@ -245,6 +237,7 @@
 
 		//	攻撃判定
 		bool	isHit = Collision::CapsuleVSSphere( bc2_bottom, bc2_top, bc2_r, bc1_attackPos, bc1_attack_r );
+
 		//	当たっていたら
 		if ( isHit )
 		{
@@ -316,6 +309,7 @@
 
 		//	攻撃判定
 		bool	isHit = Collision::CapsuleVSCapsule( bc1_attack_bottom, bc1_attack_top, bc1_attack_r, bc2_bottom, bc2_top, bc2_r );
+
 
 		//	当たっていたら
 		if ( isHit )

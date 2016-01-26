@@ -207,7 +207,7 @@
 			switch ( type )
 			{
 			case COIN:
-				r = 3.0f;
+				r = 1.5f;
 				break;
 			case COIN_BAG_5:
 			case COIN_BAG_10:

@@ -80,8 +80,8 @@ bool	Pirate::Initialize(int playerNum, Vector3 pos)
 void	Pirate::Render(iexShader* shader, LPSTR technique)
 {
 	SetCannonPos();
-	BaseChara::Render(shader, technique);
-	cannon->Render();
+	BaseChara::Render( shader, technique );
+	if ( renderflag )		cannon->Render();
 }
 
 //-----------------------------------------------------------------------------------

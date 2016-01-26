@@ -302,8 +302,6 @@ namespace
 			
 			if ( renderflag )
 			obj->Render( shader, technique );
-
-			
 		}
 	}
 
@@ -617,7 +615,8 @@ namespace
 			move = knockBackInfo.vec * (force / 4);
 			move.y = force / 4;
 
-			SetMode(MODE_STATE::KNOCKBACK);
+			SetMode( MODE_STATE::KNOCKBACK );
+			jumpState = true;
 			//damageStep++;
 			//break;
 
