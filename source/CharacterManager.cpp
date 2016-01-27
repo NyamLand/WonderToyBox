@@ -20,7 +20,6 @@
 //	初期化・解放
 //-------------------------------------------------------------------------------------
 
-
 	//	コンストラクタ
 	CharacterManager::CharacterManager( void )
 	{
@@ -102,7 +101,6 @@
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			character[i]->Render( shader, technique );	
-			//DrawCapsule( character[i]->GetPos(), Vector3( character[i]->GetPos().x, character[i]->GetPos().y + 3.0f, character[i]->GetPos().z ), 2.0f );
 		}
 	}
 
@@ -197,7 +195,8 @@
 			{
 				//	自分か相手が無敵状態だとつぎへ
 				if ( i == n )	continue;
-				if ( character[n]->GetParameterState(PARAMETER_STATE::UNRIVALED) )	continue;
+				if ( character[n]->GetParameterState( PARAMETER_STATE::UNRIVALED ) )			continue;
+				if ( character[n]->GetParameterState( PARAMETER_STATE::UNRIVALEDITEM ) )	continue;
 
 				//	タイプ別当たり判定
 				switch ( attackParam )
@@ -546,8 +545,6 @@
 		}
 	}
 
-
-
 //-------------------------------------------------------------------------------------
 //	ライフ処理
 //-------------------------------------------------------------------------------------
@@ -628,6 +625,12 @@ void	CharacterManager::SubLife(int player)const
 	bool		CharacterManager::GetJumpState( int player )const
 	{
 		return	character[player]->GetJumpFlag();
+	}
+
+	//	コイン判定状態取得
+	bool		CharacterManager::GetCoinUnrivaled( int player )const
+	{
+		return	character[player]->GetCoinUnrivaled();
 	}
 
 	//	攻撃種類取得

@@ -938,6 +938,7 @@
 	//	入力チェック画像更新
 	bool	sceneResult::InputCheckImageUpdate( void )
 	{
+		waveImage.flashingRenderflag = true;
 		bool	isEnd[PLAYER_MAX] = { false, false, false, false };
 
 		FOR( 0, PLAYER_MAX )
@@ -1670,10 +1671,12 @@
 		//	波紋終了後に選択可
 		if ( isFinViewRankInOrder && isEnd )
 		{
+			pressButtonImage.flashingRenderflag = true;
 			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
 			{
 				if ( round != Round::ROUND_FINAL )		step = RESULT_MODE::LIFE;
 				else															step = RESULT_MODE::LAST_RESULT;
+				pressButtonImage.flashingRenderflag = false;
 			}
 		}
 		else
@@ -1758,8 +1761,10 @@
 		//	波紋終了後に選択可
 		if ( isEnd )
 		{
+			pressButtonImage.flashingRenderflag = true;
 			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
 			{
+				pressButtonImage.flashingRenderflag = false;
 				if ( round != Round::ROUND_FINAL )		step = RESULT_MODE::LIFE;
 				else
 				{
@@ -1797,7 +1802,7 @@
 	void	sceneResult::ModeInputWait( void )
 	{
 		bool	isEnd = false;
-		waveImage.flashingRenderflag = true;
+		pressButtonImage.flashingRenderflag = true;
 		FOR( 0, PLAYER_MAX )
 		{
 			//	入力を受け付けていたらスキップ

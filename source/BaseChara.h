@@ -192,6 +192,7 @@ protected:
 	bool				jumpState;
 	bool				checkWall;
 	bool				renderflag;
+	bool				coinUnrivaled;
 	int				mode;
 	int				playerNum;
 	int				power;
@@ -316,6 +317,7 @@ public:
 	//void	SetBoosting( bool boosting );	//Å@
 	void	SetKnockBackVec( Vector3 vec );
 	void	SetUnrivaled( bool state );
+	void	SetCoinUnrivaled( bool state );
 	void	SetParameterState( int parameterState );
 	void	SetRank( int rank );
 	void	SetParameterState( PARAMETER_INFO& paramterState, int time );
@@ -351,6 +353,7 @@ public:
 	bool		GetCanHyper( void )const;
 	bool		GetParameterState( int type )const;
 	bool		GetJumpFlag( void )const;
+	bool		GetCoinUnrivaled( void )const;
 	int		GetPower( void )const;
 	int		GetTotalPower( void )const;
 	int		GetMode( void )const;

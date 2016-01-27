@@ -475,6 +475,30 @@ namespace
 		}
 	}
 
+	//	死亡エフェクト
+	void	Particle::Death( const Vector3& pos, float scale, const Vector3& color )
+	{
+		Vector3	Pos, Move, Power;
+		for ( int j = 0; j<20; j++ ){
+			Pos.x = pos.x + sinf( Random::GetFloat( 0.0f, D3DX_PI * 2 ) ) * ( Random::GetInt( 0, 100 ) - 50 ) * 0.01f * scale;
+			Pos.y = pos.y + ( Random::GetInt( 0, 10 ) - 5 ) * 0.1f * scale;
+			Pos.z = pos.z + cosf( Random::GetFloat( 0.0f, D3DX_PI * 2 ) ) * ( Random::GetInt( 0, 100 ) - 50 ) * 0.01f * scale;
+
+			Move = Pos - pos;
+			Move.Normalize();
+			Move *= 1.0f * scale;
+			Move.y = -1.0f * scale;
+
+			Power = pos - Pos;
+			Power.Normalize();
+			Power *= 0.01f * scale;
+			Power.y = 0.01f * scale;
+
+			pt->Set( DUST, 0, 1.0f, 60, 1.0f, 90, 0.5f, &Pos, &Move, &Power, color.x, color.y, color.z, scale * 10.0f, RS_COPY );
+		}
+
+	}
+
 //------------------------------------------------------------------------
 //	情報取得
 //------------------------------------------------------------------------
