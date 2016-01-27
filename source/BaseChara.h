@@ -87,6 +87,9 @@ namespace
 			"海賊"
 		};
 	}
+
+	//　CPUがコインを探すようになるための、場に存在するコイン枚数の基準
+	const int CPU_SERCH_COIN_MIN = 10;
 }
 
 //	class
@@ -296,7 +299,7 @@ public:
 	void	AutoRun();						//　コインを取りに行く
 	void	AutoAngleAdjust(float speed, Vector3 target);
 	//void	AutoAngleAdjust(const Vector3& direction, float speed);
-	void	AutoAttack();
+	virtual void	AutoAttack();
 	void	RunAway();
 	void	AutoGuard();
 	void	AutoWait();
