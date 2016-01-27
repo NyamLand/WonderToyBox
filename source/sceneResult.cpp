@@ -1610,10 +1610,8 @@
 				lifeImage[value].sy = lifeImage[value].sh * ( ( 5 - lifeInfo.culLife ) / 4 );
 			}
 
-			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
-			{
-				step = RESULT_MODE::INPUT_WAIT;
-			}
+			step = RESULT_MODE::INPUT_WAIT;
+			
 			return	true;
 			break;
 		}
