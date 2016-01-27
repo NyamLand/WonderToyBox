@@ -503,9 +503,6 @@
 		w = static_cast<int>( iexSystem::ScreenWidth * 0.39f );
 		h = static_cast<int>( iexSystem::ScreenHeight * 0.138f );
 		playerNumText->Render( x, y, w, h, 0, 0, 512, 128 );
-
-		
-
 	}
 
 //-------------------------------------------------------------------------------

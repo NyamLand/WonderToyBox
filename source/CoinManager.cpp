@@ -14,6 +14,7 @@
 
 //	定数
 #define	COIN_SIZE	3.0f
+#define	COIN_BAG_SIZE 0.05f
 
 //---------------------------------------------------------------------------------
 //	グローバル変数
@@ -27,8 +28,10 @@
 	bool	CoinManager::Initialize( void )
 	{
 		//	元モデル読み込み
-		org = nullptr;
-		org = new iexMesh( "DATA/Object/Coin/Coin/coin01.imo" );
+		FOR( 0, Coin::MAX )	org[value] = nullptr;
+		org[Coin::COIN] = new iexMesh( "DATA/Object/Coin/Coin/coin01.imo" );
+		org[Coin::COIN_BAG_5] = new iexMesh( "DATA/Object/Coin/CoinBag/CoinBag5.IMO" );
+		org[Coin::COIN_BAG_10] = new iexMesh( "DATA/Object/Coin/CoinBag/CoinBag10.IMO" );
 
 		//	リスト初期化
 		coinList.clear();
@@ -45,7 +48,10 @@
 			it = coinList.erase( it );
 		}
 
-		SafeDelete( org );
+		FOR( 0, Coin::MAX ) 
+		{
+			SafeDelete( org[value] );
+		}
 	}
 
 //---------------------------------------------------------------------------------
@@ -99,24 +105,37 @@
 //---------------------------------------------------------------------------------
 
 	//	生成
-	void	CoinManager::Append( const Vector3& pos, const Vector3& vec, const float& speed )
+	void	CoinManager::Append( const Vector3& pos, const Vector3& vec, const float& speed, int type )
 	{
+		Coin*	coin = new Coin();
 		//	各種情報設定
-		Coin* obj = new Coin();
-		obj->Initialize();
-		obj->judgeTimer = 30;
-		obj->activate = false;
-		obj->obj = org->Clone();
+		coin->Initialize();
+		coin->judgeTimer = 30;
+		coin->activate = false;
+		coin->type = type;
+		coin->obj = org[type]->Clone();
 		Vector3	v = vec;
 		v.Normalize();
 		Vector3	moveParam = v * speed;
-		obj->SetPos( pos );
-		obj->SetMove( moveParam );
-		obj->SetState( true );
-		obj->Update();
+		coin->SetPos( pos );
+		coin->SetMove( moveParam );
+		coin->SetState( true );
+
+		switch ( type )
+		{
+		case Coin::COIN:
+			coin->SetScale( COIN_SIZE );
+			break;
+
+		case Coin::COIN_BAG_5:
+		case Coin::COIN_BAG_10:
+			coin->SetScale( COIN_BAG_SIZE );
+			break;
+		}
+		coin->Update();
 
 		//	リストに追加
-		coinList.push_back( obj );
+		coinList.push_back( coin );
 	}
 
 //---------------------------------------------------------------------------------

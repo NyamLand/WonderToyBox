@@ -47,7 +47,8 @@ protected:
 	bool			getAwayflag;
 	bool			absorbedflg; // 掃除屋に吸収されている状態
 	bool			moveCheck;
-	int				judgeTimer;	//	判定有効時間
+	int			judgeTimer;	//	判定有効時間
+	int			type;
 
 	//	physics_parameter
 	float	mass;
@@ -58,6 +59,15 @@ protected:
 
 	//	影構造体
 	SHADOW_INFO	shadow;
+
+public:
+	enum
+	{
+		COIN,
+		COIN_BAG_5,
+		COIN_BAG_10,
+		MAX,
+	};
 
 public:
 	//	初期化・解放

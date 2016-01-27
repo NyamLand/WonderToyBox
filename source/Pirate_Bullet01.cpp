@@ -136,7 +136,7 @@ bool	Pirate_Bullet01::PlayerCollisionCheck(void)
 			//	ƒRƒCƒ“‚ª‚ ‚ê‚Î‚Î‚ç‚Ü‚«
 			if (p2_coinNum > 0)
 			{
-				coinManager->Append(p_pos_top, vec, power);
+				coinManager->Append(p_pos_top, vec, power, Coin::COIN );
 				gameManager->SubCoin(p2_Num);
 			}
 			return true;

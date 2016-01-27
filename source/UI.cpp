@@ -1172,8 +1172,8 @@
 	void	UI::CoinNumberRender( void )
 	{
 		//	15ïbÇ‹Ç≈êîéöï\é¶
-		if (gameManager->GetTimer() / SECOND >= 15)
-		{
+//		if (gameManager->GetTimer() / SECOND >= 15)
+//		{
 			FOR(0, PLAYER_MAX)
 			{
 				//	ÇPÇOÇOÇÃà ï`âÊ
@@ -1201,30 +1201,30 @@
 
 				ParticleRender(value);
 			}
-		}
+	//	}
 		//	ÉâÉXÉg15ïbÇÕé©ï™ÇÃéùÇøñáêîÇ™ï™Ç©ÇÁÇ»Ç≠Ç»ÇÈ
-		else
-		{
-			FOR(0, PLAYER_MAX)
-			{
-
-				//	ÇPÇOÇÃà ï`âÊ
-				int		sx = 12 * 64;		//	ÅH
-				int		sy = coinNumInfo[value].ten.sy;
-				int		sw = coinNumInfo[value].ten.sw;
-				int		sh = coinNumInfo[value].ten.sh;
-
-				RenderImage(coinNumInfo[value].ten, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM);
-
-				//	ÇPÇÃà ï`âÊ
-				sy = coinNumInfo[value].one.sy;
-				sw = coinNumInfo[value].one.sw;
-				sh = coinNumInfo[value].one.sh;
-				RenderImage(coinNumInfo[value].one, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM);
-			
-				ParticleRender(value);
-			}
-		}
+//		else
+//		{
+//			FOR(0, PLAYER_MAX)
+//			{
+//
+//				//	ÇPÇOÇÃà ï`âÊ
+//				int		sx = 12 * 64;		//	ÅH
+//				int		sy = coinNumInfo[value].ten.sy;
+//				int		sw = coinNumInfo[value].ten.sw;
+//				int		sh = coinNumInfo[value].ten.sh;
+//
+//				RenderImage(coinNumInfo[value].ten, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM);
+//
+//				//	ÇPÇÃà ï`âÊ
+//				sy = coinNumInfo[value].one.sy;
+//				sw = coinNumInfo[value].one.sw;
+//				sh = coinNumInfo[value].one.sh;
+//				RenderImage(coinNumInfo[value].one, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM);
+//			
+//				ParticleRender(value);
+//			}
+//		}
 
 
 	}

@@ -129,7 +129,7 @@
 		FOR( 0, PLAYER_MAX )
 		{
 			//	現ラウンドの獲得コイン枚数を設定
-			gameManager->SetTotalCoin(culRound, value, gameManager->GetCoinNum(value));
+			gameManager->SetTotalCoin( culRound, value, gameManager->GetCoinNum( value ) );
 		}
 
 		//	乱数初期化
@@ -607,7 +607,7 @@
 
 		FOR( 0, Round::END ) 
 		{
-			y = static_cast<int>( iexSystem::ScreenHeight * 0.3f ) + ( static_cast<int>( iexSystem::ScreenHeight * 0.2f ) * value );
+			y = static_cast<int>( iexSystem::ScreenHeight * 0.3f ) + ( static_cast<int>( iexSystem::ScreenHeight * 0.15f ) * value );
 			sy = sh * value;
 			ImageInitialize( roundImage[value], x, y, w, h, sx, sy, sw, sh );
 			roundImage[value].obj = orgRound;
@@ -624,19 +624,32 @@
 		//	各ラウンドのコイン枚数を取得
 		FOR( 0, PLAYER_MAX )
 		{
-			for ( int round = 0; round < Round::END; round++ ) 
+			for ( int round = 0; round <= Round::END; round++ ) 
 			{
-				//	座標を設定
-				roundCoinNumberImageInfo[round][value].pos.x = static_cast<int>( iexSystem::ScreenWidth * 0.4f ) + ( static_cast<int>( iexSystem::ScreenWidth * 0.15f ) * value );
-				roundCoinNumberImageInfo[round][value].pos.y = roundImage[round].y;
-				roundCoinNumberImageInfo[round][value].scale = 100;
-				roundCoinNumberImageInfo[round][value].one.obj = originNumber;
-				roundCoinNumberImageInfo[round][value].ten.obj = originNumber;
-				roundCoinNumberImageInfo[round][value].hundred.obj = originNumber;
+				if ( round != Round::END )
+				{
+					//	座標を設定
+					roundCoinNumberImageInfo[round][value].pos.x = static_cast<int>( iexSystem::ScreenWidth * 0.4f ) + ( static_cast<int>( iexSystem::ScreenWidth * 0.15f ) * value );
+					roundCoinNumberImageInfo[round][value].pos.y = roundImage[round].y;
+					roundCoinNumberImageInfo[round][value].scale = 100;
+					roundCoinNumberImageInfo[round][value].one.obj = originNumber;
+					roundCoinNumberImageInfo[round][value].ten.obj = originNumber;
+					roundCoinNumberImageInfo[round][value].hundred.obj = originNumber;
 
-				//	数値を設定
-				totalCoinNum = gameManager->GetTotalCoin( round, value );
-				SetNumberImageInfo( roundCoinNumberImageInfo[round][value], roundCoinNumber[round][value], totalCoinNum );
+					//	数値を設定
+					totalCoinNum = gameManager->GetTotalCoin( round, value );
+					SetNumberImageInfo( roundCoinNumberImageInfo[round][value], roundCoinNumber[round][value], totalCoinNum );
+				}
+				else
+				{
+					//	座標を設定
+					totalNumberImageInfo[value].pos.x = static_cast<int>( iexSystem::ScreenWidth * 0.4f ) + ( static_cast<int>( iexSystem::ScreenWidth * 0.15f ) * value );
+					totalNumberImageInfo[value].pos.y = static_cast<int>( iexSystem::ScreenHeight * 0.3f ) + ( static_cast<int>( iexSystem::ScreenHeight * 0.15f ) * round );
+					totalNumberImageInfo[value].scale = 100;
+					totalNumberImageInfo[value].one.obj = originNumber;
+					totalNumberImageInfo[value].ten.obj = originNumber;
+					totalNumberImageInfo[value].hundred.obj = originNumber;
+				}
 			}
 		}
 	}
@@ -646,11 +659,12 @@
 	{
 		FOR( 0, PLAYER_MAX )
 		{
-			for ( int round = 0; round < PLAYER_MAX; round++ )
+			for ( int round = 0; round < Round::END; round++ )
 			{
 				//	各ラウンドのコインの合計を求める
 				totalSortInfo[value].num += gameManager->GetTotalCoin( round, value );
 			}
+			SetNumberImageInfo( totalNumberImageInfo[value], totalNumber[value], totalSortInfo[value].num );
 		}
 
 		Sort( totalSortInfo );
@@ -663,7 +677,7 @@
 		int sw = 256;
 		int sh = 256;
 		int sx = 0;
-		int sy = gameManager->GetCharacterType( totalSortInfo[0].rank ) * h;
+		int sy = gameManager->GetCharacterType( totalSortInfo[0].rank ) * sh;
 		ImageInitialize( faceImage, x, y, w, h, sx, sy, sw, sh );
 		faceImage.renderflag = false;
 
@@ -691,6 +705,7 @@
 		//	ラスト発表構造体初期化
 		lastAnnounceInfo.step = 0;
 		lastAnnounceInfo.t = 0.0f;
+
 	}
 
 //----------------------------------------------------------------------------
@@ -1124,6 +1139,11 @@
 			{
 				NumberImageRender( roundCoinNumberImageInfo[value][player] );
 			}
+		}
+
+		FOR( 0, PLAYER_MAX )
+		{
+			NumberImageRender( totalNumberImageInfo[value] );
 		}
 	}
 
@@ -1767,6 +1787,7 @@
 				SetWaitTimer(150);
 				step = 0;
 				mode = MOVE_MODE::LAST_RESULT;
+				result_step = 0;
 			}
 			break;
 		}

@@ -102,10 +102,8 @@
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			character[i]->Render( shader, technique );	
+			//DrawCapsule( character[i]->GetPos(), Vector3( character[i]->GetPos().x, character[i]->GetPos().y + 3.0f, character[i]->GetPos().z ), 2.0f );
 		}
-
-		//　デバッグ表示
-		//DrawDebug();
 	}
 
 	//　デバッグ
@@ -239,6 +237,7 @@
 
 		//	攻撃判定
 		bool	isHit = Collision::CapsuleVSSphere( bc2_bottom, bc2_top, bc2_r, bc1_attackPos, bc1_attack_r );
+
 		//	当たっていたら
 		if ( isHit )
 		{
@@ -288,7 +287,7 @@
 			for (int i = 0; i < dropCoin; i++)
 			{
 				if (bc2_coinNum <= 0) break;
-				coinManager->Append(bc2_top, vec, totalpower);
+				coinManager->Append(bc2_top, vec, totalpower, Coin::COIN );
 				gameManager->SubCoin(bc2_Num);
 
 			}
@@ -310,6 +309,7 @@
 
 		//	攻撃判定
 		bool	isHit = Collision::CapsuleVSCapsule( bc1_attack_bottom, bc1_attack_top, bc1_attack_r, bc2_bottom, bc2_top, bc2_r );
+
 
 		//	当たっていたら
 		if ( isHit )
@@ -359,7 +359,7 @@
 			for (int i = 0; i < dropCoin; i++)
 			{
 				if (bc2_coinNum <= 0) break;
-				coinManager->Append(bc2_top, vec, totalpower);
+				coinManager->Append(bc2_top, vec, totalpower, Coin::COIN );
 				gameManager->SubCoin( bc2_Num );
 
 			}
@@ -622,6 +622,12 @@ void	CharacterManager::SubLife(int player)const
 	bool		CharacterManager::GetParameterState( int player, int type )const
 	{
 		return	character[player]->GetParameterState( type );
+	}
+
+	//	ジャンプフラグ
+	bool		CharacterManager::GetJumpState( int player )const
+	{
+		return	character[player]->GetJumpFlag();
 	}
 
 	//	攻撃種類取得

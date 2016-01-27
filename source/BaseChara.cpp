@@ -299,7 +299,6 @@ namespace
 			
 			//	影描画
 			iexPolygon::Render3D( shadow.v, 2, shadow.obj, shader3D, "alpha" );
-			//particle->BlueFlame( Vector3( pos.x, pos.y + 1.5f, pos.z ), 0.1f );
 			
 			if ( renderflag )
 			obj->Render( shader, technique );
@@ -466,10 +465,10 @@ namespace
 			}
 			move.y = 0.0f;
 			isGround = true;
-			if ( jumpPower <= 0.0f && ( mode == MODE_STATE::MOVE || mode == MODE_STATE::JUMP ) )
+			if ( jumpPower <= 0.0f/* && ( mode == MODE_STATE::MOVE || mode == MODE_STATE::JUMP ) */)
 			{
 				jumpState = true;
-				SetMode( MODE_STATE::MOVE );
+				//SetMode( MODE_STATE::MOVE );
 			}
 		}
 		//	前方レイ判定
@@ -616,7 +615,8 @@ namespace
 			move = knockBackInfo.vec * (force / 4);
 			move.y = force / 4;
 
-			SetMode(MODE_STATE::KNOCKBACK);
+			SetMode( MODE_STATE::KNOCKBACK );
+			jumpState = true;
 			//damageStep++;
 			//break;
 
@@ -709,16 +709,22 @@ namespace
 	{
 		if ( jumpState )
 		{
-			jumpPower = JUMP_POWER;
-			jumpState = false;
+			if ( isPlayer )
+			{
+				if ( input->Get( KEY_B ) == 3 )
+				{
+					jumpPower = JUMP_POWER;
+					jumpState = false;
+				}
+			}
 		}
 		else
 		{
 			if ( jumpPower > 0.0f )		move.y += jumpPower;
 			jumpPower -= JUMP_POWER * 0.1f;
 		}
-		if ( isPlayer )		Control();
-		else					ControlAI();
+		//if ( isPlayer )		Control();
+		//else					ControlAI();
 	}
 
 	//	ガード
@@ -768,15 +774,19 @@ namespace
 		SetParameterState(PARAMETER_STATE::UNRIVALED);
 //		SetMotion( MOTION_NUM::DEATH );
 
-		//	コイン全部ばらまき
+		//	コイン半分ばらまき
 		if ( !initflag )
 		{
 			int	coinNum = gameManager->GetCoinNum( this->playerNum );
-			FOR( 0, coinNum )
+			FOR( 0, coinNum / 2 )
 			{
-				//	コイン全部ばらまき
-				if ( coinNum > 0 )	
-					coinManager->Append( GetPos(), Vector3( Random::GetFloat( 0.0f, 1.0f ), 1.0f, Random::GetFloat( 0.0f, 1.0f ) ), Random::GetFloat( 0.3f, 1.0f ) );
+				//	コイン半分ばらまき
+				if (coinNum > 0)
+				{
+					coinManager->Append( GetPos(), Vector3( Random::GetFloat( 0.0f, 1.0f ), 1.0f, Random::GetFloat( 0.0f, 1.0f ) ), Random::GetFloat( 0.3f, 1.0f ), Coin::COIN );
+					gameManager->SubCoin( playerNum );
+				}
+					
 			}
 			initflag = true;
 		}
@@ -852,7 +862,7 @@ namespace
 				if ( coinNum > 0 )
 				{
 					gameManager->SubCoin( this->playerNum );
-					coinManager->Append( GetPos(), Vector3( Random::GetFloat( 0.3f, 0.7f ), 1.0f, Random::GetFloat( 0.3f, 0.7f ) ), Random::GetFloat( 0.3f, 0.7f ) );
+					coinManager->Append( GetPos(), Vector3( Random::GetFloat( 0.3f, 0.7f ), 1.0f, Random::GetFloat( 0.3f, 0.7f ) ), Random::GetFloat( 0.3f, 0.7f ), Coin::COIN );
 				}
 			}
 
@@ -861,9 +871,6 @@ namespace
 			pos = gameManager->InitPos[this->playerNum];
 			SetMode( MODE_STATE::WAIT );
 			SetParameterState( PARAMETER_STATE::RESPAWN );
-
-			//	ステージ落下回数加算
-			gameManager->AddFallStage( GetPlayerNum() );
 		}
 	} 
 
@@ -1098,6 +1105,8 @@ namespace
 		//	描画フラグ切り替え
 		if ( respawn.timer % 10 == 0 )	renderflag = !renderflag;
 
+		if ( respawn.timer <= 3 * SECOND - 30 )	SetMode( MODE_STATE::MOVE );
+
 		//	時間が来たら効果取り消し
 		if ( respawn.timer <= 0 )
 		{
@@ -1153,20 +1162,22 @@ namespace
 			}
 		}
 	
-		if ( input->Get( KEY_B ) == 3 )
-		{
-			if ( jumpState )
-			{
-				Jump();
-				mode = MODE_STATE::JUMP;
-			}
-		}
-		
+		//if ( input->Get( KEY_B ) == 3 )
+		//{
+		//	if ( jumpState )
+		//	{
+		//		mode = MODE_STATE::JUMP;
+		//	}
+		//}
+		Jump();
+
 		if ( input->Get( KEY_B6 ) == 3 )
 		{
 			m_Effect->SetShield( GetPlayerNum(), true );
 			mode = MODE_STATE::GUARD;
 		}
+
+
 	}
 
 	//	AI操作
@@ -1209,10 +1220,10 @@ namespace
 		*/
 
 		//　フィールドにコインが○○枚以上　→　コイン優先
-		if (coinManager->GetFreeCoinNum() > 50)
-		{
-			aiInfo.mode = AI_MODE_STATE::RUN;
-		}
+		//if (coinManager->GetFreeCoinNum() > 10)
+		//{
+		//	aiInfo.mode = AI_MODE_STATE::RUN;
+		//}
 		//　コイン○○以下
 		/*
 			１位  ：逃げる(80%)	＞	ガード(20%)
@@ -1220,50 +1231,60 @@ namespace
 			３位　：攻撃(60%)	＞	コイン(40%)
 			４位　：攻撃(80%)	＞  コイン(20%)
 		*/
-		else
-		{
-			//　順位別にそれぞれ確率で行動分岐
-			static int randi;
-			const int randi_MAX = 11;
-			if (!aiInfo.act_flag) randi = Random::GetInt(0, randi_MAX);
-			switch (rank)
-			{
-			case 1:
-				// 逃げる：ガード（８：２）
-				if		(randi < 8)				aiInfo.mode = AI_MODE_STATE::RUNAWAY;
-				else if (randi > randi_MAX - 2)	aiInfo.mode = AI_MODE_STATE::GUARD;
-				else							aiInfo.mode = AI_MODE_STATE::WAIT;
-				break;
+		//else
+		//{
+		//	//　順位別にそれぞれ確率で行動分岐
+		//	static int randi;
+		//	const int randi_MAX = 11;
+		//	if (!aiInfo.act_flag) randi = Random::GetInt(0, randi_MAX);
+		//	switch (rank)
+		//	{
+		//	case 1:
+		//		// 逃げる：ガード（８：２）
+		//		if		(randi < 8)				aiInfo.mode = AI_MODE_STATE::RUNAWAY;
+		//		else if (randi > randi_MAX - 2)	aiInfo.mode = AI_MODE_STATE::GUARD;
+		//		else							aiInfo.mode = AI_MODE_STATE::WAIT;
+		//		break;
+		//
+		//	case 2:
+		//		//　攻撃：逃げる：コイン（５：３：２）
+		//		if		(randi < 4)					aiInfo.mode = AI_MODE_STATE::ATTACK;
+		//		else if (randi > randi_MAX - 3)		aiInfo.mode = AI_MODE_STATE::RUNAWAY;
+		//		else if (randi == 4 || randi == 5)	aiInfo.mode = AI_MODE_STATE::RUN;
+		//		else								aiInfo.mode = AI_MODE_STATE::WAIT;
+		//		break;
+		//
+		//	case 3:
+		//		//　攻撃：コイン（６：４）
+		//		if		(randi < 6)				aiInfo.mode = AI_MODE_STATE::ATTACK;
+		//		else if (randi > randi_MAX - 4)	aiInfo.mode = AI_MODE_STATE::RUN;
+		//		else							aiInfo.mode = AI_MODE_STATE::WAIT;
+		//		break;
+		//
+		//	case 4:
+		//		//　攻撃：コイン（８：２）
+		//		if		(randi < 8)				aiInfo.mode = AI_MODE_STATE::ATTACK;
+		//		else if (randi > randi_MAX - 2)	aiInfo.mode = AI_MODE_STATE::RUN;
+		//		else							aiInfo.mode = AI_MODE_STATE::WAIT;
+		//		break;
+		//	}
+		//}
 
-			case 2:
-				//　攻撃：逃げる：コイン（５：３：２）
-				if		(randi < 4)					aiInfo.mode = AI_MODE_STATE::ATTACK;
-				else if (randi > randi_MAX - 3)		aiInfo.mode = AI_MODE_STATE::RUNAWAY;
-				else if (randi == 4 || randi == 5)	aiInfo.mode = AI_MODE_STATE::RUN;
-				else								aiInfo.mode = AI_MODE_STATE::WAIT;
-				break;
-
-			case 3:
-				//　攻撃：コイン（６：４）
-				if		(randi < 6)				aiInfo.mode = AI_MODE_STATE::ATTACK;
-				else if (randi > randi_MAX - 4)	aiInfo.mode = AI_MODE_STATE::RUN;
-				else							aiInfo.mode = AI_MODE_STATE::WAIT;
-				break;
-
-			case 4:
-				//　攻撃：コイン（８：２）
-				if		(randi < 8)				aiInfo.mode = AI_MODE_STATE::ATTACK;
-				else if (randi > randi_MAX - 2)	aiInfo.mode = AI_MODE_STATE::RUN;
-				else							aiInfo.mode = AI_MODE_STATE::WAIT;
-				break;
-			}
-		}
+		//　デバッグ（走るだけ）
+		aiInfo.mode = AI_MODE_STATE::RUN;
 
 		//	壁を感知したらジャンプ
 		if ( checkWall )
 		{
-			if ( jumpState )		mode = MODE_STATE::JUMP;
+			if ( jumpState )
+			{
+				//mode = MODE_STATE::JUMP;
+				jumpPower = JUMP_POWER;
+				jumpState = false;
+			}
 		}
+
+		Jump();
 
 	}
 
@@ -1699,11 +1720,19 @@ namespace
 		return	out;
 	}
 
+	//	ジャンプフラグ取得
+	bool		BaseChara::GetJumpFlag( void )const
+	{
+		return	jumpState;
+	}
+
 	//	モード取得
 	int		BaseChara::GetMode( void )const
 	{
 		return	mode;
 	}
+
+	//	
 	int		BaseChara::GetAIMode( void )const
 	{
 		return	aiInfo.mode;
