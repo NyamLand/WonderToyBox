@@ -25,8 +25,8 @@ namespace
 {
 	enum OFFENSIVE_POWER
 	{
-		QUICK = 1,
-		POWER = 5,
+		QUICK = 0,
+		POWER = 1,
 		HYPER = 15,
 	};
 }
@@ -39,7 +39,7 @@ namespace
 Scavenger::Scavenger(void) : BaseChara()
 {
 	//	パラメータ初期化
-	power = 3;	/*仮*/
+	power = 0;	/*仮*/
 	speed = 0.25f;
 	scale = 0.02f;
 	diffence = -1;
@@ -83,7 +83,7 @@ void	Scavenger::Render(iexShader* shader, LPSTR technique)
 
 	////	デバッグ用
 	//if (!debug)	return;
-	//DrawSphere(attackInfo.pos, attackInfo.r, 0xFFFFFFFF);
+	DrawCapsule(attackInfo.top, attackInfo.bottom, attackInfo.r, 0xFFFFFFFF);
 	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z - attackInfo.r), 0.3f);
 	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z + attackInfo.r), 0.3f);
 	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z), 0.3f);
@@ -139,7 +139,7 @@ bool	Scavenger::QuickArts(void)
 			vec.Normalize();
 			if ( dot < 45.0f && length < absorb_length ) 
 			{
-				( *it )->SetMove( -vec * 0.2f );
+				( *it )->SetMove( -vec * 0.6f );
 			}
 
 			particle->Suck(this->pos, this->pos + GetFront() * absorb_length, GetRight(), absorb_length, 0.5f);
@@ -164,14 +164,34 @@ bool	Scavenger::PowerArts( void )
 	power = POWER;
 
 	//攻撃モーションでなければモーション設定
-	if(obj->GetFrame() < SCAVENGER::MOTION_FRAME::POWER_TO_WAIT) SetMotion(SCAVENGER::MOTION_DATA::POWER_START);
+	if (obj->GetFrame() < SCAVENGER::MOTION_FRAME::POWER_TO_WAIT) SetMotion(SCAVENGER::MOTION_DATA::POWER_START);
 
-
+	float run_speed = 0.5f;
 	SetUnrivaled(false);
+
+	//	行列から前方取得
+	SetMove(Vector3(0.0f, 0.0f, 0.0f));
+	Vector3	front = GetFront();
+	Vector3	right = GetRight();
+	Vector3	p_pos = GetPos() + front * 2.0f;
+
+	//	あたり判定のパラメータを与える
+	attackInfo.r = 1.0f;
+	attackInfo.bottom = p_pos;
+	attackInfo.top = attackInfo.bottom + Vector3(0.0f, 3.0f, 0.0f);
+
+	attackInfo.bottom = p_pos - right * 1.0f;
+	attackInfo.top = attackInfo.bottom + right * 2.0f;
+
+	//	パラメータ加算
+	attackInfo.t += 0.03f;
+
+
+
+
+
 	absorb_length = 5.0f;
-	Vector3 p_front = Vector3(sinf(this->angle.y), 0, cosf(this->angle.y));
-	p_front.Normalize();
-	float speed = 0.5f;
+	front.Normalize();
 	
 
 	list<Coin*>	coinList = coinManager->GetList();
@@ -181,9 +201,9 @@ bool	Scavenger::PowerArts( void )
 		if ( state )
 		{
 			Vector3 toCoinVec = ( *it )->GetPos() - this->pos;
-			float pVecLength = p_front.Length();
+			float pVecLength = front.Length();
 			float cVecLength = toCoinVec.Length();
-			float dot = Vector3Dot( p_front, toCoinVec ) / ( pVecLength * cVecLength );
+			float dot = Vector3Dot( front, toCoinVec ) / ( pVecLength * cVecLength );
 			dot = acosf( dot );
 			dot = dot * 180.0f / D3DX_PI;
 
@@ -197,24 +217,21 @@ bool	Scavenger::PowerArts( void )
 			}
 		}
 	}
-
+	
 	if (attackInfo.t < 1.0f)
 	{
 		//攻撃中モーション固定
 		if (obj->GetFrame() >= SCAVENGER::MOTION_FRAME::POWER_TO_WAIT) obj->SetFrame(SCAVENGER::MOTION_FRAME::POWER_TO_WAIT);
 		//	後ろ
 		particle->Dust(this->pos, GetFront()*-1, GetRight(), 0.5f);
-	
-		move = p_front * speed;
+		move = front * run_speed;
 	}
-	//	パラメータ加算
-	attackInfo.t += 0.03f;
 
 	if (attackInfo.t >= 1.0f)
 	{
 		SetMotion(SCAVENGER::MOTION_DATA::POWER_END);
 	}
-	
+
 	//モーション終了時にMOVEへ戻す
 	if (obj->GetFrame() == SCAVENGER::MOTION_FRAME::POWERARTS_END)
 	{
@@ -398,7 +415,7 @@ void	Scavenger::SetAttackParam(int attackKind)
 		break;
 
 	case MODE_STATE::POWERARTS:
-		attackInfo.type = Collision::SPHEREVSCAPSULE;
+		attackInfo.type = Collision::CAPSULEVSCAPSULE;
 		knockBackInfo.type = KNOCKBACK_TYPE::MIDDLE;
 		break;
 

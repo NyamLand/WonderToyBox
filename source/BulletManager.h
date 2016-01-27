@@ -63,14 +63,14 @@ namespace
 		100 * SECOND,		//ŠC‘¯3
 	};
 
-	//‚ ‚½‚è”»’è‚ª‰~ó‚Å‚È‚¢‚à‚Ì‚ÉŠÖ‚µ‚Ä‚ÍNULL
+	//‚ ‚½‚è”»’è‚ª‚È‚¢‚à‚Ì‚ÉŠÖ‚µ‚Ä‚ÍNULL
 	const float BULLET_RADIUS[] =
 	{
 		10.0f,		//ƒŠƒX1
-		10.0f,		//‰ö“1
+		1.0f,		//‰ö“1
 		10.0f,		//‰ö“2
 		NULL,		//‰ö“3‚ÌƒA[ƒ€
-		22.0f,		//‰ö“3‚ÌŽè•”•ª
+		10.0f,		//‰ö“3‚ÌŽè•”•ª
 		2.0f,		//ŠC‘¯1
 		2.0f,		//ŠC‘¯2
 		2.0f		//ŠC‘¯3

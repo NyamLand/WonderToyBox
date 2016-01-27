@@ -21,6 +21,7 @@ Thief_Bullet04::Thief_Bullet04() :holdCoinNum(0), growSpeed(0.0f), checkMax(fals
 //	judgeTimer	=	BULLET_JUDGETIMER	[	BULLET_TYPE::THIEF_04	];
 	radius		=	BULLET_RADIUS		[	BULLET_TYPE::THIEF_04	];
 	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::THIEF_04	];
+	startPos	=	characterManager->GetPos(playerNum);
 	for (int i = 0; i < PLAYER_MAX; i++)
 	{
 		isPlayerCheck[i] = false;
@@ -71,7 +72,7 @@ void	Thief_Bullet04::Move(void)
 	float addLength = sinf(growSpeed);
 	move = front * addLength;
 	//打ち出したプレイヤーとの距離
-	Vector3 ToPlayerVec = characterManager->GetPos(playerNum) - pos;
+	Vector3 ToPlayerVec = startPos - pos;
 	float ToPlayerLength = ToPlayerVec.Length();
 
 
