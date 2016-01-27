@@ -1185,10 +1185,11 @@ namespace
 		*/
 
 		//　フィールドにコインが○○枚以上　→　コイン優先
-		//if (coinManager->GetFreeCoinNum() > 10)
-		//{
-		//	aiInfo.mode = AI_MODE_STATE::RUN;
-		//}
+		if (coinManager->GetFreeCoinNum() > CPU_SERCH_COIN_MIN)
+		{
+			aiInfo.mode = AI_MODE_STATE::RUN;
+		}
+		
 		//　コイン○○以下
 		/*
 			１位  ：逃げる(80%)	＞	ガード(20%)
@@ -1196,47 +1197,48 @@ namespace
 			３位　：攻撃(60%)	＞	コイン(40%)
 			４位　：攻撃(80%)	＞  コイン(20%)
 		*/
-		//else
-		//{
-		//	//　順位別にそれぞれ確率で行動分岐
-		//	static int randi;
-		//	const int randi_MAX = 11;
-		//	if (!aiInfo.act_flag) randi = Random::GetInt(0, randi_MAX);
-		//	switch (rank)
-		//	{
-		//	case 1:
-		//		// 逃げる：ガード（８：２）
-		//		if		(randi < 8)				aiInfo.mode = AI_MODE_STATE::RUNAWAY;
-		//		else if (randi > randi_MAX - 2)	aiInfo.mode = AI_MODE_STATE::GUARD;
-		//		else							aiInfo.mode = AI_MODE_STATE::WAIT;
-		//		break;
-		//
-		//	case 2:
-		//		//　攻撃：逃げる：コイン（５：３：２）
-		//		if		(randi < 4)					aiInfo.mode = AI_MODE_STATE::ATTACK;
-		//		else if (randi > randi_MAX - 3)		aiInfo.mode = AI_MODE_STATE::RUNAWAY;
-		//		else if (randi == 4 || randi == 5)	aiInfo.mode = AI_MODE_STATE::RUN;
-		//		else								aiInfo.mode = AI_MODE_STATE::WAIT;
-		//		break;
-		//
-		//	case 3:
-		//		//　攻撃：コイン（６：４）
-		//		if		(randi < 6)				aiInfo.mode = AI_MODE_STATE::ATTACK;
-		//		else if (randi > randi_MAX - 4)	aiInfo.mode = AI_MODE_STATE::RUN;
-		//		else							aiInfo.mode = AI_MODE_STATE::WAIT;
-		//		break;
-		//
-		//	case 4:
-		//		//　攻撃：コイン（８：２）
-		//		if		(randi < 8)				aiInfo.mode = AI_MODE_STATE::ATTACK;
-		//		else if (randi > randi_MAX - 2)	aiInfo.mode = AI_MODE_STATE::RUN;
-		//		else							aiInfo.mode = AI_MODE_STATE::WAIT;
-		//		break;
-		//	}
-		//}
+		
+		else
+		{
+			//　順位別にそれぞれ確率で行動分岐
+			static int randi;
+			const int randi_MAX = 11;
+			if (!aiInfo.act_flag) randi = Random::GetInt(0, randi_MAX);
+			switch (rank)
+			{
+			case 1:
+				// 逃げる：ガード（８：２）
+				if		(randi < 8)				aiInfo.mode = AI_MODE_STATE::RUNAWAY;
+				else if (randi > randi_MAX - 2)	aiInfo.mode = AI_MODE_STATE::GUARD;
+				else							aiInfo.mode = AI_MODE_STATE::WAIT;
+				break;
+		
+			case 2:
+				//　攻撃：逃げる：コイン（５：３：２）
+				if		(randi < 4)					aiInfo.mode = AI_MODE_STATE::ATTACK;
+				else if (randi > randi_MAX - 3)		aiInfo.mode = AI_MODE_STATE::RUNAWAY;
+				else if (randi == 4 || randi == 5)	aiInfo.mode = AI_MODE_STATE::RUN;
+				else								aiInfo.mode = AI_MODE_STATE::WAIT;
+				break;
+		
+			case 3:
+				//　攻撃：コイン（６：４）
+				if		(randi < 6)				aiInfo.mode = AI_MODE_STATE::ATTACK;
+				else if (randi > randi_MAX - 4)	aiInfo.mode = AI_MODE_STATE::RUN;
+				else							aiInfo.mode = AI_MODE_STATE::WAIT;
+				break;
+		
+			case 4:
+				//　攻撃：コイン（８：２）
+				if		(randi < 8)				aiInfo.mode = AI_MODE_STATE::ATTACK;
+				else if (randi > randi_MAX - 2)	aiInfo.mode = AI_MODE_STATE::RUN;
+				else							aiInfo.mode = AI_MODE_STATE::WAIT;
+				break;
+			}
+		}
 
 		//　デバッグ（走るだけ）
-		aiInfo.mode = AI_MODE_STATE::RUN;
+		//aiInfo.mode = AI_MODE_STATE::RUN;
 
 		//	壁を感知したらジャンプ
 		if ( checkWall )
@@ -1260,16 +1262,17 @@ namespace
 	//　コインを取りに行く
 	void	BaseChara::AutoRun( void )
 	{
-		Vector3		target = Vector3( 0.0f, 0.0f, 0.0f );
-		static	float adjustSpeed = 0.2f;
+		//-----------------------------------------
+		//　targetに向けて1～3歩歩く
+		//-----------------------------------------
+		Vector3			target = Vector3( 0.0f, 0.0f, 0.0f );
+		static	float	adjustSpeed = 0.2f;
 		bool			existence = false;
 		enum
 		{
 			AUTORUN_WALK = 0,
 			AUTORUN_STAND
 		};
-
-		//　targetに向けて1～3歩歩く
 		existence = coinManager->GetMinPos(target, pos);
 
 		//	対象が存在していたら対象に向かって走る
@@ -1321,6 +1324,45 @@ namespace
 			キャラによって 「攻撃条件」「攻撃時間」を変える　※オーバーライド
 			（主に１位に近づいてパワーアーツかクイックアーツ？）
 		*/
+
+
+		static int attackKind;
+		bool	isEnd = false;
+		if (!isEnd) attackKind = Random::GetInt(MODE_STATE::QUICKARTS, MODE_STATE::HYPERARTS);
+
+		switch (attackKind)
+		{
+		case	MODE_STATE::QUICKARTS:
+			isEnd = QuickArts();
+			if (!isEnd)	SetAttackParam(attackKind);
+			break;
+
+		case MODE_STATE::POWERARTS:
+			isEnd = PowerArts();
+			if (!isEnd)	SetAttackParam(attackKind);
+			break;
+
+		case MODE_STATE::HYPERARTS:
+			isEnd = HyperArts();
+			canHyper = isEnd;
+			if (!isEnd)	SetAttackParam(attackKind);
+			break;
+		}
+
+		//	モーション終了時に
+		if (isEnd)
+		{
+			mode = MODE_STATE::MOVE;
+			attackInfo.t = 0.0f;
+			attackInfo.r = 0.0f;
+			attackInfo.type = 0;
+			attackInfo.pos = Vector3(0.0f, 0.0f, 0.0f);
+			attackInfo.addParam = -1;
+			attackInfo.top = Vector3(0.0f, 0.0f, 0.0f);
+			attackInfo.bottom = Vector3(0.0f, 0.0f, 0.0f);
+			knockBackInfo.type = 0;
+			SetUnrivaled(false);
+		}
 
 		aiInfo.act_flag = true;
 

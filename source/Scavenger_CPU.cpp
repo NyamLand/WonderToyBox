@@ -16,24 +16,24 @@
 //	初期化・解放
 //-----------------------------------------------------------------------------
 
-//	コンストラクタ
-Scavenger_CPU::Scavenger_CPU(void) : Scavenger()
-{
-
-}
-
-//	デストラクタ
-Scavenger_CPU::~Scavenger_CPU(void)
-{
-
-}
+	//	コンストラクタ
+	Scavenger_CPU::Scavenger_CPU(void) : Scavenger()
+	{
+	
+	}
+	
+	//	デストラクタ
+	Scavenger_CPU::~Scavenger_CPU(void)
+	{
+	
+	}
 
 //-----------------------------------------------------------------------------
 //	動作関数
 //-----------------------------------------------------------------------------
 
 //	AI動作
-//void	Scavenger_CPU::ControlAI( void )
-//{
-//	particle->BlueFlame( GetPos(), 1.0f );
-//}
+	void	Scavenger_CPU::AutoAttack(void)
+	{
+	
+	}

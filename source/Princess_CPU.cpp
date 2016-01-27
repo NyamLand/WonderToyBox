@@ -33,7 +33,7 @@
 //-----------------------------------------------------------------------------
 
 	//	AI“®ì
-	//void	Princess_CPU::ControlAI( void )
-	//{
-	//	particle->BlueFlame( GetPos(), 1.0f );
-	//}
+	void	Princess_CPU::AutoAttack(void)
+	{
+
+	}
