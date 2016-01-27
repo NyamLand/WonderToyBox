@@ -81,7 +81,7 @@ void	Pirate::Render(iexShader* shader, LPSTR technique)
 {
 	SetCannonPos();
 	BaseChara::Render( shader, technique );
-	if ( renderflag )		cannon->Render();
+	if ( renderflag )		cannon->Render( shader, technique );
 }
 
 //-----------------------------------------------------------------------------------

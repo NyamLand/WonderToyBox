@@ -150,6 +150,11 @@
 		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>( LPSTR( "DATA/CHR/プリンセス/prin2.IEM" ) );					//	姫
 		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>(LPSTR("DATA/CHR/Thief/Thief.IEM"));		//	怪盗
 		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>(LPSTR("DATA/CHR/Pirate/Pirate.IEM"));				//	海賊
+		orgCannon = make_unique<iexMesh>( LPSTR( "DATA/CHR/Pirate/pirate_cannon.IMO" ) );
+		FOR( 0, PLAYER_MAX )
+		{
+			cannon[value] = orgCannon->Clone();
+		}
 
 		//	オリジナルモデル情報初期化
 		org[CHARACTER_TYPE::SCAVENGER]->SetScale( 0.015f );	//	掃除屋
@@ -321,10 +326,6 @@
 
 		//	背景描画
 		BG->Render();
-		////背景( 一番後ろに表示 )
-		//iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_FALSE );
-		//back->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 1280, 720 );
-		//iexSystem::GetDevice()->SetRenderState( D3DRS_ZENABLE, D3DZB_TRUE );
 
 		switch ( mode )
 		{
@@ -403,7 +404,20 @@
 			obj[value]->Update();
 		}
 
-		printf("1 frame = %d, 2 frame = %d, 3 frame = %d, 4 frame = %d\n", obj[0]->GetFrame(), obj[1]->GetFrame(), obj[2]->GetFrame(), obj[3]->GetFrame());
+		//	大砲位置設定
+		SetCannonPos();
+	}
+
+	//	大砲描画
+	void	sceneMenu::CannonRender( void )
+	{
+		FOR( 0, PLAYER_MAX )
+		{
+			if ( characterSelectInfo.character[value] == CHARACTER_TYPE::PIRATE )
+			{
+				cannon[value]->Render( shader3D, "toon" );
+			}
+		}
 	}
 
 //-------------------------------------------------------------------------------
@@ -667,6 +681,8 @@
 			//	モデル描画
 			obj[value]->Render( shader3D, "toon" );
 		}
+
+		CannonRender();
 		
 		FOR( 0, CHARACTER_TYPE::MAX )
 		{
@@ -1001,6 +1017,9 @@
 		case 0:		deskStage->Render();		break;
 		case 1:		toyStage->Render();		break;
 		}
+		
+		//	大砲描画
+		CannonRender();
 
 		//	プレイヤー描画
 		FOR( 0, PLAYER_MAX )
@@ -1013,6 +1032,7 @@
 			else
 				RenderImage( cursorImage[value], 0, 0, 64, 64, IMAGE_MODE::NORMAL );
 		}
+
 		//	オプション確認描画
 		OptionSelectRender();
 
@@ -1296,6 +1316,28 @@
 //	情報設定
 //-------------------------------------------------------------------------------
 
+	//	大砲位置設定
+	void	sceneMenu::SetCannonPos( void )
+	{
+		Matrix	mat;
+		Matrix	cannonMat;
+		Vector3	up = Vector3( 0.0f, 0.0f, 0.0f );
+		Vector3	cannonPos = Vector3( 0.0f, 0.0f, 0.0f );
+		FOR( 0, PLAYER_MAX )
+		{
+			if ( characterSelectInfo.character[value] != CHARACTER_TYPE::PIRATE )	continue;
+			mat = *obj[value]->GetBone( 7 ) * obj[value]->TransMatrix;
+			cannon[value]->TransMatrix = mat;
+			up = Vector3( mat._21, mat._22, mat._23 );
+			up.Normalize();
+			cannonPos = Vector3( cannon[value]->TransMatrix._41, cannon[value]->TransMatrix._42, cannon[value]->TransMatrix._43 );
+			cannonPos += up * 0.5f;
+			cannon[value]->TransMatrix._41 = cannonPos.x;
+			cannon[value]->TransMatrix._42 = cannonPos.y;
+			cannon[value]->TransMatrix._43 = cannonPos.z;
+		}
+	}
+
 	//	モード切り替え
 	void	sceneMenu::SetMode( int mode )
 	{
@@ -1329,7 +1371,3 @@
 		//	モード切替
 		this->mode = mode;
 	}
-
-//-------------------------------------------------------------------------------
-//	情報取得
-//-------------------------------------------------------------------------------

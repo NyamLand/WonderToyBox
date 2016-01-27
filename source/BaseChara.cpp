@@ -92,7 +92,6 @@ namespace
 		//	パラメータ初期化
 		Initialize( playerNum, pos );
 
-//		SetMotion( MOTION_NUM::POSTURE );
 		obj->SetPos( pos );
 		obj->SetAngle( angle );
 		obj->SetScale( scale );
@@ -451,6 +450,8 @@ namespace
 		if ( work < objectWork )	height = objectWork;
 		else									height = work;
 
+		printf( "%f\n", height );
+
 		//	接地判定
 		if ( pos.y < work || pos.y < objectWork )
 		{
@@ -465,10 +466,9 @@ namespace
 			}
 			move.y = 0.0f;
 			isGround = true;
-			if ( jumpPower <= 0.0f/* && ( mode == MODE_STATE::MOVE || mode == MODE_STATE::JUMP ) */)
+			if ( jumpPower <= 0.0f )
 			{
 				jumpState = true;
-				//SetMode( MODE_STATE::MOVE );
 			}
 		}
 		//	前方レイ判定
@@ -783,7 +783,7 @@ namespace
 				//	コイン半分ばらまき
 				if (coinNum > 0)
 				{
-					coinManager->Append( GetPos(), Vector3( Random::GetFloat( 0.0f, 1.0f ), 1.0f, Random::GetFloat( 0.0f, 1.0f ) ), Random::GetFloat( 0.3f, 1.0f ), Coin::COIN );
+					coinManager->Append( GetPos(), Vector3( Random::GetFloat( -1.0f, 1.0f ), 1.0f, Random::GetFloat( 0.0f, 1.0f ) ), Random::GetFloat( -1.0f, 1.0f ), Coin::COIN );
 					gameManager->SubCoin( playerNum );
 				}
 					

@@ -575,6 +575,7 @@
 	void	GameManager::SetMaxLife( int life )
 	{
 		this->maxlife = life;
+		FOR( 0, PLAYER_MAX )	startLife[value] = maxlife;
 	}
 
 	//アイテム有無設定
