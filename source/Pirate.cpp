@@ -91,7 +91,6 @@ void	Pirate::Render(iexShader* shader, LPSTR technique)
 //	クイックアーツ
 bool	Pirate::QuickArts(void)
 {
-	static int time = 0;
 
 	SetMotion(PIRATE::MOTION_DATA::QUICK);
 	//	行列から情報取得
@@ -113,7 +112,7 @@ bool	Pirate::QuickArts(void)
 	if (0 <= rnd && rnd < 70)	pattern = QuickArts_DATA::NORMAL_SHOT;
 	if (70 <= rnd && rnd < 100)	pattern = QuickArts_DATA::TIMER_SHOT;
 
-	if (obj->GetFrame() == PIRATE::MOTION_FRAME::SHOT)
+	if (obj->GetFrame() == PIRATE::MOTION_FRAME::QUICKARTS_SHOT)
 	{
 		switch (pattern)
 		{
@@ -125,12 +124,10 @@ bool	Pirate::QuickArts(void)
 			break;
 		}
 	}
-	time++;
 
-	//一秒間硬直
-	if (obj->GetFrame() == PIRATE::MOTION_FRAME::SHOT_STOP)
+	//モーション終了まで硬直
+	if (obj->GetFrame() == PIRATE::MOTION_FRAME::QUICKARTS_END)
 	{
-		time = 0;
 		return true;
 	}
 	return	false;
@@ -139,9 +136,7 @@ bool	Pirate::QuickArts(void)
 //	パワーアーツ
 bool	Pirate::PowerArts(void)
 {	
-	if (attackInfo.t == 0) SetMotion(PIRATE::MOTION_DATA::POWER_START);
-	
-	if (attackInfo.t > 1.0) SetMotion(PIRATE::MOTION_DATA::POWER_END);
+	if(attackInfo.t == 0) SetMotion(PIRATE::MOTION_DATA::POWER_START);
 
 	float run_speed = 0.5f;
 	SetUnrivaled(false);
@@ -167,9 +162,10 @@ bool	Pirate::PowerArts(void)
 	//	パラメータ加算
 	attackInfo.t += 0.015f;
 
-	if (attackInfo.t < 1.0f)move = front * run_speed;
+	if (attackInfo.t < 1.0f) move = front * run_speed;
+	else SetMotion(PIRATE::MOTION_DATA::POWER_END);
 
-	if (attackInfo.t >= 1.3f)	return	true;
+	if (obj->GetFrame() == PIRATE::MOTION_FRAME::POWERARTS_END)	return	true;
 	return	false;
 }
 
@@ -184,8 +180,7 @@ bool	Pirate::HyperArts(void)
 		Random::GetFloat(-20.0f, 20.0f)
 		);
 
-	//モーションアトデナオス
-	SetMotion(6);
+	SetMotion(PIRATE::MOTION_DATA::HYPER);
 
 	//自分以外のプレイヤー三人を着弾地点にする
 	Vector3 target[3];
@@ -200,8 +195,8 @@ bool	Pirate::HyperArts(void)
 	Vector3 vec[3];
 
 
-	//モーションアトデナオス
-	if (obj->GetFrame() == 255)
+	//モーション終了時に弾発射
+	if (obj->GetFrame() == PIRATE::MOTION_FRAME::HYPERARTS_END)
 	{
 		for (int i = 0; i < 3; i++)
 		{
