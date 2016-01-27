@@ -103,20 +103,17 @@ void	Scavenger::Render(iexShader* shader, LPSTR technique)
 
 //	クイックアーツ
 bool	Scavenger::QuickArts(void)
-
 {
 	power = QUICK;
+
+	if (obj->GetFrame() < SCAVENGER::MOTION_FRAME::QUICKARTS_SUCK)	SetMotion(SCAVENGER::MOTION_DATA::QUICK_START);
+	//if (obj->GetFrame() >= SCAVENGER::MOTION_FRAME::SUCK)	SetMotion(SCAVENGER::MOTION_DATA::QUICK);
+
 	////平行移動
 	ShiftMove();
-
-	if (obj->GetFrame() < SCAVENGER::MOTION_FRAME::SUCK)	SetMotion(SCAVENGER::MOTION_DATA::QUICK_START);
-	if (obj->GetFrame() >= SCAVENGER::MOTION_FRAME::SUCK)	SetMotion(SCAVENGER::MOTION_DATA::QUICK);
-
 	//その場回転
 	//RollAngle();
 
-	//無敵判定を切らないとそもそもコインを集められないので無敵切ってます。
-	//問題なら言ってください
 	SetUnrivaled(false);
 
 	if (absorb_length < 15.0f) absorb_length += 0.1f;		//吸い込む範囲を徐々に拡大
@@ -151,9 +148,12 @@ bool	Scavenger::QuickArts(void)
 
 	if ( input->Get( KEY_D ) == 2 )
 	{
+		SetMotion(SCAVENGER::MOTION_DATA::QUICK_END);
 		absorb_length = DEFAULT_ABSORB_LENGTH;
-		return true;
 	}
+
+
+	if(obj->GetFrame() == SCAVENGER::MOTION_FRAME::QUICKARTS_END) return true;
 
 	return	false;
 }
@@ -163,20 +163,10 @@ bool	Scavenger::PowerArts( void )
 {	
 	power = POWER;
 
-	if (stayTime == 0)
-	{
-		SetMotion(SCAVENGER::MOTION_DATA::POWER_START);
-		if (obj->GetFrame() >= SCAVENGER::MOTION_FRAME::POWER_FINISH) obj->SetFrame(SCAVENGER::MOTION_FRAME::POWER_FINISH);
-	}
-	if (stayTime > 0)
-	{
-		SetMotion(SCAVENGER::MOTION_DATA::POWER_END);
-		if (obj->GetFrame() >= SCAVENGER::MOTION_FRAME::POWER_TO_WAIT) obj->SetFrame(SCAVENGER::MOTION_FRAME::POWER_TO_WAIT);
-	}
+	//攻撃モーションでなければモーション設定
+	if(obj->GetFrame() < SCAVENGER::MOTION_FRAME::POWER_TO_WAIT) SetMotion(SCAVENGER::MOTION_DATA::POWER_START);
 
 
-	//無敵判定を切らないとそもそもコインを集められないので無敵切ってます。
-	//問題なら言ってください
 	SetUnrivaled(false);
 	absorb_length = 5.0f;
 	Vector3 p_front = Vector3(sinf(this->angle.y), 0, cosf(this->angle.y));
@@ -201,7 +191,7 @@ bool	Scavenger::PowerArts( void )
 			float length = vec.Length();
 
 			vec.Normalize();
-			if ( dot < 90.0f && length < absorb_length && stayTime == 0 )
+			if ( dot < 90.0f && length < absorb_length)
 			{
 				( *it )->SetMove( -vec * 2.0f );
 			}
@@ -210,6 +200,8 @@ bool	Scavenger::PowerArts( void )
 
 	if (attackInfo.t < 1.0f)
 	{
+		//攻撃中モーション固定
+		if (obj->GetFrame() >= SCAVENGER::MOTION_FRAME::POWER_TO_WAIT) obj->SetFrame(SCAVENGER::MOTION_FRAME::POWER_TO_WAIT);
 		//	後ろ
 		particle->Dust(this->pos, GetFront()*-1, GetRight(), 0.5f);
 	
@@ -220,12 +212,12 @@ bool	Scavenger::PowerArts( void )
 
 	if (attackInfo.t >= 1.0f)
 	{
-		stayTime++;
+		SetMotion(SCAVENGER::MOTION_DATA::POWER_END);
 	}
 	
-	if (stayTime >= 1 * SECOND)
+	//モーション終了時にMOVEへ戻す
+	if (obj->GetFrame() == SCAVENGER::MOTION_FRAME::POWERARTS_END)
 	{
-		stayTime = 0;
 		return	true;
 	}
 	return	false;
@@ -237,13 +229,11 @@ bool	Scavenger::HyperArts( void )
 	power = HYPER;
 
 	if (obj->GetFrame() <= SCAVENGER::MOTION_FRAME::HYPER_BEGIN) SetMotion(SCAVENGER::MOTION_DATA::HYPER_START);
-	if (obj->GetFrame() >= SCAVENGER::MOTION_FRAME::HYPER_FINISH) obj->SetFrame(SCAVENGER::MOTION_FRAME::HYPER_FINISH);
 
 	//無敵判定を切らないとそもそもコインを集められないので無敵切ってます。
 	//問題なら言ってください
 	SetUnrivaled(false);
 	absorb_length = 20.0f;
-	stayTime++;
 
 	m_Effect->StormSet(this->pos + Vector3(0.0f, 2.0f, 0.0f) , 2 * SECOND);
 	list<Coin*>	coinList = coinManager->GetList();
@@ -258,19 +248,34 @@ bool	Scavenger::HyperArts( void )
 			float length = vec.Length();
 			if ( length < absorb_length )
 			{
-				Vector3 parabola_move;
-				Parabola(parabola_move, (*it)->GetPos(), pos, 0.7f, GRAVITY);
 				(*it)->SetAbsorbedFlag(true);
-				if (stayTime == 1) (*it)->SetMove(parabola_move);
+				//初めの一フレームだけ力を与える
+				if (obj->GetFrame() == SCAVENGER::MOTION_FRAME::HYPER_BEGIN)
+				{
+					Vector3 parabola_move;
+					Parabola(parabola_move, (*it)->GetPos(), pos, 0.7f, GRAVITY);
+					(*it)->SetMove(parabola_move);
+				}
 			}
 		}
 
 	}
+	//	パラメータ加算
+	attackInfo.t += 0.01f;
 
-	if (stayTime > 2 * SECOND)
+
+	if (attackInfo.t < 1.0f)
 	{
-		stayTime = 0;
+		if (obj->GetFrame() >= SCAVENGER::MOTION_FRAME::HYPER_ABSORB) obj->SetFrame(SCAVENGER::MOTION_FRAME::HYPER_ABSORB);
+	}
+
+	if (attackInfo.t >= 1.0f)
+	{
 		absorb_length = DEFAULT_ABSORB_LENGTH;
+	}
+
+	if (obj->GetFrame() == SCAVENGER::MOTION_FRAME::HYPER_FINISH)
+	{
 		return true;
 	}
 

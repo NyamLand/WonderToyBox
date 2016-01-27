@@ -96,6 +96,8 @@ private:
 	unique_ptr<iexMesh>		toyStage;
 	unique_ptr<iex2DObj>	playerNum;
 	unique_ptr<iex3DObj>	org[4];
+	unique_ptr<iexMesh>		orgCannon;
+	iexMesh*					cannon[4];
 	iex3DObj*				obj[4];
 	iex2DObj*				face;
 	iex2DObj*				cursor;
@@ -139,6 +141,7 @@ public:
 	void	CameraUpdate( void );
 	void	ChangeToOption( void );
 	void	ModelUpdate( void );
+	void	CannonRender( void );
 
 	//	プレイヤー人数選択関数
 	void	SelectPlayerNumInitialize( void );
@@ -173,5 +176,6 @@ public:
 
 	//	情報設定
 	void	SetMode( int mode );
+	void SetCannonPos( void );
 
 };

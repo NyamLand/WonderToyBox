@@ -38,6 +38,7 @@ public:
 	void	Bomb( const Vector3& pos, float scale, const Vector3& color );
 	void	CoinGet(const Vector3& pos, const float& scale = 1.0f);										//	コインエフェクト
 	void	Magnet(const Vector3& pos, const float& length, const float& scale = 1.0f, const int& speed = 10);					//	引き寄せエフェクト
+	void	Death( const Vector3& pos, float scale, const Vector3& color );
 
 
 

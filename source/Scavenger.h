@@ -15,11 +15,13 @@ namespace SCAVENGER
 {
 	namespace MOTION_FRAME
 	{
-		const int SUCK = 92;
-		const int POWER_FINISH = 169;
-		const int POWER_TO_WAIT = 200;
-		const int HYPER_BEGIN = 201;
-		const int HYPER_FINISH = 240;
+		const int QUICKARTS_SUCK = 92;
+		const int QUICKARTS_END = 153;
+		const int POWER_TO_WAIT = 170;
+		const int POWERARTS_END = 200;
+		const int HYPER_BEGIN = 203;
+		const int HYPER_ABSORB = 240;
+		const int HYPER_FINISH = 248;
 	}
 
 	//Å@ñÇèóÉÇÅ[ÉVÉáÉì

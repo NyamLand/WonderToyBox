@@ -70,7 +70,7 @@ namespace
 	BaseChara::BaseChara( void ) : obj( nullptr ), input( nullptr ),		//	pointer
 		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ), angle( 0.0f, 0.0f, 0.0f ), objectMove( 0.0f, 0.0f, 0.0f ),	//	Vector3
 		scale(0.0f), speed(0.0f),	totalSpeed(0.0f), drag(0.0f), force( 0.0f ), moveVec( 0.0f ), jumpPower( 0.0f ), dt( 0.0f ),	//	float
-		isGround(false), isPlayer(false), jumpState( true ), checkWall(false), renderflag(true),//	bool
+		isGround(false), isPlayer(false), jumpState( true ), checkWall(false), renderflag(true), coinUnrivaled(false),//	bool
 		mode(0), playerNum(0), power(0), totalPower(0), leanFrame(0), jumpStep(0),damageStep(0),rank(0), life( 0 )		//	int
 	{
 	
@@ -92,7 +92,6 @@ namespace
 		//	パラメータ初期化
 		Initialize( playerNum, pos );
 
-//		SetMotion( MOTION_NUM::POSTURE );
 		obj->SetPos( pos );
 		obj->SetAngle( angle );
 		obj->SetScale( scale );
@@ -241,10 +240,15 @@ namespace
 		//	モード管理
 		ModeManagement();
 
+		//	死亡処理
 		if ( GetLife() <= 0 )
 		{
 			life = 0;
-			SetMode( MODE_STATE::DEATH );
+			if ( mode != MODE_STATE::DEATH )
+			{
+				SetMode( MODE_STATE::DEATH );
+				particle->BlueFlame( pos, 1.5f );
+			}
 		}
 
 		//	パラメータ情報更新
@@ -308,49 +312,6 @@ namespace
 //----------------------------------------------------------------------------
 //	動作関数
 //----------------------------------------------------------------------------
-
-	//	モーション管理
-/*	void	BaseChara::MotionManagement( int motion )
-	{
-		switch ( motion )
-		{
-		case MOTION_NUM::STAND:
-			obj->SetMotion( STAND );
-			break;
-			
-		case MOTION_NUM::POSTURE:
-			obj->SetMotion( POSTURE );
-			break;
-
-		case MOTION_NUM::JUMP:
-			obj->SetMotion( JUMP );
-			break;
-
-		case MOTION_NUM::GUARD:
-			obj->SetMotion( GUARD );
-			break;
-
-		case MOTION_NUM::LANDING:
-			obj->SetMotion( LANDING );
-			break;
-
-		case MOTION_NUM::RUN:
-			obj->SetMotion( RUN );
-			break;
-
-		case MOTION_NUM::ATTACK1:
-			obj->SetMotion( ATTACK1 );
-			break;
-
-		case MOTION_NUM::ATTACK2:
-			obj->SetMotion( ATTACK2 );
-			break;
-
-		case MOTION_NUM::ATTACK3:
-			obj->SetMotion( ATTACK3 );
-			break;
-		}
-	}*/
 
 	//	モード管理
 	void	BaseChara::ModeManagement( void )
@@ -451,6 +412,8 @@ namespace
 		if ( work < objectWork )	height = objectWork;
 		else									height = work;
 
+		printf( "%f\n", height );
+
 		//	接地判定
 		if ( pos.y < work || pos.y < objectWork )
 		{
@@ -465,10 +428,9 @@ namespace
 			}
 			move.y = 0.0f;
 			isGround = true;
-			if ( jumpPower <= 0.0f/* && ( mode == MODE_STATE::MOVE || mode == MODE_STATE::JUMP ) */)
+			if ( jumpPower <= 0.0f )
 			{
 				jumpState = true;
-				//SetMode( MODE_STATE::MOVE );
 			}
 		}
 		//	前方レイ判定
@@ -647,13 +609,15 @@ namespace
 	//	待機
 	void	BaseChara::Wait( void )
 	{
-//		SetMotion( MOTION_NUM::POSTURE );
+		SetCoinUnrivaled( true );
 		SetDrag( 0.8f );
 	}
 
 	//	動作
 	void	BaseChara::Move( void )
 	{
+		if ( GetCoinUnrivaled() ) 	SetCoinUnrivaled( false );
+		
 		//	プレイヤーかそうでないかで処理を分ける
 		if ( isPlayer )	Control();
 		else
@@ -772,6 +736,7 @@ namespace
 		
 		//	死亡中無敵
 		SetParameterState(PARAMETER_STATE::UNRIVALED);
+		SetCoinUnrivaled( true );
 //		SetMotion( MOTION_NUM::DEATH );
 
 		//	コイン半分ばらまき
@@ -783,7 +748,7 @@ namespace
 				//	コイン半分ばらまき
 				if (coinNum > 0)
 				{
-					coinManager->Append( GetPos(), Vector3( Random::GetFloat( 0.0f, 1.0f ), 1.0f, Random::GetFloat( 0.0f, 1.0f ) ), Random::GetFloat( 0.3f, 1.0f ), Coin::COIN );
+					coinManager->Append( GetPos(), Vector3( Random::GetFloat( -1.0f, 1.0f ), 1.0f, Random::GetFloat( 0.0f, 1.0f ) ), Random::GetFloat( -1.0f, 1.0f ), Coin::COIN );
 					gameManager->SubCoin( playerNum );
 				}
 					
@@ -1726,6 +1691,12 @@ namespace
 		return	jumpState;
 	}
 
+	//	コイン判定状態取得
+	bool		BaseChara::GetCoinUnrivaled( void )const
+	{
+		return	coinUnrivaled;
+	}
+
 	//	モード取得
 	int		BaseChara::GetMode( void )const
 	{
@@ -1877,6 +1848,11 @@ namespace
 		unrivaled.state = state;
 	}
 
+	//	コイン判定設定
+	void	BaseChara::SetCoinUnrivaled( bool state )
+	{
+		coinUnrivaled = state;
+	}
 
 	//	パラメータ状態設定
 	void	BaseChara::SetParameterState( int parameterState )
@@ -1934,7 +1910,7 @@ namespace
 	}
 
 	//　順位設定
-	void	BaseChara::SetRank(int rank)
+	void	BaseChara::SetRank( int rank )
 	{
 		this->rank = rank;
 	}

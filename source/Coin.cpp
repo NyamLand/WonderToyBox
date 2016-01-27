@@ -202,6 +202,7 @@
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			if ( !activate )	continue;
+			if ( characterManager->GetCoinUnrivaled( i ) )	continue;
 			//if ( characterManager->GetUnrivaled( i ) )	continue;
 			p_pos = characterManager->GetPos( i );
 			switch ( type )
