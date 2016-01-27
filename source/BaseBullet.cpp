@@ -106,7 +106,8 @@ state(true), activate(true)
 		for ( int i = 0; i < 4; i++ )
 		{
 			if ( !activate )	continue;
-			if ( characterManager->GetUnrivaled( i ) )	continue;
+			if (characterManager->GetUnrivaled(i))	continue;
+			if (i == playerNum) continue;	//撃ったプレイヤーなら除外
 			
 			//	プレイヤー情報設定
 			Vector3	p_pos_bottom = characterManager->GetPos(i);

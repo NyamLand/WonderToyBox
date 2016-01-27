@@ -98,6 +98,7 @@ void	Thief::Render(iexShader* shader, LPSTR technique)
 bool	Thief::QuickArts(void)
 {
 	static int time = 0;
+	Move();
 	//	行列から情報取得
 	Vector3	up = GetUp();
 	Vector3	right = GetRight();
@@ -117,24 +118,35 @@ bool	Thief::QuickArts(void)
 	};
 	p_pos.y += 3.0f;
 	float	 bulletSpeed = 0.5f;
-	int leanpower = 30;
 	int playerNum = GetPlayerNum();
 
-						//モーションアトデナオス(ちょうどいい感じのフレームが来たら弾発射)
-	if (time == 0 /* obj->GetFrame() == ○○ */ )
-	{
+
+	{	//撃った時に動きが一度止まるパターン
+		//					//モーションアトデナオス(ちょうどいい感じのフレームが来たら弾発射)
+		//if (time == 0 /* obj->GetFrame() == ○○ */ )
+		//{
+		//	for (int i = 0; i < 3; i++)
+		//	{
+		//		m_BulletManager->Set(BULLET_TYPE::THIEF_01 , new Thief_Bullet01, p_pos, vec[i], bulletSpeed, playerNum);
+		//	}
+		//}
+		//time++;
+
+		////モーションアトデナオス(終わりのモーションが来たら終了)
+		//if (obj->GetFrame() == 237)
+		//{
+		//	time = 0;
+		//	return true;
+		//}
+	}
+
+	{	//撃った時に動きが止まらないパターン
 		for (int i = 0; i < 3; i++)
 		{
 			m_BulletManager->Set(BULLET_TYPE::THIEF_01 , new Thief_Bullet01, p_pos, vec[i], bulletSpeed, playerNum);
 		}
-	}
-	time++;
-
-	//モーションアトデナオス(終わりのモーションが来たら終了)
-	if (obj->GetFrame() == 237)
-	{
-		time = 0;
 		return true;
+
 	}
 	return	false;
 }
@@ -143,7 +155,6 @@ bool	Thief::QuickArts(void)
 bool	Thief::PowerArts(void)
 {
 	static int time = 0;
-
 
 	//モーションアトデナオス
 	SetMotion(5);
@@ -219,8 +230,6 @@ bool	Thief::HyperArts(void)
 	int playerNum = GetPlayerNum();
 
 	//モーションアトデナオス(ちょうどいい感じのフレームが来たら弾発射)
-	int a;
-	a = obj->GetFrame();
 	if (obj->GetFrame() == 339)
 	{
 		for (int i = 0; i < 5; i++)
