@@ -15,8 +15,12 @@ namespace PIRATE
 {
 	namespace MOTION_FRAME
 	{
-		const int SHOT = 113;
-		const int SHOT_STOP = 131;
+		const int QUICKARTS_SHOT = 113;
+		const int QUICKARTS_END = 131;
+
+		const int POWERARTS_END = 210;
+
+		const int HYPERARTS_END = 255;
 	}
 	
 	enum MOTION_DATA
