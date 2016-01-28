@@ -459,6 +459,7 @@ namespace
 
 					}
 					sound->PlaySE(SE::DECIDE_SE);
+					//sound->PlaySE( SE::DEATH_SE );
 				}
 			}
 

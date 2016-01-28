@@ -247,6 +247,7 @@ namespace
 			if ( mode != MODE_STATE::DEATH )
 			{
 				SetMode( MODE_STATE::DEATH );
+				sound->PlaySE( SE::DEATH_SE );
 				particle->BlueFlame( pos, 1.5f );
 			}
 		}
@@ -827,15 +828,19 @@ namespace
 				if ( coinNum > 0 )
 				{
 					gameManager->SubCoin( this->playerNum );
-					coinManager->Append( GetPos(), Vector3( Random::GetFloat( 0.3f, 0.7f ), 1.0f, Random::GetFloat( 0.3f, 0.7f ) ), Random::GetFloat( 0.3f, 0.7f ), Coin::COIN );
+					coinManager->Append( GetPos(), Vector3( Random::GetFloat( -0.7f, 0.7f ), 1.0f, Random::GetFloat( 0.3f, 0.7f ) ), Random::GetFloat( -0.7f, 0.7f ), Coin::COIN );
 				}
 			}
 
 			//	初期位置に配置→待ち状態にして行動不能にする→リスポーン状態を設定
 			SubLife();
 			pos = gameManager->InitPos[this->playerNum];
-			SetMode( MODE_STATE::WAIT );
-			SetParameterState( PARAMETER_STATE::RESPAWN );
+			if ( life <= 0 ) 	SetMode( MODE_STATE::MOVE );
+			else
+			{
+				SetMode( MODE_STATE::WAIT );
+				SetParameterState( PARAMETER_STATE::RESPAWN );
+			}
 		}
 	} 
 
@@ -1079,7 +1084,7 @@ namespace
 			renderflag = true;
 			respawn.timer = 0;
 			respawn.state = false;
-			SetMode( MODE_STATE::MOVE );
+			//SetMode( MODE_STATE::MOVE );
 		}
 	}
 

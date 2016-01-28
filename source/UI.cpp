@@ -406,7 +406,7 @@
 
 		case GAME_MODE::MAINGAME:
 			TimerRender();
-			NewsBarRender();
+			//NewsBarRender();
 			//CoinBarRender();
 			CoinNumberRender();
 			EventRender();
@@ -414,7 +414,7 @@
 
 		case GAME_MODE::DONKETSU_DIRECTION:
 			TimerRender();
-			NewsBarRender();
+			//NewsBarRender();
 			//CoinBarRender();
 			CoinNumberRender();
 			DonketsuDirectionRender();
@@ -423,7 +423,7 @@
 		case GAME_MODE::CLIMAX:
 			//TimerRender();
 			LastProductionRender();
-			NewsBarRender();
+			//NewsBarRender();
 			//CoinBarRender();
 			CoinNumberRender();
 			EventRender();

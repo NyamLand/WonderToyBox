@@ -55,9 +55,12 @@
 		IEX_SetWAV(SE::EVENT_SE, "DATA/Sound/SE/event.wav");
 		IEX_SetWAV( SE::NEWS_SE, "DATA/Sound/SE/decision3.wav" );
 		IEX_SetWAV(SE::HIT_SE, "DATA/Sound/SE/attack-p.wav");
-
+		IEX_SetWAV( SE::DRAMROLL_SE, "DATA/Sound/SE/dramroll.wav" );
+		IEX_SetWAV( SE::DEATH_SE, "DATA/Sound/SE/death.wav" );
+		IEX_SetWAV( SE::GAMESTART_SE, "DATA/Sound/SE/GameStart.wav" );
+		IEX_SetWAV( SE::RESULT_JAN, "DATA/Sound/SE/result-jan.wav" );
 		IEX_SetWAV(SE::GAMESET_SE, "DATA/Sound/SE/GameSet.wav");
-		IEX_SetWAV(SE::GUARD_SE, "DATA/Sound/SE/guard.wav");
+		IEX_SetWAV(SE::GUARD_SE, "DATA/Sound/SE/guard.wav" );
 		IEX_SetWAV(SE::CHOICE_SE, "DATA/Sound/SE/choice.wav");
 
 		isPlay = false;

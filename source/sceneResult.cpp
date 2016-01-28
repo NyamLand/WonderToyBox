@@ -264,7 +264,9 @@
 		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>(LPSTR("DATA/CHR/プリンセス/prinsess1.IEM"));					//	姫
 		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>(LPSTR("DATA/CHR/Thief/Thief.IEM"));				//	リス
 		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>(LPSTR("DATA/CHR/Pirate/Pirate.IEM"));					//	トラ
-
+		orgCannon = make_unique<iexMesh>( LPSTR( "DATA/CHR/Pirate/pirate_cannon.IMO" ) );
+		FOR(0, PLAYER_MAX)	cannon[value] = orgCannon->Clone();
+		
 		//	ステージ設定
 		bgStage = new iexMesh("DATA/BG/MenuStage/menustage.IMO");	//	ステージ
 		bgStage->SetScale(0.1f);
@@ -272,22 +274,22 @@
 		bgStage->Update();
 
 		//	オリジナルモデル情報初期化
-		org[CHARACTER_TYPE::SCAVENGER]->SetScale(0.015f);	//	掃除屋
+		org[CHARACTER_TYPE::SCAVENGER]->SetScale(0.015f);	//	魔女
 		org[CHARACTER_TYPE::PRINCESS]->SetScale(0.04f);		//	姫
 		org[CHARACTER_TYPE::THIEF]->SetScale(0.025f);				//	怪盗
 		org[CHARACTER_TYPE::PIRATE]->SetScale(0.04f);				//	海賊
 
-		org[CHARACTER_TYPE::SCAVENGER]->SetAngle(D3DX_PI);	//	掃除屋
+		org[CHARACTER_TYPE::SCAVENGER]->SetAngle(D3DX_PI);	//	魔女
 		org[CHARACTER_TYPE::PRINCESS]->SetAngle(D3DX_PI);		//	姫
 		org[CHARACTER_TYPE::THIEF]->SetAngle(D3DX_PI);				//	シーフ
 		org[CHARACTER_TYPE::PIRATE]->SetAngle(D3DX_PI);			//	海賊
 
-		org[CHARACTER_TYPE::SCAVENGER]->SetMotion(2);		//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS]->SetMotion(1);			//	姫
+		org[CHARACTER_TYPE::SCAVENGER]->SetMotion(0);		//	魔女
+		org[CHARACTER_TYPE::PRINCESS]->SetMotion(0);			//	姫
 		org[CHARACTER_TYPE::THIEF]->SetMotion(0);	 				//	シーフ
 		org[CHARACTER_TYPE::PIRATE]->SetMotion(0);					//	海賊
 
-		org[CHARACTER_TYPE::SCAVENGER]->Update();				//	掃除屋
+		org[CHARACTER_TYPE::SCAVENGER]->Update();				//	魔女
 		org[CHARACTER_TYPE::PRINCESS]->Update();					//	姫
 		org[CHARACTER_TYPE::THIEF]->Update();							//	シーフ
 		org[CHARACTER_TYPE::PIRATE]->Update();						//	海賊
@@ -715,11 +717,8 @@
 	//	更新
 	void	sceneResult::Update( void ) 
 	{
-		//	各モデル更新
-		FOR( 0, PLAYER_MAX )
-		{
-			obj[value]->Update();
-		}
+		//	モデル更新
+		ModelUpdate();
 
 		switch ( mode )
 		{
@@ -735,7 +734,6 @@
 			LastResultUpdate();
 			break;
 		}
-
 		//	カーテン更新
 		curtainState = CurtainUpdate();
 
@@ -957,6 +955,18 @@
 		FlashingUpdate( pressButtonImage, 0.1f );
 	}
 
+	//	モデル更新
+	void	sceneResult::ModelUpdate( void )
+	{
+		FOR( 0, PLAYER_MAX )
+		{
+			obj[value]->Animation();
+			obj[value]->Update();
+		}
+
+		SetCannonPos();
+	}
+
 //----------------------------------------------------------------------------
 //	描画
 //----------------------------------------------------------------------------
@@ -990,6 +1000,9 @@
 		{
 			obj[value]->Render( shader3D, "toon" );
 		}
+
+		//	大砲描画
+		CannonRender();
 
 		//	リザルトシール描画
 		RenderImage( menuHead, menuHead.sx, menuHead.sy, menuHead.sw, menuHead.sh, IMAGE_MODE::ADOPTPARAM );
@@ -1182,6 +1195,18 @@
 	void	sceneResult::PressButtonImageRender( void )
 	{
 		RenderImage( pressButtonImage, pressButtonImage.sx, pressButtonImage.sy, pressButtonImage.sw, pressButtonImage.sh, IMAGE_MODE::FLASH );
+	}
+
+	//	大砲描画
+	void	sceneResult::CannonRender( void )
+	{
+		FOR( 0, PLAYER_MAX )
+		{
+			if ( gameManager->GetCharacterType( value ) == CHARACTER_TYPE::PIRATE )
+			{
+				cannon[value]->Render( shader3D, "toon" );
+			}
+		}
 	}
 
 //----------------------------------------------------------------------------
@@ -1632,6 +1657,28 @@
 			rankImage[value].renderflag = true;
 		}
 		step = RESULT_MODE::RANK_SKIP;
+	}
+
+	//	大砲位置設定
+	void	sceneResult::SetCannonPos( void )
+	{
+		Matrix	mat;
+		Matrix	cannonMat;
+		Vector3	up = Vector3( 0.0f, 0.0f, 0.0f );
+		Vector3	cannonPos = Vector3( 0.0f, 0.0f, 0.0f );
+		FOR( 0, PLAYER_MAX )
+		{
+			if ( gameManager->GetCharacterType( value ) != CHARACTER_TYPE::PIRATE )	continue;
+			mat = *obj[value]->GetBone( 7 ) * obj[value]->TransMatrix;
+			cannon[value]->TransMatrix = mat;
+			up = Vector3( mat._21, mat._22, mat._23 );
+			up.Normalize();
+			cannonPos = Vector3( cannon[value]->TransMatrix._41, cannon[value]->TransMatrix._42, cannon[value]->TransMatrix._43 );
+			cannonPos += up * 0.5f;
+			cannon[value]->TransMatrix._41 = cannonPos.x;
+			cannon[value]->TransMatrix._42 = cannonPos.y;
+			cannon[value]->TransMatrix._43 = cannonPos.z;
+		}
 	}
 
 //----------------------------------------------------------------------------

@@ -530,6 +530,7 @@
 		org[CHARACTER_TYPE::PRINCESS]->SetMotion(0);		//	•P
 		org[CHARACTER_TYPE::THIEF]->SetMotion(0);		//	‰ö“
 		org[CHARACTER_TYPE::PIRATE]->SetMotion(0);			//	ŠC‘¯
+	
 		//	ƒ‚ƒfƒ‹A‘I‘ðî•ñ‰Šú‰»
 		FOR( 0, PLAYER_MAX )
 		{
