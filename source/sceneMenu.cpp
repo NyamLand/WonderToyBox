@@ -202,7 +202,7 @@
 			int w = static_cast<int>( iexSystem::ScreenWidth * 0.29f );
 			int h = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
 			ImageInitialize( textImage, x, y, w, h, 512, 0, 512, 256 );
-			textImage.angle = D3DXToRadian( 5.0f );
+			//textImage.angle = D3DXToRadian( 5.0f );
 			textImage.renderflag = true;
 		}
 
@@ -561,7 +561,7 @@
 		characterSelectInfo.playerNum = gameManager->GetPlayerNum();
 
 		//	‰æ‘œˆÊ’u‰Šú‰»
-		textImage.angle = D3DXToRadian( 5.0f );
+		//textImage.angle = D3DXToRadian( 5.0f );
 		textImage.renderflag = true;
 
 		//	Šç‰æ‘œ‰Šú‰»

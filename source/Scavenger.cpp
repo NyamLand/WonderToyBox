@@ -9,6 +9,7 @@
 #include	"Camera.h"
 #include	"Effect.h"
 #include	"Scavenger.h"
+#include	"CharacterManager.h"
 
 //*********************************************************************************
 //
@@ -44,6 +45,10 @@ Scavenger::Scavenger(void) : BaseChara()
 	scale = 0.02f;
 	diffence = -1;
 	stayTime = 0;
+	fireBallState = true;
+	fireBallStep = 0;
+	fireBallInterval = SECOND / 2;
+	
 	absorb_length = DEFAULT_ABSORB_LENGTH;
 	isGround = true;
 }
@@ -76,6 +81,13 @@ bool	Scavenger::Initialize(int playerNum, Vector3 pos)
 //	更新・描画
 //-----------------------------------------------------------------------------------
 
+//	更新
+void	Scavenger::Update( void )
+{
+	BaseChara::Update();
+	fireBallInterval++;
+}
+
 //	描画
 void	Scavenger::Render(iexShader* shader, LPSTR technique)
 {
@@ -84,6 +96,7 @@ void	Scavenger::Render(iexShader* shader, LPSTR technique)
 	////	デバッグ用
 	//if (!debug)	return;
 	DrawCapsule(attackInfo.top, attackInfo.bottom, attackInfo.r, 0xFFFFFFFF);
+	DrawSphere( attackInfo.pos, attackInfo.r );
 	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z - attackInfo.r), 0.3f);
 	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z + attackInfo.r), 0.3f);
 	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z), 0.3f);
@@ -104,56 +117,122 @@ void	Scavenger::Render(iexShader* shader, LPSTR technique)
 //	クイックアーツ
 bool	Scavenger::QuickArts(void)
 {
-	power = QUICK;
+	//if ( fireBallInterval < SECOND / 2 )	return true;
+	power = 0;
+	//	情報取得
+	Matrix	mat = obj->TransMatrix;
+	Vector3	front = Vector3(mat._31, mat._32, mat._33);
+	front.Normalize();
+	Vector3	up = Vector3(mat._21, mat._22, mat._23);
+	up.Normalize();
+	static	Vector3	p_pos = Vector3(0.0f, 0.0f, 0.0f);
+	static	bool			initflag = false;
+	bool			isEnd = false;
+	bool			isHit = false;
 
-	if (obj->GetFrame() < SCAVENGER::MOTION_FRAME::QUICKARTS_SUCK)	SetMotion(SCAVENGER::MOTION_DATA::QUICK_START);
-	//if (obj->GetFrame() >= SCAVENGER::MOTION_FRAME::SUCK)	SetMotion(SCAVENGER::MOTION_DATA::QUICK);
-
-	////平行移動
-	ShiftMove();
-	//その場回転
-	//RollAngle();
-
-	SetUnrivaled(false);
-
-	if (absorb_length < 15.0f) absorb_length += 0.1f;		//吸い込む範囲を徐々に拡大
-	Vector3 p_front = Vector3(sinf(this->angle.y), 0, cosf(this->angle.y));
-
-	//	コイン情報取得
-	list<Coin*>	coinList = coinManager->GetList();
-	FOR_LIST( coinList.begin(), coinList.end() )
+	if (!initflag)
 	{
-		bool	state = ( *it )->GetState();
-		if ( state )
+		p_pos = pos + front * 2.0f + up * 2.0f;
+		fireBallInterval = 0;
+		attackInfo.t = 0.0f;
+		attackInfo.r = 1.0f;
+		initflag = true;
+	}
+
+	switch (input->Get(KEY_D))
+	{
+	case 1:
+		if (fireBallState)
 		{
-			Vector3 toCoinVec = ( *it )->GetPos() - this->pos;
-			float pVecLength = p_front.Length();
-			float cVecLength = toCoinVec.Length();
-			float dot = Vector3Dot( p_front, toCoinVec ) / ( pVecLength * cVecLength );
-			dot = acos( dot );
-			dot = dot * 180.0f / D3DX_PI;
+			//	ボタンを押してる間進行
+			p_pos += front * 0.5f;
+			attackInfo.pos = p_pos;
+			attackInfo.r = 1.0f;
 
-			Vector3 vec = ( *it )->GetPos() - this->pos;
-			float length = vec.Length();
-
-			vec.Normalize();
-			if ( dot < 45.0f && length < absorb_length ) 
+			//	他のプレイヤーに当たったら発火
+			FOR(0, PLAYER_MAX)
 			{
-				( *it )->SetMove( -vec * 0.6f );
+				if (value == playerNum)	continue;
+				Vector3	p2_pos = characterManager->GetPos(value);
+				if (Collision::CapsuleVSSphere(p2_pos, p2_pos + Vector3(0.0f, 3.0f, 0.0f), 2.0f, attackInfo.pos, attackInfo.r))
+				{
+					fireBallState = false;
+				}
 			}
+			particle->FireBall(attackInfo.pos, attackInfo.r * 0.15f, Vector3(0.7f, 0.1f, 0.1f));
+		}
+		break;
 
-			particle->Suck(this->pos, this->pos + GetFront() * absorb_length, GetRight(), absorb_length, 0.5f);
+	case 2:
+		fireBallState = false;
+		break;
+	}
+
+	if ( !fireBallState )
+	{
+		power = QUICK;
+		attackInfo.t += 0.03f;
+		if ( attackInfo.t >= 1.0f )	attackInfo.t = 1.0f;
+		isEnd = Lerp( attackInfo.r, 1.0f, 5.0f, attackInfo.t );
+		particle->BombFireBall( attackInfo.pos, attackInfo.r * 0.04f, Vector3( 0.5f, 0.1f, 0.1f ) );
+
+		if ( isEnd )
+		{
+			initflag = false;
+			fireBallState = true;
+			return	true;
 		}
 	}
+	//power = QUICK;
 
-	if ( input->Get( KEY_D ) == 2 )
-	{
-		SetMotion(SCAVENGER::MOTION_DATA::QUICK_END);
-		absorb_length = DEFAULT_ABSORB_LENGTH;
-	}
+	//if (obj->GetFrame() < SCAVENGER::MOTION_FRAME::QUICKARTS_SUCK)	SetMotion(SCAVENGER::MOTION_DATA::QUICK_START);
+	////if (obj->GetFrame() >= SCAVENGER::MOTION_FRAME::SUCK)	SetMotion(SCAVENGER::MOTION_DATA::QUICK);
+
+	//////平行移動
+	//ShiftMove();
+	////その場回転
+	////RollAngle();
+
+	//SetUnrivaled(false);
+
+	//if (absorb_length < 15.0f) absorb_length += 0.1f;		//吸い込む範囲を徐々に拡大
+	//Vector3 p_front = Vector3(sinf(this->angle.y), 0, cosf(this->angle.y));
+
+	////	コイン情報取得
+	//list<Coin*>	coinList = coinManager->GetList();
+	//FOR_LIST( coinList.begin(), coinList.end() )
+	//{
+	//	bool	state = ( *it )->GetState();
+	//	if ( state )
+	//	{
+	//		Vector3 toCoinVec = ( *it )->GetPos() - this->pos;
+	//		float pVecLength = p_front.Length();
+	//		float cVecLength = toCoinVec.Length();
+	//		float dot = Vector3Dot( p_front, toCoinVec ) / ( pVecLength * cVecLength );
+	//		dot = acos( dot );
+	//		dot = dot * 180.0f / D3DX_PI;
+
+	//		Vector3 vec = ( *it )->GetPos() - this->pos;
+	//		float length = vec.Length();
+
+	//		vec.Normalize();
+	//		if ( dot < 45.0f && length < absorb_length ) 
+	//		{
+	//			( *it )->SetMove( -vec * 0.6f );
+	//		}
+
+	//		particle->Suck(this->pos, this->pos + GetFront() * absorb_length, GetRight(), absorb_length, 0.5f);
+	//	}
+	//}
+
+	//if ( input->Get( KEY_D ) == 2 )
+	//{
+	//	SetMotion(SCAVENGER::MOTION_DATA::QUICK_END);
+	//	absorb_length = DEFAULT_ABSORB_LENGTH;
+	//}
 
 
-	if(obj->GetFrame() == SCAVENGER::MOTION_FRAME::QUICKARTS_END) return true;
+	//if(obj->GetFrame() == SCAVENGER::MOTION_FRAME::QUICKARTS_END) return true;
 
 	return	false;
 }
@@ -161,10 +240,11 @@ bool	Scavenger::QuickArts(void)
 //	パワーアーツ
 bool	Scavenger::PowerArts( void )
 {	
-	power = POWER;
-
 	//攻撃モーションでなければモーション設定
-	if (obj->GetFrame() < SCAVENGER::MOTION_FRAME::POWER_TO_WAIT) SetMotion(SCAVENGER::MOTION_DATA::POWER_START);
+	if ( obj->GetFrame() < SCAVENGER::MOTION_FRAME::POWER_TO_WAIT )
+	{
+		SetMotion( SCAVENGER::MOTION_DATA::POWER_START );
+	}
 
 	float run_speed = 0.5f;
 	SetUnrivaled(false);
@@ -185,11 +265,6 @@ bool	Scavenger::PowerArts( void )
 
 	//	パラメータ加算
 	attackInfo.t += 0.03f;
-
-
-
-
-
 	absorb_length = 5.0f;
 	front.Normalize();
 	
@@ -233,7 +308,7 @@ bool	Scavenger::PowerArts( void )
 	}
 
 	//モーション終了時にMOVEへ戻す
-	if (obj->GetFrame() == SCAVENGER::MOTION_FRAME::POWERARTS_END)
+	if ( obj->GetFrame() == SCAVENGER::MOTION_FRAME::POWERARTS_END )
 	{
 		return	true;
 	}
@@ -415,7 +490,7 @@ void	Scavenger::SetAttackParam(int attackKind)
 		break;
 
 	case MODE_STATE::POWERARTS:
-		attackInfo.type = Collision::CAPSULEVSCAPSULE;
+		attackInfo.type = Collision::SPHEREVSCAPSULE;//Collision::CAPSULEVSCAPSULE;
 		knockBackInfo.type = KNOCKBACK_TYPE::MIDDLE;
 		break;
 

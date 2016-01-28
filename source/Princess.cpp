@@ -77,16 +77,7 @@
 	{
 		BaseChara::Render( shader, technique );
 
-		////	デバッグ用
-		////if ( !debug )	return;
 		//DrawSphere( attackInfo.pos, attackInfo.r, 0xFFFFFFFF );
-		//
-		//char	str[256];
-		//Vector3	stringPos;
-		//WorldToClient( pos, stringPos, matView* matProjection );
-		//stringPos.y -= 150.0f;
-		//sprintf_s( str, "ひ\nめ\n↓" );
-		//DrawString( str, ( int )stringPos.x, ( int )stringPos.y );
 	}
 
 //-----------------------------------------------------------------------------------
