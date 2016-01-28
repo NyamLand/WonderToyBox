@@ -67,6 +67,8 @@
 		timer = 0;
 		maxlife = LIFE_MAX_NUM::LIFE_5;
 		coinCollision = false;
+		eventmode = 0;
+		absCoinEventFlag = false;
 
 		FOR( 0, Round::END )
 		{
@@ -136,6 +138,8 @@
 		donketsuBoostState = false;
 		lastBonus = Random::GetInt( 0, 3 );
 		timeStop = 0;
+		eventmode = 0;
+		absCoinEventFlag = false;
 
 		//	ゲームデータテキストを読み込む
 		//LoadTextData();
@@ -182,7 +186,6 @@
 		//-------------------------------------------------------
 		//　イベント
 		//-------------------------------------------------------
-		static int eventmode = 0;
 		int alert_type = 0;
 		int alert_sound = 0;
 
@@ -193,20 +196,13 @@
 		*/
 
 		//　演出開始
-		if (timer == 58 * SECOND || timer == 38 * SECOND || timer == 18 * SECOND)
-		//if (timer % (20 * SECOND) == 0 || timer == 60 * SECOND - 2)
+		if (timer % EVENT_INTERVAL == EVENT_TIMING)
 		{
-			eventmode = Random::GetInt(0, EVENT_MODE::MAX - 1);
-			//eventmode = Random::GetInt(EVENT_MODE::COIN_FALL, EVENT_MODE::COIN_DUBBLE);
-			
-			//　↓ 仮 ↓
-			//eventmode = EVENT_MODE::JAM_SLOPE_CAMERA;
-			//eventmode = EVENT_MODE::JAM_COIN_GETAWAY;
-			//eventmode = EVENT_MODE::JAM_SLIP;
-			//eventmode = EVENT_MODE::COIN_FALL;	//　仮 （本番：この行いらない、上の行のコメントはずす）
-			//eventmode = EVENT_MODE::COIN_DUBBLE;	//　仮 （本番：この行いらない、上の行のコメントはずす）
-			//eventmode = EVENT_MODE::COIN_WAVE;		//　仮 （本番：この行いらない、上の行のコメントはずす）
-			//　↑ 仮 ↑
+			if (timer % (3 * EVENT_INTERVAL) == EVENT_TIMING)	absCoinEventFlag = true;
+
+			eventmode = (absCoinEventFlag) ?
+				Random::GetInt(EVENT_MODE::COIN_FALL, EVENT_MODE::COIN_DUBBLE) :
+				Random::GetInt(0, EVENT_MODE::MAX - 1);
 
 			if (eventmode <= EVENT_MODE::JAM_SLIP)
 			{
@@ -239,12 +235,14 @@
 			ui->SetAlertInfo(true, alert_type);
 			sound->PlaySE(alert_sound);
 		}
-
+		
 		//　イベント発生
-		if (timer == 56 * SECOND || timer == 36 * SECOND || timer == 16 * SECOND)
+		if (timer % EVENT_INTERVAL == EVENT_TIMING - 2*SECOND)
 		{
 			//ui->SetAlertInfo(false, alert_type);
 			eventManager->SetEvent(eventmode);
+
+			absCoinEventFlag = false;
 		}
 		
 
@@ -511,6 +509,7 @@
 		static	GameManager	out;
 		return	&out;
 	}
+
 
 //-------------------------------------------------------------------------
 //	情報設定

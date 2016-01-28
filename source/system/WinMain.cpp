@@ -37,8 +37,8 @@ BOOL	InitApp( HWND hWnd )
 	//	メインフレームワーク生成
 	MainFrame = new Framework();
 	//	初期シーン登録
-	MainFrame->ChangeScene( new sceneTitle() );	//　タイトル
-	//MainFrame->ChangeScene( new sceneLoad( new sceneMenu() ) );	//　メニュー
+	//MainFrame->ChangeScene( new sceneTitle() );	//　タイトル
+	MainFrame->ChangeScene( new sceneLoad( new sceneMenu() ) );	//　メニュー
 	//MainFrame->ChangeScene( new sceneMain() );	//　メイン
 
 	return TRUE;

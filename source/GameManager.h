@@ -20,6 +20,8 @@ namespace
 	const		int		SHAKE_TIME = 30;
 	const		float	SHAKE_POWER = 1.5f;
 	const		int		SCREEN_STOPTIME = 40;
+	const		int		EVENT_INTERVAL = 20 * SECOND;
+	const		int		EVENT_TIMING = 15 * SECOND;
 
 	namespace GAME_MODE
 	{
@@ -98,7 +100,9 @@ private:
 	int	round;				//	ラウンド
 	int	totalCoin[3][4];	//	ラウンドごとのコイン合計値
 	bool	coinCollision;	//	trueでON,falseでOFF
-
+	int		eventmode;
+	bool	absCoinEventFlag;	//　絶対にコインイベントを発生させるか
+	
 public:	
 		Vector3	InitPos[4];
 public:
