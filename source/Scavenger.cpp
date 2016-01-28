@@ -298,7 +298,7 @@ bool	Scavenger::PowerArts( void )
 		//UŒ‚’†ƒ‚[ƒVƒ‡ƒ“ŒÅ’è
 		if (obj->GetFrame() >= SCAVENGER::MOTION_FRAME::POWER_TO_WAIT) obj->SetFrame(SCAVENGER::MOTION_FRAME::POWER_TO_WAIT);
 		//	Œã‚ë
-		particle->Dust(this->pos, GetFront()*-1, GetRight(), 0.5f);
+		particle->Semicircle(this->pos, GetFront(), GetRight(), GetUp(), 0.7f);
 		move = front * run_speed;
 	}
 
