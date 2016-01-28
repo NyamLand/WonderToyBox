@@ -30,7 +30,7 @@
 		pos(0.0f, 0.0f, 0.0f), angle(0.0f, 0.0f, 0.0f), scale(0.0f, 0.0f, 0.0f), tempPos(0.0f, 0.0f, 0.0f), move(0.0f, 0.0f, 0.0f),
 		moveHeight(0.0f), flashParam(0.0f),
 		state(false), unrivaled(false),
-		moveType(MOVE_TYPE::FIX_BOX), durableValue(DURABLE_VALUE), objectType(OBJECT_TYPE::BASE), id(1), unrivaledTime(0)
+		moveType(MOVE_TYPE::FIX_OBJECT), durableValue(DURABLE_VALUE), objectType(OBJECT_TYPE::BASE), id(1), unrivaledTime(0)
 	{
 		
 	}
@@ -108,7 +108,7 @@
 	{
 		switch ( moveType )
 		{
-		case MOVE_TYPE::FIX_BOX:
+		case MOVE_TYPE::FIX_OBJECT:
 			//	固定なのでなにもしない
 			break;
 
@@ -146,12 +146,12 @@
 			//	エフェクト( ヒット時エフェクト、破壊エフェクト )
 			break;
 
-		case	MOVE_TYPE::MOVE_BOX_HIEGHT:
+		case	MOVE_TYPE::MOVE_HIEGHT_OBJECT:
 			//	上下に移動
 			MoveHeight();
 			break;
 
-		case	MOVE_TYPE::MOVE_BOX_SIDE:
+		case	MOVE_TYPE::MOVE_SIDE_OBJECT:
 			//	左右に移動
 			MoveSide();
 			break;

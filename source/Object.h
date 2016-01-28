@@ -18,10 +18,10 @@ namespace
 		enum 
 		{
 			BASE,
-			FIX_BOX,
+			FIX_OBJECT,
 			BREAK_OBJECT,
-			MOVE_BOX_SIDE,
-			MOVE_BOX_HIEGHT,
+			MOVE_SIDE_OBJECT,
+			MOVE_HIEGHT_OBJECT,
 		};
 	}
 
@@ -34,6 +34,10 @@ namespace
 			GREEN_BLOCK,
 			RED_BLOCK,
 			YELLOW_BLOCK,
+			TREE_TOY,
+			ROBOT_TOY,
+			REX_TOY,
+			RABBIT_TOY,
 			DESK_BASE,
 			FOREST_BASE,
 			TOY_BASE,
