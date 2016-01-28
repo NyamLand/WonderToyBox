@@ -326,6 +326,8 @@ namespace
 					//	ƒ^ƒCƒgƒ‹‰æ‘œ‚ð‰B‚·
 					titleInfo.titleImage.renderflag = false;
 
+					sound->PlaySE( SE::DECIDE_SE );
+
 					//	‰æ–Ê§Œä
 					screen->SetScreenMode( SCREEN_MODE::WHITE_OUT, 1.0f );
 
