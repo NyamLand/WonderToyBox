@@ -249,8 +249,8 @@
 	void	Coin::Hitduringtheoperation( const Vector3& pos, const int& Num )
 	{
 		state = false;
-		float	effectScale = 0.4f;
-		particle->Spark( pos, effectScale );
+		float	effectScale = 0.8f;
+		particle->CoinUp(pos, effectScale);
 		switch ( type )
 		{
 		case COIN:

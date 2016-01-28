@@ -169,7 +169,7 @@ private:
 	ImageObj		backgauge;
 	ImageObj		gauge;
 	iex2DObj*	face;
-	ImageObj		faceImage;
+	ImageObj		faceImage[PLAYER_MAX];
 	ImageObj		countImage;
 	ImageObj		alertImage;
 	ImageObj		alert_coinImage;
@@ -335,6 +335,7 @@ public:
 	void	PlayerNumberUpdate( void );
 	void	LifeUpdate( void );
 	void	CoinNumberUpdate( void );
+	void	FaceImageUpdate( int num, int mode );
 	void	CoinImageInfoUpdate(NUMBERIMAGE_INFO& numImageinfo, NUMBER_INFO& numinfo, const int& num);
 	void	EventUpdate( void );
 	void	ParticleUpdate( void );

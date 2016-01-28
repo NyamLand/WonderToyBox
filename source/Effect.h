@@ -11,6 +11,7 @@
 class Effect
 {
 private:
+	//	ÉTÅ[ÉNÉã
 	typedef struct
 	{
 		LVERTEX		poligon[4];
@@ -55,6 +56,10 @@ private:
 	Circle		circle[4];
 	Circle		circle_out[4];
 	float		c_angle;
+	//	ç¨óê
+	Circle		confusion[4];
+	Circle		confusion_out[4];
+	bool		isConfusion[4];
 
 	ImageObj	pow_up;
 	Vector3		pow_pos;
@@ -86,8 +91,8 @@ public:
 	void	RenderShield( void );
 
 	//	èÓïÒê›íË
-	void	PoligonSet( Circle* );
-	void	CirclePosSet( Circle*, int );
+	void	PoligonSet( Circle*, float, float, float );
+	void	CirclePosSet( Circle*, int , Vector3 add = Vector3(0.0f, 0.0f, 0.0f) );
 	void	SetShield( int player, bool state );
 
 	//	ìÆçÏä÷êî
