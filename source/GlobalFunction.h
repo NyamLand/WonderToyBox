@@ -22,6 +22,7 @@
 		{
 			NORMAL,			//	オリジナル描画
 			ADOPTPARAM,	//	パラメータ採用
+			ADD,			//	加算合成
 			WAVE,				//	波紋
 			FLASH,				//	点滅
 			SCALING,			//	拡大縮小

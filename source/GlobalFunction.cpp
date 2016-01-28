@@ -183,6 +183,11 @@
 				image.obj->Render( posx, posy, width, height, sx, sy, sw, sh, image.p, image.angle, RS_COPY, GetColor( image.color, image.alpha ) );
 			break;
 
+		case IMAGE_MODE::ADD:
+			if (image.renderflag)
+				image.obj->Render(posx, posy, width, height, sx, sy, sw, sh, image.p, image.angle, RS_ADD, GetColor(image.color, image.alpha));
+			break;
+
 		case IMAGE_MODE::WAVE:
 			width = image.w + image.plusScaleX;
 			height = image.h + image.plusScaleY;
@@ -228,6 +233,11 @@
 		case IMAGE_MODE::ADOPTPARAM:
 			if (image.renderflag)
 				image.obj->Render(posx, posy, width, height, sx, sy, sw, sh, image.p, image.angle, RS_COPY, GetColor(image.color, image.alpha));
+			break;
+
+		case IMAGE_MODE::ADD:
+			if (image.renderflag)
+				image.obj->Render(posx, posy, width, height, sx, sy, sw, sh, image.p, image.angle, RS_ADD, GetColor(image.color, image.alpha));
 			break;
 
 		case IMAGE_MODE::WAVE:

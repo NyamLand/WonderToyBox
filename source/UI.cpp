@@ -202,7 +202,6 @@
 		backgauge.obj = coinbar;
 		frame.obj = coinbar;
 		face = new iex2DObj("DATA/UI/chara_emotion.png");
-		faceImage.obj = face;
 		finishImage.obj = new iex2DObj( "DATA/UI/bfUI.png");
 		countImage.obj = new iex2DObj( "DATA/UI/bfUI_02.png" );
 		alertImage.obj = new iex2DObj( "DATA/UI/alert.png" );
@@ -223,6 +222,8 @@
 		changeflag = false;
 		FOR(0,PLAYER_MAX)
 		{
+			faceImage[value].obj = face;
+
 			charatype[value] = gameManager->GetCharacterType(value);
 			startNum[value].obj = startNumber;
 			coin_flg[value] = false;
@@ -230,8 +231,8 @@
 		}
 
 		//	各UI情報初期化
-		//CoinBarInitialize();
 		CoinNumberInitialize();
+		CoinBarInitialize();
 		TimerInitialize();
 		StartAndTimeUpInitialize();
 		StartPlayerNumInitialize();
@@ -467,10 +468,13 @@
 		ImageInitialize( gauge, frame.x, frame.y, 0, backgauge.h, 0, 32, 0, 32);
 		w = static_cast<int>( iexSystem::ScreenWidth * 0.025f );
 		h = static_cast<int>( iexSystem::ScreenHeight * 0.04f );
-		ImageInitialize(faceImage, 0, frame.y - (frame.h / 2), w, h, 256, 256, 256, 256);
 
 		FOR(0,NUM_BAR)
-		{
+		{																																			
+			ImageInitialize(faceImage[value], coinNumInfo[value].pos.x, coinNumInfo[value].pos.y,
+				coinNumInfo[value].one.w + coinNumInfo[value].ten.w,	//	横幅
+				coinNumInfo[value].one.h + coinNumInfo[value].ten.h,	//	横幅
+				0, 0, 256, 256);
 			bar_x[value] = frame.x;
 			bar_sx[value] = backgauge.sx;
 			state_x[value] = 0;
@@ -802,7 +806,15 @@
 		FOR(0, PLAYER_MAX){
 			CoinCounter(gameManager->GetCoinNum(value),value);
 			CoinImageInfoUpdate(coinNumInfo[value], numInfo[value], coinNum[value]);
+			FaceImageUpdate(value, gameManager->GetCharacterType(value));
+			
 		}
+	}
+
+	void	UI::FaceImageUpdate( int num, int mode )
+	{
+		faceImage[num].alpha = 0.5f;
+		faceImage[num].sy = 256 * mode;
 	}
 
 	//	カウントダウン・スタート演出
@@ -1164,13 +1176,16 @@
 			RenderImage( gauge, gauge.sx, gauge.sy * value, gauge.sw, gauge.sh, IMAGE_MODE::NORMAL, static_cast<int>( bar_x[value] - (backgauge.w * 0.5f) + (gauge.sw * 0.5f ) ), gauge.y );
 																					
 			//顔
-			RenderImage( faceImage, faceImage.sx * state_type[value], faceImage.sy * charatype[value], faceImage.sw, faceImage.sh, IMAGE_MODE::NORMAL, state_x[value] - (backgauge.w / 2), faceImage.y );
+		//	RenderImage( faceImage, faceImage.sx * state_type[value], faceImage.sy * charatype[value], faceImage.sw, faceImage.sh, IMAGE_MODE::NORMAL, state_x[value] - (backgauge.w / 2), faceImage.y );
 		}
 	}
 
 	//	コイン枚数描画
 	void	UI::CoinNumberRender( void )
 	{
+		FOR(0, PLAYER_MAX){
+			RenderImage(faceImage[value], faceImage[value].sx, faceImage[value].sy, faceImage[value].sw, faceImage[value].sh, IMAGE_MODE::ADOPTPARAM);
+		}
 		//	15秒まで数字表示
 //		if (gameManager->GetTimer() / SECOND >= 15)
 //		{

@@ -422,16 +422,14 @@ namespace
 		}
 	}
 
-	//	コインエフェクト
+	//	コイン枚数用エフェクト
 	void	Particle::CoinGet(const Vector3& pos, const float& scale)
 	{
 		Vector3	Pos, Move, Power;
 
 		for (int j = 0; j<10; j++)
 		{
-			Pos.x = pos.x;
-			Pos.y = pos.y;
-			Pos.z = pos.z;
+			Pos = pos;
 
 			Move.x = Random::GetFloat(-50.0f, 50.0f) * (0.005f * scale);
 			Move.y = 0.8f * scale + (0.2f * scale * (j % 2));
@@ -443,6 +441,28 @@ namespace
 
 			//	画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
 			pt->Set(COIN, 0, 1.0f, 30, 1.0f, 15, 11.0f, &Pos, &Move, &Power, 0.8f, 0.8f, 0.0f, scale, RS_COPY);
+		}
+	}
+
+	//	コイン獲得用エフェクト
+	void	Particle::CoinUp(const Vector3& pos, const float& scale)
+	{
+		Vector3	Pos, Move, Power;
+
+		for (int j = 0; j<1; j++)
+		{
+			Pos = pos + Vector3(0.0f, 5.0f, 0.0f);
+
+			Move.x = 0;
+			Move.y = 0.8f * scale;
+			Move.z = 0;
+
+			Power.x = 0.0f;
+			Power.y = -(scale * 0.05f);
+			Power.z = 0.0f;
+
+			//	画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
+			pt->Set(COIN, 0, 1.0f, 30, 1.0f, 15, 1.0f, &Pos, &Move, &Power, 1.0f, 1.0f, 0.0f, scale, RS_COPY);
 		}
 	}
 
@@ -479,25 +499,84 @@ namespace
 	void	Particle::Death( const Vector3& pos, float scale, const Vector3& color )
 	{
 		Vector3	Pos, Move, Power;
-		for ( int j = 0; j<20; j++ ){
-			Pos.x = pos.x + sinf( Random::GetFloat( 0.0f, D3DX_PI * 2 ) ) * ( Random::GetInt( 0, 100 ) - 50 ) * 0.01f * scale;
+		for ( int j = 0; j<5; j++ ){
+			Pos.x = pos.x + sinf( Random::GetFloat( 0.0f, D3DX_PI * 2 ) ) * Random::GetInt( -50, 50 ) * 0.01f * scale;
 			Pos.y = pos.y + ( Random::GetInt( 0, 10 ) - 5 ) * 0.1f * scale;
-			Pos.z = pos.z + cosf( Random::GetFloat( 0.0f, D3DX_PI * 2 ) ) * ( Random::GetInt( 0, 100 ) - 50 ) * 0.01f * scale;
+			Pos.z = pos.z + cosf( Random::GetFloat( 0.0f, D3DX_PI * 2 ) ) * Random::GetInt( -50, 50 ) * 0.01f * scale;
 
 			Move = Pos - pos;
 			Move.Normalize();
 			Move *= 1.0f * scale;
-			Move.y = -1.0f * scale;
+			Move.y = -0.15f * scale;
 
 			Power = pos - Pos;
 			Power.Normalize();
 			Power *= 0.01f * scale;
-			Power.y = 0.01f * scale;
+			Power.y = 0.05f * scale;
 
-			pt->Set( DUST, 0, 1.0f, 60, 1.0f, 90, 0.5f, &Pos, &Move, &Power, color.x, color.y, color.z, scale * 10.0f, RS_COPY );
+			pt->Set( SUCK, 0, 1.0f, 40, 1.0f, 15, 0.5f, &Pos, &Move, &Power, color.x, color.y, color.z, scale * 10.0f, RS_COPY );
 		}
 
 	}
+
+	//	突進時の風を切る
+	void	Particle::Semicircle(const Vector3& pos, const Vector3& front, const Vector3& right, const Vector3& up, const float& scale)
+	{
+		Vector3	Pos, Move, Power;
+		for (int j = 0; j <10; j++)
+		{
+			Vector3 direction;
+
+			//	前方半円
+			direction = front * (Random::GetFloat(0.0f, 1.0f));			//	前
+			direction += right * (Random::GetFloat(-1.0f, 1.0f));		//	左右
+			direction += up * (Random::GetFloat(-1.0f, 1.0f));			//	上下
+
+			direction.Normalize();
+
+			//	半径10離れた位置にセット
+			Pos = (pos + Vector3(0.0f, 3.0f, 0.0f)) +direction * 5.0f;
+
+			//	後ろ向き
+			Move = -front * (Random::GetFloat(0.0f, 5.0f))* 0.1f * scale;
+
+
+			Power = Vector3(0.0f, 0.0f, 0.0f);
+
+			//	画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
+			pt->Set(SPARK, 0, 0.0f, 40, 0.0f, 20, 1.0f, &Pos, &Move, &Power, 1.0f, 1.0f, 0.0f, scale, RS_COPY);
+		}
+	}
+
+	//	大砲打った時の煙
+	void	Particle::CannonSmoke(const Vector3& pos, const Vector3& front, const Vector3& right, const Vector3& up, const float& scale)
+	{
+		Vector3	Pos, Move, Power;
+		for (int j = 0; j < 10; j++){
+			
+			Vector3 direction;
+
+			//	前方半円
+			direction = front * (Random::GetFloat(0.0f, 1.0f));			//	前
+			direction += right * (Random::GetFloat(-1.0f, 1.0f));		//	左右
+			direction += up * (Random::GetFloat(-1.0f, 1.0f));			//	上下
+			direction.Normalize();
+
+			Pos = pos + direction * 1.0f;
+
+			Move.x = 0.0f;
+			Move.y = 0.0f;
+			Move.z = 0.0f;
+
+			Power.x = 0.0f;
+			Power.y = 0.0f;
+			Power.z = 0.0f;
+
+			//	画像タイプ、出現フレーム、出現時透明度、最終フレーム、最終透明度、最高フレーム、最高透明度、出現位置、移動値、与力、	赤成分、緑成分、青成分、スケール、レンダーステート
+			pt->Set(SUCK, 0, 0.0f, 50, 0.0f, 20, 1.0f, &Pos, &Move, &Power, 0.5f, 0.5f, 0.5f, scale, RS_COPY);
+		}
+	}
+
 
 //------------------------------------------------------------------------
 //	情報取得

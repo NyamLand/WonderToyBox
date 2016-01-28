@@ -25,7 +25,13 @@
 				-3.0f,		//	最少
 				0.5f,		//	高さ
 			};
-
+			
+			const float CON_POS[3] =
+			{
+				1.5f,		//	最大
+				-1.5f,		//	最少
+				0.5f,		//	高さ
+			};
 		}
 	}
 
@@ -76,9 +82,14 @@
 				//	頂点設定
 				SetVertex(circle[i].poligon[j], 0, 0, 0, 0, 0, 0xFFFFFF);
 				SetVertex(circle_out[i].poligon[j], 0, 0, 0, 0, 0, 0xFFFFFF);
+				SetVertex(confusion[i].poligon[j], 0, 0, 0, 0, 0, 0xFFFFFF);
+				SetVertex(confusion_out[i].poligon[j], 0, 0, 0, 0, 0, 0xFFFFFF);
 			}
 			circle[i].c_pos = Vector3( 0.0f, 10.0f, 0.0f );	
 			circle_out[i].c_pos = Vector3( 0.0f, 10.0f, 0.0f );
+			confusion[i].c_pos = Vector3( 0.0f, 10.0f, 0.0f );
+			confusion_out[i].c_pos = Vector3(0.0f, 10.0f, 0.0f);
+			isConfusion[i] = true;
 		}
 
 		c_angle = 0.0f;
@@ -132,10 +143,14 @@
 
 		//	情報更新
 		for (int i = 0; i < 4; i++){
-			PoligonSet( &circle[i] );
-			PoligonSet( &circle_out[i] );
-			CirclePosSet( &circle[i], i );
-			CirclePosSet( &circle_out[i], i );
+			PoligonSet( &circle[i], POS[0], POS[1], POS[2] );
+			PoligonSet( &circle_out[i], POS[0], POS[1], POS[2] );
+			PoligonSet( &confusion[i], CON_POS[0], CON_POS[1], CON_POS[2] );
+			PoligonSet( &confusion_out[i], CON_POS[0], CON_POS[1], CON_POS[2] );
+			CirclePosSet( &circle[i], i, Vector3(0.0f, 0.4f, 0.0f) );
+			CirclePosSet( &circle_out[i], i, Vector3(0.0f, 0.4f, 0.0f) );
+			CirclePosSet( &confusion[i], i, Vector3(0.0f, 6.0f, 0.0f) );
+			CirclePosSet( &confusion_out[i], i, Vector3(0.0f, 6.0f, 0.0f) );
 		}
 		//	回転
 		Spin();
@@ -253,8 +268,13 @@
 		{
 			for (int n = 0; n < 4; n++)
 			{
+				//	サークル
 				circle_out[i].poligon[n].x = cosf(c_angle) * (circle[i].poligon[n].x - circle[i].c_pos.x) - sinf(c_angle) * (circle[i].poligon[n].z - circle[i].c_pos.z) + circle[i].c_pos.x;
 				circle_out[i].poligon[n].z = sinf(c_angle) * (circle[i].poligon[n].x - circle[i].c_pos.x) + cosf(c_angle) * (circle[i].poligon[n].z - circle[i].c_pos.z) + circle[i].c_pos.z;
+
+				//	混乱
+				confusion_out[i].poligon[n].x = cosf(c_angle) * (confusion[i].poligon[n].x - confusion[i].c_pos.x) - sinf(c_angle) * (confusion[i].poligon[n].z - confusion[i].c_pos.z) + confusion[i].c_pos.x;
+				confusion_out[i].poligon[n].z = sinf(c_angle) * (confusion[i].poligon[n].x - confusion[i].c_pos.x) + cosf(c_angle) * (confusion[i].poligon[n].z - confusion[i].c_pos.z) + confusion[i].c_pos.z;
 			}
 		}
 	}
@@ -270,6 +290,12 @@
 		//	サークル描画
 		for (int i = 0; i < 4; i++){
 			iexPolygon::Render3D(circle_out[i].poligon, 2, circle_pic[i], shader3D, "alpha" );
+
+			//	混乱描画
+			if (isConfusion[i])
+			{
+				iexPolygon::Render3D(confusion_out[i].poligon, 2, circle_pic[i], shader3D, "alpha");
+			}
 		}
 
 		//	シールド描画
@@ -309,45 +335,45 @@
 //-------------------------------------------------------------------------
 //	情報設定
 //-------------------------------------------------------------------------
-	void	Effect::PoligonSet( Circle* c )
+	void	Effect::PoligonSet( Circle* c, float max, float min, float height )
 	{
 			//	保存用
 
-			c->poligon[0].x = POS[1]	+ c->c_pos.x;
-			c->poligon[0].y = POS[2]	+ c->c_pos.y;
-			c->poligon[0].z = POS[0]	+ c->c_pos.z;
+			c->poligon[0].x = min	+ c->c_pos.x;
+			c->poligon[0].y = height	+ c->c_pos.y;
+			c->poligon[0].z = max	+ c->c_pos.z;
 			c->poligon[0].tu = 0.0f;
 			c->poligon[0].tv = 0.0f;
 			c->poligon[0].color = 0xFFFFFFFF;
 
-			c->poligon[1].x = POS[0]	+ c->c_pos.x;
-			c->poligon[1].y = POS[2]	+ c->c_pos.y;
-			c->poligon[1].z = POS[0]	+ c->c_pos.z;
+			c->poligon[1].x = max	+ c->c_pos.x;
+			c->poligon[1].y = height	+ c->c_pos.y;
+			c->poligon[1].z = max	+ c->c_pos.z;
 			c->poligon[1].tu = 1.0f;
 			c->poligon[1].tv = 0.0f;
 			c->poligon[1].color = 0xFFFFFFFF;
 
 
-			c->poligon[2].x = POS[1] + c->c_pos.x;
-			c->poligon[2].y = POS[2] + c->c_pos.y;
-			c->poligon[2].z = POS[1] + c->c_pos.z;
+			c->poligon[2].x = min + c->c_pos.x;
+			c->poligon[2].y = height + c->c_pos.y;
+			c->poligon[2].z = min + c->c_pos.z;
 			c->poligon[2].tu = 0.0f;
 			c->poligon[2].tv = 1.0f;
 			c->poligon[2].color = 0xFFFFFFFF;
 
 
-			c->poligon[3].x = POS[0] + c->c_pos.x;
-			c->poligon[3].y = POS[2] + c->c_pos.y;
-			c->poligon[3].z = POS[1] + c->c_pos.z;
+			c->poligon[3].x = max + c->c_pos.x;
+			c->poligon[3].y = height + c->c_pos.y;
+			c->poligon[3].z = min + c->c_pos.z;
 			c->poligon[3].tu = 1.0f;
 			c->poligon[3].tv = 1.0f;
 			c->poligon[3].color = 0xFFFFFFFF;
 
 	}
 
-	void	Effect::CirclePosSet( Circle* c, int i )
+	void	Effect::CirclePosSet( Circle* c, int i, Vector3 add )
 	{
-			c->c_pos = characterManager->GetPos(i) + Vector3( 0.0f, 0.4f, 0.0f );
+			c->c_pos = characterManager->GetPos(i) + add;
 	}
 
 

@@ -97,6 +97,9 @@ bool	Pirate::QuickArts(void)
 	Vector3	front = GetFront();
 	front.Normalize();
 	Vector3	c_pos = Vector3(cannon->TransMatrix._41, cannon->TransMatrix._42, cannon->TransMatrix._43); //’e‚ð”ò‚Î‚·ˆÊ’u‚ð‘å–C‚ÌˆÊ’u‚ÉÝ’è
+
+	Vector3 up	  = Vector3(cannon->TransMatrix._21, cannon->TransMatrix._22, cannon->TransMatrix._23);
+	Vector3 right = Vector3(cannon->TransMatrix._11, cannon->TransMatrix._12, cannon->TransMatrix._13);
 	SetMove(Vector3(0.0f, move.y, 0.0f));
 	Vector3 vec = front;
 
@@ -118,9 +121,11 @@ bool	Pirate::QuickArts(void)
 		{
 		case QuickArts_DATA::NORMAL_SHOT:
 			m_BulletManager->Set(BULLET_TYPE::PIRATE_01, new Pirate_Bullet01, c_pos, vec, bulletSpeed, playerNum);
+			particle->CannonSmoke(c_pos + Vector3(0.0f, 1.0f, 0.0f) + front * 1.0f, front, right, up, 2.0f);
 			break;
 		case QuickArts_DATA::TIMER_SHOT:
 			m_BulletManager->Set(BULLET_TYPE::PIRATE_02, new Pirate_Bullet02, c_pos, vec, bulletSpeed, playerNum);
+			particle->CannonSmoke(c_pos + Vector3(0.0f, 1.0f, 0.0f) + front * 1.0f, front, right, up, 2.0f);
 			break;
 		}
 	}
