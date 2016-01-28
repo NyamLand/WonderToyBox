@@ -81,14 +81,14 @@ Event_Mission*	Event_Mission::GetInstance(void)
 //*****************************************************************
 void	Event_Mission::SetEvent(int eventflag)
 {
-	switch (eventflag)
-	{
-	//case EVENT_MODE::MISSION_COLLECT:
-	//	m_Collect.eventflag = true;
-	//	break;
-	//
-	//case EVENT_MODE::MISSION_STAY:
-	//	m_Stay.eventflag = true;
-	//	break;
-	}
+	//switch (eventflag)
+	//{
+	////case EVENT_MODE::MISSION_COLLECT:
+	////	m_Collect.eventflag = true;
+	////	break;
+	////
+	////case EVENT_MODE::MISSION_STAY:
+	////	m_Stay.eventflag = true;
+	////	break;
+	//}
 }

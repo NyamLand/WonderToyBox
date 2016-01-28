@@ -373,7 +373,7 @@
 	{
 		if (!image.scalingFlag) return false;
 
-		switch (image.scalingAlphaFlag)
+		switch ( image.scalingAlphaFlag )
 		{
 		case true:
 			//	ƒpƒ‰ƒ[ƒ^‰ÁZ
@@ -420,10 +420,9 @@
 
 			if (image.alpha >= 1.0f) image.alpha = 1.0f;
 			return false;
-
-		default:
-			return false;
+			break;
 		}
+		return false;
 	}
 
 	//	‰¡Šg‘åck¬XV

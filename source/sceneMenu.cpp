@@ -509,8 +509,8 @@
 		int h = static_cast<int>( iexSystem::ScreenHeight * 0.15f );
 		playerNum->Render( x, y, w, h, 0, playerNumSelectInfo.sy, 128, 128 );
 
-		triangleCursor->Render(x+10.0f, y - 130.0f, 128, 128, 0, 0, 256, 256);
-		triangleCursor->Render(x + 10.0f, y + 140.0f, 128, 128, 256, 0, 256, 256);
+		triangleCursor->Render( ( int )( x+10.0f ), ( int )( y - 130.0f ), 128, 128, 0, 0, 256, 256);
+		triangleCursor->Render( ( int )( x + 10.0f ), ( int )( y + 140.0f ), 128, 128, 256, 0, 256, 256);
 
 		x = static_cast<int>( iexSystem::ScreenWidth * 0.35f );
 		y = static_cast<int>( iexSystem::ScreenHeight * 0.41f );
