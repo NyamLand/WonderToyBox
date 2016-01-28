@@ -1597,7 +1597,10 @@
 			{
 				isEnd = WaveUpdate( lifeImage[value] );
 			}
-			if ( isEnd )	lifeInfo.step++;
+			if ( isEnd )
+			{
+				lifeInfo.step++;
+			}
 			break;
 
 		case 4:
@@ -1609,7 +1612,7 @@
 				lifeImage[value].sx = lifeImage[value].sw * ( ( 5 - lifeInfo.culLife ) % 4 );
 				lifeImage[value].sy = lifeImage[value].sh * ( ( 5 - lifeInfo.culLife ) / 4 );
 			}
-
+			lifeAnnounceImage.renderflag = false;
 			step = RESULT_MODE::INPUT_WAIT;
 			
 			return	true;

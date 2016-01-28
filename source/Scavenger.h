@@ -54,6 +54,9 @@ private:
 private:
 	int		stayTime;	//技関連の硬直経過時間
 	float	absorb_length;		//コインを吸い込める距離
+	bool		fireBallState;
+	int		fireBallInterval;
+	int		fireBallStep;
 //	void	MotionManagement(int motion)override;
 
 public:
@@ -63,6 +66,7 @@ public:
 	bool	Initialize(int playerNum, Vector3 pos)override;
 
 	//	更新・描画
+	void	Update( void )override;
 	void	Render(iexShader* shader = nullptr, LPSTR technique = nullptr)override;
 
 	//	動作関数
