@@ -88,6 +88,12 @@ bool	Pirate_Bullet03::PlayerCollisionCheck(void)
 		if (isHit)
 		{
 			isPlayerCheck[i] = true;
+			int bcMode = characterManager->GetMode(i);
+			if (bcMode == MODE_STATE::GUARD)
+			{
+				sound->PlaySE(SE::GUARD_SE);
+				continue;
+			}
 			//	エフェクトだす
 			//state = false;
 			float	effectScale = 0.2f;

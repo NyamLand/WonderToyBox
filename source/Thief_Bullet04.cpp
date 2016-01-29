@@ -117,6 +117,12 @@ bool	Thief_Bullet04::PlayerCollisionCheck(void)
 		if (isHit)
 		{
 			isPlayerCheck[i] = true;
+			int bcMode = characterManager->GetMode(i);
+			if (bcMode == MODE_STATE::GUARD)
+			{
+				sound->PlaySE(SE::GUARD_SE);
+				continue;
+			}
 			//	エフェクトだす
 			float	effectScale = 2.2f;
 			particle->Spark(pos, effectScale);

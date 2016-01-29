@@ -158,6 +158,7 @@ private:
 	unique_ptr<Camera>		view2D, viewTest;
 	iex2DObj*						infoScreen;
 	iex2DObj*						lastResultTest;
+	iex2DObj*						winnerBack;
 	iex2DObj*						check;
 	unique_ptr<iex2DObj>	back;
 	unique_ptr<iex3DObj>	org[4];
@@ -176,7 +177,7 @@ private:
 	ImageObj							menuImage[3];
 	ImageObj							lifeImage[4];		//	ƒ‰ƒCƒt‰æ‘œ
 	ImageObj							checkImage[4];
-	ImageObj							roundImage[3];
+	ImageObj							roundImage[4];
 	ImageObj							lifeAnnounceImage;
 	ImageObj							faceImage;
 	ImageObj							playerNumImage;

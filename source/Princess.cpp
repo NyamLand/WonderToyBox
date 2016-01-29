@@ -190,6 +190,7 @@
 		static	bool	initflag = false;
 		if ( !initflag )
 		{
+			sound->PlaySE( SE::HYPER_ATTACK );
 			sound->PlaySE( SE::PRINCESS_HYPER );
 			initflag = true;
 		}

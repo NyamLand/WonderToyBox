@@ -238,6 +238,8 @@ namespace
 	//	更新
 	void	BaseChara::Update( void )
 	{
+		if ( mode != MODE_STATE::GUARD ) 	m_Effect->SetShield( GetPlayerNum(), false );
+
 		// 攻撃後再使用の準備
 		if(attackInfo.Interval > 0 ) attackInfo.Interval--;
 
@@ -707,11 +709,11 @@ namespace
 	void	BaseChara::Guard( void )
 	{
 		move.x = move.z = 0.0f;
-		SetParameterState(PARAMETER_STATE::UNRIVALED);
+		//SetParameterState(PARAMETER_STATE::UNRIVALED);
 //		SetMotion( MOTION_NUM::GUARD );
 
 		//	ボタンをはなすと戻る
-		if ( input->Get( KEY_B6 ) == 2 )
+		if ( input->Get( KEY_B6 ) != 1 )
 		{
 			SetMode( MODE_STATE::MOVE );
 			m_Effect->SetShield( GetPlayerNum(), false );

@@ -194,8 +194,9 @@ bool	Pirate::HyperArts(void)
 	static	bool	initflag = false;
 	if ( !initflag )
 	{
+		sound->PlaySE( SE::HYPER_ATTACK );
 		sound->PlaySE( SE::PIRATE_HYPER );
-		initflag = false;
+		initflag = true;
 	}
 
 	//‘å–C‚Ì–C’e”­ËˆÊ’uŒˆ’èi‰æ–Êã‘¤j

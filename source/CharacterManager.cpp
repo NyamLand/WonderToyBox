@@ -245,12 +245,18 @@
 		//	“–‚½‚Á‚Ä‚¢‚½‚ç
 		if ( isHit )
 		{
-			if (bc1->GetMode() == MODE_STATE::HYPERARTS)
+			int bc1Mode = bc1->GetMode();
+			if (bc1Mode == MODE_STATE::HYPERARTS)
 			{
 				//“–‚½‚Á‚½uŠÔ‚É‰æ–Ê—h‚ç‚·AŽ~‚ß‚é
 				gameManager->SetShakeCamera(1.5f, 30);
 				//‰æ–Ê’âŽ~
 				gameManager->SetTimeStop(SCREEN_STOPTIME);
+			}
+			if ( bc1Mode == MODE_STATE::GUARD )
+			{
+				sound->PlaySE( SE::GUARD_SE );
+				return;
 			}
 			
 			//	–³“G‚É‚·‚é
@@ -337,12 +343,19 @@
 		//	“–‚½‚Á‚Ä‚¢‚½‚ç
 		if ( isHit )
 		{
-			if (bc1->GetMode() == MODE_STATE::HYPERARTS)
+			int	bc1Mode = bc1->GetMode();
+			if (bc1Mode == MODE_STATE::HYPERARTS)
 			{
 				//“–‚½‚Á‚½uŠÔ‚É‰æ–Ê—h‚ç‚·AŽ~‚ß‚é
 				gameManager->SetShakeCamera(1.5f, 30);
 				//‰æ–Ê’âŽ~
 				gameManager->SetTimeStop(SCREEN_STOPTIME);
+			}
+
+			if ( bc1Mode == MODE_STATE::GUARD)
+			{
+				sound->PlaySE(SE::GUARD_SE);
+				return;
 			}
 
 			//	–³“G‚É‚·‚é

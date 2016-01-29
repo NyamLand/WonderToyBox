@@ -36,6 +36,7 @@ namespace
 			QUICK_HIT_SE,
 			POWER_HIT_SE,
 			HYPER_HIT_SE,
+			HYPER_ATTACK,
 
 			//	çUåÇSE
 			MAJO_QUICK_START,

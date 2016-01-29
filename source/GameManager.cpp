@@ -169,7 +169,11 @@
 		if ( timer <= 0 )
 		{
 			timer = 0;
-			mode = GAME_MODE::TIMEUP;
+			if ( mode != GAME_MODE::TIMEUP )
+			{
+				mode = GAME_MODE::TIMEUP;
+				sound->PlaySE( SE::GAMESET_SE );
+			}
 			for ( int i = 0; i < PLAYER_MAX; i++ )	characterManager->SetMode( i, MODE_STATE::WAIT );
 		}
 

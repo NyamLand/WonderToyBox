@@ -214,6 +214,7 @@
 		SafeDelete( lastResultTest );
 		SafeDelete( bgStage );
 		SafeDelete( check );
+		SafeDelete( winnerBack );
 		Random::Release();
 
 		sound->AllStop();
@@ -240,6 +241,7 @@
 		playerNumImage.obj = new iex2DObj( "DATA/UI/DonketuUI.png" );
 		waveImage.obj = new iex2DObj( "DATA/UI/Rainbow-circle.png" );
 		pressButtonImage.obj = new iex2DObj( "DATA/UI/pressspace.png" );
+		winnerBack = new iex2DObj( "DATA/UI/Last-result-back.png" );
 
 		//	ライフ発表テキスト画像初期化
 		ImageInitialize( lifeAnnounceImage, static_cast<int>( iexSystem::ScreenWidth * 0.5f ), static_cast<int>( iexSystem::ScreenHeight * 0.35f ), 300, 200, 0, 0, 512, 256 );
@@ -607,7 +609,7 @@
 		int sw = 512;
 		int sh = 128;
 
-		FOR( 0, Round::END ) 
+		FOR( 0, Round::END + 1 ) 
 		{
 			y = static_cast<int>( iexSystem::ScreenHeight * 0.3f ) + ( static_cast<int>( iexSystem::ScreenHeight * 0.15f ) * value );
 			sy = sh * value;
@@ -1155,6 +1157,8 @@
 			}
 		}
 
+		RenderImage( roundImage[3],roundImage[3].sx, roundImage[3].sy, roundImage[3].sw, roundImage[3].sh, IMAGE_MODE::NORMAL );
+
 		FOR( 0, PLAYER_MAX )
 		{
 			NumberImageRender( totalNumberImageInfo[value] );
@@ -1181,6 +1185,8 @@
 	//	優勝者関連描画
 	void	sceneResult::WinnerRender( void )
 	{
+		winnerBack->Render( 0, 0, ( int )iexSystem::ScreenWidth, ( int )iexSystem::ScreenHeight, 0, 0, 1280, 720 );
+
 		//	波紋描画
 		RenderImage( waveImage, waveImage.sx, waveImage.sy, waveImage.sw, waveImage.sh, IMAGE_MODE::WAVE );
 
@@ -1400,6 +1406,7 @@
 			if ( rouletteInfo.timer % 90 == 0 )
 			{
 				rouletteInfo.step++;
+				sound->PlaySE( SE::RESULT_JAN );
 				rouletteInfo.timer = 1;
 			}
 		}
@@ -1407,6 +1414,7 @@
 		{
 			if ( rouletteInfo.timer % 50 == 0 )
 			{
+				if ( rouletteInfo.step != PLAYER_MAX )sound->PlaySE(SE::RESULT_JAN);
 				rouletteInfo.step++;
 				rouletteInfo.timer = 1;
 			}
@@ -1756,6 +1764,7 @@
 			isEnd = CubicFunctionInterpolation( faceImage.h, 0, 700, lastAnnounceInfo.t );
 			if ( isEnd )
 			{
+				sound->PlaySE( SE::RESULT_JAN );
 				SetWave( waveImage, 1.0f );
 				lastAnnounceInfo.t = 0.0f;
 				lastAnnounceInfo.step++;
@@ -1831,12 +1840,14 @@
 		{
 		case LASTRESULT_MODE::SET_CLOSE_CURTAIN:
 			SetCurtainMode(CURTAIN_MODE::CLOSE);
+			sound->PlaySE( SE::DRAMROLL_SE );
 			result_step++;
 			break;
 
 		case LASTRESULT_MODE::CLOSE_CURTAIN:
-			if (curtainState)
+			if ( curtainState )
 			{
+				sound->StopSE( SE::DRAMROLL_SE );
 				SetWaitTimer(150);
 				step = 0;
 				mode = MOVE_MODE::LAST_RESULT;
@@ -1863,6 +1874,7 @@
 			//	入力受付
 			if ( key_space == 3 || key_a == 3 )
 			{
+				if ( !inputCheck[value] )	sound->PlaySE( SE::DECIDE_SE );
 				inputCheck[value] = true;
 				checkImage[value].renderflag = true;
 				SetWave( checkImage[value], 1.0f );
@@ -1907,8 +1919,16 @@
 		//	上下で選択
 		int	keyUp = input[0]->Get( KEY_UP );
 		int	keyDown = input[0]->Get( KEY_DOWN );
-		if ( keyUp == 3 )		menuInfo.select--;
-		if ( keyDown == 3 )	menuInfo.select++;
+		if ( keyUp == 3 )
+		{
+			sound->PlaySE( SE::CHOICE_SE );
+			menuInfo.select--;
+		}
+		if ( keyDown == 3 )
+		{
+			sound->PlaySE( SE::CHOICE_SE );
+			menuInfo.select++;
+		}
 		if ( menuInfo.select < 0 )							menuInfo.select = MENU::END - 1;
 		if ( menuInfo.select >= MENU::END )		menuInfo.select = MENU::MOVE_MENU;
 

@@ -337,6 +337,7 @@ bool	Scavenger::HyperArts( void )
 	static	bool	initflag = false;
 	if ( !initflag )
 	{
+		sound->PlaySE( SE::HYPER_ATTACK );
 		sound->PlaySE( SE::MAJO_HYPER );
 		initflag = true;
 	}

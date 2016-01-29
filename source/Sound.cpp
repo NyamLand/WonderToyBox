@@ -82,6 +82,7 @@
 		IEX_SetWAV( SE::QUICK_HIT_SE, "DATA/Sound/SE/attack-q.wav" );
 		IEX_SetWAV(SE::POWER_HIT_SE, "DATA/Sound/SE/attack-p.wav" );
 		IEX_SetWAV( SE::HYPER_HIT_SE, "DATA/Sound/SE/attack-h.wav" );
+		IEX_SetWAV( SE::HYPER_ATTACK, "DATA/Sound/SE/hyper-attack.wav" );
 
 		isPlay = false;
 	}
