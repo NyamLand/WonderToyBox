@@ -104,11 +104,11 @@ Stage*	stage = nullptr;
 		case STAGE_TYPE::TOY:
 			Append(Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 1.0f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::TOY_BASE);
 			Append(Vector3(10.0f, 20.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::BREAK_OBJECT, OBJECT_TYPE::RED_BLOCK);
-			Append(Vector3(-10.0f, 10.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::MOVE_HIEGHT_OBJECT, OBJECT_TYPE::RED_BLOCK);
+			Append(Vector3(-10.0f, 10.0f, -10.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::MOVE_SIDE_OBJECT, OBJECT_TYPE::RED_BLOCK);
 			Append(Vector3(-5.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.01f, 0.01f, 0.01f), MOVE_TYPE::BREAK_OBJECT, OBJECT_TYPE::TREE_TOY);
 			Append(Vector3(-3.0f, 0.0f, 0.0f), Vector3(0.0f, 3.0f, 0.0f), Vector3(0.01f, 0.01f, 0.01f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::RABBIT_TOY);
 			Append(Vector3(5.0f, 0.0f, 5.0f), Vector3(0.0f, 3.0f, 0.0f), Vector3(0.01f, 0.01f, 0.01f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::ROBOT_TOY);
-			Append(Vector3(-10.0f, 0.0f, -10.0f), Vector3(0.0f, 1.5f, 0.0f), Vector3(0.05f, 0.05f, 0.05f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::REX_TOY);
+			Append(Vector3(-10.0f, 0.0f, -10.0f), Vector3(0.0f, 1.5f, 0.0f), Vector3(0.09f, 0.09f, 0.09f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::REX_TOY);
 			break;
 		}
 	}
