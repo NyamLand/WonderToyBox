@@ -125,6 +125,7 @@ namespace
 				attackInfo.bottom = Vector3( 0.0f, 0.0f, 0.0f );
 				attackInfo.top = Vector3( 0.0f, 0.0f, 0.0f );
 				attackInfo.pos = Vector3( 0.0f, 0.0f, 0.0f );
+				attackInfo.Interval = 0;
 				attackInfo.addParam = -1;
 				attackInfo.r = 0.0f;
 				attackInfo.t = 0.0f;
@@ -237,6 +238,9 @@ namespace
 	//	更新
 	void	BaseChara::Update( void )
 	{
+		// 攻撃後再使用の準備
+		if(attackInfo.Interval > 0 ) attackInfo.Interval--;
+
 		//	モード管理
 		ModeManagement();
 
@@ -634,23 +638,30 @@ namespace
 
 		bool	isEnd = false;
 
-		switch ( attackKind )
+		if (attackInfo.Interval > 0)
 		{
-		case	MODE_STATE::QUICKARTS:
-			isEnd = QuickArts();
-			if (!isEnd)	SetAttackParam(attackKind);
-			break;
+			isEnd = true;
+		}
+		else
+		{
+			switch (attackKind)
+			{
+			case	MODE_STATE::QUICKARTS:
+				isEnd = QuickArts();
+				if (!isEnd)	SetAttackParam(attackKind);
+				break;
 
-		case MODE_STATE::POWERARTS:
-			isEnd = PowerArts();
-			if (!isEnd)	SetAttackParam(attackKind);
-			break;
+			case MODE_STATE::POWERARTS:
+				isEnd = PowerArts();
+				if (!isEnd)	SetAttackParam(attackKind);
+				break;
 
-		case MODE_STATE::HYPERARTS:
-			isEnd = HyperArts();
-			canHyper = isEnd;
-			if (!isEnd)	SetAttackParam(attackKind);
-			break;
+			case MODE_STATE::HYPERARTS:
+				isEnd = HyperArts();
+				canHyper = isEnd;
+				if (!isEnd)	SetAttackParam(attackKind);
+				break;
+			}
 		}
 
 		//	モーション終了時に
@@ -711,6 +722,7 @@ namespace
 	//	ダメージ
 	void	BaseChara::Damage( void )
 	{
+
 		//モーションアトデナオス(余力があれば関数化)
 		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::SCAVENGER)
 		{
@@ -724,7 +736,7 @@ namespace
 		{
 			SetMotion(8);
 		}
-
+		
 		AddKnockBackForce(force);
 	}
 

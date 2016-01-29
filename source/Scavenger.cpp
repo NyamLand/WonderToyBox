@@ -26,7 +26,7 @@ namespace
 {
 	enum OFFENSIVE_POWER
 	{
-		QUICK = 0,
+		QUICK = 1,
 		POWER = 1,
 		HYPER = 15,
 	};
@@ -49,7 +49,7 @@ Scavenger::Scavenger(void) : BaseChara()
 	fireBallStep = 0;
 	fireBallInterval = SECOND / 2;
 	
-	absorb_length = DEFAULT_ABSORB_LENGTH;
+	absorb_length = SCAVENGER::DEFAULT_ABSORB_LENGTH;
 	isGround = true;
 }
 
@@ -118,7 +118,7 @@ void	Scavenger::Render(iexShader* shader, LPSTR technique)
 bool	Scavenger::QuickArts(void)
 {
 	//if ( fireBallInterval < SECOND / 2 )	return true;
-	power = 0;
+	power = QUICK;
 	//	情報取得
 	Matrix	mat = obj->TransMatrix;
 	Vector3	front = Vector3(mat._31, mat._32, mat._33);
@@ -240,6 +240,7 @@ bool	Scavenger::QuickArts(void)
 //	パワーアーツ
 bool	Scavenger::PowerArts( void )
 {	
+	power = POWER;
 	//攻撃モーションでなければモーション設定
 	if ( obj->GetFrame() < SCAVENGER::MOTION_FRAME::POWER_TO_WAIT )
 	{
@@ -322,8 +323,6 @@ bool	Scavenger::HyperArts( void )
 
 	if (obj->GetFrame() <= SCAVENGER::MOTION_FRAME::HYPER_BEGIN) SetMotion(SCAVENGER::MOTION_DATA::HYPER_START);
 
-	//無敵判定を切らないとそもそもコインを集められないので無敵切ってます。
-	//問題なら言ってください
 	SetUnrivaled(false);
 	absorb_length = 20.0f;
 
@@ -345,7 +344,7 @@ bool	Scavenger::HyperArts( void )
 				if (obj->GetFrame() == SCAVENGER::MOTION_FRAME::HYPER_BEGIN)
 				{
 					Vector3 parabola_move;
-					Parabola(parabola_move, (*it)->GetPos(), pos, 0.7f, GRAVITY);
+					Parabola(parabola_move, (*it)->GetPos(), pos, 1.0f, GRAVITY * SCAVENGER::SUCK_POWER);
 					(*it)->SetMove(parabola_move);
 				}
 			}
@@ -363,7 +362,7 @@ bool	Scavenger::HyperArts( void )
 
 	if (attackInfo.t >= 1.0f)
 	{
-		absorb_length = DEFAULT_ABSORB_LENGTH;
+		absorb_length = SCAVENGER::DEFAULT_ABSORB_LENGTH;
 	}
 
 	if (obj->GetFrame() == SCAVENGER::MOTION_FRAME::HYPER_FINISH)
@@ -490,7 +489,7 @@ void	Scavenger::SetAttackParam(int attackKind)
 		break;
 
 	case MODE_STATE::POWERARTS:
-		attackInfo.type = Collision::SPHEREVSCAPSULE;//Collision::CAPSULEVSCAPSULE;
+		attackInfo.type = Collision::CAPSULEVSCAPSULE;//Collision::SPHEREVSCAPSULE;
 		knockBackInfo.type = KNOCKBACK_TYPE::MIDDLE;
 		break;
 

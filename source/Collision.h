@@ -15,6 +15,7 @@ private:
 public:
 	enum
 	{
+		NONE = -1,				//　判定なし
 		SPHEREVSCAPSULE = 1,	//	球VSカプセル
 		SPHEREVSSPHERE,			//	球VS球
 		CAPSULEVSCAPSULE,			//	カプセルVSカプセル
