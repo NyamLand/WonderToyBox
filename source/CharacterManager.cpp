@@ -197,6 +197,7 @@
 				if ( i == n )	continue;
 				if ( character[n]->GetParameterState( PARAMETER_STATE::UNRIVALED ) )			continue;
 				if ( character[n]->GetParameterState( PARAMETER_STATE::UNRIVALEDITEM ) )	continue;
+				if (character[n]->GetAttackParam() == Collision::NONE)	continue;
 
 				//	ƒ^ƒCƒv•Ê“–‚½‚è”»’è
 				switch ( attackParam )
@@ -242,7 +243,10 @@
 		{
 			if (bc1->GetMode() == MODE_STATE::HYPERARTS)
 			{
-				gameManager->SetShakeCamera( 1.5f, 30 );
+				//“–‚½‚Á‚½uŠÔ‚É‰æ–Ê—h‚ç‚·AŽ~‚ß‚é
+				gameManager->SetShakeCamera(1.5f, 30);
+				//‰æ–Ê’âŽ~
+				gameManager->SetTimeStop(SCREEN_STOPTIME);
 			}
 			
 			//	–³“G‚É‚·‚é
@@ -262,15 +266,17 @@
 			particle->Spark( bc2_top, effectScale );
 
 			//	ƒmƒbƒNƒoƒbƒN
-			Vector3	knockBackVec = bc1_attackPos - bc2_top;
-			knockBackVec.y = bc2_top.y;
-			knockBackVec.Normalize();
+			if (bc2->GetKnockBackType() != KNOCKBACK_TYPE::NONE)
+			{
+				Vector3	knockBackVec = bc1_attackPos - bc2_top;
+				knockBackVec.y = bc2_top.y;
+				knockBackVec.Normalize();
+				bc2->SetKnockBackVec(-knockBackVec);
+				SetKnockBackParam(bc1, bc2);
+			}
+			//‚â‚ç‚êFÝ’è
 			Vector3	color = bc1->GetDamageColor();
-			bc2->SetPassColor( color );
-			bc2->SetKnockBackVec( -knockBackVec );
-
-			SetKnockBackParam(bc1, bc2);
-
+			bc2->SetPassColor(color);
 			//	ƒRƒCƒ“‚Î‚ç‚Ü‚«•ûŒüÝ’è
 			Vector3	vec = Vector3( Random::GetFloat( -1.0f, 1.0f ), 1.0f, Random::GetFloat( -1.0f, 1.0f ) );
 			vec.Normalize();
@@ -315,9 +321,11 @@
 		{
 			if (bc1->GetMode() == MODE_STATE::HYPERARTS)
 			{
-				gameManager->SetShakeCamera( 1.5f, 30 );
+				//“–‚½‚Á‚½uŠÔ‚É‰æ–Ê—h‚ç‚·AŽ~‚ß‚é
+				gameManager->SetShakeCamera(1.5f, 30);
+				//‰æ–Ê’âŽ~
+				gameManager->SetTimeStop(SCREEN_STOPTIME);
 			}
-			if (bc1->GetMode() == MODE_STATE::HYPERARTS){};
 
 			//	–³“G‚É‚·‚é
 			if (bc2->GetParameterState(PARAMETER_STATE::UNRIVALED))	return;
@@ -333,15 +341,16 @@
 			particle->Spark( bc2_top, effectScale );
 
 			//	ƒmƒbƒNƒoƒbƒN
-			Vector3	knockBackVec = bc1_attack_top - bc2_top;
-			knockBackVec.y = bc2_top.y;
-			knockBackVec.Normalize();
+			if (bc2->GetKnockBackType() != KNOCKBACK_TYPE::NONE)
+			{
+				Vector3	knockBackVec = bc1_attack_top - bc2_top;
+				knockBackVec.y = bc2_top.y;
+				knockBackVec.Normalize();
+				bc2->SetKnockBackVec( -knockBackVec );
+				SetKnockBackParam(bc1, bc2);
+			}
 			Vector3	color = bc1->GetDamageColor();
 			bc2->SetPassColor( color );
-			bc2->SetKnockBackVec( -knockBackVec );
-
-
-			SetKnockBackParam(bc1, bc2);
 
 			//	ƒRƒCƒ“‚Î‚ç‚Ü‚«•ûŒüÝ’è
 			Vector3	vec = Vector3( Random::GetFloat( -1.0f, 1.0f ), 1.0f, Random::GetFloat( -1.0f, 1.0f ) );
@@ -775,10 +784,6 @@ void	CharacterManager::SubLife(int player)const
 	{
 		switch (bc1->GetKnockBackType())
 		{
-		case KNOCKBACK_TYPE::NONE:
-			bc2->SetMode(MODE_STATE::DAMAGE);
-			break;
-
 		case KNOCKBACK_TYPE::STRENGTH:
 			bc2->SetForce(1.5f);
 			bc2->SetMode(MODE_STATE::DAMAGE);

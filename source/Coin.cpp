@@ -10,6 +10,7 @@
 #include	"Sound.h"
 #include	"Particle.h"
 #include	"Event_Coin.h"
+#include	"Scavenger.h"
 
 #include	"Coin.h"
 
@@ -229,7 +230,9 @@
 	{
 		//	d—Í‰ÁZ
 		if ( moveCheck )
-		move.y += GRAVITY;
+		if (!absorbedflg) move.y += GRAVITY;
+		//‹z‚¢‚Ü‚ê‚é—Í‚ğ¿—Ê‚Ì‘ã‚í‚è‚Æ‚µ‚Äg—p
+		if (absorbedflg) move.y += GRAVITY * SCAVENGER::SUCK_POWER;
 		
 		//	‰ñ“]
 		angle += 0.05f;

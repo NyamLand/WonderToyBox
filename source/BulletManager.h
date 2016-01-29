@@ -75,7 +75,21 @@ namespace
 		2.0f,		//ŠC‘¯2
 		2.0f		//ŠC‘¯3
 	};
+
 }
+
+//í—Ş‚²‚Æ‚Ì’e”ƒJƒEƒ“ƒg
+struct BULLET_NUM
+{
+	int Squirrel_01;
+	int Thief_01;
+	int Thief_02;
+	int Thief_03;
+	int Thief_04;
+	int Pirate_01;
+	int Pirate_02;
+	int Pirate_03;
+};
 
 class BulletManager
 {
@@ -91,8 +105,10 @@ private:
 	BaseBullet*	c_Bullet[BULLET_MAX];
 
 	//	•Ï”
-	int				bullet_num;	//	’e”
 	int				limitTimer;
+
+	//í—Ş‚²‚Æ‚Ì’e”ƒJƒEƒ“ƒg
+	BULLET_NUM	 bullet_num;	//	’e”
 
 public:
 	//	‰Šú‰»E‰ğ•ú

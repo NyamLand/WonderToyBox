@@ -145,6 +145,7 @@ bool	Thief::QuickArts(void)
 		{
 			m_BulletManager->Set(BULLET_TYPE::THIEF_01 , new Thief_Bullet01, p_pos, vec[i], bulletSpeed, playerNum);
 		}
+		attackInfo.Interval = 60;
 		return true;
 
 	}
@@ -201,7 +202,6 @@ bool	Thief::HyperArts(void)
 	SetParameterState(PARAMETER_STATE::UNRIVALED);
 	move = Vector3(0, 0 - GRAVITY, 0);	//撃ってる間は静止させる
 
-	static int time = 0;
 
 	//	行列から情報取得
 	Vector3	front = GetFront();
@@ -237,12 +237,10 @@ bool	Thief::HyperArts(void)
 			m_BulletManager->Set(BULLET_TYPE::THIEF_03, new Thief_Bullet03, p_pos, vec[i], b_angle[i],  bulletSpeed, playerNum);
 		}
 	}
-	time++;
 
 	//モーションアトデナオス(終わりのモーションが来たら終了)
 	if (obj->GetFrame() == 399)
 	{
-		time = 0;
 		return true;
 	}
 	return	false;

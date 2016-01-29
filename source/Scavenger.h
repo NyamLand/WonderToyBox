@@ -13,6 +13,10 @@
 
 namespace SCAVENGER
 {
+	//’è”
+	const float SUCK_POWER = 2.5f;
+	const float DEFAULT_ABSORB_LENGTH = 3.0f;
+
 	namespace MOTION_FRAME
 	{
 		const int QUICKARTS_SUCK = 92;
@@ -46,10 +50,6 @@ namespace SCAVENGER
 //	class
 class Scavenger : public		BaseChara
 {
-private:
-	
-	
-	const float DEFAULT_ABSORB_LENGTH = 3.0f;
 
 private:
 	int		stayTime;	//‹ZŠÖ˜A‚Ìd’¼Œo‰ßŠÔ
@@ -79,6 +79,7 @@ public:
 
 	//	î•ñİ’è
 	void	SetAttackParam(int attackKind)override;
+
 };
 
 //*********************************************************************************

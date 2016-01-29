@@ -113,6 +113,7 @@ protected:
 		Vector3	top;
 		Vector3	bottom;
 		int		addParam;	//’Ç‰ÁŒø‰Ê
+		int		Interval;	//UŒ‚ŠÔŠu
 		float	r;
 		float	t;
 	};
