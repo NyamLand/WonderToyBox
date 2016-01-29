@@ -80,6 +80,7 @@
 	//	更新
 	void	CharacterManager::Update( void )
 	{
+		//PlayerDistCheck();
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			//	各キャラクター更新
@@ -90,6 +91,8 @@
 
 		//	当たり判定
 		HitCheck();
+
+		//	プレイヤー位置調整
 
 		//	どんけつブースト
 		DonketsuBoost();
@@ -191,6 +194,7 @@
 				break;
 			}
 
+			//	プレイヤーへの当たり判定
 			for ( int n = 0; n < PLAYER_MAX; n++ )
 			{
 				//	自分か相手が無敵状態だとつぎへ
@@ -544,6 +548,38 @@
 			}
 		}
 	}
+	
+	//	プレイヤーとプレイヤーの位置調整
+	void	CharacterManager::PlayerDistCheck( void )
+	{
+		Vector3	pos1, pos2;
+		Vector3	vec;
+		float			length;
+
+		FOR( 0, PLAYER_MAX )
+		{
+			for ( int i = 0; i < PLAYER_MAX; i++ )
+			{
+				//	自分同士はスキップ
+				if ( value == i )		continue;
+
+				pos1 = character[value]->GetPos();
+				pos2 = character[i]->GetPos();
+
+				vec = pos2 - pos1;
+				length = vec.Length();
+
+				//	近ければ遠ざける
+				if ( length < 4.0f )
+				{
+					vec.Normalize();
+					vec *= -2.0f;
+					character[value]->SetPos( pos1 + vec );
+				}
+			}
+		}
+	}
+	
 
 //-------------------------------------------------------------------------------------
 //	ライフ処理
