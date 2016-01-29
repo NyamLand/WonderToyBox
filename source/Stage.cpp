@@ -131,7 +131,7 @@ Stage*	stage = nullptr;
 		switch ( stageType )
 		{
 		case	STAGE_TYPE::DESK:
-			lightColor = Vector3( 1.0f, 1.0f, 1.0f );
+			lightColor = Vector3( 1.5f, 1.5f, 1.5f );
 			break;
 			
 		case	STAGE_TYPE::TOY:
