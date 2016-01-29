@@ -13,6 +13,23 @@ hyper-attack	→必殺技発動時
 item-get	→アイテム獲得
 result-jan	→リザルト数値発表時
 
+～攻撃用「char-arts」内に～
+Majo-qs		→魔女クイック発射時
+Majo-qe		→魔女クイック爆発時
+Majo-p		→魔女パワー発動時
+Majo-h		→魔女ハイパー発動時
+Prin-q		→姫様クイック発動時
+Prin-p		→姫様パワー発動時
+Prin-h		→姫様ハイパー発動時
+Kai-q		→怪盗クイック発動時
+Kai-p		→怪盗パワー発動時
+Kai-h		→怪盗ハイパー発動時	(ちょっと恐ろしそうな魔法)
+Pai-qw		→海賊不発弾発射時
+Pai-qp		→海賊実弾発射時
+Pai-qb		→海賊爆弾爆発時
+Pai-p		→海賊パワー発動時
+Pai-h		→海賊ハイパー発動時
+
 
 
 FightBGM	→戦闘用BGM
