@@ -108,7 +108,7 @@ private:
 	int				limitTimer;
 
 	//種類ごとの弾数カウント
-	BULLET_NUM	 bullet_num;	//	弾数
+	/*BULLET_NUM*/	 int bullet_num;	//	弾数
 
 public:
 	//	初期化・解放
