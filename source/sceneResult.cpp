@@ -241,7 +241,7 @@
 		playerNumImage.obj = new iex2DObj( "DATA/UI/DonketuUI.png" );
 		waveImage.obj = new iex2DObj( "DATA/UI/Rainbow-circle.png" );
 		pressButtonImage.obj = new iex2DObj( "DATA/UI/pressspace.png" );
-		winnerBack = new iex2DObj( "DATA/UI/Last-result-back.png" );
+		winnerBack = new iex2DObj( "DATA/UI/Result/Last-result-back.png" );
 
 		//	ライフ発表テキスト画像初期化
 		ImageInitialize( lifeAnnounceImage, static_cast<int>( iexSystem::ScreenWidth * 0.5f ), static_cast<int>( iexSystem::ScreenHeight * 0.35f ), 300, 200, 0, 0, 512, 256 );
@@ -1945,6 +1945,7 @@
 		int keyA = input[0]->Get( KEY_A );
 		if ( keySpace == 3 || keyA == 3 )
 		{
+			sound->PlaySE( SE::DECIDE_SE );
 			switch ( menuInfo.select )
 			{
 			case MENU::MOVE_MENU:
