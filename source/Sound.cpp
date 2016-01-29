@@ -79,6 +79,10 @@
 		IEX_SetWAV( SE::PIRATE_POWER, "DATA/Sound/SE/char-arts/Pai-p.wav" );
 		IEX_SetWAV( SE::PIRATE_HYPER, "DATA/Sound/SE/char-arts/Pai-h.wav" );
 
+		IEX_SetWAV( SE::QUICK_HIT_SE, "DATA/Sound/SE/attack-q.wav" );
+		IEX_SetWAV(SE::POWER_HIT_SE, "DATA/Sound/SE/attack-p.wav" );
+		IEX_SetWAV( SE::HYPER_HIT_SE, "DATA/Sound/SE/attack-h.wav" );
+
 		isPlay = false;
 	}
 

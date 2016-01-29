@@ -12,6 +12,7 @@
 #include	"BulletManager.h"
 #include	"Thief_Bullet04.h"
 #include	"Stage.h"
+#include	"Sound.h"
 #include	"Effect.h"
 
 Thief_Bullet04::Thief_Bullet04() :holdCoinNum(0), growSpeed(0.0f), checkMax(false), checkMin(false)
@@ -126,6 +127,8 @@ bool	Thief_Bullet04::PlayerCollisionCheck(void)
 			//画面振動
 			gameManager->SetShakeCamera(SHAKE_POWER, SHAKE_TIME);
 
+			//	音鳴らす
+			sound->PlaySE( SE::HYPER_HIT_SE );
 
 			//	ノックバック
 			Vector3	knockBackVec = bulletPos - p_pos_bottom;

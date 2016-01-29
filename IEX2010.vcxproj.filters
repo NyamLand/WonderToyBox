@@ -160,9 +160,6 @@
     <Filter Include="ソース ファイル\Bullet\Pirate_Bullet03">
       <UniqueIdentifier>{93e3c1de-d014-4fee-af83-2f9f9b008e8f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Stage">
-      <UniqueIdentifier>{9109e5d6-b65d-40d0-874f-45154ce7e914}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Events">
       <UniqueIdentifier>{599a5610-f91a-4cf5-907e-ffee01825250}</UniqueIdentifier>
     </Filter>
@@ -177,6 +174,9 @@
     </Filter>
     <Filter Include="ソース ファイル\UI\AirPlane">
       <UniqueIdentifier>{cc44b8b4-b304-4160-bcee-091738e112b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Stage">
+      <UniqueIdentifier>{9109e5d6-b65d-40d0-874f-45154ce7e914}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

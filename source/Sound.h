@@ -33,6 +33,9 @@ namespace
 			DEATH_SE,
 			CHOICE_SE,		//	‘I‘ðSE
 			GUARD_SE,		//	ƒK[ƒhŽžSE
+			QUICK_HIT_SE,
+			POWER_HIT_SE,
+			HYPER_HIT_SE,
 
 			//	UŒ‚SE
 			MAJO_QUICK_START,

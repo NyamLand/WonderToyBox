@@ -98,7 +98,7 @@ bool	Pirate_Bullet03::PlayerCollisionCheck(void)
 			//画面振動
 			gameManager->SetShakeCamera(SHAKE_POWER, SHAKE_TIME);
 			//サウンド再生
-			sound->PlaySE(SE::HIT_SE);
+			sound->PlaySE(SE::HYPER_HIT_SE);
 			//	ノックバック
 			Vector3	knockBackVec = bulletPos - p_pos_bottom;
 			knockBackVec.y = p_pos_bottom.y;

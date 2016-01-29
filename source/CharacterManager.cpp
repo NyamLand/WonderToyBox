@@ -260,7 +260,21 @@
 			int addParam = bc1->GetAttack_addParam();
 			bc2->SetParameterState( addParam );
 			//サウンド再生
-			sound->PlaySE(SE::HIT_SE);
+			int attackMode = bc1->GetMode();
+			switch ( attackMode )
+			{
+			case MODE_STATE::QUICKARTS:
+				sound->PlaySE( SE::QUICK_HIT_SE );
+				break;
+
+			case MODE_STATE::POWERARTS:
+				sound->PlaySE( SE::POWER_HIT_SE );
+				break;
+
+			case MODE_STATE::HYPERARTS:
+				sound->PlaySE( SE::HYPER_HIT_SE );
+				break;
+			}
 			//	ライフ減らす
 			int power = bc1->GetPower();
 			FOR(0, power) bc2->SubLife();
@@ -335,7 +349,21 @@
 			if (bc2->GetParameterState(PARAMETER_STATE::UNRIVALED))	return;
 			bc2->SetParameterState(PARAMETER_STATE::UNRIVALED);
 			//サウンド再生
-			sound->PlaySE(SE::HIT_SE);
+			int attackMode = bc1->GetMode();
+			switch ( attackMode )
+			{
+			case MODE_STATE::QUICKARTS:
+				sound->PlaySE(SE::QUICK_HIT_SE);
+				break;
+
+			case MODE_STATE::POWERARTS:
+				sound->PlaySE(SE::POWER_HIT_SE);
+				break;
+
+			case MODE_STATE::HYPERARTS:
+				sound->PlaySE(SE::HYPER_HIT_SE);
+				break;
+			}
 			//	ライフ減らす
 			int power = bc1->GetPower();
 			FOR(0, power) bc2->SubLife();
