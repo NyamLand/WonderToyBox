@@ -14,7 +14,7 @@
 //
 //*****************************************************************************************************************************
 
-char*	AppTitle = "IEX2010";
+char*	AppTitle = "WonderToyBox";
 
 BOOL	bFullScreen = FALSE;
 DWORD	ScreenMode = SCREEN1664;//SCREEN720p;

@@ -131,7 +131,7 @@ Stage*	stage = nullptr;
 		switch ( stageType )
 		{
 		case	STAGE_TYPE::DESK:
-			lightColor = Vector3( 1.5f, 1.5f, 1.5f );
+			lightColor = Vector3( 1.0f, 1.0f, 1.0f );
 			break;
 			
 		case	STAGE_TYPE::TOY:
@@ -144,6 +144,7 @@ Stage*	stage = nullptr;
 		}
 		//	シェーダーにセット
 		iexLight::DirLight( shader3D, 0, &dirLightVec, lightColor.x, lightColor.y, lightColor.z );
+		shader3D->SetValue( "DirLightVec", dirLightVec );
 
 		return	true;
 	}

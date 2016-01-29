@@ -63,10 +63,10 @@
 		RefTex = new iex2DObj( 1280, 720, IEX2D_RENDERTARGET );
 
 		//	ƒ‰ƒCƒgİ’è
-		dir = Vector3( 1.0f, -2.0f, -1.0f );
+		dir = Vector3( 0.5f, -1.0f, 1.0f );
 		dir.Normalize();
 		iexLight::DirLight( shader3D, 0, &dir, 0.5f, 0.5f, 0.5f );
-		shader3D->SetValue("DirLightVec", Vector3( 1.0f, 0.0f, 1.0f ) );
+		//shader3D->SetValue("DirLightVec", Vector3( 1.0f, 0.0f, 1.0f ) );
 
 		//	ƒJƒƒ‰İ’è
 		mainView = new Camera();
