@@ -7,6 +7,7 @@
 #include	"Coin.h"
 #include	"CoinManager.h"
 #include	"GameManager.h"
+#include	"Sound.h"
 #include	"BulletManager.h"
 
 //*********************************************************************************
@@ -98,6 +99,12 @@ void	Thief::Render(iexShader* shader, LPSTR technique)
 bool	Thief::QuickArts(void)
 {
 	static int time = 0;
+	static	bool	initflag = false;
+	if ( !initflag )
+	{
+		sound->PlaySE( SE::KAITO_QUICK );
+		initflag = true;
+	}
 	Move();
 	//	行列から情報取得
 	Vector3	up = GetUp();
@@ -146,6 +153,7 @@ bool	Thief::QuickArts(void)
 			m_BulletManager->Set(BULLET_TYPE::THIEF_01 , new Thief_Bullet01, p_pos, vec[i], bulletSpeed, playerNum);
 		}
 		attackInfo.Interval = 60;
+		initflag = false;
 		return true;
 
 	}
@@ -156,7 +164,12 @@ bool	Thief::QuickArts(void)
 bool	Thief::PowerArts(void)
 {
 	static int time = 0;
-
+	static	bool initflag = false;
+	if ( !initflag )
+	{
+		sound->PlaySE( SE::KAITO_POWER );
+		initflag = true;
+	}
 	//モーションアトデナオス
 	SetMotion(5);
 	//if (obj->GetFrame() >= 277) obj->SetFrame(277);
@@ -185,6 +198,7 @@ bool	Thief::PowerArts(void)
 		if (obj->GetFrame() == 277)
 		{
 			time = 0;
+			initflag = false;
 			return true;
 		}
 	return	false;
@@ -193,6 +207,13 @@ bool	Thief::PowerArts(void)
 //	ハイパーアーツ
 bool	Thief::HyperArts(void)
 {
+	static	bool	initflag = false;
+	if ( !initflag )
+	{
+		sound->PlaySE( SE::KAITO_HYPER );
+		initflag = true;
+	}
+
 
 	//モーションアトデナオス
 	SetMotion(6);
@@ -241,6 +262,7 @@ bool	Thief::HyperArts(void)
 	//モーションアトデナオス(終わりのモーションが来たら終了)
 	if (obj->GetFrame() == 399)
 	{
+		initflag = false;
 		return true;
 	}
 	return	false;

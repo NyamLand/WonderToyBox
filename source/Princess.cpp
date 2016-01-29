@@ -5,6 +5,7 @@
 #include	"Particle.h"
 #include	"Princess.h"
 #include	"CoinManager.h"
+#include	"Sound.h"
 #include	"GameManager.h"
 
 //*********************************************************************************
@@ -89,6 +90,13 @@
 	{
 		power = 1;
 
+		static	bool	initflag = false;
+		if ( !initflag )
+		{
+			sound->PlaySE( SE::PRINCESS_QUICK );
+			initflag = true;
+		}
+
 		//SetMotion(PRINCESS::MOTIO_DATA::QUICK);
 
 		//	行列から前方取得
@@ -116,13 +124,23 @@
 		if (attackInfo.t <= 0.5f) SetParameterState(PARAMETER_STATE::UNRIVALED);
 		else					SetUnrivaled(false);
 
-		if ( attackInfo.t >= 1.0f )	return	true;
+		if ( attackInfo.t >= 1.0f )
+		{
+			initflag = false;
+			return	true;
+		}
 		return	false;
 	}
 
 	//	パワーアーツ
 	bool	Princess::PowerArts( void )
 	{
+		static	bool	initflag = false;
+		if ( !initflag )
+		{
+			sound->PlaySE( SE::PRINCESS_POWER );
+			initflag = true;
+		}
 		power = 0;
 		Vector3	p_pos = GetPos();
 		attackInfo.pos = Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z );
@@ -156,7 +174,11 @@
 		if (attackInfo.t <= 0.5f)		SetParameterState(PARAMETER_STATE::UNRIVALED);
 		else							SetUnrivaled(false);
 
-		if ( attackInfo.t >= 1.0f )	return	true;
+		if ( attackInfo.t >= 1.0f )
+		{
+			initflag = false;
+			return	true;
+		}
 		return	false;
 	}
 
@@ -164,6 +186,13 @@
 	bool	Princess::HyperArts( void )
 	{
 		power = HYPER;
+
+		static	bool	initflag = false;
+		if ( !initflag )
+		{
+			sound->PlaySE( SE::PRINCESS_HYPER );
+			initflag = true;
+		}
 
 		static	int		num = 0;	//	回数
 		SetMove( Vector3( 0.0f, 0.0f ,0.0f ) );
@@ -192,6 +221,7 @@
 
 			case 1:
 				num = 0;
+				initflag = false;
 				return	true;
 				break;
 			}

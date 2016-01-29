@@ -63,6 +63,22 @@
 		IEX_SetWAV(SE::GUARD_SE, "DATA/Sound/SE/guard.wav" );
 		IEX_SetWAV(SE::CHOICE_SE, "DATA/Sound/SE/choice.wav");
 
+		IEX_SetWAV( SE::MAJO_QUICK_START, "DATA/Sound/SE/char-arts/Majo-qs.wav" );
+		IEX_SetWAV( SE::MAJO_QUICK_BOMB, "DATA/Sound/SE/char-arts/Majo-qe.wav" );
+		IEX_SetWAV( SE::MAJO_POWER, "DATA/Sound/SE/char-arts/Majo-p.wav" );
+		IEX_SetWAV( SE::MAJO_HYPER, "DATA/Sound/SE/char-arts/Majo-h.wav" );
+		IEX_SetWAV( SE::PRINCESS_QUICK, "DATA/Sound/SE/char-arts/Prin-q.wav" );
+		IEX_SetWAV( SE::PRINCESS_POWER, "DATA/Sound/SE/char-arts/Prin-p.wav" );
+		IEX_SetWAV( SE::PRINCESS_HYPER, "DATA/Sound/SE/char-arts/Prin-h.wav" );
+		IEX_SetWAV( SE::KAITO_QUICK, "DATA/Sound/SE/char-arts/kai-q.wav" );
+		IEX_SetWAV( SE::KAITO_POWER, "DATA/Sound/SE/char-arts/kai-p.wav" );
+		IEX_SetWAV( SE::KAITO_HYPER, "DATA/Sound/SE/char-arts/kai-h.wav" );
+		IEX_SetWAV( SE::PIRATE_QUICK_BOMB, "DATA/Sound/SE/char-arts/Pai-qb.wav" );
+		IEX_SetWAV( SE::PIRATE_QUICK_SUCCESS, "DATA/Sound/SE/char-arts/Pai-qp.wav" );
+		IEX_SetWAV( SE::PIRATE_QUICK_MISS, "DATA/Sound/SE/char-arts/Pai-qw.wav" );
+		IEX_SetWAV( SE::PIRATE_POWER, "DATA/Sound/SE/char-arts/Pai-p.wav" );
+		IEX_SetWAV( SE::PIRATE_HYPER, "DATA/Sound/SE/char-arts/Pai-h.wav" );
+
 		isPlay = false;
 	}
 

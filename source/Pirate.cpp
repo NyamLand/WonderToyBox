@@ -3,15 +3,16 @@
 #include	"GlobalFunction.h"
 #include	"Collision.h"
 #include	"Particle.h"
-#include	"Pirate.h"
 #include	"CharacterManager.h"
 #include	"GameManager.h"
 #include	"BulletManager.h"
+#include	"Sound.h"
 #include	"Random.h"
+#include	"Pirate.h"
 
 //*********************************************************************************
 //
-//	Princessクラス
+//	Pirateクラス
 //
 //*********************************************************************************
 
@@ -122,10 +123,12 @@ bool	Pirate::QuickArts(void)
 		case QuickArts_DATA::NORMAL_SHOT:
 			m_BulletManager->Set(BULLET_TYPE::PIRATE_01, new Pirate_Bullet01, c_pos, vec, bulletSpeed, playerNum);
 			particle->CannonSmoke(c_pos + Vector3(0.0f, 1.0f, 0.0f) + front * 1.0f, front, right, up, 2.0f);
+			sound->PlaySE( SE::PIRATE_QUICK_SUCCESS );
 			break;
 		case QuickArts_DATA::TIMER_SHOT:
 			m_BulletManager->Set(BULLET_TYPE::PIRATE_02, new Pirate_Bullet02, c_pos, vec, bulletSpeed, playerNum);
 			particle->CannonSmoke(c_pos + Vector3(0.0f, 1.0f, 0.0f) + front * 1.0f, front, right, up, 2.0f);
+			sound->PlaySE( SE::PIRATE_QUICK_MISS );
 			break;
 		}
 	}
@@ -141,6 +144,13 @@ bool	Pirate::QuickArts(void)
 //	パワーアーツ
 bool	Pirate::PowerArts(void)
 {	
+	static	bool	initflag = false;
+	if ( !initflag )
+	{
+		sound->PlaySE( SE::PIRATE_POWER );
+		initflag = true;
+	}
+
 	if(attackInfo.t == 0) SetMotion(PIRATE::MOTION_DATA::POWER_START);
 
 	float run_speed = 0.5f;
@@ -170,13 +180,24 @@ bool	Pirate::PowerArts(void)
 	if (attackInfo.t < 1.0f) move = front * run_speed;
 	else SetMotion(PIRATE::MOTION_DATA::POWER_END);
 
-	if (obj->GetFrame() == PIRATE::MOTION_FRAME::POWERARTS_END)	return	true;
+	if (obj->GetFrame() == PIRATE::MOTION_FRAME::POWERARTS_END)
+	{
+		initflag = false;
+		return	true;
+	}
 	return	false;
 }
 
 //	ハイパーアーツ
 bool	Pirate::HyperArts(void)
 {
+	static	bool	initflag = false;
+	if ( !initflag )
+	{
+		sound->PlaySE( SE::PIRATE_HYPER );
+		initflag = false;
+	}
+
 	//大砲の砲弾発射位置決定（画面上側）
 	Vector3 b_pos;
 	b_pos = Vector3(
@@ -208,6 +229,7 @@ bool	Pirate::HyperArts(void)
 			Parabola(vec[i], b_pos, target[i], bulletSpeed, GRAVITY);
 			m_BulletManager->Set(BULLET_TYPE::PIRATE_01, new Pirate_Bullet03, b_pos, vec[i], bulletSpeed, playerNum);
 		}
+		initflag = false;
 		return true;
 	}
 		

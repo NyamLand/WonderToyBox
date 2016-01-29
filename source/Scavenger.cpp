@@ -9,6 +9,7 @@
 #include	"Camera.h"
 #include	"Effect.h"
 #include	"Scavenger.h"
+#include	"Sound.h"
 #include	"CharacterManager.h"
 
 //*********************************************************************************
@@ -130,12 +131,13 @@ bool	Scavenger::QuickArts(void)
 	bool			isEnd = false;
 	bool			isHit = false;
 
-	if (!initflag)
+	if ( !initflag )
 	{
 		p_pos = pos + front * 2.0f + up * 2.0f;
 		fireBallInterval = 0;
 		attackInfo.t = 0.0f;
 		attackInfo.r = 1.0f;
+		sound->PlaySE( SE::MAJO_QUICK_START );
 		initflag = true;
 	}
 
@@ -156,6 +158,7 @@ bool	Scavenger::QuickArts(void)
 				Vector3	p2_pos = characterManager->GetPos(value);
 				if (Collision::CapsuleVSSphere(p2_pos, p2_pos + Vector3(0.0f, 3.0f, 0.0f), 2.0f, attackInfo.pos, attackInfo.r))
 				{
+					sound->PlaySE( SE::MAJO_QUICK_BOMB );
 					fireBallState = false;
 				}
 			}
@@ -165,6 +168,7 @@ bool	Scavenger::QuickArts(void)
 
 	case 2:
 		fireBallState = false;
+		sound->PlaySE( SE::MAJO_QUICK_BOMB );
 		break;
 	}
 
@@ -240,6 +244,14 @@ bool	Scavenger::QuickArts(void)
 //	パワーアーツ
 bool	Scavenger::PowerArts( void )
 {	
+	static	bool initflag = false;
+
+	if ( !initflag )
+	{
+		sound->PlaySE( SE::MAJO_POWER );
+		initflag = true;
+	}
+
 	power = POWER;
 	//攻撃モーションでなければモーション設定
 	if ( obj->GetFrame() < SCAVENGER::MOTION_FRAME::POWER_TO_WAIT )
@@ -311,6 +323,7 @@ bool	Scavenger::PowerArts( void )
 	//モーション終了時にMOVEへ戻す
 	if ( obj->GetFrame() == SCAVENGER::MOTION_FRAME::POWERARTS_END )
 	{
+		initflag = false;
 		return	true;
 	}
 	return	false;
@@ -320,6 +333,13 @@ bool	Scavenger::PowerArts( void )
 bool	Scavenger::HyperArts( void )
 {
 	power = HYPER;
+
+	static	bool	initflag = false;
+	if ( !initflag )
+	{
+		sound->PlaySE( SE::MAJO_HYPER );
+		initflag = true;
+	}
 
 	if (obj->GetFrame() <= SCAVENGER::MOTION_FRAME::HYPER_BEGIN) SetMotion(SCAVENGER::MOTION_DATA::HYPER_START);
 
@@ -367,6 +387,7 @@ bool	Scavenger::HyperArts( void )
 
 	if (obj->GetFrame() == SCAVENGER::MOTION_FRAME::HYPER_FINISH)
 	{
+		initflag = false;
 		return true;
 	}
 
