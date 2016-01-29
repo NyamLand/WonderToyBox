@@ -61,6 +61,7 @@ public:
 	void	HitCheckCapsuleVSCapsule( BaseChara* bc1, BaseChara* bc2 );
 	void	HitCheckObjectCapsule( BaseChara* bc );
 	void	HitCheckObjectSphere( BaseChara* bc );
+	void	PlayerDistCheck( void );
 
 	//ƒ‰ƒCƒtˆ—
 	void	AddLife(int player )const;

@@ -144,6 +144,7 @@ Stage*	stage = nullptr;
 		}
 		//	シェーダーにセット
 		iexLight::DirLight( shader3D, 0, &dirLightVec, lightColor.x, lightColor.y, lightColor.z );
+		shader3D->SetValue( "DirLightVec", dirLightVec );
 
 		return	true;
 	}

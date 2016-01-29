@@ -216,7 +216,7 @@
 
 	//	パラメータ
 	float3	DirLightVec = { 1.0f, 0.0f, 1.0f };
-	float3	DirLightColor = { 1.0f, 0.0f, 0.0f };
+	float3	DirLightColor = { 1.0f, 1.0f, 1.0f };
 
 	//	平行光
 	float3	DirLight( float3 normal )

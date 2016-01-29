@@ -17,15 +17,15 @@
 //	グローバル
 //-----------------------------------------------------------------------------------
 
-#define	POWER_ARTS_RADIUS	15.0f
+#define	POWER_ARTS_RADIUS	7.5f
 
 	namespace
 	{
 		enum OFFENSIVE_POWER
 		{
 			QUICK = 1,
-			POWER = 2,
-			HYPER = 3,
+			POWER = 0,
+			HYPER = 0,
 		};
 	}
 
@@ -152,9 +152,6 @@
 			}
 		}
 
-		//相手を混乱状態に
-		attackInfo.addParam = PARAMETER_STATE::CONFUSION;
-
 		//	無敵状態
 		if (attackInfo.t <= 0.5f)		SetParameterState(PARAMETER_STATE::UNRIVALED);
 		else							SetUnrivaled(false);
@@ -179,7 +176,8 @@
 
 		//	エフェクト
 		particle->FlowerDisseminate( attackInfo.pos, attackInfo.r, 2.0f, Vector3( 1.0f, 0.4f, 0.4f ) );
-
+		//相手を混乱状態に
+		attackInfo.addParam = PARAMETER_STATE::CONFUSION;
 		//	パラメータ加算
 		attackInfo.t += 0.02f;
 
@@ -263,8 +261,7 @@
 			break;
 
 		case MODE_STATE::POWERARTS:
-			attackInfo.type = Collision::SPHEREVSCAPSULE;
-			knockBackInfo.type = KNOCKBACK_TYPE::NONE;
+			//プレイヤーとの判定なし
 			break;
 
 		case MODE_STATE::HYPERARTS:
