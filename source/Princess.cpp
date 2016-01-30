@@ -78,7 +78,7 @@
 	{
 		BaseChara::Render( shader, technique );
 
-		//DrawSphere( attackInfo.pos, attackInfo.r, 0xFFFFFFFF );
+		DrawCapsule( attackInfo.bottom, attackInfo.top, attackInfo.r, 0xFFFFFFFF );
 	}
 
 //-----------------------------------------------------------------------------------
@@ -198,6 +198,8 @@
 		static	int		num = 0;	//	âÒêî
 		SetMove( Vector3( 0.0f, 0.0f ,0.0f ) );
 		Vector3	p_pos = GetPos();
+		attackInfo.top = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
+		attackInfo.bottom = Vector3( p_pos.x, p_pos.y - 1.5f, p_pos.z );
 		attackInfo.pos = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
 
 		//	îÕàÕägëÂ
@@ -296,7 +298,7 @@
 			break;
 
 		case MODE_STATE::HYPERARTS:
-			attackInfo.type = Collision::SPHEREVSCAPSULE;
+			attackInfo.type = Collision::CAPSULEVSCYRINDER;
 			knockBackInfo.type = KNOCKBACK_TYPE::STRENGTH;
 			break;
 		}
