@@ -19,6 +19,8 @@ public:
 		SPHEREVSCAPSULE = 1,	//	球VSカプセル
 		SPHEREVSSPHERE,			//	球VS球
 		CAPSULEVSCAPSULE,			//	カプセルVSカプセル
+		CAPSULEVSCYRINDER,		//	球VS円柱（円柱の回転なし）
+		CYRINDERVSCYRINDER,		//	球VS円柱（円柱の回転なし）
 		SPHEREVSCYRINDER,			//	球VS円柱（円柱の回転なし）
 		SPHEREVSPOINT,				//	球VS点
 	};
@@ -61,6 +63,7 @@ public:
 	static	float DistanceSegmentSegmentSq( const Vector3& l1p1, const Vector3& l1p2, const Vector3& l2p1, const Vector3& l2p2 );
 	static	bool	CapsuleVSCapsule( Vector3 p1, Vector3 p2, float r1, Vector3 p3, Vector3 p4, float r2 );
 	static	bool	CapsuleVSSphere( const Vector3& p1, const Vector3& p2, float r1, const Vector3& c, float r2 );
+	static	bool	CapsuleVSCyrinder( const Vector3& bottom1, const Vector3& top1, float r1, const Vector3& bottom2, const Vector3& top2, float r2 );
 	static	bool	SphereVSSphere( Vector3 c1, float r1, Vector3 c2, float r2 );
 };
 

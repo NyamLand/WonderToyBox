@@ -5,6 +5,7 @@
 #include	"Particle.h"
 #include	"Princess.h"
 #include	"CoinManager.h"
+#include	"Sound.h"
 #include	"GameManager.h"
 
 //*********************************************************************************
@@ -77,7 +78,7 @@
 	{
 		BaseChara::Render( shader, technique );
 
-		//DrawSphere( attackInfo.pos, attackInfo.r, 0xFFFFFFFF );
+		DrawCapsule( attackInfo.bottom, attackInfo.top, attackInfo.r, 0xFFFFFFFF );
 	}
 
 //-----------------------------------------------------------------------------------
@@ -88,6 +89,13 @@
 	bool	Princess::QuickArts( void )
 	{
 		power = 1;
+
+		static	bool	initflag = false;
+		if ( !initflag )
+		{
+			sound->PlaySE( SE::PRINCESS_QUICK );
+			initflag = true;
+		}
 
 		//SetMotion(PRINCESS::MOTIO_DATA::QUICK);
 
@@ -116,13 +124,23 @@
 		if (attackInfo.t <= 0.5f) SetParameterState(PARAMETER_STATE::UNRIVALED);
 		else					SetUnrivaled(false);
 
-		if ( attackInfo.t >= 1.0f )	return	true;
+		if ( attackInfo.t >= 1.0f )
+		{
+			initflag = false;
+			return	true;
+		}
 		return	false;
 	}
 
 	//	パワーアーツ
 	bool	Princess::PowerArts( void )
 	{
+		static	bool	initflag = false;
+		if ( !initflag )
+		{
+			sound->PlaySE( SE::PRINCESS_POWER );
+			initflag = true;
+		}
 		power = 0;
 		Vector3	p_pos = GetPos();
 		attackInfo.pos = Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z );
@@ -156,7 +174,11 @@
 		if (attackInfo.t <= 0.5f)		SetParameterState(PARAMETER_STATE::UNRIVALED);
 		else							SetUnrivaled(false);
 
-		if ( attackInfo.t >= 1.0f )	return	true;
+		if ( attackInfo.t >= 1.0f )
+		{
+			initflag = false;
+			return	true;
+		}
 		return	false;
 	}
 
@@ -165,9 +187,19 @@
 	{
 		power = HYPER;
 
+		static	bool	initflag = false;
+		if ( !initflag )
+		{
+			sound->PlaySE( SE::HYPER_ATTACK );
+			sound->PlaySE( SE::PRINCESS_HYPER );
+			initflag = true;
+		}
+
 		static	int		num = 0;	//	回数
 		SetMove( Vector3( 0.0f, 0.0f ,0.0f ) );
 		Vector3	p_pos = GetPos();
+		attackInfo.top = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
+		attackInfo.bottom = Vector3( p_pos.x, p_pos.y - 1.5f, p_pos.z );
 		attackInfo.pos = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
 
 		//	範囲拡大
@@ -192,6 +224,7 @@
 
 			case 1:
 				num = 0;
+				initflag = false;
 				return	true;
 				break;
 			}
@@ -265,7 +298,7 @@
 			break;
 
 		case MODE_STATE::HYPERARTS:
-			attackInfo.type = Collision::SPHEREVSCAPSULE;
+			attackInfo.type = Collision::CAPSULEVSCYRINDER;
 			knockBackInfo.type = KNOCKBACK_TYPE::STRENGTH;
 			break;
 		}

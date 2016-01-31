@@ -306,7 +306,6 @@
 		//	‘S‘ÌXV
 		if (gameManager->GetTimeStop() <= 0)
 		{
-			sound->PlaySE( SE::GAMESET_SE );
 			AllUpdate();
 		}
 	}

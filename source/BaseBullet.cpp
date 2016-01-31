@@ -123,6 +123,12 @@
 
 			if ( isHit )
 			{
+				int bcMode = characterManager->GetMode(i);
+				if (bcMode == MODE_STATE::GUARD)
+				{
+					sound->PlaySE(SE::GUARD_SE);
+					continue;
+				}
 				//サウンド再生
 				sound->PlaySE(SE::HIT_SE);
 				//	エフェクトだす

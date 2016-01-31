@@ -59,6 +59,7 @@ public:
 	void	HitCheck( void );
 	void	HitCheckSphereVSCapsule( BaseChara* bc1, BaseChara* bc2 );
 	void	HitCheckCapsuleVSCapsule( BaseChara* bc1, BaseChara* bc2 );
+	void	HitCheckCapsuleVSCyrinder( BaseChara* bc1, BaseChara* bc2 );
 	void	HitCheckObjectCapsule( BaseChara* bc );
 	void	HitCheckObjectSphere( BaseChara* bc );
 	void	PlayerDistCheck( void );

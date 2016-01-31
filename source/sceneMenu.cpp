@@ -482,6 +482,7 @@
 			//	決定
 			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
 			{
+				sound->PlaySE( SE::DECIDE_SE );
 				gameManager->SetPlayerNum( playerNumSelectInfo.num + 1 );
 				bgInfo.start = CAMERA_TARGET::front;
 				bgInfo.end = CAMERA_TARGET::right;
@@ -615,6 +616,7 @@
 			//	決定
 			if ( input[value]->Get( KEY_SPACE ) == 3 || input[value]->Get( KEY_A ) == 3 )
 			{
+				sound->PlaySE( SE::DECIDE_SE );
 				gameManager->SetCharacterType( value, characterSelectInfo.character[value] );
 				characterSelectInfo.select[value] = true;
 			}
@@ -690,15 +692,7 @@
 			//	顔描画
 			RenderImage( faceImage[value], 0, 256 * value, 256, 256, IMAGE_MODE::NORMAL );
 		}
-			//	カーソル描画
-		//FOR( 0, PLAYER_MAX )
-		//{
-		//	cursorImage[value].x = faceImage[characterSelectInfo.character[value]].x-faceImage[characterSelectInfo.character[value]].w/2;
-		//	cursorImage[value].y = faceImage[characterSelectInfo.character[value]].y - faceImage[characterSelectInfo.character[value]].h / 2;
-		//	if ( characterSelectInfo.select[value] )	cursorImage[value].color = Vector3( 0.5f, 0.5f, 0.5f );	//	決定時明度下げる
-		//	RenderImage( cursorImage[value], 128 * ( value % 2 ), 128 * ( value / 2 ), 128, 128, IMAGE_MODE::NORMAL );
-		//	//RenderImage(cursorImage[value], 128 * ( value % 2 ), 128 * value, 128, 128, IMAGE_MODE::NORMAL);
-		//}
+
 		//プレイヤー1
 		cursorImage[0].x = faceImage[characterSelectInfo.character[0]].x - faceImage[characterSelectInfo.character[0]].w / 2;
 		cursorImage[0].y = faceImage[characterSelectInfo.character[0]].y - faceImage[characterSelectInfo.character[0]].h / 2;
@@ -734,13 +728,14 @@
 		}
 
 		FOR(0, PLAYER_MAX){
-			if (characterSelectInfo.select[value]){
+			if ( characterSelectInfo.select[value] ){
 				RenderImage(decidecursorImage[value], 128 * (value % 2), 128 * (value / 2), 128, 128, IMAGE_MODE::NORMAL);
 			}
 			else
 			{
 				RenderImage(cursorImage[value], 128 * (value % 2), 128 * (value / 2), 128, 128, IMAGE_MODE::NORMAL);
 			}
+
 		}
 		
 	}
@@ -823,8 +818,9 @@
 		}
 
 		//	決定
-		if ( KEY( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )
+		if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
 		{
+			sound->PlaySE( SE::DECIDE_SE );
 			//	マネージャーに情報をセット
 			gameManager->SetStageType( stageSelectInfo.stage );
 
@@ -934,7 +930,7 @@
 		//	決定（はい：メインへ、いいえ：キャラ選択へ）
 		if ( input[0]->Get( KEY_A ) == 3 || input[0]->Get( KEY_SPACE ) == 3 )
 		{
-			
+			sound->PlaySE( SE::DECIDE_SE );
 			//	確認表示
 			if ( !checkSelectInfo.check )
 			{
