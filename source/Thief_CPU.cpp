@@ -33,7 +33,7 @@
 //-----------------------------------------------------------------------------
 
 	//	AIìÆçÏ
-	void	Thief_CPU::AutoAttack( void )
+	/*void	Thief_CPU::AutoAttack( void )
 	{
 
-	}
+	}*/

@@ -647,6 +647,12 @@
 			FOR( gameManager->GetPlayerNum(), PLAYER_MAX )
 			{
 				characterSelectInfo.character[value] = Random::GetInt( 0, CHARACTER_TYPE::MAX - 1 );
+				//　デバッグ
+				//characterSelectInfo.character[0] = CHARACTER_TYPE::SCAVENGER;
+				characterSelectInfo.character[1] = CHARACTER_TYPE::PRINCESS;
+				characterSelectInfo.character[2] = CHARACTER_TYPE::THIEF;
+				characterSelectInfo.character[3] = CHARACTER_TYPE::SCAVENGER;
+				//characterSelectInfo.character[3] = CHARACTER_TYPE::PIRATE;
 				gameManager->SetCharacterType( value, characterSelectInfo.character[value] );
 			
 				//	モデル差し替え

@@ -8,6 +8,8 @@
 //*******************************************************************************
 
 //	include
+#include	"Random.h"
+#include	"CoinManager.h"
 #include	"ItemManager.h"
 
 //	parameter
@@ -39,8 +41,8 @@ namespace
 			WAIT,
 			MOVE,
 			ATTACK,
-			POWERARTS,
 			QUICKARTS,
+			POWERARTS,
 			HYPERARTS,
 			JUMP,
 			GUARD,
@@ -48,6 +50,27 @@ namespace
 			DAMAGE_LEANBACKWARD,
 			KNOCKBACK,
 			DEATH,
+		};
+	}
+
+	namespace AI_MODE_STATE
+	{
+		enum
+		{
+			WAIT,
+			MOVE,
+			ATTACK,
+			QUICKARTS,
+			POWERARTS,
+			HYPERARTS,
+			JUMP,
+			GUARD,
+			DAMAGE,
+			DAMAGE_LEANBACKWARD,
+			KNOCKBACK,
+			DEATH,
+			
+			RUNAWAY,
 		};
 	}
 
@@ -287,6 +310,7 @@ public:
 	void	ItemUnrivaled( void );
 
 	//	子クラスで実装
+	virtual	void	CPU_ModeManagement( void );
 	virtual	bool	QuickArts( void ) = 0;
 	virtual	bool	PowerArts( void ) = 0;
 	virtual	bool	HyperArts( void ) = 0;
@@ -297,10 +321,11 @@ public:
 	virtual	void	Control( void );
 
 	//	AI動作関数
-	void	AutoRun();						//　コインを取りに行く
+	void	AutoMove();		
+	void	AutoPickCoin( int freeCoinMin );	
 	void	AutoAngleAdjust(float speed, Vector3 target);
 	//void	AutoAngleAdjust(const Vector3& direction, float speed);
-	virtual void	AutoAttack();
+	virtual void	AutoAttack( int attackKind );
 	void	RunAway();
 	void	AutoGuard();
 	void	AutoWait();

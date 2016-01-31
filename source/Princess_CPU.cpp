@@ -33,7 +33,7 @@
 //-----------------------------------------------------------------------------
 
 	//	AIìÆçÏ
-	void	Princess_CPU::AutoAttack(void)
+	/*void	Princess_CPU::AutoAttack(void)
 	{
 
-	}
+	}*/
