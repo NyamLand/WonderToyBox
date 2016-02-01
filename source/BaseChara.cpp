@@ -419,8 +419,6 @@ namespace
 		if ( work < objectWork )	height = objectWork;
 		else									height = work;
 
-		printf( "%f\n", height );
-
 		//	Ú’n”»’è
 		if ( pos.y < work || pos.y < objectWork )
 		{

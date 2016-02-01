@@ -106,6 +106,10 @@
 		{
 			character[i]->Render( shader, technique );	
 		}
+
+		Vector3	pos = character[0]->GetPos();
+		printf( "pos.x = %f pos.y = %f pos.z = %f\n", pos.x, pos.y, pos.z );
+		
 	}
 
 	//　デバッグ
