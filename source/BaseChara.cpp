@@ -223,7 +223,7 @@ namespace
 	//	更新
 	void	BaseChara::Update( void )
 	{
-		if ( mode != MODE_STATE::GUARD ) 	m_Effect->SetShield( GetPlayerNum(), false );
+		if ( mode != MODE_STATE::GUARD && !GetParameterState( PARAMETER_STATE::UNRIVALEDITEM ) ) 	m_Effect->SetShield( GetPlayerNum(), false );
 
 		// 攻撃後再使用の準備
 		if(attackInfo.Interval > 0 ) attackInfo.Interval--;
@@ -1141,6 +1141,7 @@ namespace
 		//	時間が来たら効果取り消し
 		if ( unrivaledItem.timer <= 0 )
 		{
+			m_Effect->SetShield( playerNum, false );
 			unrivaledItem.timer = 0;
 			unrivaledItem.state = false;
 			unrivaled.state = false;
@@ -1980,6 +1981,7 @@ namespace
 			break;
 
 		case	PARAMETER_STATE::UNRIVALEDITEM:
+			m_Effect->SetShield( playerNum, true );
 			SetParameterState( unrivaledItem, 5 * SECOND );
 			break;
 		}

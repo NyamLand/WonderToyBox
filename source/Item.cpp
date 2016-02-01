@@ -106,6 +106,10 @@
 		case	ITEM_TYPE::UNRIVALED:
 			characterManager->SetParameterInfo( Num, PARAMETER_STATE::UNRIVALEDITEM );
 			break;
+
+		case ITEM_TYPE::LIFE:
+			characterManager->AddLife( Num );
+			break;
 		}
 		static	float	effectScale = 0.2f;
 		particle->Spark( pos, effectScale );

@@ -2,6 +2,7 @@
 #include	"iextreme.h"
 #include	"system/system.h"
 #include	"system/Framework.h"
+#include	"Random.h"
 #include	"GlobalFunction.h"
 #include	< process.h >
 #include	"Camera.h"
@@ -45,6 +46,8 @@ using namespace std;
 			SafeDelete( bgImage[value].obj );
 		}
 		SafeDelete( nowLoading );	
+
+		//Random::Release();
 	}
 
 	//	初期化
@@ -53,6 +56,9 @@ using namespace std;
 		//    環境設定
 		iexLight::SetAmbient( 0x808080 );
 		iexLight::SetFog( 800, 1000, 0 );
+		
+		//	乱数初期化
+		Random::Initialize();
 
 		//	カメラ設定
 		mainView = new Camera();
@@ -71,8 +77,14 @@ using namespace std;
 			ImageInitialize( bgImage[value], x, y, w, h, 0, 0, 1280, 720 );
 		}
 
-		moveImage = bgImage[0];
-		backImage = bgImage[1];
+		order = Random::GetInt( 0, IMAGE_MAX - 1 );
+		int randOrder = Random::GetInt( 0, IMAGE_MAX - 1 );
+		while ( randOrder == order )
+		{
+			randOrder = Random::GetInt( 0, IMAGE_MAX - 1 );
+		}
+		moveImage = bgImage[randOrder];
+		backImage = bgImage[order];
 
 		//	NowLoading初期化
 		nowLoading = new iex2DObj( "DATA/UI/Loading.png" );
@@ -92,7 +104,6 @@ using namespace std;
 		changeSceneFlag = false;
 		loadingTimer = 0;
 		renderCount = 0;
-		order = 1;
 		return	true;
 	}
 
@@ -172,6 +183,7 @@ using namespace std;
 	{
 		isEnd = false;
 		static	int	centerX = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
+		int randOrder = Random::GetInt( 0, IMAGE_MAX - 1);
 
 		//	タイマー加算
 		timer++;
@@ -190,11 +202,14 @@ using namespace std;
 
 			if ( isEnd )
 			{
-				if ( order == IMAGE_MAX - 1 )	backImage = bgImage[0];
-				else backImage = bgImage[order + 1];
 				moveImage = bgImage[order];
-				order++;
-				if ( order >= IMAGE_MAX )	order = 0;
+
+				while ( randOrder == order )
+				{
+					randOrder = Random::GetInt( 0, IMAGE_MAX - 1 );
+				}
+				backImage = bgImage[randOrder];
+				order = randOrder;
 				t = 0.0f;
 				timer = 0;
 			}
