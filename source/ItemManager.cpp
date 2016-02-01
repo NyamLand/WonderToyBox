@@ -26,6 +26,7 @@
 		org[ITEM_TYPE::UNRIVALED] = new iexMesh( "DATA/Object/Item/Item02.IMO" );
 		org[ITEM_TYPE::MAGNET] = new iexMesh( "DATA/Object/Item/Item04.IMO" );
 		org[ITEM_TYPE::SPEED_UP] = new iexMesh( "DATA/Object/Item/Item03.IMO" );
+		org[ITEM_TYPE::LIFE] = new iexMesh( "DATA/Object/Item/Item05.IMO" );
 		itemList.clear();
 
 		return	true;

@@ -22,6 +22,7 @@ namespace
 			SPEED_UP,
 			MAGNET,
 			UNRIVALED,
+			LIFE,
 			MAX,
 			BOMB,
 			SEALED_ATTACK,
