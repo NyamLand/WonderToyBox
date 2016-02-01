@@ -33,7 +33,7 @@
 //-----------------------------------------------------------------------------
 	
 	//	AIìÆçÏ
-	void Pirate_CPU::AutoAttack( void )
+	/*void Pirate_CPU::AutoAttack( void )
 	{
 		QuickArts();
-	}
+	}*/
