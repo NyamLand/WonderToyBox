@@ -383,7 +383,7 @@
 	{
 		if (!image.scalingFlag) return false;
 
-		switch (image.scalingAlphaFlag)
+		switch ( image.scalingAlphaFlag )
 		{
 		case true:
 			//	パラメータ加算
@@ -430,10 +430,9 @@
 
 			if (image.alpha >= 1.0f) image.alpha = 1.0f;
 			return false;
-
-		default:
-			return false;
+			break;
 		}
+		return false;
 	}
 
 	//	横拡大縦縮小更新
@@ -742,9 +741,9 @@
 	}
 
 //----------------------------------------------------------------------
-//	放物線(出力、開始点、目標地点、初速、重力)
+//	放物線(出力、開始点、目標地点、初速、かかる負荷(重さ))
 //----------------------------------------------------------------------
-	bool Parabola(Vector3& out, Vector3 start, Vector3 end, float speed, float gravity)
+	bool Parabola(Vector3& out, Vector3 start, Vector3 end, float speed, float mass)
 	{
 		float angleTan;
 		float elevation;	//仰角
@@ -757,7 +756,7 @@
 		// y = v0 * sinθ*t + 0.5f*G*t*t
 		// x = v0 * cosθ*t
 		// 2次方程式 a*T*T + b*T + c = 0
-		float A = (gravity*txz*txz) / (2.0f*speed*speed);
+		float A = (mass*txz*txz) / (2.0f*speed*speed);
 
 		// Tの係数(aT*T + b*T + c = 0)	
 		float a, b, c;

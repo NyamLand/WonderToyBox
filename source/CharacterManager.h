@@ -59,12 +59,14 @@ public:
 	void	HitCheck( void );
 	void	HitCheckSphereVSCapsule( BaseChara* bc1, BaseChara* bc2 );
 	void	HitCheckCapsuleVSCapsule( BaseChara* bc1, BaseChara* bc2 );
+	void	HitCheckCapsuleVSCyrinder( BaseChara* bc1, BaseChara* bc2 );
 	void	HitCheckObjectCapsule( BaseChara* bc );
 	void	HitCheckObjectSphere( BaseChara* bc );
+	void	PlayerDistCheck( void );
 
 	//ƒ‰ƒCƒtˆ—
-	void	AddLife(int player )const;
-	void	SubLife(int player )const;
+	void	AddLife( int player )const;
+	void	SubLife( int player )const;
 
 	//	î•ñæ“¾
 	Matrix	GetMatrix( int player )const;

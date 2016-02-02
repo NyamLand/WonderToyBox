@@ -63,6 +63,12 @@ Stage*	stage = nullptr;
 		org[OBJECT_TYPE::GREEN_BLOCK] = new iexMesh("DATA/Object/Box/greenBox.imo");
 		org[OBJECT_TYPE::RED_BLOCK] = new iexMesh("DATA/Object/Box/redBox.imo");
 		org[OBJECT_TYPE::YELLOW_BLOCK] = new iexMesh("DATA/Object/Box/yellowBox.imo");
+
+		org[OBJECT_TYPE::TREE_TOY] = new iexMesh("DATA/BG/stageobj/tree/tree.IMO");
+		org[OBJECT_TYPE::REX_TOY] = new iexMesh("DATA/BG/stageobj/rex/Rex.IMO");
+		org[OBJECT_TYPE::RABBIT_TOY] = new iexMesh("DATA/BG/stageobj/usg/usg.IMO");
+		org[OBJECT_TYPE::ROBOT_TOY] = new iexMesh("DATA/BG/stageobj/Robot/Robot.IMO");
+
 		org[OBJECT_TYPE::DESK_BASE] = new iexMesh("DATA/BG/stage-desk/stage.IMO");
 		org[OBJECT_TYPE::FOREST_BASE] = new iexMesh("DATA/BG/Forest/model/forest_base.IMO");
 		org[OBJECT_TYPE::TOY_BASE] = new iexMesh("DATA/BG/stage_toy/stageToy.IMO" );
@@ -74,6 +80,10 @@ Stage*	stage = nullptr;
 		collisionObj[OBJECT_TYPE::GREEN_BLOCK] = new iexMesh("DATA/Object/Box/greenBox.imo");
 		collisionObj[OBJECT_TYPE::RED_BLOCK] = new iexMesh("DATA/Object/Box/redBox.imo");
 		collisionObj[OBJECT_TYPE::YELLOW_BLOCK] = new iexMesh("DATA/Object/Box/yellowBox.imo");
+		collisionObj[OBJECT_TYPE::TREE_TOY] = new iexMesh("DATA/BG/stageobj/tree/treeatr.IMO");
+		collisionObj[OBJECT_TYPE::REX_TOY] = new iexMesh("DATA/BG/stageobj/rex/Rexatr.IMO");
+		collisionObj[OBJECT_TYPE::RABBIT_TOY] = new iexMesh("DATA/BG/stageobj/usg/usg.IMO");
+		collisionObj[OBJECT_TYPE::ROBOT_TOY] = new iexMesh("DATA/BG/stageobj/Robot/Robot.IMO");
 		collisionObj[OBJECT_TYPE::DESK_BASE] = new iexMesh("DATA/BG/stage-desk/Collision.IMO");
 		collisionObj[OBJECT_TYPE::FOREST_BASE] = new iexMesh("DATA/BG/Forest/Collision/collision_forest.IMO");
 		collisionObj[OBJECT_TYPE::TOY_BASE] = new iexMesh( "DATA/BG/stage_toy/stageToy.IMO" );
@@ -86,15 +96,24 @@ Stage*	stage = nullptr;
 		switch ( stageType )
 		{
 		case STAGE_TYPE::DESK:
-			Append( Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 1.0f, 1.0f, 1.0f ), MOVE_TYPE::FIX_BOX, OBJECT_TYPE::DESK_BASE );
+			Append(Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 1.0f), MOVE_TYPE::FIX_OBJECT , OBJECT_TYPE::DESK_BASE);
 			//Append( Vector3( 10.0f, 20.0f, 0.0f ), Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 0.5f, 0.5f, 0.5f ), MOVE_TYPE::BREAK_OBJECT, OBJECT_TYPE::RED_BLOCK );
 			//Append( Vector3( -10.0f, 10.0f, 0.0f ), Vector3( 0.0f, 0.0f, 0.0f ), Vector3( 0.5f, 0.5f, 0.5f ), MOVE_TYPE::MOVE_BOX_HIEGHT, OBJECT_TYPE::RED_BLOCK );
 			break;
 
 		case STAGE_TYPE::TOY:
-			Append(Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 1.0f), MOVE_TYPE::FIX_BOX, OBJECT_TYPE::TOY_BASE);
-			Append(Vector3(10.0f, 20.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::BREAK_OBJECT, OBJECT_TYPE::RED_BLOCK);
-			Append(Vector3(-10.0f, 10.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::MOVE_BOX_HIEGHT, OBJECT_TYPE::RED_BLOCK);
+			Append(Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 1.0f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::TOY_BASE);
+			Append(Vector3(-4.0f, 10.0f, 20.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 0.2f, 0.5f), MOVE_TYPE::MOVE_SIDE_OBJECT, OBJECT_TYPE::BLUE_BLOCK);
+			Append(Vector3(-22.0f, 0.0f, 18.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 1.0f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::YELLOW_BLOCK);
+			Append(Vector3(-16.0f, 0.0f, 18.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 1.0f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::GREEN_BLOCK);
+			Append(Vector3(-22.0f, 5.0f, 20.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::BLUE_BLOCK);
+			Append(Vector3(15.0f, 15.0f, 18.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::YELLOW_BLOCK);
+			Append(Vector3(-20.0f, 0.0f, 8.0f), Vector3(0.0f, 1.5f, 0.0f), Vector3(0.09f, 0.09f, 0.09f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::REX_TOY);
+			/*Append(Vector3(-10.0f, 10.0f, -10.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::MOVE_SIDE_OBJECT, OBJECT_TYPE::RED_BLOCK);
+			Append(Vector3(-5.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.01f, 0.01f, 0.01f), MOVE_TYPE::BREAK_OBJECT, OBJECT_TYPE::TREE_TOY);
+			Append(Vector3(-3.0f, 0.0f, 0.0f), Vector3(0.0f, 3.0f, 0.0f), Vector3(0.01f, 0.01f, 0.01f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::RABBIT_TOY);
+			Append(Vector3(5.0f, 0.0f, 5.0f), Vector3(0.0f, 3.0f, 0.0f), Vector3(0.01f, 0.01f, 0.01f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::ROBOT_TOY);
+			Append(Vector3(-10.0f, 0.0f, -10.0f), Vector3(0.0f, 1.5f, 0.0f), Vector3(0.09f, 0.09f, 0.09f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::REX_TOY);*/
 			break;
 		}
 	}
@@ -130,6 +149,7 @@ Stage*	stage = nullptr;
 		}
 		//	シェーダーにセット
 		iexLight::DirLight( shader3D, 0, &dirLightVec, lightColor.x, lightColor.y, lightColor.z );
+		shader3D->SetValue( "DirLightVec", dirLightVec );
 
 		return	true;
 	}

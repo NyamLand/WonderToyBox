@@ -214,6 +214,7 @@
 		SafeDelete( lastResultTest );
 		SafeDelete( bgStage );
 		SafeDelete( check );
+		SafeDelete( winnerBack );
 		Random::Release();
 
 		sound->AllStop();
@@ -240,6 +241,7 @@
 		playerNumImage.obj = new iex2DObj( "DATA/UI/DonketuUI.png" );
 		waveImage.obj = new iex2DObj( "DATA/UI/Rainbow-circle.png" );
 		pressButtonImage.obj = new iex2DObj( "DATA/UI/pressspace.png" );
+		winnerBack = new iex2DObj( "DATA/UI/Result/Last-result-back.png" );
 
 		//	ライフ発表テキスト画像初期化
 		ImageInitialize( lifeAnnounceImage, static_cast<int>( iexSystem::ScreenWidth * 0.5f ), static_cast<int>( iexSystem::ScreenHeight * 0.35f ), 300, 200, 0, 0, 512, 256 );
@@ -264,7 +266,9 @@
 		org[CHARACTER_TYPE::PRINCESS] = make_unique<iex3DObj>(LPSTR("DATA/CHR/プリンセス/prinsess1.IEM"));					//	姫
 		org[CHARACTER_TYPE::THIEF] = make_unique<iex3DObj>(LPSTR("DATA/CHR/Thief/Thief.IEM"));				//	リス
 		org[CHARACTER_TYPE::PIRATE] = make_unique<iex3DObj>(LPSTR("DATA/CHR/Pirate/Pirate.IEM"));					//	トラ
-
+		orgCannon = make_unique<iexMesh>( LPSTR( "DATA/CHR/Pirate/pirate_cannon.IMO" ) );
+		FOR(0, PLAYER_MAX)	cannon[value] = orgCannon->Clone();
+		
 		//	ステージ設定
 		bgStage = new iexMesh("DATA/BG/MenuStage/menustage.IMO");	//	ステージ
 		bgStage->SetScale(0.1f);
@@ -272,22 +276,22 @@
 		bgStage->Update();
 
 		//	オリジナルモデル情報初期化
-		org[CHARACTER_TYPE::SCAVENGER]->SetScale(0.015f);	//	掃除屋
+		org[CHARACTER_TYPE::SCAVENGER]->SetScale(0.015f);	//	魔女
 		org[CHARACTER_TYPE::PRINCESS]->SetScale(0.04f);		//	姫
 		org[CHARACTER_TYPE::THIEF]->SetScale(0.025f);				//	怪盗
 		org[CHARACTER_TYPE::PIRATE]->SetScale(0.04f);				//	海賊
 
-		org[CHARACTER_TYPE::SCAVENGER]->SetAngle(D3DX_PI);	//	掃除屋
+		org[CHARACTER_TYPE::SCAVENGER]->SetAngle(D3DX_PI);	//	魔女
 		org[CHARACTER_TYPE::PRINCESS]->SetAngle(D3DX_PI);		//	姫
 		org[CHARACTER_TYPE::THIEF]->SetAngle(D3DX_PI);				//	シーフ
 		org[CHARACTER_TYPE::PIRATE]->SetAngle(D3DX_PI);			//	海賊
 
-		org[CHARACTER_TYPE::SCAVENGER]->SetMotion(2);		//	掃除屋
-		org[CHARACTER_TYPE::PRINCESS]->SetMotion(1);			//	姫
+		org[CHARACTER_TYPE::SCAVENGER]->SetMotion(0);		//	魔女
+		org[CHARACTER_TYPE::PRINCESS]->SetMotion(0);			//	姫
 		org[CHARACTER_TYPE::THIEF]->SetMotion(0);	 				//	シーフ
 		org[CHARACTER_TYPE::PIRATE]->SetMotion(0);					//	海賊
 
-		org[CHARACTER_TYPE::SCAVENGER]->Update();				//	掃除屋
+		org[CHARACTER_TYPE::SCAVENGER]->Update();				//	魔女
 		org[CHARACTER_TYPE::PRINCESS]->Update();					//	姫
 		org[CHARACTER_TYPE::THIEF]->Update();							//	シーフ
 		org[CHARACTER_TYPE::PIRATE]->Update();						//	海賊
@@ -605,7 +609,7 @@
 		int sw = 512;
 		int sh = 128;
 
-		FOR( 0, Round::END ) 
+		FOR( 0, Round::END + 1 ) 
 		{
 			y = static_cast<int>( iexSystem::ScreenHeight * 0.3f ) + ( static_cast<int>( iexSystem::ScreenHeight * 0.15f ) * value );
 			sy = sh * value;
@@ -715,11 +719,8 @@
 	//	更新
 	void	sceneResult::Update( void ) 
 	{
-		//	各モデル更新
-		FOR( 0, PLAYER_MAX )
-		{
-			obj[value]->Update();
-		}
+		//	モデル更新
+		ModelUpdate();
 
 		switch ( mode )
 		{
@@ -735,7 +736,6 @@
 			LastResultUpdate();
 			break;
 		}
-
 		//	カーテン更新
 		curtainState = CurtainUpdate();
 
@@ -957,6 +957,18 @@
 		FlashingUpdate( pressButtonImage, 0.1f );
 	}
 
+	//	モデル更新
+	void	sceneResult::ModelUpdate( void )
+	{
+		FOR( 0, PLAYER_MAX )
+		{
+			obj[value]->Animation();
+			obj[value]->Update();
+		}
+
+		SetCannonPos();
+	}
+
 //----------------------------------------------------------------------------
 //	描画
 //----------------------------------------------------------------------------
@@ -990,6 +1002,9 @@
 		{
 			obj[value]->Render( shader3D, "toon" );
 		}
+
+		//	大砲描画
+		CannonRender();
 
 		//	リザルトシール描画
 		RenderImage( menuHead, menuHead.sx, menuHead.sy, menuHead.sw, menuHead.sh, IMAGE_MODE::ADOPTPARAM );
@@ -1142,6 +1157,8 @@
 			}
 		}
 
+		RenderImage( roundImage[3],roundImage[3].sx, roundImage[3].sy, roundImage[3].sw, roundImage[3].sh, IMAGE_MODE::NORMAL );
+
 		FOR( 0, PLAYER_MAX )
 		{
 			NumberImageRender( totalNumberImageInfo[value] );
@@ -1168,6 +1185,8 @@
 	//	優勝者関連描画
 	void	sceneResult::WinnerRender( void )
 	{
+		winnerBack->Render( 0, 0, ( int )iexSystem::ScreenWidth, ( int )iexSystem::ScreenHeight, 0, 0, 1280, 720 );
+
 		//	波紋描画
 		RenderImage( waveImage, waveImage.sx, waveImage.sy, waveImage.sw, waveImage.sh, IMAGE_MODE::WAVE );
 
@@ -1182,6 +1201,18 @@
 	void	sceneResult::PressButtonImageRender( void )
 	{
 		RenderImage( pressButtonImage, pressButtonImage.sx, pressButtonImage.sy, pressButtonImage.sw, pressButtonImage.sh, IMAGE_MODE::FLASH );
+	}
+
+	//	大砲描画
+	void	sceneResult::CannonRender( void )
+	{
+		FOR( 0, PLAYER_MAX )
+		{
+			if ( gameManager->GetCharacterType( value ) == CHARACTER_TYPE::PIRATE )
+			{
+				cannon[value]->Render( shader3D, "toon" );
+			}
+		}
 	}
 
 //----------------------------------------------------------------------------
@@ -1375,6 +1406,7 @@
 			if ( rouletteInfo.timer % 90 == 0 )
 			{
 				rouletteInfo.step++;
+				sound->PlaySE( SE::RESULT_JAN );
 				rouletteInfo.timer = 1;
 			}
 		}
@@ -1382,6 +1414,7 @@
 		{
 			if ( rouletteInfo.timer % 50 == 0 )
 			{
+				if ( rouletteInfo.step != PLAYER_MAX )sound->PlaySE(SE::RESULT_JAN);
 				rouletteInfo.step++;
 				rouletteInfo.timer = 1;
 			}
@@ -1597,7 +1630,10 @@
 			{
 				isEnd = WaveUpdate( lifeImage[value] );
 			}
-			if ( isEnd )	lifeInfo.step++;
+			if ( isEnd )
+			{
+				lifeInfo.step++;
+			}
 			break;
 
 		case 4:
@@ -1609,11 +1645,9 @@
 				lifeImage[value].sx = lifeImage[value].sw * ( ( 5 - lifeInfo.culLife ) % 4 );
 				lifeImage[value].sy = lifeImage[value].sh * ( ( 5 - lifeInfo.culLife ) / 4 );
 			}
-
-			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
-			{
-				step = RESULT_MODE::INPUT_WAIT;
-			}
+			lifeAnnounceImage.renderflag = false;
+			step = RESULT_MODE::INPUT_WAIT;
+			
 			return	true;
 			break;
 		}
@@ -1631,6 +1665,28 @@
 			rankImage[value].renderflag = true;
 		}
 		step = RESULT_MODE::RANK_SKIP;
+	}
+
+	//	大砲位置設定
+	void	sceneResult::SetCannonPos( void )
+	{
+		Matrix	mat;
+		Matrix	cannonMat;
+		Vector3	up = Vector3( 0.0f, 0.0f, 0.0f );
+		Vector3	cannonPos = Vector3( 0.0f, 0.0f, 0.0f );
+		FOR( 0, PLAYER_MAX )
+		{
+			if ( gameManager->GetCharacterType( value ) != CHARACTER_TYPE::PIRATE )	continue;
+			mat = *obj[value]->GetBone( 7 ) * obj[value]->TransMatrix;
+			cannon[value]->TransMatrix = mat;
+			up = Vector3( mat._21, mat._22, mat._23 );
+			up.Normalize();
+			cannonPos = Vector3( cannon[value]->TransMatrix._41, cannon[value]->TransMatrix._42, cannon[value]->TransMatrix._43 );
+			cannonPos += up * 0.5f;
+			cannon[value]->TransMatrix._41 = cannonPos.x;
+			cannon[value]->TransMatrix._42 = cannonPos.y;
+			cannon[value]->TransMatrix._43 = cannonPos.z;
+		}
 	}
 
 //----------------------------------------------------------------------------
@@ -1708,6 +1764,7 @@
 			isEnd = CubicFunctionInterpolation( faceImage.h, 0, 700, lastAnnounceInfo.t );
 			if ( isEnd )
 			{
+				sound->PlaySE( SE::RESULT_JAN );
 				SetWave( waveImage, 1.0f );
 				lastAnnounceInfo.t = 0.0f;
 				lastAnnounceInfo.step++;
@@ -1783,12 +1840,14 @@
 		{
 		case LASTRESULT_MODE::SET_CLOSE_CURTAIN:
 			SetCurtainMode(CURTAIN_MODE::CLOSE);
+			sound->PlaySE( SE::DRAMROLL_SE );
 			result_step++;
 			break;
 
 		case LASTRESULT_MODE::CLOSE_CURTAIN:
-			if (curtainState)
+			if ( curtainState )
 			{
+				sound->StopSE( SE::DRAMROLL_SE );
 				SetWaitTimer(150);
 				step = 0;
 				mode = MOVE_MODE::LAST_RESULT;
@@ -1815,6 +1874,7 @@
 			//	入力受付
 			if ( key_space == 3 || key_a == 3 )
 			{
+				if ( !inputCheck[value] )	sound->PlaySE( SE::DECIDE_SE );
 				inputCheck[value] = true;
 				checkImage[value].renderflag = true;
 				SetWave( checkImage[value], 1.0f );
@@ -1859,8 +1919,16 @@
 		//	上下で選択
 		int	keyUp = input[0]->Get( KEY_UP );
 		int	keyDown = input[0]->Get( KEY_DOWN );
-		if ( keyUp == 3 )		menuInfo.select--;
-		if ( keyDown == 3 )	menuInfo.select++;
+		if ( keyUp == 3 )
+		{
+			sound->PlaySE( SE::CHOICE_SE );
+			menuInfo.select--;
+		}
+		if ( keyDown == 3 )
+		{
+			sound->PlaySE( SE::CHOICE_SE );
+			menuInfo.select++;
+		}
 		if ( menuInfo.select < 0 )							menuInfo.select = MENU::END - 1;
 		if ( menuInfo.select >= MENU::END )		menuInfo.select = MENU::MOVE_MENU;
 
@@ -1877,6 +1945,7 @@
 		int keyA = input[0]->Get( KEY_A );
 		if ( keySpace == 3 || keyA == 3 )
 		{
+			sound->PlaySE( SE::DECIDE_SE );
 			switch ( menuInfo.select )
 			{
 			case MENU::MOVE_MENU:

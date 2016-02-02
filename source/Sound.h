@@ -15,23 +15,47 @@ namespace
 	{
 		enum SE_TYPE
 		{
-			NEWS_SE,	
-			HYPER_SE,
-			POWER_SE,
-			QUICK_SE,
-			COIN_SE,
-			ITEM_SE,
-			DECIDE_SE,
-			SELECT_SE,
-			CANCEL_SE,
-			EVENT_SE,
-			HIT_SE,
+			NEWS_SE,	//	ニュースSE
+			HYPER_SE,	//	ハイパー発動時SE
+			POWER_SE,	//	パワー発動時SE
+			QUICK_SE,	//	クイック発動時SE
+			COIN_SE,		//	コインSE
+			ITEM_SE,		//	アイテムSE
+			DECIDE_SE,	//	決定時SE
+			SELECT_SE,	//	カーソル移動SE
+			CANCEL_SE,//	キャンセルSE
+			EVENT_SE,	//	イベントSE
+			HIT_SE,		//	ヒットSE
+			DRAMROLL_SE,	//	ｄｒｒｒｒｒｒSE
+			RESULT_JAN,		//	発表時SE
+			GAMESTART_SE,
+			GAMESET_SE,	//	ゲームセットSE
+			DEATH_SE,
+			CHOICE_SE,		//	選択SE
+			GUARD_SE,		//	ガード時SE
+			QUICK_HIT_SE,
+			POWER_HIT_SE,
+			HYPER_HIT_SE,
+			HYPER_ATTACK,
 
-			GAMESET_SE,
-			CHOICE_SE,
-			GUARD_SE,
+			//	攻撃SE
+			MAJO_QUICK_START,
+			MAJO_QUICK_BOMB,
+			MAJO_POWER,
+			MAJO_HYPER,
+			PRINCESS_QUICK,
+			PRINCESS_POWER,
+			PRINCESS_HYPER,
+			KAITO_QUICK,
+			KAITO_POWER,
+			KAITO_HYPER,
+			PIRATE_QUICK_MISS,
+			PIRATE_QUICK_SUCCESS,
+			PIRATE_QUICK_BOMB,
+			PIRATE_POWER,
+			PIRATE_HYPER,
 
-			END,
+			END,		//	終端
 		};
 	}
 
@@ -53,7 +77,7 @@ class Sound
 {
 private:
 	LPDSSTREAM		stream;
-	bool					isPlay;
+	bool						isPlay;
 
 public:
 	//	初期化・解放

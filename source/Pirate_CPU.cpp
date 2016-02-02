@@ -16,24 +16,24 @@
 //	初期化・解放
 //-----------------------------------------------------------------------------
 
-//	コンストラクタ
-Pirate_CPU::Pirate_CPU(void) : Pirate()
-{
-
-}
-
-//	デストラクタ
-Pirate_CPU::~Pirate_CPU(void)
-{
-
-}
+	//	コンストラクタ
+	Pirate_CPU::Pirate_CPU(void) : Pirate()
+	{
+	
+	}
+	
+	//	デストラクタ
+	Pirate_CPU::~Pirate_CPU(void)
+	{
+	
+	}
 
 //-----------------------------------------------------------------------------
 //	動作関数
 //-----------------------------------------------------------------------------
-
-//	AI動作
-//void	Knight_CPU::ControlAI( void )
-//{
-//	particle->BlueFlame( GetPos(), 1.0f );
-//}
+	
+	//	AI動作
+	/*void Pirate_CPU::AutoAttack( void )
+	{
+		QuickArts();
+	}*/

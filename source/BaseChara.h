@@ -8,6 +8,8 @@
 //*******************************************************************************
 
 //	include
+#include	"Random.h"
+#include	"CoinManager.h"
 #include	"ItemManager.h"
 
 //	parameter
@@ -39,8 +41,8 @@ namespace
 			WAIT,
 			MOVE,
 			ATTACK,
-			POWERARTS,
 			QUICKARTS,
+			POWERARTS,
 			HYPERARTS,
 			JUMP,
 			GUARD,
@@ -48,6 +50,27 @@ namespace
 			DAMAGE_LEANBACKWARD,
 			KNOCKBACK,
 			DEATH,
+		};
+	}
+
+	namespace AI_MODE_STATE
+	{
+		enum
+		{
+			WAIT,
+			MOVE,
+			ATTACK,
+			QUICKARTS,
+			POWERARTS,
+			HYPERARTS,
+			JUMP,
+			GUARD,
+			DAMAGE,
+			DAMAGE_LEANBACKWARD,
+			KNOCKBACK,
+			DEATH,
+			
+			RUNAWAY,
 		};
 	}
 
@@ -87,6 +110,9 @@ namespace
 			"海賊"
 		};
 	}
+
+	//　CPUがコインを探すようになるための、場に存在するコイン枚数の基準
+	const int CPU_SERCH_COIN_MIN = 10;
 }
 
 //	class
@@ -110,6 +136,7 @@ protected:
 		Vector3	top;
 		Vector3	bottom;
 		int		addParam;	//追加効果
+		int		Interval;	//攻撃間隔
 		float	r;
 		float	t;
 	};
@@ -284,6 +311,7 @@ public:
 	void	ItemUnrivaled( void );
 
 	//	子クラスで実装
+	virtual	void	CPU_ModeManagement( void );
 	virtual	bool	QuickArts( void ) = 0;
 	virtual	bool	PowerArts( void ) = 0;
 	virtual	bool	HyperArts( void ) = 0;
@@ -294,10 +322,11 @@ public:
 	virtual	void	Control( void );
 
 	//	AI動作関数
-	void	AutoRun();						//　コインを取りに行く
+	void	AutoMove();		
+	void	AutoPickCoin( int freeCoinMin );	
 	void	AutoAngleAdjust(float speed, Vector3 target);
 	//void	AutoAngleAdjust(const Vector3& direction, float speed);
-	void	AutoAttack();
+	virtual void	AutoAttack( int attackKind );
 	void	RunAway();
 	void	AutoGuard();
 	void	AutoWait();
@@ -347,9 +376,7 @@ public:
 	int		GetAttack_addParam(void)const;
 	float		GetAttack_R( void )const;
 	float		GetAttack_T( void )const;
-	//float	GetSpeed( void )const;
 	float		GetTotalSpeed( void )const;
-	//bool	GetUnrivaled( void )const;
 	bool		GetCanHyper( void )const;
 	bool		GetParameterState( int type )const;
 	bool		GetJumpFlag( void )const;

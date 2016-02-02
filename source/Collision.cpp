@@ -773,6 +773,21 @@ iexMesh*	Collision::obj = NULL;
 		return	false;
 	}
 
+	//	ƒJƒvƒZƒ‹‚Æ‰~’Œ‚Ì“–‚½‚è”»’è
+	bool	Collision::CapsuleVSCyrinder( const Vector3& bottom1, const Vector3& top1, float r1, const Vector3& bottom2, const Vector3& top2, float r2 )
+	{
+		float length = DistanceSegmentSegmentSq( bottom1, top1, bottom2, top2 );
+
+		if ( length <= ( r1 + r2 ) * ( r1 + r2 ) )
+		{
+			if ( top2.y >= bottom1.y && bottom2.y <= top1.y )
+			{
+				return	true;
+			}
+		}
+		return	false;
+	}
+
 	//	‹…‚Æ‹…‚Ì“–‚½‚è”»’è
 	bool	Collision::SphereVSSphere( Vector3 c1, float r1, Vector3 c2, float r2 )
 	{

@@ -10,6 +10,7 @@
 #include	"Sound.h"
 #include	"Particle.h"
 #include	"Event_Coin.h"
+#include	"Scavenger.h"
 
 #include	"Coin.h"
 
@@ -136,7 +137,7 @@
 		shadow.scale = maxScale - ( maxScale * t );
 
 		//	頂点セット
-		static	DWORD	vertexColor = 0xFFFFFFFF;
+		static	DWORD	vertexColor = 0x55FFFFFF;
 		SetVertex( shadow.v[0], shadow.pos.x - shadow.scale / 2, shadow.pos.y, shadow.pos.z + shadow.scale / 2, 0.0f, 0.0f, vertexColor );
 		SetVertex( shadow.v[1], shadow.pos.x + shadow.scale / 2, shadow.pos.y, shadow.pos.z + shadow.scale / 2, 1.0f, 0.0f, vertexColor );
 		SetVertex( shadow.v[2], shadow.pos.x - shadow.scale / 2, shadow.pos.y, shadow.pos.z - shadow.scale / 2, 0.0f, 1.0f, vertexColor );
@@ -229,7 +230,9 @@
 	{
 		//	重力加算
 		if ( moveCheck )
-		move.y += GRAVITY;
+		if (!absorbedflg) move.y += GRAVITY;
+		//吸い込まれる力を質量の代わりとして使用
+		if (absorbedflg) move.y += GRAVITY * SCAVENGER::SUCK_POWER;
 		
 		//	回転
 		angle += 0.05f;

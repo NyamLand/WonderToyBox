@@ -158,11 +158,14 @@ private:
 	unique_ptr<Camera>		view2D, viewTest;
 	iex2DObj*						infoScreen;
 	iex2DObj*						lastResultTest;
+	iex2DObj*						winnerBack;
 	iex2DObj*						check;
 	unique_ptr<iex2DObj>	back;
 	unique_ptr<iex3DObj>	org[4];
+	unique_ptr<iexMesh>		orgCannon;
 	iexMesh*							bgStage;
 	iex3DObj*						obj[4];
+	iexMesh*							cannon[4];
 	iex2DObj*						originNumber;
 	iex2DObj*						menuText;
 	iex2DObj*						life;
@@ -174,7 +177,7 @@ private:
 	ImageObj							menuImage[3];
 	ImageObj							lifeImage[4];		//	ライフ画像
 	ImageObj							checkImage[4];
-	ImageObj							roundImage[3];
+	ImageObj							roundImage[4];
 	ImageObj							lifeAnnounceImage;
 	ImageObj							faceImage;
 	ImageObj							playerNumImage;
@@ -252,6 +255,7 @@ public:
 	void	LastRank( void );
 	void	WinnerRender( void );
 	void	PressButtonImageRender( void );
+	void	CannonRender( void );
 	
 	//	動作関数
 	bool	LightUpdate( void );
@@ -274,6 +278,7 @@ public:
 	bool	WallLightCheck( int num );
 	bool	InputCheckImageUpdate( void );
 	void	PressButtonUpdate( void );
+	void	ModelUpdate( void );
 
 	//	選択モード関数
 	bool	DownPolygon( void );
@@ -293,6 +298,7 @@ public:
 	void	SetNumberInfo( NUMBER_INFO& number, int coin );	//	コイン枚数引き渡し
 	void	SetCurtainMode( int mode );
 	void	SetWaitTimer( int time );
+	void SetCannonPos( void );
 };
 
 //*******************************************************************************

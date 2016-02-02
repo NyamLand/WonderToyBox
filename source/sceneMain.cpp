@@ -63,10 +63,10 @@
 		RefTex = new iex2DObj( 1280, 720, IEX2D_RENDERTARGET );
 
 		//	ライト設定
-		dir = Vector3( 1.0f, -2.0f, -1.0f );
+		dir = Vector3( 0.5f, -1.0f, 1.0f );
 		dir.Normalize();
 		iexLight::DirLight( shader3D, 0, &dir, 0.5f, 0.5f, 0.5f );
-		shader3D->SetValue("DirLightVec", Vector3( 1.0f, 0.0f, 1.0f ) );
+		//shader3D->SetValue("DirLightVec", Vector3( 1.0f, 0.0f, 1.0f ) );
 
 		//	カメラ設定
 		mainView = new Camera();
@@ -304,7 +304,10 @@
 		gameManager->Update();
 
 		//	全体更新
-		if (gameManager->GetTimeStop() <= 0) AllUpdate();
+		if (gameManager->GetTimeStop() <= 0)
+		{
+			AllUpdate();
+		}
 	}
 
 	//	タイムアップ更新
@@ -399,7 +402,7 @@
 			//	オブジェクト描画
 			stage->Render( shader3D, "full_s" );
  			characterManager->Render(shader3D, "toon");
-			coinManager->Render(shader3D, "full");
+			coinManager->Render( shader3D, "full" );
 			m_BulletManager->Render();
 			itemManager->Render();
 

@@ -9,6 +9,7 @@
 #include	"sceneTitle.h"
 #include	"EventManager.h"
 #include	"Particle.h"
+#include	"Sound.h"
 #include	"UI.h"
 
 //****************************************************************************************
@@ -407,7 +408,7 @@
 
 		case GAME_MODE::MAINGAME:
 			TimerRender();
-			NewsBarRender();
+			//NewsBarRender();
 			//CoinBarRender();
 			CoinNumberRender();
 			EventRender();
@@ -415,7 +416,7 @@
 
 		case GAME_MODE::DONKETSU_DIRECTION:
 			TimerRender();
-			NewsBarRender();
+			//NewsBarRender();
 			//CoinBarRender();
 			CoinNumberRender();
 			DonketsuDirectionRender();
@@ -424,7 +425,7 @@
 		case GAME_MODE::CLIMAX:
 			//TimerRender();
 			LastProductionRender();
-			NewsBarRender();
+			//NewsBarRender();
 			//CoinBarRender();
 			CoinNumberRender();
 			EventRender();
@@ -492,7 +493,7 @@
 
 		//	表示色
 		coinColor[0] = Vector3(1.0f, 0.0f, 0.0f);
-		coinColor[1] = Vector3(0.0f, 0.0f, 1.0f);
+		coinColor[1] = Vector3(0.7f, 0.7f, 1.0f);
 		coinColor[2] = Vector3(1.0f, 1.0f, 0.0f);
 		coinColor[3] = Vector3(0.0f, 1.0f, 0.0f);
 
@@ -851,6 +852,7 @@
 			break;
 		//	GOがフェードイン
 		case 2:
+			sound->PlaySE( SE::GAMESTART_SE );
 			if (!countImage.scalingFlag)
 			{
 				waittime = 90;		//	文字停止フレーム数

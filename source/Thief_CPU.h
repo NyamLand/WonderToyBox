@@ -22,6 +22,7 @@ public:
 
 	//	“®ìŠÖ”
 	bool	CPU_Move(void);
+	//void	AutoAttack( void ) override;
 	//void	ControlAI( void )override;
 };
 

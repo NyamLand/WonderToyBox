@@ -5,6 +5,7 @@
 #include	"Particle.h"
 #include	"Princess.h"
 #include	"CoinManager.h"
+#include	"Sound.h"
 #include	"GameManager.h"
 
 //*********************************************************************************
@@ -17,15 +18,15 @@
 //	グローバル
 //-----------------------------------------------------------------------------------
 
-#define	POWER_ARTS_RADIUS	15.0f
+#define	POWER_ARTS_RADIUS	7.5f
 
 	namespace
 	{
 		enum OFFENSIVE_POWER
 		{
 			QUICK = 1,
-			POWER = 2,
-			HYPER = 3,
+			POWER = 0,
+			HYPER = 0,
 		};
 	}
 
@@ -77,16 +78,7 @@
 	{
 		BaseChara::Render( shader, technique );
 
-		////	デバッグ用
-		////if ( !debug )	return;
-		//DrawSphere( attackInfo.pos, attackInfo.r, 0xFFFFFFFF );
-		//
-		//char	str[256];
-		//Vector3	stringPos;
-		//WorldToClient( pos, stringPos, matView* matProjection );
-		//stringPos.y -= 150.0f;
-		//sprintf_s( str, "ひ\nめ\n↓" );
-		//DrawString( str, ( int )stringPos.x, ( int )stringPos.y );
+		DrawCapsule( attackInfo.bottom, attackInfo.top, attackInfo.r, 0xFFFFFFFF );
 	}
 
 //-----------------------------------------------------------------------------------
@@ -97,6 +89,13 @@
 	bool	Princess::QuickArts( void )
 	{
 		power = 1;
+
+		static	bool	initflag = false;
+		if ( !initflag )
+		{
+			sound->PlaySE( SE::PRINCESS_QUICK );
+			initflag = true;
+		}
 
 		//SetMotion(PRINCESS::MOTIO_DATA::QUICK);
 
@@ -125,13 +124,23 @@
 		if (attackInfo.t <= 0.5f) SetParameterState(PARAMETER_STATE::UNRIVALED);
 		else					SetUnrivaled(false);
 
-		if ( attackInfo.t >= 1.0f )	return	true;
+		if ( attackInfo.t >= 1.0f )
+		{
+			initflag = false;
+			return	true;
+		}
 		return	false;
 	}
 
 	//	パワーアーツ
 	bool	Princess::PowerArts( void )
 	{
+		static	bool	initflag = false;
+		if ( !initflag )
+		{
+			sound->PlaySE( SE::PRINCESS_POWER );
+			initflag = true;
+		}
 		power = 0;
 		Vector3	p_pos = GetPos();
 		attackInfo.pos = Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z );
@@ -161,14 +170,15 @@
 			}
 		}
 
-		//相手を混乱状態に
-		attackInfo.addParam = PARAMETER_STATE::CONFUSION;
-
 		//	無敵状態
 		if (attackInfo.t <= 0.5f)		SetParameterState(PARAMETER_STATE::UNRIVALED);
 		else							SetUnrivaled(false);
 
-		if ( attackInfo.t >= 1.0f )	return	true;
+		if ( attackInfo.t >= 1.0f )
+		{
+			initflag = false;
+			return	true;
+		}
 		return	false;
 	}
 
@@ -177,9 +187,19 @@
 	{
 		power = HYPER;
 
+		static	bool	initflag = false;
+		if ( !initflag )
+		{
+			sound->PlaySE( SE::HYPER_ATTACK );
+			sound->PlaySE( SE::PRINCESS_HYPER );
+			initflag = true;
+		}
+
 		static	int		num = 0;	//	回数
 		SetMove( Vector3( 0.0f, 0.0f ,0.0f ) );
 		Vector3	p_pos = GetPos();
+		attackInfo.top = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
+		attackInfo.bottom = Vector3( p_pos.x, p_pos.y - 1.5f, p_pos.z );
 		attackInfo.pos = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
 
 		//	範囲拡大
@@ -188,7 +208,8 @@
 
 		//	エフェクト
 		particle->FlowerDisseminate( attackInfo.pos, attackInfo.r, 2.0f, Vector3( 1.0f, 0.4f, 0.4f ) );
-
+		//相手を混乱状態に
+		attackInfo.addParam = PARAMETER_STATE::CONFUSION;
 		//	パラメータ加算
 		attackInfo.t += 0.02f;
 
@@ -203,6 +224,7 @@
 
 			case 1:
 				num = 0;
+				initflag = false;
 				return	true;
 				break;
 			}
@@ -272,12 +294,11 @@
 			break;
 
 		case MODE_STATE::POWERARTS:
-			attackInfo.type = Collision::SPHEREVSCAPSULE;
-			knockBackInfo.type = KNOCKBACK_TYPE::NONE;
+			//プレイヤーとの判定なし
 			break;
 
 		case MODE_STATE::HYPERARTS:
-			attackInfo.type = Collision::SPHEREVSCAPSULE;
+			attackInfo.type = Collision::CAPSULEVSCYRINDER;
 			knockBackInfo.type = KNOCKBACK_TYPE::STRENGTH;
 			break;
 		}

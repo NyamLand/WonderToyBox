@@ -358,7 +358,7 @@ namespace
 	{
 		Vector3	Pos, Move, Power;
 
-		for ( int i = 0; i < 5; i++ )
+		for ( int i = 0; i < 10; i++ )
 		{
 			Pos.x = pos.x + sinf( Random::GetFloat( 0.0f, 2 * D3DX_PI ) ) * ( Random::GetInt( 0, 200 ) - 100 ) * 0.007f * scale;
 			Pos.y = pos.y + ( Random::GetInt( 0, 200 ) - 100 ) * 0.007f * scale;
@@ -372,7 +372,7 @@ namespace
 			Power.Normalize();
 			Power *= 0.001f * scale;
 
-			pt->Set( FLOWER, 0, 0.0f, 30, 0.0f, 20, 1.0f, &Pos, &Move, &Power, color.x, color.y, color.z, scale * 0.1f, RS_COPY );
+			pt->Set( FLOWER, 0, 0.0f, 30, 0.5f, 20, 1.0f, &Pos, &Move, &Power, color.x, color.y, color.z, scale * 0.2f, RS_COPY );
 		}
 	}
 
@@ -381,7 +381,7 @@ namespace
 	{
 		Vector3	Pos, Move, Power;
 
-		for ( int i = 0; i < 5; i++ )
+		for ( int i = 0; i < 10; i++ )
 		{
 			Pos.x = pos.x + sinf( Random::GetFloat( 0.0f, 2 * D3DX_PI ) ) * ( Random::GetInt( 0, 200 ) - 100 ) * 0.007f * scale;
 			Pos.y = pos.y;
@@ -396,7 +396,7 @@ namespace
 			Power.Normalize();
 			Power *= ( 0.0005f * speed ) * scale;
 
-			pt->Set( FLOWER, 0, 0.5f, 30, 1.0f, 30, 0.5f, &Pos, &Move, &Power, color.x, color.y, color.z, scale * 0.1f, RS_COPY );
+			pt->Set( FLOWER, 0, 0.0f, 30, 0.5f, 30, 1.0f, &Pos, &Move, &Power, color.x, color.y, color.z, scale * 0.1f, RS_COPY );
 		}
 	}
 
@@ -519,7 +519,52 @@ namespace
 
 	}
 
-	//	ìÀêiéûÇÃïóÇêÿÇÈ
+	//	âŒãÖ
+	void	Particle::FireBall( const Vector3& pos, float scale, const Vector3& color )
+	{
+		Vector3	Pos, Move, Power;
+		for ( int j = 0; j<10; j++ )
+		{
+			Pos.x = pos.x + sinf( Random::GetFloat( 0.0f, D3DX_PI * 2 ) ) * ( Random::GetInt( 0, 200 ) - 100 ) * 0.01f * scale;
+			Pos.y = pos.y + ( Random::GetInt( 0, 200 ) - 100 ) * 0.01f * scale;
+			Pos.z = pos.z + cosf( Random::GetFloat( 0.0f, D3DX_PI * 2 ) ) * ( Random::GetInt( 0, 200 ) - 100 ) * 0.01f * scale;
+
+			Move.x = 0.0f;
+			Move.y = 0.0f;
+			Move.z = 0.0f;
+
+			Power = Pos - pos;
+			Power.Normalize();
+			Power *= 0.01f * scale;
+
+			pt->Set( SPARK, 0, 0.3f, 30, 0.5f, 60, 0.1f, &Pos, &Move, &Power, color.x, color.y, color.z, scale * 10.0f, RS_COPY );
+		}
+	}
+
+	//	âŒãÖîöî≠
+	void	Particle::BombFireBall( const Vector3& pos, float scale, const Vector3& color )
+	{
+		Vector3	Pos, Move, Power;
+		for (int j = 0; j<20; j++){
+			Pos.x = pos.x + sinf(Random::GetFloat(0.0f, D3DX_PI * 2)) * (Random::GetInt(0, 200) - 100) * 0.01f * scale;
+			Pos.y = pos.y + (Random::GetInt(0, 200) - 100) * 0.01f * scale;
+			Pos.z = pos.z + cosf(Random::GetFloat(0.0f, D3DX_PI * 2)) * (Random::GetInt(0, 200) - 100) * 0.01f * scale;
+
+			Move = Pos - pos;
+			Move.Normalize();
+			Move *= 2.5f * scale;
+			Move.y = -5.0f * scale;
+
+			Power = pos - Pos;
+			Power.Normalize();
+			Power *= 0.15f * scale;
+			Power.y = 0.5f * scale;
+
+			pt->Set( SPARK, 0, 0.3f, 30, 1.0f, 60, 1.0f, &Pos, &Move, &Power, color.x, color.y, color.z, scale * 20.0f, RS_COPY );
+		}
+	}
+	
+		//	ìÀêiéûÇÃïóÇêÿÇÈ
 	void	Particle::Semicircle(const Vector3& pos, const Vector3& front, const Vector3& right, const Vector3& up, const float& scale)
 	{
 		Vector3	Pos, Move, Power;
@@ -576,7 +621,6 @@ namespace
 			pt->Set(SUCK, 0, 0.0f, 50, 0.0f, 20, 1.0f, &Pos, &Move, &Power, 0.5f, 0.5f, 0.5f, scale, RS_COPY);
 		}
 	}
-
 
 //------------------------------------------------------------------------
 //	èÓïÒéÊìæ

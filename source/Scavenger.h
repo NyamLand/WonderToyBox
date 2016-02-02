@@ -13,6 +13,10 @@
 
 namespace SCAVENGER
 {
+	//定数
+	const float SUCK_POWER = 2.5f;
+	const float DEFAULT_ABSORB_LENGTH = 3.0f;
+
 	namespace MOTION_FRAME
 	{
 		const int QUICKARTS_SUCK = 92;
@@ -46,14 +50,13 @@ namespace SCAVENGER
 //	class
 class Scavenger : public		BaseChara
 {
-private:
-	
-	
-	const float DEFAULT_ABSORB_LENGTH = 3.0f;
 
 private:
 	int		stayTime;	//技関連の硬直経過時間
 	float	absorb_length;		//コインを吸い込める距離
+	bool		fireBallState;
+	int		fireBallInterval;
+	int		fireBallStep;
 //	void	MotionManagement(int motion)override;
 
 public:
@@ -63,6 +66,7 @@ public:
 	bool	Initialize(int playerNum, Vector3 pos)override;
 
 	//	更新・描画
+	void	Update( void )override;
 	void	Render(iexShader* shader = nullptr, LPSTR technique = nullptr)override;
 
 	//	動作関数
@@ -75,6 +79,7 @@ public:
 
 	//	情報設定
 	void	SetAttackParam(int attackKind)override;
+
 };
 
 //*********************************************************************************

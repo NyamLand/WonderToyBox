@@ -8,6 +8,7 @@
 #include	"Sound.h"
 #include	"Stage.h"
 #include	"CoinManager.h"
+#include	"Particle.h"
 #include	"CharacterManager.h"
 
 //****************************************************************************************
@@ -80,6 +81,7 @@
 	//	更新
 	void	CharacterManager::Update( void )
 	{
+		//PlayerDistCheck();
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			//	各キャラクター更新
@@ -90,6 +92,8 @@
 
 		//	当たり判定
 		HitCheck();
+
+		//	プレイヤー位置調整
 
 		//	どんけつブースト
 		DonketsuBoost();
@@ -102,6 +106,10 @@
 		{
 			character[i]->Render( shader, technique );	
 		}
+
+		Vector3	pos = character[0]->GetPos();
+		printf( "pos.x = %f pos.y = %f pos.z = %f\n", pos.x, pos.y, pos.z );
+		
 	}
 
 	//　デバッグ
@@ -191,12 +199,14 @@
 				break;
 			}
 
+			//	プレイヤーへの当たり判定
 			for ( int n = 0; n < PLAYER_MAX; n++ )
 			{
 				//	自分か相手が無敵状態だとつぎへ
 				if ( i == n )	continue;
 				if ( character[n]->GetParameterState( PARAMETER_STATE::UNRIVALED ) )			continue;
 				if ( character[n]->GetParameterState( PARAMETER_STATE::UNRIVALEDITEM ) )	continue;
+				if (character[n]->GetAttackParam() == Collision::NONE)	continue;
 
 				//	タイプ別当たり判定
 				switch ( attackParam )
@@ -207,6 +217,10 @@
 
 				case Collision::CAPSULEVSCAPSULE:
 					HitCheckCapsuleVSCapsule( character[i], character[n] );
+					break;
+
+				case Collision::CAPSULEVSCYRINDER:
+					HitCheckCapsuleVSCyrinder( character[i], character[n] );
 					break;
 
 				case Collision::SPHEREVSCYRINDER:
@@ -240,19 +254,44 @@
 		//	当たっていたら
 		if ( isHit )
 		{
-			if (bc1->GetMode() == MODE_STATE::HYPERARTS)
+			int bc1Mode = bc1->GetMode();
+			if (bc1Mode == MODE_STATE::HYPERARTS)
 			{
-				gameManager->SetShakeCamera( 1.5f, 30 );
+				//当たった瞬間に画面揺らす、止める
+				gameManager->SetShakeCamera(1.5f, 30);
+				//画面停止
+				gameManager->SetTimeStop(SCREEN_STOPTIME);
+			}
+			if ( bc1Mode == MODE_STATE::GUARD )
+			{
+				sound->PlaySE( SE::GUARD_SE );
+				return;
 			}
 			
 			//	無敵にする
 			if ( bc2->GetParameterState( PARAMETER_STATE::UNRIVALED ) )	return;
 			bc2->SetParameterState( PARAMETER_STATE::UNRIVALED );
 
+			//	特殊効果付与
 			int addParam = bc1->GetAttack_addParam();
 			bc2->SetParameterState( addParam );
+
 			//サウンド再生
-			sound->PlaySE(SE::HIT_SE);
+			int attackMode = bc1->GetMode();
+			switch ( attackMode )
+			{
+			case MODE_STATE::QUICKARTS:
+				sound->PlaySE( SE::QUICK_HIT_SE );
+				break;
+
+			case MODE_STATE::POWERARTS:
+				sound->PlaySE( SE::POWER_HIT_SE );
+				break;
+
+			case MODE_STATE::HYPERARTS:
+				sound->PlaySE( SE::HYPER_HIT_SE );
+				break;
+			}
 			//	ライフ減らす
 			int power = bc1->GetPower();
 			FOR(0, power) bc2->SubLife();
@@ -262,15 +301,20 @@
 			particle->Spark( bc2_top, effectScale );
 
 			//	ノックバック
-			Vector3	knockBackVec = bc1_attackPos - bc2_top;
-			knockBackVec.y = bc2_top.y;
-			knockBackVec.Normalize();
+			if (bc2->GetKnockBackType() != KNOCKBACK_TYPE::NONE)
+			{
+				Vector3	knockBackVec = bc1_attackPos - bc2_top;
+				knockBackVec.y = bc2_top.y;
+				knockBackVec.Normalize();
+				bc2->SetKnockBackVec( -knockBackVec );
+				SetKnockBackParam(bc1, bc2);
+			}
+			//やられ色設定
 			Vector3	color = bc1->GetDamageColor();
+			if ( addParam == PARAMETER_STATE::CONFUSION )		color = Vector3( 0.0f, 1.0f, 0.0f );
+			else if ( power == 0 )														color = Vector3( 0.5f, 0.5f, 0.0f );
+			else																					color = Vector3( 1.0f, 0.0f, 0.0f );
 			bc2->SetPassColor( color );
-			bc2->SetKnockBackVec( -knockBackVec );
-
-			SetKnockBackParam(bc1, bc2);
-
 			//	コインばらまき方向設定
 			Vector3	vec = Vector3( Random::GetFloat( -1.0f, 1.0f ), 1.0f, Random::GetFloat( -1.0f, 1.0f ) );
 			vec.Normalize();
@@ -313,17 +357,40 @@
 		//	当たっていたら
 		if ( isHit )
 		{
-			if (bc1->GetMode() == MODE_STATE::HYPERARTS)
+			int	bc1Mode = bc1->GetMode();
+			if (bc1Mode == MODE_STATE::HYPERARTS)
 			{
-				gameManager->SetShakeCamera( 1.5f, 30 );
+				//当たった瞬間に画面揺らす、止める
+				gameManager->SetShakeCamera(1.5f, 30);
+				//画面停止
+				gameManager->SetTimeStop(SCREEN_STOPTIME);
 			}
-			if (bc1->GetMode() == MODE_STATE::HYPERARTS){};
+
+			if ( bc1Mode == MODE_STATE::GUARD)
+			{
+				sound->PlaySE(SE::GUARD_SE);
+				return;
+			}
 
 			//	無敵にする
 			if (bc2->GetParameterState(PARAMETER_STATE::UNRIVALED))	return;
 			bc2->SetParameterState(PARAMETER_STATE::UNRIVALED);
 			//サウンド再生
-			sound->PlaySE(SE::HIT_SE);
+			int attackMode = bc1->GetMode();
+			switch ( attackMode )
+			{
+			case MODE_STATE::QUICKARTS:
+				sound->PlaySE(SE::QUICK_HIT_SE);
+				break;
+
+			case MODE_STATE::POWERARTS:
+				sound->PlaySE(SE::POWER_HIT_SE);
+				break;
+
+			case MODE_STATE::HYPERARTS:
+				sound->PlaySE(SE::HYPER_HIT_SE);
+				break;
+			}
 			//	ライフ減らす
 			int power = bc1->GetPower();
 			FOR(0, power) bc2->SubLife();
@@ -333,15 +400,20 @@
 			particle->Spark( bc2_top, effectScale );
 
 			//	ノックバック
-			Vector3	knockBackVec = bc1_attack_top - bc2_top;
-			knockBackVec.y = bc2_top.y;
-			knockBackVec.Normalize();
+			if (bc2->GetKnockBackType() != KNOCKBACK_TYPE::NONE)
+			{
+				Vector3	knockBackVec = bc1_attack_top - bc2_top;
+				knockBackVec.y = bc2_top.y;
+				knockBackVec.Normalize();
+				bc2->SetKnockBackVec( -knockBackVec );
+				SetKnockBackParam(bc1, bc2);
+			}
+
+			//やられ色設定
 			Vector3	color = bc1->GetDamageColor();
+			if ( power == 0 )														color = Vector3( 1.0f, 1.0f, 0.0f );
+			else																			color = Vector3( 1.0f, 0.0f, 0.0f );
 			bc2->SetPassColor( color );
-			bc2->SetKnockBackVec( -knockBackVec );
-
-
-			SetKnockBackParam(bc1, bc2);
 
 			//	コインばらまき方向設定
 			Vector3	vec = Vector3( Random::GetFloat( -1.0f, 1.0f ), 1.0f, Random::GetFloat( -1.0f, 1.0f ) );
@@ -360,6 +432,101 @@
 				if (bc2_coinNum <= 0) break;
 				coinManager->Append(bc2_top, vec, totalpower, Coin::COIN );
 				gameManager->SubCoin( bc2_Num );
+
+			}
+		}
+	}
+
+	//	カプセルと円柱の当たり判定
+	void	CharacterManager::HitCheckCapsuleVSCyrinder( BaseChara* bc1, BaseChara* bc2 )
+	{
+		//	攻撃する方
+		Vector3	bc1_attack_bottom = bc1->GetAttackPos_Bottom();
+		Vector3	bc1_attack_top = bc1->GetAttackPos_Top();
+		float		bc1_attack_r = bc1->GetAttack_R();
+
+		//	攻撃される方
+		Vector3	bc2_bottom = bc2->GetPos();
+		Vector3	bc2_top = Vector3(bc2_bottom.x, bc2_bottom.y + 3.0f, bc2_bottom.z);
+		float		bc2_r = 2.0f;
+
+		//	攻撃判定
+		bool	isHit = Collision::CapsuleVSCyrinder( bc1_attack_bottom, bc1_attack_top, bc1_attack_r, bc2_bottom, bc2_top, bc2_r );
+
+		//	当たっていたら
+		if (isHit)
+		{
+			int	bc1Mode = bc1->GetMode();
+			if (bc1Mode == MODE_STATE::HYPERARTS)
+			{
+				//当たった瞬間に画面揺らす、止める
+				gameManager->SetShakeCamera(1.5f, 30);
+				//画面停止
+				gameManager->SetTimeStop(SCREEN_STOPTIME);
+			}
+
+			if (bc1Mode == MODE_STATE::GUARD)
+			{
+				sound->PlaySE(SE::GUARD_SE);
+				return;
+			}
+
+			//	無敵にする
+			if (bc2->GetParameterState(PARAMETER_STATE::UNRIVALED))	return;
+			bc2->SetParameterState(PARAMETER_STATE::UNRIVALED);
+			//サウンド再生
+			int attackMode = bc1->GetMode();
+			switch (attackMode)
+			{
+			case MODE_STATE::QUICKARTS:
+				sound->PlaySE(SE::QUICK_HIT_SE);
+				break;
+
+			case MODE_STATE::POWERARTS:
+				sound->PlaySE(SE::POWER_HIT_SE);
+				break;
+
+			case MODE_STATE::HYPERARTS:
+				sound->PlaySE(SE::HYPER_HIT_SE);
+				break;
+			}
+			//	ライフ減らす
+			int power = bc1->GetPower();
+			FOR(0, power) bc2->SubLife();
+
+			//	エフェクトだす
+			float	effectScale = 1.0f;
+			particle->Spark(bc2_top, effectScale);
+
+			//	ノックバック
+			if (bc2->GetKnockBackType() != KNOCKBACK_TYPE::NONE)
+			{
+				Vector3	knockBackVec = bc1_attack_top - bc2_top;
+				knockBackVec.y = bc2_top.y;
+				knockBackVec.Normalize();
+				bc2->SetKnockBackVec(-knockBackVec);
+				SetKnockBackParam(bc1, bc2);
+			}
+			Vector3	color = bc1->GetDamageColor();
+			bc2->SetPassColor(color);
+
+			//	コインばらまき方向設定
+			Vector3	vec = Vector3(Random::GetFloat(-1.0f, 1.0f), 1.0f, Random::GetFloat(-1.0f, 1.0f));
+			vec.Normalize();
+
+			//	プレイヤー番号取得とばらまきパワー設定
+			//float	power = 0.15f;
+			float	totalpower = bc1->GetTotalPower()*0.1f;
+			int		dropCoin = bc1->GetTotalPower();
+			int		bc2_Num = bc2->GetPlayerNum();
+			int		bc2_coinNum = gameManager->GetCoinNum(bc2_Num);
+
+			//	攻撃側のtotalPower枚のコインをばらまき
+			for (int i = 0; i < dropCoin; i++)
+			{
+				if (bc2_coinNum <= 0) break;
+				coinManager->Append(bc2_top, vec, totalpower, Coin::COIN);
+				gameManager->SubCoin(bc2_Num);
 
 			}
 		}
@@ -544,6 +711,38 @@
 			}
 		}
 	}
+	
+	//	プレイヤーとプレイヤーの位置調整
+	void	CharacterManager::PlayerDistCheck( void )
+	{
+		Vector3	pos1, pos2;
+		Vector3	vec;
+		float			length;
+
+		FOR( 0, PLAYER_MAX )
+		{
+			for ( int i = 0; i < PLAYER_MAX; i++ )
+			{
+				//	自分同士はスキップ
+				if ( value == i )		continue;
+
+				pos1 = character[value]->GetPos();
+				pos2 = character[i]->GetPos();
+
+				vec = pos2 - pos1;
+				length = vec.Length();
+
+				//	近ければ遠ざける
+				if ( length < 4.0f )
+				{
+					vec.Normalize();
+					vec *= -2.0f;
+					character[value]->SetPos( pos1 + vec );
+				}
+			}
+		}
+	}
+	
 
 //-------------------------------------------------------------------------------------
 //	ライフ処理
@@ -775,10 +974,6 @@ void	CharacterManager::SubLife(int player)const
 	{
 		switch (bc1->GetKnockBackType())
 		{
-		case KNOCKBACK_TYPE::NONE:
-			bc2->SetMode(MODE_STATE::DAMAGE);
-			break;
-
 		case KNOCKBACK_TYPE::STRENGTH:
 			bc2->SetForce(1.5f);
 			bc2->SetMode(MODE_STATE::DAMAGE);

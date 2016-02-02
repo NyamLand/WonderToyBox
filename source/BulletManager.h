@@ -63,19 +63,33 @@ namespace
 		100 * SECOND,		//海賊3
 	};
 
-	//あたり判定が円状でないものに関してはNULL
+	//あたり判定がないものに関してはNULL
 	const float BULLET_RADIUS[] =
 	{
 		10.0f,		//リス1
-		10.0f,		//怪盗1
+		1.0f,		//怪盗1
 		10.0f,		//怪盗2
 		NULL,		//怪盗3のアーム
-		22.0f,		//怪盗3の手部分
+		10.0f,		//怪盗3の手部分
 		2.0f,		//海賊1
 		2.0f,		//海賊2
 		2.0f		//海賊3
 	};
+
 }
+
+//種類ごとの弾数カウント
+struct BULLET_NUM
+{
+	int Squirrel_01;
+	int Thief_01;
+	int Thief_02;
+	int Thief_03;
+	int Thief_04;
+	int Pirate_01;
+	int Pirate_02;
+	int Pirate_03;
+};
 
 class BulletManager
 {
@@ -91,8 +105,10 @@ private:
 	BaseBullet*	c_Bullet[BULLET_MAX];
 
 	//	変数
-	int				bullet_num;	//	弾数
 	int				limitTimer;
+
+	//種類ごとの弾数カウント
+	/*BULLET_NUM*/	 int bullet_num;	//	弾数
 
 public:
 	//	初期化・解放

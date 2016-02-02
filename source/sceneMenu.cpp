@@ -202,7 +202,7 @@
 			int w = static_cast<int>( iexSystem::ScreenWidth * 0.29f );
 			int h = static_cast<int>( iexSystem::ScreenHeight * 0.2f );
 			ImageInitialize( textImage, x, y, w, h, 512, 0, 512, 256 );
-			textImage.angle = D3DXToRadian( 5.0f );
+			//textImage.angle = D3DXToRadian( 5.0f );
 			textImage.renderflag = true;
 		}
 
@@ -482,6 +482,7 @@
 			//	決定
 			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
 			{
+				sound->PlaySE( SE::DECIDE_SE );
 				gameManager->SetPlayerNum( playerNumSelectInfo.num + 1 );
 				bgInfo.start = CAMERA_TARGET::front;
 				bgInfo.end = CAMERA_TARGET::right;
@@ -509,8 +510,8 @@
 		int h = static_cast<int>( iexSystem::ScreenHeight * 0.15f );
 		playerNum->Render( x, y, w, h, 0, playerNumSelectInfo.sy, 128, 128 );
 
-		triangleCursor->Render(x+10.0f, y - 130.0f, 128, 128, 0, 0, 256, 256);
-		triangleCursor->Render(x + 10.0f, y + 140.0f, 128, 128, 256, 0, 256, 256);
+		triangleCursor->Render( ( int )( x+10.0f ), ( int )( y - 130.0f ), 128, 128, 0, 0, 256, 256);
+		triangleCursor->Render( ( int )( x + 10.0f ), ( int )( y + 140.0f ), 128, 128, 256, 0, 256, 256);
 
 		x = static_cast<int>( iexSystem::ScreenWidth * 0.35f );
 		y = static_cast<int>( iexSystem::ScreenHeight * 0.41f );
@@ -530,6 +531,7 @@
 		org[CHARACTER_TYPE::PRINCESS]->SetMotion(0);		//	姫
 		org[CHARACTER_TYPE::THIEF]->SetMotion(0);		//	怪盗
 		org[CHARACTER_TYPE::PIRATE]->SetMotion(0);			//	海賊
+	
 		//	モデル、選択情報初期化
 		FOR( 0, PLAYER_MAX )
 		{
@@ -561,7 +563,7 @@
 		characterSelectInfo.playerNum = gameManager->GetPlayerNum();
 
 		//	画像位置初期化
-		textImage.angle = D3DXToRadian( 5.0f );
+		//textImage.angle = D3DXToRadian( 5.0f );
 		textImage.renderflag = true;
 
 		//	顔画像初期化
@@ -614,6 +616,7 @@
 			//	決定
 			if ( input[value]->Get( KEY_SPACE ) == 3 || input[value]->Get( KEY_A ) == 3 )
 			{
+				sound->PlaySE( SE::DECIDE_SE );
 				gameManager->SetCharacterType( value, characterSelectInfo.character[value] );
 				characterSelectInfo.select[value] = true;
 			}
@@ -647,6 +650,12 @@
 			FOR( gameManager->GetPlayerNum(), PLAYER_MAX )
 			{
 				characterSelectInfo.character[value] = Random::GetInt( 0, CHARACTER_TYPE::MAX - 1 );
+				//　デバッグ
+				//characterSelectInfo.character[0] = CHARACTER_TYPE::SCAVENGER;
+				characterSelectInfo.character[1] = CHARACTER_TYPE::PRINCESS;
+				characterSelectInfo.character[2] = CHARACTER_TYPE::THIEF;
+				characterSelectInfo.character[3] = CHARACTER_TYPE::SCAVENGER;
+				//characterSelectInfo.character[3] = CHARACTER_TYPE::PIRATE;
 				gameManager->SetCharacterType( value, characterSelectInfo.character[value] );
 			
 				//	モデル差し替え
@@ -689,15 +698,7 @@
 			//	顔描画
 			RenderImage( faceImage[value], 0, 256 * value, 256, 256, IMAGE_MODE::NORMAL );
 		}
-			//	カーソル描画
-		//FOR( 0, PLAYER_MAX )
-		//{
-		//	cursorImage[value].x = faceImage[characterSelectInfo.character[value]].x-faceImage[characterSelectInfo.character[value]].w/2;
-		//	cursorImage[value].y = faceImage[characterSelectInfo.character[value]].y - faceImage[characterSelectInfo.character[value]].h / 2;
-		//	if ( characterSelectInfo.select[value] )	cursorImage[value].color = Vector3( 0.5f, 0.5f, 0.5f );	//	決定時明度下げる
-		//	RenderImage( cursorImage[value], 128 * ( value % 2 ), 128 * ( value / 2 ), 128, 128, IMAGE_MODE::NORMAL );
-		//	//RenderImage(cursorImage[value], 128 * ( value % 2 ), 128 * value, 128, 128, IMAGE_MODE::NORMAL);
-		//}
+
 		//プレイヤー1
 		cursorImage[0].x = faceImage[characterSelectInfo.character[0]].x - faceImage[characterSelectInfo.character[0]].w / 2;
 		cursorImage[0].y = faceImage[characterSelectInfo.character[0]].y - faceImage[characterSelectInfo.character[0]].h / 2;
@@ -733,13 +734,14 @@
 		}
 
 		FOR(0, PLAYER_MAX){
-			if (characterSelectInfo.select[value]){
+			if ( characterSelectInfo.select[value] ){
 				RenderImage(decidecursorImage[value], 128 * (value % 2), 128 * (value / 2), 128, 128, IMAGE_MODE::NORMAL);
 			}
 			else
 			{
 				RenderImage(cursorImage[value], 128 * (value % 2), 128 * (value / 2), 128, 128, IMAGE_MODE::NORMAL);
 			}
+
 		}
 		
 	}
@@ -822,8 +824,9 @@
 		}
 
 		//	決定
-		if ( KEY( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )
+		if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
 		{
+			sound->PlaySE( SE::DECIDE_SE );
 			//	マネージャーに情報をセット
 			gameManager->SetStageType( stageSelectInfo.stage );
 
@@ -933,7 +936,7 @@
 		//	決定（はい：メインへ、いいえ：キャラ選択へ）
 		if ( input[0]->Get( KEY_A ) == 3 || input[0]->Get( KEY_SPACE ) == 3 )
 		{
-			
+			sound->PlaySE( SE::DECIDE_SE );
 			//	確認表示
 			if ( !checkSelectInfo.check )
 			{

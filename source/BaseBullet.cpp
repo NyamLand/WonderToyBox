@@ -106,7 +106,8 @@
 		for ( int i = 0; i < 4; i++ )
 		{
 			if ( !activate )	continue;
-			if ( characterManager->GetUnrivaled( i ) )	continue;
+			if (characterManager->GetUnrivaled(i))	continue;
+			if (i == playerNum) continue;	//撃ったプレイヤーなら除外
 			
 			//	プレイヤー情報設定
 			Vector3	p_pos_bottom = characterManager->GetPos(i);
@@ -122,6 +123,12 @@
 
 			if ( isHit )
 			{
+				int bcMode = characterManager->GetMode(i);
+				if (bcMode == MODE_STATE::GUARD)
+				{
+					sound->PlaySE(SE::GUARD_SE);
+					continue;
+				}
 				//サウンド再生
 				sound->PlaySE(SE::HIT_SE);
 				//	エフェクトだす
