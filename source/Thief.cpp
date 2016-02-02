@@ -42,6 +42,7 @@ Thief::Thief(void) : BaseChara()
 	scale = 0.035f;
 	diffence = -1;
 	stayTime = 0;
+	artsTimer = 0;
 	absorb_length = DEFAULT_ABSORB_LENGTH;
 	isGround = true;
 }
@@ -163,10 +164,9 @@ bool	Thief::QuickArts(void)
 //	パワーアーツ
 bool	Thief::PowerArts(void)
 {
-	static int time = 0;
-	static	bool initflag = false;
 	if ( !initflag )
 	{
+		artsTimer = 0;
 		sound->PlaySE( SE::KAITO_POWER );
 		initflag = true;
 	}
@@ -188,16 +188,16 @@ bool	Thief::PowerArts(void)
 	int playerNum = GetPlayerNum();
 
 	//モーションアトデナオス(ちょうどいい感じのフレームが来たら弾発射)
-	if (time == 0/* obj->GetFrame() == ○○ */)
+	if (artsTimer == 0/* obj->GetFrame() == ○○ */)
 	{
 		m_BulletManager->Set(BULLET_TYPE::THIEF_02, new Thief_Bullet02, p_pos, vec, bulletSpeed, playerNum);
 	}
-		time++;
+	artsTimer++;
 
 		//モーションアトデナオス
 		if (obj->GetFrame() == 277)
 		{
-			time = 0;
+			artsTimer = 0;
 			initflag = false;
 			return true;
 		}
@@ -207,7 +207,6 @@ bool	Thief::PowerArts(void)
 //	ハイパーアーツ
 bool	Thief::HyperArts(void)
 {
-	static	bool	initflag = false;
 	if ( !initflag )
 	{
 		sound->PlaySE( SE::HYPER_ATTACK );

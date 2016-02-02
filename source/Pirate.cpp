@@ -144,7 +144,6 @@ bool	Pirate::QuickArts(void)
 //	パワーアーツ
 bool	Pirate::PowerArts(void)
 {	
-	static	bool	initflag = false;
 	if ( !initflag )
 	{
 		sound->PlaySE( SE::PIRATE_POWER );
@@ -191,7 +190,6 @@ bool	Pirate::PowerArts(void)
 //	ハイパーアーツ
 bool	Pirate::HyperArts(void)
 {
-	static	bool	initflag = false;
 	if ( !initflag )
 	{
 		sound->PlaySE( SE::HYPER_ATTACK );

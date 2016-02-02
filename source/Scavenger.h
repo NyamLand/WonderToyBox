@@ -57,6 +57,7 @@ private:
 	bool		fireBallState;
 	int		fireBallInterval;
 	int		fireBallStep;
+	Vector3	p_pos;
 //	void	MotionManagement(int motion)override;
 
 public:

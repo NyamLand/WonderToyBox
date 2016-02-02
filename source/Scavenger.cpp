@@ -49,6 +49,7 @@ Scavenger::Scavenger(void) : BaseChara()
 	fireBallState = true;
 	fireBallStep = 0;
 	fireBallInterval = SECOND / 2;
+	p_pos = Vector3( 0.0f, 0.0f, 0.0f );
 	
 	absorb_length = SCAVENGER::DEFAULT_ABSORB_LENGTH;
 	isGround = true;
@@ -126,8 +127,6 @@ bool	Scavenger::QuickArts(void)
 	front.Normalize();
 	Vector3	up = Vector3(mat._21, mat._22, mat._23);
 	up.Normalize();
-	static	Vector3	p_pos = Vector3(0.0f, 0.0f, 0.0f);
-	static	bool			initflag = false;
 	bool			isEnd = false;
 	bool			isHit = false;
 
@@ -244,8 +243,6 @@ bool	Scavenger::QuickArts(void)
 //	パワーアーツ
 bool	Scavenger::PowerArts( void )
 {	
-	static	bool initflag = false;
-
 	if ( !initflag )
 	{
 		sound->PlaySE( SE::MAJO_POWER );
@@ -334,7 +331,6 @@ bool	Scavenger::HyperArts( void )
 {
 	power = HYPER;
 
-	static	bool	initflag = false;
 	if ( !initflag )
 	{
 		sound->PlaySE( SE::HYPER_ATTACK );

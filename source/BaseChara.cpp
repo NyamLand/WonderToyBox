@@ -54,8 +54,8 @@ namespace
 	//	コンストラクタ
 	BaseChara::BaseChara( void ) : obj( nullptr ), input( nullptr ),		//	pointer
 		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ), angle( 0.0f, 0.0f, 0.0f ), objectMove( 0.0f, 0.0f, 0.0f ),	//	Vector3
-		scale(0.0f), speed(0.0f),	totalSpeed(0.0f), drag(0.0f), force( 0.0f ), moveVec( 0.0f ), jumpPower( 0.0f ), dt( 0.0f ),	//	float
-		isGround(false), isPlayer(false), jumpState( true ), checkWall(false), renderflag(true), coinUnrivaled(false),//	bool
+		scale(0.0f), speed(0.0f),	totalSpeed(0.0f), drag(0.0f), force( 0.0f ), moveVec( 0.0f ), jumpPower( 0.0f ), dt( 0.0f ), param( 0.0f ),	//	float
+		isGround(false), isPlayer(false), jumpState( true ), checkWall(false), renderflag(true), coinUnrivaled(false), initflag(false),//	bool
 		mode(0), playerNum(0), power(0), totalPower(0), leanFrame(0), jumpStep(0),damageStep(0),rank(0), life( 0 )		//	int
 	{
 	
@@ -460,9 +460,11 @@ namespace
 			{
 				pos.y = height = objectWork;
 				pos += objectMove;
+				isGround = true;
 			}
 			if ( pos.y < work )
 			{
+				isGround = true;
 				pos.y = height = work;
 			}
 			move.y = 0.0f;
@@ -592,7 +594,7 @@ namespace
 
 		//SetParameterState(PARAMETER_STATE::UNRIVALED);
 		SetDrag(1.0f);	//一時的に抗力なくす
-		if (move.y < 0 && isGround)
+		if (/*move.y < 0 &&*/ isGround)
 		{
 			move = Vector3(0.0f, 0.0f, 0.0f);
 			damageStep = 0;
@@ -630,7 +632,11 @@ namespace
 	//	ノックバック	仰け反りのみ
 	void	BaseChara::KnockBackLeanBackWard( void )
 	{
-		static int branktime = 0;	//仮の仰け反り時間　後でモーションフレームからとる可能性大
+		if ( !initflag )
+		{
+			branktime = 0;	//仮の仰け反り時間　後でモーションフレームからとる可能性大
+			initflag = true;
+		}
 
 		//SetParameterState(PARAMETER_STATE::UNRIVALED);
 		if ( branktime == 0 )  SetDamageColor( damageColor.catchColor );
@@ -640,6 +646,7 @@ namespace
 		if ( branktime >= leanFrame )
 		{
 			branktime = 0;
+			initflag = false;
 			SetMode( MODE_STATE::MOVE );
 			//SetUnrivaled(false);
 		}
@@ -656,6 +663,9 @@ namespace
 	void	BaseChara::Move( void )
 	{
 		if ( GetCoinUnrivaled() ) 	SetCoinUnrivaled( false );
+		initflag = false;
+		param = false;
+		attackInfo.type = 0;
 
 		Control();
 	}
@@ -769,11 +779,7 @@ namespace
 
 	//	死亡
 	void	BaseChara::Death( void )
-	{
-		static	float	param = 0.0f;	//	仮
-		static	bool	initflag = false;		//	初期通過フラグ
-		static	float	moveAngle = 0.0f;
-		
+	{		
 		//	死亡中無敵
 		SetParameterState(PARAMETER_STATE::UNRIVALED);
 		SetCoinUnrivaled( true );
@@ -782,6 +788,7 @@ namespace
 		//	コイン半分ばらまき
 		if ( !initflag )
 		{
+			moveAngle = 0.0f;
 			int	coinNum = gameManager->GetCoinNum( this->playerNum );
 			FOR( 0, coinNum / 2 )
 			{
@@ -1134,6 +1141,9 @@ namespace
 
 		//	無敵にする
 		unrivaled.state = true;
+
+		//	シールドを常に設定
+		m_Effect->SetShield( playerNum, true );
 
 		//	タイマー減算
 		unrivaledItem.timer--;

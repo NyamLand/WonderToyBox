@@ -212,6 +212,8 @@ protected:
 	float				diffence;
 	float				jumpPower;
 	float				dt;
+	float				param;			//	äÑçá
+	float				moveAngle;
 	bool				isGround;
 	bool				canHyper;
 	bool				inUseHyper;
@@ -220,6 +222,7 @@ protected:
 	bool				checkWall;
 	bool				renderflag;
 	bool				coinUnrivaled;
+	bool				initflag;
 	int				mode;
 	int				playerNum;
 	int				power;
@@ -229,6 +232,7 @@ protected:
 	int				damageStep;
 	int				rank;
 	int				life;
+	int				branktime;
 
 	//	äeèÓïÒç\ë¢ëÃ
 	DAMAGECOLOR_INFO		damageColor;

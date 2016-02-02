@@ -474,6 +474,11 @@
 			//	無敵にする
 			if (bc2->GetParameterState(PARAMETER_STATE::UNRIVALED))	return;
 			bc2->SetParameterState(PARAMETER_STATE::UNRIVALED);
+
+			//	特殊効果付与
+			int addParam = bc1->GetAttack_addParam();
+			bc2->SetParameterState(addParam);
+
 			//サウンド再生
 			int attackMode = bc1->GetMode();
 			switch (attackMode)
@@ -507,8 +512,12 @@
 				bc2->SetKnockBackVec(-knockBackVec);
 				SetKnockBackParam(bc1, bc2);
 			}
+
+			//やられ色設定
 			Vector3	color = bc1->GetDamageColor();
-			bc2->SetPassColor(color);
+			if ( power == 0 )														color = Vector3( 1.0f, 1.0f, 0.0f );
+			else																			color = Vector3( 1.0f, 0.0f, 0.0f );
+			bc2->SetPassColor( color );
 
 			//	コインばらまき方向設定
 			Vector3	vec = Vector3(Random::GetFloat(-1.0f, 1.0f), 1.0f, Random::GetFloat(-1.0f, 1.0f));

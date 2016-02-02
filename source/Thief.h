@@ -35,6 +35,7 @@ private:
 
 private:
 	int		stayTime;	//‹ZŠÖ˜A‚Ìd’¼Œo‰ßŠÔ
+	int		artsTimer;
 	float	absorb_length;		//ƒRƒCƒ“‚ğ‹z‚¢‚ß‚é‹——£
 //	void	MotionManagement(int motion)override;
 
