@@ -229,6 +229,7 @@ namespace
 		attackInfo.addParam = -1;
 		attackInfo.top = Vector3(0.0f, 0.0f, 0.0f);
 		attackInfo.bottom = Vector3(0.0f, 0.0f, 0.0f);
+		initflag = false;
 		knockBackInfo.type = 0;
 	}
 

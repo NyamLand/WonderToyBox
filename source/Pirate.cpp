@@ -147,7 +147,6 @@ bool	Pirate::QuickArts(void)
 bool	Pirate::PowerArts(void)
 {	
 	power = POWER;
-	static	bool	initflag = false;
 	if ( !initflag )
 	{
 		sound->PlaySE( SE::PIRATE_POWER );
@@ -196,7 +195,6 @@ bool	Pirate::HyperArts(void)
 {
 	power = HYPER;
 
-	static	bool	initflag = false;
 	if ( !initflag )
 	{
 		sound->PlaySE( SE::HYPER_ATTACK );
