@@ -143,15 +143,19 @@ bool	Thief_Bullet01::PlayerCollisionCheck(void)
 			vec.Normalize();
 
 			//	プレイヤー番号取得とばらまきパワー設定
-			float	power = 0.2f;
-			int		p2_Num = characterManager->GetPlayerNum(i);
-			int		p2_coinNum = gameManager->GetCoinNum(p2_Num);
+			float		power = 0.5f;
+			int		p2_Num = characterManager->GetPlayerNum( i );
+			int		p2_coinNum = gameManager->GetCoinNum( p2_Num );
 
 			//	コインがあればばらまき
-			if (p2_coinNum > 0)
+			static	int coinNum = 3;
+			FOR( 0, coinNum )
 			{
-				coinManager->Append(p_pos_top, vec, power, Coin::COIN);
-				gameManager->SubCoin(p2_Num);
+				if ( p2_coinNum > 0 )
+				{
+					coinManager->Append( p_pos_top, vec, power, Coin::COIN );
+					gameManager->SubCoin( p2_Num );
+				}
 			}
 			return true;
 		}

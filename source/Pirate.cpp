@@ -38,7 +38,7 @@ namespace
 Pirate::Pirate(void) : BaseChara()
 {
 	//	ƒpƒ‰ƒ[ƒ^‰Šú‰»
-	power = 2;/*‰¼*/
+	power = 1;/*‰¼*/
 	speed = 0.25f;
 	scale = 0.045f;
 	diffence = -1;
