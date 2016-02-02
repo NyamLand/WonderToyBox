@@ -376,9 +376,7 @@ public:
 	int		GetAttack_addParam(void)const;
 	float		GetAttack_R( void )const;
 	float		GetAttack_T( void )const;
-	//float	GetSpeed( void )const;
 	float		GetTotalSpeed( void )const;
-	//bool	GetUnrivaled( void )const;
 	bool		GetCanHyper( void )const;
 	bool		GetParameterState( int type )const;
 	bool		GetJumpFlag( void )const;
