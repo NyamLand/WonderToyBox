@@ -219,6 +219,19 @@ namespace
 		}
 	}
 
+	//攻撃情報初期化
+	void	BaseChara::AttackParamInitialize(void)
+	{
+		attackInfo.t = 0.0f;
+		attackInfo.r = 0.0f;
+		attackInfo.type = 0;
+		attackInfo.pos = Vector3(0.0f, 0.0f, 0.0f);
+		attackInfo.addParam = -1;
+		attackInfo.top = Vector3(0.0f, 0.0f, 0.0f);
+		attackInfo.bottom = Vector3(0.0f, 0.0f, 0.0f);
+		knockBackInfo.type = 0;
+	}
+
 //----------------------------------------------------------------------------
 //	更新・描画
 //----------------------------------------------------------------------------
@@ -702,15 +715,8 @@ namespace
 		if ( isEnd )
 		{
 			mode = MODE_STATE::MOVE;
-			attackInfo.t = 0.0f;
-			attackInfo.r = 0.0f;
-			attackInfo.type = 0;
-			attackInfo.pos = Vector3(0.0f, 0.0f, 0.0f);
-			attackInfo.addParam = -1;
-			attackInfo.top = Vector3(0.0f, 0.0f, 0.0f);
-			attackInfo.bottom = Vector3(0.0f, 0.0f, 0.0f);
-			knockBackInfo.type = 0;
 			SetUnrivaled(false);
+			AttackParamInitialize();
 		}
 	}
 
@@ -754,6 +760,8 @@ namespace
 	//	ダメージ
 	void	BaseChara::Damage( void )
 	{
+		// 攻撃中に食らったときにパラメーター初期化
+		AttackParamInitialize();
 
 		//モーションアトデナオス(余力があれば関数化)
 		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::SCAVENGER)

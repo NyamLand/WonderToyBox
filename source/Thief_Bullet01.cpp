@@ -137,24 +137,29 @@ bool	Thief_Bullet01::PlayerCollisionCheck(void)
 			characterManager->SetLeanFrame(i, leanpower);
 			characterManager->SetMode(i, MODE_STATE::DAMAGE_LEANBACKWARD);
 
-			//	コインばらまき方向設定
-			std::uniform_real_distribution<float>	vecrand(-1.0f, 1.0f);
-			Vector3	vec = Vector3(Random::GetFloat(-1.0f, 1.0f), 1.0f, Random::GetFloat(-1.0f, 1.0f));
-			vec.Normalize();
+
 
 			//	プレイヤー番号取得とばらまきパワー設定
-			float		power = 0.5f;
-			int		p2_Num = characterManager->GetPlayerNum( i );
-			int		p2_coinNum = gameManager->GetCoinNum( p2_Num );
+			float	power = 0.2f;
+			int		p2_Num = characterManager->GetPlayerNum(i);
 
-			//	コインがあればばらまき
-			static	int coinNum = 3;
-			FOR( 0, coinNum )
-			{
-				if ( p2_coinNum > 0 )
+			//三枚ばら撒く
+			int drop_coinNum = 3;
+
+
+			FOR(0, drop_coinNum)
+			{			
+				//	コインばらまき方向設定
+				std::uniform_real_distribution<float>	vecrand(-1.0f, 1.0f);
+				Vector3	vec = Vector3(Random::GetFloat(-1.0f, 1.0f), 1.0f, Random::GetFloat(-1.0f, 1.0f));
+				vec *= 3.0f;
+				//vec.Normalize();
+				int		p2_coinNum = gameManager->GetCoinNum(p2_Num);
+				//	コインがあればばら撒く
+				if (p2_coinNum > 0)
 				{
-					coinManager->Append( p_pos_top, vec, power, Coin::COIN );
-					gameManager->SubCoin( p2_Num );
+					coinManager->Append(p_pos_top, vec, power, Coin::COIN);
+					gameManager->SubCoin(p2_Num);
 				}
 			}
 			return true;
