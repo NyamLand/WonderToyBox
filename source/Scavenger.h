@@ -54,9 +54,13 @@ class Scavenger : public		BaseChara
 private:
 	int		stayTime;	//技関連の硬直経過時間
 	float	absorb_length;		//コインを吸い込める距離
+
+	//クイックアーツ関連
 	bool		fireBallState;
 	int		fireBallInterval;
 	int		fireBallStep;
+	Vector3	fireBall_pos;
+	bool	fireBall_initflag;
 //	void	MotionManagement(int motion)override;
 
 public:

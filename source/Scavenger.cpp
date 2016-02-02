@@ -49,6 +49,8 @@ Scavenger::Scavenger(void) : BaseChara()
 	fireBallState = true;
 	fireBallStep = 0;
 	fireBallInterval = SECOND / 2;
+	fireBall_pos = Vector3(0.0f, 0.0f, 0.0f);
+	fireBall_initflag = false;
 	
 	absorb_length = SCAVENGER::DEFAULT_ABSORB_LENGTH;
 	isGround = true;
@@ -126,19 +128,17 @@ bool	Scavenger::QuickArts(void)
 	front.Normalize();
 	Vector3	up = Vector3(mat._21, mat._22, mat._23);
 	up.Normalize();
-	static	Vector3	p_pos = Vector3(0.0f, 0.0f, 0.0f);
-	static	bool			initflag = false;
 	bool			isEnd = false;
 	bool			isHit = false;
 
-	if ( !initflag )
+	if (!fireBall_initflag)
 	{
-		p_pos = pos + front * 2.0f + up * 2.0f;
+		fireBall_pos = pos + front * 2.0f + up * 2.0f;
 		fireBallInterval = 0;
 		attackInfo.t = 0.0f;
 		attackInfo.r = 1.0f;
 		sound->PlaySE( SE::MAJO_QUICK_START );
-		initflag = true;
+		fireBall_initflag = true;
 	}
 
 	switch (input->Get(KEY_D))
@@ -147,8 +147,8 @@ bool	Scavenger::QuickArts(void)
 		if (fireBallState)
 		{
 			//	ボタンを押してる間進行
-			p_pos += front * 0.5f;
-			attackInfo.pos = p_pos;
+			fireBall_pos += front * 0.5f;
+			attackInfo.pos = fireBall_pos;
 			attackInfo.r = 1.0f;
 
 			//	他のプレイヤーに当たったら発火
@@ -182,7 +182,7 @@ bool	Scavenger::QuickArts(void)
 
 		if ( isEnd )
 		{
-			initflag = false;
+			fireBall_initflag = false;
 			fireBallState = true;
 			return	true;
 		}

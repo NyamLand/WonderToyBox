@@ -474,6 +474,11 @@
 			//	–³“G‚É‚·‚é
 			if (bc2->GetParameterState(PARAMETER_STATE::UNRIVALED))	return;
 			bc2->SetParameterState(PARAMETER_STATE::UNRIVALED);
+
+			//	“ÁŽêŒø‰Ê•t—^
+			int addParam = bc1->GetAttack_addParam();
+			bc2->SetParameterState(addParam);
+
 			//ƒTƒEƒ“ƒhÄ¶
 			int attackMode = bc1->GetMode();
 			switch (attackMode)
