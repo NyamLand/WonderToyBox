@@ -1,3 +1,4 @@
+
 #include	"iextreme.h"
 #include	"system\System.h"
 #include	"GlobalFunction.h"
@@ -30,11 +31,11 @@
 		FOR(0, PLAYER_MAX)
 		{
 			//	ƒJƒƒ‰‰Šú‰»
-			playerView[value]	= make_unique<Camera>();
+			playerView[value] = std::make_unique<Camera>();
 			playerView[value]->SetPos(Vector3(0.0f, 20.0f, -10.0f));
 
 			//	•Ï”‰Šú‰»
-			wipe[value]			= make_unique<iex2DObj>( iexSystem::ScreenWidth, iexSystem::ScreenHeight, IEX2D_RENDERTARGET );
+			wipe[value]			= std::make_unique<iex2DObj>( iexSystem::ScreenWidth, iexSystem::ScreenHeight, IEX2D_RENDERTARGET );
 			color[value]		= Vector3( 0.0f, 1.0f, 0.0f );
 			pos[value]			= Vector3( 0.0f, 0.0f, 0.0f );
 			arrow_pos[value]	= Vector3( 0.0f, 0.0f, 0.0f );

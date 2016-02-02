@@ -253,14 +253,14 @@ private:
 	EVENT_INFO	eventInfo;
 	
 	//	パーティクル用バックバッファ
-	unique_ptr<iex2DObj>	target_par;
+	std::unique_ptr<iex2DObj>	target_par;
 
 	//	パーティクル用
 	bool		coin_flg[PLAYER_MAX];
 	int			coin_timer[PLAYER_MAX];
 
 	//	パーティクル用カメラ
-	unique_ptr<Camera>		particle_camera;
+	std::unique_ptr<Camera>		particle_camera;
 		
 	//	パラメータ
 	int		scene;
