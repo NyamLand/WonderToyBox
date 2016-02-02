@@ -312,7 +312,7 @@
 			//‚â‚ç‚êFİ’è
 			Vector3	color = bc1->GetDamageColor();
 			if ( addParam == PARAMETER_STATE::CONFUSION )		color = Vector3( 0.0f, 1.0f, 0.0f );
-			else if ( power == 0 )														color = Vector3( 1.0f, 1.0f, 0.0f );
+			else if ( power == 0 )														color = Vector3( 0.5f, 0.5f, 0.0f );
 			else																					color = Vector3( 1.0f, 0.0f, 0.0f );
 			bc2->SetPassColor( color );
 			//	ƒRƒCƒ“‚Î‚ç‚Ü‚«•ûŒüİ’è
