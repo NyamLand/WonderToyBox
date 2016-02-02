@@ -39,6 +39,9 @@ public:
 	bool Initialize();
 	void Update();
 
+
+
+	bool	PlayerCollisionCheck(void);
 	void Wait();
 	void Targeting();
 	void Firing();
