@@ -71,7 +71,7 @@
 		for ( int i = 0; i < BULLET_MAX; i++ )
 		{
 			if ( c_Bullet[i] == NULL )	continue;
-			bullet_num++;
+			bullet_num;
 
 			if ( c_Bullet[i]->limitTimer < 0 ) c_Bullet[i]->state = false;
 
