@@ -7,6 +7,8 @@
 //
 //*******************************************************************************
 
+#include	<memory>
+
 class PlayerWipe
 {
 private:
@@ -25,10 +27,10 @@ private:
 
 private:
 	//	個人カメラ
-	unique_ptr<Camera>		playerView[PLAYER_MAX];
+	std::unique_ptr<Camera>		playerView[PLAYER_MAX];
 	
 	//	ワイプ
-	unique_ptr<iex2DObj>	wipe[PLAYER_MAX];
+	std::unique_ptr<iex2DObj>	wipe[PLAYER_MAX];
 
 	//	画像
 	ImageObj	arrow;

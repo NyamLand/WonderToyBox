@@ -51,7 +51,7 @@ namespace SCAVENGER
 class Scavenger : public		BaseChara
 {
 
-private:
+protected:
 	int		stayTime;	//技関連の硬直経過時間
 	float	absorb_length;		//コインを吸い込める距離
 	bool		fireBallState;

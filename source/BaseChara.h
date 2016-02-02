@@ -8,9 +8,6 @@
 //*******************************************************************************
 
 //	include
-#include	"Random.h"
-#include	"CoinManager.h"
-#include	"ItemManager.h"
 
 //	parameter
 namespace
@@ -322,8 +319,10 @@ public:
 	virtual	void	Control( void );
 
 	//	AIìÆçÏä÷êî
-	void	AutoMove();		
-	void	AutoPickCoin( int freeCoinMin );	
+	void	AutoMove( void );		
+	void	AutoJump( void );
+	void	AutoPickCoin( void );
+	void	AutoKnockBack( void );
 	void	AutoAngleAdjust(float speed, Vector3 target);
 	//void	AutoAngleAdjust(const Vector3& direction, float speed);
 	virtual void	AutoAttack( int attackKind );

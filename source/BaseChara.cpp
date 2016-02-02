@@ -8,8 +8,11 @@
 #include	"Camera.h"
 #include	"EventManager.h"
 #include	"Effect.h"
-#include	"Sound.h"
 #include	"Stage.h"
+#include	"Random.h"
+#include	"CoinManager.h"
+#include	"ItemManager.h"
+#include	"Sound.h"
 
 #include	"BaseChara.h"
 #include	"CharacterManager.h"
@@ -325,10 +328,6 @@ namespace
 			Attack( mode );
 			break;
 
-		case MODE_STATE::JUMP:
-			Jump();
-			break;
-
 		case MODE_STATE::GUARD:
 			Guard();
 			break;
@@ -368,10 +367,6 @@ namespace
 		case AI_MODE_STATE::QUICKARTS:
 			SetParameterState(PARAMETER_STATE::UNRIVALED);
 			AutoAttack(aiInfo.mode);
-			break;
-
-		case AI_MODE_STATE::JUMP:
-			Jump();
 			break;
 
 		case AI_MODE_STATE::GUARD:
@@ -1192,7 +1187,10 @@ namespace
 	//	AI操作
 	void	BaseChara::ControlAI( void )
 	{
-		AutoPickCoin(CPU_SERCH_COIN_MIN);
+		if (coinManager->GetFreeCoinNum() < CPU_SERCH_COIN_MIN)
+		{
+			AutoPickCoin();
+		}
 
 		//--------------------------------------------
 		//　ここでは各モードになるための条件を実装
@@ -1263,19 +1261,8 @@ namespace
 		//　デバッグ（走るだけ）
 		//aiInfo.mode = AI_MODE_STATE::MOVE;
 
-		//	壁を感知したらジャンプ
-		if ( checkWall )
-		{
-			if ( jumpState )
-			{
-				//mode = MODE_STATE::JUMP;
-				jumpPower = JUMP_POWER;
-				jumpState = false;
-			}
-		}
-
-		Jump();
-
+		
+		AutoJump();
 	}
 
 
@@ -1294,10 +1281,30 @@ namespace
 		ControlAI();
 	}
 
+	void	BaseChara::AutoJump( void )
+	{
+		//	壁を感知したらジャンプ
+		if (checkWall)
+		{
+			if (jumpState)
+			{
+				//mode = MODE_STATE::JUMP;
+				jumpPower = JUMP_POWER;
+				jumpState = false;
+			}
+			else
+			{
+				if (jumpPower > 0.0f)		move.y += jumpPower;
+				jumpPower -= JUMP_POWER * 0.1f;
+			}
+		}
+
+	}
+
 	//　コインを取りに行く
-	void	BaseChara::AutoPickCoin( int freeCoinMin )
+	void	BaseChara::AutoPickCoin( void )
 	{	
-		if (coinManager->GetFreeCoinNum() < freeCoinMin) return;
+		//if (coinManager->GetFreeCoinNum() < freeCoinMin) return;
 
 		//-----------------------------------------
 		//　targetに向けて1～3歩歩く
@@ -1315,8 +1322,6 @@ namespace
 		//	対象が存在していたら対象に向かって走る
 		if (existence)
 		{
-			//particle->BlueFlame(target, 1.0f);
-//			SetMotion(MOTION_NUM::RUN);
 			AutoAngleAdjust(adjustSpeed, target);
 			if (!slip.state)
 			{
@@ -1334,6 +1339,38 @@ namespace
 		}
 	}
 	
+	void	BaseChara::AutoKnockBack( void )
+	{
+		//モーションアトデナオス(余力があれば関数化)
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::SCAVENGER)
+		{
+			if (obj->GetFrame() >= 278) obj->SetFrame(278);
+		}
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
+		{
+			if (obj->GetFrame() >= 286) obj->SetFrame(286);
+		}
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::THIEF)
+		{
+			if (obj->GetFrame() >= 408) obj->SetFrame(408);
+		}
+		//		SetMotion(MOTION_NUM::POSTURE);
+
+		//SetParameterState(PARAMETER_STATE::UNRIVALED);
+		SetDrag(1.0f);	//一時的に抗力なくす
+		if (move.y < 0 && isGround)
+		{
+			move = Vector3(0.0f, 0.0f, 0.0f);
+			damageStep = 0;
+			aiInfo.mode = AI_MODE_STATE::KNOCKBACK;
+
+			//モーションアトデナオス
+			SetMotion(0);
+
+			//SetUnrivaled(false);
+		}
+	}
+
 	//	向き調整
 	void	BaseChara::AutoAngleAdjust( float speed, Vector3 target )
 	{
@@ -1418,6 +1455,8 @@ namespace
 
 		Vector3 vec_add( ZERO_VECTOR3 );
 		Vector3 target( ZERO_VECTOR3 );
+
+		
 		for (int i = 0; i < PLAYER_MAX; i++)
 		{
 			Vector3 vec[4];
@@ -1445,7 +1484,11 @@ namespace
 
 		//　角度調整
 		static	float	adjustSpeed = 0.2f;
-		AutoAngleAdjust( adjustSpeed, target );
+		if (checkWall)
+		{
+			target *= -1;
+		}
+		AutoAngleAdjust( adjustSpeed+1.0f, target );
 
 		//　移動
 		if ( !slip.state )
