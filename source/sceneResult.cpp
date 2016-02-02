@@ -947,7 +947,12 @@
 			isEnd[value] = WaveUpdate( checkImage[value] );
 		}
 
-		if ( isEnd[0] && isEnd[1] && isEnd[2] && isEnd[3] )	return	true;
+		int count = 0;
+		FOR( 0, PLAYER_MAX )
+		{
+			if ( isEnd[value] )	count++;
+		}
+		if ( count >= gameManager->GetPlayerNum() )	return	true;
 		return	false;
 	}
 
