@@ -103,16 +103,16 @@ Stage*	stage = nullptr;
 
 		case STAGE_TYPE::TOY:
 			Append(Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 1.0f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::TOY_BASE);
-			Append(Vector3(-22.0f, 0.0f, 20.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.2f, 0.5f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::YELLOW_BLOCK);
-			Append(Vector3(-14.0f, 3.0f, 20.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.2f, 0.5f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::YELLOW_BLOCK);
+			//Append(Vector3(-22.0f, 0.0f, 20.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.2f, 0.5f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::YELLOW_BLOCK);
+			//Append(Vector3(-14.0f, 3.0f, 20.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.2f, 0.5f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::YELLOW_BLOCK);
 
 
 
-			Append(Vector3(-4.0f, 10.0f, 19.5f), Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 0.2f, 0.5f), MOVE_TYPE::MOVE_SIDE_OBJECT, OBJECT_TYPE::BLUE_BLOCK);
+			//Append(Vector3(-4.0f, 10.0f, 19.5f), Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 0.2f, 0.5f), MOVE_TYPE::MOVE_SIDE_OBJECT, OBJECT_TYPE::BLUE_BLOCK);
 			//Append(Vector3(-22.0f, 0.0f, 18.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(2.0f, 0.5f, 2.0f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::YELLOW_BLOCK);
 			//Append(Vector3(-16.0f, 0.0f, 18.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 1.0f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::GREEN_BLOCK);
 			//Append(Vector3(-22.0f, 5.0f, 20.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::BLUE_BLOCK);
-			Append(Vector3(15.0f, 13.0f, 18.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::YELLOW_BLOCK);
+			//Append(Vector3(15.0f, 13.0f, 18.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::YELLOW_BLOCK);
 			//Append(Vector3(-20.0f, 0.0f, 8.0f), Vector3(0.0f, 1.5f, 0.0f), Vector3(0.09f, 0.09f, 0.09f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::REX_TOY);
 			/*Append(Vector3(-10.0f, 10.0f, -10.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::MOVE_SIDE_OBJECT, OBJECT_TYPE::RED_BLOCK);
 			Append(Vector3(-5.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.01f, 0.01f, 0.01f), MOVE_TYPE::BREAK_OBJECT, OBJECT_TYPE::TREE_TOY);
