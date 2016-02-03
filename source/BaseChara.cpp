@@ -346,10 +346,12 @@ namespace
 		switch ( mode )
 		{
 		case MODE_STATE::WAIT:
+			AttackParamInitialize();
 			Wait();
 			break;
 
 		case MODE_STATE::MOVE:
+			AttackParamInitialize();
 			Move();
 			break;
 
@@ -361,22 +363,27 @@ namespace
 			break;
 
 		case MODE_STATE::GUARD:
+			AttackParamInitialize();
 			Guard();
 			break;
 
 		case MODE_STATE::DAMAGE:
+			AttackParamInitialize();
 			Damage();
 			break;
 
 		case MODE_STATE::KNOCKBACK:
+			AttackParamInitialize();
 			KnockBack();
 			break;
 
 		case MODE_STATE::DAMAGE_LEANBACKWARD:
+			AttackParamInitialize();
 			KnockBackLeanBackWard();
 			break;
 
 		case MODE_STATE::DEATH:
+			AttackParamInitialize();
 			Death();
 			break;
 		}
@@ -831,6 +838,13 @@ namespace
 	//	éÄñS
 	void	BaseChara::Death( void )
 	{		
+		//	ëSå¯â èâä˙âª
+		ParameterInfoInitialize(attackUp);
+		ParameterInfoInitialize(speedUp);
+		ParameterInfoInitialize(magnet);
+		ParameterInfoInitialize(confusion);
+		ParameterInfoInitialize(respawn);
+		ParameterInfoInitialize(unrivaledItem);
 		//	éÄñSíÜñ≥ìG
 		SetParameterState(PARAMETER_STATE::UNRIVALED);
 		SetCoinUnrivaled( true );
