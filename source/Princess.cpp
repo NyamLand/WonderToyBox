@@ -20,9 +20,18 @@
 
 #define	POWER_ARTS_RADIUS	7.5f
 
-	namespace
+namespace OFFENSIVE_POWER
+{
+	enum 
 	{
-		enum OFFENSIVE_POWER
+		QUICK = 1,
+		POWER = 0,
+		HYPER = 1,
+	};
+}
+namespace DROP_POWER
+{
+		enum 
 		{
 			QUICK = 1,
 			POWER = 0,
@@ -38,7 +47,6 @@
 	Princess::Princess( void ) : BaseChara()
 	{
 		//	パラメータ初期化
-		power = 2;/*仮*/
 		speed = 0.25f;
 		scale = 0.06f;
 		diffence = -1;
@@ -89,7 +97,8 @@
 	//	クイックアーツ
 	bool	Princess::QuickArts( void )
 	{
-		power = 1;
+		attackInfo.power = OFFENSIVE_POWER::QUICK;
+		attackInfo.dropPower = DROP_POWER::QUICK;
 
 		if ( !initflag )
 		{
@@ -140,7 +149,8 @@
 			sound->PlaySE( SE::PRINCESS_POWER );
 			initflag = true;
 		}
-		power = 0;
+		attackInfo.power = OFFENSIVE_POWER::POWER;
+		attackInfo.dropPower = DROP_POWER::POWER;
 		Vector3	p_pos = GetPos();
 		attackInfo.pos = Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z );
 		SetMove( Vector3( 0.0f, 0.0f, 0.0f ) );
@@ -184,49 +194,50 @@
 	//	ハイパーアーツ
 	bool	Princess::HyperArts( void )
 	{
-		//power = HYPER;
+		attackInfo.power = OFFENSIVE_POWER::HYPER;
+		attackInfo.dropPower = DROP_POWER::HYPER;
 
-		//if ( !initflag )
-		//{
-		//	sound->PlaySE( SE::HYPER_ATTACK );
-		//	sound->PlaySE( SE::PRINCESS_HYPER );
-		//	hyperNum = 0;
-		//	initflag = true;
-		//}
+		if ( !initflag )
+		{
+			sound->PlaySE( SE::HYPER_ATTACK );
+			sound->PlaySE( SE::PRINCESS_HYPER );
+			hyperNum = 0;
+			initflag = true;
+		}
 
-		//SetMove( Vector3( 0.0f, 0.0f ,0.0f ) );
-		//Vector3	p_pos = GetPos();
-		//attackInfo.top = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
-		//attackInfo.bottom = Vector3( p_pos.x, p_pos.y - 1.5f, p_pos.z );
-		//attackInfo.pos = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
+		SetMove( Vector3( 0.0f, 0.0f ,0.0f ) );
+		Vector3	p_pos = GetPos();
+		attackInfo.top = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
+		attackInfo.bottom = Vector3( p_pos.x, p_pos.y - 1.5f, p_pos.z );
+		attackInfo.pos = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
 
-		////	範囲拡大
-		//float t = GetBezier( ePrm_t::eSlow_Lv4, ePrm_t::eRapid_Lv1, attackInfo.t );
-		//Lerp( attackInfo.r, 0.0f, 50.0f, t );
+		//	範囲拡大
+		float t = GetBezier( ePrm_t::eSlow_Lv4, ePrm_t::eRapid_Lv1, attackInfo.t );
+		Lerp( attackInfo.r, 0.0f, 50.0f, t );
 
-		////	エフェクト
-		//particle->FlowerDisseminate( attackInfo.pos, attackInfo.r, 2.0f, Vector3( 1.0f, 0.4f, 0.4f ) );
-		////相手を混乱状態に
-		//attackInfo.addParam = PARAMETER_STATE::CONFUSION;
-		////	パラメータ加算
-		//attackInfo.t += 0.02f;
+		//	エフェクト
+		particle->FlowerDisseminate( attackInfo.pos, attackInfo.r, 2.0f, Vector3( 1.0f, 0.4f, 0.4f ) );
+		//相手を混乱状態に
+		attackInfo.addParam = PARAMETER_STATE::CONFUSION;
+		//	パラメータ加算
+		attackInfo.t += 0.02f;
 
-		//if ( attackInfo.t >= 1.0f )
-		//{
-		//	switch ( hyperNum )
-		//	{
-		//	case 0:
-		//		hyperNum++;
-		//		attackInfo.t  = 0.0f;
-		//		break;
+		if ( attackInfo.t >= 1.0f )
+		{
+			switch ( hyperNum )
+			{
+			case 0:
+				hyperNum++;
+				attackInfo.t  = 0.0f;
+				break;
 
-		//	case 1:
-		//		hyperNum = 0;
-		//		initflag = false;
-		//		return	true;
-		//		break;
-		//	}
-		//}
+			case 1:
+				hyperNum = 0;
+				initflag = false;
+				return	true;
+				break;
+			}
+		}
 		return	false;
 	}
 

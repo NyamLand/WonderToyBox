@@ -60,7 +60,7 @@ namespace
 	pos(0.0f, 0.0f, 0.0f), move(0.0f, 0.0f, 0.0f), angle(0.0f, 0.0f, 0.0f), objectMove(0.0f, 0.0f, 0.0f),	//	Vector3
 	scale(0.0f), speed(0.0f), totalSpeed(0.0f), drag(0.0f), force(0.0f), moveVec(0.0f), jumpPower(0.0f), dt(0.0f), param(0.0f),	//	float
 	isGround(false), isPlayer(false), jumpState(true), checkWall(false), renderflag(true), coinUnrivaled(false), initflag(false),//	bool
-	mode(0), playerNum(0), power(0), totalPower(0), leanFrame(0), jumpStep(0), damageStep(0), rank(0), life(0), checkWallCount(0)		//	int
+	mode(0), playerNum(0), totalPower(0), leanFrame(0), jumpStep(0), damageStep(0), rank(0), life(0), checkWallCount(0)		//	int
 	{
 	
 	}
@@ -103,7 +103,7 @@ namespace
 		mode = MODE_STATE::WAIT;
 		this->pos = pos;
 		angle = Vector3( 0.0f, 0.0f, 0.0f );
-		totalPower = power;
+		totalPower = 0/*power*/;
 		totalSpeed = speed;
 
 		//	構造体初期化
@@ -115,9 +115,12 @@ namespace
 				attackInfo.top = Vector3( 0.0f, 0.0f, 0.0f );
 				attackInfo.pos = Vector3( 0.0f, 0.0f, 0.0f );
 				attackInfo.Interval = 0;
+				attackInfo.power = 0;
+				attackInfo.dropPower = 0;
 				attackInfo.addParam = -1;
 				attackInfo.r = 0.0f;
 				attackInfo.t = 0.0f;
+				attackInfo.coinDropType = DROP_TYPE::DROP;
 			}
 
 			//	ノックバック情報初期化
@@ -949,16 +952,16 @@ namespace
 	//	パラメータ調整
 	void	BaseChara::ParameterAdjust( void )
 	{
-		totalPower = power;
+		totalPower = attackInfo.dropPower;
 		totalSpeed = speed;
 
-		if ( attackUp.state )	totalPower = power + plusStatusInfo.power;
+		if (attackUp.state)	totalPower = attackInfo.dropPower + plusStatusInfo.power;
 		if ( speedUp.state )	totalSpeed = speed + plusStatusInfo.speed;
 		
 		//　ブースト中
 		if ( boost.state )
 		{
-			totalPower = power + plusStatusInfo.boostPower;
+			totalPower = attackInfo.dropPower + plusStatusInfo.boostPower;
 			totalSpeed = speed + plusStatusInfo.boostSpeed;
 			if ( attackUp.state )	totalPower += plusStatusInfo.power;
 			if ( speedUp.state )	totalSpeed += plusStatusInfo.speed;
@@ -1241,7 +1244,7 @@ namespace
 			{
 				if (GetLife() > 1)
 				{
-					//SubLife();
+					SubLife();
 					mode = MODE_STATE::HYPERARTS;
 				}
 			}
@@ -1866,7 +1869,13 @@ namespace
 	//	攻撃力取得
 	int			BaseChara::GetPower( void )const
 	{
-		return	power;
+		return	attackInfo.power;
+	}
+
+	//	コイン落とす攻撃力取得
+	int			BaseChara::GetDropPower(void)const
+	{
+		return	attackInfo.dropPower;
 	}
 
 	int			BaseChara::GetTotalPower( void )const
@@ -2009,6 +2018,12 @@ namespace
 	int		BaseChara::GetLife( void )const
 	{
 		return	life;
+	}
+
+	//攻撃時のコインの落とし方取得
+	int		BaseChara::GetDropType(void)const
+	{
+		return attackInfo.coinDropType;
 	}
 
 //----------------------------------------------------------------------------

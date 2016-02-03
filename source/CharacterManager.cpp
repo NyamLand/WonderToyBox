@@ -324,16 +324,33 @@
 			//float	power = 0.2f;
 			float	totalpower = bc1->GetTotalPower()*0.1f;
 			int		dropCoin = bc1->GetTotalPower();
+			int		bc1_Num = bc1->GetPlayerNum();
 			int		bc2_Num = bc2->GetPlayerNum();
 			int		bc2_coinNum = gameManager->GetCoinNum( bc2_Num );
 
-			//	攻撃側のtotalPower枚のコインをばらまき
-			for (int i = 0; i < dropCoin; i++)
-			{
-				if (bc2_coinNum <= 0) break;
-				coinManager->Append(bc2_top, vec, totalpower, Coin::COIN );
-				gameManager->SubCoin(bc2_Num);
 
+			int dropType = bc1->GetDropType();
+			switch (dropType)
+			{
+			case DROP_TYPE::DROP:
+				//	攻撃側のtotalPower枚のコインをばらまき
+				for (int i = 0; i < dropCoin; i++)
+				{
+					if (bc2_coinNum <= 0) break;
+					coinManager->Append(bc2_top, vec, totalpower, Coin::COIN);
+					gameManager->SubCoin(bc2_Num);
+
+				}
+				break;
+			case DROP_TYPE::SUCTION:
+				for (int i = 0; i < dropCoin; i++)
+				{
+					bc2_coinNum = gameManager->GetCoinNum(bc2_Num);
+					if (bc2_coinNum <= 0) break;
+					gameManager->SubCoin(bc2_Num);
+					gameManager->AddCoin(bc1_Num);
+				}
+				break;
 			}
 		}
 	}
@@ -424,16 +441,32 @@
 			//float	power = 0.15f;
 			float	totalpower = bc1->GetTotalPower()*0.1f;
 			int		dropCoin = bc1->GetTotalPower();
+			int		bc1_Num = bc1->GetPlayerNum();
 			int		bc2_Num = bc2->GetPlayerNum();
 			int		bc2_coinNum = gameManager->GetCoinNum(bc2_Num);
 
-			//	攻撃側のtotalPower枚のコインをばらまき
-			for (int i = 0; i < dropCoin; i++)
+			int dropType = bc1->GetDropType();
+			switch (dropType)
 			{
-				if (bc2_coinNum <= 0) break;
-				coinManager->Append(bc2_top, vec, totalpower, Coin::COIN );
-				gameManager->SubCoin( bc2_Num );
+			case DROP_TYPE::DROP:
+				//	攻撃側のtotalPower枚のコインをばらまき
+				for (int i = 0; i < dropCoin; i++)
+				{
+					if (bc2_coinNum <= 0) break;
+					coinManager->Append(bc2_top, vec, totalpower, Coin::COIN);
+					gameManager->SubCoin(bc2_Num);
 
+				}
+				break;
+			case DROP_TYPE::SUCTION:
+				for (int i = 0; i < dropCoin; i++)
+				{
+					bc2_coinNum = gameManager->GetCoinNum(bc2_Num);
+					if (bc2_coinNum <= 0) break;
+					gameManager->SubCoin(bc2_Num);
+					gameManager->AddCoin(bc1_Num);
+				}
+				break;
 			}
 		}
 	}
@@ -528,16 +561,32 @@
 			//float	power = 0.15f;
 			float	totalpower = bc1->GetTotalPower()*0.1f;
 			int		dropCoin = bc1->GetTotalPower();
+			int		bc1_Num = bc1->GetPlayerNum();
 			int		bc2_Num = bc2->GetPlayerNum();
 			int		bc2_coinNum = gameManager->GetCoinNum(bc2_Num);
 
-			//	攻撃側のtotalPower枚のコインをばらまき
-			for (int i = 0; i < dropCoin; i++)
+			int dropType = bc1->GetDropType();
+			switch (dropType)
 			{
-				if (bc2_coinNum <= 0) break;
-				coinManager->Append(bc2_top, vec, totalpower, Coin::COIN);
-				gameManager->SubCoin(bc2_Num);
+			case DROP_TYPE::DROP:
+				//	攻撃側のtotalPower枚のコインをばらまき
+				for (int i = 0; i < dropCoin; i++)
+				{
+					if (bc2_coinNum <= 0) break;
+					coinManager->Append(bc2_top, vec, totalpower, Coin::COIN);
+					gameManager->SubCoin(bc2_Num);
 
+				}
+				break;
+			case DROP_TYPE::SUCTION:
+				for (int i = 0; i < dropCoin; i++)
+				{
+					bc2_coinNum = gameManager->GetCoinNum(bc2_Num);
+					if (bc2_coinNum <= 0) break;
+					gameManager->SubCoin(bc2_Num);
+					gameManager->AddCoin(bc1_Num);
+				}
+				break;
 			}
 		}
 	}

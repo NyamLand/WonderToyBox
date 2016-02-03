@@ -20,9 +20,20 @@
 //	グローバル
 //-----------------------------------------------------------------------------------
 
-namespace
+namespace OFFENSIVE_POWER
 {
-	enum OFFENSIVE_POWER
+	enum
+	{
+		//クイックとハイパーはバレット側で処理
+		QUICK = 0,
+		POWER = 1,
+		HYPER = 0,
+	};
+}
+
+namespace DROP_POWER
+{
+	enum 
 	{
 		//クイックとハイパーはバレット側で処理
 		QUICK = 0,
@@ -39,7 +50,6 @@ namespace
 Pirate::Pirate(void) : BaseChara()
 {
 	//	パラメータ初期化
-	power = 0;/*仮*/
 	speed = 0.25f;
 	scale = 0.045f;
 	diffence = -1;
@@ -93,7 +103,8 @@ void	Pirate::Render(iexShader* shader, LPSTR technique)
 //	クイックアーツ
 bool	Pirate::QuickArts(void)
 {
-	power = QUICK;
+	attackInfo.power = OFFENSIVE_POWER::QUICK;
+	attackInfo.dropPower = DROP_POWER::QUICK;
 
 	SetMotion(PIRATE::MOTION_DATA::QUICK);
 	//	行列から情報取得
@@ -145,8 +156,9 @@ bool	Pirate::QuickArts(void)
 
 //	パワーアーツ
 bool	Pirate::PowerArts(void)
-{	
-	power = POWER;
+{
+	attackInfo.power = OFFENSIVE_POWER::POWER;
+	attackInfo.dropPower = DROP_POWER::POWER;
 	if ( !initflag )
 	{
 		sound->PlaySE( SE::PIRATE_POWER );
@@ -193,7 +205,8 @@ bool	Pirate::PowerArts(void)
 //	ハイパーアーツ
 bool	Pirate::HyperArts(void)
 {
-	power = HYPER;
+	attackInfo.power = OFFENSIVE_POWER::HYPER;
+	attackInfo.dropPower = DROP_POWER::HYPER;
 
 	if ( !initflag )
 	{

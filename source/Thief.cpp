@@ -20,13 +20,23 @@
 //	グローバル
 //-----------------------------------------------------------------------------------
 
-namespace
+namespace OFFENSIVE_POWER
 {
-	enum OFFENSIVE_POWER
+	enum 
 	{
 		QUICK = 0,
 		POWER = 0,
 		HYPER = 1,
+	};
+}
+
+namespace DROP_POWER
+{
+	enum 
+	{
+		QUICK = 0,
+		POWER = 0,
+		HYPER = 20,
 	};
 }
 
@@ -63,7 +73,7 @@ bool	Thief::Initialize(int playerNum, Vector3 pos)
 	//	モデル読み込み
 	if (obj == nullptr)
 		obj = new iex3DObj("DATA/CHR/Thief/Thief.IEM");
-	arm = new iexMesh("DATA/Effect/k_arm/k_arm3.imo");
+	arm = new iexMesh("DATA/Effect/k_arm/k_arm4.imo");
 	hand = new iexMesh("DATA/Effect/kq_hand(仮)/hand.IMO");
 
 	arm->SetScale(0.1f);
@@ -80,14 +90,13 @@ bool	Thief::Initialize(int playerNum, Vector3 pos)
 void	Thief::Render(iexShader* shader, LPSTR technique)
 {
 	//SetArmTransform();
-	//BaseChara::Render(shader, technique);
-	//arm->SetAngle(0.5f);
+	BaseChara::Render(shader, technique);
 
 	if (armRenderflag) arm->Render(shader, technique);
 
 	////	デバッグ用
 	//if (!debug)	return;
-	DrawCapsule(attackInfo.bottom, attackInfo.top, attackInfo.r, 0xFFFFFFFF);
+	//DrawCapsule(attackInfo.bottom, attackInfo.top, attackInfo.r, 0xFFFFFFFF);
 	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z - attackInfo.r), 0.3f);
 	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z + attackInfo.r), 0.3f);
 	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z), 0.3f);
@@ -227,7 +236,9 @@ bool	Thief::HyperArts(void)
 	//モーションアトデナオス
 	SetMotion(6);
 
-	power = OFFENSIVE_POWER::HYPER;
+	attackInfo.power = OFFENSIVE_POWER::HYPER;
+	attackInfo.dropPower = DROP_POWER::HYPER;
+	attackInfo.coinDropType = DROP_TYPE::SUCTION;
 	SetParameterState(PARAMETER_STATE::UNRIVALED);
 	move = Vector3(0, 0 - GRAVITY, 0);	//撃ってる間は静止させる
 
