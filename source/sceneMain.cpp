@@ -70,6 +70,9 @@
 
 		//	カメラ設定
 		mainView = new Camera();
+		
+		//	プレイヤー
+		PlayerInitialize();
 
 		//	プレイヤーワイプ
 		playerWipe->Initialize();
@@ -85,9 +88,6 @@
 		//	ステージ
 		stage = new Stage();
 		stage->LightInitialize( dir );
-		
-		//	プレイヤー
-		PlayerInitialize();
 		
 		//	コイン
 		coinManager->Initialize();

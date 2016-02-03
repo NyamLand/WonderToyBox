@@ -42,9 +42,9 @@ namespace
 		//	被ダメージ用各色
 		const Vector3	DAMAGE_COLOR[] =
 		{
-			Vector3(1.0f, 1.0f, 1.0f),
-			Vector3(1.0f, 1.0f, 1.0f),
 			Vector3(1.0f, 0.0f, 0.0f),
+			Vector3(0.0f, 0.0f, 1.0f),
+			Vector3(1.0f, 1.0f, 0.0f),
 			Vector3(0.0f, 1.0f, 0.0f),
 			Vector3(0.0f, 0.0f, 1.0f),
 		};
@@ -807,6 +807,7 @@ namespace
 		//	死亡中無敵
 		SetParameterState(PARAMETER_STATE::UNRIVALED);
 		SetCoinUnrivaled( true );
+		particle->Death(GetPos(), 0.2f, GetDamageColor());
 //		SetMotion( MOTION_NUM::DEATH );
 
 		//	コイン半分ばらまき
@@ -1128,7 +1129,7 @@ namespace
 	void	BaseChara::Confusion( void )
 	{
 		if ( !confusion.state )	return;
-
+		m_Effect->SetConfusion(true, playerNum);
 		//	タイマー減算
 		confusion.timer--;
 
@@ -1136,6 +1137,7 @@ namespace
 		if ( confusion.timer <= 0 )
 		{
 			confusion.timer = 0;
+			m_Effect->SetConfusion(false, playerNum);
 			confusion.state = false;
 		}
 	}
@@ -1450,6 +1452,7 @@ namespace
 		//	死亡中無敵
 		SetParameterState(PARAMETER_STATE::UNRIVALED);
 		SetCoinUnrivaled(true);
+		particle->Death(GetPos(), 0.2f, GetDamageColor());
 		//		SetMotion( MOTION_NUM::DEATH );
 
 		//	コイン半分ばらまき
