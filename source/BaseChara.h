@@ -160,6 +160,7 @@ protected:
 		int		param;
 		bool	act_flag;		//　行動中か（true：行動中）
 		int		runStraightCount;
+		int		AdjustingCount;	//　角度調整時間
 
 		int		step_autorun;
 		int		count_wait;		//　待機時間（１秒未満）
@@ -328,21 +329,21 @@ public:
 	virtual	void	Control( void );
 
 	//	AI動作関数
-	void	AutoMove( void );		
-	void	AutoWait();
+	virtual void	AutoMove( void );		
+	virtual void	AutoWait();
 	virtual void	AutoAttack( int attackKind );
-	void	AutoGuard();
-	void	AutoDamage( void );
-	void	AutoKnockBack( void );
-	void	AutoAddKnockBackForce(float force);
-	void	AutoKnockBackLeanBackWard(void);
-	void	AutoDeath( void );
-	void	RunAway( void );
-	void	Stop( void );
+	virtual void	AutoGuard();
+	virtual void	AutoDamage(void);
+	virtual void	AutoKnockBack(void);
+	virtual void	AutoAddKnockBackForce(float force);
+	virtual void	AutoKnockBackLeanBackWard(void);
+	virtual void	AutoDeath(void);
+	virtual void	RunAway(void);
+	virtual void	Stop(void);
 
-	void	AutoAngleAdjust(float speed, Vector3 target);
-	void	AutoJump( void );
-	void	AutoPickCoin( void );
+	virtual void	AutoAngleAdjust(float speed, Vector3 target);
+	virtual void	AutoJump(void);
+	virtual void	AutoPickCoin(void);
 	
 	//	情報設定
 	void	SetMode( int mode );

@@ -25,7 +25,6 @@ protected:
 	iexMesh*		org[Coin::MAX];			//	オリジナルモデル
 	list<Coin*>	coinList;
 
-
 	//	変数
 	int				coin_num;	//	コイン枚数
 
@@ -48,6 +47,7 @@ public:
 	
 	//	情報取得
 	bool	GetMinPos( Vector3& out, const Vector3& pos );
+	int		GetNearCoinNum(float dist, const Vector3& pos);
 	int		GetFreeCoinNum( void )const;
 	list<Coin*>	GetList( void )const;
 	static CoinManager*	GetInstance( void );
