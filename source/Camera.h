@@ -66,7 +66,7 @@ class Camera : public iexView
 {
 private:
 	//	定数
-	static	const		int		MAX = 15;		//	カメラからターゲットの距離の最大
+	static	const		int		MAX = 25;		//	カメラからターゲットの距離の最大
 	static	const		int		MIN = 8;		//								最少
 	static	const		int		PLAYER_NUM = 4;	//	プレイヤーの数
 

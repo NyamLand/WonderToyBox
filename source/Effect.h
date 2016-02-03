@@ -55,11 +55,13 @@ private:
 	iex2DObj*	circle_pic[4];
 	Circle		circle[4];
 	Circle		circle_out[4];
-	float		c_angle;
+	float		circle_speed;
 	//	ç¨óê
 	Circle		confusion[4];
 	Circle		confusion_out[4];
+	iex2DObj*	confusion_pic;
 	bool		isConfusion[4];
+	float		confusion_speed;
 
 	ImageObj	pow_up;
 	Vector3		pow_pos;
@@ -94,6 +96,7 @@ public:
 	void	PoligonSet( Circle*, float, float, float );
 	void	CirclePosSet( Circle*, int , Vector3 add = Vector3(0.0f, 0.0f, 0.0f) );
 	void	SetShield( int player, bool state );
+	void	SetConfusion( bool state, int num ){ isConfusion[num] = state; }
 
 	//	ìÆçÏä÷êî
 	void	Shield( void );

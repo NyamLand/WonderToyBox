@@ -338,9 +338,9 @@ bool	Scavenger::HyperArts( void )
 		initflag = true;
 	}
 
-	if (obj->GetFrame() <= SCAVENGER::MOTION_FRAME::HYPER_BEGIN) SetMotion(SCAVENGER::MOTION_DATA::HYPER_START);
+	if ( obj->GetFrame() <= SCAVENGER::MOTION_FRAME::HYPER_BEGIN) SetMotion(SCAVENGER::MOTION_DATA::HYPER_START );
 
-	SetUnrivaled(false);
+	//SetUnrivaled(false);
 	absorb_length = 20.0f;
 
 	m_Effect->StormSet(this->pos + Vector3(0.0f, 2.0f, 0.0f) , 2 * SECOND);

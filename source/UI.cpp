@@ -210,6 +210,7 @@
 		alert_coinImage.obj = new iex2DObj( "DATA/UI/coin_alert.png" );
 		playerNumber = new iex2DObj( "DATA/UI/number.png" );
 		life = new iex2DObj( "DATA/UI/NLife.png" );
+		crown = new iex2DObj( "DATA/UI/1stCrown.png" );
 		pCoinNumImage = new iex2DObj("DATA/UI/number.png");
 		roundImage.obj = new iex2DObj( "DATA/UI/roundText.png" );
 		startNumber = new iex2DObj("DATA/UI/DonketuUI.png");
@@ -244,6 +245,7 @@
 		LastProductionInitialize();
 		PlayerNumberInitialize();
 		LifeInitialize();
+		CrownInitialize();
 		RoundInitialize();
 		EventInitialize();
 	}
@@ -333,6 +335,7 @@
 	{
 		PlayerNumberUpdate();
 		LifeUpdate();
+		CrownUpdate();
 		ParticleUpdate();
 
 		switch ( mode )
@@ -398,6 +401,7 @@
 
 		//PlayerNumberRender();
 		LifeRender();
+		CrownRender();
 		RoundRender();
 
 		switch ( mode )
@@ -696,6 +700,18 @@
 			lifeInfo[value].life = gameManager->GetStartLife( value );
 			lifeInfo[value].lifeImage.obj = life;
 			ImageInitialize( lifeInfo[value].lifeImage, 0, 10, 75, 75, 0, 0, 64, 64 );
+		}
+	}
+
+	//	1位王冠画像初期化
+	void	UI::CrownInitialize(void)
+	{
+		FOR(0, PLAYER_MAX)
+		{
+			crownInfo[value].state = false;
+			crownInfo[value].crownImage.obj = crown;
+			ImageInitialize(crownInfo[value].crownImage, 0, 10, 125, 125, 0, 0, 512, 512);
+			crownInfo[value].crownImage.alpha = 0.8f;
 		}
 	}
 
@@ -1129,6 +1145,42 @@
 		}
 	}
 
+	//	王冠更新
+	void	UI::CrownUpdate( void )
+	{
+
+		Vector3	p_Pos;
+		Vector3	p_Up;
+		Vector3	CrownPos;
+		Vector3	out;
+		int		lifeSize;
+
+		FOR( 0, PLAYER_MAX )
+		{
+			//	1位以外は飛ばす
+			if (characterManager->GetRank(value) > 1)
+			{
+				crownInfo[value].state = false;
+				continue;
+			}
+
+			//	表示状態へ
+			crownInfo[value].state = true;
+
+			//	表示座標算出
+			p_Pos = characterManager->GetPos( value );
+			p_Up = characterManager->GetUp( value );
+			CrownPos = p_Pos + p_Up * 5.0f;
+			lifeSize = lifeInfo[value].lifeImage.sh;
+			WorldToClient( CrownPos, out, matView * matProjection );
+
+			//	描画位置設定
+			crownInfo[value].crownImage.x = ( int )out.x;
+			crownInfo[value].crownImage.y = ( int )out.y - lifeSize;
+
+		}
+	}
+
 	//　イベントのUI（飛行機挙動）
 	void	UI::EventUpdate()
 	{
@@ -1406,6 +1458,18 @@
 		FOR( 0, PLAYER_MAX )
 		{
 			RenderImage( lifeInfo[value].lifeImage, lifeInfo[value].lifeImage.sx, lifeInfo[value].lifeImage.sy, lifeInfo[value].lifeImage.sw, lifeInfo[value].lifeImage.sh, IMAGE_MODE::NORMAL );
+		}
+	}
+
+	//	王冠描画
+	void	UI::CrownRender( void )
+	{
+		FOR( 0, PLAYER_MAX )
+		{
+			if (crownInfo[value].state)
+			{
+				RenderImage( crownInfo[value].crownImage, crownInfo[value].crownImage.sx, crownInfo[value].crownImage.sy, crownInfo[value].crownImage.sw, crownInfo[value].crownImage.sh, IMAGE_MODE::ADOPTPARAM );
+			}
 		}
 	}
 
