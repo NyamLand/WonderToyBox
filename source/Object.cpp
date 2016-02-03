@@ -70,7 +70,7 @@
 		//	情報更新
 		obj->SetScale( scale );
 		if ( objectType == OBJECT_TYPE::DESK_BASE ) 	obj->SetAngle( angle.y + D3DX_PI );
-		else																			obj->SetAngle( angle );
+		else											obj->SetAngle( angle );
 		obj->SetPos( pos );
 		obj->Update();
 		
@@ -81,6 +81,22 @@
 		collisionObj->Update();
 	}
 
+	void	Object::ObjUpdate(void)
+	{
+		//	情報更新
+		obj->SetScale(scale);
+		if (objectType == OBJECT_TYPE::DESK_BASE) 	obj->SetAngle(angle.y + D3DX_PI);
+		else										obj->SetAngle(angle);
+		obj->SetPos(pos);
+		obj->Update();
+
+		//	情報更新
+		collisionObj->SetScale(scale);
+		collisionObj->SetAngle(angle);
+		collisionObj->SetPos(pos);
+		collisionObj->Update();
+
+	}
 	//	描画
 	void	Object::Render( iexShader* shader, LPSTR technique )
 	{
@@ -390,3 +406,42 @@
 		return	move;
 	}
 	
+	bool Object::GetLocal(Vector3 &localPos, Vector3 &localAngle)
+	{
+		obj->Update();
+		Matrix mat = obj->TransMatrix;	//	Objectが動いていないとき
+		Matrix invMat;					//	逆行列
+		D3DXMatrixInverse(&invMat, null, &mat);
+		Vector3 layPos;
+		layPos.x = invMat._11 * localPos.x + invMat._21 * localPos.y + invMat._31 * localPos.z + invMat._41;
+		layPos.y = invMat._12 * localPos.x + invMat._22 * localPos.y + invMat._32 * localPos.z + invMat._42;
+		layPos.z = invMat._13 * localPos.x + invMat._23 * localPos.y + invMat._33 * localPos.z + invMat._43;
+
+		Vector3 p = layPos + Vector3(0, 2.0f, 0);
+		Vector3 v(0, -1.0f, 0);		//	下向きのベクトル
+		Vector3 out;
+		float dist = 100.0f;
+		localAngle -= angle;
+
+		if (obj->RayPick(&out, &p, &v, &dist) != -1)
+		{
+			//	ローカル座標算出
+			localPos = out;
+
+			return true;
+		}
+		return false;
+	}
+
+	void Object::GetWorld(Vector3 &worldPos, Vector3 &worldAngle)
+	{
+		obj->Update();
+		Matrix mat = obj->TransMatrix;
+		Vector3 wPos;
+		wPos.x = mat._11 * worldPos.x + mat._21 * worldPos.y + mat._31 * worldPos.z + mat._41;
+		wPos.y = mat._12 * worldPos.x + mat._22 * worldPos.y + mat._32 * worldPos.z + mat._42;
+		wPos.z = mat._13 * worldPos.x + mat._23 * worldPos.y + mat._33 * worldPos.z + mat._43;
+
+		worldPos = wPos;
+		worldAngle += angle;
+	}
