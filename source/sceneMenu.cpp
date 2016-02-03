@@ -654,8 +654,8 @@
 				//characterSelectInfo.character[0] = CHARACTER_TYPE::SCAVENGER;
 				characterSelectInfo.character[1] = CHARACTER_TYPE::PRINCESS;
 				characterSelectInfo.character[2] = CHARACTER_TYPE::THIEF;
-				characterSelectInfo.character[3] = CHARACTER_TYPE::SCAVENGER;
-				//characterSelectInfo.character[3] = CHARACTER_TYPE::PIRATE;
+				//characterSelectInfo.character[3] = CHARACTER_TYPE::SCAVENGER;
+				characterSelectInfo.character[3] = CHARACTER_TYPE::PIRATE;
 				gameManager->SetCharacterType( value, characterSelectInfo.character[value] );
 			
 				//	ƒ‚ƒfƒ‹·‚µ‘Ö‚¦

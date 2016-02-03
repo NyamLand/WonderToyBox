@@ -86,23 +86,23 @@
 		//	P1
 		pos[0].x = WIPE_LEFT;
 		pos[0].y = WIPE_UP;
-		color[0] = Vector3(1.0f, 0.0f, 0.0f);
+		color[0] = characterManager->GetDamageColor(0);
 
 		//	P2
 		pos[1].x = WIPE_RIGHT;
 		pos[1].y = WIPE_UP;
-		color[1] = Vector3(0.0f, 0.0f, 1.0f);
+		color[1] = characterManager->GetDamageColor(1);
 
 
 		//	P3
 		pos[2].x = WIPE_LEFT;
 		pos[2].y = WIPE_DOWN;
-		color[2] = Vector3(1.0f, 1.0f, 0.0f);
+		color[2] = characterManager->GetDamageColor(2);
 	
 		//	P4
 		pos[3].x = WIPE_RIGHT;
 		pos[3].y = WIPE_DOWN;
-		color[3] = Vector3(0.0f, 1.0f, 0.0f);
+		color[3] = characterManager->GetDamageColor(3);
 		
 	}
 

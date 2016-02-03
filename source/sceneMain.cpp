@@ -70,6 +70,9 @@
 
 		//	カメラ設定
 		mainView = new Camera();
+		
+		//	プレイヤー
+		PlayerInitialize();
 
 		//	プレイヤーワイプ
 		playerWipe->Initialize();
@@ -85,9 +88,6 @@
 		//	ステージ
 		stage = new Stage();
 		stage->LightInitialize( dir );
-		
-		//	プレイヤー
-		PlayerInitialize();
 		
 		//	コイン
 		coinManager->Initialize();
@@ -268,7 +268,10 @@
 		if ( ui->GetChangeFlag() ) 
 		{
 			gameManager->SetMode( GAME_MODE::MAINGAME );
-			for ( int i = 0; i < 4; i++ )		characterManager->SetMode( i, MODE_STATE::MOVE );
+			for (int i = 0; i < 4; i++)
+				(characterManager->GetIsPlayer(i)) ?
+				characterManager->SetMode(i, MODE_STATE::MOVE) :
+				characterManager->SetAIMode(i, AI_MODE_STATE::MOVE);
 			ui->SetChangeFlag( false );
 		}
 	}

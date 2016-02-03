@@ -143,7 +143,10 @@ bool	Thief_Bullet04::PlayerCollisionCheck(void)
 			characterManager->SetKnockBackVec(i, -knockBackVec);
 			characterManager->SetLeanFrame(i, leanpower);
 			characterManager->SetForce(i, 2.0f);
-			characterManager->SetMode(i, MODE_STATE::DAMAGE);
+			(characterManager->GetIsPlayer(i)) ?
+				characterManager->SetMode(i, MODE_STATE::DAMAGE) :
+				characterManager->SetAIMode(i, AI_MODE_STATE::DAMAGE);
+			//characterManager->SetMode(i, MODE_STATE::DAMAGE);
 
 
 			//	ƒvƒŒƒCƒ„[”Ô†Žæ“¾

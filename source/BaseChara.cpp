@@ -32,6 +32,7 @@
 #define	SLIP_TIMER_MAX		300	
 #define	JUMP_POWER		0.08f	//	ジャンプ力
 #define	WALL_DIST			2.5f		//	壁との距離
+#define	HYPER_RATE		0.01f	//　CPUがハイパーを発動する確率
 namespace
 {
 
@@ -41,9 +42,9 @@ namespace
 		//	被ダメージ用各色
 		const Vector3	DAMAGE_COLOR[] =
 		{
-			Vector3(1.0f, 1.0f, 1.0f),
-			Vector3(1.0f, 1.0f, 1.0f),
 			Vector3(1.0f, 0.0f, 0.0f),
+			Vector3(0.0f, 0.0f, 1.0f),
+			Vector3(1.0f, 1.0f, 0.0f),
 			Vector3(0.0f, 1.0f, 0.0f),
 			Vector3(0.0f, 0.0f, 1.0f),
 		};
@@ -136,10 +137,11 @@ namespace
 
 			//	AI情報初期化
 			{
-				aiInfo.mode = AI_MODE_STATE::WAIT;
+				aiInfo.mode = AI_MODE_STATE::STOP;
 				aiInfo.param = 0;
 				aiInfo.act_flag = false;
 				aiInfo.runStraightCount = 0;
+				aiInfo.AdjustingCount = 10;
 				aiInfo.step_autorun = 0;
 				aiInfo.count_wait		= 30;
 				aiInfo.count_run		= 3 * SECOND;
@@ -418,6 +420,10 @@ namespace
 
 		case AI_MODE_STATE::RUNAWAY:
 			RunAway();
+			break;
+
+		case AI_MODE_STATE::STOP:
+			Stop();
 			break;
 		}
 	}
@@ -801,6 +807,7 @@ namespace
 		//	死亡中無敵
 		SetParameterState(PARAMETER_STATE::UNRIVALED);
 		SetCoinUnrivaled( true );
+		particle->Death(GetPos(), 0.2f, GetDamageColor());
 //		SetMotion( MOTION_NUM::DEATH );
 
 		//	コイン半分ばらまき
@@ -1122,7 +1129,7 @@ namespace
 	void	BaseChara::Confusion( void )
 	{
 		if ( !confusion.state )	return;
-
+		m_Effect->SetConfusion(true, playerNum);
 		//	タイマー減算
 		confusion.timer--;
 
@@ -1130,6 +1137,7 @@ namespace
 		if ( confusion.timer <= 0 )
 		{
 			confusion.timer = 0;
+			m_Effect->SetConfusion(false, playerNum);
 			confusion.state = false;
 		}
 	}
@@ -1236,82 +1244,7 @@ namespace
 	//	AI操作
 	void	BaseChara::ControlAI( void )
 	{
-		if (coinManager->GetFreeCoinNum() < CPU_SERCH_COIN_MIN)
-		{
-			AutoPickCoin();
-		}
-
-		//--------------------------------------------
-		//　ここでは各モードになるための条件を実装
-		//--------------------------------------------
-
-		/*	
-			・コインがある時はコインを取りに行く。（1,2歩歩く→ちょっと止まる）、（コイン取る→次を探す）
-			　→ 確率で適当に攻撃出す（キャラによって挙動を変える）
-			・段差を見分けてジャンプも出来るようにしたい。
-			・コインがない時は１位もしくは距離が近い相手を攻撃。
-			・誰かが近くで攻撃行為をしていたら確率でガード。
-			・もしどんけつになったら８割ぐらいの確率でハイパーアーツを使う。
-		*/
-
-		//　フィールドにコインが○○枚以上　→　コイン優先
-		//if (coinManager->GetFreeCoinNum() > CPU_SERCH_COIN_MIN)
-		//{
-		//	aiInfo.mode = AI_MODE_STATE::MOVE;
-		//}
 		
-		//　コイン○○以下
-		/*
-			１位  ：逃げる(80%)	＞	ガード(20%)
-			２位　：攻撃(50%)	＞	逃げ(30%)	＞　コイン(20%)
-			３位　：攻撃(60%)	＞	コイン(40%)
-			４位　：攻撃(80%)	＞  コイン(20%)
-		*/
-		
-		//else
-		//{
-			//　順位別にそれぞれ確率で行動分岐
-			//static int randi;
-			//const int randi_MAX = 11;
-			//if (!aiInfo.act_flag) randi = Random::GetInt(0, randi_MAX);
-			//switch (rank)
-			//{
-			//case 1:
-			//	// 逃げる：ガード（８：２）
-			//	if		(randi < 8)				aiInfo.mode = AI_MODE_STATE::RUNAWAY;
-			//	else if (randi > randi_MAX - 2)	aiInfo.mode = AI_MODE_STATE::GUARD;
-			//	else							aiInfo.mode = AI_MODE_STATE::WAIT;
-			//	break;
-		
-			//case 2:
-			//	//　攻撃：逃げる：コイン（５：３：２）
-			//	if		(randi < 4)					aiInfo.mode = AI_MODE_STATE::ATTACK;
-			//	else if (randi > randi_MAX - 3)		aiInfo.mode = AI_MODE_STATE::RUNAWAY;
-			//	else if (randi == 4 || randi == 5)	aiInfo.mode = AI_MODE_STATE::MOVE;
-			//	else								aiInfo.mode = AI_MODE_STATE::WAIT;
-			//	break;
-		
-			//case 3:
-			//	//　攻撃：コイン（６：４）
-			//	if		(randi < 6)				aiInfo.mode = AI_MODE_STATE::ATTACK;
-			//	else if (randi > randi_MAX - 4)	aiInfo.mode = AI_MODE_STATE::MOVE;
-			//	else							aiInfo.mode = AI_MODE_STATE::WAIT;
-			//	break;
-		
-			//case 4:
-			//	//　攻撃：コイン（８：２）
-			//	if		(randi < 8)				aiInfo.mode = AI_MODE_STATE::ATTACK;
-			//	else if (randi > randi_MAX - 2)	aiInfo.mode = AI_MODE_STATE::MOVE;
-			//	else							aiInfo.mode = AI_MODE_STATE::WAIT;
-			//	break;
-			//}
-		//}
-
-		//　デバッグ（走るだけ）
-		//aiInfo.mode = AI_MODE_STATE::MOVE;
-
-		
-		AutoJump();
 	}
 
 
@@ -1424,7 +1357,24 @@ namespace
 	//　ダメージ
 	void	BaseChara::AutoDamage(void)
 	{
+		// 攻撃中に食らったときにパラメーター初期化
+		AttackParamInitialize();
 
+		//モーションアトデナオス(余力があれば関数化)
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::SCAVENGER)
+		{
+			if (obj->GetFrame() <= 250) SetMotion(9);
+		}
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
+		{
+			SetMotion(7);
+		}
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
+		{
+			SetMotion(8);
+		}
+
+		AutoAddKnockBackForce(force);
 	}
 
 	//　ノックバック
@@ -1502,6 +1452,7 @@ namespace
 		//	死亡中無敵
 		SetParameterState(PARAMETER_STATE::UNRIVALED);
 		SetCoinUnrivaled(true);
+		particle->Death(GetPos(), 0.2f, GetDamageColor());
 		//		SetMotion( MOTION_NUM::DEATH );
 
 		//	コイン半分ばらまき
@@ -1705,6 +1656,14 @@ namespace
 			}
 		}
 
+	}
+
+	//　完全停止（イントロ・終了時用）
+	void	BaseChara::Stop( void )
+	{
+		SetMotion(0);
+		SetCoinUnrivaled(true);
+		SetDrag(0.8f);
 	}
 
 //----------------------------------------------------------------------------
@@ -1973,6 +1932,12 @@ namespace
 		return	coinUnrivaled;
 	}
 
+	//　プレイヤーかどうかを取得
+	bool		BaseChara::GetIsPlayer( void )const
+	{
+		return	isPlayer;
+	}
+
 	//	モード取得
 	int		BaseChara::GetMode( void )const
 	{
@@ -2168,6 +2133,7 @@ namespace
 			break;
 
 		case PARAMETER_STATE::CONFUSION:
+			m_Effect->StateEffectSet(playerNum, PARAMETER_STATE::CONFUSION);
 			SetParameterState( confusion, 3 * SECOND );
 			break;
 

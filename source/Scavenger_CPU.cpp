@@ -40,7 +40,6 @@
 	{
 		bool initFlag = Scavenger::Initialize(playerNum, pos);
 		quickCount = 2 * SECOND;
-		AdjustingCount = 10;
 
 		return initFlag;
 	}
@@ -257,7 +256,7 @@
 	void	Scavenger_CPU::ControlAI(void)
 	{
 		//@ƒnƒCƒp[
-		if (coinManager->GetFreeCoinNum() >= 30)
+		if (coinManager->GetFreeCoinNum() >= 40)
 		{
 			if (life >= 3)
 			{
@@ -278,17 +277,14 @@
 		//@‡ˆÊ•Ês“®
 		else
 		{
-			//@ƒfƒoƒbƒO
-			rank = 4;
-
 			//@‚PˆÊ@¨@“¦‚°‚é
 			switch (rank)
 			{
 			case 1:
-				RunAway();
+				aiInfo.mode = AI_MODE_STATE::RUNAWAY;
 				break;
 
-			//@‚QˆÊ@¨@‚PˆÊ‚ðUŒ‚F“¦‚°‚éi‚VF‚Rj
+				//@‚QˆÊ@¨@‚PˆÊ‚ðUŒ‚F“¦‚°‚éi‚VF‚Rj
 			case 2:
 				if (Random::PercentageRandom(0.7f))
 				{
@@ -301,7 +297,7 @@
 					}
 					//@Šp“x’²®
 					const float adjustSpeed = 0.2f;
-					if (AdjustingCount > 0)
+					if (aiInfo.AdjustingCount > 0)
 					{
 						AutoAngleAdjust(adjustSpeed, target);
 					}
@@ -312,18 +308,18 @@
 						if (isMiddle(rand_Q_P_W, 0, 2))			aiInfo.mode = AI_MODE_STATE::QUICKARTS;
 						else if (isMiddle(rand_Q_P_W, 2, 6))	aiInfo.mode = AI_MODE_STATE::POWERARTS;
 						else									aiInfo.mode = AI_MODE_STATE::WAIT;
-						
-						AdjustingCount = 10;
+
+						aiInfo.AdjustingCount = 10;
 					}
-					AdjustingCount--;
+					aiInfo.AdjustingCount--;
 				}
 				else
 				{
-					RunAway();
+					aiInfo.mode = AI_MODE_STATE::RUNAWAY;
 				}
 				break;
-			
-			//@‚RˆÊE‚SˆÊ@¨@‚PˆÊ‚©‚QˆÊ‚ðƒ‰ƒ“ƒ_ƒ€‚ÅUŒ‚
+
+				//@‚RˆÊE‚SˆÊ@¨@‚PˆÊ‚©‚QˆÊ‚ðƒ‰ƒ“ƒ_ƒ€‚ÅUŒ‚
 			case 3:
 			case 4:
 				int targetPlayerRank = (Random::PercentageRandom(0.65f)) ? 1 : 2;
@@ -336,7 +332,7 @@
 				}
 				//@Šp“x’²®
 				const float adjustSpeed = 0.2f;
-				if (AdjustingCount > 0)
+				if (aiInfo.AdjustingCount > 0)
 				{
 					AutoAngleAdjust(adjustSpeed, target);
 				}
@@ -348,14 +344,13 @@
 					else if (isMiddle(rand_Q_P_W, 2, 6))	aiInfo.mode = AI_MODE_STATE::POWERARTS;
 					else									aiInfo.mode = AI_MODE_STATE::WAIT;
 
-					AdjustingCount = 10;
+					aiInfo.AdjustingCount = 10;
 				}
-				AdjustingCount--;
+				aiInfo.AdjustingCount--;
 
 				break;
 			}
 		}
 
 		AutoJump();
-
 	}
