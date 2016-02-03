@@ -158,6 +158,8 @@ protected:
 		int		mode;
 		int		param;
 		bool	act_flag;		//　行動中か（true：行動中）
+		int		runStraightCount;
+
 		int		step_autorun;
 		int		count_wait;		//　待機時間（１秒未満）
 		int		count_run;		//	歩く時間（２～４秒）
@@ -230,6 +232,7 @@ protected:
 	int				rank;
 	int				life;
 	int				branktime;
+	int				checkWallCount;
 
 	//	各情報構造体
 	DAMAGECOLOR_INFO		damageColor;
@@ -325,16 +328,20 @@ public:
 
 	//	AI動作関数
 	void	AutoMove( void );		
+	void	AutoWait();
+	virtual void	AutoAttack( int attackKind );
+	void	AutoGuard();
+	void	AutoDamage( void );
+	void	AutoKnockBack( void );
+	void	AutoAddKnockBackForce(float force);
+	void	AutoKnockBackLeanBackWard(void);
+	void	AutoDeath( void );
+	void	RunAway();
+
+	void	AutoAngleAdjust(float speed, Vector3 target);
 	void	AutoJump( void );
 	void	AutoPickCoin( void );
-	void	AutoKnockBack( void );
-	void	AutoAngleAdjust(float speed, Vector3 target);
-	//void	AutoAngleAdjust(const Vector3& direction, float speed);
-	virtual void	AutoAttack( int attackKind );
-	void	RunAway();
-	void	AutoGuard();
-	void	AutoWait();
-
+	
 	//	情報設定
 	void	SetMode( int mode );
 	void	SetAIMode( int mode );

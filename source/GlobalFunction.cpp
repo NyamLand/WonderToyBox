@@ -827,3 +827,17 @@
 		pOut->y = pV->y;
 		pOut->z = pV->z;
 	}
+
+//-------------------------------------------------------------------------
+//	‰‰ZŒn
+//-------------------------------------------------------------------------
+	
+	//@( min <= value && value < max )
+	bool isMiddle(const int& value, const int& min, const int& max)
+	{
+		return	(min <= value && value < max);
+	}
+	bool isMiddle(const float& value, const float& min, const float& max)
+	{
+		return	(min <= value && value < max);
+	}

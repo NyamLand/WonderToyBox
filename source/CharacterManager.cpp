@@ -205,8 +205,7 @@
 				//	Ž©•ª‚©‘ŠŽè‚ª–³“Gó‘Ô‚¾‚Æ‚Â‚¬‚Ö
 				if ( i == n )	continue;
 				if ( character[n]->GetParameterState( PARAMETER_STATE::UNRIVALED ) )			continue;
-				if ( character[n]->GetParameterState( PARAMETER_STATE::UNRIVALEDITEM ) )	continue;
-				if (character[n]->GetAttackParam() == Collision::NONE)	continue;
+				if ( character[n]->GetAttackParam() == Collision::NONE )	continue;
 
 				//	ƒ^ƒCƒv•Ê“–‚½‚è”»’è
 				switch ( attackParam )
@@ -255,6 +254,8 @@
 		if ( isHit )
 		{
 			int bc1Mode = bc1->GetMode();
+			int bc2Mode = bc2->GetMode();
+			bool	bc2Shield = bc2->GetParameterState( PARAMETER_STATE::UNRIVALEDITEM );
 			if (bc1Mode == MODE_STATE::HYPERARTS)
 			{
 				//“–‚½‚Á‚½uŠÔ‚É‰æ–Ê—h‚ç‚·AŽ~‚ß‚é
@@ -262,7 +263,7 @@
 				//‰æ–Ê’âŽ~
 				gameManager->SetTimeStop(SCREEN_STOPTIME);
 			}
-			if ( bc1Mode == MODE_STATE::GUARD )
+			if ( bc2Mode == MODE_STATE::GUARD || bc2Shield )
 			{
 				sound->PlaySE( SE::GUARD_SE );
 				return;
