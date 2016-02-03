@@ -176,9 +176,17 @@
 			}
 			for (int i = 0; i < PLAYER_MAX; i++)
 			{
-				(characterManager->GetIsPlayer(i)) ?
-					characterManager->SetMode(i, MODE_STATE::WAIT) :
-					characterManager->SetAIMode(i, AI_MODE_STATE::STOP);
+				if ( characterManager->GetIsPlayer( i ) )
+				{
+					if ( characterManager->GetMode(i) == MODE_STATE::MOVE )
+					{
+						characterManager->SetMode( i, MODE_STATE::WAIT );
+					}
+				}
+				else
+				{
+					characterManager->SetAIMode( i, AI_MODE_STATE::STOP );
+				}	
 			}
 		}
 

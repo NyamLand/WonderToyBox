@@ -106,9 +106,13 @@
 		{
 			character[i]->Render( shader, technique );	
 		}
-
-		Vector3	pos = character[0]->GetPos();
-		printf( "pos.x = %f pos.y = %f pos.z = %f\n", pos.x, pos.y, pos.z );
+		int	p_mode[PLAYER_MAX];
+		
+		FOR( 0, PLAYER_MAX )
+		{
+			p_mode[value] = character[value]->GetMode();
+		}
+		printf( "1p_mode = %d 2p_mode = %d 3p_mode = %d, 4p_mode = %d\n",  p_mode[0], p_mode[1], p_mode[2], p_mode[3] );
 		
 	}
 
