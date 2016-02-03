@@ -26,7 +26,7 @@
 		{
 			QUICK = 1,
 			POWER = 0,
-			HYPER = 0,
+			HYPER = 1,
 		};
 	}
 
