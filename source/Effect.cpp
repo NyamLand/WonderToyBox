@@ -28,8 +28,8 @@
 			
 			const float CON_POS[3] =
 			{
-				1.5f,		//	最大
-				-1.5f,		//	最少
+				2.0f,		//	最大
+				-2.0f,		//	最少
 				0.5f,		//	高さ
 			};
 		}
@@ -51,6 +51,7 @@
 		SafeDelete( aura );
 		SafeDelete( pow_up.obj );
 		SafeDelete( shieldInfo.obj );
+		SafeDelete( confusion_pic );
 		
 		for ( int i = 0; i < 4; i++ )
 		{
@@ -70,6 +71,7 @@
 		circle_pic[1] = new iex2DObj("DATA/Effect/circle/PL2.png");
 		circle_pic[2] = new iex2DObj("DATA/Effect/circle/PL3.png");
 		circle_pic[3] = new iex2DObj("DATA/Effect/circle/PL4.png");
+		confusion_pic = new iex2DObj("DATA/Effect/confusion.png");
 
 		pow_up.obj = new iex2DObj( "DATA/Effect/ol-r.png" );
 		shieldInfo.obj = new iex2DObj( "DATA/Effect/state/Guard-ef.png" );
@@ -92,7 +94,8 @@
 			isConfusion[i] = true;
 		}
 
-		c_angle = 0.0f;
+		circle_speed = 0.0f;
+		confusion_speed = 0.0f;
 		pow_pos = Vector3(0, 0, 0);
 		pow_time = 0;
 
@@ -154,7 +157,8 @@
 		}
 		//	回転
 		Spin();
-		c_angle += 0.02f;
+		circle_speed += 0.02f;		//	プレイヤー番号サークルスピード
+		confusion_speed += 0.08f;
 
 		//	パワー更新
 		pow_time++;
@@ -269,12 +273,12 @@
 			for (int n = 0; n < 4; n++)
 			{
 				//	サークル
-				circle_out[i].poligon[n].x = cosf(c_angle) * (circle[i].poligon[n].x - circle[i].c_pos.x) - sinf(c_angle) * (circle[i].poligon[n].z - circle[i].c_pos.z) + circle[i].c_pos.x;
-				circle_out[i].poligon[n].z = sinf(c_angle) * (circle[i].poligon[n].x - circle[i].c_pos.x) + cosf(c_angle) * (circle[i].poligon[n].z - circle[i].c_pos.z) + circle[i].c_pos.z;
+				circle_out[i].poligon[n].x = cosf(circle_speed) * (circle[i].poligon[n].x - circle[i].c_pos.x) - sinf(circle_speed) * (circle[i].poligon[n].z - circle[i].c_pos.z) + circle[i].c_pos.x;
+				circle_out[i].poligon[n].z = sinf(circle_speed) * (circle[i].poligon[n].x - circle[i].c_pos.x) + cosf(circle_speed) * (circle[i].poligon[n].z - circle[i].c_pos.z) + circle[i].c_pos.z;
 
 				//	混乱
-				confusion_out[i].poligon[n].x = cosf(c_angle) * (confusion[i].poligon[n].x - confusion[i].c_pos.x) - sinf(c_angle) * (confusion[i].poligon[n].z - confusion[i].c_pos.z) + confusion[i].c_pos.x;
-				confusion_out[i].poligon[n].z = sinf(c_angle) * (confusion[i].poligon[n].x - confusion[i].c_pos.x) + cosf(c_angle) * (confusion[i].poligon[n].z - confusion[i].c_pos.z) + confusion[i].c_pos.z;
+				confusion_out[i].poligon[n].x = cosf(confusion_speed) * (confusion[i].poligon[n].x - confusion[i].c_pos.x) - sinf(confusion_speed) * (confusion[i].poligon[n].z - confusion[i].c_pos.z) + confusion[i].c_pos.x;
+				confusion_out[i].poligon[n].z = sinf(confusion_speed) * (confusion[i].poligon[n].x - confusion[i].c_pos.x) + cosf(confusion_speed) * (confusion[i].poligon[n].z - confusion[i].c_pos.z) + confusion[i].c_pos.z;
 			}
 		}
 	}
@@ -294,7 +298,7 @@
 			//	混乱描画
 			if (isConfusion[i])
 			{
-				iexPolygon::Render3D(confusion_out[i].poligon, 2, circle_pic[i], shader3D, "alpha");
+				iexPolygon::Render3D(confusion_out[i].poligon, 2, confusion_pic, shader3D, "alpha");
 			}
 		}
 

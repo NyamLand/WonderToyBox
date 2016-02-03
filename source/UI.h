@@ -151,6 +151,13 @@ private:
 		ImageObj	lifeImage;
 	};
 
+	//	王冠情報
+	struct CROWN_INFO
+	{
+		bool	state;
+		ImageObj	crownImage;
+	};
+
 	//　イベント情報
 	struct EVENT_INFO
 	{
@@ -179,6 +186,7 @@ private:
 	ImageObj		pNumImage[PLAYER_MAX];
 	iex2DObj*	pCoinNumImage;
 	iex2DObj*	life;
+	iex2DObj*	crown;
 	ImageObj		roundImage;
 	ImageObj	finishImage;
 
@@ -244,6 +252,9 @@ private:
 
 	//	ライフ情報
 	LIFE_INFO			lifeInfo[4];
+
+	//	王冠情報
+	CROWN_INFO			crownInfo[4];
 
 	//	コイン枚数情報
 	NUMBERIMAGE_INFO	coinNumInfo[PLAYER_MAX];
@@ -315,9 +326,10 @@ public:
 	void	LastProductionInitialize( void );
 	void	PlayerNumberInitialize( void );
 	void	LifeInitialize( void );
+	void	CrownInitialize( void );
 	void	CoinNumberInitialize( void );
 	void	RoundInitialize( void );
-	void	EventInitialize(void);
+	void	EventInitialize( void );
 
 	//	メイン動作更新
 	void	TimerUpdate( void );
@@ -334,6 +346,7 @@ public:
 	void	LastProduction( void );
 	void	PlayerNumberUpdate( void );
 	void	LifeUpdate( void );
+	void	CrownUpdate( void );
 	void	CoinNumberUpdate( void );
 	void	FaceImageUpdate( int num, int mode );
 	void	CoinImageInfoUpdate(NUMBERIMAGE_INFO& numImageinfo, NUMBER_INFO& numinfo, const int& num);
@@ -353,8 +366,9 @@ public:
 	void	LastProductionRender( void );
 	void	PlayerNumberRender( void );
 	void	LifeRender( void );
+	void	CrownRender( void );
 	void	CoinNumberRender( void );
-	void	EventRender(void);
+	void	EventRender( void );
 	void	ParticleRender( int value );
 	void	RenderTargetParticle( void );
 
