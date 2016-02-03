@@ -334,6 +334,7 @@
 	}
 
 	//	シールド描画
+
 	void	Effect::RenderShield( void )
 	{
 		//	シールド描画
