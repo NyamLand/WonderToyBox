@@ -17,7 +17,7 @@
 //*********************************************************************************
 
 #define		QUICK_RATE	0.05f
-#define		POWER_RATE	0.05f
+#define		POWER_RATE	0.5f
 #define		HYPER_RATE	0.005f
 
 //-----------------------------------------------------------------------------
@@ -68,7 +68,7 @@
 			switch (rank)
 			{
 			case 1:
-				RunAway();
+				aiInfo.mode = AI_MODE_STATE::RUNAWAY;
 				break;
 
 			//　２位　→　１位を攻撃：逃げる（６：４）
@@ -116,7 +116,7 @@
 				}
 				else	//　４０％
 				{
-					RunAway();
+					aiInfo.mode = AI_MODE_STATE::RUNAWAY;
 				}
 				break;
 
@@ -170,6 +170,15 @@
 	{
 		//　程よくパワーアーツも使う
 		BaseChara::AutoPickCoin();
+
+		//　側にコインがいっぱいあればパワーで回収
+		if (coinManager->GetNearCoinNum(3.0f, pos) >= 5)
+		{
+			if (Random::PercentageRandom(POWER_RATE))
+			{
+				aiInfo.mode = AI_MODE_STATE::POWERARTS;
+			}
+		}
 	}
 
 	void	Princess_CPU::RunAway(void)
@@ -249,15 +258,6 @@
 			aiInfo.mode = AI_MODE_STATE::MOVE;
 		}
 		else aiInfo.count_runaway--;
-
-		//　側にコインがいっぱいあればパワーで回収
-		if (coinManager->GetNearCoinNum(3.0f, pos) >= 5)
-		{
-			if (Random::PercentageRandom(POWER_RATE))
-			{
-				aiInfo.mode = AI_MODE_STATE::POWERARTS;
-			}
-		}
 
 		//　稀にクイック
 		if (Random::PercentageRandom(0.001f))

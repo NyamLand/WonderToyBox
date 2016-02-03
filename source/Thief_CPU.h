@@ -21,8 +21,8 @@ public:
 	~Thief_CPU(void);
 
 	//	ìÆçÏä÷êî
-	bool	CPU_Move(void);
-	//void	AutoAttack( void ) override;
-	//void	ControlAI( void )override;
+	void	ControlAI(void) override;
+	void	AutoPickCoin(void)override;
+	void	RunAway(void)override;
 };
 

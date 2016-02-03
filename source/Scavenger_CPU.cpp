@@ -281,7 +281,7 @@
 			switch (rank)
 			{
 			case 1:
-				RunAway();
+				aiInfo.mode = AI_MODE_STATE::RUNAWAY;
 				break;
 
 				//　２位　→　１位を攻撃：逃げる（７：３）
@@ -315,7 +315,7 @@
 				}
 				else
 				{
-					RunAway();
+					aiInfo.mode = AI_MODE_STATE::RUNAWAY;
 				}
 				break;
 
