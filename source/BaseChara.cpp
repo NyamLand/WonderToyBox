@@ -55,11 +55,11 @@ namespace
 //----------------------------------------------------------------------------
 
 	//	コンストラクタ
-	BaseChara::BaseChara( void ) : obj( nullptr ), input( nullptr ),		//	pointer
-		pos( 0.0f, 0.0f, 0.0f ), move( 0.0f, 0.0f, 0.0f ), angle( 0.0f, 0.0f, 0.0f ), objectMove( 0.0f, 0.0f, 0.0f ),	//	Vector3
-		scale(0.0f), speed(0.0f),	totalSpeed(0.0f), drag(0.0f), force( 0.0f ), moveVec( 0.0f ), jumpPower( 0.0f ), dt( 0.0f ), param( 0.0f ),	//	float
-		isGround(false), isPlayer(false), jumpState( true ), checkWall(false), renderflag(true), coinUnrivaled(false), initflag(false),//	bool
-		mode(0), playerNum(0), power(0), totalPower(0), leanFrame(0), jumpStep(0),damageStep(0),rank(0), life( 0 )		//	int
+	BaseChara::BaseChara(void) : obj(nullptr), input(nullptr),		//	pointer
+	pos(0.0f, 0.0f, 0.0f), move(0.0f, 0.0f, 0.0f), angle(0.0f, 0.0f, 0.0f), objectMove(0.0f, 0.0f, 0.0f),	//	Vector3
+	scale(0.0f), speed(0.0f), totalSpeed(0.0f), drag(0.0f), force(0.0f), moveVec(0.0f), jumpPower(0.0f), dt(0.0f), param(0.0f),	//	float
+	isGround(false), isPlayer(false), jumpState(true), checkWall(false), renderflag(true), coinUnrivaled(false), initflag(false),//	bool
+	mode(0), playerNum(0), power(0), totalPower(0), leanFrame(0), jumpStep(0), damageStep(0), rank(0), life(0), checkWallCount(0)		//	int
 	{
 	
 	}
@@ -93,7 +93,7 @@ namespace
 	bool	BaseChara::Initialize( int playerNum, Vector3 pos )
 	{
 		//	モデル設定
-		obj = nullptr;
+ 		obj = nullptr;
 		
 		//	プレイヤー番号登録
 		this->playerNum = playerNum;
@@ -139,6 +139,7 @@ namespace
 				aiInfo.mode = AI_MODE_STATE::WAIT;
 				aiInfo.param = 0;
 				aiInfo.act_flag = false;
+				aiInfo.runStraightCount = 0;
 				aiInfo.step_autorun = 0;
 				aiInfo.count_wait		= 30;
 				aiInfo.count_run		= 3 * SECOND;
@@ -238,11 +239,23 @@ namespace
 		if ( GetLife() <= 0 )
 		{
 			life = 0;
-			if ( mode != MODE_STATE::DEATH )
+			if (isPlayer)
 			{
-				SetMode( MODE_STATE::DEATH );
-				sound->PlaySE( SE::DEATH_SE );
-				particle->BlueFlame( pos, 1.5f );
+				if (mode != MODE_STATE::DEATH)
+				{
+					SetMode(MODE_STATE::DEATH);
+					sound->PlaySE(SE::DEATH_SE);
+					particle->BlueFlame(pos, 1.5f);
+				}
+			}
+			else
+			{
+				if (aiInfo.mode != AI_MODE_STATE::DEATH)
+				{
+					aiInfo.mode = AI_MODE_STATE::DEATH;
+					sound->PlaySE(SE::DEATH_SE);
+					particle->BlueFlame(pos, 1.5f);
+				}
 			}
 		}
 
@@ -370,23 +383,23 @@ namespace
 			break;
 
 		case AI_MODE_STATE::GUARD:
-			Guard();
+			AutoGuard();
 			break;
 
 		case AI_MODE_STATE::DAMAGE:
-			Damage();
+			AutoDamage();
 			break;
 
 		case AI_MODE_STATE::KNOCKBACK:
-			KnockBack();
+			AutoKnockBack();
 			break;
 
 		case AI_MODE_STATE::DAMAGE_LEANBACKWARD:
-			KnockBackLeanBackWard();
+			AutoKnockBackLeanBackWard();
 			break;
 
 		case AI_MODE_STATE::DEATH:
-			Death();
+			AutoDeath();
 			break;
 
 		case AI_MODE_STATE::RUNAWAY:
@@ -860,26 +873,33 @@ namespace
 	//	落下チェック
 	void	BaseChara::FallCheck( void )
 	{
-		if ( pos.y < -3.0f )
+		if (pos.y < -3.0f)
 		{
 			//	コインを半分減らす
-			int		coinNum = gameManager->GetCoinNum( playerNum ) / 2;
-			FOR( 0, coinNum )
+			int		coinNum = gameManager->GetCoinNum(playerNum) / 2;
+			FOR(0, coinNum)
 			{
-				if ( coinNum > 0 )
+				if (coinNum > 0)
 				{
-					gameManager->SubCoin( this->playerNum );
-					coinManager->Append( GetPos(), Vector3( Random::GetFloat( -0.7f, 0.7f ), 1.0f, Random::GetFloat( 0.3f, 0.7f ) ), Random::GetFloat( -0.7f, 0.7f ), Coin::COIN );
+					gameManager->SubCoin(this->playerNum);
+					coinManager->Append(GetPos(), Vector3(Random::GetFloat(-0.7f, 0.7f), 1.0f, Random::GetFloat(0.3f, 0.7f)), Random::GetFloat(-0.7f, 0.7f), Coin::COIN);
 				}
 			}
 
 			//	初期位置に配置→待ち状態にして行動不能にする→リスポーン状態を設定
 			SubLife();
 			pos = gameManager->InitPos[this->playerNum];
-			if ( life <= 0 ) 	SetMode( MODE_STATE::MOVE );
+			if (life <= 0)
+			{
+				(isPlayer)?
+					SetMode(MODE_STATE::MOVE) :
+					aiInfo.mode = AI_MODE_STATE::MOVE;
+			}
 			else
 			{
-				SetMode( MODE_STATE::WAIT );
+				(isPlayer) ?
+					SetMode(MODE_STATE::WAIT) :
+					aiInfo.mode = AI_MODE_STATE::WAIT;
 				SetParameterState( PARAMETER_STATE::RESPAWN );
 			}
 		}
@@ -939,7 +959,9 @@ namespace
 		if ( life <= 0 )
 		{
 			life = 0;
-			SetMode( AI_MODE_STATE::DEATH );
+			(isPlayer) ?
+				SetMode(MODE_STATE::DEATH) :
+				aiInfo.mode = AI_MODE_STATE::DEATH;
 		}
 	}
 
@@ -1116,7 +1138,13 @@ namespace
 		//	描画フラグ切り替え
 		if ( respawn.timer % 10 == 0 )	renderflag = !renderflag;
 
-		if ( respawn.timer <= 3 * SECOND - 30 )	SetMode( MODE_STATE::MOVE );
+		if (respawn.timer <= 3 * SECOND - 30)
+		{
+			(isPlayer) ?
+				SetMode(MODE_STATE::MOVE) :
+				aiInfo.mode = AI_MODE_STATE::MOVE;
+		}
+
 
 		//	時間が来たら効果取り消し
 		if ( respawn.timer <= 0 )
@@ -1284,125 +1312,32 @@ namespace
 //	AI動作関数
 //----------------------------------------------------------------------------
 	
+	//　基本行動（行動分岐）
 	void	BaseChara::AutoMove( void )
 	{
-		//if (GetCoinUnrivaled()) 	SetCoinUnrivaled(false);
+		if (GetCoinUnrivaled()) 	SetCoinUnrivaled(false);
 
 		//　各モードに遷移
 		ControlAI();
 	}
 
-	void	BaseChara::AutoJump( void )
+	//　立ち止まり
+	void	BaseChara::AutoWait()
 	{
-		//	壁を感知したらジャンプ
-		if (checkWall)
-		{
-			if (jumpState)
-			{
-				//mode = MODE_STATE::JUMP;
-				jumpPower = JUMP_POWER;
-				jumpState = false;
-			}
-			else
-			{
-				if (jumpPower > 0.0f)		move.y += jumpPower;
-				jumpPower -= JUMP_POWER * 0.1f;
-			}
-		}
+		SetDrag(0.8f);
+		move.x = move.z = 0.0f;
+		aiInfo.act_flag = true;
 
+		if (aiInfo.count_wait <= 0)
+		{
+			aiInfo.count_wait = 30;
+			aiInfo.act_flag = false;
+			aiInfo.mode = AI_MODE_STATE::MOVE;
+		}
+		else aiInfo.count_wait--;
 	}
 
-	//　コインを取りに行く
-	void	BaseChara::AutoPickCoin( void )
-	{	
-		//if (coinManager->GetFreeCoinNum() < freeCoinMin) return;
-
-		//-----------------------------------------
-		//　targetに向けて1～3歩歩く
-		//-----------------------------------------
-		Vector3			target = Vector3( 0.0f, 0.0f, 0.0f );
-		static	float	adjustSpeed = 0.2f;
-		bool			existence = false;
-		enum
-		{
-			AUTORUN_WALK = 0,
-			AUTORUN_STAND
-		};
-		existence = coinManager->GetMinPos(target, pos);
-
-		//	対象が存在していたら対象に向かって走る
-		if (existence)
-		{
-			AutoAngleAdjust(adjustSpeed, target);
-			if (!slip.state)
-			{
-				move.x = sinf(angle.y) * speed;
-				move.z = cosf(angle.y) * speed;
-			}
-			else
-			{
-				if (move.Length() < speed)
-				{
-					move.x += sinf(angle.y) * slipInfo.speed;
-					move.z += cosf(angle.y) * slipInfo.speed;
-				}
-			}
-		}
-	}
-	
-	void	BaseChara::AutoKnockBack( void )
-	{
-		//モーションアトデナオス(余力があれば関数化)
-		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::SCAVENGER)
-		{
-			if (obj->GetFrame() >= 278) obj->SetFrame(278);
-		}
-		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
-		{
-			if (obj->GetFrame() >= 286) obj->SetFrame(286);
-		}
-		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::THIEF)
-		{
-			if (obj->GetFrame() >= 408) obj->SetFrame(408);
-		}
-		//		SetMotion(MOTION_NUM::POSTURE);
-
-		//SetParameterState(PARAMETER_STATE::UNRIVALED);
-		SetDrag(1.0f);	//一時的に抗力なくす
-		if (move.y < 0 && isGround)
-		{
-			move = Vector3(0.0f, 0.0f, 0.0f);
-			damageStep = 0;
-			aiInfo.mode = AI_MODE_STATE::KNOCKBACK;
-
-			//モーションアトデナオス
-			SetMotion(0);
-
-			//SetUnrivaled(false);
-		}
-	}
-
-	//	向き調整
-	void	BaseChara::AutoAngleAdjust( float speed, Vector3 target )
-	{
-		//	カメラの前方方向を求める
-		Vector3	vEye( mainView->GetTarget() - mainView->GetPos() );
-		float	cameraAngle = atan2f(vEye.x, vEye.z);
-
-		Vector3	vec = target - pos;
-		vec.Normalize();
-
-		//	入力方向を求める
-		float inputAngle = atan2f( vec.x, vec.z );
-		moveVec = inputAngle;
-
-		//	目標の角度を求める
-		float	targetAngle = cameraAngle + inputAngle;
-
-		//	親に投げる
-		AngleAdjust(Vector3(sinf(targetAngle), 0.0f, cosf(targetAngle)), speed);
-	}
-
+	//　攻撃
 	void	BaseChara::AutoAttack( int attackKind )
 	{
 		/*
@@ -1457,6 +1392,208 @@ namespace
 		else aiInfo.count_attack--;
 	}
 
+	//　オートガード(引数：フレーム数)
+	void	BaseChara::AutoGuard()
+	{
+//		SetMotion(MOTION_NUM::GUARD);
+		move.x = move.z = 0.0f;
+		SetParameterState(PARAMETER_STATE::UNRIVALED);
+		aiInfo.act_flag = true;
+		
+		if (aiInfo.count_guard <= 0)
+		{
+			SetUnrivaled(false);
+			aiInfo.count_guard = 1 * SECOND;
+			aiInfo.act_flag = false;
+			aiInfo.mode = AI_MODE_STATE::MOVE;
+
+		}
+		else aiInfo.count_guard--;
+	}
+
+	//　ダメージ
+	void	BaseChara::AutoDamage(void)
+	{
+
+	}
+
+	//　ノックバック
+	void	BaseChara::AutoKnockBack(void)
+	{
+		//モーションアトデナオス(余力があれば関数化)
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::SCAVENGER)
+		{
+			if (obj->GetFrame() >= 278) obj->SetFrame(278);
+		}
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
+		{
+			if (obj->GetFrame() >= 286) obj->SetFrame(286);
+		}
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::THIEF)
+		{
+			if (obj->GetFrame() >= 408) obj->SetFrame(408);
+		}
+		//		SetMotion(MOTION_NUM::POSTURE);
+
+		//SetParameterState(PARAMETER_STATE::UNRIVALED);
+		SetDrag(1.0f);	//一時的に抗力なくす
+		if (/*move.y < 0 &&*/ isGround)
+		{
+			move = Vector3(0.0f, 0.0f, 0.0f);
+			damageStep = 0;
+			aiInfo.mode = AI_MODE_STATE::MOVE;
+
+			//モーションアトデナオス
+			SetMotion(0);
+
+			//SetUnrivaled(false);
+		}
+	}
+
+	//　ノックバック与力
+	void	BaseChara::AutoAddKnockBackForce(float force)
+	{
+		//モーションアトデナオス(余力があれば関数化)
+		isGround = false;
+		SetDamageColor(damageColor.catchColor);
+		move = knockBackInfo.vec * (force / 4);
+		move.y = force / 4;
+
+		aiInfo.mode = AI_MODE_STATE::KNOCKBACK;
+		jumpState = true;
+	}
+
+	//　仰け反り
+	void	BaseChara::AutoKnockBackLeanBackWard(void)
+	{
+		if (!initflag)
+		{
+			branktime = 0;	//仮の仰け反り時間　後でモーションフレームからとる可能性大
+			initflag = true;
+		}
+
+		//SetParameterState(PARAMETER_STATE::UNRIVALED);
+		if (branktime == 0)  SetDamageColor(damageColor.catchColor);
+		branktime++;
+		SetMove(Vector3(0.0f, move.y, 0.0f));
+		//		SetMotion( MOTION_NUM::POSTURE );
+		if (branktime >= leanFrame)
+		{
+			branktime = 0;
+			initflag = false;
+			aiInfo.mode = AI_MODE_STATE::MOVE;
+			//SetUnrivaled(false);
+		}
+	}
+
+	//　死亡
+	void	BaseChara::AutoDeath(void)
+	{
+		//	死亡中無敵
+		SetParameterState(PARAMETER_STATE::UNRIVALED);
+		SetCoinUnrivaled(true);
+		//		SetMotion( MOTION_NUM::DEATH );
+
+		//	コイン半分ばらまき
+		if (!initflag)
+		{
+			moveAngle = 0.0f;
+			int	coinNum = gameManager->GetCoinNum(this->playerNum);
+			FOR(0, coinNum / 2)
+			{
+				//	コイン半分ばらまき
+				if (coinNum > 0)
+				{
+					coinManager->Append(GetPos(), Vector3(Random::GetFloat(-1.0f, 1.0f), 1.0f, Random::GetFloat(0.0f, 1.0f)), Random::GetFloat(-1.0f, 1.0f), Coin::COIN);
+					gameManager->SubCoin(playerNum);
+				}
+
+			}
+			initflag = true;
+		}
+
+		//	待ち時間加算（仮）モーション出来次第変更
+		param += 0.01f;
+		if (param >= 1.0f)	param = 1.0f;
+
+		CubicFunctionInterpolation(moveAngle, 0.0f, D3DX_PI * 0.5f, param);
+		SetAngle(Vector3(moveAngle, GetAngle(), 0.0f));
+
+		//	今はモーションないので２秒待ち時間を設定
+		if (param >= 1.0f)
+		{
+			//	リスポーン
+			pos = gameManager->InitPos[this->playerNum];
+			SetLife(gameManager->GetStartLife(this->playerNum));	//	ライフを満タンにする
+			aiInfo.mode = AI_MODE_STATE::WAIT;											//	待機にして動けなくする
+			SetParameterState(PARAMETER_STATE::RESPAWN);			//	点滅＆無敵処理開始
+			SetAngle(Vector3(0.0f, 0.0f, 0.0f));
+			param = 0.0f;
+			initflag = false;
+		}
+	}
+
+	//　コインを取りに行く
+	void	BaseChara::AutoPickCoin( void )
+	{	
+		//if (coinManager->GetFreeCoinNum() < freeCoinMin) return;
+
+		//-----------------------------------------
+		//　targetに向けて1～3歩歩く
+		//-----------------------------------------
+		Vector3			target = Vector3( 0.0f, 0.0f, 0.0f );
+		static	float	adjustSpeed = 0.2f;
+		bool			existence = false;
+		enum
+		{
+			AUTORUN_WALK = 0,
+			AUTORUN_STAND
+		};
+		existence = coinManager->GetMinPos(target, pos);
+
+		//	対象が存在していたら対象に向かって走る
+		if (existence)
+		{
+			AutoAngleAdjust(adjustSpeed, target);
+			if (!slip.state)
+			{
+				move.x = sinf(angle.y) * speed;
+				move.z = cosf(angle.y) * speed;
+			}
+			else
+			{
+				if (move.Length() < speed)
+				{
+					move.x += sinf(angle.y) * slipInfo.speed;
+					move.z += cosf(angle.y) * slipInfo.speed;
+				}
+			}
+		}
+	}
+	
+	
+
+	//	向き調整
+	void	BaseChara::AutoAngleAdjust( float speed, Vector3 target )
+	{
+		//	カメラの前方方向を求める
+		Vector3	vEye( mainView->GetTarget() - mainView->GetPos() );
+		float	cameraAngle = atan2f(vEye.x, vEye.z);
+
+		Vector3	vec = target - pos;
+		vec.Normalize();
+
+		//	入力方向を求める
+		float inputAngle = atan2f( vec.x, vec.z );
+		moveVec = inputAngle;
+
+		//	目標の角度を求める
+		float	targetAngle = cameraAngle + inputAngle;
+
+		//	親に投げる
+		AngleAdjust(Vector3(sinf(targetAngle), 0.0f, cosf(targetAngle)), speed);
+	}
+
 	//　逃げる
 	void	BaseChara::RunAway( void )
 	{
@@ -1491,15 +1628,27 @@ namespace
 
 		//　逃げる方向は相手３人に対して反対方向
 		vec_add.Normalize();
-		target = pos - vec_add;
 
-		//　角度調整
-		static	float	adjustSpeed = 0.2f;
+		//　壁に向かってぶち当たるなら逆方向へ直進
 		if (checkWall)
 		{
-			target *= -1;
+			checkWallCount++;
 		}
-		AutoAngleAdjust( adjustSpeed+1.0f, target );
+		if (aiInfo.runStraightCount <= 0)
+		{
+			target = pos - vec_add;
+		}
+		if (checkWallCount >= 10)
+		{
+			target *= -3.0f;
+			aiInfo.runStraightCount = 1 * SECOND;
+			checkWallCount = 0;
+		}
+		aiInfo.runStraightCount--;
+		
+		//　角度調整
+		static	float	adjustSpeed = 0.2f;
+		AutoAngleAdjust(adjustSpeed, target);
 
 		//　移動
 		if ( !slip.state )
@@ -1521,44 +1670,31 @@ namespace
 		{
 			aiInfo.count_runaway = 3 * SECOND;
 			aiInfo.act_flag = false;
-			SetMode(MODE_STATE::MOVE);
+			aiInfo.mode = AI_MODE_STATE::MOVE;
 		}
 		else aiInfo.count_runaway--;
 	}
 
-	//　オートガード(引数：フレーム数)
-	void	BaseChara::AutoGuard()
-	{
-//		SetMotion(MOTION_NUM::GUARD);
-		move.x = move.z = 0.0f;
-		SetParameterState(PARAMETER_STATE::UNRIVALED);
-		aiInfo.act_flag = true;
-		
-		if (aiInfo.count_guard <= 0)
-		{
-			SetUnrivaled(false);
-			aiInfo.count_guard = 1 * SECOND;
-			aiInfo.act_flag = false;
-			SetMode(MODE_STATE::MOVE);
-		}
-		else aiInfo.count_guard--;
-	}
 
-	//　立ち止まり
-	void	BaseChara::AutoWait()
+	//　ジャンプ
+	void	BaseChara::AutoJump( void )
 	{
-//		SetMotion(MOTION_NUM::STAND);
-		SetDrag(0.8f);
-		move.x = move.z = 0.0f;
-		aiInfo.act_flag = true;
-
-		if (aiInfo.count_wait <= 0)
+		//	壁を感知したらジャンプ
+		if (checkWall)
 		{
-			aiInfo.count_wait = 45;
-			aiInfo.act_flag = false;
-			aiInfo.mode = AI_MODE_STATE::MOVE;
+			if (jumpState)
+			{
+				//mode = MODE_STATE::JUMP;
+				jumpPower = JUMP_POWER;
+				jumpState = false;
+			}
+			else
+			{
+				if (jumpPower > 0.0f)		move.y += jumpPower;
+				jumpPower -= JUMP_POWER * 0.1f;
+			}
 		}
-		else aiInfo.count_wait--;
+
 	}
 
 //----------------------------------------------------------------------------
