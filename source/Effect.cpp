@@ -52,6 +52,7 @@
 		SafeDelete( pow_up.obj );
 		SafeDelete( shieldInfo.obj );
 		SafeDelete( confusion_pic );
+		SafeDelete( state );
 		
 		for ( int i = 0; i < 4; i++ )
 		{
@@ -75,9 +76,8 @@
 
 		pow_up.obj = new iex2DObj( "DATA/Effect/ol-r.png" );
 		shieldInfo.obj = new iex2DObj( "DATA/Effect/state/Guard-ef.png" );
-		stateEffect.obj = new iex2DObj("DATA/UI/state-state.png");
+		state = new iex2DObj("DATA/UI/item-state.png");
 		ImageInitialize(pow_up, 0, 0, 90, 90, 0, 0, 0, 0);
-		ImageInitialize(stateEffect, 0, 0, 90, 90, 0, 0, 256, 256);
 
 		for (int i = 0; i < 4; i++){
 			for (int j = 0; j < 4; j++){
@@ -92,6 +92,10 @@
 			confusion[i].c_pos = Vector3( 0.0f, 10.0f, 0.0f );
 			confusion_out[i].c_pos = Vector3(0.0f, 10.0f, 0.0f);
 			isConfusion[i] = false;
+
+			ImageInitialize(stateEffect[i].image, 0, 0, 90, 90, 0, 0, 256, 256);
+			stateEffect[i].image.obj = state;
+			stateEffect[i].pos = Vector3(0, 0, 0);
 		}
 
 		circle_speed = 0.0f;
@@ -99,7 +103,6 @@
 		pow_pos = Vector3(0, 0, 0);
 		pow_time = 0;
 
-		state_pos = Vector3(0, 0, 0);
 		
 		//	シールド初期化
 		ShieldInitialize();
@@ -173,8 +176,9 @@
 		Shield();
 
 		//	アイテムエフェクト更新
-		StateEffectUpdate();
-
+		FOR(0, PLAYER_MAX){
+			StateEffectUpdate( value );
+		}
 
 	}
 
@@ -194,51 +198,51 @@
 	}
 
 	//	アイテムエフェクト
-	void	Effect::StateEffectUpdate( void )
+	void	Effect::StateEffectUpdate( int num )
 	{
-		ScalingAlphaUpdate(stateEffect, 100);	
-		Lerp(state_pos, state_start, state_finish, stateEffect.t);
-		stateEffect.x = (int)state_pos.x;	stateEffect.y = (int)state_pos.y;
+		ScalingAlphaUpdate(stateEffect[num].image, 100);	
+		Lerp(stateEffect[num].pos, stateEffect[num].start, stateEffect[num].finish, stateEffect[num].image.t);
+		stateEffect[num].image.x = (int)stateEffect[num].pos.x;	stateEffect[num].image.y = (int)stateEffect[num].pos.y;
 	}
 
 	//	プレイヤー番号でその場所にエフェクト(アイテム用)
 	void	Effect::StateEffectSet( int num ,int state)
 	{
-		WorldToClient(characterManager->GetPos(num), state_pos, matView * matProjection);
-		state_start = state_pos + Vector3(0.0f, 0.0f, 0.0f);
-		state_finish = state_pos + Vector3(0.0f, -100.0f, 0.0f);
-		SetScaling(stateEffect, 1.0f, true);
+		WorldToClient(characterManager->GetPos(num), stateEffect[num].pos, matView * matProjection);
+		stateEffect[num].start = stateEffect[num].pos + Vector3(0.0f, 0.0f, 0.0f);
+		stateEffect[num].finish = stateEffect[num].pos + Vector3(0.0f, -100.0f, 0.0f);
+		SetScaling(stateEffect[num].image, 1.0f, true);
 
 		switch (state)
 		{
 		case ITEM_TYPE::ATTACK_UP:
-			stateEffect.sx = 0;
-			stateEffect.sy = 0;
+			stateEffect[num].image.sx = 0;
+			stateEffect[num].image.sy = 0;
 			break;
 
 		case ITEM_TYPE::UNRIVALED:
-			stateEffect.sx = 256;
-			stateEffect.sy = 0;
+			stateEffect[num].image.sx = 256;
+			stateEffect[num].image.sy = 0;
 			break;
 
 		case ITEM_TYPE::SPEED_UP:
-			stateEffect.sx = 0;
-			stateEffect.sy = 256;
+			stateEffect[num].image.sx = 0;
+			stateEffect[num].image.sy = 256;
 			break;
 
 		case ITEM_TYPE::MAGNET:
-			stateEffect.sx = 256;
-			stateEffect.sy = 256;
+			stateEffect[num].image.sx = 256;
+			stateEffect[num].image.sy = 256;
 			break;
 
 		case ITEM_TYPE::LIFE:
-			stateEffect.sx = 256 * 2;
-			stateEffect.sy = 0;
+			stateEffect[num].image.sx = 256 * 2;
+			stateEffect[num].image.sy = 0;
 			break;
 
 		case PARAMETER_STATE::CONFUSION:
-			stateEffect.sx = 256 * 3;
-			stateEffect.sy = 0;
+			stateEffect[num].image.sx = 256 * 3;
+			stateEffect[num].image.sy = 0;
 			break;
 
 		}
@@ -324,8 +328,9 @@
 			pow_up.renderflag = true;	pow_up.alpha = 0.3f;
 
 		}
-
-		RenderImage(stateEffect, stateEffect.sx, stateEffect.sy, stateEffect.sw, stateEffect.sh, IMAGE_MODE::SCALING);
+		FOR(0, PLAYER_MAX){
+			RenderImage(stateEffect[value].image, stateEffect[value].image.sx, stateEffect[value].image.sy, stateEffect[value].image.sw, stateEffect[value].image.sh, IMAGE_MODE::SCALING);
+		}
 	}
 
 	//	シールド描画

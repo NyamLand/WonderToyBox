@@ -31,6 +31,14 @@ private:
 		Vector3				pos[4];		//	ポリゴン座標
 	};
 
+	struct StateEffect
+	{
+		ImageObj		image;
+		Vector3		pos;
+		Vector3		start;
+		Vector3		finish;
+	};
+
 	//	シールド用情報
 	struct SHIELD_INFO
 	{
@@ -67,10 +75,8 @@ private:
 	Vector3		pow_pos;
 	int			pow_time;
 
-	ImageObj	stateEffect;
-	Vector3		state_pos;
-	Vector3		state_start;
-	Vector3		state_finish;
+	StateEffect		stateEffect[4];
+	iex2DObj*		state;
 
 	SHIELD_INFO	shieldInfo;
 	
@@ -87,7 +93,7 @@ public:
 	void	AuraUpdate( void );
 	void	StormSet( Vector3 pos, int time );
 	void	StormTimer( void );
-	void	StateEffectUpdate( void );
+	void	StateEffectUpdate( int num );
 	void	StateEffectSet( int num, int state );
 	void	Render( void );
 	void	RenderShield( void );

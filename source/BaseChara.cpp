@@ -2133,6 +2133,7 @@ namespace
 			break;
 
 		case PARAMETER_STATE::CONFUSION:
+			m_Effect->StateEffectSet(playerNum, PARAMETER_STATE::CONFUSION);
 			SetParameterState( confusion, 3 * SECOND );
 			break;
 
