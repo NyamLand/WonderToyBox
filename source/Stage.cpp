@@ -140,7 +140,7 @@ Stage*	stage = nullptr;
 			break;
 			
 		case	STAGE_TYPE::TOY:
-			lightColor = Vector3(1.5f, 1.5f, 1.5f);
+			lightColor = Vector3(1.0f, 1.0f, 1.0f);
 			break;
 
 		case	STAGE_TYPE::BLOCK:
