@@ -351,11 +351,14 @@
 		{
 			//particle->Death(characterManager->GetPos(0), 0.2f , characterManager->GetDamageColor(0));
 			//particle->Semicircle(characterManager->GetPos(0), characterManager->GetFront(0), characterManager->GetRight(0), characterManager->GetUp(0), 0.7f);
-			particle->CannonSmoke(characterManager->GetPos(0), characterManager->GetFront(0), characterManager->GetRight(0), characterManager->GetUp(0), 0.7f);
+			//particle->CannonSmoke(characterManager->GetPos(0), characterManager->GetFront(0), characterManager->GetRight(0), characterManager->GetUp(0), 0.7f);
+			m_Effect->SetConfusion(true, 0);
 		}
 
-		if (KEY(KEY_SPACE) == 3)
+		if (KEY(KEY_SPACE) == 2)
 		{
+			m_Effect->SetConfusion(false, 0);
+
 			//particle->CoinUp(characterManager->GetPos(0), 0.8f);
 			//particle->Death(characterManager->GetPos(0), 0.2f , characterManager->GetDamageColor(0));
 			//particle->Semicircle(characterManager->GetPos(0), characterManager->GetFront(0), characterManager->GetRight(0), characterManager->GetUp(0), 0.7f);

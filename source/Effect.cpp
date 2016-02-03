@@ -6,7 +6,7 @@
 #include	"CharacterManager.h"
 #include	"Particle.h"
 
-#include	"Item.h"
+#include	"item.h"
 #include	"Effect.h"
 
 //*******************************************************************************
@@ -75,9 +75,9 @@
 
 		pow_up.obj = new iex2DObj( "DATA/Effect/ol-r.png" );
 		shieldInfo.obj = new iex2DObj( "DATA/Effect/state/Guard-ef.png" );
-		itemEffect.obj = new iex2DObj("DATA/UI/item-state.png");
+		stateEffect.obj = new iex2DObj("DATA/UI/state-state.png");
 		ImageInitialize(pow_up, 0, 0, 90, 90, 0, 0, 0, 0);
-		ImageInitialize(itemEffect, 0, 0, 90, 90, 0, 0, 256, 256);
+		ImageInitialize(stateEffect, 0, 0, 90, 90, 0, 0, 256, 256);
 
 		for (int i = 0; i < 4; i++){
 			for (int j = 0; j < 4; j++){
@@ -91,7 +91,7 @@
 			circle_out[i].c_pos = Vector3( 0.0f, 10.0f, 0.0f );
 			confusion[i].c_pos = Vector3( 0.0f, 10.0f, 0.0f );
 			confusion_out[i].c_pos = Vector3(0.0f, 10.0f, 0.0f);
-			isConfusion[i] = true;
+			isConfusion[i] = false;
 		}
 
 		circle_speed = 0.0f;
@@ -99,7 +99,7 @@
 		pow_pos = Vector3(0, 0, 0);
 		pow_time = 0;
 
-		item_pos = Vector3(0, 0, 0);
+		state_pos = Vector3(0, 0, 0);
 		
 		//	シールド初期化
 		ShieldInitialize();
@@ -173,7 +173,7 @@
 		Shield();
 
 		//	アイテムエフェクト更新
-		ItemEffectUpdate();
+		StateEffectUpdate();
 
 
 	}
@@ -194,43 +194,53 @@
 	}
 
 	//	アイテムエフェクト
-	void	Effect::ItemEffectUpdate( void )
+	void	Effect::StateEffectUpdate( void )
 	{
-		ScalingAlphaUpdate(itemEffect, 100);	
-		Lerp(item_pos, item_start, item_finish, itemEffect.t);
-		itemEffect.x = (int)item_pos.x;	itemEffect.y = (int)item_pos.y;
+		ScalingAlphaUpdate(stateEffect, 100);	
+		Lerp(state_pos, state_start, state_finish, stateEffect.t);
+		stateEffect.x = (int)state_pos.x;	stateEffect.y = (int)state_pos.y;
 	}
 
 	//	プレイヤー番号でその場所にエフェクト(アイテム用)
-	void	Effect::ItemEffectSet( int num ,int state)
+	void	Effect::StateEffectSet( int num ,int state)
 	{
-		WorldToClient(characterManager->GetPos(num), item_pos, matView * matProjection);
-		item_start = item_pos + Vector3(0.0f, 0.0f, 0.0f);
-		item_finish = item_pos + Vector3(0.0f, -100.0f, 0.0f);
-		SetScaling(itemEffect, 1.0f, true);
+		WorldToClient(characterManager->GetPos(num), state_pos, matView * matProjection);
+		state_start = state_pos + Vector3(0.0f, 0.0f, 0.0f);
+		state_finish = state_pos + Vector3(0.0f, -100.0f, 0.0f);
+		SetScaling(stateEffect, 1.0f, true);
 
 		switch (state)
 		{
 		case ITEM_TYPE::ATTACK_UP:
-			itemEffect.sx = 0;
-			itemEffect.sy = 0;
+			stateEffect.sx = 0;
+			stateEffect.sy = 0;
 			break;
 
 		case ITEM_TYPE::UNRIVALED:
-			itemEffect.sx = 256;
-			itemEffect.sy = 0;
+			stateEffect.sx = 256;
+			stateEffect.sy = 0;
 			break;
 
 		case ITEM_TYPE::SPEED_UP:
-			itemEffect.sx = 0;
-			itemEffect.sy = 256;
+			stateEffect.sx = 0;
+			stateEffect.sy = 256;
 			break;
 
 		case ITEM_TYPE::MAGNET:
-			itemEffect.sx = 256;
-			itemEffect.sy = 256;
+			stateEffect.sx = 256;
+			stateEffect.sy = 256;
 			break;
-				
+
+		case ITEM_TYPE::LIFE:
+			stateEffect.sx = 256 * 2;
+			stateEffect.sy = 0;
+			break;
+
+		case PARAMETER_STATE::CONFUSION:
+			stateEffect.sx = 256 * 3;
+			stateEffect.sy = 0;
+			break;
+
 		}
 
 	}
@@ -315,7 +325,7 @@
 
 		}
 
-		RenderImage(itemEffect, itemEffect.sx, itemEffect.sy, itemEffect.sw, itemEffect.sh, IMAGE_MODE::SCALING);
+		RenderImage(stateEffect, stateEffect.sx, stateEffect.sy, stateEffect.sw, stateEffect.sh, IMAGE_MODE::SCALING);
 	}
 
 	//	シールド描画

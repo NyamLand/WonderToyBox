@@ -710,8 +710,9 @@
 		{
 			crownInfo[value].state = false;
 			crownInfo[value].crownImage.obj = crown;
-			ImageInitialize(crownInfo[value].crownImage, 0, 10, 125, 125, 0, 0, 512, 512);
-			crownInfo[value].crownImage.alpha = 0.8f;
+			ImageInitialize(crownInfo[value].crownImage, 0, 10, 80, 80, 0, 0, 512, 512);
+			//crownInfo[value].crownImage.alpha = 0.8f;
+			crownInfo[value].crownImage.color = Vector3( 1.0f, 0.5f, 0.5f );
 		}
 	}
 
