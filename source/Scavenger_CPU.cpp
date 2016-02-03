@@ -18,9 +18,11 @@
 //
 //*********************************************************************************
 
+#define		POWERARTS_RATE	0.001f
 //-----------------------------------------------------------------------------
 //	初期化・解放
 //-----------------------------------------------------------------------------
+
 
 	//	コンストラクタ
 	Scavenger_CPU::Scavenger_CPU(void) : Scavenger()
@@ -38,7 +40,7 @@
 	{
 		bool initFlag = Scavenger::Initialize(playerNum, pos);
 		quickCount = 2 * SECOND;
-		rand_int = Random::GetInt(0, 9);
+		AdjustingCount = 10;
 
 		return initFlag;
 	}
@@ -81,11 +83,96 @@
 			}
 
 			//　程よくパワー
-			if (Random::PercentageRandom(0.0001f))
+			if (Random::PercentageRandom(POWERARTS_RATE))
 			{
 				aiInfo.mode = AI_MODE_STATE::POWERARTS;
 			}
 		}
+	}
+
+	//　逃げる（程よくパワーアーツ発動）
+	void	Scavenger_CPU::RunAway()
+	{
+		aiInfo.act_flag = true;
+
+		Vector3 vec_add(ZERO_VECTOR3);
+		Vector3 target(ZERO_VECTOR3);
+
+
+		for (int i = 0; i < PLAYER_MAX; i++)
+		{
+			Vector3 vec[4];
+
+			//	プレイヤーの番号を取得
+			int	p_num = characterManager->GetPlayerNum(i);
+
+			//	自分と同じ番号だったらスキップ
+			if (GetPlayerNum() == p_num)
+			{
+				vec[p_num] = Vector3(ZERO_VECTOR3);
+				continue;
+			}
+
+			//	以下は自分VS相手の処理
+			vec[i] = characterManager->GetPos(characterManager->GetPlayerNum(i)) - pos;
+
+			//　相手３人へのベクトルを合算
+			vec_add += vec[i];
+		}
+
+		//　逃げる方向は相手３人に対して反対方向
+		vec_add.Normalize();
+
+		//　壁に向かってぶち当たるなら逆方向へ直進
+		if (checkWall)
+		{
+			checkWallCount++;
+		}
+		if (aiInfo.runStraightCount <= 0)
+		{
+			target = pos - vec_add;
+		}
+		if (checkWallCount >= 10)
+		{
+			target *= -3.0f;
+			aiInfo.runStraightCount = 1 * SECOND;
+			checkWallCount = 0;
+		}
+		aiInfo.runStraightCount--;
+
+		//　角度調整
+		static	float	adjustSpeed = 0.2f;
+		AutoAngleAdjust(adjustSpeed, target);
+
+		//　移動
+		if (!slip.state)
+		{
+			move.x = sinf(moveVec) * totalSpeed;
+			move.z = cosf(moveVec) * totalSpeed;
+		}
+		else
+		{
+			if (move.Length() < totalSpeed)
+			{
+				move.x += sinf(moveVec) * slipInfo.speed;
+				move.z += cosf(moveVec) * slipInfo.speed;
+			}
+		}
+
+		//　パワーアーツ
+		if (Random::PercentageRandom(POWERARTS_RATE))
+		{
+			aiInfo.mode = AI_MODE_STATE::POWERARTS;
+		}
+
+		//　行動続行是非
+		if (aiInfo.count_runaway <= 0)
+		{
+			aiInfo.count_runaway = 3 * SECOND;
+			aiInfo.act_flag = false;
+			SetMode(MODE_STATE::MOVE);
+		}
+		else aiInfo.count_runaway--;
 	}
 
 	//　AIクイック
@@ -170,7 +257,7 @@
 	void	Scavenger_CPU::ControlAI(void)
 	{
 		//　ハイパー
-		if (coinManager->GetFreeCoinNum() >= 50)
+		if (coinManager->GetFreeCoinNum() >= 30)
 		{
 			if (life >= 3)
 			{
@@ -187,15 +274,85 @@
 		{
 			AutoPickCoin();
 		}
+
+		//　順位別行動
 		else
 		{
-			if (rank == 1)
+			//　デバッグ
+			rank = 4;
+
+			//　１位　→　逃げる
+			switch (rank)
 			{
+			case 1:
 				RunAway();
-			}
-			else
-			{
-				
+				break;
+
+			//　２位　→　１位を攻撃：逃げる（７：３）
+			case 2:
+				if (Random::PercentageRandom(0.7f))
+				{
+					//　ターゲット調整
+					Vector3 target;
+					FOR(0, PLAYER_MAX)
+					{
+						if (characterManager->GetRank(value) != 1)	continue;
+						target = characterManager->GetPos(value);
+					}
+					//　角度調整
+					const float adjustSpeed = 0.2f;
+					if (AdjustingCount > 0)
+					{
+						AutoAngleAdjust(adjustSpeed, target);
+					}
+					else
+					{
+						//　ランダムに行動分岐
+						static int rand_Q_P_W = Random::GetInt(0, 9);
+						if (isMiddle(rand_Q_P_W, 0, 2))			aiInfo.mode = AI_MODE_STATE::QUICKARTS;
+						else if (isMiddle(rand_Q_P_W, 2, 6))	aiInfo.mode = AI_MODE_STATE::POWERARTS;
+						else									aiInfo.mode = AI_MODE_STATE::WAIT;
+						
+						AdjustingCount = 10;
+					}
+					AdjustingCount--;
+				}
+				else
+				{
+					RunAway();
+				}
+				break;
+			
+			//　３位・４位　→　１位か２位をランダムで攻撃
+			case 3:
+			case 4:
+				int targetPlayerRank = (Random::PercentageRandom(0.65f)) ? 1 : 2;
+				//　ターゲット調整
+				Vector3 target;
+				FOR(0, PLAYER_MAX)
+				{
+					if (characterManager->GetRank(value) != targetPlayerRank)	continue;
+					target = characterManager->GetPos(value);
+				}
+				//　角度調整
+				const float adjustSpeed = 0.2f;
+				if (AdjustingCount > 0)
+				{
+					AutoAngleAdjust(adjustSpeed, target);
+				}
+				else
+				{
+					//　ランダムに行動分岐
+					static int rand_Q_P_W = Random::GetInt(0, 9);
+					if (isMiddle(rand_Q_P_W, 0, 2))			aiInfo.mode = AI_MODE_STATE::QUICKARTS;
+					else if (isMiddle(rand_Q_P_W, 2, 6))	aiInfo.mode = AI_MODE_STATE::POWERARTS;
+					else									aiInfo.mode = AI_MODE_STATE::WAIT;
+
+					AdjustingCount = 10;
+				}
+				AdjustingCount--;
+
+				break;
 			}
 		}
 

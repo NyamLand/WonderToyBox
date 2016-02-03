@@ -15,7 +15,7 @@ class Scavenger_CPU : public Scavenger
 {
 private:
 	int		quickCount;
-	int		rand_int;
+	int		AdjustingCount;
 
 public:
 	//	‰Šú‰»E‰ğ•ú
@@ -28,6 +28,7 @@ public:
 	void	AutoPickCoin();
 	//void	AutoAttack( void );
 	//bool	HyperArts();
+	void	RunAway();
 	bool	QuickArts();
 	void	ControlAI( void ) override;
 };
