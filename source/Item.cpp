@@ -116,7 +116,7 @@
 	
 		sound->PlaySE( SE::ITEM_SE );
 
-		m_Effect->ItemEffectSet(Num, type);
+		m_Effect->StateEffectSet(Num, type);
 	}
 
 //-------------------------------------------------------------------------------
