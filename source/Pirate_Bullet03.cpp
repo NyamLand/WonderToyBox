@@ -17,7 +17,6 @@ Pirate_Bullet03::Pirate_Bullet03()
 	radius		=	BULLET_RADIUS		[	BULLET_TYPE::PIRATE_03	];
 	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::PIRATE_03	];
 	scale		=	Vector3(0.1f, 0.1f, 0.1f);
-	explode_scale = radius * 0.08f;
 	leanpower	=	0;
 	power = 2;
 	for (int i = 0; i < PLAYER_MAX; i++)
@@ -44,7 +43,6 @@ void	Pirate_Bullet03::Update(void)
 	}
 
 
-	explode_scale = radius * 0.08f;
 	if (explosion) Explode();
 
 
@@ -64,7 +62,15 @@ void	Pirate_Bullet03::Move(void)
 	pos += move;
 }
 
-
+void	Pirate_Bullet03::Explode(void)
+{
+	radius += 2.0f;
+	move = Vector3(0, 0, 0);
+	particle->Bomb(Vector3(pos.x,pos.y + 4.0f,pos.z), radius * 0.1f, Vector3(0.7f, 0.2f, 0.1f));
+	//particle->Bom(this->pos, radius, 1.0f);
+	//爆発範囲が一定以上になったら消去
+	if (radius > 20.0f) state = false;
+}
 
 //	プレイヤーとのあたりチェック
 bool	Pirate_Bullet03::PlayerCollisionCheck(void)
@@ -83,7 +89,7 @@ bool	Pirate_Bullet03::PlayerCollisionCheck(void)
 
 		//	バレット情報設定
 		Vector3	bulletPos = GetPos();
-		//bulletPos.y += 0.5f;
+		bulletPos.y += 4.0f;
 		float		bullet_r = radius;
 
 		bool isHit = Collision::CapsuleVSSphere(p_pos_bottom, p_pos_top, p_r, bulletPos, bullet_r);

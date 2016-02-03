@@ -24,9 +24,9 @@ namespace
 {
 	enum OFFENSIVE_POWER
 	{
-		QUICK = 1,
-		POWER = 5,
-		HYPER = 15,
+		QUICK = 0,
+		POWER = 0,
+		HYPER = 1,
 	};
 }
 
@@ -45,6 +45,7 @@ Thief::Thief(void) : BaseChara()
 	artsTimer = 0;
 	absorb_length = DEFAULT_ABSORB_LENGTH;
 	isGround = true;
+	armRenderflag = false;
 }
 
 //	デストラクタ
@@ -62,6 +63,10 @@ bool	Thief::Initialize(int playerNum, Vector3 pos)
 	//	モデル読み込み
 	if (obj == nullptr)
 		obj = new iex3DObj("DATA/CHR/Thief/Thief.IEM");
+	arm = new iexMesh("DATA/Effect/k_arm/k_arm3.imo");
+	hand = new iexMesh("DATA/Effect/kq_hand(仮)/hand.IMO");
+
+	arm->SetScale(0.1f);
 
 	if (obj == nullptr)	return	false;
 	return	true;
@@ -74,11 +79,15 @@ bool	Thief::Initialize(int playerNum, Vector3 pos)
 //	描画
 void	Thief::Render(iexShader* shader, LPSTR technique)
 {
-	BaseChara::Render(shader, technique);
+	//SetArmTransform();
+	//BaseChara::Render(shader, technique);
+	//arm->SetAngle(0.5f);
+
+	if (armRenderflag) arm->Render(shader, technique);
 
 	////	デバッグ用
 	//if (!debug)	return;
-	//DrawSphere(attackInfo.pos, attackInfo.r, 0xFFFFFFFF);
+	DrawCapsule(attackInfo.bottom, attackInfo.top, attackInfo.r, 0xFFFFFFFF);
 	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z - attackInfo.r), 0.3f);
 	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z + attackInfo.r), 0.3f);
 	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z), 0.3f);
@@ -218,8 +227,7 @@ bool	Thief::HyperArts(void)
 	//モーションアトデナオス
 	SetMotion(6);
 
-
-	power = HYPER;
+	power = OFFENSIVE_POWER::HYPER;
 	SetParameterState(PARAMETER_STATE::UNRIVALED);
 	move = Vector3(0, 0 - GRAVITY, 0);	//撃ってる間は静止させる
 
@@ -231,37 +239,63 @@ bool	Thief::HyperArts(void)
 	SetMove(Vector3(0.0f, move.y, 0.0f));
 
 	//	情報設定
-	Vector3	vec[5] =
-	{
-		front * 5.0f + right * 8.0f,
-		front * 5.0f + right * 3.0f,
-		front * 5.0f,
-		front * 5.0f + right * -3.0f,
-		front * 5.0f + right * -8.0f
-	};
-	Vector3 b_angle[5] =
-	{
-		{ 0, angle.y + GetAngle(vec[0], front), 0 },
-		{ 0, angle.y + GetAngle(vec[1], front), 0 },
-		{ 0, angle.y, 0 },
-		{ 0, angle.y - GetAngle(vec[3], front), 0 },
-		{ 0, angle.y - GetAngle(vec[4], front), 0 }
-	};
-	float	 bulletSpeed = 0.5f;
-	int playerNum = GetPlayerNum();
+	SetArmTransform();
 
-	//モーションアトデナオス(ちょうどいい感じのフレームが来たら弾発射)
-	if (obj->GetFrame() == 339)
+	static int step = 0;
+	static float range = 0;
+	//モーションアトデナオス(ちょうどいい感じのフレームが来たら攻撃開始)
+	if (obj->GetFrame() >= 339 && obj->GetFrame() < 399)
 	{
-		for (int i = 0; i < 5; i++)
+		float t = GetBezier(ePrm_t::eRapid_Lv5, ePrm_t::eSlow_Lv1, attackInfo.t);
+		Vector3 f = front * (2.0f * sinf(D3DX_PI * t));
+		Vector3 r = -right * (2.0f * cosf(D3DX_PI * t));
+		attackInfo.bottom = p_pos + f + r;
+
+		switch (step)
 		{
-			m_BulletManager->Set(BULLET_TYPE::THIEF_03, new Thief_Bullet03, p_pos, vec[i], b_angle[i],  bulletSpeed, playerNum);
+		case 0:
+			//	あたり判定のパラメータを与える
+			attackInfo.top = attackInfo.bottom + r * range;
+			attackInfo.r = 2.5f;
+			range += 1.0;
+			if(range > 20.0f) step++;
+			break;
+		case 1:
+			//	パラメータ加算
+			attackInfo.top = attackInfo.bottom + f * range + r * range;
+			attackInfo.t += 0.03f;
+			if (attackInfo.t > 1.0f) step++;
+			break;
+		case 2:
+			attackInfo.top = attackInfo.bottom - r * range;
+			attackInfo.t = 0.0f;
+			range -= 1.0f;
+			break;
 		}
+		armRenderflag = true;
 	}
 
+	Vector3 v1, v2;
+	v1 = front;
+	v2 = attackInfo.top - attackInfo.bottom;
+	v1.Normalize();
+	v2.Normalize();
+	float armAngle = GetAngle(v1, v2);
+	Vector3 cross;
+	Vector3Cross(cross, v1, v2);
+	if (cross.y < 0) armAngle = -armAngle;
+
+	arm->SetPos(pos);
+	arm->SetAngle(angle.y + armAngle);
+	arm->SetScale(Vector3(0.03f,0.03f,range * 0.01f));
+	arm->Update();
+
 	//モーションアトデナオス(終わりのモーションが来たら終了)
-	if (obj->GetFrame() == 399)
+	if (/*obj->GetFrame() == 399*/ range < 0)
 	{
+		step = 0;
+		range = 0;
+		armRenderflag = false;
 		initflag = false;
 		return true;
 	}
@@ -315,6 +349,15 @@ bool	Thief::HyperArts(void)
 //-----------------------------------------------------------------------------------
 //	情報設定
 //-----------------------------------------------------------------------------------
+void	Thief::SetArmTransform(void)
+{
+
+}
+
+void	Thief::SetHandTransform(void)
+{
+
+}
 
 //	攻撃用パラメータ設定
 void	Thief::SetAttackParam(int attackKind)
@@ -333,7 +376,7 @@ void	Thief::SetAttackParam(int attackKind)
 		break;
 
 	case MODE_STATE::HYPERARTS:
-		attackInfo.type = Collision::SPHEREVSCYRINDER;
+		attackInfo.type = Collision::CAPSULEVSCAPSULE;
 		knockBackInfo.type = KNOCKBACK_TYPE::STRENGTH;
 		break;
 	}

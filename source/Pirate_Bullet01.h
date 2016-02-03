@@ -13,7 +13,6 @@ protected:
 	int	power;
 	bool explosion;
 	bool isPlayerCheck[4];	//ｎ番目のプレイヤーに触れたかどうか = false;
-	float	explode_scale;	//爆発の大きさ
 public:
 	//	初期化・解放
 	Pirate_Bullet01(void);
@@ -25,7 +24,7 @@ public:
 	void Move();
 	void Update();
 
-	void Explode();
+	virtual void Explode();
 
 protected:
 	virtual bool PlayerCollisionCheck(void);

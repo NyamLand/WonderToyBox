@@ -61,11 +61,11 @@ bool	Pirate::Initialize(int playerNum, Vector3 pos)
 	//	モデル読み込み
 	if (obj == nullptr)
 		obj = new iex3DObj("DATA/CHR/Pirate/Pirate.IEM");
+	cannon = new iexMesh( "DATA/CHR/Pirate/pirate_cannon.IMO" );
 
 	//	スケール設定
 	obj->SetScale(0.02f);
 	obj->Update();
-	cannon = new iexMesh( "DATA/CHR/Pirate/pirate_cannon.IMO" );
 	//cannon->SetScale( 0.02f );
 
 
@@ -208,7 +208,7 @@ bool	Pirate::HyperArts(void)
 
 	SetMotion(PIRATE::MOTION_DATA::HYPER);
 
-	float bulletSpeed = 0.15f;
+	float bulletSpeed = 0.3f;
 	Vector3 vec(0.0f,-0.5f,0.0f);
 
 
