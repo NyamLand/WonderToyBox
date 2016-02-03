@@ -199,6 +199,32 @@
 	{
 		return	coin_num;
 	}
+	
+	//　近くにあるコインの数を返す
+	int		CoinManager::GetNearCoinNum( float dist, const Vector3& pos )
+	{
+		int	coinNum = 0;
+
+		//	コイン全部をチェック
+		FOR_LIST( coinList.begin(), coinList.end() )
+		{
+			if ( !( *it )->GetState() )	continue;
+
+			//	コインの座標を取得
+			Vector3 coin_pos = ( *it )->GetPos();
+
+			//	与えられた座標との距離を算出
+			float	length = ( coin_pos - pos ).Length();
+
+			//	距離が最小値より短かったら情報を交換
+			if ( length < dist )
+			{
+				coinNum++;
+			}
+		}
+
+		return coinNum;
+	}
 
 	//	コインリスト取得
 	list<Coin*>	CoinManager::GetList( void )const
