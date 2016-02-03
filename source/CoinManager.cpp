@@ -115,7 +115,7 @@
 		coin->type = type;
 		coin->obj = org[type]->Clone();
 		Vector3	v = vec;
-		v.Normalize();
+		//v.Normalize();
 		Vector3	moveParam = v * speed;
 		coin->SetPos( pos );
 		coin->SetMove( moveParam );

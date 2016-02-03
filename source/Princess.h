@@ -39,7 +39,7 @@ namespace PRINCESS
 class Princess : public		BaseChara
 {
 private:
-	
+	int hyperNum;	//	ハイパーウェーブ回数
 
 private:
 //	void	MotionManagement( int motion )override;

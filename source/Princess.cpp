@@ -42,6 +42,7 @@
 		speed = 0.25f;
 		scale = 0.06f;
 		diffence = -1;
+		hyperNum = 0;
 		isGround = true;
 	}
 
@@ -90,7 +91,6 @@
 	{
 		power = 1;
 
-		static	bool	initflag = false;
 		if ( !initflag )
 		{
 			sound->PlaySE( SE::PRINCESS_QUICK );
@@ -135,7 +135,6 @@
 	//	パワーアーツ
 	bool	Princess::PowerArts( void )
 	{
-		static	bool	initflag = false;
 		if ( !initflag )
 		{
 			sound->PlaySE( SE::PRINCESS_POWER );
@@ -187,15 +186,14 @@
 	{
 		power = HYPER;
 
-		static	bool	initflag = false;
 		if ( !initflag )
 		{
 			sound->PlaySE( SE::HYPER_ATTACK );
 			sound->PlaySE( SE::PRINCESS_HYPER );
+			hyperNum = 0;
 			initflag = true;
 		}
 
-		static	int		num = 0;	//	回数
 		SetMove( Vector3( 0.0f, 0.0f ,0.0f ) );
 		Vector3	p_pos = GetPos();
 		attackInfo.top = Vector3( p_pos.x, p_pos.y + 1.5f, p_pos.z );
@@ -215,15 +213,15 @@
 
 		if ( attackInfo.t >= 1.0f )
 		{
-			switch ( num )
+			switch ( hyperNum )
 			{
 			case 0:
-				num++;
+				hyperNum++;
 				attackInfo.t  = 0.0f;
 				break;
 
 			case 1:
-				num = 0;
+				hyperNum = 0;
 				initflag = false;
 				return	true;
 				break;

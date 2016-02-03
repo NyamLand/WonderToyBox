@@ -1,3 +1,4 @@
+#include	<memory>
 
 #include	"iextreme.h"
 #include	"system/system.h"
@@ -215,8 +216,8 @@
 
 		//	パーティクル用バッファ
 		PAR_POS = Vector3(100.0f, 100.0f, 100.0f);
-		target_par = make_unique<iex2DObj>(iexSystem::ScreenWidth, iexSystem::ScreenHeight, IEX2D_RENDERTARGET);
-		particle_camera = make_unique<Camera>();
+		target_par = std::make_unique<iex2DObj>(iexSystem::ScreenWidth, iexSystem::ScreenHeight, IEX2D_RENDERTARGET);
+		particle_camera = std::make_unique<Camera>();
 		particle_camera->SetPos(Vector3(0.0f, 10.0f, -10.0f) + PAR_POS);
 		
 		//	共通変数初期化 

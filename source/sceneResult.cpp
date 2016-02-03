@@ -947,7 +947,12 @@
 			isEnd[value] = WaveUpdate( checkImage[value] );
 		}
 
-		if ( isEnd[0] && isEnd[1] && isEnd[2] && isEnd[3] )	return	true;
+		int count = 0;
+		FOR( 0, PLAYER_MAX )
+		{
+			if ( isEnd[value] )	count++;
+		}
+		if ( count >= gameManager->GetPlayerNum() )	return	true;
 		return	false;
 	}
 
@@ -1942,21 +1947,26 @@
 
 		// 決定ボタンでシーン移行フラグを立てる
 		int keySpace = input[0]->Get( KEY_SPACE );
-		int keyA = input[0]->Get( KEY_A );
-		if ( keySpace == 3 || keyA == 3 )
+		int keyA = input[0]->Get(KEY_A);
+		
+		//	決定キーで決定＆シーン移行
+		if ( !changeScene )
 		{
-			sound->PlaySE( SE::DECIDE_SE );
-			switch ( menuInfo.select )
+			if ( keySpace == 3 || keyA == 3 )
 			{
-			case MENU::MOVE_MENU:
-				screen->SetScreenMode( SCREEN_MODE::WIPE_OUT, 1.0f );
-				break;
+				sound->PlaySE( SE::DECIDE_SE );
+				switch ( menuInfo.select )
+				{
+				case MENU::MOVE_MENU:
+					screen->SetScreenMode( SCREEN_MODE::WIPE_OUT, 1.0f );
+					break;
 
-			case MENU::MOVE_TITLE:
-				screen->SetScreenMode( SCREEN_MODE::FADE_OUT, 1.0f );
-				break;
+				case MENU::MOVE_TITLE:
+					screen->SetScreenMode( SCREEN_MODE::FADE_OUT, 1.0f );
+					break;
+				}
+				changeScene = true;
 			}
-			changeScene = true;
 		}
 	}
 	

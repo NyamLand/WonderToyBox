@@ -24,9 +24,10 @@ namespace
 {
 	enum OFFENSIVE_POWER
 	{
-		QUICK = 1,
-		POWER = 5,
-		HYPER = 15,
+		//クイックとハイパーはバレット側で処理
+		QUICK = 0,
+		POWER = 1,
+		HYPER = 0,
 	};
 }
 
@@ -38,7 +39,7 @@ namespace
 Pirate::Pirate(void) : BaseChara()
 {
 	//	パラメータ初期化
-	power = 2;/*仮*/
+	power = 0;/*仮*/
 	speed = 0.25f;
 	scale = 0.045f;
 	diffence = -1;
@@ -92,6 +93,7 @@ void	Pirate::Render(iexShader* shader, LPSTR technique)
 //	クイックアーツ
 bool	Pirate::QuickArts(void)
 {
+	power = QUICK;
 
 	SetMotion(PIRATE::MOTION_DATA::QUICK);
 	//	行列から情報取得
@@ -144,7 +146,7 @@ bool	Pirate::QuickArts(void)
 //	パワーアーツ
 bool	Pirate::PowerArts(void)
 {	
-	static	bool	initflag = false;
+	power = POWER;
 	if ( !initflag )
 	{
 		sound->PlaySE( SE::PIRATE_POWER );
@@ -191,7 +193,8 @@ bool	Pirate::PowerArts(void)
 //	ハイパーアーツ
 bool	Pirate::HyperArts(void)
 {
-	static	bool	initflag = false;
+	power = HYPER;
+
 	if ( !initflag )
 	{
 		sound->PlaySE( SE::HYPER_ATTACK );
@@ -201,35 +204,18 @@ bool	Pirate::HyperArts(void)
 
 	//大砲の砲弾発射位置決定（画面上側）
 	Vector3 b_pos;
-	b_pos = Vector3(
-		Random::GetFloat(-20.0f, -20.0f),
-		30.0f,
-		Random::GetFloat(-20.0f, 20.0f)
-		);
+	b_pos = Vector3(0.0f,40.0f,0.0f);
 
 	SetMotion(PIRATE::MOTION_DATA::HYPER);
 
-	//自分以外のプレイヤー三人を着弾地点にする
-	Vector3 target[3];
-	for (int i = 0, n = 0; i < 4; i++)
-	{
-		if (i == playerNum) continue;	//自分は除外
-		target[n] = characterManager->GetPos(i);
-		n++;
-	}
-
-	float bulletSpeed = 0.5f;
-	Vector3 vec[3];
+	float bulletSpeed = 0.15f;
+	Vector3 vec(0.0f,-0.5f,0.0f);
 
 
 	//モーション終了時に弾発射
 	if (obj->GetFrame() == PIRATE::MOTION_FRAME::HYPERARTS_END)
 	{
-		for (int i = 0; i < 3; i++)
-		{
-			Parabola(vec[i], b_pos, target[i], bulletSpeed, GRAVITY);
-			m_BulletManager->Set(BULLET_TYPE::PIRATE_01, new Pirate_Bullet03, b_pos, vec[i], bulletSpeed, playerNum);
-		}
+		m_BulletManager->Set(BULLET_TYPE::PIRATE_01, new Pirate_Bullet03, b_pos, vec, bulletSpeed, playerNum);
 		initflag = false;
 		return true;
 	}

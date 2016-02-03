@@ -51,12 +51,13 @@ namespace SCAVENGER
 class Scavenger : public		BaseChara
 {
 
-private:
+protected:
 	int		stayTime;	//‹ZŠÖ˜A‚Ìd’¼Œo‰ßŠÔ
 	float	absorb_length;		//ƒRƒCƒ“‚ğ‹z‚¢‚ß‚é‹——£
 	bool		fireBallState;
 	int		fireBallInterval;
 	int		fireBallStep;
+	Vector3	p_pos;
 //	void	MotionManagement(int motion)override;
 
 public:

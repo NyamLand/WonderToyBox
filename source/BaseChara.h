@@ -8,9 +8,6 @@
 //*******************************************************************************
 
 //	include
-#include	"Random.h"
-#include	"CoinManager.h"
-#include	"ItemManager.h"
 
 //	parameter
 namespace
@@ -212,6 +209,8 @@ protected:
 	float				diffence;
 	float				jumpPower;
 	float				dt;
+	float				param;			//	割合
+	float				moveAngle;
 	bool				isGround;
 	bool				canHyper;
 	bool				inUseHyper;
@@ -220,6 +219,7 @@ protected:
 	bool				checkWall;
 	bool				renderflag;
 	bool				coinUnrivaled;
+	bool				initflag;
 	int				mode;
 	int				playerNum;
 	int				power;
@@ -229,6 +229,7 @@ protected:
 	int				damageStep;
 	int				rank;
 	int				life;
+	int				branktime;
 
 	//	各情報構造体
 	DAMAGECOLOR_INFO		damageColor;
@@ -266,6 +267,7 @@ public:
 	virtual	bool	Initialize( int playerNum, Vector3 pos, bool isPlayer );
 	virtual	bool	Initialize( int playerNum, Vector3 pos );
 	virtual	void	ShadowInitialize( void );
+	void	AttackParamInitialize(void);
 	void	Release( void );
 
 	//	更新・描画
@@ -322,8 +324,10 @@ public:
 	virtual	void	Control( void );
 
 	//	AI動作関数
-	void	AutoMove();		
-	void	AutoPickCoin( int freeCoinMin );	
+	void	AutoMove( void );		
+	void	AutoJump( void );
+	void	AutoPickCoin( void );
+	void	AutoKnockBack( void );
 	void	AutoAngleAdjust(float speed, Vector3 target);
 	//void	AutoAngleAdjust(const Vector3& direction, float speed);
 	virtual void	AutoAttack( int attackKind );

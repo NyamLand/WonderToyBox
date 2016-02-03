@@ -16,8 +16,10 @@ Pirate_Bullet03::Pirate_Bullet03()
 {
 	radius		=	BULLET_RADIUS		[	BULLET_TYPE::PIRATE_03	];
 	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::PIRATE_03	];
-	scale		=	Vector3(0.01f, 0.01f, 0.01f);
+	scale		=	Vector3(0.1f, 0.1f, 0.1f);
+	explode_scale = radius * 0.08f;
 	leanpower	=	0;
+	power = 2;
 	for (int i = 0; i < PLAYER_MAX; i++)
 	{
 		isPlayerCheck[i] = false;
@@ -34,14 +36,15 @@ void	Pirate_Bullet03::Update(void)
 
 	liveTime++;
 
-	//
-
-	if (PlayerCollisionCheck() ||/* Collision::CheckWall(pos, move)*/StageCollisionCheck())
+	//プレイヤーに当たるか地面（障害物除く）に当たると爆破
+	if (PlayerCollisionCheck() ||/* Collision::CheckWall(pos, move)*/pos.y <= 0.0f)
 	{
 		enable = false;
 		explosion = true;
 	}
 
+
+	explode_scale = radius * 0.08f;
 	if (explosion) Explode();
 
 
@@ -57,7 +60,7 @@ void	Pirate_Bullet03::Update(void)
 
 void	Pirate_Bullet03::Move(void)
 {
-	move.y += GRAVITY;
+	//move.y += GRAVITY;
 	pos += move;
 }
 
@@ -105,6 +108,8 @@ bool	Pirate_Bullet03::PlayerCollisionCheck(void)
 			gameManager->SetShakeCamera(SHAKE_POWER, SHAKE_TIME);
 			//サウンド再生
 			sound->PlaySE(SE::HYPER_HIT_SE);
+			//	ライフ減らす
+			FOR(0, power) characterManager->SubLife(i);
 			//	ノックバック
 			Vector3	knockBackVec = bulletPos - p_pos_bottom;
 			knockBackVec.y = p_pos_bottom.y;
