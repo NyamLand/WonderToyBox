@@ -366,14 +366,14 @@ namespace
 
 	void	BaseChara::CPU_ModeManagement()
 	{
-		switch (aiInfo.mode)
+		switch ( aiInfo.mode )
 		{
-		case AI_MODE_STATE::MOVE:		//　コインを取りに行く
-			AutoMove();
-			break;
-
 		case AI_MODE_STATE::WAIT:
 			AutoWait();
+			break;
+
+		case AI_MODE_STATE::MOVE:		//　コインを取りに行く
+			AutoMove();
 			break;
 
 		case AI_MODE_STATE::POWERARTS:
@@ -675,6 +675,7 @@ namespace
 		initflag = false;
 		param = false;
 		attackInfo.type = 0;
+		AttackParamInitialize();
 
 		Control();
 	}
