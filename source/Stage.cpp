@@ -103,12 +103,17 @@ Stage*	stage = nullptr;
 
 		case STAGE_TYPE::TOY:
 			Append(Vector3(0.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 1.0f, 1.0f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::TOY_BASE);
-			Append(Vector3(-4.0f, 10.0f, 20.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 0.2f, 0.5f), MOVE_TYPE::MOVE_SIDE_OBJECT, OBJECT_TYPE::BLUE_BLOCK);
-			Append(Vector3(-22.0f, 0.0f, 18.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 1.0f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::YELLOW_BLOCK);
-			Append(Vector3(-16.0f, 0.0f, 18.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 1.0f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::GREEN_BLOCK);
-			Append(Vector3(-22.0f, 5.0f, 20.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::BLUE_BLOCK);
-			Append(Vector3(15.0f, 15.0f, 18.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::YELLOW_BLOCK);
-			Append(Vector3(-20.0f, 0.0f, 8.0f), Vector3(0.0f, 1.5f, 0.0f), Vector3(0.09f, 0.09f, 0.09f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::REX_TOY);
+			Append(Vector3(-22.0f, 0.0f, 20.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.2f, 0.5f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::YELLOW_BLOCK);
+			Append(Vector3(-14.0f, 3.0f, 20.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.2f, 0.5f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::YELLOW_BLOCK);
+
+
+
+			Append(Vector3(-4.0f, 10.0f, 19.5f), Vector3(0.0f, 0.0f, 0.0f), Vector3(1.0f, 0.2f, 0.5f), MOVE_TYPE::MOVE_SIDE_OBJECT, OBJECT_TYPE::BLUE_BLOCK);
+			//Append(Vector3(-22.0f, 0.0f, 18.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(2.0f, 0.5f, 2.0f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::YELLOW_BLOCK);
+			//Append(Vector3(-16.0f, 0.0f, 18.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 1.0f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::GREEN_BLOCK);
+			//Append(Vector3(-22.0f, 5.0f, 20.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::BLUE_BLOCK);
+			Append(Vector3(15.0f, 13.0f, 18.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::YELLOW_BLOCK);
+			//Append(Vector3(-20.0f, 0.0f, 8.0f), Vector3(0.0f, 1.5f, 0.0f), Vector3(0.09f, 0.09f, 0.09f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::REX_TOY);
 			/*Append(Vector3(-10.0f, 10.0f, -10.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.5f, 0.5f, 0.5f), MOVE_TYPE::MOVE_SIDE_OBJECT, OBJECT_TYPE::RED_BLOCK);
 			Append(Vector3(-5.0f, 0.0f, 0.0f), Vector3(0.0f, 0.0f, 0.0f), Vector3(0.01f, 0.01f, 0.01f), MOVE_TYPE::BREAK_OBJECT, OBJECT_TYPE::TREE_TOY);
 			Append(Vector3(-3.0f, 0.0f, 0.0f), Vector3(0.0f, 3.0f, 0.0f), Vector3(0.01f, 0.01f, 0.01f), MOVE_TYPE::FIX_OBJECT, OBJECT_TYPE::RABBIT_TOY);
@@ -192,6 +197,18 @@ Stage*	stage = nullptr;
 		}
 	}
 
+	//	情報のみ更新
+	void	Stage::ObjUpdate(void)
+	{
+		bool	state = true;
+
+		FOR(0, OBJ_MAX)
+		{
+			//	生存チェック( 存在していたら更新 )
+			state = object[value]->GetState();
+			if (state)		object[value]->ObjUpdate();
+		}
+	}
 	//	描画
 	void	Stage::Render( iexShader* shader, LPSTR technique )
 	{
@@ -861,4 +878,61 @@ Stage*	stage = nullptr;
 		}
 
 		return	out;
+	}
+
+	bool Stage::GetLocal( Vector3 &localPos, Vector3 &localAngle)
+	{
+		//	出力
+		bool			out =false;
+		int			moveType;
+		Vector3		outLocalPos = localPos;
+		Vector3		outLocalAngle = localAngle;
+
+		//	全当たり判定
+		FOR(0, OBJ_MAX)
+		{
+			//	生存チェック
+			if (!object[value]->GetState())	continue;
+
+			//	オブジェクトのタイプを取得
+			moveType = object[value]->GetMoveType();
+
+			//	ベースのみ当たり判定
+			if (moveType == MOVE_TYPE::MOVE_SIDE_OBJECT
+				|| moveType == MOVE_TYPE::MOVE_HIEGHT_OBJECT)
+			{
+				out = object[value]->GetLocal(outLocalPos, outLocalAngle);
+				localPos = outLocalPos;
+				localAngle = outLocalAngle;
+			}
+		}
+
+		return	out;
+	}
+
+	void Stage::GetWorld( Vector3 &worldPos, Vector3 &worldAngle)
+	{
+		//	出力
+		int			moveType;
+		Vector3		outLocalPos =worldPos;
+		Vector3		outLocalAngle = worldAngle;
+
+		//	全当たり判定
+		FOR(0, OBJ_MAX)
+		{
+			//	生存チェック
+			if (!object[value]->GetState())	continue;
+
+			//	オブジェクトのタイプを取得
+			moveType = object[value]->GetMoveType();
+
+			//	ベースのみ当たり判定
+			if (moveType == MOVE_TYPE::MOVE_SIDE_OBJECT
+				|| moveType == MOVE_TYPE::MOVE_HIEGHT_OBJECT)
+			{
+				object[value]->GetWorld(outLocalPos, outLocalAngle);
+				worldPos = outLocalPos;
+				worldAngle = outLocalAngle;
+			}
+		}
 	}

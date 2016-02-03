@@ -80,6 +80,7 @@ public:
 
 	//	çXêVÅEï`âÊ
 	void	Update( void );
+	void	ObjUpdate(void);
 	void	Render( iexShader*	shader = nullptr, LPSTR technique = nullptr );
 
 	//	ìÆçÏä÷êî
@@ -120,6 +121,8 @@ public:
 	int			GetObjectType( void )const;
 	int			GetMoveType( void )const;
 	int			GetID( void )const;
+	bool		GetLocal(Vector3 &localPos, Vector3 &localAngle);
+	void		GetWorld(Vector3 &worldPos, Vector3 &worldAngle);
 };
 
 //*******************************************************************************

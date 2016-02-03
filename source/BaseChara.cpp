@@ -445,6 +445,30 @@ namespace
 		//	壁判定
 		checkWall = stage->CheckWall( pos, move );
 
+		Vector3 localPos = GetPos();
+		Vector3 localAngle = Vector3(0.0f, GetAngle(), 0.0f);
+		//乗り物
+		bool ret = stage->GetLocal(localPos, localAngle );	//ボックスのレイが返っているか
+		stage->ObjUpdate();
+		//carrier->Update(mat);
+
+		if (ret)
+		{
+			//carrier->GetWorld(localPos);
+			stage->GetWorld(localPos, localAngle);
+			/*player->SetMode(Player::MODE_MOVE);*/
+
+			/*Vector3 m = GetMove();
+			SetMove(Vector3(m.x, 0, m.z));*/
+
+			SetPos(localPos);
+			obj->SetPos(localPos);
+			SetAngle(localAngle);
+			obj->SetAngle(localAngle);
+			obj->Update();
+		}
+
+
 		//	下方レイ判定
 		work = stage->GetHeight( pos );
 		objectWork = stage->GetHeightToObject( pos, objectMove, outId );
