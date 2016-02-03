@@ -1213,7 +1213,7 @@ namespace
 			{
 				if (GetLife() > 1)
 				{
-					SubLife();
+					//SubLife();
 					mode = MODE_STATE::HYPERARTS;
 				}
 			}
@@ -1893,6 +1893,7 @@ namespace
 	{
 		return	angle.y;
 	}
+
 
 	float		BaseChara::GetAngle(Vector3 vec1, Vector3 vec2)const
 	{

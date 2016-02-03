@@ -34,6 +34,11 @@ private:
 	const float DEFAULT_ABSORB_LENGTH = 3.0f;
 
 private:
+	iexMesh*	arm;	//ハイパーアーツ攻撃用
+	iexMesh*	hand;	//ハイパーアーツ攻撃用
+
+	bool		armRenderflag;
+
 	int		stayTime;	//技関連の硬直経過時間
 	int		artsTimer;
 	float	absorb_length;		//コインを吸い込める距離
@@ -45,6 +50,7 @@ public:
 	~Thief(void);
 	bool	Initialize(int playerNum, Vector3 pos)override;
 
+
 	//	更新・描画
 	void	Render(iexShader* shader = nullptr, LPSTR technique = nullptr)override;
 
@@ -54,6 +60,8 @@ public:
 	bool	HyperArts(void)override;
 
 	//	情報設定
+	void	SetArmTransform(void);
+	void	SetHandTransform(void);
 	void	SetAttackParam(int attackKind)override;
 };
 
