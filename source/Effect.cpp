@@ -91,7 +91,7 @@
 			circle_out[i].c_pos = Vector3( 0.0f, 10.0f, 0.0f );
 			confusion[i].c_pos = Vector3( 0.0f, 10.0f, 0.0f );
 			confusion_out[i].c_pos = Vector3(0.0f, 10.0f, 0.0f);
-			isConfusion[i] = true;
+			isConfusion[i] = false;
 		}
 
 		circle_speed = 0.0f;

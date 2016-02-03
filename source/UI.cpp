@@ -497,10 +497,10 @@
 		coinNumInfo[3].pos.x = static_cast<int>(iexSystem::ScreenWidth * 0.9);
 
 		//	•\Ž¦F
-		coinColor[0] = Vector3(1.0f, 0.0f, 0.0f);
-		coinColor[1] = Vector3(0.7f, 0.7f, 1.0f);
-		coinColor[2] = Vector3(1.0f, 1.0f, 0.0f);
-		coinColor[3] = Vector3(0.0f, 1.0f, 0.0f);
+		coinColor[0] = characterManager->GetDamageColor(0);
+		coinColor[1] = characterManager->GetDamageColor(1) + Vector3(0.7f, 0.7f, 0.0f);
+		coinColor[2] = characterManager->GetDamageColor(2);
+		coinColor[3] = characterManager->GetDamageColor(3);
 
 
 		FOR(0, PLAYER_MAX){
