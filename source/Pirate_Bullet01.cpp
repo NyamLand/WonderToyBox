@@ -129,7 +129,10 @@ bool	Pirate_Bullet01::PlayerCollisionCheck(void)
 			characterManager->SetKnockBackVec(i, -knockBackVec);
 			characterManager->SetLeanFrame(i, leanpower);
 			characterManager->SetForce(i, 2.0f);
-			characterManager->SetMode(i, MODE_STATE::DAMAGE);
+			(characterManager->GetIsPlayer(i)) ?
+				characterManager->SetMode(i, MODE_STATE::DAMAGE) :
+				characterManager->SetAIMode(i, AI_MODE_STATE::DAMAGE);
+			//characterManager->SetMode(i, MODE_STATE::DAMAGE);
 
 			//	ƒRƒCƒ“‚Î‚ç‚Ü‚«•ûŒüİ’è
 			std::uniform_real_distribution<float>	vecrand(-1.0f, 1.0f);

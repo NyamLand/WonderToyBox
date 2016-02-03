@@ -174,7 +174,12 @@
 				mode = GAME_MODE::TIMEUP;
 				sound->PlaySE( SE::GAMESET_SE );
 			}
-			for ( int i = 0; i < PLAYER_MAX; i++ )	characterManager->SetMode( i, MODE_STATE::WAIT );
+			for (int i = 0; i < PLAYER_MAX; i++)
+			{
+				(characterManager->GetIsPlayer(i)) ?
+					characterManager->SetMode(i, MODE_STATE::WAIT) :
+					characterManager->SetAIMode(i, AI_MODE_STATE::STOP);
+			}
 		}
 
 		//-------------------------------------------------------

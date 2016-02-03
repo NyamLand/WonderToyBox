@@ -68,6 +68,7 @@ namespace
 			DEATH,
 			
 			RUNAWAY,
+			STOP
 		};
 	}
 
@@ -336,7 +337,8 @@ public:
 	void	AutoAddKnockBackForce(float force);
 	void	AutoKnockBackLeanBackWard(void);
 	void	AutoDeath( void );
-	void	RunAway();
+	void	RunAway( void );
+	void	Stop( void );
 
 	void	AutoAngleAdjust(float speed, Vector3 target);
 	void	AutoJump( void );
@@ -392,6 +394,7 @@ public:
 	bool		GetParameterState( int type )const;
 	bool		GetJumpFlag( void )const;
 	bool		GetCoinUnrivaled( void )const;
+	bool		GetIsPlayer( void )const;
 	int		GetPower( void )const;
 	int		GetTotalPower( void )const;
 	int		GetMode( void )const;
