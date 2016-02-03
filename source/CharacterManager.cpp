@@ -842,6 +842,12 @@ void	CharacterManager::SubLife(int player)const
 		return	character[player]->GetCoinUnrivaled();
 	}
 
+	//　プレイヤーであるかを取得
+	bool		CharacterManager::GetIsPlayer(int player)const
+	{
+		return	character[player]->GetIsPlayer();
+	}
+
 	//	攻撃種類取得
 	int			CharacterManager::GetAttackParam( int player )const
 	{
@@ -986,17 +992,23 @@ void	CharacterManager::SubLife(int player)const
 		{
 		case KNOCKBACK_TYPE::STRENGTH:
 			bc2->SetForce(1.5f);
-			bc2->SetMode(MODE_STATE::DAMAGE);
+			(bc2->GetIsPlayer()) ?
+				bc2->SetMode(MODE_STATE::DAMAGE) :
+				bc2->SetAIMode(AI_MODE_STATE::DAMAGE);
 			break;
 
 		case KNOCKBACK_TYPE::MIDDLE:
 			bc2->SetForce(1.0f);
-			bc2->SetMode(MODE_STATE::DAMAGE);
+			(bc2->GetIsPlayer()) ?
+				bc2->SetMode(MODE_STATE::DAMAGE) :
+				bc2->SetAIMode(AI_MODE_STATE::DAMAGE);
 			break;
 
 		case KNOCKBACK_TYPE::WEAK:
 			bc2->SetForce(0.5f);
-			bc2->SetMode(MODE_STATE::DAMAGE);
+			(bc2->GetIsPlayer()) ?
+				bc2->SetMode(MODE_STATE::DAMAGE) :
+				bc2->SetAIMode(AI_MODE_STATE::DAMAGE);
 			break;
 
 		case KNOCKBACK_TYPE::LEANBACKWARD:

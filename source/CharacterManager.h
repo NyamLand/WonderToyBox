@@ -82,6 +82,7 @@ public:
 	bool		GetParameterState( int player, int type )const;
 	bool		GetJumpState( int player )const;
 	bool		GetCoinUnrivaled( int player )const;
+	bool		GetIsPlayer( int player )const;
 
 	int		GetAttackParam( int player )const;
 	int		GetPlayerNum( int playerNum )const;

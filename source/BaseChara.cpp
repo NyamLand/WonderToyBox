@@ -136,7 +136,7 @@ namespace
 
 			//	AI情報初期化
 			{
-				aiInfo.mode = AI_MODE_STATE::WAIT;
+				aiInfo.mode = AI_MODE_STATE::STOP;
 				aiInfo.param = 0;
 				aiInfo.act_flag = false;
 				aiInfo.runStraightCount = 0;
@@ -418,6 +418,10 @@ namespace
 
 		case AI_MODE_STATE::RUNAWAY:
 			RunAway();
+			break;
+
+		case AI_MODE_STATE::STOP:
+			Stop();
 			break;
 		}
 	}
@@ -1424,7 +1428,24 @@ namespace
 	//　ダメージ
 	void	BaseChara::AutoDamage(void)
 	{
+		// 攻撃中に食らったときにパラメーター初期化
+		AttackParamInitialize();
 
+		//モーションアトデナオス(余力があれば関数化)
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::SCAVENGER)
+		{
+			if (obj->GetFrame() <= 250) SetMotion(9);
+		}
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
+		{
+			SetMotion(7);
+		}
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
+		{
+			SetMotion(8);
+		}
+
+		AutoAddKnockBackForce(force);
 	}
 
 	//　ノックバック
@@ -1707,6 +1728,14 @@ namespace
 
 	}
 
+	//　完全停止（イントロ・終了時用）
+	void	BaseChara::Stop( void )
+	{
+		SetMotion(0);
+		SetCoinUnrivaled(true);
+		SetDrag(0.8f);
+	}
+
 //----------------------------------------------------------------------------
 //	情報取得
 //----------------------------------------------------------------------------
@@ -1971,6 +2000,12 @@ namespace
 	bool		BaseChara::GetCoinUnrivaled( void )const
 	{
 		return	coinUnrivaled;
+	}
+
+	//　プレイヤーかどうかを取得
+	bool		BaseChara::GetIsPlayer( void )const
+	{
+		return	isPlayer;
 	}
 
 	//	モード取得
