@@ -32,8 +32,17 @@
 //	ìÆçÏä÷êî
 //-----------------------------------------------------------------------------
 
-	//	AIìÆçÏ
-	/*void	Thief_CPU::AutoAttack( void )
+	void	Thief_CPU::ControlAI(void)
 	{
 
-	}*/
+	}
+
+	void	Thief_CPU::AutoPickCoin(void)
+	{
+
+	}
+
+	void	Thief_CPU::RunAway(void)
+	{
+
+	}
