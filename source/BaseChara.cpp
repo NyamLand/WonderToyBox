@@ -1269,7 +1269,7 @@ namespace
 		{
 			if (input->Get(KEY_A) == 3)
 			{
-				if (GetLife() > 1)
+				if ( GetLife() > 1 && !GetParameterState( PARAMETER_STATE::RESPAWN ) )
 				{
 					SubLife();
 					mode = MODE_STATE::HYPERARTS;
