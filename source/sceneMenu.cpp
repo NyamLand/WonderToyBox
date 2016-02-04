@@ -762,8 +762,8 @@
 		
 		//　おもちゃモデル初期化
 		toyStage->SetPos(0.0f,0.0f,0.0f);
-		toyStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
-		toyStage->SetScale(0.05f);
+		toyStage->SetAngle(D3DXToRadian(30.0f), D3DXToRadian(-80.0f), 0.0f);
+		toyStage->SetScale(0.09f);
 		toyStage->Update();
 
 		//	パラメータ初期化
@@ -796,7 +796,7 @@
 
 		case 1:
 			deskStage->SetPos(-7.0f, 14.0f, 15.0f);
-			toyStage->SetPos(2.0f, 14.0f, 8.0f);
+			toyStage->SetPos(2.0f, 13.0f, 8.0f);
 			deskStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
 			toyStage->SetAngle(D3DXToRadian(30.0f), stageSelectInfo.angle, 0.0f);
 			break;
