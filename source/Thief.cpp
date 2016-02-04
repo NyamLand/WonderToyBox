@@ -239,6 +239,7 @@ bool	Thief::HyperArts(void)
 	attackInfo.power = OFFENSIVE_POWER::HYPER;
 	attackInfo.dropPower = DROP_POWER::HYPER;
 	attackInfo.coinDropType = DROP_TYPE::SUCTION;
+
 	SetParameterState(PARAMETER_STATE::UNRIVALED);
 	move = Vector3(0, 0 - GRAVITY, 0);	//撃ってる間は静止させる
 
@@ -253,7 +254,7 @@ bool	Thief::HyperArts(void)
 	SetArmTransform();
 
 	static int step = 0;
-	static float range = 0;
+	static float rate = 0;
 	//モーションアトデナオス(ちょうどいい感じのフレームが来たら攻撃開始)
 	if (obj->GetFrame() >= 339 && obj->GetFrame() < 399)
 	{
@@ -266,21 +267,21 @@ bool	Thief::HyperArts(void)
 		{
 		case 0:
 			//	あたり判定のパラメータを与える
-			attackInfo.top = attackInfo.bottom + r * range;
+			attackInfo.top = attackInfo.bottom + r * rate;
 			attackInfo.r = 2.5f;
-			range += 1.0;
-			if(range > 20.0f) step++;
+			rate += 1.0;
+			if(rate > 20.0f) step++;
 			break;
 		case 1:
 			//	パラメータ加算
-			attackInfo.top = attackInfo.bottom + f * range + r * range;
+			attackInfo.top = attackInfo.bottom + f * rate + r * rate;
 			attackInfo.t += 0.03f;
 			if (attackInfo.t > 1.0f) step++;
 			break;
 		case 2:
-			attackInfo.top = attackInfo.bottom - r * range;
+			attackInfo.top = attackInfo.bottom - r * rate;
 			attackInfo.t = 0.0f;
-			range -= 1.0f;
+			rate -= 1.0f;
 			break;
 		}
 		armRenderflag = true;
@@ -298,14 +299,14 @@ bool	Thief::HyperArts(void)
 
 	arm->SetPos(pos);
 	arm->SetAngle(angle.y + armAngle);
-	arm->SetScale(Vector3(0.03f,0.03f,range * 0.01f));
+	arm->SetScale(Vector3(0.03f,0.03f,rate * 0.01f));
 	arm->Update();
 
 	//モーションアトデナオス(終わりのモーションが来たら終了)
-	if (/*obj->GetFrame() == 399*/ range < 0)
+	if (/*obj->GetFrame() == 399*/ rate < 0)
 	{
 		step = 0;
-		range = 0;
+		rate = 0;
 		armRenderflag = false;
 		initflag = false;
 		return true;
