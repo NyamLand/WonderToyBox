@@ -276,10 +276,13 @@ bool	Thief::HyperArts(void)
 			//	ƒpƒ‰ƒ[ƒ^‰ÁŽZ
 			attackInfo.top = attackInfo.bottom + f * rate + r * rate;
 			attackInfo.t += 0.03f;
-			if (attackInfo.t > 1.0f) step++;
+			if (attackInfo.t >= 1.0f)
+			{
+				step++;
+			}
 			break;
 		case 2:
-			attackInfo.top = attackInfo.bottom - r * rate;
+			//attackInfo.top = attackInfo.bottom + r * rate;
 			attackInfo.t = 0.0f;
 			rate -= 1.0f;
 			break;
