@@ -1976,6 +1976,10 @@ namespace
 		case	PARAMETER_STATE::UNRIVALEDITEM:
 			out = unrivaledItem.state;
 			break;
+
+		case PARAMETER_STATE::RESPAWN:
+			out = respawn.state;
+			break;
 		}
 
 		return	out;
