@@ -143,21 +143,18 @@ bool	Thief_Bullet01::PlayerCollisionCheck(void)
 			float	power = 0.2f;
 			int		p2_Num = characterManager->GetPlayerNum(i);
 
-			//三枚ばら撒く
-			int drop_coinNum = 3;
-
-
-			FOR(0, drop_coinNum)
-			{			
-				//	コインばらまき方向設定
-				std::uniform_real_distribution<float>	vecrand(-1.0f, 1.0f);
-				Vector3	vec = Vector3(Random::GetFloat(-1.0f, 1.0f), 1.0f, Random::GetFloat(-1.0f, 1.0f));
-				vec *= 3.0f;
-				//vec.Normalize();
+			int		dropCoin = characterManager->GetTotalPower(i);
+			for (int i = 0; i < dropCoin; i++)
+			{
 				int		p2_coinNum = gameManager->GetCoinNum(p2_Num);
 				//	コインがあればばら撒く
 				if (p2_coinNum > 0)
-				{
+				{	
+					//	コインばらまき方向設定
+					std::uniform_real_distribution<float>	vecrand(-1.0f, 1.0f);
+					Vector3	vec = Vector3(Random::GetFloat(-1.0f, 1.0f), 1.0f, Random::GetFloat(-1.0f, 1.0f));
+					vec *= 3.0f;
+					//vec.Normalize();
 					coinManager->Append(p_pos_top, vec, power, Coin::COIN);
 					gameManager->SubCoin(p2_Num);
 				}

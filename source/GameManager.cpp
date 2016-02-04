@@ -176,6 +176,9 @@
 			}
 			for (int i = 0; i < PLAYER_MAX; i++)
 			{
+				//2.4‰ž‹}ˆ’u
+				characterManager->SetParameterInfo(i, PARAMETER_STATE::UNRIVALED);
+
 				if ( characterManager->GetIsPlayer( i ) )
 				{
 					if ( characterManager->GetMode(i) == MODE_STATE::MOVE )
