@@ -180,7 +180,9 @@ private:
 	ImageObj							roundImage[4];
 	ImageObj							lifeAnnounceImage;
 	ImageObj							faceImage;
+	ImageObj							faceImageObj[4];
 	ImageObj							playerNumImage;
+	ImageObj							playerNumImageObj[4];
 	ImageObj							waveImage;
 	ImageObj							pressButtonImage;
 	LIFE_INFO						lifeInfo;
@@ -254,6 +256,8 @@ public:
 	void	CurtainRender( void );
 	void	LastRank( void );
 	void	WinnerRender( void );
+	void	AllPlayerFaceRender( void );
+	void	AllPlayerNumRender( void );
 	void	PressButtonImageRender( void );
 	void	CannonRender( void );
 	

@@ -96,6 +96,16 @@ namespace
 		};
 	}
 
+	//コインの落とし方
+	namespace DROP_TYPE
+	{
+		enum
+		{
+			DROP,
+			SUCTION,
+		};
+	}
+
 	//	キャラクター名文字列
 	namespace
 	{
@@ -133,10 +143,13 @@ protected:
 		Vector3	pos;
 		Vector3	top;
 		Vector3	bottom;
+		int		power;		//攻撃力
+		int		dropPower;	//コインを落とす力（落とす枚数）
 		int		addParam;	//追加効果
 		int		Interval;	//攻撃間隔
 		float	r;
 		float	t;
+		int		coinDropType;
 	};
 
 	//	ノックバック情報
@@ -226,7 +239,6 @@ protected:
 	bool				initflag;
 	int				mode;
 	int				playerNum;
-	int				power;
 	int				totalPower;
 	int				leanFrame;		//	仰け反り時間
 	int				jumpStep;			//	ジャンプ動作
@@ -396,7 +408,8 @@ public:
 	bool		GetJumpFlag( void )const;
 	bool		GetCoinUnrivaled( void )const;
 	bool		GetIsPlayer( void )const;
-	int		GetPower( void )const;
+	int		GetPower(void)const;
+	int		GetDropPower(void)const;
 	int		GetTotalPower( void )const;
 	int		GetMode( void )const;
 	int		GetAIMode( void )const;
@@ -405,5 +418,6 @@ public:
 	int		GetKnockBackType(void)const;
 	int		GetLeanFrame( void )const;
 	int		GetRank( void )const;
-	int		GetLife( void )const;
+	int		GetLife(void)const;
+	int		GetDropType(void)const;
 };

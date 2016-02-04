@@ -36,6 +36,7 @@ public:
 
 	//	çXêVÅEï`âÊ
 	void	Update( void );
+	void	ObjUpdate(void);
 	void	Render( iexShader*	shader = nullptr, LPSTR technique = nullptr );
 
 	//	ìÆçÏä÷êî
@@ -55,13 +56,15 @@ public:
 	float	GetHeightToObject( const Vector3& pos, Vector3& outTempPos, int& outId, int id = 0 );
 	float	GetFrontToObject( const Vector3& pos, Vector3& outHitPos, int& outId, int id = 0 );
 	float	GetBackToObject( const Vector3& pos, Vector3& outHitPos, int& outId, int id = 0 );
-	float GetRightToObject( const Vector3& pos, Vector3& outHitPos, int& outId, int id = 0 );
-	float GetLeftToObject( const Vector3& pos, Vector3& outHitPos, int& outId, int id = 0 );
+	float	GetRightToObject( const Vector3& pos, Vector3& outHitPos, int& outId, int id = 0 );
+	float	GetLeftToObject( const Vector3& pos, Vector3& outHitPos, int& outId, int id = 0 );
 	float	GetHeight( const Vector3& pos );
 	float	GetFront( const Vector3& pos );
 	float	GetBack( const Vector3& pos );
 	float	GetRight( const Vector3& pos );
 	float	GetLeft( const Vector3& pos );
+	bool	GetLocal( Vector3 &localPos, Vector3 &localAngle);
+	void	GetWorld( Vector3 &worldPos, Vector3 &worldAngle);
 };
 
 extern	Stage* stage;

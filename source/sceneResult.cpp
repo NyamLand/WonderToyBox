@@ -257,7 +257,7 @@
 
 		//	PressButtonImage初期化
 		x = static_cast<int>( iexSystem::ScreenWidth * 0.8f );
-		y = static_cast<int>( iexSystem::ScreenHeight * 0.8f );
+		y = static_cast<int>( iexSystem::ScreenHeight * 0.9f );
 		ImageInitialize( pressButtonImage, x, y, w, h, 0, 0, 256, 128 );
 		pressButtonImage.flashingRenderflag = false;
 
@@ -624,10 +624,21 @@
 	void	sceneResult::SetRoundCoinNumber( void )
 	{
 		int	totalCoinNum;
+		int x, y, w, h, sx, sy, sw, sh;
+		int x2, y2, w2, h2, sx2, sy2, sw2, sh2;
 
 		//	各ラウンドのコイン枚数を取得
 		FOR( 0, PLAYER_MAX )
 		{
+			//	各プレイヤーの顔画像設定
+			y = roundImage[0].y - static_cast<int>( iexSystem::ScreenHeight * 0.15f );
+			w = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
+			h = w;
+			sw = 256;
+			sh = 256;
+			sx = 0;
+			sy = gameManager->GetCharacterType( value ) * sh;
+
 			for ( int round = 0; round <= Round::END; round++ ) 
 			{
 				if ( round != Round::END )
@@ -643,6 +654,8 @@
 					//	数値を設定
 					totalCoinNum = gameManager->GetTotalCoin( round, value );
 					SetNumberImageInfo( roundCoinNumberImageInfo[round][value], roundCoinNumber[round][value], totalCoinNum );
+
+					x = roundCoinNumberImageInfo[round][value].pos.x;
 				}
 				else
 				{
@@ -655,6 +668,22 @@
 					totalNumberImageInfo[value].hundred.obj = originNumber;
 				}
 			}
+
+			//	顔画像初期化
+			ImageInitialize( faceImageObj[value], x, y, w, h, sx, sy, sw, sh );
+			faceImageObj[value].obj = faceImage.obj;
+
+			//	プレイヤー番号初期化
+			x2 = x - static_cast<int>( iexSystem::ScreenWidth * 0.05f );
+			y2 = y + static_cast<int>( iexSystem::ScreenHeight * 0.05f );
+			w2 = static_cast<int>( iexSystem::ScreenWidth * 0.07f );
+			h2 = w2;
+			sw2 = 128;
+			sh2 = 128;
+			sx2 = value * sw2;
+			sy2 = 256;
+			ImageInitialize( playerNumImageObj[value], x2, y2, w2, h2, sx2, sy2, sw2, sh2 );
+			playerNumImageObj[value].obj = playerNumImage.obj;
 		}
 	}
 
@@ -1168,6 +1197,10 @@
 		{
 			NumberImageRender( totalNumberImageInfo[value] );
 		}
+
+		//	顔、プレイヤー番号描画
+		AllPlayerFaceRender();
+		AllPlayerNumRender();
 	}
 
 	//	カーテン描画
@@ -1217,6 +1250,24 @@
 			{
 				cannon[value]->Render( shader3D, "toon" );
 			}
+		}
+	}
+
+	//	全プレイヤー顔描画
+	void	sceneResult::AllPlayerFaceRender( void )
+	{
+		FOR( 0, PLAYER_MAX )
+		{
+			RenderImage( faceImageObj[value], faceImageObj[value].sx, faceImageObj[value].sy, faceImageObj[value].sw, faceImageObj[value].sh, IMAGE_MODE::NORMAL );
+		}
+	}
+
+	//	全プレイヤー番号描画
+	void	sceneResult::AllPlayerNumRender( void )
+	{
+		FOR( 0, PLAYER_MAX )
+		{
+			RenderImage( playerNumImageObj[value], playerNumImageObj[value].sx, playerNumImageObj[value].sy, playerNumImageObj[value].sw, playerNumImageObj[value].sh, IMAGE_MODE::NORMAL );
 		}
 	}
 
@@ -1637,6 +1688,7 @@
 			}
 			if ( isEnd )
 			{
+				lifeInfo.t = 0.0f;
 				lifeInfo.step++;
 			}
 			break;
@@ -1650,10 +1702,15 @@
 				lifeImage[value].sx = lifeImage[value].sw * ( ( 5 - lifeInfo.culLife ) % 4 );
 				lifeImage[value].sy = lifeImage[value].sh * ( ( 5 - lifeInfo.culLife ) / 4 );
 			}
-			lifeAnnounceImage.renderflag = false;
-			step = RESULT_MODE::INPUT_WAIT;
-			
-			return	true;
+			//lifeAnnounceImage.renderflag = false;
+
+			isEnd = Lerp( lifeAnnounceImage.alpha, 1.0f, 0.0f, lifeInfo.t );
+
+			if ( isEnd )
+			{
+				step = RESULT_MODE::INPUT_WAIT;
+				return	true;
+			}
 			break;
 		}
 
@@ -1891,6 +1948,7 @@
 		//	全員の入力が終わっていたら
 		if ( isEnd )
 		{
+			pressButtonImage.flashingRenderflag = false;
 			screen->SetScreenMode( SCREEN_MODE::FADE_OUT, 1.0f );
 			changeScene = true;
 		}

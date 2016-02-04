@@ -20,9 +20,18 @@
 
 #define	POWER_ARTS_RADIUS	7.5f
 
-	namespace
+namespace OFFENSIVE_POWER
+{
+	enum 
 	{
-		enum OFFENSIVE_POWER
+		QUICK = 1,
+		POWER = 0,
+		HYPER = 1,
+	};
+}
+namespace DROP_POWER
+{
+		enum 
 		{
 			QUICK = 1,
 			POWER = 0,
@@ -38,7 +47,6 @@
 	Princess::Princess( void ) : BaseChara()
 	{
 		//	パラメータ初期化
-		power = 2;/*仮*/
 		speed = 0.25f;
 		scale = 0.06f;
 		diffence = -1;
@@ -89,7 +97,8 @@
 	//	クイックアーツ
 	bool	Princess::QuickArts( void )
 	{
-		power = 1;
+		attackInfo.power = OFFENSIVE_POWER::QUICK;
+		attackInfo.dropPower = DROP_POWER::QUICK;
 
 		if ( !initflag )
 		{
@@ -140,7 +149,8 @@
 			sound->PlaySE( SE::PRINCESS_POWER );
 			initflag = true;
 		}
-		power = 0;
+		attackInfo.power = OFFENSIVE_POWER::POWER;
+		attackInfo.dropPower = DROP_POWER::POWER;
 		Vector3	p_pos = GetPos();
 		attackInfo.pos = Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z );
 		SetMove( Vector3( 0.0f, 0.0f, 0.0f ) );
@@ -184,7 +194,8 @@
 	//	ハイパーアーツ
 	bool	Princess::HyperArts( void )
 	{
-		power = HYPER;
+		attackInfo.power = OFFENSIVE_POWER::HYPER;
+		attackInfo.dropPower = DROP_POWER::HYPER;
 
 		if ( !initflag )
 		{

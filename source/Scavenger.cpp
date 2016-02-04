@@ -23,9 +23,18 @@
 //-----------------------------------------------------------------------------------
 #define	MIN_INPUT_STATE	300	//	スティック判定最小値
 
-namespace
+namespace OFFENSIVE_POWER
 {
-	enum OFFENSIVE_POWER
+	enum 
+	{
+		QUICK = 1,
+		POWER = 1,
+		HYPER = 15,
+	};
+}
+namespace DROP_POWER
+{
+	enum 
 	{
 		QUICK = 1,
 		POWER = 1,
@@ -41,7 +50,6 @@ namespace
 Scavenger::Scavenger(void) : BaseChara()
 {
 	//	パラメータ初期化
-	power = 0;	/*仮*/
 	speed = 0.25f;
 	scale = 0.02f;
 	diffence = -1;
@@ -120,7 +128,8 @@ void	Scavenger::Render(iexShader* shader, LPSTR technique)
 bool	Scavenger::QuickArts(void)
 {
 	//if ( fireBallInterval < SECOND / 2 )	return true;
-	power = QUICK;
+	attackInfo.power = OFFENSIVE_POWER::QUICK;
+	attackInfo.dropPower = DROP_POWER::QUICK;
 	//	情報取得
 	Matrix	mat = obj->TransMatrix;
 	Vector3	front = Vector3(mat._31, mat._32, mat._33);
@@ -173,7 +182,8 @@ bool	Scavenger::QuickArts(void)
 
 	if ( !fireBallState )
 	{
-		power = QUICK;
+		attackInfo.power = OFFENSIVE_POWER::QUICK;
+		attackInfo.dropPower = DROP_POWER::QUICK;
 		attackInfo.t += 0.03f;
 		if ( attackInfo.t >= 1.0f )	attackInfo.t = 1.0f;
 		isEnd = Lerp( attackInfo.r, 1.0f, 5.0f, attackInfo.t );
@@ -248,8 +258,8 @@ bool	Scavenger::PowerArts( void )
 		sound->PlaySE( SE::MAJO_POWER );
 		initflag = true;
 	}
-
-	power = POWER;
+	attackInfo.power = OFFENSIVE_POWER::POWER;
+	attackInfo.dropPower = DROP_POWER::POWER;
 	//攻撃モーションでなければモーション設定
 	if ( obj->GetFrame() < SCAVENGER::MOTION_FRAME::POWER_TO_WAIT )
 	{
@@ -329,7 +339,6 @@ bool	Scavenger::PowerArts( void )
 //	ハイパーアーツ
 bool	Scavenger::HyperArts( void )
 {
-	power = HYPER;
 
 	if ( !initflag )
 	{

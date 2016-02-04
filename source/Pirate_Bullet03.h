@@ -17,6 +17,9 @@ public:
 
 	void Move();
 	void Update();
+
+	void Pirate_Bullet03::Explode(void);
+
 	bool PlayerCollisionCheck(void);
 };
 

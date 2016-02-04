@@ -73,12 +73,13 @@
 	{
 		if(enable) obj->Render();
 		//DrawSphere( Vector3( pos.x, pos.y, pos.z ), radius / 5, 0xFFFF0000 );
+		//DrawSphere(Vector3(pos.x, pos.y + 4.0f, pos.z), radius, 0xFFFF0000);
 	}
 
 	//	シェーダー付き描画
 	void	BaseBullet::Render(iexShader* shader, LPSTR technique)
 	{
-		obj->Render( shader, technique );
+		obj->Render(shader, technique);
 		
 	}
 
