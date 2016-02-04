@@ -316,7 +316,7 @@
 	{
 		//	camera
 		mainView->Activate();
-		mainView->Clear();
+		mainView->Clear(0xFF02B4FE);
 
 		//	ƒ‰ƒCƒgİ’è
 		dir = bgInfo.target;

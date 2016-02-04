@@ -225,7 +225,7 @@ namespace
 	{
 		//	画面クリア
 		mainView->Activate();
-		mainView->Clear();
+		mainView->Clear( 0xFF02B4FE );
 
 		//	ステージ描画
 		stage->Render();
