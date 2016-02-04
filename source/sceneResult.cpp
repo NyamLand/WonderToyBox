@@ -1909,7 +1909,7 @@
 		case LASTRESULT_MODE::CLOSE_CURTAIN:
 			if ( curtainState )
 			{
-				sound->StopSE( SE::DRAMROLL_SE );
+				//sound->StopSE( SE::DRAMROLL_SE );
 				SetWaitTimer(150);
 				step = 0;
 				mode = MOVE_MODE::LAST_RESULT;
