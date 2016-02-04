@@ -86,8 +86,6 @@ namespace DROP_POWER
 	void	Princess::Render( iexShader* shader, LPSTR technique )
 	{
 		BaseChara::Render( shader, technique );
-
-		DrawCapsule( attackInfo.bottom, attackInfo.top, attackInfo.r, 0xFFFFFFFF );
 	}
 
 //-----------------------------------------------------------------------------------
