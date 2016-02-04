@@ -653,6 +653,10 @@ namespace
 		{
 			if (obj->GetFrame() >= 408) obj->SetFrame(408);
 		}
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PRINCESS)
+		{
+			if (obj->GetFrame() >= 214) obj->SetFrame(214);
+		}
 //		SetMotion(MOTION_NUM::POSTURE);
 
 		//SetParameterState(PARAMETER_STATE::UNRIVALED);
@@ -824,13 +828,17 @@ namespace
 		{
 			if (obj->GetFrame() <= 250) SetMotion(9);
 		}
-		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::THIEF)
 		{
 			SetMotion(7);
 		}
 		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
 		{
-			SetMotion(8);
+			SetMotion(7);
+		}
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PRINCESS)
+		{
+			SetMotion(5);
 		}
 		
 		AddKnockBackForce(force);

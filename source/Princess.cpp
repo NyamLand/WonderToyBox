@@ -68,7 +68,7 @@ namespace DROP_POWER
 
 		//	モデル読み込み
 		if( obj == nullptr )
-			obj = new iex3DObj( "DATA/CHR/プリンセス/prinsess1.IEM" );
+			obj = new iex3DObj( "DATA/CHR/プリンセス/new motion/prinsess.mkm.IEM" );
 
 		//	スケール設定
 		obj->SetScale( scale );
@@ -95,6 +95,10 @@ namespace DROP_POWER
 	//	クイックアーツ
 	bool	Princess::QuickArts( void )
 	{
+		//モーションアトデナオス
+		SetMotion(2);
+		if (obj->GetFrame() >= 75) obj->SetFrame(75);
+
 		attackInfo.power = OFFENSIVE_POWER::QUICK;
 		attackInfo.dropPower = DROP_POWER::QUICK;
 
@@ -142,6 +146,9 @@ namespace DROP_POWER
 	//	パワーアーツ
 	bool	Princess::PowerArts( void )
 	{
+		//モーションアトデナオス
+		SetMotion(3);
+		if (obj->GetFrame() >= 114) obj->SetFrame(114);
 		if ( !initflag )
 		{
 			sound->PlaySE( SE::PRINCESS_POWER );
@@ -194,6 +201,9 @@ namespace DROP_POWER
 	{
 		//2.4応急処置
 		//発動中動き停止
+
+		SetMotion(4);
+		if (obj->GetFrame() >= 184) obj->SetFrame(184);
 		move = Vector3(0, 0, 0);
 
 		attackInfo.power = OFFENSIVE_POWER::HYPER;

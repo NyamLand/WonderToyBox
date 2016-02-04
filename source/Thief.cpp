@@ -253,8 +253,6 @@ bool	Thief::HyperArts(void)
 	//	情報設定
 	SetArmTransform();
 
-	static int step = 0;
-	static float rate = 0;
 	//モーションアトデナオス(ちょうどいい感じのフレームが来たら攻撃開始)
 	if (obj->GetFrame() >= 339 && obj->GetFrame() < 399)
 	{
@@ -263,28 +261,28 @@ bool	Thief::HyperArts(void)
 		Vector3 r = -right * (2.0f * cosf(D3DX_PI * t));
 		attackInfo.bottom = p_pos + f + r;
 
-		switch (step)
+		switch (HyperStep)
 		{
 		case 0:
 			//	あたり判定のパラメータを与える
-			attackInfo.top = attackInfo.bottom + r * rate;
+			attackInfo.top = attackInfo.bottom + r * HyperRate;
 			attackInfo.r = 2.5f;
-			rate += 1.0;
-			if(rate > 20.0f) step++;
+			HyperRate += 1.0;
+			if (HyperRate > 20.0f) HyperStep++;
 			break;
 		case 1:
 			//	パラメータ加算
-			attackInfo.top = attackInfo.bottom + f * rate + r * rate;
+			attackInfo.top = attackInfo.bottom + f * HyperRate + r * HyperRate;
 			attackInfo.t += 0.03f;
 			if (attackInfo.t >= 1.0f)
 			{
-				step++;
+				HyperStep++;
 			}
 			break;
 		case 2:
 			//attackInfo.top = attackInfo.bottom + r * rate;
 			attackInfo.t = 0.0f;
-			rate -= 1.0f;
+			HyperRate -= 1.0f;
 			break;
 		}
 		armRenderflag = true;
@@ -302,14 +300,14 @@ bool	Thief::HyperArts(void)
 
 	arm->SetPos(pos);
 	arm->SetAngle(angle.y + armAngle);
-	arm->SetScale(Vector3(0.03f,0.03f,rate * 0.01f));
+	arm->SetScale(Vector3(0.03f, 0.03f, HyperRate * 0.01f));
 	arm->Update();
 
 	//モーションアトデナオス(終わりのモーションが来たら終了)
-	if (/*obj->GetFrame() == 399*/ rate < 0)
+	if (/*obj->GetFrame() == 399*/ HyperRate < 0)
 	{
-		step = 0;
-		rate = 0;
+		HyperStep = 0;
+		HyperRate = 0;
 		armRenderflag = false;
 		initflag = false;
 		return true;
