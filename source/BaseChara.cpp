@@ -496,8 +496,9 @@ namespace
 			stage->GetWorld(localPos, localAngle);
 			/*player->SetMode(Player::MODE_MOVE);*/
 
-			/*Vector3 m = GetMove();
-			SetMove(Vector3(m.x, 0, m.z));*/
+			Vector3 m = GetMove();
+			SetMove(Vector3(m.x, 0, m.z));
+
 
 			SetPos(localPos);
 			obj->SetPos(localPos);
@@ -852,21 +853,25 @@ namespace
 //		SetMotion( MOTION_NUM::DEATH );
 
 		//	コイン半分ばらまき
-		if ( !initflag )
+		// 2.4応急処置
+		if (param <= 0)
 		{
-			moveAngle = 0.0f;
-			int	coinNum = gameManager->GetCoinNum( this->playerNum );
-			FOR( 0, coinNum / 2 )
+			if (!initflag)
 			{
-				//	コイン半分ばらまき
-				if (coinNum > 0)
+				moveAngle = 0.0f;
+				int	coinNum = gameManager->GetCoinNum(this->playerNum);
+				FOR(0, coinNum / 2)
 				{
-					coinManager->Append( GetPos(), Vector3( Random::GetFloat( -1.0f, 1.0f ), 1.0f, Random::GetFloat( 0.0f, 1.0f ) ), Random::GetFloat( -1.0f, 1.0f ), Coin::COIN );
-					gameManager->SubCoin( playerNum );
+					//	コイン半分ばらまき
+					if (coinNum > 0)
+					{
+						coinManager->Append(GetPos(), Vector3(Random::GetFloat(-1.0f, 1.0f), 1.0f, Random::GetFloat(0.0f, 1.0f)), Random::GetFloat(-1.0f, 1.0f), Coin::COIN);
+						gameManager->SubCoin(playerNum);
+					}
+
 				}
-					
+				initflag = true;
 			}
-			initflag = true;
 		}
 
 		//	待ち時間加算（仮）モーション出来次第変更

@@ -130,23 +130,30 @@ bool	Pirate_Bullet03::PlayerCollisionCheck(void)
 				characterManager->SetAIMode(i, AI_MODE_STATE::DAMAGE);
 			//characterManager->SetMode(i, MODE_STATE::DAMAGE);
 
-			//	コインばらまき方向設定
-			std::uniform_real_distribution<float>	vecrand(-1.0f, 1.0f);
-			Vector3	vec = Vector3(Random::GetFloat(-1.0f, 1.0f), 1.0f, Random::GetFloat(-1.0f, 1.0f));
-			vec.Normalize();
+
 
 			//	プレイヤー番号取得とばらまきパワー設定
 			float	power = 0.2f;
+
+			int		dropCoin = characterManager->GetTotalPower(i);
 			int		p2_Num = characterManager->GetPlayerNum(i);
 			int		p2_coinNum = gameManager->GetCoinNum(p2_Num);
 
-			//	コインがあればばらまき
-			if (p2_coinNum > 0)
+
+			for (int i = 0; i < dropCoin; i++)
 			{
-				coinManager->Append(p_pos_top, vec, power, Coin::COIN );
-				gameManager->SubCoin(p2_Num);
+				//	コインがあればばらまき
+				if (p2_coinNum > 0)
+				{
+					//	コインばらまき方向設定
+					std::uniform_real_distribution<float>	vecrand(-1.0f, 1.0f);
+					Vector3	vec = Vector3(Random::GetFloat(-1.0f, 1.0f), 1.0f, Random::GetFloat(-1.0f, 1.0f));
+					vec.Normalize();
+					coinManager->Append(p_pos_top, vec, power, Coin::COIN);
+					gameManager->SubCoin(p2_Num);
+				}
 			}
-			return true;
+				return true;
 		}
 	}
 	return false;

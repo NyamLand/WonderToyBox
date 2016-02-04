@@ -192,6 +192,10 @@ namespace DROP_POWER
 	//	ハイパーアーツ
 	bool	Princess::HyperArts( void )
 	{
+		//2.4応急処置
+		//発動中動き停止
+		move = Vector3(0, 0, 0);
+
 		attackInfo.power = OFFENSIVE_POWER::HYPER;
 		attackInfo.dropPower = DROP_POWER::HYPER;
 
