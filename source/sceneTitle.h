@@ -1,5 +1,5 @@
 
-#ifndef __SCENETITLE_H__
+#ifndef		__SCENETITLE_H__
 #define	__SCENETITLE_H__
 
 //*****************************************************************************
@@ -26,11 +26,12 @@ namespace
 	}
 }
 
+//	include
+#include	"Curtain.h"
+
+//	class
 class sceneTitle : public	Scene
 {
-private:	//	定数
-	static const int STAGE_MAX = 8;
-
 private:	//	構造体
 
 	//	各キャラクター情報
@@ -95,6 +96,9 @@ private:	//	構造体
 	};
 
 private:
+	//	カーテン
+	Curtain*	curtain;
+
 	//	背景
 	iexMesh*	stage;
 
@@ -123,6 +127,9 @@ public:
 	//	更新・描画
 	void	Update( void );
 	void	Render( void );
+
+	//	動作関数
+	void	CurtainInitialize( void );
 
 	//-------------------------------------
 	//　各画面ごとのメソッド

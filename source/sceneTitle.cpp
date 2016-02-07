@@ -12,6 +12,7 @@
 #include	"BaseChara.h"
 #include	"CharacterManager.h"
 #include	"UI.h"
+#include	"Curtain.h"
 #include	"sceneMain.h"
 #include	"sceneMenu.h"
 #include	"sceneLoad.h"
@@ -30,15 +31,13 @@
 
 namespace
 {
-	//	タイトルメニュー用情報
-	namespace Title_Info
+	namespace TITLE_STEP
 	{
-		const		LPSTR	characterName[] =
+		enum
 		{
-			"ナイト",
-			"プリンセス",
-			"リス",
-			"Yねえさん"
+			WAIT_SCREEN,
+			WAIT_INPUT,
+			WAIT_OPEN,
 		};
 	}
 }
@@ -56,6 +55,7 @@ namespace
 	//	デストラクタ
 	sceneTitle::~sceneTitle( void )
 	{
+		SafeDelete( curtain );
 		SafeDelete( mainView );
 		SafeDelete( titleInfo.curtainL.obj );
 		SafeDelete( titleInfo.curtainR.obj );
@@ -82,17 +82,16 @@ namespace
 		//	カメラ設定
 		mainView = new Camera();
 
+		//	カーテン初期化
+		curtain = new Curtain();
+
 		//	マネージャー初期化
 		gameManager->Initialize();
 
 		//	パーティクル初期化
 		particle->Initialize();
 
-		//	音登録
-		sound->Initialize();
-
 		//	スクリーン初期化
-		screen->Initialize();
 		screen->SetScreenMode( SCREEN_MODE::FADE_IN, 1.0f );
 
 		//	UI初期化
@@ -114,7 +113,7 @@ namespace
 		CreditInitialize();
 
 		//BGM設定再生
-		sound->PlayBGM(BGM::TITLE_BGM);
+		sound->PlayBGM( BGM::TITLE_BGM );
 		return	true;
 	}
 
@@ -136,35 +135,16 @@ namespace
 		titleInfo.gameStartImage.obj = titleInfo.titleText;
 		titleInfo.creditTextImage.obj = titleInfo.titleText;
 
-		//	カーテン用構造体初期化
-		{
-			//	パラメータ初期化
-			titleInfo.curtainL.t = 0.0f;
-			titleInfo.curtainR.t = 0.0f;
-
-			//	頂点設定
-			SetVertex( titleInfo.curtainL.tlv[0], 0, 0, 0, 0, 0, 0xFFFFFFFF );
-			SetVertex( titleInfo.curtainL.tlv[1], static_cast<float>( iexSystem::ScreenWidth / 2 ), 0, 0, 1, 0, 0xFFFFFFFF );
-			SetVertex( titleInfo.curtainL.tlv[2], 0, static_cast<float>( iexSystem::ScreenHeight ), 0, 0, 1, 0xFFFFFFFF );
-			SetVertex( titleInfo.curtainL.tlv[3], static_cast<float>( iexSystem::ScreenWidth / 2 ), static_cast<float>( iexSystem::ScreenHeight ), 0, 1, 1, 0xFFFFFFFF );
-			
-			SetVertex( titleInfo.curtainR.tlv[0], static_cast<float>( iexSystem::ScreenWidth / 2 ), 0, 0, 1, 0, 0xFFFFFFFF );
-			SetVertex( titleInfo.curtainR.tlv[1], static_cast<float>( iexSystem::ScreenWidth ), 0, 0, 0, 0, 0xFFFFFFFF );
-			SetVertex( titleInfo.curtainR.tlv[2], static_cast<float>( iexSystem::ScreenWidth / 2 ), static_cast<float>( iexSystem::ScreenHeight ), 0, 1, 1, 0xFFFFFFFF );
-			SetVertex( titleInfo.curtainR.tlv[3], static_cast<float>( iexSystem::ScreenWidth ), static_cast<float>( iexSystem::ScreenHeight ), 0, 0, 1, 0xFFFFFFFF );
-		}
+		//	カーテン初期化
+		CurtainInitialize();
 
 		//	カメラ情報初期化
-		{
-			cameraInfo.state = 0;
-		}
+		cameraInfo.state = 0;
 
 		//	変数初期化
 		titleInfo.titleImage.renderflag = true;
 		titleInfo.step = 0;
 		titleInfo.nextMode = 0;
-
-
 	}
 
 	//	メニュー初期化
@@ -181,6 +161,14 @@ namespace
 		creditInfo.t = 0.0f;
 	}
 
+	//	カーテン情報初期化
+	void	sceneTitle::CurtainInitialize( void )
+	{
+		//	パラメータ初期化
+		titleInfo.curtainL.t = 0.0f;
+		titleInfo.curtainR.t = 0.0f;
+	}
+
 //-----------------------------------------------------------------------------------
 //	更新・描画
 //-----------------------------------------------------------------------------------
@@ -188,6 +176,8 @@ namespace
 	//	更新
 	void	sceneTitle::Update( void )
 	{
+		curtain->Update();
+
 		//	各モード動作
 		switch ( mode )
 		{
@@ -229,6 +219,9 @@ namespace
 
 		//	ステージ描画
 		stage->Render();
+
+		//	カーテン描画
+		curtain->Render();
 
 		//	パーティクル描画
 		//particle->Render();
@@ -331,6 +324,9 @@ namespace
 					//	画面制御
 					screen->SetScreenMode( SCREEN_MODE::WHITE_OUT, 1.0f );
 
+					//	カーテンモード設定
+					curtain->SetMode( Curtain::OPEN );
+
 					//	pressspace波紋
 					static	float	wavespeed = 1.5f;
 					
@@ -353,12 +349,11 @@ namespace
 				mainView->Update( VIEW_MODE::TITLE );
 
 				//	波紋更新
-				//WaveUpdate( titleInfo.pressSpace );
 				WaveUpdate( titleInfo.gameStartImage );
 				WaveUpdate( titleInfo.creditTextImage );
 
 				//	点滅更新
-				switch (titleInfo.nextMode)
+				switch ( titleInfo.nextMode )
 				{
 				case 0:
 					FlashingUpdate( titleInfo.gameStartImage, D3DX_PI / 180 * 10.0f );
@@ -370,26 +365,9 @@ namespace
 					titleInfo.gameStartImage.flashingAlpha = 1.0f;
 					break;
 				}
-				//	パラメータ加算
-				titleInfo.curtainL.t += D3DX_PI / 180 * speed;
-				titleInfo.curtainR.t += D3DX_PI / 180 * speed;
-
-				//	パラメータ上限設定
-				if ( titleInfo.curtainL.t >= 1.0f )	titleInfo.curtainL.t = 1.0f;
-				if ( titleInfo.curtainR.t >= 1.0f )	titleInfo.curtainR.t = 1.0f;
-
-				//	各頂点移動
-				curtainStateL = Lerp( titleInfo.curtainL.tlv[0].sx, 0, -( static_cast<int>( iexSystem::ScreenWidth / 2 ) ), GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, titleInfo.curtainL.t ) );
-				curtainStateL = Lerp( titleInfo.curtainL.tlv[1].sx, static_cast<int>( iexSystem::ScreenWidth / 2 ), 0, GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, titleInfo.curtainL.t ) );
-				curtainStateL = Lerp( titleInfo.curtainL.tlv[2].sx, 0, -( static_cast<int>( iexSystem::ScreenWidth / 2 ) ), GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, titleInfo.curtainL.t ) );
-				curtainStateL = Lerp( titleInfo.curtainL.tlv[3].sx, static_cast<int>( iexSystem::ScreenWidth / 2 ), 0, GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, titleInfo.curtainL.t ) );
-				curtainStateR = Lerp( titleInfo.curtainR.tlv[0].sx, static_cast<int>( iexSystem::ScreenWidth / 2 ), static_cast<int>( iexSystem::ScreenWidth ), GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, titleInfo.curtainL.t ) );
-				curtainStateR = Lerp( titleInfo.curtainR.tlv[1].sx, static_cast<int>( iexSystem::ScreenWidth ), static_cast<int>( iexSystem::ScreenWidth * 1.5f ), GetBezier( ePrm_t::eSlow_Lv1, ePrm_t::eSlow_Lv1, titleInfo.curtainL.t ) );
-				curtainStateR = Lerp( titleInfo.curtainR.tlv[2].sx, static_cast<int>( iexSystem::ScreenWidth / 2 ), static_cast<int>( iexSystem::ScreenWidth ), GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, titleInfo.curtainL.t ) );
-				curtainStateR = Lerp( titleInfo.curtainR.tlv[3].sx, static_cast<int>( iexSystem::ScreenWidth ), static_cast<int>( iexSystem::ScreenWidth * 1.5f ), GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5, titleInfo.curtainL.t ) );
 
 				//	動作済みで次のステップへ
-				if ( curtainStateL && curtainStateR )	titleInfo.step++;
+				if ( curtain->GetIsEnd() )	titleInfo.step++;
 				break;
 
 			case 3:
@@ -417,11 +395,10 @@ namespace
 		void	sceneTitle::TitleRender( void )
 		{
 			//	背景描画
-			iexPolygon::Rect(0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight , RS_COPY, 0xFFFFFFFF);
+			iexPolygon::Rect( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight , RS_COPY, 0xFFFFFFFF );
 
 			//	幕描画
-			iexPolygon::Render2D( titleInfo.curtainL.tlv, 2, titleInfo.curtainL.obj, RS_COPY );
-			iexPolygon::Render2D( titleInfo.curtainR.tlv, 2, titleInfo.curtainL.obj, RS_COPY );
+			curtain->Render();
 
 			//	タイトル画像描画
 			RenderImage( titleInfo.titleImage, 0, 0, 512, 512, IMAGE_MODE::NORMAL );

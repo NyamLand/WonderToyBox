@@ -32,8 +32,8 @@
 //	初期化・解放
 //-----------------------------------------------------------------------------------
 
-	//	初期化
-	bool	Screen::Initialize( void )
+	//	コンストラクタ
+	Screen::Screen( void )
 	{
 		mode = SCREEN_MODE::FADE_IN;
 		color = Color::BLACK;
@@ -46,12 +46,10 @@
 
 		shader3D->SetValue( "screen_width", static_cast<float>( iexSystem::ScreenWidth ) );
 		shader3D->SetValue( "screen_height", static_cast<float>( iexSystem::ScreenHeight ) );
-
-		return	false;
 	}
 
-	//	解放
-	void	Screen::Release( void )
+	//	デストラクタ
+	Screen::~Screen( void )
 	{
 
 	}

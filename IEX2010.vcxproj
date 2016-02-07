@@ -112,6 +112,7 @@
     <ClCompile Include="source\AirPlane.cpp" />
     <ClCompile Include="source\BaseChara.cpp" />
     <ClCompile Include="source\BaseBullet.cpp" />
+    <ClCompile Include="source\Curtain.cpp" />
     <ClCompile Include="source\Event_Coin.cpp" />
     <ClCompile Include="source\Event_Jamming.cpp" />
     <ClCompile Include="source\Event_Mission.cpp" />
@@ -183,6 +184,8 @@
     <ClInclude Include="source\AirPlane.h" />
     <ClInclude Include="source\BaseChara.h" />
     <ClInclude Include="source\BaseBullet.h" />
+    <ClInclude Include="source\Curtain.h" />
+    <ClInclude Include="source\Define.h" />
     <ClInclude Include="source\Event_Coin.h" />
     <ClInclude Include="source\Event_Jamming.h" />
     <ClInclude Include="source\Event_Mission.h" />

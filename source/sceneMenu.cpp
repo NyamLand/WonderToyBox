@@ -12,6 +12,7 @@
 #include	"BaseChara.h"
 #include	"CharacterManager.h"
 #include	"UI.h"
+#include	"Curtain.h"
 #include	"sceneMain.h"
 #include	"sceneLoad.h"
 #include	"sceneTitle.h"
@@ -118,7 +119,6 @@
 		Random::Initialize();
 
 		//	screen
-		screen->Initialize();
 		screen->SetScreenMode( SCREEN_MODE::WIPE_IN, 1.5f );
 
 		//	ゲームマネージャ初期化
@@ -445,7 +445,7 @@
 		if ( playerNumSelectInfo.t >= 1.0f )
 		{
 			//	選択
-			if ( input[0]->Get( KEY_DOWN ) == 1 )
+			if ( input[0]->Get( KEY_DOWN ) == 1 || input[0]->Get( KEY_AXISY ) < 0 )
 			{
 				sound->PlaySE(SE::CHOICE_SE);
 				//	元の座標を保存
@@ -462,7 +462,7 @@
 				}
 			}
 
-			if ( input[0]->Get( KEY_UP ) == 1 )
+			if ( input[0]->Get( KEY_UP ) == 1 || input[0]->Get( KEY_AXISY ) > 0 )
 			{
 				sound->PlaySE(SE::CHOICE_SE);
 				//	元の座標を保存
@@ -532,6 +532,18 @@
 		org[CHARACTER_TYPE::THIEF]->SetMotion(0);		//	怪盗
 		org[CHARACTER_TYPE::PIRATE]->SetMotion(0);			//	海賊
 	
+		//	顔画像初期化
+		FOR( 0, CHARACTER_TYPE::MAX )
+		{
+			int left = static_cast<int>( iexSystem::ScreenWidth / 5 );
+			int x = left + left * value;
+			int y = static_cast<int>( iexSystem::ScreenHeight * 0.37f );
+			int w = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
+			int h = static_cast<int>( iexSystem::ScreenHeight * 0.155f );
+			ImageInitialize( faceImage[value], x, y, w, h, 0, 256 * value, 256, 256 );
+			faceImage[value].obj = face;
+		}
+
 		//	モデル、選択情報初期化
 		FOR( 0, PLAYER_MAX )
 		{
@@ -540,6 +552,7 @@
 			modelAngle[value] = Vector3( 0.0f, D3DXToRadian( 100.0f ), 0.0f );
 
 			//	選択情報初期化
+			characterSelectInfo.t[value] = 1.0f;
 			characterSelectInfo.character[value] = value;
 			characterSelectInfo.select[value] = false;
 			
@@ -554,6 +567,15 @@
 			{
 				cursorImage[value].renderflag = false;
 			}
+			
+			//	カーソル座標初期化
+			characterSelectInfo.startPos[value] = faceImage[characterSelectInfo.character[value]].x;
+			characterSelectInfo.endPos[value] = faceImage[characterSelectInfo.character[value]].x;
+			cursorImage[value].x = faceImage[characterSelectInfo.character[value]].x;
+			cursorImage[value].y = faceImage[characterSelectInfo.character[value]].y;
+
+			//	波紋終了フラグ
+			characterSelectInfo.isWaveEnd[value] = false;
 		}
 	
 		//	変数初期化
@@ -566,26 +588,30 @@
 		//textImage.angle = D3DXToRadian( 5.0f );
 		textImage.renderflag = true;
 
-		//	顔画像初期化
-		FOR( 0, CHARACTER_TYPE::MAX )
-		{
-			int left = static_cast<int>( iexSystem::ScreenWidth / 5 );
-			int x = left + left * value;
-			int y = static_cast<int>( iexSystem::ScreenHeight * 0.37f );
-			int w = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
-			int h = static_cast<int>( iexSystem::ScreenHeight * 0.155f );
-			ImageInitialize( faceImage[value], x, y, w, h, 0, 256 * value, 256, 256 );
-			faceImage[value].obj = face;
-		}
 	}
 
 	//	キャラクター選択
 	void	sceneMenu::SelectCharacterUpdate( void )
 	{
-		if (bgInfo.t < 1.0f)return;
+		if ( bgInfo.t < 1.0f )return;
+
+
 		//	各プレイヤー動作
 		FOR( 0, characterSelectInfo.playerNum )
 		{
+			characterSelectInfo.isWaveEnd[value] = false;
+
+			//	パラメータ加算
+			characterSelectInfo.t[value] += 0.08f;
+			if ( characterSelectInfo.t[value] >= 1.0f )	characterSelectInfo.t[value] = 1.0f;
+
+			//	移動補間
+			CubicFunctionInterpolation( cursorImage[value].x, characterSelectInfo.startPos[value], characterSelectInfo.endPos[value], characterSelectInfo.t[value] );
+			cursorImage[value].y = faceImage[characterSelectInfo.character[value]].y;
+
+			//	補間終了してなかったらスキップ
+			if ( characterSelectInfo.t[value] < 1.0f )	continue;
+
 			//	キャンセル
 			if ( input[value]->Get( KEY_B ) == 3 )		characterSelectInfo.select[value] = false;
 
@@ -593,42 +619,70 @@
 			if ( characterSelectInfo.select[value] )	continue;
 
 			//	カーソル移動
-			if ( input[value]->Get( KEY_RIGHT ) == 3 )	
+			if ( input[value]->Get( KEY_RIGHT ) == 1 || input[value]->Get( KEY_AXISX ) > 0 )	
 			{
+				//	効果音
 				sound->PlaySE( SE::CHOICE_SE );
+				
+				//	現在位置を保存
+				characterSelectInfo.startPos[value] = faceImage[characterSelectInfo.character[value]].x;
+
+				//	パラメータ加算
 				characterSelectInfo.character[value]++;
-				//	下限設定
-				if ( characterSelectInfo.character[value] >= CHARACTER_TYPE::MAX )	characterSelectInfo.character[value] = 0;
-				//	モデル差し替え
-				obj[value] = org[characterSelectInfo.character[value]]->Clone();
-			}
-			if ( input[value]->Get( KEY_LEFT ) == 3 )
-			{
-				sound->PlaySE( SE::CHOICE_SE );
-				characterSelectInfo.character[value]--;
+
 				//	上限設定
-				if ( characterSelectInfo.character[value] < 0 )	characterSelectInfo.character[value] = CHARACTER_TYPE::MAX - 1;
+				if ( characterSelectInfo.character[value] >= CHARACTER_TYPE::MAX )	characterSelectInfo.character[value] = 0;
+
+				//	カーソル位置設定
+				characterSelectInfo.endPos[value] = faceImage[characterSelectInfo.character[value]].x;
+
 				//	モデル差し替え
 				obj[value] = org[characterSelectInfo.character[value]]->Clone();
+
+				//	移動パラメータ初期化
+				characterSelectInfo.t[value] = 0.0f;
 			}
 
+			if ( input[value]->Get( KEY_LEFT ) == 1 || input[value]->Get( KEY_AXISX ) < 0 )
+			{
+				//	効果音
+				sound->PlaySE( SE::CHOICE_SE );
+
+				//	現在位置を保存
+				characterSelectInfo.startPos[value] = faceImage[characterSelectInfo.character[value]].x;
+
+				//	減算
+				characterSelectInfo.character[value]--;
+
+				//	下限設定
+				if ( characterSelectInfo.character[value] < 0 )	characterSelectInfo.character[value] = CHARACTER_TYPE::MAX - 1;
+
+				//	カーソル位置設定
+				characterSelectInfo.endPos[value] = faceImage[characterSelectInfo.character[value]].x;
+
+				//	モデル差し替え
+				obj[value] = org[characterSelectInfo.character[value]]->Clone();
+
+				//	移動パラメータ初期化
+				characterSelectInfo.t[value] = 0.0f;
+			}
 
 			//	決定
 			if ( input[value]->Get( KEY_SPACE ) == 3 || input[value]->Get( KEY_A ) == 3 )
 			{
 				sound->PlaySE( SE::DECIDE_SE );
 				gameManager->SetCharacterType( value, characterSelectInfo.character[value] );
+				SetWave( cursorImage[value], 1.5f );
 				characterSelectInfo.select[value] = true;
 			}
-
-
 		}
 
-		//	選択済み人数をカウント
+		//	選択済み人数をカウント&波紋更新
 		int		selectCheck = 0;
 		FOR( 0, gameManager->GetPlayerNum() )
 		{
 			if ( characterSelectInfo.select[value] )	selectCheck++;
+			characterSelectInfo.isWaveEnd[value] = WaveUpdate( cursorImage[value], 80 );
 		}
 
 		//	全員未選択時にキャンセルボタンを押すとプレイ人数選択へ移行
@@ -643,9 +697,25 @@
 			}
 		}
 
+
+		//	データ更新
+		FOR( 0, PLAYER_MAX )
+		{
+			modelPos[value] = Vector3( -12.0f, 10.0f, -9.0f + 6.0f * value );
+			modelAngle[value] = Vector3( 0.0f, CHARA_ANGLE::CharaSelectPlayer_ANGLE[value], 0.0f );
+		}
+
 		//	全員選択済み
+		int	isWaveEnd = 0;
 		if ( selectCheck >= gameManager->GetPlayerNum() )
 		{
+			FOR( 0, PLAYER_MAX )
+			{
+				if ( characterSelectInfo.isWaveEnd[value] )	isWaveEnd++;
+			}
+
+			if ( isWaveEnd < gameManager->GetPlayerNum() )	return;
+
 			//	コンピュータ分を適当に設定
 			FOR( gameManager->GetPlayerNum(), PLAYER_MAX )
 			{
@@ -667,13 +737,6 @@
 			bgInfo.start = bgInfo.end;
 			bgInfo.end = CAMERA_TARGET::back;
 			SetMode( MENU_MODE::SELECT_STAGE );
-		}
-
-		//	モデルデータ更新
-		FOR( 0, PLAYER_MAX )
-		{
-			modelPos[value] = Vector3( -12.0f, 10.0f, -9.0f + 6.0f * value );
-			modelAngle[value] = Vector3( 0.0f, CHARA_ANGLE::CharaSelectPlayer_ANGLE[value], 0.0f );
 		}
 	}
 
@@ -700,17 +763,18 @@
 		}
 
 		//プレイヤー1
-		cursorImage[0].x = faceImage[characterSelectInfo.character[0]].x - faceImage[characterSelectInfo.character[0]].w / 2;
-		cursorImage[0].y = faceImage[characterSelectInfo.character[0]].y - faceImage[characterSelectInfo.character[0]].h / 2;
-		if (characterSelectInfo.select[0])	{
+		cursorImage[0].x -= faceImage[characterSelectInfo.character[0]].w / 2;
+		cursorImage[0].y -= faceImage[characterSelectInfo.character[0]].h / 2;
+		if (characterSelectInfo.select[0])	
+		{
 			decidecursorImage[0].x = cursorImage[0].x;	//	決定時明度下げる
 			decidecursorImage[0].y = cursorImage[0].y;
 		}
 		
 
 		//プレイヤー2
-		cursorImage[1].x = faceImage[characterSelectInfo.character[1]].x + faceImage[characterSelectInfo.character[1]].w / 2;
-		cursorImage[1].y = faceImage[characterSelectInfo.character[1]].y - faceImage[characterSelectInfo.character[1]].h / 2;
+		cursorImage[1].x += faceImage[characterSelectInfo.character[1]].w / 2;
+		cursorImage[1].y -= faceImage[characterSelectInfo.character[1]].h / 2;
 		if (characterSelectInfo.select[1])	{
 			decidecursorImage[1].x = cursorImage[1].x;	//	決定時明度下げる
 			decidecursorImage[1].y = cursorImage[1].y;
@@ -718,30 +782,32 @@
 
 
 		//プレイヤー3
-		cursorImage[2].x = faceImage[characterSelectInfo.character[2]].x - faceImage[characterSelectInfo.character[2]].w / 2;
-		cursorImage[2].y = faceImage[characterSelectInfo.character[2]].y + faceImage[characterSelectInfo.character[2]].h / 2;
+		cursorImage[2].x -= faceImage[characterSelectInfo.character[2]].w / 2;
+		cursorImage[2].y += faceImage[characterSelectInfo.character[2]].h / 2;
 		if (characterSelectInfo.select[2])	{
 			decidecursorImage[2].x = cursorImage[2].x;	//	決定時明度下げる
 			decidecursorImage[2].y = cursorImage[2].y;
 		}
 
 		//プレイヤー4
-		cursorImage[3].x = faceImage[characterSelectInfo.character[3]].x + faceImage[characterSelectInfo.character[3]].w / 2;
-		cursorImage[3].y = faceImage[characterSelectInfo.character[3]].y + faceImage[characterSelectInfo.character[3]].h / 2;
+		cursorImage[3].x += faceImage[characterSelectInfo.character[3]].w / 2;
+		cursorImage[3].y += faceImage[characterSelectInfo.character[3]].h / 2;
 		if (characterSelectInfo.select[3])	{
 			decidecursorImage[3].x = cursorImage[3].x;	//	決定時明度下げる
 			decidecursorImage[3].y = cursorImage[3].y;
 		}
 
-		FOR(0, PLAYER_MAX){
-			if ( characterSelectInfo.select[value] ){
-				RenderImage(decidecursorImage[value], 128 * (value % 2), 128 * (value / 2), 128, 128, IMAGE_MODE::NORMAL);
+		FOR( 0, PLAYER_MAX )
+		{
+			if ( characterSelectInfo.select[value] )
+			{
+				RenderImage( decidecursorImage[value], 128 * (value % 2), 128 * (value / 2), 128, 128, IMAGE_MODE::NORMAL);
+				RenderImage( cursorImage[value], 128 * ( value % 2 ), 128 * ( value / 2 ), 128, 128, IMAGE_MODE::WAVE );
 			}
 			else
 			{
-				RenderImage(cursorImage[value], 128 * (value % 2), 128 * (value / 2), 128, 128, IMAGE_MODE::NORMAL);
+				RenderImage( cursorImage[value], 128 * (value % 2), 128 * (value / 2), 128, 128, IMAGE_MODE::NORMAL );
 			}
-
 		}
 		
 	}

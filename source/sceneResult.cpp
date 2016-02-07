@@ -7,6 +7,7 @@
 #include	"GameManager.h"
 #include	"Collision.h"
 #include	"CharacterManager.h"
+#include	"Curtain.h"
 #include	"sceneTitle.h"
 #include	"sceneMenu.h"
 #include	"sceneMain.h"
@@ -119,7 +120,6 @@
 	bool	sceneResult::Initialize( void )
 	{
 		//	スクリーン設定
-		screen->Initialize();
 		screen->SetScreenMode( SCREEN_MODE::FADE_IN , 1.5f );
 
 		//	現在のラウンドを取得

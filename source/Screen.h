@@ -24,11 +24,14 @@ namespace
 	}
 }
 
+//	include
+#include	"iextreme.h"
+
 //	class
 class Screen
 {
 private:
-	int			mode;
+	int		mode;
 	float		alpha;
 	float		speed;
 	bool		screenState;
@@ -37,11 +40,12 @@ private:
 	Vector3	color;
 	float		param;
 
-public:
+private:
 	//	初期化・解放
-	bool	Initialize( void );
-	void	Release( void );
+	Screen( void );
+	~Screen( void );
 
+public:
 	//	更新・描画
 	bool	Update( void );
 	void	Render( void );
