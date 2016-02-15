@@ -35,10 +35,9 @@ namespace DROP_POWER
 {
 	enum 
 	{
-		//クイックとハイパーはバレット側で処理
-		QUICK = 0,
+		QUICK = 3,
 		POWER = 5,
-		HYPER = 0,
+		HYPER = 15,
 	};
 }
 

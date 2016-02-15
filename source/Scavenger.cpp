@@ -126,6 +126,10 @@ void	Scavenger::Render(iexShader* shader, LPSTR technique)
 //	クイックアーツ
 bool	Scavenger::QuickArts(void)
 {
+	if (obj->GetMotion() != SCAVENGER::MOTION_DATA::QUICKARTS &&
+		obj->GetMotion() != SCAVENGER::MOTION_DATA::QUICKARTS_END)
+	SetMotion(SCAVENGER::MOTION_DATA::QUICKARTS_START);
+
 	//if ( fireBallInterval < SECOND / 2 )	return true;
 	attackInfo.power = OFFENSIVE_POWER::QUICK;
 	attackInfo.dropPower = DROP_POWER::QUICK;
@@ -154,6 +158,8 @@ bool	Scavenger::QuickArts(void)
 	case 1:
 		if (fireBallState)
 		{
+			if (obj->GetFrame() == SCAVENGER::MOTION_FRAME::QUICKARTS_START_END)
+				obj->SetMotion(SCAVENGER::MOTION_DATA::QUICKARTS);
 			//	ボタンを押してる間進行
 			p_pos += front * 0.5f;
 			attackInfo.pos = p_pos;
@@ -175,6 +181,7 @@ bool	Scavenger::QuickArts(void)
 		break;
 
 	case 2:
+			obj->SetMotion(SCAVENGER::MOTION_DATA::QUICKARTS_END);
 		fireBallState = false;
 		sound->PlaySE( SE::MAJO_QUICK_BOMB );
 		break;
@@ -263,7 +270,7 @@ bool	Scavenger::PowerArts( void )
 	//攻撃モーションでなければモーション設定
 	if ( obj->GetFrame() < SCAVENGER::MOTION_FRAME::POWER_TO_WAIT )
 	{
-		SetMotion( SCAVENGER::MOTION_DATA::POWER_START );
+		SetMotion(SCAVENGER::MOTION_DATA::POWERARTS_START);
 	}
 
 	float run_speed = 0.5f;
@@ -324,7 +331,7 @@ bool	Scavenger::PowerArts( void )
 
 	if (attackInfo.t >= 1.0f)
 	{
-		SetMotion(SCAVENGER::MOTION_DATA::POWER_END);
+		SetMotion(SCAVENGER::MOTION_DATA::POWERARTS_END);
 	}
 
 	//モーション終了時にMOVEへ戻す
@@ -339,6 +346,8 @@ bool	Scavenger::PowerArts( void )
 //	ハイパーアーツ
 bool	Scavenger::HyperArts( void )
 {
+	//空中で発動しても停止する
+	move = Vector3(0, -GRAVITY, 0);
 
 	if ( !initflag )
 	{
@@ -347,7 +356,7 @@ bool	Scavenger::HyperArts( void )
 		initflag = true;
 	}
 
-	if ( obj->GetFrame() <= SCAVENGER::MOTION_FRAME::HYPER_BEGIN) SetMotion(SCAVENGER::MOTION_DATA::HYPER_START );
+	if (obj->GetFrame() <= SCAVENGER::MOTION_FRAME::HYPER_BEGIN) SetMotion(SCAVENGER::MOTION_DATA::HYPERARTS_START);
 
 	//SetUnrivaled(false);
 	absorb_length = 20.0f;

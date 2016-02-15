@@ -640,23 +640,8 @@ namespace
 	//	ノックバック
 	void	BaseChara::KnockBack( void )
 	{
-		//モーションアトデナオス(余力があれば関数化)
-		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::SCAVENGER)
-		{
-			if (obj->GetFrame() >= 278) obj->SetFrame(278);
-		}
-		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
-		{
-			if (obj->GetFrame() >= 286) obj->SetFrame(286);
-		}
-		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::THIEF)
-		{
-			if (obj->GetFrame() >= 408) obj->SetFrame(408);
-		}
-		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PRINCESS)
-		{
-			if (obj->GetFrame() >= 214) obj->SetFrame(214);
-		}
+
+		KeepDamageFrame();
 //		SetMotion(MOTION_NUM::POSTURE);
 
 		//SetParameterState(PARAMETER_STATE::UNRIVALED);
@@ -667,9 +652,7 @@ namespace
 			damageStep = 0;
 			SetMode(MODE_STATE::MOVE);
 
-			//モーションアトデナオス
-			SetMotion(0);
-
+			SetMotion(COMMON_MOTION::WAIT);
 			//SetUnrivaled(false);
 		}
 	}
@@ -823,23 +806,7 @@ namespace
 		// 攻撃中に食らったときにパラメーター初期化
 		AttackParamInitialize();
 
-		//モーションアトデナオス(余力があれば関数化)
-		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::SCAVENGER)
-		{
-			if (obj->GetFrame() <= 250) SetMotion(9);
-		}
-		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::THIEF)
-		{
-			SetMotion(7);
-		}
-		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
-		{
-			SetMotion(7);
-		}
-		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PRINCESS)
-		{
-			SetMotion(5);
-		}
+		SetDamageMotion();
 		
 		AddKnockBackForce(force);
 	}
@@ -913,8 +880,7 @@ namespace
 
 		if ( length > MIN_INPUT_STATE )
 		{
-			//モーションアトデナオス
-			SetMotion( 1 );
+			SetMotion( COMMON_MOTION::RUN );
 			//SetMotion( MOTION_NUM::RUN );
 			static	float adjustSpeed = 0.3f;
 			AngleAdjust( adjustSpeed );
@@ -934,8 +900,7 @@ namespace
 		}
 		else
 		{
-			//モーションアトデナオス
-			SetMotion(0);
+			SetMotion(COMMON_MOTION::WAIT);
 //			SetMotion( MOTION_NUM::POSTURE );
 			SetDrag( 0.8f );
 		}
@@ -1033,6 +998,31 @@ namespace
 			(isPlayer) ?
 				SetMode(MODE_STATE::DEATH) :
 				aiInfo.mode = AI_MODE_STATE::DEATH;
+		}
+	}
+
+
+	void	BaseChara::KeepDamageFrame(void)
+	{
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::SCAVENGER)
+		{
+			if (obj->GetFrame() >= SCAVENGER::MOTION_FRAME::DAMAGE_END)
+				obj->SetFrame(SCAVENGER::MOTION_FRAME::DAMAGE_END);
+		}
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
+		{
+			if (obj->GetFrame() >= PIRATE::MOTION_FRAME::DAMAGE_END)
+				obj->SetFrame(PIRATE::MOTION_FRAME::DAMAGE_END);
+		}
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::THIEF)
+		{
+			if (obj->GetFrame() >= THIEF::MOTION_FRAME::DAMAGE_END)
+				obj->SetFrame(THIEF::MOTION_FRAME::DAMAGE_END);
+		}
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PRINCESS)
+		{
+			if (obj->GetFrame() >= PRINCESS::MOTION_FRAME::DAMAGE_END)
+				obj->SetFrame(PRINCESS::MOTION_FRAME::DAMAGE_END);
 		}
 	}
 
@@ -1425,19 +1415,7 @@ namespace
 		// 攻撃中に食らったときにパラメーター初期化
 		AttackParamInitialize();
 
-		//モーションアトデナオス(余力があれば関数化)
-		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::SCAVENGER)
-		{
-			if (obj->GetFrame() <= 250) SetMotion(9);
-		}
-		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
-		{
-			SetMotion(7);
-		}
-		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
-		{
-			SetMotion(8);
-		}
+		SetDamageMotion();
 
 		AutoAddKnockBackForce(force);
 	}
@@ -1445,19 +1423,7 @@ namespace
 	//　ノックバック
 	void	BaseChara::AutoKnockBack(void)
 	{
-		//モーションアトデナオス(余力があれば関数化)
-		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::SCAVENGER)
-		{
-			if (obj->GetFrame() >= 278) obj->SetFrame(278);
-		}
-		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
-		{
-			if (obj->GetFrame() >= 286) obj->SetFrame(286);
-		}
-		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::THIEF)
-		{
-			if (obj->GetFrame() >= 408) obj->SetFrame(408);
-		}
+		KeepDamageFrame();
 		//		SetMotion(MOTION_NUM::POSTURE);
 
 		//SetParameterState(PARAMETER_STATE::UNRIVALED);
@@ -1468,8 +1434,7 @@ namespace
 			damageStep = 0;
 			aiInfo.mode = AI_MODE_STATE::MOVE;
 
-			//モーションアトデナオス
-			SetMotion(0);
+			SetMotion(COMMON_MOTION::WAIT);
 
 			//SetUnrivaled(false);
 		}
@@ -1478,7 +1443,6 @@ namespace
 	//　ノックバック与力
 	void	BaseChara::AutoAddKnockBackForce(float force)
 	{
-		//モーションアトデナオス(余力があれば関数化)
 		isGround = false;
 		SetDamageColor(damageColor.catchColor);
 		move = knockBackInfo.vec * (force / 4);
@@ -2078,6 +2042,27 @@ namespace
 		if ( obj->GetMotion() != motion )
 		{
 			obj->SetMotion(motion);
+		}
+	}
+
+	//ダメージ設定
+	void	BaseChara::SetDamageMotion()
+	{
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::SCAVENGER)
+		{
+			SetMotion(SCAVENGER::MOTION_DATA::DAMAGE);
+		}
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::THIEF)
+		{
+			SetMotion(THIEF::MOTION_DATA::DAMAGE);
+		}
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
+		{
+			SetMotion(PIRATE::MOTION_DATA::DAMAGE);
+		}
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PRINCESS)
+		{
+			SetMotion(PIRATE::MOTION_DATA::DAMAGE);
 		}
 	}
 

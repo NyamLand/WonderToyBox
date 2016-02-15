@@ -106,6 +106,16 @@ namespace
 		};
 	}
 
+	//(共通)モーション番号
+	namespace COMMON_MOTION
+	{
+		enum
+		{
+			WAIT,
+			RUN,
+		};
+	}
+
 	//	キャラクター名文字列
 	namespace
 	{
@@ -315,6 +325,7 @@ public:
 	void	ShadowUpdate( void );
 	void	AddLife( void );
 	void	SubLife( void );
+	void	KeepDamageFrame( void );
 
 	//	パラメータ状態動作
 	void	Unrivaled(void);
@@ -377,7 +388,8 @@ public:
 	void	SetRank( int rank );
 	void	SetParameterState( PARAMETER_INFO& paramterState, int time );
 	void	SetForce(float force);
-	void	SetMotion( int motion );
+	void	SetMotion(int motion);
+	void	SetDamageMotion();
 	void	SetLife( int life );
 
 	//	情報取得

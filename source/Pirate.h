@@ -21,6 +21,7 @@ namespace PIRATE
 		const int POWERARTS_END = 210;
 
 		const int HYPERARTS_END = 255;
+		const int DAMAGE_END = 286;
 	}
 	
 	enum MOTION_DATA
