@@ -252,12 +252,13 @@
 	//	パラメータ
 	float3	SkyColor = { 0.3f, 0.4f, 0.5f };
 	float3	GroundColor = { 0.4f, 0.3f, 0.1f };
+	float3	BulletColor = { 0.0f, 0.0f, 0.0f };
 
 	//	半球ライティング
 	float3	HemiSphereLight( float3 normal )
 	{
 		float	rate = normal.y * 0.5f + 0.5f;
-		float3 color = GroundColor * ( 1 - rate ) + SkyColor * rate;
+		float3 color = GroundColor * (1 - rate) + SkyColor * rate;
 
 		return	color;
 	}
@@ -1320,6 +1321,56 @@
 		}
 
 	//-----------------------------------------------------------------------------------
+	//	バレット用シェーダー
+	//-----------------------------------------------------------------------------------
+	V_FULL	VS_Bullet(VS_INPUT	In)
+	{
+			V_FULL	Out = (V_FULL)0;
+
+			Out.Pos = mul(In.Pos, Projection);
+			Out.Color = 1;
+			Out.Tex = In.Tex;
+
+			float4	P = mul(In.Pos, TransMatrix);
+				float3x3	mat = TransMatrix;
+				float3 N = mul(In.Normal, mat);
+				N = normalize(N);
+
+			float	rate = N * 0.5f + 0.5f;
+			float3 color = BulletColor * rate;
+			Out.Ambient.rgb += color;
+
+			//	頂点ローカル座標系算出
+			float3	vx;
+			float3	vy = { 0.0f, 1.0f, 0.001f };
+				vx = cross(vy, N);
+			vx = normalize(vx);
+			vy = cross(vx, N);
+			vy = normalize(vy);
+
+			//	ライトベクトル補正
+			Out.vLight.x = dot(vx, DirLightVec);
+			Out.vLight.y = dot(vy, DirLightVec);
+			Out.vLight.z = dot(N, DirLightVec);
+
+			//	点光源ベクトル補正
+			float3	pvec = (P - plight_pos) / plight_range;
+
+				//	ライトベクトル補正
+				Out.pLight.x = dot(vx, pvec);
+			Out.pLight.y = dot(vy, pvec);
+			Out.pLight.z = dot(N, pvec);
+
+			//	視線ベクトル補正
+			float3	E = P - ViewPos;	//	視線ベクトル
+				Out.vE.x = dot(vx, E);
+			Out.vE.y = dot(vy, E);
+			Out.vE.z = dot(N, E);
+
+			return	Out;
+		}
+
+	//-----------------------------------------------------------------------------------
 	//	ピクセルシェーダー(有り)
 	//-----------------------------------------------------------------------------------
 		float4	PS_Skin( VS_OUTPUT In )	:	COLOR
@@ -1854,5 +1905,25 @@
 				ZWriteEnable = true;
 
 				PixelShader = compile ps_3_0 PS_WipeEffect();
+			}
+		}
+
+
+		//-----------------------------------------------------------------------------------
+		//	バレット用
+		//-----------------------------------------------------------------------------------
+				//	合成なし
+		technique bullet
+		{
+			pass P0
+			{
+				AlphaBlendEnable	=	true;
+				BlendOp				=	Add;
+				SrcBlend				=	SrcAlpha;
+				DestBlend				=	InvSrcAlpha;
+				ZWriteEnable			=	true;
+
+				VertexShader = compile		vs_3_0 VS_Bullet();
+				PixelShader			=		compile		ps_3_0 PS_Full();
 			}
 		}

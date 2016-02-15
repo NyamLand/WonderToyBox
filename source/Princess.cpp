@@ -197,6 +197,10 @@ namespace DROP_POWER
 	//	ハイパーアーツ
 	bool	Princess::HyperArts( void )
 	{
+
+		//空中で発動しても停止する
+		move = Vector3(0, -GRAVITY, 0);
+
 		SetMotion(PRINCESS::MOTION_DATA::HYPERARTS);
 		if (obj->GetFrame() >= PRINCESS::MOTION_FRAME::HYPERARTS_END) obj->SetFrame(PRINCESS::MOTION_FRAME::HYPERARTS_END);
 		move = Vector3(0, 0, 0);

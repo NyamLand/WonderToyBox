@@ -233,6 +233,10 @@ bool	Thief::PowerArts(void)
 //	ハイパーアーツ
 bool	Thief::HyperArts(void)
 {
+
+	//空中で発動しても停止する
+	move = Vector3(0, -GRAVITY, 0);
+
 	if ( !initflag )
 	{
 		sound->PlaySE( SE::HYPER_ATTACK );
