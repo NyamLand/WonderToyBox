@@ -496,8 +496,9 @@ namespace
 			stage->GetWorld(localPos, localAngle);
 			/*player->SetMode(Player::MODE_MOVE);*/
 
-			/*Vector3 m = GetMove();
-			SetMove(Vector3(m.x, 0, m.z));*/
+			Vector3 m = GetMove();
+			SetMove(Vector3(m.x, 0, m.z));
+
 
 			SetPos(localPos);
 			obj->SetPos(localPos);
@@ -651,6 +652,10 @@ namespace
 		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::THIEF)
 		{
 			if (obj->GetFrame() >= 408) obj->SetFrame(408);
+		}
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PRINCESS)
+		{
+			if (obj->GetFrame() >= 214) obj->SetFrame(214);
 		}
 //		SetMotion(MOTION_NUM::POSTURE);
 
@@ -823,13 +828,17 @@ namespace
 		{
 			if (obj->GetFrame() <= 250) SetMotion(9);
 		}
-		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::THIEF)
 		{
 			SetMotion(7);
 		}
 		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PIRATE)
 		{
-			SetMotion(8);
+			SetMotion(7);
+		}
+		if (gameManager->GetCharacterType(playerNum) == CHARACTER_TYPE::PRINCESS)
+		{
+			SetMotion(5);
 		}
 		
 		AddKnockBackForce(force);
@@ -852,21 +861,25 @@ namespace
 //		SetMotion( MOTION_NUM::DEATH );
 
 		//	コイン半分ばらまき
-		if ( !initflag )
+		// 2.4応急処置
+		if (param <= 0)
 		{
-			moveAngle = 0.0f;
-			int	coinNum = gameManager->GetCoinNum( this->playerNum );
-			FOR( 0, coinNum / 2 )
+			if (!initflag)
 			{
-				//	コイン半分ばらまき
-				if (coinNum > 0)
+				moveAngle = 0.0f;
+				int	coinNum = gameManager->GetCoinNum(this->playerNum);
+				FOR(0, coinNum / 2)
 				{
-					coinManager->Append( GetPos(), Vector3( Random::GetFloat( -1.0f, 1.0f ), 1.0f, Random::GetFloat( 0.0f, 1.0f ) ), Random::GetFloat( -1.0f, 1.0f ), Coin::COIN );
-					gameManager->SubCoin( playerNum );
+					//	コイン半分ばらまき
+					if (coinNum > 0)
+					{
+						coinManager->Append(GetPos(), Vector3(Random::GetFloat(-1.0f, 1.0f), 1.0f, Random::GetFloat(0.0f, 1.0f)), Random::GetFloat(-1.0f, 1.0f), Coin::COIN);
+						gameManager->SubCoin(playerNum);
+					}
+
 				}
-					
+				initflag = true;
 			}
-			initflag = true;
 		}
 
 		//	待ち時間加算（仮）モーション出来次第変更
@@ -1169,7 +1182,11 @@ namespace
 	//	混乱
 	void	BaseChara::Confusion( void )
 	{
-		if ( !confusion.state )	return;
+		if ( !confusion.state )
+		{
+			m_Effect->SetConfusion( false, playerNum );
+			return;
+		}
 		m_Effect->SetConfusion(true, playerNum);
 		//	タイマー減算
 		confusion.timer--;
@@ -1256,7 +1273,7 @@ namespace
 		{
 			if (input->Get(KEY_A) == 3)
 			{
-				if (GetLife() > 1)
+				if ( GetLife() > 1 && !GetParameterState( PARAMETER_STATE::RESPAWN ) )
 				{
 					SubLife();
 					mode = MODE_STATE::HYPERARTS;
@@ -1330,24 +1347,31 @@ namespace
 		*/
 
 		bool	isEnd = false;
-
-		switch (attackKind)
+		if (attackInfo.Interval > 0)
 		{
-		case AI_MODE_STATE::QUICKARTS:
-			isEnd = QuickArts();
-			if (!isEnd)	SetAttackParam(attackKind);
-			break;
+			isEnd = true;
+		}
+		else
+		{
+			switch (attackKind)
+			{
+			case AI_MODE_STATE::QUICKARTS:
+				isEnd = QuickArts();
+				if (!isEnd)	SetAttackParam(attackKind);
+				break;
 
-		case AI_MODE_STATE::POWERARTS:
-			isEnd = PowerArts();
-			if (!isEnd)	SetAttackParam(attackKind);
-			break;
+			case AI_MODE_STATE::POWERARTS:
+				isEnd = PowerArts();
+				if (!isEnd)	SetAttackParam(attackKind);
+				break;
 
-		case AI_MODE_STATE::HYPERARTS:
-			isEnd = HyperArts();
-			canHyper = isEnd;
-			if (!isEnd)	SetAttackParam(attackKind);
-			break;
+			case AI_MODE_STATE::HYPERARTS:
+				isEnd = HyperArts();
+				canHyper = isEnd;
+				if (!isEnd)	SetAttackParam(attackKind);
+				break;
+			}
+
 		}
 
 		//	モーション終了時に
@@ -1962,6 +1986,10 @@ namespace
 
 		case	PARAMETER_STATE::UNRIVALEDITEM:
 			out = unrivaledItem.state;
+			break;
+
+		case PARAMETER_STATE::RESPAWN:
+			out = respawn.state;
 			break;
 		}
 

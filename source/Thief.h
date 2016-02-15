@@ -15,6 +15,10 @@
 class Thief : public		BaseChara
 {
 private:
+	//後でマジックナンバー直す
+	int HyperStep = 0;
+	float HyperRate = 0;
+
 	enum MOTION_DATA
 	{
 		POSTURE = 0,
@@ -49,6 +53,7 @@ public:
 	Thief(void);
 	~Thief(void);
 	bool	Initialize(int playerNum, Vector3 pos)override;
+	void	AttackParamInitialize( void )override;
 
 
 	//	更新・描画

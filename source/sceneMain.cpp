@@ -392,7 +392,7 @@
 				
 				//	画面クリア
 				mainView->Activate();
-				mainView->Clear();
+				mainView->Clear( 0xFF02B4FE );
 			}
 			//		プレイヤー個人ワイプ
 			else

@@ -24,5 +24,6 @@ public:
 	void	ControlAI(void) override;
 	void	AutoPickCoin(void)override;
 	void	RunAway(void)override;
+	bool	QuickArts(void)override;
 };
 

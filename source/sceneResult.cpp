@@ -7,6 +7,7 @@
 #include	"GameManager.h"
 #include	"Collision.h"
 #include	"CharacterManager.h"
+#include	"Curtain.h"
 #include	"sceneTitle.h"
 #include	"sceneMenu.h"
 #include	"sceneMain.h"
@@ -119,7 +120,6 @@
 	bool	sceneResult::Initialize( void )
 	{
 		//	スクリーン設定
-		screen->Initialize();
 		screen->SetScreenMode( SCREEN_MODE::FADE_IN , 1.5f );
 
 		//	現在のラウンドを取得
@@ -1909,7 +1909,7 @@
 		case LASTRESULT_MODE::CLOSE_CURTAIN:
 			if ( curtainState )
 			{
-				sound->StopSE( SE::DRAMROLL_SE );
+				//sound->StopSE( SE::DRAMROLL_SE );
 				SetWaitTimer(150);
 				step = 0;
 				mode = MOVE_MODE::LAST_RESULT;

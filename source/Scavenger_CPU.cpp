@@ -18,7 +18,26 @@
 //
 //*********************************************************************************
 
-#define		POWERARTS_RATE	0.001f
+#define		POWER_RATE	0.001f
+
+namespace OFFENSIVE_POWER
+{
+	enum
+	{
+		QUICK = 1,
+		POWER = 1,
+		HYPER = 15,
+	};
+}
+namespace DROP_POWER
+{
+	enum
+	{
+		QUICK = 5,
+		POWER = 7,
+		HYPER = 15,
+	};
+}
 //-----------------------------------------------------------------------------
 //	初期化・解放
 //-----------------------------------------------------------------------------
@@ -82,7 +101,7 @@
 			}
 
 			//　程よくパワー
-			if (Random::PercentageRandom(POWERARTS_RATE))
+			if (Random::PercentageRandom(POWER_RATE))
 			{
 				aiInfo.mode = AI_MODE_STATE::POWERARTS;
 			}
@@ -159,7 +178,7 @@
 		}
 
 		//　パワーアーツ
-		if (Random::PercentageRandom(POWERARTS_RATE))
+		if (Random::PercentageRandom(POWER_RATE))
 		{
 			aiInfo.mode = AI_MODE_STATE::POWERARTS;
 		}
@@ -292,8 +311,10 @@
 					Vector3 target;
 					FOR(0, PLAYER_MAX)
 					{
-						if (characterManager->GetRank(value) != 1)	continue;
-						target = characterManager->GetPos(value);
+						if (characterManager->GetRank(value) == 1)
+						{
+							target = characterManager->GetPos(value);
+						}
 					}
 					//　角度調整
 					const float adjustSpeed = 0.2f;

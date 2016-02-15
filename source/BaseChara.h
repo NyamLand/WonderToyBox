@@ -284,7 +284,7 @@ public:
 	virtual	bool	Initialize( int playerNum, Vector3 pos, bool isPlayer );
 	virtual	bool	Initialize( int playerNum, Vector3 pos );
 	virtual	void	ShadowInitialize( void );
-	void	AttackParamInitialize(void);
+	virtual	void	AttackParamInitialize(void);
 	void	Release( void );
 
 	//	çXêVÅEï`âÊ

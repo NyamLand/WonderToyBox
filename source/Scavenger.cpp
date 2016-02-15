@@ -36,12 +36,11 @@ namespace DROP_POWER
 {
 	enum 
 	{
-		QUICK = 1,
-		POWER = 1,
+		QUICK = 5,
+		POWER = 7,
 		HYPER = 15,
 	};
 }
-
 //-----------------------------------------------------------------------------------
 //	初期化・解放
 //-----------------------------------------------------------------------------------
@@ -105,8 +104,8 @@ void	Scavenger::Render(iexShader* shader, LPSTR technique)
 
 	////	デバッグ用
 	//if (!debug)	return;
-	DrawCapsule(attackInfo.top, attackInfo.bottom, attackInfo.r, 0xFFFFFFFF);
-	DrawSphere( attackInfo.pos, attackInfo.r );
+	//DrawCapsule(attackInfo.top, attackInfo.bottom, attackInfo.r, 0xFFFFFFFF);
+	//DrawSphere( attackInfo.pos, attackInfo.r );
 	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z - attackInfo.r), 0.3f);
 	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z + attackInfo.r), 0.3f);
 	//particle->BlueFlame(Vector3(attackInfo.pos.x + attackInfo.r, attackInfo.pos.y, attackInfo.pos.z), 0.3f);
@@ -138,6 +137,7 @@ bool	Scavenger::QuickArts(void)
 	up.Normalize();
 	bool			isEnd = false;
 	bool			isHit = false;
+	SetMove( Vector3( 0.0f, 0.0f, 0.0f ) );
 
 	if ( !initflag )
 	{
@@ -511,8 +511,8 @@ void	Scavenger::SetAttackParam(int attackKind)
 	{
 	case MODE_STATE::QUICKARTS:
 		attackInfo.type = Collision::SPHEREVSCAPSULE;
-		if (attackInfo.t < 0.6) knockBackInfo.type = KNOCKBACK_TYPE::LEANBACKWARD;	//2Hitまでは仰け反りのみ
-		if (attackInfo.t >= 0.6) knockBackInfo.type = KNOCKBACK_TYPE::WEAK;		//3hit目からは吹き飛ばしあり
+		//if (attackInfo.t < 0.6) knockBackInfo.type = KNOCKBACK_TYPE::LEANBACKWARD;	//2Hitまでは仰け反りのみ
+		knockBackInfo.type = KNOCKBACK_TYPE::WEAK;		//3hit目からは吹き飛ばしあり
 		break;
 
 	case MODE_STATE::POWERARTS:

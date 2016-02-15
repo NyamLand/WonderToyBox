@@ -26,12 +26,16 @@ private:
 
 	struct CharacterSelectInfo
 	{
+		float		t[4];
 		int		step;
 		int		timer;
 		int		character[4];
+		int		startPos[4];
+		int		endPos[4];
 		int		imagePos;
 		int		playerNum;
 		bool	select[4];
+		bool	isWaveEnd[4];
 	};
 
 	struct StageSelectInfo

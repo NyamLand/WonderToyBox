@@ -2,6 +2,7 @@
 #include	"Framework.h"
 #include	"GlobalFunction.h"
 #include	"CharacterManager.h"
+#include	"Curtain.h"
 
 #include	"../sceneTitle.h"
 #include	"../sceneMenu.h"

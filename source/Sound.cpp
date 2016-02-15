@@ -34,18 +34,6 @@
 	//	コンストラクタ
 	Sound::Sound( void )
 	{
-	
-	}
-
-	//	デストラクタ
-	Sound::~Sound( void )
-	{
-
-	}
-
-	//	初期化
-	void	Sound::Initialize( void )
-	{
 		IEX_SetWAV( SE::HYPER_SE, "DATA/Sound/SE/attack-h.wav" );
 		IEX_SetWAV( SE::POWER_SE, "DATA/Sound/SE/attack-p.wav" );
 		IEX_SetWAV( SE::QUICK_SE, "DATA/Sound/SE/attack-q.wav" );
@@ -85,6 +73,12 @@
 		IEX_SetWAV( SE::HYPER_ATTACK, "DATA/Sound/SE/hyper-attack.wav" );
 
 		isPlay = false;
+	}
+
+	//	デストラクタ
+	Sound::~Sound( void )
+	{
+
 	}
 
 //---------------------------------------------------------------------------

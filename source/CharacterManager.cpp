@@ -110,7 +110,7 @@
 		
 		FOR( 0, PLAYER_MAX )
 		{
-			p_mode[value] = character[value]->GetMode();
+			p_mode[value] = character[value]->GetRank();
 		}
 		printf( "1p_mode = %d 2p_mode = %d 3p_mode = %d, 4p_mode = %d\n",  p_mode[0], p_mode[1], p_mode[2], p_mode[3] );
 		
@@ -320,9 +320,7 @@
 			else if ( power == 0 )														color = Vector3( 0.5f, 0.5f, 0.0f );
 			else																					color = Vector3( 1.0f, 0.0f, 0.0f );
 			bc2->SetPassColor( color );
-			//	コインばらまき方向設定
-			Vector3	vec = Vector3( Random::GetFloat( -1.0f, 1.0f ), 1.0f, Random::GetFloat( -1.0f, 1.0f ) );
-			vec.Normalize();
+
 
 			//	プレイヤー番号取得とばらまきパワー設定
 			//float	power = 0.2f;
@@ -341,7 +339,10 @@
 				for (int i = 0; i < dropCoin; i++)
 				{
 					if (bc2_coinNum <= 0) break;
-					coinManager->Append(bc2_top, vec, totalpower, Coin::COIN);
+					//	コインばらまき方向設定
+					Vector3	vec = Vector3(Random::GetFloat(-1.0f, 1.0f), 1.0f, Random::GetFloat(-1.0f, 1.0f));
+					vec.Normalize();
+					coinManager->Append(bc2_top, vec, 0.5f, Coin::COIN);
 					gameManager->SubCoin(bc2_Num);
 
 				}
@@ -437,9 +438,7 @@
 			else																			color = Vector3( 1.0f, 0.0f, 0.0f );
 			bc2->SetPassColor( color );
 
-			//	コインばらまき方向設定
-			Vector3	vec = Vector3( Random::GetFloat( -1.0f, 1.0f ), 1.0f, Random::GetFloat( -1.0f, 1.0f ) );
-			vec.Normalize();
+
 
 			//	プレイヤー番号取得とばらまきパワー設定
 			//float	power = 0.15f;
@@ -457,7 +456,10 @@
 				for (int i = 0; i < dropCoin; i++)
 				{
 					if (bc2_coinNum <= 0) break;
-					coinManager->Append(bc2_top, vec, totalpower, Coin::COIN);
+					//	コインばらまき方向設定
+					Vector3	vec = Vector3(Random::GetFloat(-1.0f, 1.0f), 1.0f, Random::GetFloat(-1.0f, 1.0f));
+					vec.Normalize();
+					coinManager->Append(bc2_top, vec, 0.5f, Coin::COIN);
 					gameManager->SubCoin(bc2_Num);
 
 				}
@@ -557,9 +559,7 @@
 			else																			color = Vector3( 1.0f, 0.0f, 0.0f );
 			bc2->SetPassColor( color );
 
-			//	コインばらまき方向設定
-			Vector3	vec = Vector3(Random::GetFloat(-1.0f, 1.0f), 1.0f, Random::GetFloat(-1.0f, 1.0f));
-			vec.Normalize();
+
 
 			//	プレイヤー番号取得とばらまきパワー設定
 			//float	power = 0.15f;
@@ -577,6 +577,9 @@
 				for (int i = 0; i < dropCoin; i++)
 				{
 					if (bc2_coinNum <= 0) break;
+					//	コインばらまき方向設定
+					Vector3	vec = Vector3(Random::GetFloat(-1.0f, 1.0f), 1.0f, Random::GetFloat(-1.0f, 1.0f));
+					vec.Normalize();
 					coinManager->Append(bc2_top, vec, totalpower, Coin::COIN);
 					gameManager->SubCoin(bc2_Num);
 

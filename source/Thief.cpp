@@ -82,6 +82,12 @@ bool	Thief::Initialize(int playerNum, Vector3 pos)
 	return	true;
 }
 
+void	Thief::AttackParamInitialize(void)
+{
+	BaseChara::AttackParamInitialize();
+	armRenderflag = false;
+}
+
 //-----------------------------------------------------------------------------------
 //	更新・描画
 //-----------------------------------------------------------------------------------
@@ -90,6 +96,7 @@ bool	Thief::Initialize(int playerNum, Vector3 pos)
 void	Thief::Render(iexShader* shader, LPSTR technique)
 {
 	//SetArmTransform();
+
 	BaseChara::Render(shader, technique);
 
 	if (armRenderflag) arm->Render(shader, technique);
@@ -118,7 +125,6 @@ void	Thief::Render(iexShader* shader, LPSTR technique)
 bool	Thief::QuickArts(void)
 {
 	static int time = 0;
-	static	bool	initflag = false;
 	if ( !initflag )
 	{
 		sound->PlaySE( SE::KAITO_QUICK );
@@ -232,13 +238,13 @@ bool	Thief::HyperArts(void)
 		initflag = true;
 	}
 
-
 	//モーションアトデナオス
 	SetMotion(6);
 
 	attackInfo.power = OFFENSIVE_POWER::HYPER;
 	attackInfo.dropPower = DROP_POWER::HYPER;
 	attackInfo.coinDropType = DROP_TYPE::SUCTION;
+
 	SetParameterState(PARAMETER_STATE::UNRIVALED);
 	move = Vector3(0, 0 - GRAVITY, 0);	//撃ってる間は静止させる
 
@@ -252,8 +258,6 @@ bool	Thief::HyperArts(void)
 	//	情報設定
 	SetArmTransform();
 
-	static int step = 0;
-	static float range = 0;
 	//モーションアトデナオス(ちょうどいい感じのフレームが来たら攻撃開始)
 	if (obj->GetFrame() >= 339 && obj->GetFrame() < 399)
 	{
@@ -262,25 +266,28 @@ bool	Thief::HyperArts(void)
 		Vector3 r = -right * (2.0f * cosf(D3DX_PI * t));
 		attackInfo.bottom = p_pos + f + r;
 
-		switch (step)
+		switch (HyperStep)
 		{
 		case 0:
 			//	あたり判定のパラメータを与える
-			attackInfo.top = attackInfo.bottom + r * range;
+			attackInfo.top = attackInfo.bottom + r * HyperRate;
 			attackInfo.r = 2.5f;
-			range += 1.0;
-			if(range > 20.0f) step++;
+			HyperRate += 1.0;
+			if (HyperRate > 20.0f) HyperStep++;
 			break;
 		case 1:
 			//	パラメータ加算
-			attackInfo.top = attackInfo.bottom + f * range + r * range;
+			attackInfo.top = attackInfo.bottom + f * HyperRate + r * HyperRate;
 			attackInfo.t += 0.03f;
-			if (attackInfo.t > 1.0f) step++;
+			if (attackInfo.t >= 1.0f)
+			{
+				HyperStep++;
+			}
 			break;
 		case 2:
-			attackInfo.top = attackInfo.bottom - r * range;
+			//attackInfo.top = attackInfo.bottom + r * rate;
 			attackInfo.t = 0.0f;
-			range -= 1.0f;
+			HyperRate -= 1.0f;
 			break;
 		}
 		armRenderflag = true;
@@ -298,14 +305,14 @@ bool	Thief::HyperArts(void)
 
 	arm->SetPos(pos);
 	arm->SetAngle(angle.y + armAngle);
-	arm->SetScale(Vector3(0.03f,0.03f,range * 0.01f));
+	arm->SetScale(Vector3(0.03f, 0.03f, HyperRate * 0.01f));
 	arm->Update();
 
 	//モーションアトデナオス(終わりのモーションが来たら終了)
-	if (/*obj->GetFrame() == 399*/ range < 0)
+	if (/*obj->GetFrame() == 399*/ HyperRate < 0)
 	{
-		step = 0;
-		range = 0;
+		HyperStep = 0;
+		HyperRate = 0;
 		armRenderflag = false;
 		initflag = false;
 		return true;

@@ -79,14 +79,12 @@ private:
 	LPDSSTREAM		stream;
 	bool						isPlay;
 
-public:
+private:
 	//	‰Šú‰»E‰ğ•ú
 	Sound( void );
 	~Sound( void );
 
-	//	“o˜^
-	void	Initialize( void );
-
+public:
 	//	SEÄ¶
 	void	PlaySE( int type );
 	void	StopSE( int type );

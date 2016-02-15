@@ -178,6 +178,12 @@
     <Filter Include="ソース ファイル\Stage">
       <UniqueIdentifier>{9109e5d6-b65d-40d0-874f-45154ce7e914}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\Define">
+      <UniqueIdentifier>{1f13bf56-ae65-43cf-9ce7-1a305a376c89}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Curtain">
+      <UniqueIdentifier>{12ae62d3-46b1-4603-be02-0aa0b5edeb4d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -387,6 +393,9 @@
     <ClCompile Include="source\AirPlane.cpp">
       <Filter>ソース ファイル\UI\AirPlane</Filter>
     </ClCompile>
+    <ClCompile Include="source\Curtain.cpp">
+      <Filter>ソース ファイル\Curtain</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -550,6 +559,12 @@
     </ClInclude>
     <ClInclude Include="source\AirPlane.h">
       <Filter>ソース ファイル\UI\AirPlane</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Define.h">
+      <Filter>ソース ファイル\Define</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Curtain.h">
+      <Filter>ソース ファイル\Curtain</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

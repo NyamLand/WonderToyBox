@@ -21,6 +21,28 @@
 #define		POWER_RATE	0.01f
 #define		HYPER_RATE	0.01f
 
+namespace OFFENSIVE_POWER
+{
+	enum
+	{
+		//クイックとハイパーはバレット側で処理
+		QUICK = 1,
+		POWER = 1,
+		HYPER = 1,
+	};
+}
+
+namespace DROP_POWER
+{
+	enum
+	{
+		//クイックとハイパーはバレット側で処理
+		QUICK = 0,
+		POWER = 5,
+		HYPER = 15,
+	};
+}
+
 //-----------------------------------------------------------------------------
 //	初期化・解放
 //-----------------------------------------------------------------------------
@@ -112,8 +134,8 @@
 				{
 					//　ランダムに行動分岐
 					static int rand_Q_P_W = Random::GetInt(0, 9);
-					if (isMiddle(rand_Q_P_W, 0, 2))			aiInfo.mode = AI_MODE_STATE::QUICKARTS;
-					else if (isMiddle(rand_Q_P_W, 2, 6))	aiInfo.mode = AI_MODE_STATE::POWERARTS;
+					if (isMiddle(rand_Q_P_W, 0, 3))			aiInfo.mode = AI_MODE_STATE::QUICKARTS;
+					else if (isMiddle(rand_Q_P_W, 4, 6))	aiInfo.mode = AI_MODE_STATE::POWERARTS;
 					else									aiInfo.mode = AI_MODE_STATE::WAIT;
 
 					aiInfo.AdjustingCount = 10;
@@ -291,6 +313,8 @@
 	//　ＣＰＵパワー
 	bool	Pirate_CPU::PowerArts(void)
 	{
+		attackInfo.power = OFFENSIVE_POWER::POWER;
+		attackInfo.dropPower = DROP_POWER::POWER;
 		//power = POWER;
 		if (!initflag)
 		{
