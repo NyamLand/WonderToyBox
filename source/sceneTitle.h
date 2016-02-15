@@ -63,10 +63,11 @@ private:	//	構造体
 	//	タイトル用パラメータ
 	struct TITLE_INFO
 	{
-		int		step;
-		int		nextMode;
-		CurtainInfo	curtainR;
-		CurtainInfo	curtainL;
+		int				step;
+		int				nextMode;
+		bool				changeflag;
+		bool				curtainState;
+		float				speed;
 		iex2DObj*	titleText;
 		ImageObj		pressSpace;
 		ImageObj		titleImage;
@@ -123,13 +124,12 @@ public:
 	void	TitleInitialize( void );
 	void	MenuInitialize( void );
 	void	CreditInitialize( void );
+	bool	Load( void );
+	void	Release( void );
 
 	//	更新・描画
 	void	Update( void );
 	void	Render( void );
-
-	//	動作関数
-	void	CurtainInitialize( void );
 
 	//-------------------------------------
 	//　各画面ごとのメソッド
@@ -143,12 +143,8 @@ public:
 	void	MenuRender( void );
 
 	//　選択画面へ
-	void	MoveSelectUpdate( void );
-	void	MoveSelectRender( void );
-
-	//　オプション
-	void	OptionUpdate( void );
-	void	OptionRender( void );
+	void	MoveSceneUpdate( void );
+	void	MoveSceneRender( void );
 
 	//　クレジット
 	void	CreditUpdate( void );
