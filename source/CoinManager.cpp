@@ -71,8 +71,14 @@
 			coin_num++;
 
 			//	情報更新
-			( *it )->Update();
+			bool state = (*it)->GetState();
+			if ( state )		( *it )->Update();
 
+		}
+
+		//	生存確認&消去
+		FOR_LIST( coinList.begin(), coinList.end() )
+		{			
 			//	消滅していたらリストから削除
 			bool state = ( *it )->GetState();
 			if ( !state )
