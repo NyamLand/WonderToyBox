@@ -33,11 +33,11 @@ namespace DROP_POWER
 {
 		enum 
 		{
-			QUICK = 1,
+			QUICK = 5,
 			POWER = 0,
-			HYPER = 1,
+			HYPER = 7,
 		};
-	}
+}
 
 //-----------------------------------------------------------------------------------
 //	èâä˙âªÅEâï˙
@@ -311,7 +311,7 @@ namespace DROP_POWER
 		{
 		case MODE_STATE::QUICKARTS:
 			attackInfo.type = Collision::SPHEREVSCAPSULE;
-			knockBackInfo.type = KNOCKBACK_TYPE::WEAK;
+			knockBackInfo.type = KNOCKBACK_TYPE::MIDDLE;
 			break;
 
 		case MODE_STATE::POWERARTS:

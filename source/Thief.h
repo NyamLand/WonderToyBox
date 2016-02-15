@@ -53,6 +53,7 @@ public:
 	Thief(void);
 	~Thief(void);
 	bool	Initialize(int playerNum, Vector3 pos)override;
+	void	AttackParamInitialize( void )override;
 
 
 	//	XVE•`‰æ

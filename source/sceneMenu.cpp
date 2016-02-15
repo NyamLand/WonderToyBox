@@ -720,12 +720,12 @@
 			FOR( gameManager->GetPlayerNum(), PLAYER_MAX )
 			{
 				characterSelectInfo.character[value] = Random::GetInt( 0, CHARACTER_TYPE::MAX - 1 );
-				//　デバッグ
-				//characterSelectInfo.character[0] = CHARACTER_TYPE::SCAVENGER;
-				characterSelectInfo.character[1] = CHARACTER_TYPE::PRINCESS;
-				characterSelectInfo.character[2] = CHARACTER_TYPE::THIEF;
-				//characterSelectInfo.character[3] = CHARACTER_TYPE::SCAVENGER;
-				characterSelectInfo.character[3] = CHARACTER_TYPE::PIRATE;
+				////　デバッグ
+				////characterSelectInfo.character[0] = CHARACTER_TYPE::SCAVENGER;
+				//characterSelectInfo.character[1] = CHARACTER_TYPE::PRINCESS;
+				//characterSelectInfo.character[2] = CHARACTER_TYPE::THIEF;
+				////characterSelectInfo.character[3] = CHARACTER_TYPE::SCAVENGER;
+				//characterSelectInfo.character[3] = CHARACTER_TYPE::PIRATE;
 				gameManager->SetCharacterType( value, characterSelectInfo.character[value] );
 			
 				//	モデル差し替え
@@ -828,7 +828,7 @@
 		
 		//　おもちゃモデル初期化
 		toyStage->SetPos(0.0f,0.0f,0.0f);
-		toyStage->SetAngle(D3DXToRadian(30.0f), D3DXToRadian(-80.0f), 0.0f);
+		toyStage->SetAngle(D3DXToRadian(30.0f), 0.0f/*D3DXToRadian(-80.0f)*/, 0.0f);
 		toyStage->SetScale(0.09f);
 		toyStage->Update();
 
@@ -857,14 +857,14 @@
 			deskStage->SetPos(-2.0f, 14.0f, 8.0f);
 			toyStage->SetPos(7.0f, 14.0f, 15.0f);
 			deskStage->SetAngle( D3DXToRadian( 30.0f ), stageSelectInfo.angle, 0.0f );
-			toyStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
+			toyStage->SetAngle(D3DXToRadian(-30.0f), 0.0f, 0.0f);
 			break;
 
 		case 1:
 			deskStage->SetPos(-7.0f, 14.0f, 15.0f);
 			toyStage->SetPos(2.0f, 13.0f, 8.0f);
 			deskStage->SetAngle(D3DXToRadian(30.0f), D3DX_PI, 0.0f);
-			toyStage->SetAngle(D3DXToRadian(30.0f), stageSelectInfo.angle, 0.0f);
+			toyStage->SetAngle(D3DXToRadian(-30.0f), stageSelectInfo.angle + PI, 0.0f);
 			break;
 		}
 
@@ -970,8 +970,8 @@
 			deskStage->Update();
 		
 			toyStage->SetPos(7.0f, 15.5f, 2.5f);
-			toyStage->SetAngle(D3DXToRadian(45.0f), D3DXToRadian(-90.0f), 0.0f);
-			toyStage->SetScale(0.02f);
+			toyStage->SetAngle( D3DXToRadian(-45.0f), D3DXToRadian( 90.0f), 0.0f );
+			toyStage->SetScale(0.03f);
 			toyStage->Update();
 		}
 

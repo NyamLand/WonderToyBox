@@ -532,19 +532,21 @@ namespace
 		//	XV
 		void	sceneTitle::CreditUpdate( void )
 		{
-			if ( input[0]->Get( KEY_SPACE ) == 3 )
+			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3  || input[0]->Get( KEY_B ) == 3 )
 			{
 				mode = TITLE_MODE::TITLE;
+				MainFrame->ChangeScene( new sceneTitle() );
+				return;
 				creditInfo.t = 0.0f;
 			}
 			
 			if (screen->GetScreenState())
 			{
-				creditInfo.t += 0.005f;
+				creditInfo.t += 0.003f;
 				if ( creditInfo.t >= 1.0f )	creditInfo.t = 1.0f;
 			}
 
-			Lerp( creditInfo.sy, 0, 1536, creditInfo.t );
+			Lerp( creditInfo.sy, 0, 800, creditInfo.t );
 		}
 
 		//	•`‰æ

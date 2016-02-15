@@ -1182,7 +1182,11 @@ namespace
 	//	混乱
 	void	BaseChara::Confusion( void )
 	{
-		if ( !confusion.state )	return;
+		if ( !confusion.state )
+		{
+			m_Effect->SetConfusion( false, playerNum );
+			return;
+		}
 		m_Effect->SetConfusion(true, playerNum);
 		//	タイマー減算
 		confusion.timer--;
@@ -1343,24 +1347,31 @@ namespace
 		*/
 
 		bool	isEnd = false;
-
-		switch (attackKind)
+		if (attackInfo.Interval > 0)
 		{
-		case AI_MODE_STATE::QUICKARTS:
-			isEnd = QuickArts();
-			if (!isEnd)	SetAttackParam(attackKind);
-			break;
+			isEnd = true;
+		}
+		else
+		{
+			switch (attackKind)
+			{
+			case AI_MODE_STATE::QUICKARTS:
+				isEnd = QuickArts();
+				if (!isEnd)	SetAttackParam(attackKind);
+				break;
 
-		case AI_MODE_STATE::POWERARTS:
-			isEnd = PowerArts();
-			if (!isEnd)	SetAttackParam(attackKind);
-			break;
+			case AI_MODE_STATE::POWERARTS:
+				isEnd = PowerArts();
+				if (!isEnd)	SetAttackParam(attackKind);
+				break;
 
-		case AI_MODE_STATE::HYPERARTS:
-			isEnd = HyperArts();
-			canHyper = isEnd;
-			if (!isEnd)	SetAttackParam(attackKind);
-			break;
+			case AI_MODE_STATE::HYPERARTS:
+				isEnd = HyperArts();
+				canHyper = isEnd;
+				if (!isEnd)	SetAttackParam(attackKind);
+				break;
+			}
+
 		}
 
 		//	モーション終了時に

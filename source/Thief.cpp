@@ -82,6 +82,12 @@ bool	Thief::Initialize(int playerNum, Vector3 pos)
 	return	true;
 }
 
+void	Thief::AttackParamInitialize(void)
+{
+	BaseChara::AttackParamInitialize();
+	armRenderflag = false;
+}
+
 //-----------------------------------------------------------------------------------
 //	更新・描画
 //-----------------------------------------------------------------------------------
@@ -90,6 +96,7 @@ bool	Thief::Initialize(int playerNum, Vector3 pos)
 void	Thief::Render(iexShader* shader, LPSTR technique)
 {
 	//SetArmTransform();
+
 	BaseChara::Render(shader, technique);
 
 	if (armRenderflag) arm->Render(shader, technique);
@@ -118,7 +125,6 @@ void	Thief::Render(iexShader* shader, LPSTR technique)
 bool	Thief::QuickArts(void)
 {
 	static int time = 0;
-	static	bool	initflag = false;
 	if ( !initflag )
 	{
 		sound->PlaySE( SE::KAITO_QUICK );
@@ -231,7 +237,6 @@ bool	Thief::HyperArts(void)
 		sound->PlaySE( SE::KAITO_HYPER );
 		initflag = true;
 	}
-
 
 	//モーションアトデナオス
 	SetMotion(6);

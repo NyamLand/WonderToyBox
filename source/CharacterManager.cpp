@@ -110,7 +110,7 @@
 		
 		FOR( 0, PLAYER_MAX )
 		{
-			p_mode[value] = character[value]->GetMode();
+			p_mode[value] = character[value]->GetRank();
 		}
 		printf( "1p_mode = %d 2p_mode = %d 3p_mode = %d, 4p_mode = %d\n",  p_mode[0], p_mode[1], p_mode[2], p_mode[3] );
 		
@@ -342,7 +342,7 @@
 					//	コインばらまき方向設定
 					Vector3	vec = Vector3(Random::GetFloat(-1.0f, 1.0f), 1.0f, Random::GetFloat(-1.0f, 1.0f));
 					vec.Normalize();
-					coinManager->Append(bc2_top, vec, totalpower, Coin::COIN);
+					coinManager->Append(bc2_top, vec, 0.5f, Coin::COIN);
 					gameManager->SubCoin(bc2_Num);
 
 				}
@@ -459,7 +459,7 @@
 					//	コインばらまき方向設定
 					Vector3	vec = Vector3(Random::GetFloat(-1.0f, 1.0f), 1.0f, Random::GetFloat(-1.0f, 1.0f));
 					vec.Normalize();
-					coinManager->Append(bc2_top, vec, totalpower, Coin::COIN);
+					coinManager->Append(bc2_top, vec, 0.5f, Coin::COIN);
 					gameManager->SubCoin(bc2_Num);
 
 				}

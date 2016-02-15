@@ -36,12 +36,11 @@ namespace DROP_POWER
 {
 	enum 
 	{
-		QUICK = 1,
-		POWER = 1,
+		QUICK = 5,
+		POWER = 7,
 		HYPER = 15,
 	};
 }
-
 //-----------------------------------------------------------------------------------
 //	èâä˙âªÅEâï˙
 //-----------------------------------------------------------------------------------
@@ -138,6 +137,7 @@ bool	Scavenger::QuickArts(void)
 	up.Normalize();
 	bool			isEnd = false;
 	bool			isHit = false;
+	SetMove( Vector3( 0.0f, 0.0f, 0.0f ) );
 
 	if ( !initflag )
 	{
@@ -511,8 +511,8 @@ void	Scavenger::SetAttackParam(int attackKind)
 	{
 	case MODE_STATE::QUICKARTS:
 		attackInfo.type = Collision::SPHEREVSCAPSULE;
-		if (attackInfo.t < 0.6) knockBackInfo.type = KNOCKBACK_TYPE::LEANBACKWARD;	//2HitÇ‹Ç≈ÇÕã¬ÇØîΩÇËÇÃÇ›
-		if (attackInfo.t >= 0.6) knockBackInfo.type = KNOCKBACK_TYPE::WEAK;		//3hitñ⁄Ç©ÇÁÇÕêÅÇ´îÚÇŒÇµÇ†ÇË
+		//if (attackInfo.t < 0.6) knockBackInfo.type = KNOCKBACK_TYPE::LEANBACKWARD;	//2HitÇ‹Ç≈ÇÕã¬ÇØîΩÇËÇÃÇ›
+		knockBackInfo.type = KNOCKBACK_TYPE::WEAK;		//3hitñ⁄Ç©ÇÁÇÕêÅÇ´îÚÇŒÇµÇ†ÇË
 		break;
 
 	case MODE_STATE::POWERARTS:
