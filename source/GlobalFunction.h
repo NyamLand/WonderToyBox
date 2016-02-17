@@ -107,7 +107,20 @@
 //	システム
 //----------------------------------------------------------------------
 
-	//	解放
+	//	読み込み ポインターをnull初期化してnewする
+	//	成功していたらtrueをかえす
+	template<typename T>
+	bool	PointerNew( T*& ptr, LPSTR filename = nullptr )
+	{
+		ptr = nullptr;
+		if ( filename != nullptr )	ptr = new T( filename );
+		else ptr = new T();
+
+		if ( ptr != nullptr )	return	true;
+		return	false;
+	}
+
+	//	解放 ポインターをdeleteしてnullptrを代入する
 	template<typename T>
 	void	SafeDelete( T*& ptr )
 	{
@@ -118,7 +131,7 @@
 		}
 	}
 
-	//	行列解放
+	//	行列解放 行列のポインターをdelete[]してnullptrを代入する
 	template<typename T>
 	void	SafeDeleteArray( T*& ptr )
 	{
@@ -129,31 +142,50 @@
 		}
 	}
 
-	//	変換
-	POINT	GetPoint( int x, int y );
-	DWORD	GetColor( float r, float g, float b, float a );
-	DWORD	GetColor( Vector3 color );
-	DWORD	GetColor( Vector3 color, float alpha );
-
-	//	ワールド座標からクライエント座標への変換
-	bool	WorldToClient( const Vector3& pos, Vector3& out, const Matrix& mat );
-
-	//	クライアント座標からワールド座標への変換
-	void	ClientToWorld( const Vector3& screenPos, Vector3& out );
-
 	//	デバッグ文字描画
 	void	DrawString( LPSTR string, int x, int y, DWORD color = 0xFFFFFFFF );
 	void	DrawString( LPSTR string, int x, int y, float r, float g, float b );
 	void	DrawString( LPSTR string, int x, int y, Vector3 color );
 
-	//	画像操作
+//----------------------------------------------------------------------
+//	変換
+//----------------------------------------------------------------------
+
+	//	int型数値をPOINTに変換し変換後のPOINTをかえす
+	POINT	GetPoint( int x, int y );
+
+	//	各色,透明度を設定し変換後のDWORDをかえす
+	DWORD	GetColor( float r, float g, float b, float a );
+	DWORD	GetColor( Vector3 color );
+	DWORD	GetColor( Vector3 color, float alpha );
+
+	//	ワールド座標からクライエント座標への変換
+	//	outにposのスクリーン座標をかえす
+	bool	WorldToClient( const Vector3& pos, Vector3& out, const Matrix& mat );
+
+	//	クライアント座標からワールド座標への変換
+	//	outにスクリーン上のワールド座標をかえす
+	void	ClientToWorld( const Vector3& screenPos, Vector3& out );
+
+//----------------------------------------------------------------------
+//	画像操作
+//----------------------------------------------------------------------
+
+	//	画像初期化・描画
 	void	ImageInitialize( ImageObj& image, int x, int y, int w, int h, int sx, int sy, int sw, int sh );
 	void	RenderImage( ImageObj image, int sx, int sy, int sw, int sh, int mode );
 	void	RenderImage( ImageObj image, int sx, int sy, int sw, int sh, int mode, int x, int y );
 
+	//	波紋の設定(波紋出したいオブジェクト、波紋スピード)
 	void	SetWave( ImageObj& image, float speed );
+
+	//	波紋更新（波紋出したいオブジェクト、波紋大きさ、スタート時透明度）波紋終了時trueをかえす
 	bool	WaveUpdate( ImageObj& image, int max_scale = 140, float max_alpha = 1.0f );
+
+	//	点滅更新（点滅させたいオブジェクト、点滅スピード）
 	void	FlashingUpdate( ImageObj& image, float speed = -1.0f );
+
+	//	拡大
 	void	SetScaling( ImageObj& image, float speed, bool state = true );					//	state:	true = 拡大　false = 縮小
 	void	ScalingUpdate(ImageObj& image, int max_scale = 140);
 	bool	ScalingAlphaUpdate(ImageObj& image, int max_scale = 140);
@@ -179,7 +211,7 @@
 	void	SetVertex( TLVERTEX& v, float x, float y, float z, float tu, float tv, DWORD color );
 
 //----------------------------------------------------------------------
-//	線形補間( 出力、開始値、最終値, 割合 )
+//	線形補間( 出力、開始値、最終値, 割合 )　終了時trueをかえす
 //----------------------------------------------------------------------
 
 	template<typename T, typename T2>
@@ -192,7 +224,7 @@
 	}
 
 //----------------------------------------------------------------------
-//	３次関数補間( 出力、開始値、最終値, 割合 )
+//	３次関数補間( 出力、開始値、最終値, 割合 )　終了時trueをかえす
 //----------------------------------------------------------------------
 
 	template<typename T, typename T2>
@@ -206,7 +238,7 @@
 	}
 
 //----------------------------------------------------------------------
-//	ベジェ曲線
+//	ベジェ曲線（出力、スタート位置、制御点、終了位置、求めたい割合） 終了時trueをかえす
 //----------------------------------------------------------------------
 
 	//	２次ベジェ曲線

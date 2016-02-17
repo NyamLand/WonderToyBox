@@ -38,6 +38,7 @@ namespace
 			WAIT_SCREEN,
 			WAIT_INPUT,
 			WAIT_OPEN,
+			NEXT_MODE,
 		};
 	}
 }
@@ -55,16 +56,7 @@ namespace
 	//	デストラクタ
 	sceneTitle::~sceneTitle( void )
 	{
-		SafeDelete( curtain );
-		SafeDelete( mainView );
-		SafeDelete( titleInfo.curtainL.obj );
-		SafeDelete( titleInfo.curtainR.obj );
-		SafeDelete( titleInfo.titleImage.obj );
-		SafeDelete( titleInfo.pressSpace.obj );
-		SafeDelete( stage );
-		SafeDelete( titleInfo.titleText );
-		SafeDelete( creditInfo.credit );
-		sound->AllStop();
+		Release();
 	}
 	
 	//	初期化
@@ -78,6 +70,9 @@ namespace
 		Vector3 dir( 0.0f, -1.0f, -0.0f );
 		dir.Normalize();
 		iexLight::DirLight( shader3D, 0, &dir, 1.0f, 1.0f, 1.0f );
+
+		//	読み込み
+		Load();
 
 		//	カメラ設定
 		mainView = new Camera();
@@ -98,9 +93,8 @@ namespace
 		ui = new UI();
 		ui->Initialize( UI_MODE::TITLE );
 		
-		//	ステージ
-		stage = new iexMesh( "DATA/BG/title_stageV2/title_stagev2.IMO" );
-		stage->SetAngle( PI );
+		//	ステージ	
+		stage->SetAngle( D3DX_PI );
 		stage->SetScale( 0.1f );
 		stage->Update();
 
@@ -112,7 +106,7 @@ namespace
 		MenuInitialize();
 		CreditInitialize();
 
-		//BGM設定再生
+		//	BGM設定再生
 		sound->PlayBGM( BGM::TITLE_BGM );
 		return	true;
 	}
@@ -120,13 +114,6 @@ namespace
 	//	タイトル初期化
 	void	sceneTitle::TitleInitialize( void )
 	{
-		//	画像読み込み
-		titleInfo.curtainL.obj = new iex2DObj( "DATA/UI/title/curtain1.png" );
-		titleInfo.curtainR.obj = new iex2DObj( "DATA/UI/title/curtain2.png" );
-		titleInfo.titleImage.obj = new iex2DObj( "DATA/UI/title.png" );
-		titleInfo.pressSpace.obj = new iex2DObj( "DATA/UI/pressspace.png" );
-		titleInfo.titleText = new iex2DObj( "DATA/UI/title/titleText.png" );
-
 		//	画像構造体初期化
 		ImageInitialize( titleInfo.pressSpace, iexSystem::ScreenWidth / 2, static_cast<int>( iexSystem::ScreenHeight * 0.82f ), static_cast<int>( iexSystem::ScreenWidth * 0.2f ), static_cast<int>( iexSystem::ScreenHeight * 0.15f ), 0, 0, 256, 128 );
 		ImageInitialize( titleInfo.titleImage, iexSystem::ScreenWidth / 2, static_cast<int>( iexSystem::ScreenHeight * 0.42f ), static_cast<int>( iexSystem::ScreenWidth * 0.4f ), static_cast<int>( iexSystem::ScreenHeight * 0.7f ), 0, 0, 512, 512 );
@@ -135,9 +122,6 @@ namespace
 		titleInfo.gameStartImage.obj = titleInfo.titleText;
 		titleInfo.creditTextImage.obj = titleInfo.titleText;
 
-		//	カーテン初期化
-		CurtainInitialize();
-
 		//	カメラ情報初期化
 		cameraInfo.state = 0;
 
@@ -145,6 +129,9 @@ namespace
 		titleInfo.titleImage.renderflag = true;
 		titleInfo.step = 0;
 		titleInfo.nextMode = 0;
+		titleInfo.changeflag = false;
+		titleInfo.curtainState = false;
+		titleInfo.speed = 0.5f;
 	}
 
 	//	メニュー初期化
@@ -155,18 +142,39 @@ namespace
 
 	//	クレジット初期化
 	void	sceneTitle::CreditInitialize( void )
-	{
-		creditInfo.credit = new iex2DObj( "DATA/UI/title/credit.png" );
+	{		
 		creditInfo.sy = 0;
 		creditInfo.t = 0.0f;
 	}
 
-	//	カーテン情報初期化
-	void	sceneTitle::CurtainInitialize( void )
+	//	読み込み
+	bool	sceneTitle::Load( void )
 	{
-		//	パラメータ初期化
-		titleInfo.curtainL.t = 0.0f;
-		titleInfo.curtainR.t = 0.0f;
+		//	ステージ
+		PointerNew( stage, "DATA/BG/title_stageV2/title_stagev2.IMO" );
+
+		//	タイトル画像
+		PointerNew( titleInfo.titleImage.obj, "DATA/UI/title.png" );
+		PointerNew( titleInfo.pressSpace.obj, "DATA/UI/pressspace.png" );
+		PointerNew( titleInfo.titleText, "DATA/UI/title/titleText.png" );
+
+		//	クレジット用画像
+		PointerNew( creditInfo.credit, "DATA/UI/title/credit.png" );
+
+		return	true;
+	}
+
+	//	解放
+	void	sceneTitle::Release( void )
+	{
+		SafeDelete( curtain );
+		SafeDelete( mainView );
+		SafeDelete( titleInfo.titleImage.obj );
+		SafeDelete( titleInfo.pressSpace.obj );
+		SafeDelete( stage );
+		SafeDelete( titleInfo.titleText );
+		SafeDelete( creditInfo.credit );
+		sound->AllStop();
 	}
 
 //-----------------------------------------------------------------------------------
@@ -190,11 +198,7 @@ namespace
 			break;
 
 		case TITLE_MODE::PLAY:
-			MoveSelectUpdate();
-			break;
-
-		case TITLE_MODE::OPTION:
-			OptionUpdate();
+			MoveSceneUpdate();
 			break;
 
 		case TITLE_MODE::CREDIT:
@@ -237,11 +241,7 @@ namespace
 			break;
 
 		case TITLE_MODE::PLAY:
-			MoveSelectRender();
-			break;
-
-		case TITLE_MODE::OPTION:
-			OptionRender();
+			MoveSceneRender();
 			break;
 
 		case TITLE_MODE::CREDIT:
@@ -267,20 +267,15 @@ namespace
 		//	更新
 		void	sceneTitle::TitleUpdate( void )
 		{
-			//	パラメータ
-			static	bool	changeflag = false;
-			static	bool	curtainStateL = false;
-			static	bool	curtainStateR = false;
-			static	float	speed = 0.5f;
-
+			static	float flashingSpeed = D3DX_PI / 180 * 10.0f;
 			switch ( titleInfo.step )
 			{
-			case 0:
+			case TITLE_STEP::WAIT_SCREEN:
 				//	フェード処理終了まで待つ
 				if ( screen->GetScreenState() )	titleInfo.step++;
 				break;
 
-			case 1:
+			case TITLE_STEP::WAIT_INPUT:
 				//	カメラ更新
 				mainView->Update( VIEW_MODE::SETUP );
 
@@ -314,11 +309,12 @@ namespace
 				}
 				
 				//	SPACEキーで選択
-				if ( KEY( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )
+				if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
 				{
 					//	タイトル画像を隠す
 					titleInfo.titleImage.renderflag = false;
 
+					//	決定音鳴らす
 					sound->PlaySE( SE::DECIDE_SE );
 
 					//	画面制御
@@ -329,22 +325,20 @@ namespace
 
 					//	pressspace波紋
 					static	float	wavespeed = 1.5f;
-					
 					switch ( titleInfo.nextMode )
 					{
-					case 0:
-						SetWave( titleInfo.gameStartImage, wavespeed );
+					case 0:	SetWave( titleInfo.gameStartImage, wavespeed );
 						break;
-
-					case 1:
-						SetWave( titleInfo.creditTextImage, wavespeed );
+					case 1:	SetWave( titleInfo.creditTextImage, wavespeed );
 						break;
 					}
+
+					//	つぎのステップ
 					titleInfo.step++;
 				}
 				break;
 
-			case 2:
+			case TITLE_STEP::WAIT_OPEN:
 				//	カメラ更新
 				mainView->Update( VIEW_MODE::TITLE );
 
@@ -356,12 +350,12 @@ namespace
 				switch ( titleInfo.nextMode )
 				{
 				case 0:
-					FlashingUpdate( titleInfo.gameStartImage, D3DX_PI / 180 * 10.0f );
+					FlashingUpdate( titleInfo.gameStartImage, flashingSpeed );
 					titleInfo.creditTextImage.flashingAlpha = 1.0f;
 					break;
 
 				case 1:
-					FlashingUpdate( titleInfo.creditTextImage, D3DX_PI / 180 * 10.0f );
+					FlashingUpdate( titleInfo.creditTextImage, flashingSpeed );
 					titleInfo.gameStartImage.flashingAlpha = 1.0f;
 					break;
 				}
@@ -370,10 +364,9 @@ namespace
 				if ( curtain->GetIsEnd() )	titleInfo.step++;
 				break;
 
-			case 3:
-				changeflag = false;
-				curtainStateL = false;
-				curtainStateR = false;
+			case TITLE_STEP::NEXT_MODE:
+				titleInfo.changeflag = false;
+				titleInfo.curtainState = false;
 				static	float	screenSpeed = 1.0f;
 				screen->SetScreenMode( SCREEN_MODE::WHITE_IN, screenSpeed );
 
@@ -403,14 +396,12 @@ namespace
 			//	タイトル画像描画
 			RenderImage( titleInfo.titleImage, 0, 0, 512, 512, IMAGE_MODE::NORMAL );
 
-			//	pressSpace描画
+			//	テキスト描画
 			RenderImage( titleInfo.gameStartImage, 0, 0, 512, 128, IMAGE_MODE::FLASH );
 			RenderImage( titleInfo.creditTextImage, 0, 128, 512, 128, IMAGE_MODE::FLASH );
-
 			RenderImage( titleInfo.pressSpace, 0, 0, 256, 128, IMAGE_MODE::WAVE );
 			RenderImage( titleInfo.gameStartImage, 0, 0, 512, 128, IMAGE_MODE::WAVE );
 			RenderImage( titleInfo.creditTextImage, 0, 128, 512, 128, IMAGE_MODE::WAVE );
-
 		}
 
 	//--------------------------------------------------------
@@ -421,41 +412,34 @@ namespace
 		void	sceneTitle::MenuUpdate( void )
 		{
 			//	移動先をかえる
-			if (mainView->GetMoveState())	//	移動が終了してたら
+			if ( mainView->GetMoveState() )	//	移動が終了してたら
 			{
 				//	決定
-				if (KEY(KEY_SPACE) == 3 || KEY(KEY_A) == 3)
+				if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
 				{
-					if (menuInfo.menu_num == TITLE_TARGET::PLAY)
+					//	決定音
+					sound->PlaySE( SE::DECIDE_SE );
+
+					//	カメラ移動先、注視点設定
+					if ( menuInfo.menu_num == TITLE_TARGET::PLAY )
 					{
 						mode = TITLE_MODE::PLAY;
-						if (mainView->GetMoveState())
+						if ( mainView->GetMoveState() )
 						{
-							mainView->SetNextPoint(TITLE_TARGET::MOVE_MENU_UP, 0.008f);
-							//sound->PlaySE(SE::DECIDE_SE);
-
+							mainView->SetNextPoint( TITLE_TARGET::MOVE_MENU_UP, 0.008f );
 						}
-
 					}
-					sound->PlaySE(SE::DECIDE_SE);
-					//sound->PlaySE( SE::DEATH_SE );
 				}
 			}
 
 			//	カメラ更新
 			mainView->Update( VIEW_MODE::TITLE );
-
-			//	UI更新
-			if (menuInfo.menu_num == TITLE_TARGET::PLAY)
-			{
-				ui->Update(TITLE_MODE::MENU);
-			}
 		}
 
 		//	描画
 		void	sceneTitle::MenuRender( void )
 		{
-			ui->Render( 0 );
+
 		}
 
 	//--------------------------------------------------------
@@ -463,7 +447,7 @@ namespace
 	//--------------------------------------------------------
 		
 		//　更新
-		void	sceneTitle::MoveSelectUpdate( void )
+		void	sceneTitle::MoveSceneUpdate( void )
 		{			
 			//	カメラ更新
 			mainView->Update( VIEW_MODE::TITLE );
@@ -494,35 +478,9 @@ namespace
 		}
 
 		//　描画
-		void	sceneTitle::MoveSelectRender( void )
+		void	sceneTitle::MoveSceneRender( void )
 		{
 
-		}
-
-	//--------------------------------------------------------
-	//	オプション
-	//--------------------------------------------------------
-	
-		//	更新
-		void	sceneTitle::OptionUpdate( void )
-		{
-			mainView->Update( VIEW_MODE::TITLE );
-			ui->Update( mode );
-			if ( !mainView->GetMoveState() )	return;
-			if ( KEY( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )
-			{
-				mode = TITLE_MODE::MENU;
-				sound->PlaySE( SE::DECIDE_SE );
-				mainView->SetNextPoint( TITLE_TARGET::PLAY, 0.01f );
-			}
-			mainView->SetNextPoint(menuInfo.menu_num, 0.01f);
-		}
-
-		//	描画
-		void	sceneTitle::OptionRender( void )
-		{
-			DrawString( "オプションだよ。設定いじってね", 50, 50 );
-			DrawString( "[SPACE]：メニューへ", 300, 400, 0xFFFFFF00 );
 		}
 
 	//--------------------------------------------------------
@@ -532,19 +490,23 @@ namespace
 		//	更新
 		void	sceneTitle::CreditUpdate( void )
 		{
-			if ( input[0]->Get( KEY_SPACE ) == 3 )
+			//	タイトルへ戻る
+			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3  || input[0]->Get( KEY_B ) == 3 )
 			{
 				mode = TITLE_MODE::TITLE;
-				creditInfo.t = 0.0f;
+				MainFrame->ChangeScene( new sceneTitle() );
+				return;
 			}
 			
-			if (screen->GetScreenState())
+			//	スクリーン切り替え修了後
+			if ( screen->GetScreenState() )
 			{
-				creditInfo.t += 0.005f;
+				creditInfo.t += 0.003f;
 				if ( creditInfo.t >= 1.0f )	creditInfo.t = 1.0f;
 			}
 
-			Lerp( creditInfo.sy, 0, 1536, creditInfo.t );
+			//	補間
+			Lerp( creditInfo.sy, 0, 800, creditInfo.t );
 		}
 
 		//	描画

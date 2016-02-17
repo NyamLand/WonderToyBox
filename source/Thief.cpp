@@ -20,6 +20,7 @@
 //	グローバル
 //-----------------------------------------------------------------------------------
 
+//攻撃力（HP）
 namespace OFFENSIVE_POWER
 {
 	enum 
@@ -30,15 +31,18 @@ namespace OFFENSIVE_POWER
 	};
 }
 
+//攻撃力（コイン落とす枚数）QUICK,POWERはバレット側で設定
 namespace DROP_POWER
 {
 	enum 
 	{
-		QUICK = 0,
+		QUICK = 3,
 		POWER = 0,
 		HYPER = 20,
 	};
 }
+
+
 
 //-----------------------------------------------------------------------------------
 //	初期化・解放
@@ -82,6 +86,12 @@ bool	Thief::Initialize(int playerNum, Vector3 pos)
 	return	true;
 }
 
+void	Thief::AttackParamInitialize(void)
+{
+	BaseChara::AttackParamInitialize();
+	armRenderflag = false;
+}
+
 //-----------------------------------------------------------------------------------
 //	更新・描画
 //-----------------------------------------------------------------------------------
@@ -90,6 +100,7 @@ bool	Thief::Initialize(int playerNum, Vector3 pos)
 void	Thief::Render(iexShader* shader, LPSTR technique)
 {
 	//SetArmTransform();
+
 	BaseChara::Render(shader, technique);
 
 	if (armRenderflag) arm->Render(shader, technique);
@@ -118,7 +129,6 @@ void	Thief::Render(iexShader* shader, LPSTR technique)
 bool	Thief::QuickArts(void)
 {
 	static int time = 0;
-	static	bool	initflag = false;
 	if ( !initflag )
 	{
 		sound->PlaySE( SE::KAITO_QUICK );
@@ -131,8 +141,7 @@ bool	Thief::QuickArts(void)
 	Vector3	p_pos = GetPos();
 	SetMove(Vector3(0.0f, move.y, 0.0f));
 
-	//モーションアトデナオス
-	SetMotion(4);
+	SetMotion(THIEF::MOTION_DATA::QUICKARTS);
 	//if (obj->GetFrame() >= 237) obj->SetMotion(237);
 
 	//	情報設定
@@ -188,8 +197,8 @@ bool	Thief::PowerArts(void)
 		sound->PlaySE( SE::KAITO_POWER );
 		initflag = true;
 	}
-	//モーションアトデナオス
-	SetMotion(5);
+
+	SetMotion(THIEF::MOTION_DATA::POWERARTS);
 	//if (obj->GetFrame() >= 277) obj->SetFrame(277);
 
 	//	行列から情報取得
@@ -205,15 +214,14 @@ bool	Thief::PowerArts(void)
 	int leanpower = 30;
 	int playerNum = GetPlayerNum();
 
-	//モーションアトデナオス(ちょうどいい感じのフレームが来たら弾発射)
+
 	if (artsTimer == 0/* obj->GetFrame() == ○○ */)
 	{
 		m_BulletManager->Set(BULLET_TYPE::THIEF_02, new Thief_Bullet02, p_pos, vec, bulletSpeed, playerNum);
 	}
 	artsTimer++;
 
-		//モーションアトデナオス
-		if (obj->GetFrame() == 277)
+	if (obj->GetFrame() == THIEF::MOTION_FRAME::POWERARTS_END)
 		{
 			artsTimer = 0;
 			initflag = false;
@@ -225,6 +233,10 @@ bool	Thief::PowerArts(void)
 //	ハイパーアーツ
 bool	Thief::HyperArts(void)
 {
+
+	//空中で発動しても停止する
+	move = Vector3(0, -GRAVITY, 0);
+
 	if ( !initflag )
 	{
 		sound->PlaySE( SE::HYPER_ATTACK );
@@ -232,16 +244,13 @@ bool	Thief::HyperArts(void)
 		initflag = true;
 	}
 
-
-	//モーションアトデナオス
-	SetMotion(6);
-
 	attackInfo.power = OFFENSIVE_POWER::HYPER;
 	attackInfo.dropPower = DROP_POWER::HYPER;
 	attackInfo.coinDropType = DROP_TYPE::SUCTION;
 
 	SetParameterState(PARAMETER_STATE::UNRIVALED);
 	move = Vector3(0, 0 - GRAVITY, 0);	//撃ってる間は静止させる
+	SetMotion(THIEF::MOTION_DATA::HYPERARTS);
 
 
 	//	行列から情報取得
@@ -250,11 +259,8 @@ bool	Thief::HyperArts(void)
 	Vector3	p_pos = GetPos();
 	SetMove(Vector3(0.0f, move.y, 0.0f));
 
-	//	情報設定
-	SetArmTransform();
 
-	//モーションアトデナオス(ちょうどいい感じのフレームが来たら攻撃開始)
-	if (obj->GetFrame() >= 339 && obj->GetFrame() < 399)
+	if (obj->GetFrame() >= THIEF::MOTION_FRAME::HYPERARTS_ATTACKSTART/* && obj->GetFrame() < THIEF::MOTION_FRAME::HYPERARTS_ATTACKEND*/)
 	{
 		float t = GetBezier(ePrm_t::eRapid_Lv5, ePrm_t::eSlow_Lv1, attackInfo.t);
 		Vector3 f = front * (2.0f * sinf(D3DX_PI * t));
@@ -303,8 +309,7 @@ bool	Thief::HyperArts(void)
 	arm->SetScale(Vector3(0.03f, 0.03f, HyperRate * 0.01f));
 	arm->Update();
 
-	//モーションアトデナオス(終わりのモーションが来たら終了)
-	if (/*obj->GetFrame() == 399*/ HyperRate < 0)
+	if (HyperRate < 0)
 	{
 		HyperStep = 0;
 		HyperRate = 0;
@@ -362,15 +367,6 @@ bool	Thief::HyperArts(void)
 //-----------------------------------------------------------------------------------
 //	情報設定
 //-----------------------------------------------------------------------------------
-void	Thief::SetArmTransform(void)
-{
-
-}
-
-void	Thief::SetHandTransform(void)
-{
-
-}
 
 //	攻撃用パラメータ設定
 void	Thief::SetAttackParam(int attackKind)

@@ -15,16 +15,18 @@ namespace PRINCESS
 {
 	namespace MOTION_FRAME
 	{
-
+		const int POWERARTS_END = 114;
+		const int HYPERARTS_END = 184;
+		const int DAMAGE_END = 214;
 	}
 
 	enum MOTION_DATA
 	{
 		WAIT,
 		RUN,
-		JUMP,
-		QUICK,
-		POWER,
+		QUICKARTS,
+		POWERARTS,
+		HYPERARTS,
 		GUARD,
 		DAMAGE,
 		KNOCKBACK,

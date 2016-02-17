@@ -20,6 +20,25 @@
 #define		POWER_RATE	0.5f
 #define		HYPER_RATE	0.005f
 
+namespace OFFENSIVE_POWER
+{
+	enum
+	{
+		QUICK = 1,
+		POWER = 0,
+		HYPER = 1,
+	};
+}
+namespace DROP_POWER
+{
+	enum
+	{
+		QUICK = 5,
+		POWER = 0,
+		HYPER = 7,
+	};
+}
+
 //-----------------------------------------------------------------------------
 //	èâä˙âªÅEâï˙
 //-----------------------------------------------------------------------------

@@ -409,7 +409,7 @@
 			stage->Render( shader3D, "full_s" );
  			characterManager->Render(shader3D, "toon");
 			coinManager->Render( shader3D, "full" );
-			m_BulletManager->Render();
+			m_BulletManager->Render(shader3D, "bullet");
 			itemManager->Render();
 
 			//	パーティクル描画

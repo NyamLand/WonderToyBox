@@ -213,7 +213,7 @@
 				break;
 			case COIN_BAG_5:
 			case COIN_BAG_10:
-				r = 5.0f;
+				r = 2.0f;
 				break;
 			}
 			bool isHit = Collision::CapsuleVSSphere( p_pos, Vector3( p_pos.x, p_pos.y + 3.0f, p_pos.z ), 2.0f, Vector3( pos.x, pos.y + ( scale * 0.5f ), pos.z ), r );

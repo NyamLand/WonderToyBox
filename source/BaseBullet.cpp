@@ -23,6 +23,18 @@
 //	グローバル
 //-------------------------------------------------------------------------------
 
+//プレイヤーごとの色
+namespace
+{
+	const Vector3	BULLET_COLOR[] =
+	{
+		Vector3(1.0f, 0.0f, 0.0f),
+		Vector3(0.0f, 0.0f, 1.0f),
+		Vector3(1.0f, 1.0f, 0.0f),
+		Vector3(0.0f, 1.0f, 0.0f),
+		Vector3(0.0f, 0.0f, 1.0f),
+	};
+}
 //-------------------------------------------------------------------------------
 //	初期化・解放
 //-------------------------------------------------------------------------------
@@ -79,6 +91,8 @@
 	//	シェーダー付き描画
 	void	BaseBullet::Render(iexShader* shader, LPSTR technique)
 	{
+		Vector3 color = BULLET_COLOR[playerNum];
+		shader3D->SetValue("BulletColor", color);
 		obj->Render(shader, technique);
 		
 	}

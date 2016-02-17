@@ -33,11 +33,11 @@ namespace DROP_POWER
 {
 		enum 
 		{
-			QUICK = 1,
+			QUICK = 5,
 			POWER = 0,
-			HYPER = 1,
+			HYPER = 7,
 		};
-	}
+}
 
 //-----------------------------------------------------------------------------------
 //	初期化・解放
@@ -95,9 +95,7 @@ namespace DROP_POWER
 	//	クイックアーツ
 	bool	Princess::QuickArts( void )
 	{
-		//モーションアトデナオス
-		SetMotion(2);
-		if (obj->GetFrame() >= 75) obj->SetFrame(75);
+		SetMotion(PRINCESS::MOTION_DATA::QUICKARTS);
 
 		attackInfo.power = OFFENSIVE_POWER::QUICK;
 		attackInfo.dropPower = DROP_POWER::QUICK;
@@ -146,9 +144,9 @@ namespace DROP_POWER
 	//	パワーアーツ
 	bool	Princess::PowerArts( void )
 	{
-		//モーションアトデナオス
-		SetMotion(3);
-		if (obj->GetFrame() >= 114) obj->SetFrame(114);
+		SetMotion(PRINCESS::MOTION_DATA::POWERARTS);
+		if (obj->GetFrame() >= PRINCESS::MOTION_FRAME::POWERARTS_END) obj->SetFrame(PRINCESS::MOTION_FRAME::POWERARTS_END);
+
 		if ( !initflag )
 		{
 			sound->PlaySE( SE::PRINCESS_POWER );
@@ -199,11 +197,12 @@ namespace DROP_POWER
 	//	ハイパーアーツ
 	bool	Princess::HyperArts( void )
 	{
-		//2.4応急処置
-		//発動中動き停止
 
-		SetMotion(4);
-		if (obj->GetFrame() >= 184) obj->SetFrame(184);
+		//空中で発動しても停止する
+		move = Vector3(0, -GRAVITY, 0);
+
+		SetMotion(PRINCESS::MOTION_DATA::HYPERARTS);
+		if (obj->GetFrame() >= PRINCESS::MOTION_FRAME::HYPERARTS_END) obj->SetFrame(PRINCESS::MOTION_FRAME::HYPERARTS_END);
 		move = Vector3(0, 0, 0);
 
 		attackInfo.power = OFFENSIVE_POWER::HYPER;
@@ -311,7 +310,7 @@ namespace DROP_POWER
 		{
 		case MODE_STATE::QUICKARTS:
 			attackInfo.type = Collision::SPHEREVSCAPSULE;
-			knockBackInfo.type = KNOCKBACK_TYPE::WEAK;
+			knockBackInfo.type = KNOCKBACK_TYPE::MIDDLE;
 			break;
 
 		case MODE_STATE::POWERARTS:

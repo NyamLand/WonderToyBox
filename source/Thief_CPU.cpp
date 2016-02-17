@@ -22,6 +22,26 @@
 #define		POWER_RATE	0.01f
 #define		HYPER_RATE	0.05f
 
+namespace OFFENSIVE_POWER
+{
+	enum
+	{
+		QUICK = 0,
+		POWER = 0,
+		HYPER = 1,
+	};
+}
+
+namespace DROP_POWER
+{
+	enum
+	{
+		QUICK = 0,
+		POWER = 0,
+		HYPER = 20,
+	};
+}
+
 //-----------------------------------------------------------------------------
 //	初期化・解放
 //-----------------------------------------------------------------------------
@@ -44,8 +64,7 @@
 
 	void	Thief_CPU::ControlAI(void)
 	{
-		//　ハイパー
-		
+		//　ハイパー	
 		if (life >= 3)
 		{
 			int HavingCoinTotal = 0;
@@ -220,7 +239,7 @@
 			//　程よくパワー
 			if (Random::PercentageRandom(QUICK_RATE))
 			{
-				aiInfo.mode = (Random::PercentageRandom(0.8f)) ?
+				aiInfo.mode = ( Random::PercentageRandom( 0.8f ) ) ?
 					AI_MODE_STATE::QUICKARTS :
 					AI_MODE_STATE::POWERARTS;
 			}
@@ -313,8 +332,6 @@
 
 	bool	Thief_CPU::QuickArts( void )
 	{
-		static int time = 0;
-		static	bool	initflag = false;
 		if (!initflag)
 		{
 			sound->PlaySE(SE::KAITO_QUICK);

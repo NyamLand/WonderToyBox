@@ -11,6 +11,36 @@
 //	include
 #include	"BaseChara.h"
 
+namespace THIEF
+{
+	//モーション番号
+	enum MOTION_DATA
+	{
+		POSTURE = 0,
+		RUN,
+		JUMP,
+		GUARD,
+		QUICKARTS,
+		POWERARTS,
+		HYPERARTS,
+		DAMAGE,
+		DOWN,
+		GUTS,
+		HAPPY,
+		SAD,
+		ANGRY
+	};
+
+	//モーション固定、切り替えに使うフレーム
+	namespace MOTION_FRAME
+	{
+		const int POWERARTS_END = 277;
+		const int HYPERARTS_ATTACKSTART = 339;
+		const int HYPERARTS_ATTACKEND = 399;
+		const int DAMAGE_END = 408;
+	}
+}
+
 //	class
 class Thief : public		BaseChara
 {
@@ -19,22 +49,7 @@ private:
 	int HyperStep = 0;
 	float HyperRate = 0;
 
-	enum MOTION_DATA
-	{
-		POSTURE = 0,
-		RUN,
-		JUMP,
-		GUARD,
-		QUICK,
-		POWER,
-		HYPER,
-		DAMAGE,
-		DOWN,
-		GUTS,
-		HAPPY,
-		SAD,
-		ANGRY
-	};
+
 	const float DEFAULT_ABSORB_LENGTH = 3.0f;
 
 private:
@@ -53,6 +68,7 @@ public:
 	Thief(void);
 	~Thief(void);
 	bool	Initialize(int playerNum, Vector3 pos)override;
+	void	AttackParamInitialize( void )override;
 
 
 	//	更新・描画
@@ -64,8 +80,6 @@ public:
 	bool	HyperArts(void)override;
 
 	//	情報設定
-	void	SetArmTransform(void);
-	void	SetHandTransform(void);
 	void	SetAttackParam(int attackKind)override;
 };
 

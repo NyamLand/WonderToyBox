@@ -19,13 +19,14 @@ namespace SCAVENGER
 
 	namespace MOTION_FRAME
 	{
-		const int QUICKARTS_SUCK = 92;
+		const int QUICKARTS_START_END = 92;	//QUICKARTS_STARTのモーションが終わったフレーム
 		const int QUICKARTS_END = 153;
 		const int POWER_TO_WAIT = 170;
 		const int POWERARTS_END = 200;
 		const int HYPER_BEGIN = 203;
 		const int HYPER_ABSORB = 240;
 		const int HYPER_FINISH = 248;
+		const int DAMAGE_END = 278;
 	}
 
 	//　魔女モーション
@@ -33,13 +34,13 @@ namespace SCAVENGER
 	{
 		WAIT,
 		RUN,
-		QUICK_START,
-		QUICK,
-		QUICK_END,
-		POWER_START,
-		POWER_END,
-		HYPER_START,
-		HYPER_END,
+		QUICKARTS_START,
+		QUICKARTS,
+		QUICKARTS_END,
+		POWERARTS_START,
+		POWERARTS_END,
+		HYPERARTS_START,
+		HYPERARTS_END,
 		DAMAGE,
 		WIN,
 		LOSE
