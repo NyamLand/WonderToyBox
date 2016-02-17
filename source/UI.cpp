@@ -451,9 +451,9 @@
 	{
 		FOR( 0, PLAYER_MAX ){
 			ImageInitialize( faceImage[value], coinNumInfo[value].pos.x, coinNumInfo[value].pos.y,
-				coinNumInfo[value].one.w + coinNumInfo[value].ten.w,
-				coinNumInfo[value].one.h + coinNumInfo[value].ten.h,
-				0, 0, 256, 256 );
+							 coinNumInfo[value].one.w + coinNumInfo[value].ten.w,
+							 coinNumInfo[value].one.h + coinNumInfo[value].ten.h,
+							 0, 0, 256, 256 );
 		}
 	}
 
@@ -580,7 +580,7 @@
 	}
 
 	//	1à â§ä•âÊëúèâä˙âª
-	void	UI::CrownInitialize(void)
+	void	UI::CrownInitialize( void )
 	{
 		FOR( 0, PLAYER_MAX )
 		{
