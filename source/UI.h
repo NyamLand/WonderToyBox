@@ -56,7 +56,7 @@ namespace
 class UI
 {
 private:
-	struct ALERT_INFO
+	struct AlertInfo
 	{
 		bool	flag;
 		int		timer;
@@ -65,37 +65,15 @@ private:
 		int		type;
 	};
 
-	struct TITLE_INFO
+	struct TitleInfo
 	{
 		ImageObj	textImage;
 		int		step;
 		AirPlane*	airPlane;
 	};
 
-	struct DONKETSU_DIRECT_INFO
-	{
-		const int WAIT_MAX = 5 * SECOND + 30;
 
-		//　顔関連
-		ImageObj	face;
-		int		f;
-		int		roulette;
-		int		face_step;
-
-		//　DonketsuBoooooost!!!
-		ImageObj	DB;
-		int			DB_step;
-
-		//　？P
-		ImageObj	P;
-		int			P_step;
-
-		//　FightLast
-		ImageObj	fight;
-		int			fight_step;
-	};
-
-	struct HURRY_INFO
+	struct HurryInfo
 	{
 		bool	flag;
 		int		timer;
@@ -103,29 +81,8 @@ private:
 		float	param;
 	};
 
-	/*struct AIRPLANE_INFO
-	{
-		int IN_START_POS_X;
-		int IN_START_POS_Y;
-		int IN_END_POS_X;
-		int IN_END_POS_Y;
-		int OUT_START_POS_X;
-		int OUT_END_POS_X;
-		int OUT_END_POS_Y;
-		int ROLL_POINT_ADJUST_X;
-	};*/
-
-	//	コインバー情報
-	struct COINBAR_INFO
-	{
-		float	param[4];
-		float	sub[4];
-		float	scale[4];
-		int		coinNum[4];
-	};
-
 	//	コイン枚数構造体
-	struct NUMBERIMAGE_INFO
+	struct NumberImageInfo
 	{
 		int				scale;
 		POINT			pos;
@@ -136,7 +93,7 @@ private:
 	};
 
 	//	数字情報
-	struct NUMBER_INFO
+	struct NumberInfo
 	{
 		int		hundred;		//コイン三桁目
 		int		ten;			//コイン二桁目
@@ -145,21 +102,21 @@ private:
 	};
 	
 	//	ライフ情報
-	struct LIFE_INFO
+	struct LifeInfo
 	{
 		int	life;
 		ImageObj	lifeImage;
 	};
 
 	//	王冠情報
-	struct CROWN_INFO
+	struct CrownInfo
 	{
 		bool	state;
 		ImageObj	crownImage;
 	};
 
 	//　イベント情報
-	struct EVENT_INFO
+	struct EventInfo
 	{
 		int mode;
 		int step;
@@ -168,27 +125,50 @@ private:
 		AirPlane*	airPlane;
 	};
 
+	//	タイマー情報
+	struct TimerInfo
+	{
+		int		x, y, sx, sy;
+		int		time;
+		int		second[2], minute;
+	};
+
+	//	ラストタイマー情報
+	struct LastTimerInfo
+	{
+		bool	state;
+		float	alpha;
+		float	t;
+	};
+
+	//	カウントダウン情報
+	struct CountInfo
+	{
+		int		count;
+		Vector3 start_pos;
+		Vector3 finish_pos;
+		float	start_t;
+		int		start_step;
+		int		waitTimer;
+	};
+
 private:
 	//	各画像
 	ImageObj	timer;
-	iex2DObj*	coinbar;
-	ImageObj		frame;
-	ImageObj		backgauge;
-	ImageObj		gauge;
+	ImageObj	faceImage[PLAYER_MAX];
+	ImageObj	countImage;
+	ImageObj	alertImage;
+	ImageObj	alert_coinImage;
+	ImageObj	startNum[PLAYER_MAX];
+	ImageObj	pNumImage[PLAYER_MAX];
+	ImageObj	roundImage;
+	ImageObj	finishImage;
 	iex2DObj*	face;
-	ImageObj		faceImage[PLAYER_MAX];
-	ImageObj		countImage;
-	ImageObj		alertImage;
-	ImageObj		alert_coinImage;
 	iex2DObj*	playerNumber;
 	iex2DObj*	startNumber;
-	ImageObj		startNum[PLAYER_MAX];
-	ImageObj		pNumImage[PLAYER_MAX];
 	iex2DObj*	pCoinNumImage;
 	iex2DObj*	life;
 	iex2DObj*	crown;
-	ImageObj		roundImage;
-	ImageObj	finishImage;
 
 private:
 	//	定数
@@ -198,24 +178,7 @@ private:
 	bool	changeflag;
 
 	//	カウントダウン・スタート・タイムアップ演出
-	int		count;
-	Vector3 start_pos;
-	Vector3 finish_pos;
-	float	start_t;
-	int		start_step;
-	int		waitTimer;
-
-	//	タイマー
-	int		x, y, sx, sy;
-	int		time;
-	int		second[2], minute;
-
-	//	コインバー
-	static	const		int		NUM_BAR = 4;
-	int		frame_x, frame_y, frame_sx, frame_sy;
-	int		bar_x[4], bar_y[4], bar_sx[4], bar_sy[4];
-	int		state_x[4];
-	int		state_type[4];
+	CountInfo			countInfo;
 
 	//	コイン枚数
 	int		coinNum[PLAYER_MAX];
@@ -225,50 +188,39 @@ private:
 	int		charatype[PLAYER_MAX];
 
 	//	ラスト時間
-	bool	last_state;
-	float	last_alpha;
-	float	last_t;
-
-	//	ニュース
-	NewsBar	newsbar;
-
+	LastTimerInfo		lasttimerInfo;
+	
+	//	タイマー
+	TimerInfo			timerInfo;
+	
 	//	警告パラメータ
-	ALERT_INFO	alertInfo;
+	AlertInfo			alertInfo;
 
 	//	タイトルパラメータ
-	TITLE_INFO	titleInfo;
-
-	//　どんけつ演出パラメータ
-	DONKETSU_DIRECT_INFO ddInfo;
+	TitleInfo			titleInfo;
 
 	//	HurryUpパラメータ
-	HURRY_INFO	hurryInfo;
-
-	//	飛行機パラメータ
-	//AIRPLANE_INFO		airPlaneInfo;
-
-	//	コインバー情報
-	COINBAR_INFO	coinBarInfo;
+	HurryInfo			hurryInfo;
 
 	//	ライフ情報
-	LIFE_INFO			lifeInfo[4];
+	LifeInfo			lifeInfo[4];
 
 	//	王冠情報
-	CROWN_INFO			crownInfo[4];
+	CrownInfo			crownInfo[4];
 
 	//	コイン枚数情報
-	NUMBERIMAGE_INFO	coinNumInfo[PLAYER_MAX];
-	NUMBER_INFO			numInfo[PLAYER_MAX];
+	NumberImageInfo	coinNumInfo[PLAYER_MAX];
+	NumberInfo			numInfo[PLAYER_MAX];
 
 	//　イベント情報
-	EVENT_INFO	eventInfo;
-	
-	//	パーティクル用バックバッファ
-	std::unique_ptr<iex2DObj>	target_par;
+	EventInfo			eventInfo;
 
 	//	パーティクル用
 	bool		coin_flg[PLAYER_MAX];
 	int			coin_timer[PLAYER_MAX];
+	
+	//	パーティクル用バックバッファ
+	std::unique_ptr<iex2DObj>	target_par;
 
 	//	パーティクル用カメラ
 	std::unique_ptr<Camera>		particle_camera;
@@ -297,7 +249,6 @@ public:
 	//	更新・描画
 	void	Update( const int& mode );
 	void	Render( const int& mode );
-	void	DrawDebug();
 
 	//	各シーン更新
 	void	TitleUpdate( int mode );
@@ -315,12 +266,9 @@ public:
 
 	//-------------------------------メイン処理-------------------------------------//
 	//	メイン動作初期化
-	void	CoinBarInitialize( void );
 	void	TimerInitialize( void );
-	void	NewsBarInitialize( void );
 	void	StartAndTimeUpInitialize( void );
 	void	StartPlayerNumInitialize( void );
-	void	DonketsuDirectionInitialize( void );
 	void	AlertInitialize( void );
 	void	HurryUpInitialize( void );
 	void	LastProductionInitialize( void );
@@ -328,18 +276,16 @@ public:
 	void	LifeInitialize( void );
 	void	CrownInitialize( void );
 	void	CoinNumberInitialize( void );
+	void	FaceImageInitialize( void );
 	void	RoundInitialize( void );
 	void	EventInitialize( void );
 
 	//	メイン動作更新
 	void	TimerUpdate( void );
-	void	CoinBarUpdate( void );
-	void	NewsBarUpdate( void );
 	void	StartUpdate( void );
 	bool	StartMove( void );
 	void	StartPlayerNumUpdate( void );
 	void	FinishUpdate( void );
-	void	DonketsuDirectionUpdate( void );
 	void	AlertUpdate( void );
 	void	MissionDirectionUpdate( void );
 	void	HurryUpdate( void );
@@ -349,22 +295,18 @@ public:
 	void	CrownUpdate( void );
 	void	CoinNumberUpdate( void );
 	void	FaceImageUpdate( int num, int mode );
-	void	CoinImageInfoUpdate(NUMBERIMAGE_INFO& numImageinfo, NUMBER_INFO& numinfo, const int& num);
+	void	CoinImageInfoUpdate( NumberImageInfo& numImageinfo, NumberInfo& numinfo, const int& num );
 	void	EventUpdate( void );
 	void	ParticleUpdate( void );
 
 	//	メイン描画
 	void	TimerRender( void );
-	void	CoinBarRender( void );
-	void	NewsBarRender( void );
 	void	StartRender( void );
 	void	StartPlayerNumRender( void );
 	void	FinishRender( void );
-	void	DonketsuDirectionRender( void );
 	void	AlertRender( void );
 	void	MissionDirectionRender( void );
 	void	LastProductionRender( void );
-	void	PlayerNumberRender( void );
 	void	LifeRender( void );
 	void	CrownRender( void );
 	void	CoinNumberRender( void );
@@ -373,18 +315,9 @@ public:
 	void	RenderTargetParticle( void );
 
 	//	メイン動作関数
-	void BarControl( void );
-	void StateImageControl( void );
-	void FaceRoulette( int face_wait );
-	void DB_Direction( int wait );
-	void P_Direction( int wait );
-	void Fight_Direction( int wait );
-	void CoinCounter( int coin , int num);
+	void	CoinCounter( int coin , int num );
 	void	RoundRender( void );
 
-	//	テスト用
-	void	BarControl2( void );
-	void	BarRender( void );
 	//------------------------------情報取得・設定------------------------------------//
 
 	//	情報設定
@@ -394,9 +327,9 @@ public:
 	void	SetFlyingIn( int type );
 	void	SetImageSrcPos( int mode );
 	void	SetImageSrcPos( int sx, int sy );
-	void	SetCoinImageInfo(NUMBERIMAGE_INFO& numImageinfo, NUMBER_INFO& numinfo, const int& num);
-	void	SetNumberInfo(NUMBER_INFO& nomber, int coin);
-	void	SetEventInfoMode(int mode);
+	void	SetCoinImageInfo( NumberImageInfo& numImageinfo, NumberInfo& numinfo, const int& num );
+	void	SetNumberInfo( NumberInfo& nomber, int coin );
+	void	SetEventInfoMode( int mode );
 
 	//	情報取得
 	bool	GetChangeFlag( void );
