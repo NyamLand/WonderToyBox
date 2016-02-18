@@ -14,7 +14,6 @@
 SquirrelBullet01::SquirrelBullet01()
 {
 	scale		=	Vector3(0.05f,0.05f,0.05f);
-	leanpower	=	0;
 //	judgeTimer	=	BULLET_JUDGETIMER	[	BULLET_TYPE::SQUIRREL_01	]; 
 	radius		=	BULLET_RADIUS		[	BULLET_TYPE::SQUIRREL_01	];
 	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::SQUIRREL_01	];

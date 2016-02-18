@@ -102,7 +102,6 @@ public:
 	void		SetMode( int player, int mode );
 	void		SetAIMode( int player, int mode );
 	//void		SetBoosting( int player, bool boosting );
-	void		SetLeanFrame( int player, int leanframe );
 	void		SetPassColor( int player, Vector3 color );
 	void		SetParameterInfo( int player, int parameterInfo );
 	void		SetRank(int player, int rank);

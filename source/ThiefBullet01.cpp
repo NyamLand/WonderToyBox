@@ -20,7 +20,6 @@
 ThiefBullet01::ThiefBullet01()
 {
 	scale		=	Vector3( 0.05f,0.05f,0.05f );
-	leanpower	=	0;
 	angle.y		=	characterManager->GetAngle(playerNum);
 //	judgeTimer	=	BULLET_JUDGETIMER	[	BULLET_TYPE::THIEF_01	];
 	radius		=	BULLET_RADIUS		[	BULLET_TYPE::THIEF_01	];
@@ -134,8 +133,6 @@ bool	ThiefBullet01::PlayerCollisionCheck(void)
 			Vector3	color = Vector3(0.5f, 0.5f, 0.0f);
 			characterManager->SetPassColor(i, color);
 			characterManager->SetKnockBackVec(i, -knockBackVec);
-			characterManager->SetLeanFrame(i, leanpower);
-			characterManager->SetMode(i, MODE_STATE::DAMAGE_LEANBACKWARD);
 
 
 

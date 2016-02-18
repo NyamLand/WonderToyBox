@@ -22,7 +22,6 @@ protected:
 	bool			enable;		//描画するかどうか
 	float			radius;		//物体の半径(あたり判定で使用))
 	int				limitTimer; //	消滅までの時間
-	int				leanpower; //	仰け反り時間用
 	int				number;		//	番号割り当て用
 	int				playerNum;	//何番目のプレイヤーの弾か
 	int				liveTime;	//生成されてからの時間

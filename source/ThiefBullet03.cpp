@@ -16,7 +16,6 @@
 ThiefBullet03::ThiefBullet03() :growSpeed(0.0f), checkMax(false), checkMin(false)
 {
 	scale		=	Vector3(0.01f,0.01f,0.005f);
-	leanpower	=	0;	
 //	judgeTimer	=	BULLET_JUDGETIMER	[	BULLET_TYPE::THIEF_03	];
 	radius		=	BULLET_RADIUS		[	BULLET_TYPE::THIEF_03	];
 	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::THIEF_03	];

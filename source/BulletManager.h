@@ -125,7 +125,6 @@ public:
 	void	Set(int type, BaseBullet* obj, Vector3 pos, const Vector3 vec, float speed, int playerNum);
 	void	Set(int type, BaseBullet* obj, Vector3 pos, const Vector3 vec, const Vector3 angle, float speed, int playerNum);
 	//void	Set(int type, BaseBullet* obj, Vector3 pos, const Vector3 vec, const float& scale, float speed);
-	//void	Set(int type, BaseBullet* obj, Vector3 pos, const Vector3 vec, float speed, int leanpower);
 	void	DistCheck(int n);
 };
 

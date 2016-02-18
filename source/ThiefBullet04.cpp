@@ -18,7 +18,6 @@
 ThiefBullet04::ThiefBullet04() :holdCoinNum(0), growSpeed(0.0f), checkMax(false), checkMin(false)
 {
 	scale		=	Vector3(0.03f, 0.03f, 0.03f);
-	leanpower	=	0;
 //	judgeTimer	=	BULLET_JUDGETIMER	[	BULLET_TYPE::THIEF_04	];
 	radius		=	BULLET_RADIUS		[	BULLET_TYPE::THIEF_04	];
 	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::THIEF_04	];
@@ -141,8 +140,7 @@ bool	ThiefBullet04::PlayerCollisionCheck(void)
 			knockBackVec.y = p_pos_bottom.y;
 			knockBackVec.Normalize();
 			characterManager->SetKnockBackVec(i, -knockBackVec);
-			characterManager->SetLeanFrame(i, leanpower);
-			characterManager->SetForce(i, 2.0f);
+			characterManager->SetForce(i, 0.7f);
 			(characterManager->GetIsPlayer(i)) ?
 				characterManager->SetMode(i, MODE_STATE::DAMAGE) :
 				characterManager->SetAIMode(i, AI_MODE_STATE::DAMAGE);

@@ -43,7 +43,7 @@ namespace
 	BaseBullet::BaseBullet(void) :
 	obj(NULL),
 	pos(0, 0, 0), move(0, 0, 0),
-	limitTimer(0),  number(0), leanpower(0), playerNum(0), liveTime(0), step(0), 
+	limitTimer(0),  number(0),playerNum(0), liveTime(0), step(0), 
 	radius(0),
 	scale(0,0,0), angle(0,0,0),
 	state(true), activate(true)
@@ -69,7 +69,6 @@ namespace
 	//	activate = false;
 	//	state = false;
 	//	number = 0;
-	//	leanpower = 0;
 
 	//	return	true;
 	//}
@@ -158,8 +157,6 @@ namespace
 				Vector3	color = characterManager->GetDamageColor(i);
 				characterManager->SetPassColor(i,color);
 				characterManager->SetKnockBackVec(i, -knockBackVec);
-				characterManager->SetLeanFrame(i, leanpower);
-				characterManager->SetMode( i, MODE_STATE::DAMAGE_LEANBACKWARD );
 
 
 

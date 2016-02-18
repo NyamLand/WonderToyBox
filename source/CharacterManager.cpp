@@ -1011,12 +1011,6 @@ void	CharacterManager::SubLife(int player)const
 		character[player]->SetBoosting( boosting );
 	}*/
 
-	//	‹Â‚¯”½‚èŽžŠÔŽæ“¾
-	void		CharacterManager::SetLeanFrame( int player, int leanframe )
-	{
-		character[player]->SetLeanFrame( leanframe );
-	}
-
 	//	“n‚·FÝ’è
 	void		CharacterManager::SetPassColor( int player, Vector3 color )
 	{
@@ -1047,29 +1041,24 @@ void	CharacterManager::SubLife(int player)const
 		switch (bc1->GetKnockBackType())
 		{
 		case KNOCKBACK_TYPE::STRENGTH:
-			bc2->SetForce(1.5f);
-			(bc2->GetIsPlayer()) ?
-				bc2->SetMode(MODE_STATE::DAMAGE) :
-				bc2->SetAIMode(AI_MODE_STATE::DAMAGE);
-			break;
-
-		case KNOCKBACK_TYPE::MIDDLE:
-			bc2->SetForce(1.0f);
-			(bc2->GetIsPlayer()) ?
-				bc2->SetMode(MODE_STATE::DAMAGE) :
-				bc2->SetAIMode(AI_MODE_STATE::DAMAGE);
-			break;
-
-		case KNOCKBACK_TYPE::WEAK:
 			bc2->SetForce(0.5f);
 			(bc2->GetIsPlayer()) ?
 				bc2->SetMode(MODE_STATE::DAMAGE) :
 				bc2->SetAIMode(AI_MODE_STATE::DAMAGE);
 			break;
 
-		case KNOCKBACK_TYPE::LEANBACKWARD:
-			bc2->SetLeanFrame(bc1->GetLeanFrame());
-			bc2->SetMode(MODE_STATE::DAMAGE_LEANBACKWARD);
+		case KNOCKBACK_TYPE::MIDDLE:
+			bc2->SetForce(0.25f);
+			(bc2->GetIsPlayer()) ?
+				bc2->SetMode(MODE_STATE::DAMAGE) :
+				bc2->SetAIMode(AI_MODE_STATE::DAMAGE);
+			break;
+
+		case KNOCKBACK_TYPE::WEAK:
+			bc2->SetForce(0.1f);
+			(bc2->GetIsPlayer()) ?
+				bc2->SetMode(MODE_STATE::DAMAGE) :
+				bc2->SetAIMode(AI_MODE_STATE::DAMAGE);
 			break;
 		}
 	}
