@@ -176,26 +176,6 @@
 	//}
 
 
-	//void	BulletManager::Set(int type, BaseBullet* obj, Vector3 pos, const Vector3 vec, float speed, int leanpower)
-	//{
-	//	for (int i = 0; i < BULLET_MAX; i++)
-	//	{
-	//		if (c_Bullet[i]!= NULL)	continue;
-	//		c_Bullet[i] = obj;
-	//		c_Bullet[i]->obj = org[type]->Clone();
-	//		c_Bullet[i]->judgeTimer = 10;
-	//		c_Bullet[i]->limitTimer = 0;
-	//		c_Bullet[i]->activate = false;
-	//		c_Bullet[i]->state = true;
-	//		c_Bullet[i]->pos = pos;
-	//		Vector3	v = vec;
-	//		v.Normalize();
-	//		c_Bullet[i]->move = v * speed;
-	//		c_Bullet[i]->scale = 0.05f;
-	//		break;
-	//	}
-	//}
-
 	//	à íuí≤êÆ
 	void	BulletManager::DistCheck( int n )
 	{

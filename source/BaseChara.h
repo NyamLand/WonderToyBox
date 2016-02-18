@@ -44,7 +44,6 @@ namespace
 			JUMP,
 			GUARD,
 			DAMAGE,
-			DAMAGE_LEANBACKWARD,
 			KNOCKBACK,
 			DEATH,
 		};
@@ -63,7 +62,6 @@ namespace
 			JUMP,
 			GUARD,
 			DAMAGE,
-			DAMAGE_LEANBACKWARD,
 			KNOCKBACK,
 			DEATH,
 			
@@ -80,7 +78,6 @@ namespace
 			STRENGTH,		//	強
 			MIDDLE,				//	中
 			WEAK,					//	弱
-			LEANBACKWARD,			//	ノックバックなし、仰け反り
 		};
 	}
 
@@ -167,6 +164,7 @@ protected:
 	{
 		Vector3	vec;
 		int		type;
+		int		interval;
 	};
 	
 	//	パラメータ情報
@@ -250,7 +248,6 @@ protected:
 	int				mode;
 	int				playerNum;
 	int				totalPower;
-	int				leanFrame;		//	仰け反り時間
 	int				jumpStep;			//	ジャンプ動作
 	int				damageStep;
 	int				rank;
@@ -319,7 +316,6 @@ public:
 	void	KnockBack( void );
 	void	Death( void );
 	void	AddKnockBackForce(float force);
-	void	KnockBackLeanBackWard( void );
 	void	FallCheck( void );
 	void	ParameterAdjust( void );
 	void	ShadowUpdate( void );
@@ -359,7 +355,6 @@ public:
 	virtual void	AutoDamage(void);
 	virtual void	AutoKnockBack(void);
 	virtual void	AutoAddKnockBackForce(float force);
-	virtual void	AutoKnockBackLeanBackWard(void);
 	virtual void	AutoDeath(void);
 	virtual void	RunAway(void);
 	virtual void	Stop(void);
@@ -379,7 +374,6 @@ public:
 	void	SetDrag( float param );
 	void	SetDamageColor( Vector3 color );
 	void	SetPassColor( Vector3 color );
-	void	SetLeanFrame( int frame );
 	//void	SetBoosting( bool boosting );	//　
 	void	SetKnockBackVec( Vector3 vec );
 	void	SetUnrivaled( bool state );
@@ -428,7 +422,6 @@ public:
 	int		GetPlayerNum( void )const;
 	int		GetAttackParam( void )const;
 	int		GetKnockBackType(void)const;
-	int		GetLeanFrame( void )const;
 	int		GetRank( void )const;
 	int		GetLife(void)const;
 	int		GetDropType(void)const;

@@ -211,7 +211,6 @@ bool	Thief::PowerArts(void)
 	Vector3	vec = front * 1.0f;
 
 	float	 bulletSpeed = 0.8f;
-	int leanpower = 30;
 	int playerNum = GetPlayerNum();
 
 
@@ -374,9 +373,6 @@ void	Thief::SetAttackParam(int attackKind)
 	switch (attackKind)
 	{
 	case MODE_STATE::QUICKARTS:
-		attackInfo.type = Collision::SPHEREVSCAPSULE;
-		if (attackInfo.t < 0.6) knockBackInfo.type = KNOCKBACK_TYPE::LEANBACKWARD;	//2HitÇ‹Ç≈ÇÕã¬ÇØîΩÇËÇÃÇ›
-		if (attackInfo.t >= 0.6) knockBackInfo.type = KNOCKBACK_TYPE::WEAK;		//3hitñ⁄Ç©ÇÁÇÕêÅÇ´îÚÇŒÇµÇ†ÇË
 		break;
 
 	case MODE_STATE::POWERARTS:

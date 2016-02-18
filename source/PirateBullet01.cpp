@@ -18,7 +18,6 @@ PirateBullet01::PirateBullet01()
 	radius		=	BULLET_RADIUS		[	BULLET_TYPE::PIRATE_01	];
 	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::PIRATE_01	];
 	scale		=	Vector3(0.01f, 0.01f, 0.01f);
-	leanpower	=	0;
 }
 
 bool PirateBullet01::Initialize()
@@ -121,7 +120,6 @@ void	PirateBullet01::Move(void)
 //			Vector3	color = characterManager->GetDamageColor(i);
 //			characterManager->SetPassColor(i, color);
 //			characterManager->SetKnockBackVec(i, -knockBackVec);
-//			characterManager->SetLeanFrame(i, leanpower);
 //			characterManager->SetForce(i, 2.0f);
 //			(characterManager->GetIsPlayer(i)) ?
 //				characterManager->SetMode(i, MODE_STATE::DAMAGE) :

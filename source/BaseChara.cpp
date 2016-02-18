@@ -60,7 +60,7 @@ namespace
 	pos(0.0f, 0.0f, 0.0f), move(0.0f, 0.0f, 0.0f), angle(0.0f, 0.0f, 0.0f), objectMove(0.0f, 0.0f, 0.0f),	//	Vector3
 	scale(0.0f), speed(0.0f), totalSpeed(0.0f), drag(0.0f), force(0.0f), moveVec(0.0f), jumpPower(0.0f), dt(0.0f), param(0.0f),	//	float
 	isGround(false), isPlayer(false), jumpState(true), checkWall(false), renderflag(true), coinUnrivaled(false), initflag(false),//	bool
-	mode(0), playerNum(0), totalPower(0), leanFrame(0), jumpStep(0), damageStep(0), rank(0), life(0), checkWallCount(0)		//	int
+	mode(0), playerNum(0), totalPower(0),jumpStep(0), damageStep(0), rank(0), life(0), checkWallCount(0)		//	int
 	{
 	
 	}
@@ -127,6 +127,7 @@ namespace
 			{
 				knockBackInfo.type = 0;
 				knockBackInfo.vec = Vector3(0.0f, 0.0f, 0.0f);
+				knockBackInfo.interval = 0;
 		}
 
 			//	ダメージ時色情報初期化
@@ -377,11 +378,6 @@ namespace
 			KnockBack();
 			break;
 
-		case MODE_STATE::DAMAGE_LEANBACKWARD:
-			AttackParamInitialize();
-			KnockBackLeanBackWard();
-			break;
-
 		case MODE_STATE::DEATH:
 			AttackParamInitialize();
 			Death();
@@ -418,10 +414,6 @@ namespace
 
 		case AI_MODE_STATE::KNOCKBACK:
 			AutoKnockBack();
-			break;
-
-		case AI_MODE_STATE::DAMAGE_LEANBACKWARD:
-			AutoKnockBackLeanBackWard();
 			break;
 
 		case AI_MODE_STATE::DEATH:
@@ -640,13 +632,13 @@ namespace
 	//	ノックバック
 	void	BaseChara::KnockBack( void )
 	{
-
+		knockBackInfo.interval--;
 		KeepDamageFrame();
 //		SetMotion(MOTION_NUM::POSTURE);
 
 		//SetParameterState(PARAMETER_STATE::UNRIVALED);
-		SetDrag(1.0f);	//一時的に抗力なくす
-		if (/*move.y < 0 &&*/ isGround)
+		//SetDrag(1.0f);	//一時的に抗力なくす
+		if (knockBackInfo.interval < 0 && isGround)
 		{
 			move = Vector3(0.0f, 0.0f, 0.0f);
 			damageStep = 0;
@@ -665,9 +657,10 @@ namespace
 		//case 0:
 			isGround = false;
 			SetDamageColor(damageColor.catchColor);
-			move = knockBackInfo.vec * (force / 4);
-			move.y = force / 4;
+			move = knockBackInfo.vec * force;
+			move.y = force;
 
+			knockBackInfo.interval = 5;
 			SetMode( MODE_STATE::KNOCKBACK );
 			jumpState = true;
 			//damageStep++;
@@ -679,28 +672,7 @@ namespace
 		//}
 	}
 
-	//	ノックバック	仰け反りのみ
-	void	BaseChara::KnockBackLeanBackWard( void )
-	{
-		if ( !initflag )
-		{
-			branktime = 0;	//仮の仰け反り時間　後でモーションフレームからとる可能性大
-			initflag = true;
-		}
 
-		//SetParameterState(PARAMETER_STATE::UNRIVALED);
-		if ( branktime == 0 )  SetDamageColor( damageColor.catchColor );
-		branktime++;
-		SetMove( Vector3( 0.0f, move.y, 0.0f ) );
-//		SetMotion( MOTION_NUM::POSTURE );
-		if ( branktime >= leanFrame )
-		{
-			branktime = 0;
-			initflag = false;
-			SetMode( MODE_STATE::MOVE );
-			//SetUnrivaled(false);
-		}
-	}
 
 	//	待機
 	void	BaseChara::Wait( void )
@@ -1445,35 +1417,14 @@ namespace
 	{
 		isGround = false;
 		SetDamageColor(damageColor.catchColor);
-		move = knockBackInfo.vec * (force / 4);
-		move.y = force / 4;
+		move = knockBackInfo.vec * force;
+		move.y = force;
 
 		aiInfo.mode = AI_MODE_STATE::KNOCKBACK;
 		jumpState = true;
 	}
 
-	//　仰け反り
-	void	BaseChara::AutoKnockBackLeanBackWard(void)
-	{
-		if (!initflag)
-		{
-			branktime = 0;	//仮の仰け反り時間　後でモーションフレームからとる可能性大
-			initflag = true;
-		}
 
-		//SetParameterState(PARAMETER_STATE::UNRIVALED);
-		if (branktime == 0)  SetDamageColor(damageColor.catchColor);
-		branktime++;
-		SetMove(Vector3(0.0f, move.y, 0.0f));
-		//		SetMotion( MOTION_NUM::POSTURE );
-		if (branktime >= leanFrame)
-		{
-			branktime = 0;
-			initflag = false;
-			aiInfo.mode = AI_MODE_STATE::MOVE;
-			//SetUnrivaled(false);
-		}
-	}
 
 	//　死亡
 	void	BaseChara::AutoDeath(void)
@@ -1996,12 +1947,6 @@ namespace
 		return	playerNum;
 	}
 
-	//	仰け反りフレーム取得
-	int		BaseChara::GetLeanFrame( void )const
-	{
-		return	leanFrame;
-	}
-
 	//	攻撃タイプ取得
 	int		BaseChara::GetAttackParam( void )const
 	{
@@ -2130,12 +2075,6 @@ namespace
 	void	BaseChara::SetPassColor( Vector3 color )
 	{
 		damageColor.catchColor = color;
-	}
-
-	//	仰け反り時間設定
-	void	BaseChara::SetLeanFrame( int frame )
-	{
-		leanFrame = frame;
 	}
 
 	//	ブースト状態設定

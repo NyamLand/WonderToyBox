@@ -119,7 +119,6 @@ bool	Pirate::QuickArts(void)
 	//’e‚ğ”­Ë‚·‚é‚Æ‚«‚Ìî•ñ‚ğŒˆ’è
 	c_pos.y -= 1.0f;
 	float	 bulletSpeed = 0.5f;
-	int leanpower = 30;
 	int playerNum = GetPlayerNum();
 
 	//”­Ë‚·‚é’e‚Ìí—Ş‚ğŒˆ’è

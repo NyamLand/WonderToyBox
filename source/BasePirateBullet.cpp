@@ -82,8 +82,7 @@ bool	BasePirateBullet::PlayerCollisionCheck(void)
 			Vector3	color = characterManager->GetDamageColor(i);
 			characterManager->SetPassColor(i, color);
 			characterManager->SetKnockBackVec(i, -knockBackVec);
-			characterManager->SetLeanFrame(i, leanpower);
-			characterManager->SetForce(i, 2.0f);
+			characterManager->SetForce(i, 0.5f);
 			(characterManager->GetIsPlayer(i)) ?
 				characterManager->SetMode(i, MODE_STATE::DAMAGE) :
 				characterManager->SetAIMode(i, AI_MODE_STATE::DAMAGE);
