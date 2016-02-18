@@ -75,46 +75,16 @@
 	}
 
 	//	初期化
-	bool	UI::Initialize( int scene )
+	bool	UI::Initialize( void )
 	{
-		this->scene = scene;
-
-		//	モード別初期化
-		switch ( this->scene )
-		{
-		case UI_MODE::TITLE:
-			TitleInitialize();
-			break;
-
-		case UI_MODE::MAIN:
-			MainInitialize();
-			break;
-
-		case UI_MODE::RESULT:
-			ResultInitialize();
-			break;
-		}
-
+		MainInitialize();
 		return	true;
 	}
 
 	//	解放
 	void	UI::Release( void )
 	{
-		switch ( scene )
-		{
-		case UI_MODE::TITLE:
-			TitleRelease();
-			break;
-
-		case UI_MODE::MAIN:
-			MainRelease();
-			break;
-
-		case	UI_MODE::RESULT:
-			ResultRelease();
-			break;
-		}
+		MainRelease();
 	}
 
 //------------------------------------------------------------------------------
@@ -124,53 +94,18 @@
 	//	更新
 	void	UI::Update( const int& mode )
 	{
-		switch ( this->scene )
-		{
-		case UI_MODE::TITLE:
-			TitleUpdate( mode );
-			break;
-
-		case UI_MODE::MAIN:
-			MainUpdate( mode );
-			break;
-
-		case UI_MODE::RESULT:
-			ResultUpdate( mode );
-			break;
-		}
+		MainUpdate( mode );
 	}
 
 	//	描画
 	void	UI::Render( const int& mode )
 	{
-		switch ( this->scene )
-		{
-		case UI_MODE::TITLE:
-			TitleRender( mode );
-			break;
-
-		case UI_MODE::MAIN:
-			MainRender( mode );
-			break;
-
-		case UI_MODE::RESULT:
-			ResultRender( mode );
-			break;
-		}
+		MainRender( mode );
 	}
 	
 //------------------------------------------------------------------------------
 //	各シーン初期化
 //------------------------------------------------------------------------------
-
-	//	タイトル用初期化
-	void	UI::TitleInitialize( void )
-	{
-		//	変数初期化
-		titleInfo.airPlane = new AirPlane();
-		titleInfo.step = 0;
-
-	}
 
 	//	メイン用初期化
 	void	UI::MainInitialize( void )
@@ -220,21 +155,9 @@
 		EventInitialize();
 	}
 
-	//	リザルト用初期化
-	void	UI::ResultInitialize( void )
-	{
-
-	}
-
 //------------------------------------------------------------------------------
 //	各シーン解放
 //------------------------------------------------------------------------------
-
-	//	タイトル用解放
-	void	UI::TitleRelease( void )
-	{
-		SafeDelete( titleInfo.airPlane );
-	}
 
 	//	メイン用解放
 	void	UI::MainRelease( void )
@@ -253,48 +176,10 @@
 		SafeDelete( startNumber );
 	}
 
-	//	リザルト用解放
-	void	UI::ResultRelease( void )
-	{
-
-	}
-
 //------------------------------------------------------------------------------
 //	各シーン更新
 //------------------------------------------------------------------------------
 
-	//	タイトル更新
-	void	UI::TitleUpdate( int mode )
-	{
-		//	画像設定
-		SetImageSrcPos( mode );
-
-		bool	isEnd = false;
-		switch ( titleInfo.step ) 
-		{
-		case 0:
-			//	どっかからやってくる
-			titleInfo.step++;
-			break;
-
-		case 1:
-			titleInfo.airPlane->Update();
-			if ( mode == TITLE_MODE::MOVE_MAIN )
-			{
-				
-				Vector3 endPos( static_cast<float>( titleInfo.airPlane->OUT_END_POS_X ), static_cast<float>( titleInfo.airPlane->OUT_END_POS_Y ), 0.0f );
-				titleInfo.airPlane->SetNext(titleInfo.airPlane->GetPos(), endPos, AirPlane::FLYING_OUT );
-				titleInfo.step++;
-			}
-			
-			break;
-
-		case 2:
-			titleInfo.airPlane->Update();
-			break;
-		}
-	}
-	
 	//	メイン更新
 	void	UI::MainUpdate( int mode )
 	{
@@ -331,21 +216,9 @@
 		}
 	}
 
-	//	リザルト更新
-	void	UI::ResultUpdate( int mode )
-	{
-
-	}
-
 //------------------------------------------------------------------------------
 //	各シーン描画
 //------------------------------------------------------------------------------
-
-	//	タイトル描画
-	void	UI::TitleRender( int mode )
-	{
-		titleInfo.airPlane->Render();
-	}
 
 	//	メイン描画
 	void	UI::MainRender( int mode )
@@ -390,17 +263,6 @@
 
 	}
 
-	//	リザルト描画
-	void	UI::ResultRender( int mode )
-	{
-
-	}
-
-//------------------------------------------------------------------------------
-//	タイトル動作初期化
-//------------------------------------------------------------------------------
-
-	
 //------------------------------------------------------------------------------
 //	メイン動作初期化
 //------------------------------------------------------------------------------
@@ -473,8 +335,6 @@
 			timerInfo.second[value] = 0;
 		}
 	}
-
-	//	ニュースバー初期化
 
 	//	カウントダウン・スタート・終了演出
 	void	UI::StartAndTimeUpInitialize( void )
@@ -603,7 +463,6 @@
 		int	sw	= 512;
 		int	sh	= 128;
 		ImageInitialize( roundImage, x, y, w, h, sx, sy, sw, sh );
-		//roundImage.angle = D3DXToRadian( -30.0f );
 	}
 
 	//　イベント情報初期化
@@ -647,6 +506,7 @@
 		}
 	}
 
+	//	顔画像構造体更新
 	void	UI::FaceImageUpdate( int num, int mode )
 	{
 		faceImage[num].alpha	= 0.5f;
@@ -783,19 +643,11 @@
 		if ( countInfo.waitTimer <= 0 )	changeflag = true;
 	}
 
-	//	どんけつ決定演出
-
-
 	//	警告演出
 	void	UI::AlertUpdate( void )
 	{
 		if ( !alertInfo.flag ) return;
 
-		if ( alertInfo.type == ALERT_TYPE_INFO::MISSION )
-		{
-			MissionDirectionUpdate();
-		}
-		else
 		{
 			alertInfo.param += D3DX_PI / 30.0f;
 			alertInfo.alpha = 0.1f + 0.1f * sinf(alertInfo.param);
@@ -828,11 +680,6 @@
 		eventInfo.texture.x		= ( int )eventInfo.airPlane->GetPos().x;
 		eventInfo.texture.y		= ( int )eventInfo.airPlane->GetPos().y;
 		eventInfo.texture.sy	= eventInfo.mode * 128;
-	}
-
-	void	UI::MissionDirectionUpdate( void )
-	{
-
 	}
 
 	//	HurryUp演出
@@ -969,7 +816,7 @@
 	}
 
 	//　イベントのUI（飛行機挙動）
-	void	UI::EventUpdate()
+	void	UI::EventUpdate( void )
 	{
 		bool isEnd = !eventManager->GetEventFlag();
 		if ( isEnd )	return;
@@ -1106,8 +953,6 @@
 		RenderImage( finishImage, finishImage.sx, finishImage.sy, finishImage.sw, finishImage.sh, IMAGE_MODE::NORMAL );
 	}
 
-	//	どんけつ演出
-
 	//	警告描画
 	void	UI::AlertRender( void )
 	{
@@ -1127,23 +972,12 @@
 			RenderImage( alert_coinImage, alert_coinImage.sx, alert_coinImage.sy, alert_coinImage.sw, alert_coinImage.sh, IMAGE_MODE::NORMAL );
 			break;
 
-			//　ミッションイベント演出
-		case ALERT_TYPE_INFO::MISSION:
-			MissionDirectionRender();
-			break;
-
 		default:
 			break;
 		}
 
 		//　飛行機
 		EventRender();
-	}
-
-	//　ミッションイベント演出
-	void	UI::MissionDirectionRender()
-	{
-
 	}
 
 	//	時間警告描画
@@ -1168,9 +1002,6 @@
 		timer.sy = 0;
 
 	}
-
-	//	プレイヤー番号描画
-
 
 	//	ライフ描画
 	void	UI::LifeRender( void )
@@ -1200,11 +1031,10 @@
 	}
 
 	//	イベント関連情報描画（飛行機表示）
-	void	UI::EventRender(void)
+	void	UI::EventRender( void )
 	{
 		if ( eventInfo.texture.x <= static_cast<int>( iexSystem::ScreenWidth ) ||
 			eventInfo.texture.x + eventInfo.texture.sx >= 0 )
-			//eventInfo.airPlane->Render();
 			RenderImage( eventInfo.texture, eventInfo.texture.sx, eventInfo.texture.sy, eventInfo.texture.sw, eventInfo.texture.sh, IMAGE_MODE::ADOPTPARAM );
 	}
 
@@ -1219,6 +1049,7 @@
 		particle->Render();
 
 	}
+
 //------------------------------------------------------------------------------
 //	動作関数
 //------------------------------------------------------------------------------
@@ -1324,54 +1155,6 @@
 	void	UI::SetHurryFlag( bool flag )
 	{
 		hurryInfo.flag = flag;
-	}
-
-	//	飛び入り設定
-	void	UI::SetFlyingIn( int type )
-	{
-
-	}
-
-	//	モード別読み込み位置設定
-	void	UI::SetImageSrcPos( int mode )
-	{
-		if ( mode == TITLE_MODE::TITLE )
-		{
-			titleInfo.textImage.renderflag = false;
-		}
-		else
-		{
-			titleInfo.textImage.renderflag = true;
-		}
-
-		switch ( mode ) 
-		{
-		case TITLE_MODE::MENU:
-			SetImageSrcPos( 0, 0 );
-			break;
-
-		case TITLE_MODE::OPTION:
-			SetImageSrcPos( 0, 128 );
-			break;
-
-		case TITLE_MODE::CREDIT:
-			SetImageSrcPos( 0, 256 );
-			break;
-
-		case TITLE_MODE::PLAY:
-			SetImageSrcPos( 0, 384 );
-			break;
-
-		case TITLE_MODE::MOVE_MAIN:
-			break;
-		}
-	}
-
-	//	読み込み位置設定
-	void	UI::SetImageSrcPos( int sx, int sy )
-	{
-		titleInfo.textImage.sx = sx;
-		titleInfo.textImage.sy = sy;
 	}
 
 	//	モード変更フラグ取得

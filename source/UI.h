@@ -233,36 +233,24 @@ public:
 	//	初期化・解放
 	UI( void );
 	~UI( void );
-	bool	Initialize( int scene );
+	bool	Initialize( void );
 	void	Release( void );
 
 	//	各シーン初期化
-	void	TitleInitialize( void );
 	void	MainInitialize( void );
-	void	ResultInitialize( void );
 	
 	//	各シーン解放
-	void	TitleRelease( void );
 	void	MainRelease( void );
-	void	ResultRelease( void );
 
 	//	更新・描画
 	void	Update( const int& mode );
 	void	Render( const int& mode );
 
 	//	各シーン更新
-	void	TitleUpdate( int mode );
 	void	MainUpdate( int mode );
-	void	ResultUpdate( int mode );
 
 	//	各シーン描画
-	void	TitleRender( int mode );
 	void	MainRender( int mode );
-	void	ResultRender( int mode );
-
-	//------------------------------タイトル処理------------------------------------//
-	bool	FlyingIn( void );
-	bool	FlyingOut( int startPos );
 
 	//-------------------------------メイン処理-------------------------------------//
 	//	メイン動作初期化
@@ -287,7 +275,6 @@ public:
 	void	StartPlayerNumUpdate( void );
 	void	FinishUpdate( void );
 	void	AlertUpdate( void );
-	void	MissionDirectionUpdate( void );
 	void	HurryUpdate( void );
 	void	LastProduction( void );
 	void	PlayerNumberUpdate( void );
@@ -305,7 +292,6 @@ public:
 	void	StartPlayerNumRender( void );
 	void	FinishRender( void );
 	void	AlertRender( void );
-	void	MissionDirectionRender( void );
 	void	LastProductionRender( void );
 	void	LifeRender( void );
 	void	CrownRender( void );
@@ -324,9 +310,6 @@ public:
 	void	SetChangeFlag( const bool& flag );
 	void	SetAlertInfo( bool flag, int type );
 	void	SetHurryFlag( bool flag );
-	void	SetFlyingIn( int type );
-	void	SetImageSrcPos( int mode );
-	void	SetImageSrcPos( int sx, int sy );
 	void	SetCoinImageInfo( NumberImageInfo& numImageinfo, NumberInfo& numinfo, const int& num );
 	void	SetNumberInfo( NumberInfo& nomber, int coin );
 	void	SetEventInfoMode( int mode );
