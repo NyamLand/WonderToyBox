@@ -102,6 +102,12 @@
 		
 		//	シールド初期化
 		ShieldInitialize();
+
+		//	定数初期化
+		//	攻撃UP					スピードUP			マグネット						無敵				回復						混乱	
+		STATE_INFO[0].sx = 0;	STATE_INFO[1].sx = 0;	STATE_INFO[2].sx = 256;	STATE_INFO[3].sx = 256;	STATE_INFO[4].sx = 256 * 2;	STATE_INFO[9].sx = 256 * 3;
+		STATE_INFO[0].sy = 0;	STATE_INFO[1].sy = 256;	STATE_INFO[2].sy = 256;	STATE_INFO[3].sy = 0;	STATE_INFO[4].sy = 0;		STATE_INFO[9].sy = 0;
+
 	}
 
 	//	シールド初期化
@@ -201,40 +207,8 @@
 		stateInfo.stateEffect[num].finish	= stateInfo.stateEffect[num].pos + Vector3( 0.0f, -100.0f, 0.0f );
 		SetScaling( stateInfo.stateEffect[num].image, 1.0f, true );
 
-		switch ( state )
-		{
-		case ITEM_TYPE::ATTACK_UP:
-			stateInfo.stateEffect[num].image.sx = 0;
-			stateInfo.stateEffect[num].image.sy = 0;
-			break;
-
-		case ITEM_TYPE::UNRIVALED:
-			stateInfo.stateEffect[num].image.sx = 256;
-			stateInfo.stateEffect[num].image.sy = 0;
-			break;
-
-		case ITEM_TYPE::SPEED_UP:
-			stateInfo.stateEffect[num].image.sx = 0;
-			stateInfo.stateEffect[num].image.sy = 256;
-			break;
-
-		case ITEM_TYPE::MAGNET:
-			stateInfo.stateEffect[num].image.sx = 256;
-			stateInfo.stateEffect[num].image.sy = 256;
-			break;
-
-		case ITEM_TYPE::LIFE:
-			stateInfo.stateEffect[num].image.sx = 256 * 2;
-			stateInfo.stateEffect[num].image.sy = 0;
-			break;
-
-		case PARAMETER_STATE::CONFUSION:
-			stateInfo.stateEffect[num].image.sx = 256 * 3;
-			stateInfo.stateEffect[num].image.sy = 0;
-			break;
-
-		}
-
+		stateInfo.stateEffect[num].image.sx = STATE_INFO[state].sx;
+		stateInfo.stateEffect[num].image.sy = STATE_INFO[state].sy;
 	}
 
 	//	竜巻

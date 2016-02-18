@@ -74,7 +74,7 @@
 		Release();
 	}
 
-	//	初期化
+	//	初期化(現在のシーン)
 	bool	UI::Initialize( int scene )
 	{
 		this->scene = scene;
@@ -121,7 +121,7 @@
 //	更新・描画
 //------------------------------------------------------------------------------
 
-	//	更新
+	//	更新(現在のシーン)
 	void	UI::Update( const int& mode )
 	{
 		switch ( this->scene )
@@ -140,7 +140,7 @@
 		}
 	}
 
-	//	描画
+	//	描画(現在のシーン)
 	void	UI::Render( const int& mode )
 	{
 		switch ( this->scene )
@@ -175,31 +175,31 @@
 	//	メイン用初期化
 	void	UI::MainInitialize( void )
 	{
-		timer.obj			= new iex2DObj("DATA/UI/timer.png");
-		face				= new iex2DObj("DATA/UI/chara_emotion.png");
-		finishImage.obj		= new iex2DObj( "DATA/UI/bfUI.png");
+		timer.obj			= new iex2DObj( "DATA/UI/timer.png" );
+		face				= new iex2DObj( "DATA/UI/chara_emotion.png" );
+		finishImage.obj		= new iex2DObj( "DATA/UI/bfUI.png" );
 		countImage.obj		= new iex2DObj( "DATA/UI/bfUI_02.png" );
 		alertImage.obj		= new iex2DObj( "DATA/UI/alert.png" );
 		alert_coinImage.obj = new iex2DObj( "DATA/UI/coin_alert.png" );
 		playerNumber		= new iex2DObj( "DATA/UI/number.png" );
 		life				= new iex2DObj( "DATA/UI/NLife.png" );
 		crown				= new iex2DObj( "DATA/UI/1stCrown.png" );
-		pCoinNumImage		= new iex2DObj("DATA/UI/number.png");
+		pCoinNumImage		= new iex2DObj( "DATA/UI/number.png" );
 		roundImage.obj		= new iex2DObj( "DATA/UI/roundText.png" );
-		startNumber			= new iex2DObj("DATA/UI/DonketuUI.png");
+		startNumber			= new iex2DObj( "DATA/UI/DonketuUI.png" );
 
 		//	パーティクル用バッファ
-		PAR_POS			= Vector3(100.0f, 100.0f, 100.0f);
-		target_par		= std::make_unique<iex2DObj>(iexSystem::ScreenWidth, iexSystem::ScreenHeight, IEX2D_RENDERTARGET);
+		PAR_POS			= Vector3( 100.0f, 100.0f, 100.0f );
+		target_par		= std::make_unique<iex2DObj>( iexSystem::ScreenWidth, iexSystem::ScreenHeight, IEX2D_RENDERTARGET );
 		particle_camera = std::make_unique<Camera>();
-		particle_camera->SetPos(Vector3(0.0f, 10.0f, -10.0f) + PAR_POS);
+		particle_camera->SetPos( Vector3( 0.0f, 10.0f, -10.0f ) + PAR_POS);
 		
 		//	共通変数初期化 
 		changeflag = false;
 		FOR( 0, PLAYER_MAX )
 		{
 			faceImage[value].obj	= face;
-			charatype[value]		= gameManager->GetCharacterType(value);
+			charatype[value]		= gameManager->GetCharacterType( value );
 			startNum[value].obj		= startNumber;
 			coin_flg[value]			= false;
 			coin_timer[value]		= 0;
@@ -283,7 +283,7 @@
 			{
 				
 				Vector3 endPos( static_cast<float>( titleInfo.airPlane->OUT_END_POS_X ), static_cast<float>( titleInfo.airPlane->OUT_END_POS_Y ), 0.0f );
-				titleInfo.airPlane->SetNext(titleInfo.airPlane->GetPos(), endPos, AirPlane::FLYING_OUT );
+				titleInfo.airPlane->SetNext( titleInfo.airPlane->GetPos(), endPos, AirPlane::FLYING_OUT );
 				titleInfo.step++;
 			}
 			
@@ -484,13 +484,13 @@
 		int w		= static_cast<int>( iexSystem::ScreenWidth * 0.27f );
 		int h		= static_cast<int>( iexSystem::ScreenHeight * 0.49f );
 		ImageInitialize( countImage, x, y, w, h, 0, 0, 512, 512 );
-		w			= static_cast<int>( iexSystem::ScreenWidth * 0.49f);
-		h			= static_cast<int>( iexSystem::ScreenHeight * 0.27f);
+		w			= static_cast<int>( iexSystem::ScreenWidth * 0.49f );
+		h			= static_cast<int>( iexSystem::ScreenHeight * 0.27f );
 		ImageInitialize( finishImage, x, y, w, h, 0, 512, 1024, 512 );
 		countInfo.count			= 0;
 		countInfo.waitTimer		= 0;
-		countInfo.start_pos		= Vector3((float)countImage.x, -((float)countImage.h / 2.0f), 0.0f);
-		countInfo.finish_pos	= Vector3((float)countImage.x, (float)countImage.y, 0.0f);
+		countInfo.start_pos		= Vector3( ( float )countImage.x, -( (float )countImage.h / 2.0f ), 0.0f );
+		countInfo.finish_pos	= Vector3( ( float )countImage.x, ( float )countImage.y, 0.0f );
 		countInfo.start_t		= 0.0f;
 		countInfo.start_step	= 0;
 	}
@@ -503,8 +503,8 @@
 		Vector3	p_pos		= Vector3(0.0f, 0.0f, 0.0f);
 		Vector3	out			= Vector3(0.0f, 0.0f, 0.0f);
 		int sx, sy;
-		int w				= static_cast<int>(iexSystem::ScreenWidth * 0.15f);
-		int h				= static_cast<int>(iexSystem::ScreenHeight * 0.15f);
+		int w				= static_cast<int>( iexSystem::ScreenWidth * 0.15f );
+		int h				= static_cast<int>( iexSystem::ScreenHeight * 0.15f );
 
 		FOR( 0, PLAYER_MAX )
 		{
@@ -607,7 +607,7 @@
 	}
 
 	//　イベント情報初期化
-	void	UI::EventInitialize(void)
+	void	UI::EventInitialize( void )
 	{
 		eventInfo.mode			= 0;
 		eventInfo.step			= 0;
@@ -671,7 +671,7 @@
 			break;
 		//	着地しながらフェードアウト
 		case 1:
-			if (!countImage.scalingFlag)
+			if ( !countImage.scalingFlag )
 			{
 				countImage.alpha -= 1.0f / 60.0f;
 				if ( countImage.alpha <= 0.0f )
@@ -702,7 +702,7 @@
 			waittime--;
 			if ( waittime >= 0 )	break;
 
-			changeflag	= true;
+			changeflag			= true;
 			countInfo.waitTimer = 2 * SECOND;
 			break;
 		}
@@ -798,7 +798,7 @@
 		else
 		{
 			alertInfo.param += D3DX_PI / 30.0f;
-			alertInfo.alpha = 0.1f + 0.1f * sinf(alertInfo.param);
+			alertInfo.alpha = 0.1f + 0.1f * sinf( alertInfo.param );
 
 			alertInfo.timer++;
 			if ( alertInfo.timer % 15 == 0 )
@@ -1069,7 +1069,7 @@
 	{
 		if ( !coin_flg[value] ) return;
 
-		target_par->Render( (int)( coinNumInfo[value].pos.x - coinNumInfo[value].scale * 1.5f ), (int)( coinNumInfo[value].pos.y - coinNumInfo[value].scale ),
+		target_par->Render( ( int )( coinNumInfo[value].pos.x - coinNumInfo[value].scale * 1.5f ), ( int )( coinNumInfo[value].pos.y - coinNumInfo[value].scale ),
 			coinNumInfo[value].scale * 3, coinNumInfo[value].scale * 2,
 			0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, shader2D, "add" );
 	
@@ -1105,8 +1105,6 @@
 	{
 		RenderImage( finishImage, finishImage.sx, finishImage.sy, finishImage.sw, finishImage.sh, IMAGE_MODE::NORMAL );
 	}
-
-	//	どんけつ演出
 
 	//	警告描画
 	void	UI::AlertRender( void )
@@ -1223,7 +1221,7 @@
 //	動作関数
 //------------------------------------------------------------------------------
 
-	//	コイン枚数を1枚ずつカウントアップダウン
+	//	コイン枚数を1枚ずつカウントアップダウン(コイン枚数、プレイヤー番号)
 	void	UI::CoinCounter( int coin, int num )
 	{
 		if (coinNum[num] == coin)	return;
@@ -1244,7 +1242,7 @@
 	
 	}
 
-	//	設定した数値にあわせて構造体情報を設定、１００以上かで配置も変更
+	//	設定した数値にあわせて構造体情報を設定、１００以上かで配置も変更(数字画像情報、コイン画像情報、コイン枚数)
 	void	UI::CoinImageInfoUpdate( NumberImageInfo& numImageInfo, NumberInfo& numInfo, const int& num )
 	{
 		//	桁数確認
@@ -1381,7 +1379,7 @@
 		return	out;
 	}
 
-	//	設定した数値にあわせて構造体情報を設定、１００以上かで配置も変更
+	//	設定した数値にあわせて構造体情報を設定、１００以上かで配置も変更(数字画像情報、コイン画像情報、コイン枚数)
 	void	UI::SetCoinImageInfo( NumberImageInfo& numImageInfo, NumberInfo& numInfo, const int& num )
 	{
 		//	桁数確認
