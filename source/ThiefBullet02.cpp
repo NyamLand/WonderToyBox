@@ -10,10 +10,10 @@
 #include	"CharacterManager.h"
 #include	"BaseBullet.h"
 #include	"BulletManager.h"
-#include	"Thief_Bullet02.h"
+#include	"ThiefBullet02.h"
 #include	"Stage.h"
 
-Thief_Bullet02::Thief_Bullet02() : holdCoinNum(0), range(0)
+ThiefBullet02::ThiefBullet02() : holdCoinNum(0), range(0)
 {
 	scale		=	Vector3(0.05f,0.05f,0.05f);
 	leanpower	=	0;
@@ -23,12 +23,12 @@ Thief_Bullet02::Thief_Bullet02() : holdCoinNum(0), range(0)
 	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::THIEF_02	];
 }
 
-bool Thief_Bullet02::Initialize()
+bool ThiefBullet02::Initialize()
 {
 	return true;
 }
 
-void	Thief_Bullet02::Update(void)
+void	ThiefBullet02::Update(void)
 {
 	//	動作
 	CollectCoin();
@@ -49,7 +49,7 @@ void	Thief_Bullet02::Update(void)
 }
 
 
-void	Thief_Bullet02::Move(void)
+void	ThiefBullet02::Move(void)
 {
 	move.y += GRAVITY; 
 	StageCollisionCheck();
@@ -80,7 +80,7 @@ void	Thief_Bullet02::Move(void)
 	//if (StageCollisionCheck()) move = Vector3(0,0,0);
 }
 
-void Thief_Bullet02::CollectCoin()
+void ThiefBullet02::CollectCoin()
 {
 	float length = 3.0f;
 
@@ -115,7 +115,7 @@ void Thief_Bullet02::CollectCoin()
 }
 
 //打ち出したプレイヤーとの判定
-bool Thief_Bullet02::HitCheckVsMyPlayer()
+bool ThiefBullet02::HitCheckVsMyPlayer()
 {
 	float length = 0.5f;
 	Vector3 vec = characterManager->GetPos(playerNum) - pos;

@@ -1,18 +1,18 @@
 
-#ifndef __THIEF_BULLET04_H__
-#define	__THIEF_BULLET04_H__
+#ifndef __THIEFBULLET04_H__
+#define	__THIEFBULLET04_H__
 
 #include	"BaseBullet.h"
 //*****************************************************************************
 //
-//	Thief_Bullet04クラス(ハイパーアーツの先っぽ)
+//	ThiefBullet04クラス(ハイパーアーツの先っぽ)
 //
 //*****************************************************************************
 
 
-#include	"Thief_Bullet03.h"
+#include	"ThiefBullet03.h"
 
-class Thief_Bullet04 : public BaseBullet
+class ThiefBullet04 : public BaseBullet
 {
 private:
 	int		holdCoinNum;
@@ -23,8 +23,8 @@ private:
 
 public:
 	//	初期化・解放
-	Thief_Bullet04(void);
-	~Thief_Bullet04(void){};
+	ThiefBullet04(void);
+	~ThiefBullet04(void){};
 
 	bool Initialize();
 	void Update();

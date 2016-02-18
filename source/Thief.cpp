@@ -162,7 +162,7 @@ bool	Thief::QuickArts(void)
 		//{
 		//	for (int i = 0; i < 3; i++)
 		//	{
-		//		m_BulletManager->Set(BULLET_TYPE::THIEF_01 , new Thief_Bullet01, p_pos, vec[i], bulletSpeed, playerNum);
+		//		m_BulletManager->Set(BULLET_TYPE::THIEF_01 , new ThiefBullet01, p_pos, vec[i], bulletSpeed, playerNum);
 		//	}
 		//}
 		//time++;
@@ -178,7 +178,7 @@ bool	Thief::QuickArts(void)
 	{	//Œ‚‚Á‚½‚É“®‚«‚ª~‚Ü‚ç‚È‚¢ƒpƒ^[ƒ“
 		for (int i = 0; i < 3; i++)
 		{
-			m_BulletManager->Set(BULLET_TYPE::THIEF_01 , new Thief_Bullet01, p_pos, vec[i], bulletSpeed, playerNum);
+			m_BulletManager->Set(BULLET_TYPE::THIEF_01 , new ThiefBullet01, p_pos, vec[i], bulletSpeed, playerNum);
 		}
 		attackInfo.Interval = 60;
 		initflag = false;
@@ -217,7 +217,7 @@ bool	Thief::PowerArts(void)
 
 	if (artsTimer == 0/* obj->GetFrame() == ›› */)
 	{
-		m_BulletManager->Set(BULLET_TYPE::THIEF_02, new Thief_Bullet02, p_pos, vec, bulletSpeed, playerNum);
+		m_BulletManager->Set(BULLET_TYPE::THIEF_02, new ThiefBullet02, p_pos, vec, bulletSpeed, playerNum);
 	}
 	artsTimer++;
 

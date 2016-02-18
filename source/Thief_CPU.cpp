@@ -366,7 +366,7 @@ namespace DROP_POWER
 			//{
 			//	for (int i = 0; i < 3; i++)
 			//	{
-			//		m_BulletManager->Set(BULLET_TYPE::THIEF_01 , new Thief_Bullet01, p_pos, vec[i], bulletSpeed, playerNum);
+			//		m_BulletManager->Set(BULLET_TYPE::THIEF_01 , new ThiefBullet01, p_pos, vec[i], bulletSpeed, playerNum);
 			//	}
 			//}
 			//time++;
@@ -382,7 +382,7 @@ namespace DROP_POWER
 		{	//åÇÇ¡ÇΩéûÇ…ìÆÇ´Ç™é~Ç‹ÇÁÇ»Ç¢ÉpÉ^Å[Éì
 			for (int i = 0; i < 3; i++)
 			{
-				m_BulletManager->Set(BULLET_TYPE::THIEF_01, new Thief_Bullet01, p_pos, vec[i], bulletSpeed, playerNum);
+				m_BulletManager->Set(BULLET_TYPE::THIEF_01, new ThiefBullet01, p_pos, vec[i], bulletSpeed, playerNum);
 			}
 			attackInfo.Interval = 60;
 			initflag = false;

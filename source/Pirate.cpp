@@ -133,12 +133,12 @@ bool	Pirate::QuickArts(void)
 		switch (pattern)
 		{
 		case QuickArts_DATA::NORMAL_SHOT:
-			m_BulletManager->Set(BULLET_TYPE::PIRATE_01, new Pirate_Bullet01, c_pos, vec, bulletSpeed, playerNum);
+			m_BulletManager->Set(BULLET_TYPE::PIRATE_01, new PirateBullet01, c_pos, vec, bulletSpeed, playerNum);
 			particle->CannonSmoke(c_pos + Vector3(0.0f, 1.0f, 0.0f) + front * 1.0f, front, right, up, 2.0f);
 			sound->PlaySE( SE::PIRATE_QUICK_SUCCESS );
 			break;
 		case QuickArts_DATA::TIMER_SHOT:
-			m_BulletManager->Set(BULLET_TYPE::PIRATE_02, new Pirate_Bullet02, c_pos, vec, bulletSpeed, playerNum);
+			m_BulletManager->Set(BULLET_TYPE::PIRATE_02, new PirateBullet02, c_pos, vec, bulletSpeed, playerNum);
 			particle->CannonSmoke(c_pos + Vector3(0.0f, 1.0f, 0.0f) + front * 1.0f, front, right, up, 2.0f);
 			sound->PlaySE( SE::PIRATE_QUICK_MISS );
 			break;
@@ -227,7 +227,7 @@ bool	Pirate::HyperArts(void)
 	//ƒ‚[ƒVƒ‡ƒ“I—¹Žž‚É’e”­ŽË
 	if (obj->GetFrame() == PIRATE::MOTION_FRAME::HYPERARTS_END)
 	{
-		m_BulletManager->Set(BULLET_TYPE::PIRATE_01, new Pirate_Bullet03, b_pos, vec, bulletSpeed, playerNum);
+		m_BulletManager->Set(BULLET_TYPE::PIRATE_01, new PirateBullet03, b_pos, vec, bulletSpeed, playerNum);
 		initflag = false;
 		return true;
 	}

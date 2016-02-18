@@ -1,17 +1,17 @@
 
-#ifndef __THIEF_BULLET02_H__
-#define	__THIEF_BULLET02_H__
+#ifndef __THIEFBULLET02_H__
+#define	__THIEFBULLET02_H__
 
 #include	"BaseBullet.h"
 //*****************************************************************************
 //
-//	Thief_Bullet02クラス
+//	ThiefBullet02クラス
 //
 //*****************************************************************************
 
 
 
-class Thief_Bullet02 : public BaseBullet
+class ThiefBullet02 : public BaseBullet
 {
 private:
 	int holdCoinNum;
@@ -19,8 +19,8 @@ private:
 
 public:
 	//	初期化・解放
-	Thief_Bullet02(void);
-	~Thief_Bullet02(void){};
+	ThiefBullet02(void);
+	~ThiefBullet02(void){};
 
 	bool Initialize();
 

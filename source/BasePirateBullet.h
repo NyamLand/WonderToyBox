@@ -1,32 +1,32 @@
-#ifndef __PIRATE_BULLET01_H__
-#define	__PIRATE_BULLET01_H__
+#ifndef __BASEPIRATEBULLET01_H__
+#define	__BASEPIRATEBULLET01_H__
 
 #include	"BaseBullet.h"
 //*****************************************************************************
 //
-//	Pirate_Bullet01クラス
+//	BasePirateBulletクラス
 //
 //*****************************************************************************
-class Pirate_Bullet01 : public BaseBullet
+class BasePirateBullet : public BaseBullet
 {
 protected:
 	int	power;
 	bool explosion;
-	bool isPlayerCheck[4];	//ｎ番目のプレイヤーに触れたかどうか = false;
+	bool isPlayerCheck[4];	//ｎ番目のプレイヤーに触れたかどうか 触れていない = false;
 public:
 	//	初期化・解放
-	Pirate_Bullet01(void);
-	~Pirate_Bullet01(void){
-	
+	BasePirateBullet(void);
+	~BasePirateBullet(void){
+
 	};
 	bool Initialize();
 
-	void Move();
-	void Update();
+	virtual void Move() = 0;
+	virtual void Update() = 0;
 
-	virtual void Explode();
 
 protected:
+	virtual void Explode();
 	virtual bool PlayerCollisionCheck(void);
 };
 

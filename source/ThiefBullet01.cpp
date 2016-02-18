@@ -10,14 +10,14 @@
 #include	"CharacterManager.h"
 #include	"BaseBullet.h"
 #include	"BulletManager.h"
-#include	"Thief_Bullet01.h"
+#include	"ThiefBullet01.h"
 #include	"Stage.h"
 #include	"Sound.h"
 
 
 
 
-Thief_Bullet01::Thief_Bullet01()
+ThiefBullet01::ThiefBullet01()
 {
 	scale		=	Vector3( 0.05f,0.05f,0.05f );
 	leanpower	=	0;
@@ -27,13 +27,13 @@ Thief_Bullet01::Thief_Bullet01()
 	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::THIEF_01	];
 }
 
-bool Thief_Bullet01::Initialize()
+bool ThiefBullet01::Initialize()
 {
 
 	return true;
 }
 
-void	Thief_Bullet01::Update(void)
+void	ThiefBullet01::Update(void)
 {
 	//	動作
 	Move();
@@ -56,7 +56,7 @@ void	Thief_Bullet01::Update(void)
 }
 
 
-void	Thief_Bullet01::Move(void)
+void	ThiefBullet01::Move(void)
 {
 	ToPlayerLength = 10000.0f;	//とりあえず超でかい数字
 	ToPlayerVec;
@@ -92,7 +92,7 @@ void	Thief_Bullet01::Move(void)
 
 
 //	プレイヤーとのあたりチェック
-bool	Thief_Bullet01::PlayerCollisionCheck(void)
+bool	ThiefBullet01::PlayerCollisionCheck(void)
 {
 	for (int i = 0; i < 4; i++)
 	{
@@ -165,7 +165,7 @@ bool	Thief_Bullet01::PlayerCollisionCheck(void)
 	return false;
 }
 
-void Thief_Bullet01::Wait()
+void ThiefBullet01::Wait()
 {
 	move = Vector3(0, 0, 0);
 
@@ -219,7 +219,7 @@ void Thief_Bullet01::Wait()
 	}
 }
 
-void Thief_Bullet01::Targeting()
+void ThiefBullet01::Targeting()
 {
 	upDot = GetDegreeAngle(up, ToPlayerVec);
 	backDot = GetDegreeAngle(-up, ToPlayerVec);
@@ -232,13 +232,13 @@ void Thief_Bullet01::Targeting()
 	}
 }
 
-void Thief_Bullet01::Firing()
+void ThiefBullet01::Firing()
 {
 	move = ToPlayerVec * 1.0f;
 	step = STEP::STALK;
 }
 
-void Thief_Bullet01::Stalk()
+void ThiefBullet01::Stalk()
 {
 	for (int i = 0; i < 4; i++)
 	{

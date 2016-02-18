@@ -7,56 +7,43 @@
 #include	"CharacterManager.h"
 #include	"Particle.h"
 #include	"CoinManager.h"
-#include	"CharacterManager.h"
 #include	"BaseBullet.h"
 #include	"BulletManager.h"
-#include	"Thief_Bullet04.h"
-#include	"Stage.h"
 #include	"Sound.h"
-#include	"Effect.h"
+#include	"PirateBullet03.h"
 
-Thief_Bullet04::Thief_Bullet04() :holdCoinNum(0), growSpeed(0.0f), checkMax(false), checkMin(false)
+PirateBullet03::PirateBullet03()
 {
-	scale		=	Vector3(0.03f, 0.03f, 0.03f);
+	radius		=	BULLET_RADIUS		[	BULLET_TYPE::PIRATE_03	];
+	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::PIRATE_03	];
+	scale		=	Vector3(0.1f, 0.1f, 0.1f);
 	leanpower	=	0;
-//	judgeTimer	=	BULLET_JUDGETIMER	[	BULLET_TYPE::THIEF_04	];
-	radius		=	BULLET_RADIUS		[	BULLET_TYPE::THIEF_04	];
-	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::THIEF_04	];
-	startPos	=	characterManager->GetPos(playerNum);
-	for (int i = 0; i < PLAYER_MAX; i++)
-	{
-		isPlayerCheck[i] = false;
-	}
+	power = 2;
 }
 
-bool Thief_Bullet04::Initialize()
+void	PirateBullet03::Update(void)
 {
-	return true;
-}
 
-void	Thief_Bullet04::Update(void)
-{
-	//	動作
-	Move();
+	//	if (judgeTimer > 0)	judgeTimer--;
+	//	else							activate = true;
 
-//	if (judgeTimer > 0)	judgeTimer--;
-//	else							activate = true;
-
-	limitTimer--;
+	//limitTimer--;
 
 	liveTime++;
 
-	PlayerCollisionCheck();
-
-	if (checkMin == true)
+	//プレイヤーに当たるか地面（障害物除く）に当たると爆破
+	if (PlayerCollisionCheck() ||/* Collision::CheckWall(pos, move)*/pos.y <= 0.0f)
 	{
-		for (int i = 0; i < holdCoinNum; i++)
-		{
-			gameManager->AddCoin(playerNum);	//消滅時に奪い取ったコイン加算
-		}
-		state = false;
+		enable = false;
+		explosion = true;
 	}
 
+
+	if (explosion) Explode();
+
+
+	//	動作
+	Move();
 
 	obj->SetAngle(angle);
 	obj->SetPos(pos);
@@ -65,35 +52,24 @@ void	Thief_Bullet04::Update(void)
 }
 
 
-void	Thief_Bullet04::Move(void)
+void	PirateBullet03::Move(void)
 {
-	Vector3 front = GetFront();
-	front.Normalize();
-	growSpeed += 0.05f;
-	float addLength = sinf(growSpeed);
-	move = front * addLength;
-	//打ち出したプレイヤーとの距離
-	Vector3 ToPlayerVec = startPos - pos;
-	float ToPlayerLength = ToPlayerVec.Length();
+	//move.y += GRAVITY;
+	pos += move;
+}
 
-
-	if(!stage->CheckWall(pos, move)) pos += move;
-
-	//縮み始めたら最大まで伸びたものとする(縮み始めている)
-	if (addLength <= 0)
-	{
-		checkMax = true;
-	}
-
-	//一度縮んでから再度伸びると最小まで縮んだものとする
-	if (addLength >= 0 && checkMax == true || ToPlayerLength <= 0.5f && checkMax == true)
-	{
-		checkMin = true;
-	}
+void	PirateBullet03::Explode(void)
+{
+	radius += 2.0f;
+	move = Vector3(0, 0, 0);
+	particle->Bomb(Vector3(pos.x,pos.y + 4.0f,pos.z), radius * 0.1f, Vector3(0.7f, 0.2f, 0.1f));
+	//particle->Bom(this->pos, radius, 1.0f);
+	//爆発範囲が一定以上になったら消去
+	if (radius > 20.0f) state = false;
 }
 
 //	プレイヤーとのあたりチェック
-bool	Thief_Bullet04::PlayerCollisionCheck(void)
+bool	PirateBullet03::PlayerCollisionCheck(void)
 {
 	for (int i = 0; i < 4; i++)
 	{
@@ -109,8 +85,8 @@ bool	Thief_Bullet04::PlayerCollisionCheck(void)
 
 		//	バレット情報設定
 		Vector3	bulletPos = GetPos();
-		//bulletPos.y += 0.5f;
-		float		bullet_r = scale.y * radius;
+		bulletPos.y += 4.0f;
+		float		bullet_r = radius;
 
 		bool isHit = Collision::CapsuleVSSphere(p_pos_bottom, p_pos_top, p_r, bulletPos, bullet_r);
 
@@ -124,22 +100,24 @@ bool	Thief_Bullet04::PlayerCollisionCheck(void)
 				continue;
 			}
 			//	エフェクトだす
-			float	effectScale = 2.2f;
-			particle->Spark(pos, effectScale);
-			Vector3	color = characterManager->GetDamageColor(i);
-			characterManager->SetPassColor(i, color);
+			//state = false;
+			float	effectScale = 0.2f;
+			particle->Spark(p_pos_top, effectScale);
+
 			//画面停止
 			gameManager->SetTimeStop(SCREEN_STOPTIME);
 			//画面振動
 			gameManager->SetShakeCamera(SHAKE_POWER, SHAKE_TIME);
-
-			//	音鳴らす
-			sound->PlaySE( SE::HYPER_HIT_SE );
-
+			//サウンド再生
+			sound->PlaySE(SE::HYPER_HIT_SE);
+			//	ライフ減らす
+			FOR(0, power) characterManager->SubLife(i);
 			//	ノックバック
 			Vector3	knockBackVec = bulletPos - p_pos_bottom;
 			knockBackVec.y = p_pos_bottom.y;
 			knockBackVec.Normalize();
+			Vector3	color = characterManager->GetDamageColor(i);
+			characterManager->SetPassColor(i, color);
 			characterManager->SetKnockBackVec(i, -knockBackVec);
 			characterManager->SetLeanFrame(i, leanpower);
 			characterManager->SetForce(i, 2.0f);
@@ -149,20 +127,29 @@ bool	Thief_Bullet04::PlayerCollisionCheck(void)
 			//characterManager->SetMode(i, MODE_STATE::DAMAGE);
 
 
-			//	プレイヤー番号取得
-			int		p2_Num = characterManager->GetPlayerNum(i);
 
-			//	コインがあれば奪い取る
-			for (int i = 0; i < 30; i++)
+			//	プレイヤー番号取得とばらまきパワー設定
+			float	power = 0.2f;
+
+			int		dropCoin = characterManager->GetTotalPower(i);
+			int		p2_Num = characterManager->GetPlayerNum(i);
+			int		p2_coinNum = gameManager->GetCoinNum(p2_Num);
+
+
+			for (int i = 0; i < dropCoin; i++)
 			{
-				int		p2_coinNum = gameManager->GetCoinNum(p2_Num);
+				//	コインがあればばらまき
 				if (p2_coinNum > 0)
 				{
+					//	コインばらまき方向設定
+					std::uniform_real_distribution<float>	vecrand(-1.0f, 1.0f);
+					Vector3	vec = Vector3(Random::GetFloat(-1.0f, 1.0f), 1.0f, Random::GetFloat(-1.0f, 1.0f));
+					vec.Normalize();
+					coinManager->Append(p_pos_top, vec, power, Coin::COIN);
 					gameManager->SubCoin(p2_Num);
-					holdCoinNum++;
 				}
 			}
-			return true;
+				return true;
 		}
 	}
 	return false;

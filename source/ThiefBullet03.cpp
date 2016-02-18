@@ -9,11 +9,11 @@
 #include	"CoinManager.h"
 #include	"CharacterManager.h"
 #include	"BaseBullet.h"
-#include	"Thief_Bullet03.h"
+#include	"ThiefBullet03.h"
 #include	"BulletManager.h"
 #include	"Stage.h"
 
-Thief_Bullet03::Thief_Bullet03() :growSpeed(0.0f), checkMax(false), checkMin(false)
+ThiefBullet03::ThiefBullet03() :growSpeed(0.0f), checkMax(false), checkMin(false)
 {
 	scale		=	Vector3(0.01f,0.01f,0.005f);
 	leanpower	=	0;	
@@ -22,13 +22,13 @@ Thief_Bullet03::Thief_Bullet03() :growSpeed(0.0f), checkMax(false), checkMin(fal
 	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::THIEF_03	];
 }
 
-bool Thief_Bullet03::Initialize()
+bool ThiefBullet03::Initialize()
 {
-	m_BulletManager->Set(BULLET_TYPE::THIEF_04, new Thief_Bullet04, pos, move, angle, 0.5f, playerNum);
+	m_BulletManager->Set(BULLET_TYPE::THIEF_04, new ThiefBullet04, pos, move, angle, 0.5f, playerNum);
 	return true;
 }
 
-void	Thief_Bullet03::Update(void)
+void	ThiefBullet03::Update(void)
 {
 	//	ìÆçÏ
 	ControlScale();
@@ -53,7 +53,7 @@ void	Thief_Bullet03::Update(void)
 }
 
 
-void	Thief_Bullet03::ControlScale(void)
+void	ThiefBullet03::ControlScale(void)
 {
 	Vector3 front = GetFront();
 	front.Normalize();
