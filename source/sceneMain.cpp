@@ -108,32 +108,13 @@
 
 		//UI
 		ui = new UI();
-		ui->Initialize( UI_MODE::MAIN );
+		ui->Initialize();
 
 		//	BGM再生
 		if (gameManager->GetRound()!=2)	sound->PlayBGM( BGM::MAIN_BGM );
 		else sound->PlayBGM(BGM::FAINLROUND_BGM);
 
 		return true;
-	}
-
-	//	初期化（デバッグ用）
-	void	sceneMain::InitializeDebug(void)
-	{
-		gameManager->InitializeDebug();
-		gameStartCoinNum = 0;
-
-		//　ステージ
-		//stageManager->Initialize( dir );
-
-		//　プレイヤー・CPU
-		//PlayerInitialize();
-
-		m_BulletManager->Initialize();
-		itemManager->Initialize();
-		coinManager->Initialize();
-		m_Effect->Initialize();
-		ui->Initialize( UI_MODE::MAIN );
 	}
 
 	//	デストラクタ

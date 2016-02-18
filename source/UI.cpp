@@ -88,25 +88,10 @@
 	}
 
 	//	初期化
-	bool	UI::Initialize( int scene )
+	bool	UI::Initialize( void )
 	{
-		this->scene = scene;
-
 		//	モード別初期化
-		switch ( this->scene )
-		{
-		case UI_MODE::TITLE:
-			TitleInitialize();
-			break;
-
-		case UI_MODE::MAIN:
-			MainInitialize();
-			break;
-
-		case UI_MODE::RESULT:
-			ResultInitialize();
-			break;
-		}
+		MainInitialize();		
 
 		return	true;
 	}
@@ -114,20 +99,7 @@
 	//	解放
 	void	UI::Release( void )
 	{
-		switch ( scene )
-		{
-		case UI_MODE::TITLE:
-			TitleRelease();
-			break;
-
-		case UI_MODE::MAIN:
-			MainRelease();
-			break;
-
-		case	UI_MODE::RESULT:
-			ResultRelease();
-			break;
-		}
+		MainRelease();
 	}
 
 //------------------------------------------------------------------------------
@@ -137,63 +109,18 @@
 	//	更新
 	void	UI::Update( const int& mode )
 	{
-		switch ( this->scene )
-		{
-		case UI_MODE::TITLE:
-			TitleUpdate( mode );
-			break;
-
-		case UI_MODE::MAIN:
-			MainUpdate( mode );
-			break;
-
-		case UI_MODE::RESULT:
-			ResultUpdate( mode );
-			break;
-		}
+		MainUpdate( mode );
 	}
 
 	//	描画
 	void	UI::Render( const int& mode )
 	{
-		switch ( this->scene )
-		{
-		case UI_MODE::TITLE:
-			TitleRender( mode );
-			break;
-
-		case UI_MODE::MAIN:
-			MainRender( mode );
-			break;
-
-		case UI_MODE::RESULT:
-			ResultRender( mode );
-			break;
-		}
-		DrawDebug();
-	}
-
-	//　デバッグ表示
-	void	UI::DrawDebug()
-	{
-		if (debug)
-		{
-			
-		}
+		MainRender( mode );
 	}
 
 //------------------------------------------------------------------------------
 //	各シーン初期化
 //------------------------------------------------------------------------------
-
-	//	タイトル用初期化
-	void	UI::TitleInitialize( void )
-	{
-		//	変数初期化
-		titleInfo.airPlane = new AirPlane();
-		titleInfo.step = 0;
-
-	}
 
 	//	メイン用初期化
 	void	UI::MainInitialize( void )
@@ -235,12 +162,9 @@
 
 		//	各UI情報初期化
 		CoinNumberInitialize();
-		CoinBarInitialize();
 		TimerInitialize();
 		StartAndTimeUpInitialize();
 		StartPlayerNumInitialize();
-		NewsBarInitialize();
-		DonketsuDirectionInitialize();
 		AlertInitialize();
 		LastProductionInitialize();
 		PlayerNumberInitialize();
@@ -250,31 +174,15 @@
 		EventInitialize();
 	}
 
-	//	リザルト用初期化
-	void	UI::ResultInitialize( void )
-	{
-
-	}
-
 //------------------------------------------------------------------------------
 //	各シーン解放
 //------------------------------------------------------------------------------
-
-	//	タイトル用解放
-	void	UI::TitleRelease( void )
-	{
-		SafeDelete( titleInfo.airPlane );
-	}
 
 	//	メイン用解放
 	void	UI::MainRelease( void )
 	{
 		SafeDelete( timer.obj );
 		SafeDelete( coinbar );
-		SafeDelete( ddInfo.face.obj );
-		SafeDelete( ddInfo.DB.obj );
-		SafeDelete( ddInfo.P.obj );
-		SafeDelete( ddInfo.fight.obj );
 		SafeDelete( face );
 		SafeDelete( countImage.obj );
 		SafeDelete( finishImage.obj );
@@ -288,47 +196,9 @@
 		SafeDelete( startNumber );
 	}
 
-	//	リザルト用解放
-	void	UI::ResultRelease( void )
-	{
-
-	}
-
 //------------------------------------------------------------------------------
 //	各シーン更新
 //------------------------------------------------------------------------------
-
-	//	タイトル更新
-	void	UI::TitleUpdate( int mode )
-	{
-		//	画像設定
-		SetImageSrcPos( mode );
-
-		bool	isEnd = false;
-		switch ( titleInfo.step ) 
-		{
-		case 0:
-			////	どっかからやってくる
-			titleInfo.step++;
-			break;
-
-		case 1:
-			titleInfo.airPlane->Update();
-			if (mode == TITLE_MODE::MOVE_MAIN)
-			{
-				
-				Vector3 endPos( static_cast<float>( titleInfo.airPlane->OUT_END_POS_X ), static_cast<float>( titleInfo.airPlane->OUT_END_POS_Y ), 0.0f );
-				titleInfo.airPlane->SetNext(titleInfo.airPlane->GetPos(), endPos, AirPlane::FLYING_OUT);
-				titleInfo.step++;
-			}
-			
-			break;
-
-		case 2:
-			titleInfo.airPlane->Update();
-			break;
-		}
-	}
 	
 	//	メイン更新
 	void	UI::MainUpdate( int mode )
@@ -347,21 +217,13 @@
 
 		case GAME_MODE::MAINGAME:
 			TimerUpdate();
-			NewsBarUpdate();
-			//CoinBarUpdate();
 			CoinNumberUpdate();
 			AlertUpdate();
 			EventUpdate();
 			break;
 
-		case GAME_MODE::DONKETSU_DIRECTION:
-			DonketsuDirectionUpdate();
-			break;
-
 		case GAME_MODE::CLIMAX:
 			TimerUpdate();
-			NewsBarUpdate();
-			//CoinBarUpdate();
 			CoinNumberUpdate();
 			LastProduction();
 			AlertUpdate();
@@ -375,31 +237,15 @@
 			FinishUpdate();
 			break;
 		}
-
-		
-	}
-
-	//	リザルト更新
-	void	UI::ResultUpdate( int mode )
-	{
-
 	}
 
 //------------------------------------------------------------------------------
 //	各シーン描画
 //------------------------------------------------------------------------------
 
-	//	タイトル描画
-	void	UI::TitleRender( int mode )
-	{
-		titleInfo.airPlane->Render();
-	}
-
 	//	メイン描画
 	void	UI::MainRender( int mode )
 	{
-
-		//PlayerNumberRender();
 		LifeRender();
 		CrownRender();
 		RoundRender();
@@ -413,28 +259,19 @@
 
 		case GAME_MODE::MAINGAME:
 			TimerRender();
-			//NewsBarRender();
-			//CoinBarRender();
 			CoinNumberRender();
 			EventRender();
 			break;
 
 		case GAME_MODE::DONKETSU_DIRECTION:
 			TimerRender();
-			//NewsBarRender();
-			//CoinBarRender();
 			CoinNumberRender();
-			DonketsuDirectionRender();
 			break;
 
 		case GAME_MODE::CLIMAX:
-			//TimerRender();
 			LastProductionRender();
-			//NewsBarRender();
-			//CoinBarRender();
 			CoinNumberRender();
 			EventRender();
-
 			break;
 
 		case GAME_MODE::TIMEUP:
@@ -442,14 +279,8 @@
 			break;
 		}
 
-		if (alertInfo.flag)	AlertRender();
+		if ( alertInfo.flag )	AlertRender();
 	
-
-	}
-
-	//	リザルト描画
-	void	UI::ResultRender( int mode )
-	{
 
 	}
 
@@ -461,31 +292,6 @@
 //------------------------------------------------------------------------------
 //	メイン動作初期化
 //------------------------------------------------------------------------------
-
-	//	コインバー初期化
-	void	UI::CoinBarInitialize( void )
-	{
-		int x = static_cast<int>( iexSystem::ScreenWidth / 2 );
-		int y = static_cast<int>( iexSystem::ScreenHeight * 0.93f );
-		int w = static_cast<int>( iexSystem::ScreenWidth * 0.77f );
-		int h = static_cast<int>( iexSystem::ScreenHeight * 0.11f );
-		ImageInitialize( frame, x, y, w, h, 0, 32 * 5, 512, 64);
-		ImageInitialize( backgauge, frame.x, frame.y, frame.w - (frame.w / 10), frame.h - (frame.h / 2), 0, 32 * 4, 480, 32);
-		ImageInitialize( gauge, frame.x, frame.y, 0, backgauge.h, 0, 32, 0, 32);
-		w = static_cast<int>( iexSystem::ScreenWidth * 0.025f );
-		h = static_cast<int>( iexSystem::ScreenHeight * 0.04f );
-
-		FOR(0,NUM_BAR)
-		{																																			
-			ImageInitialize(faceImage[value], coinNumInfo[value].pos.x, coinNumInfo[value].pos.y,
-				coinNumInfo[value].one.w + coinNumInfo[value].ten.w,	//	横幅
-				coinNumInfo[value].one.h + coinNumInfo[value].ten.h,	//	横幅
-				0, 0, 256, 256);
-			bar_x[value] = frame.x;
-			bar_sx[value] = backgauge.sx;
-			state_x[value] = 0;
-		}
-	}
 
 	//	コイン枚数初期化
 	void	UI::CoinNumberInitialize( void )
@@ -545,22 +351,6 @@
 		}
 	}
 
-	//	ニュースバー初期化
-	void	UI::NewsBarInitialize( void )
-	{
-		//	ニュースバー初期化
-		newsbar.renderflag = false;
-		newsbar.left = iexSystem::ScreenWidth;
-		newsbar.top = 0;
-		newsbar.right = iexSystem::ScreenWidth;
-		newsbar.bottom = static_cast<int>( iexSystem::ScreenHeight * ( 0.07f ) );
-		newsbar.text = GameInfo::NewsText[ gameManager->GetLastBonus() ];
-		newsbar.alpha = 0.5f;
-		newsbar.color = Vector3( 0.3f, 0.3f, 0.3f );
-		newsbar.step = 0;
-		newsbar.textleft = static_cast<int>( iexSystem::ScreenWidth * ( 1.17f ) );
-	}
-
 	//	カウントダウン・スタート・終了演出
 	void	UI::StartAndTimeUpInitialize( void )
 	{
@@ -599,45 +389,6 @@
  
 			ImageInitialize(startNum[value], 0, 0, w, h, sx, sy, 128, 128);
 		}
-	}
-
-	//	どんけつ演出初期化
-	void	UI::DonketsuDirectionInitialize( void )
-	{
-		//　構造体初期化
-		
-		//　顔ルーレット関連
-		ddInfo.face.obj = new iex2DObj("DATA/UI/chara_emotion.png");
-		int x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
-		int y = static_cast<int>( iexSystem::ScreenHeight * 0.5f );
-		ImageInitialize(ddInfo.face, x, y, 0, 0, FACE_INFO::Normal * 256, 0 * 256, 256, 256);
-		ddInfo.f = 0;
-		ddInfo.roulette = 0;
-		ddInfo.face_step = -1;
-
-		//　DonketsuBoooooooooooost!!!
-		ddInfo.DB.obj = new iex2DObj("DATA/UI/DonketuUI.png");
-		x = static_cast<int>( iexSystem::ScreenWidth * 0.94f );
-		y = static_cast<int>( iexSystem::ScreenHeight * -0.14f );
-		ImageInitialize(ddInfo.DB, x, y, 0, 0, 0, 0, 512, 256);
-		ddInfo.DB.angle = 0;
-		ddInfo.DB_step = -1;
-
-		//　？P関連
-		x = static_cast<int>( iexSystem::ScreenWidth * 0.78f );
-		y = static_cast<int>( iexSystem::ScreenHeight * 0.76f );
-		ddInfo.P.obj = new iex2DObj("DATA/UI/DonketuUI.png");
-		ImageInitialize(ddInfo.P, x, y, 0, 0, 0, 256, 128, 128);
-		ddInfo.P.renderflag = false;
-		ddInfo.P_step = -1;
-
-		//　FightLast
-		ddInfo.fight.obj = new iex2DObj("DATA/UI/L_coin_alert.png");
-		x = static_cast<int>(iexSystem::ScreenWidth * 0.5f);
-		y = static_cast<int>(iexSystem::ScreenHeight * 0.5f);
-		ImageInitialize(ddInfo.fight, x, y, 256, 256, 0, 0, 256, 256);
-		ddInfo.fight.renderflag = false;
-		ddInfo.fight_step = -1;
 	}
 
 	//	警告演出初期化
@@ -711,7 +462,6 @@
 			crownInfo[value].state = false;
 			crownInfo[value].crownImage.obj = crown;
 			ImageInitialize(crownInfo[value].crownImage, 0, 10, 80, 80, 0, 0, 512, 512);
-			//crownInfo[value].crownImage.alpha = 0.8f;
 			crownInfo[value].crownImage.color = Vector3( 1.0f, 0.5f, 0.5f );
 		}
 	}
@@ -728,7 +478,6 @@
 		int	sw = 512;
 		int	sh = 128;
 		ImageInitialize( roundImage, x, y, w, h, sx, sy, sw, sh );
-		//roundImage.angle = D3DXToRadian( -30.0f );
 	}
 
 	//　イベント情報初期化
@@ -761,75 +510,17 @@
 		second[1] = this->time / SECOND % 10;
 	}
 
-	//	ニュースバー関連動作
-	void	UI::NewsBarUpdate( void )
-	{
-		if ( !gameManager->GetNewsFlag() )	return;
-
-		switch ( newsbar.step )
-		{
-		case 0:
-			//	バー出現
-			newsbar.left -= static_cast<int>( iexSystem::ScreenWidth * 0.02f );
-			if ( newsbar.left <= 0 )
-			{
-				newsbar.left = 0;
-				newsbar.step++;
-			}
-			break;
-
-		case 1:
-			//	テキスト出現
-			newsbar.textleft--;
-			if ( newsbar.textleft <= static_cast<int>( iexSystem::ScreenWidth * -0.23f ) )
-			{
-				newsbar.textleft = static_cast<int>( iexSystem::ScreenWidth * 1.17f );
-				newsbar.step++;
-			}
-			break;
-
-		case 2:
-			//	バー退避
-			newsbar.right -= static_cast<int>( iexSystem::ScreenWidth * 0.02f );
-			if ( newsbar.right <= 0 )
-			{
-				newsbar.right = 0;
-				newsbar.step++;
-			}
-			break;
-
-		case 3:
-			//	初期化
-			gameManager->SetNewsFlag( false );
-			newsbar.left = iexSystem::ScreenWidth;
-			newsbar.right = iexSystem::ScreenWidth;
-			newsbar.textleft = static_cast<int>( iexSystem::ScreenWidth * 1.17f );
-			newsbar.step = 0;
-			break;
-		}
-	}
-
-	//	コインバー関連動作
-	void	UI::CoinBarUpdate( void )
-	{
-		//	バー動作
-		BarControl();
-
-		//	顔動作
-		StateImageControl();
-	}
-
 	//	コイン枚数動作
 	void	UI::CoinNumberUpdate( void )
 	{
 		FOR(0, PLAYER_MAX){
 			CoinCounter(gameManager->GetCoinNum(value),value);
 			CoinImageInfoUpdate(coinNumInfo[value], numInfo[value], coinNum[value]);
-			FaceImageUpdate(value, gameManager->GetCharacterType(value));
-			
+			FaceImageUpdate(value, gameManager->GetCharacterType(value));	
 		}
 	}
 
+	//	各キャラクター顔画像設定
 	void	UI::FaceImageUpdate( int num, int mode )
 	{
 		faceImage[num].alpha = 0.5f;
@@ -966,50 +657,11 @@
 		if ( waitTimer <= 0 )	changeflag = true;
 	}
 
-	//	どんけつ決定演出
-	void	UI::DonketsuDirectionUpdate( void )
-	{
-		/*
-			・「どんけつは～？」を最初にバンッ!
-			・４人の顔を２回ずつぷわぷわっと風船が膨らむような感じに出す。ちょっと間をおいて９回目で決定
-			　決定時に顔のバックに強調エフェクト、背景を暖色系に。
-			・下方に○Ｐ！
-		*/
-
-		//　演出用時間更新
-		static int wait = DD_TIMING::WAIT_MAX;
-		if (wait <= 0)
-		{
-			wait = 5 * SECOND + 30;
-			changeflag = true;
-		}
-
-		//　「DonketsuBoooooooooooost!!!」
-		DB_Direction(wait);
-		
-		//　顔ルーレット
-		FaceRoulette(wait);
-
-		//　「？P」
-		P_Direction(wait);
-
-		//　がんばれ！のやつ
-		Fight_Direction(wait);
-
-		//　更新
-		wait--;
-	}
-
 	//	警告演出
-	void	UI::AlertUpdate(void)
+	void	UI::AlertUpdate( void )
 	{
-		if (!alertInfo.flag) return;
+		if ( !alertInfo.flag ) return;
 
-		if (alertInfo.type == ALERT_TYPE_INFO::MISSION)
-		{
-			MissionDirectionUpdate();
-		}
-		else
 		{
 			alertInfo.param += D3DX_PI / 30.0f;
 			alertInfo.alpha = 0.1f + 0.1f * sinf(alertInfo.param);
@@ -1042,11 +694,6 @@
 		eventInfo.texture.x = ( int )eventInfo.airPlane->GetPos().x;
 		eventInfo.texture.y = ( int )eventInfo.airPlane->GetPos().y;
 		eventInfo.texture.sy = eventInfo.mode * 128;
-	}
-
-	void	UI::MissionDirectionUpdate(void)
-	{
-
 	}
 
 	//	HurryUp演出
@@ -1149,7 +796,6 @@
 	//	王冠更新
 	void	UI::CrownUpdate( void )
 	{
-
 		Vector3	p_Pos;
 		Vector3	p_Up;
 		Vector3	CrownPos;
@@ -1183,7 +829,7 @@
 	}
 
 	//　イベントのUI（飛行機挙動）
-	void	UI::EventUpdate()
+	void	UI::EventUpdate( void )
 	{
 		bool isEnd = !eventManager->GetEventFlag();
 		if (isEnd)	return;
@@ -1213,28 +859,6 @@
 //------------------------------------------------------------------------------
 //	メイン描画
 //------------------------------------------------------------------------------
-
-	//	コインバー描画
-	void	UI::CoinBarRender( void )
-	{
-		//フレーム
-		RenderImage(frame, frame.sx, frame.sy, frame.sw, frame.sh, IMAGE_MODE::NORMAL);
-
-		//灰色のバー
-		RenderImage(backgauge, backgauge.sx, backgauge.sy, backgauge.sw, backgauge.sh, IMAGE_MODE::NORMAL);
-
-		FOR(0, PLAYER_MAX)
-		{
-			//色のバー
-			gauge.w = bar_sx[value];	gauge.sw = bar_sx[value];
-
-			//	（左上位置 - ゲージ幅の半分）で中心、ゲージを右向きへ増やすため
-			RenderImage( gauge, gauge.sx, gauge.sy * value, gauge.sw, gauge.sh, IMAGE_MODE::NORMAL, static_cast<int>( bar_x[value] - (backgauge.w * 0.5f) + (gauge.sw * 0.5f ) ), gauge.y );
-																					
-			//顔
-		//	RenderImage( faceImage, faceImage.sx * state_type[value], faceImage.sy * charatype[value], faceImage.sw, faceImage.sh, IMAGE_MODE::NORMAL, state_x[value] - (backgauge.w / 2), faceImage.y );
-		}
-	}
 
 	//	コイン枚数描画
 	void	UI::CoinNumberRender( void )
@@ -1311,24 +935,13 @@
 	
 	}
 
-	//	ニュース描画
-	void	UI::NewsBarRender( void )
-	{
-		if( !gameManager->GetNewsFlag() )	return;
-		
-		iexPolygon::Rect( newsbar.left, newsbar.top, newsbar.right - newsbar.left, newsbar.bottom - newsbar.top, RS_COPY, GetColor( newsbar.color, newsbar.alpha ) );
-		IEX_DrawText( newsbar.text, newsbar.textleft, newsbar.top + static_cast<int>( iexSystem::ScreenHeight * 0.013f ), 500, 200, 0xFFFFFFFF );
-	}
-
 	//	タイマー描画
 	void	UI::TimerRender( void )
-	{
-		
+	{	
 		RenderImage( timer, timer.sx * minute		, timer.sy, timer.sw, timer.sh, IMAGE_MODE::NORMAL, timer.x + timer.w * 0, timer.y );
 		RenderImage( timer, timer.sx * 10			, timer.sy, timer.sw, timer.sh, IMAGE_MODE::NORMAL, timer.x + timer.w * 1, timer.y  );
 		RenderImage( timer, timer.sx * second[0]	, timer.sy, timer.sw, timer.sh, IMAGE_MODE::NORMAL, timer.x + timer.w * 2, timer.y  );
 		RenderImage( timer, timer.sx * second[1]	, timer.sy, timer.sw, timer.sh, IMAGE_MODE::NORMAL, timer.x + timer.w * 3, timer.y  );
-
 	}
 
 	//	カウントダウン・スタート演出
@@ -1355,40 +968,11 @@
 		RenderImage(finishImage, finishImage.sx, finishImage.sy, finishImage.sw, finishImage.sh, IMAGE_MODE::NORMAL);
 	}
 
-	//	どんけつ演出
-	void	UI::DonketsuDirectionRender( void )
-	{
-		//　グレーバック
-		DWORD	color = 0xD0000000;
-		iexPolygon::Rect( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, RS_COPY, color );
-
-		//　顔ルーレット
-		RenderImage(ddInfo.face, FACE_INFO::Normal * 256, charatype[ddInfo.f] * 256, 256, 256, IMAGE_MODE::NORMAL);
-		
-		//　DonketsuBoooooooooooost!!!
-		RenderImage(ddInfo.DB, 0, 0, 512, 256, IMAGE_MODE::ADOPTPARAM );
-	
-		//　？P
-		RenderImage(ddInfo.P, gameManager->GetWorst()*128, 256, 128, 128, IMAGE_MODE::NORMAL);
-
-		//　FightLast
-		RenderImage(ddInfo.fight, 0, 0, 256, 256, IMAGE_MODE::NORMAL);
-
-		//　デバッグ
-		if (debug)
-		{
-			char	str[256];
-			int		worst = gameManager->GetWorst();
-			wsprintf(str, "ビリは p%d", worst + 1);
-			DrawString(str, 200, 70);
-		}
-	}
-
 	//	警告描画
-	void	UI::AlertRender(void)
+	void	UI::AlertRender( void )
 	{
 		int color;
-		switch (alertInfo.type)
+		switch ( alertInfo.type )
 		{
 		case ALERT_TYPE_INFO::JAM:
 			//　フィルタ色設定、フィルタ描画、警告画像描画
@@ -1403,22 +987,11 @@
 			RenderImage(alert_coinImage, alert_coinImage.sx, alert_coinImage.sy, alert_coinImage.sw, alert_coinImage.sh, IMAGE_MODE::NORMAL);
 			break;
 
-			//　ミッションイベント演出
-		case ALERT_TYPE_INFO::MISSION:
-			MissionDirectionRender();
-			break;
-
 		default:	break;
 		}
 
 		//　飛行機
 		EventRender();
-	}
-
-	//　ミッションイベント演出
-	void	UI::MissionDirectionRender()
-	{
-
 	}
 
 	//	時間警告描画
@@ -1481,7 +1054,7 @@
 	}
 
 	//	イベント関連情報描画（飛行機表示）
-	void	UI::EventRender(void)
+	void	UI::EventRender( void )
 	{
 		if (eventInfo.texture.x <= static_cast<int>(iexSystem::ScreenWidth) ||
 			eventInfo.texture.x + eventInfo.texture.sx >= 0)
@@ -1500,6 +1073,7 @@
 		particle->Render();
 
 	}
+
 //------------------------------------------------------------------------------
 //	動作関数
 //------------------------------------------------------------------------------
@@ -1536,391 +1110,6 @@
 
 	}
 
-	//	バー動作
-	void	UI::BarControl( void )
-	{/*
-		//static const int MAX_COIN = 201;
-
-		bar_x[1] = bar_x[0] + bar_sx[0];
-		bar_x[2] = bar_x[1] + bar_sx[1];
-		bar_x[3] = bar_x[2] + bar_sx[2];
-
-		int num_coin[4];
-		FOR(0,PLAYER_MAX)
-		for (int i = 0; i < 4; i++)
-		{
-			num_coin[i] = gameManager->GetCoinNum(i);
-			bar_sx[i] = backgauge.w * num_coin[i] / gameManager->GetLife();
-		}*/
-	}
-	
-	//	バー動作２
-	void	UI::BarControl2( void )
-	{
-		//	プレイヤー情報登録
-		FOR( 0, PLAYER_MAX )
-		{
-			coinBarInfo.coinNum[value] = gameManager->GetCoinNum( value );
-			coinBarInfo.param[value] = 1.0f;
-		}
-
-		float		sub[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
-		float		average = 0;
-		static const int MAX_COIN = 201;
-
-		//	コイン差を調べる
-		for ( int i = 0; i < PLAYER_MAX; i++ )
-		{
-			for ( int n = 0; n < PLAYER_MAX; n++ )
-			{
-				//	コイン差で割合をだす
-				if ( i == n ) continue;
-
-				if ( coinBarInfo.coinNum[n] == 0 )	sub[n] = 1.0f;
-				else sub[n] = ( float )( coinBarInfo.coinNum[i] / coinBarInfo.coinNum[n] );
-			}
-
-			//	平均を求める
-			average = ( sub[0] + sub[1] + sub[2] + sub[3] ) / PLAYER_MAX;
-			average /= PLAYER_MAX - 1;
-			coinBarInfo.param[i] = average;
-		}
-
-		int		originWidth = backgauge.w / PLAYER_MAX;
-		FOR( 0, PLAYER_MAX )
-		{
-			bar_sx[value] = originWidth * ( int )coinBarInfo.param[value];
-		}
-
-		bar_x[1] = bar_x[0] + bar_sx[0];
-		bar_x[2] = bar_x[1] + bar_sx[1];
-		bar_x[3] = bar_x[2] + bar_sx[2];
-	}
-
-	//	バー描画
-	void	UI::BarRender( void )
-	{
-	}
-
-	//	顔動作
-	void	UI::StateImageControl( void )
-	{
-		//画像の描画場所 = 各色の先頭　+　各色の中心　-　画像サイズの半分
-		state_x[0] = (bar_x[0] + (bar_x[1] - bar_x[0]) / 2);
-		state_x[1] = (bar_x[1] + (bar_x[2] - bar_x[1]) / 2);
-		state_x[2] = (bar_x[2] + (bar_x[3] - bar_x[2]) / 2);
-		state_x[3] = (bar_x[3] + (bar_x[3] + bar_sx[3] - bar_x[3]) / 2);
-
-
-		int num_coin[4], temp_coin[4];
-		for (int i = 0; i < 4; i++)
-		{
-			num_coin[i] = temp_coin[i] = gameManager->GetCoinNum(i);
-		}
-
-		for (int i = 0, temp; i < 4 - 1; i++)
-		{
-			for (int j = 4 - 1; j > i; j--)
-			{
-				if (temp_coin[j - 1] > temp_coin[j])
-				{
-					temp = temp_coin[j];
-					temp_coin[j] = temp_coin[j - 1];
-					temp_coin[j - 1] = temp;
-				}
-			}
-		}
-
-		for (int i = 0; i < 4; i++)
-		{
-			for (int j = 0; j < 4; j++)
-			{
-				if (num_coin[i] == temp_coin[j])
-				{
-					switch (j)
-					{
-					case 0:
-						state_type[i] = FACE_INFO::Sad;
-						break;
-
-					case 1:
-					case 2:
-						state_type[i] = FACE_INFO::Normal;
-						break;
-
-					case 3:
-						state_type[i] = FACE_INFO::Good;
-						break;
-					}
-				}
-			}
-		}
-	}
-
-	//　DonketsuBoooooooooooost!!!の演出
-	void	UI::DB_Direction( int wait )
-	{
-		const int POS_X = iexSystem::ScreenWidth / 5;		//　固定位置
-		const int POS_Y = iexSystem::ScreenHeight / 6;		//　固定位置
-		const int TRANS_X = (POS_X - static_cast<int>( iexSystem::ScreenWidth * 0.94f ) ) / 30;	//　TPF
-		const int TRANS_Y = (POS_Y - static_cast<int>( iexSystem::ScreenHeight * -0.14f ) ) / 30;	//　TPF
-		const int SIZE_X = static_cast<int>( iexSystem::ScreenWidth * 0.47f );
-		const int SIZE_Y = static_cast<int>( iexSystem::ScreenHeight * 0.41f );
-		const int SCALING_X = SIZE_X / 30;
-		const int SCALING_Y = SIZE_Y / 30;
-		const float ROT = 30 * 0.0175f;	//　回転量
-		
-		//　タイミングによる設定
-		switch (wait)
-		{
-			//　演出スタート
-		case DD_TIMING::WAIT_MAX:
-			ddInfo.DB_step = 0;
-			break;
-
-			//　固定
-		case DD_TIMING::DB_LOCK:
-			ddInfo.DB_step = 1;
-			break;
-		}
-
-		//　演出部
-		switch (ddInfo.DB_step)
-		{
-			//　移動・回転
-		case 0:
-			ddInfo.DB.x += TRANS_X;
-			ddInfo.DB.y += TRANS_Y;
-			ddInfo.DB.p.x = ddInfo.DB.x;
-			ddInfo.DB.p.y = ddInfo.DB.y;
-			ddInfo.DB.w += SCALING_X;
-			ddInfo.DB.h += SCALING_Y;
-			ddInfo.DB.angle += ROT;
-			break;
-
-			//　固定
-		case 1:
-			ddInfo.DB.x = POS_X;
-			ddInfo.DB.y = POS_Y;
-			ddInfo.DB.w = SIZE_X;
-			ddInfo.DB.h = SIZE_Y;
-			ddInfo.DB.angle = D3DXToRadian(-30.0f);
-			break;
-		}
-	}
-
-	//　どんけつ演出の顔
-	void	UI::FaceRoulette( int face_wait )
-	{
-		const int INTERVAL = 10;
-		const int SPF = 320 / INTERVAL;	// SCALE PER FRAME(１フレームに拡大する分)
-
-		switch (face_wait)
-		{
-			//　イントロ　→　１Ｐ
-		case DD_TIMING::FACE_LOCK + INTERVAL * 13:
-		case DD_TIMING::FACE_LOCK + INTERVAL * 9:
-			ddInfo.face_step = 0;
-			ddInfo.face.w = ddInfo.face.h = 0;
-			ddInfo.f = characterManager->GetPlayerNum(0);
-			break;
-
-			//　１Ｐ　→　２Ｐ
-		case DD_TIMING::FACE_LOCK + INTERVAL * 12:
-		case DD_TIMING::FACE_LOCK + INTERVAL * 8:
-			ddInfo.face_step = 1;
-			ddInfo.face.w = ddInfo.face.h = 0;
-			ddInfo.f = characterManager->GetPlayerNum(1);
-			break;
-
-			//　２Ｐ　→　３Ｐ
-		case DD_TIMING::FACE_LOCK + INTERVAL * 11:
-		case DD_TIMING::FACE_LOCK + INTERVAL * 7:
-			ddInfo.face_step = 2;
-			ddInfo.face.w = ddInfo.face.h = 0;
-			ddInfo.f = characterManager->GetPlayerNum(2);
-			break;
-
-			//　３Ｐ　→　４Ｐ
-		case DD_TIMING::FACE_LOCK + INTERVAL * 10:
-		case DD_TIMING::FACE_LOCK + INTERVAL * 6:
-			ddInfo.face_step = 3;
-			ddInfo.face.w = ddInfo.face.h = 0;
-			ddInfo.f = characterManager->GetPlayerNum(3);
-			break;
-
-			//　４Ｐ　→　しぼみ始める
-		case DD_TIMING::FACE_LOCK + INTERVAL * 5:
-			ddInfo.face_step = 4;
-			ddInfo.face.w = static_cast<int>( iexSystem::ScreenWidth * 0.25f );
-			ddInfo.face.h = static_cast<int>( iexSystem::ScreenHeight * 0.44f );
-			break;
-
-			//　しぼみきる　→　待ち
-		case DD_TIMING::FACE_LOCK + INTERVAL * 4:
-			ddInfo.face_step = 5;
-			ddInfo.face.w = ddInfo.face.h = 0;
-			ddInfo.f = -1;
-			break;
-
-
-			//　待ち　→　ビリ
-		case DD_TIMING::FACE_LOCK + INTERVAL * 1:
-			ddInfo.face_step = 6;
-			ddInfo.f = gameManager->GetWorst();
-			break;
-
-			//　ビリ　→　そのまま放置
-		case DD_TIMING::FACE_LOCK:
-			ddInfo.face_step = 7;
-			break;
-
-		case DD_TIMING::FIGHT_START:
-			ddInfo.face_step = 8;
-			break;
-		}
-
-		//　演出
-		switch (ddInfo.face_step)
-		{
-			//　１～４Ｐ拡大
-		case 0:
-		case 1:
-		case 2:
-		case 3:
-			ddInfo.face.renderflag = true;
-			ddInfo.face.w += SPF;
-			ddInfo.face.h += SPF;
-			break;
-
-			//　８人目の縮小
-		case 4:
-			ddInfo.face.renderflag = true;
-			ddInfo.face.w -= SPF;
-			ddInfo.face.h -= SPF;
-			break;
-		
-			//　ビリ拡大（大きめに）
-		case 6:
-			ddInfo.face.renderflag = true;
-			ddInfo.face.w += static_cast<int>( iexSystem::ScreenWidth * 0.39f ) / INTERVAL;
-			ddInfo.face.h += static_cast<int>( iexSystem::ScreenHeight * 0.69f ) / INTERVAL;
-			break;
-
-			//　放置
-		case 7:
-			ddInfo.face.renderflag = true;
-			ddInfo.face.w = static_cast<int>( iexSystem::ScreenWidth * 0.39f );
-			ddInfo.face.h = static_cast<int>( iexSystem::ScreenHeight * 0.69f );
-			break;
-
-		default:
-			ddInfo.face.renderflag = false;
-			break;
-		}
-	}
-	
-	//　「？Ｐ」の演出
-	void	UI::P_Direction( int wait )
-	{
-		const int INTERVAL = 5;
-		const int SIZE_X = static_cast<int>( iexSystem::ScreenWidth * 0.31f );
-		const int SIZE_Y = static_cast<int>( iexSystem::ScreenHeight * 0.49f );
-		const int SCALING = 200;
-		const int SPF = SCALING / INTERVAL;
-		
-		//　タイミングによる設定
-		switch (wait)
-		{
-			//　出現
-		case DD_TIMING::P_START:
-			ddInfo.P.renderflag = true;
-			ddInfo.P_step = 0;
-			break;
-		case DD_TIMING::P_START - 5:
-			ddInfo.P_step = 3;
-			break;
-
-			//　拡大スタート
-		case DD_TIMING::P_LOCK + INTERVAL * 6:
-		case DD_TIMING::P_LOCK + INTERVAL * 4:
-		case DD_TIMING::P_LOCK + INTERVAL * 2:
-			ddInfo.P.w = SIZE_X;
-			ddInfo.P.h = SIZE_Y;
-			ddInfo.P_step = 1;
-			break;
-
-			//　縮小スタート
-		case DD_TIMING::P_LOCK + INTERVAL * 5:
-		case DD_TIMING::P_LOCK + INTERVAL * 3:
-		case DD_TIMING::P_LOCK + INTERVAL * 1:
-			ddInfo.P.w = SIZE_X + SCALING;
-			ddInfo.P.h = SIZE_Y + SCALING;
-			ddInfo.P_step = 2;
-			break;
-	
-			//　固定
-		case DD_TIMING::P_LOCK:
-			ddInfo.P.w = SIZE_X;
-			ddInfo.P.h = SIZE_Y;
-			ddInfo.P_step = 3;
-			break; 
-		}
-
-		//　演出部
-		switch (ddInfo.P_step)
-		{
-			//　出現
-		case 0:
-			ddInfo.P.w += SIZE_X / 10;
-			ddInfo.P.h += SIZE_Y / 10;
-			break;
-
-			//　拡大
-		case 1:
-			ddInfo.P.w += SPF;
-			ddInfo.P.h += SPF;
-			break;
-
-			//　縮小
-		case 2:
-			ddInfo.P.w -= SPF;
-			ddInfo.P.h -= SPF;
-			break;
-
-			//　固定
-		case 3:
-			ddInfo.P.w = SIZE_X;
-			ddInfo.P.h = SIZE_Y;
-			break;
-		}
-	}
-
-	//　FightLastの演出
-	void	UI::Fight_Direction(int wait)
-	{
-		//　タイミングによる設定
-		switch (wait)
-		{
-		case DD_TIMING::FIGHT_START:
-			ddInfo.fight.renderflag = true;
-			ddInfo.fight_step = 0;
-
-			ddInfo.DB.renderflag = false;
-			ddInfo.face.renderflag = false;
-			ddInfo.P.renderflag = false;
-			break;
-		}
-
-		//　演出部
-		switch (ddInfo.fight_step)
-		{
-		case 0:
-			
-			break;
-		}
-	}
-	
 	//	設定した数値にあわせて構造体情報を設定、１００以上かで配置も変更
 	void	UI::CoinImageInfoUpdate(NUMBERIMAGE_INFO& numImageInfo, NUMBER_INFO& numInfo, const int& num)
 	{
@@ -2003,54 +1192,6 @@
 		hurryInfo.flag = flag;
 	}
 
-	//	飛び入り設定
-	void	UI::SetFlyingIn( int type )
-	{
-
-	}
-
-	//	モード別読み込み位置設定
-	void	UI::SetImageSrcPos( int mode )
-	{
-		if ( mode == TITLE_MODE::TITLE )
-		{
-			titleInfo.textImage.renderflag = false;
-		}
-		else
-		{
-			titleInfo.textImage.renderflag = true;
-		}
-
-		switch ( mode ) 
-		{
-		case TITLE_MODE::MENU:
-			SetImageSrcPos( 0, 0 );
-			break;
-
-		case TITLE_MODE::OPTION:
-			SetImageSrcPos( 0, 128 );
-			break;
-
-		case TITLE_MODE::CREDIT:
-			SetImageSrcPos( 0, 256 );
-			break;
-
-		case TITLE_MODE::PLAY:
-			SetImageSrcPos( 0, 384 );
-			break;
-
-		case TITLE_MODE::MOVE_MAIN:
-			break;
-		}
-	}
-
-	//	読み込み位置設定
-	void	UI::SetImageSrcPos( int sx, int sy )
-	{
-		titleInfo.textImage.sx = sx;
-		titleInfo.textImage.sy = sy;
-	}
-
 	//	モード変更フラグ取得
 	bool	UI::GetChangeFlag( void )
 	{
@@ -2059,7 +1200,7 @@
 	}
 
 	//	設定した数値にあわせて構造体情報を設定、１００以上かで配置も変更
-	void	UI::SetCoinImageInfo(NUMBERIMAGE_INFO& numImageInfo, NUMBER_INFO& numInfo, const int& num)
+	void	UI::SetCoinImageInfo( NUMBERIMAGE_INFO& numImageInfo, NUMBER_INFO& numInfo, const int& num )
 	{
 		//	桁数確認
 		if (num >= 100)		numImageInfo.hundredRenderFlag = true;
@@ -2118,7 +1259,7 @@
 	}
 
 	//	数値構造体に値をセットする
-	void	UI::SetNumberInfo(NUMBER_INFO& number, int coin)
+	void	UI::SetNumberInfo( NUMBER_INFO& number, int coin )
 	{
 		number.hundred = coin / 100 % 10;
 		number.ten = coin / 10 % 10;
@@ -2126,7 +1267,7 @@
 	}
 
 	//	イベント情報、モード設定
-	void	UI::SetEventInfoMode(int mode)
+	void	UI::SetEventInfoMode( int mode )
 	{
 		this->eventInfo.mode = mode;
 	}
