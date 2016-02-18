@@ -11,7 +11,6 @@
 #include	"Random.h"
 #include	"BaseChara.h"
 #include	"CharacterManager.h"
-#include	"UI.h"
 #include	"Curtain.h"
 #include	"sceneMain.h"
 #include	"sceneMenu.h"
@@ -89,10 +88,6 @@ namespace
 		//	スクリーン初期化
 		screen->SetScreenMode( SCREEN_MODE::FADE_IN, 1.0f );
 
-		//	UI初期化
-		ui = new UI();
-		ui->Initialize( UI_MODE::TITLE );
-		
 		//	ステージ	
 		stage->SetAngle( D3DX_PI );
 		stage->SetScale( 0.1f );
@@ -248,9 +243,6 @@ namespace
 			CreditRender();
 			break;
 		}
-
-		//	UI描画
-		ui->Render( mode );
 
 		//	スクリーン描画
 		screen->Render();
@@ -451,10 +443,6 @@ namespace
 		{			
 			//	カメラ更新
 			mainView->Update( VIEW_MODE::TITLE );
-
-			//	UI更新
-			ui->Update( TITLE_MODE::MOVE_MAIN );
-
 
 			switch ( cameraInfo.state )
 			{
