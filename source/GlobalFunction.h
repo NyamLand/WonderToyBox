@@ -50,21 +50,6 @@
 		LPDIRECT3DVERTEXBUFFER9		operator -> (){ return p; }
 	};
 
-	//	ニュース構造体
-	struct NewsBar
-	{
-		int		left;
-		int		top;
-		int		right;
-		int		bottom;
-		float	alpha;
-		Vector3	color;
-		LPSTR	text;
-		int		textleft;
-		int		step;
-		bool	renderflag;
-	};
-
 	//	画像構造体
 	struct ImageObj
 	{

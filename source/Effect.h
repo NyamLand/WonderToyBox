@@ -14,71 +14,105 @@ private:
 	//	サークル
 	typedef struct
 	{
-		LVERTEX		poligon[4];
+		LVERTEX		poligon[PLAYER_MAX];
 		Vector3		c_pos;
 	}Circle;
 
-	struct EFF_VERTEX
+	struct Eff_Vertex
 	{
-		LVERTEX	v[4];		//	ポリゴン
-		float			angle;	//	向き
+		LVERTEX	v[PLAYER_MAX];		//	ポリゴン
+		float			angle;		//	向き
 	};
 
 	//	シールド本体
-	struct SHIELD
+	struct Shield
 	{
-		EFF_VERTEX		v[4];			//	ポリゴン情報
-		Vector3				pos[4];		//	ポリゴン座標
+		Eff_Vertex			v[PLAYER_MAX];		//	ポリゴン情報
+		Vector3				pos[PLAYER_MAX];		//	ポリゴン座標
 	};
 
+	//	状態異常
 	struct StateEffect
 	{
-		ImageObj		image;
+		ImageObj	image;
 		Vector3		pos;
 		Vector3		start;
 		Vector3		finish;
 	};
 
 	//	シールド用情報
-	struct SHIELD_INFO
+	struct ShieldInfo
 	{
 		iex2DObj*	obj;
-		SHIELD	shield[4];
-		Vector3	pos[4];
-		float	scale;
-		float	r;
-		bool	state[4];
+		Shield		shield[PLAYER_MAX];
+		Vector3		pos[PLAYER_MAX];
+		float		scale;
+		float		r;
+		bool		state[PLAYER_MAX];
 	};
+
+	//	サークル情報
+	struct CircleInfo
+	{
+		Circle		circle[PLAYER_MAX];
+		Circle		circle_out[PLAYER_MAX];
+		iex2DObj*	pic[PLAYER_MAX];
+		float		speed;
+	};
+
+	//	混乱用情報
+	struct ConfusionInfo
+	{
+		Circle		confusion[PLAYER_MAX];
+		Circle		confusion_out[PLAYER_MAX];
+		iex2DObj*	pic;
+		float		speed;
+		bool		state[PLAYER_MAX];
+	};
+
+	//	状態異常用情報
+	struct StateInfo
+	{
+		StateEffect		stateEffect[PLAYER_MAX];
+		iex2DObj*		pic;
+	};
+
+	//	オーラ
+	struct Aura
+	{
+		iexMesh*	mesh;
+		bool		state;
+	};
+
+	//	竜巻
+	struct Storm
+	{
+		iexMesh*	mesh;
+		bool		state;
+		Vector3		pos;
+		int			time;
+		float		_adjustV;
+	};
+
 private:
 	//	オーラ
-	iexMesh*	aura;
-	bool		isAura;
+	Aura		aura;
+
 	//	竜巻
-	iexMesh*	storm;
-	bool		isStorm;
-	Vector3		storm_pos;
-	int			storm_time;
-	float		_adjustV;
+	Storm		storm;
 
-	iex2DObj*	circle_pic[4];
-	Circle		circle[4];
-	Circle		circle_out[4];
-	float		circle_speed;
+	//	サークル
+	CircleInfo	circleInfo;
+
 	//	混乱
-	Circle		confusion[4];
-	Circle		confusion_out[4];
-	iex2DObj*	confusion_pic;
-	bool		isConfusion[4];
-	float		confusion_speed;
 
-	ImageObj	pow_up;
-	Vector3		pow_pos;
-	int			pow_time;
+	ConfusionInfo	confusionInfo;
 
-	StateEffect		stateEffect[4];
-	iex2DObj*		state;
+	//	状態異常用
+	StateInfo		stateInfo;
 
-	SHIELD_INFO	shieldInfo;
+	//	盾
+	ShieldInfo		shieldInfo;
 	
 public:
 	//	初期化・解放
@@ -102,7 +136,7 @@ public:
 	void	PoligonSet( Circle*, float, float, float );
 	void	CirclePosSet( Circle*, int , Vector3 add = Vector3(0.0f, 0.0f, 0.0f) );
 	void	SetShield( int player, bool state );
-	void	SetConfusion( bool state, int num ){ isConfusion[num] = state; }
+	void	SetConfusion( bool state, int num ){ confusionInfo.state[num] = state; }
 
 	//	動作関数
 	void	Shield( void );
