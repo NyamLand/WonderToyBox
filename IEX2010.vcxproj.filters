@@ -120,23 +120,8 @@
     <Filter Include="ソース ファイル\Bullet\BaseBullet">
       <UniqueIdentifier>{9a57d1f2-4a39-47a5-9e36-e21adc8ecc1c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Bullet\Thief_Bullet01">
-      <UniqueIdentifier>{ee7b2aaf-435b-4d08-907f-3748bc6e4569}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Bullet\Squirrel_Bullet01">
-      <UniqueIdentifier>{cfe93910-f10e-4d77-a324-314de6511f75}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\StageManager">
       <UniqueIdentifier>{8ed026fe-458c-4da9-812b-91367850d576}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Bullet\Thief_Bullet03">
-      <UniqueIdentifier>{94937493-1ea3-4327-9e05-eca8654214b0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Bullet\Thief_Bullet04">
-      <UniqueIdentifier>{60967d9d-6360-4e74-a969-e5b55b4cb019}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Bullet\Thief_Bullet02">
-      <UniqueIdentifier>{1e7b2f38-3bdb-4571-a0b7-7ca1d0300c55}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\Wipe">
       <UniqueIdentifier>{39ede1e2-747a-4fd5-b0d8-676305a443ce}</UniqueIdentifier>
@@ -148,17 +133,8 @@
     <Filter Include="ソース ファイル\Character\Pirate">
       <UniqueIdentifier>{65c1b651-e688-4958-951f-2d6f9306f124}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Bullet\Pirate_Bullet01">
-      <UniqueIdentifier>{1ef33839-09d0-4665-b5a2-60d54b9e0e39}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Character\CPU\Pirate">
       <UniqueIdentifier>{8c8922ea-b73d-4438-886e-4ed68fbe9e8b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Bullet\Pirate_Bullet02">
-      <UniqueIdentifier>{0a3c6889-e7c2-46fd-b57a-b940359c59c5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Bullet\Pirate_Bullet03">
-      <UniqueIdentifier>{93e3c1de-d014-4fee-af83-2f9f9b008e8f}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\Events">
       <UniqueIdentifier>{599a5610-f91a-4cf5-907e-ffee01825250}</UniqueIdentifier>
@@ -183,6 +159,39 @@
     </Filter>
     <Filter Include="ソース ファイル\Curtain">
       <UniqueIdentifier>{12ae62d3-46b1-4603-be02-0aa0b5edeb4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Bullet\PirateBullet">
+      <UniqueIdentifier>{ec2f0dd3-c2c5-4680-ac3c-a30acc2c286b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Bullet\PirateBullet\PirateBullet01">
+      <UniqueIdentifier>{1ef33839-09d0-4665-b5a2-60d54b9e0e39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Bullet\PirateBullet\PirateBullet02">
+      <UniqueIdentifier>{0a3c6889-e7c2-46fd-b57a-b940359c59c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Bullet\PirateBullet\PirateBullet03">
+      <UniqueIdentifier>{93e3c1de-d014-4fee-af83-2f9f9b008e8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Bullet\SquirrelBullet01">
+      <UniqueIdentifier>{cfe93910-f10e-4d77-a324-314de6511f75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Bullet\ThiefBullet">
+      <UniqueIdentifier>{cd70d649-de26-429f-8914-7829433f060e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Bullet\ThiefBullet\Thief_Bullet04">
+      <UniqueIdentifier>{60967d9d-6360-4e74-a969-e5b55b4cb019}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Bullet\ThiefBullet\ThiefBullet01">
+      <UniqueIdentifier>{ee7b2aaf-435b-4d08-907f-3748bc6e4569}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Bullet\ThiefBullet\ThiefBullet02">
+      <UniqueIdentifier>{1e7b2f38-3bdb-4571-a0b7-7ca1d0300c55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Bullet\ThiefBullet\ThiefBullet03">
+      <UniqueIdentifier>{94937493-1ea3-4327-9e05-eca8654214b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Bullet\PirateBullet\BasePirateBullet">
+      <UniqueIdentifier>{0e21d244-f091-45ae-980d-20bc2ff1f783}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -339,21 +348,6 @@
     <ClCompile Include="source\BaseBullet.cpp">
       <Filter>ソース ファイル\Bullet\BaseBullet</Filter>
     </ClCompile>
-    <ClCompile Include="source\Thief_Bullet01.cpp">
-      <Filter>ソース ファイル\Bullet\Thief_Bullet01</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Squirrel_Bullet01.cpp">
-      <Filter>ソース ファイル\Bullet\Squirrel_Bullet01</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Thief_Bullet03.cpp">
-      <Filter>ソース ファイル\Bullet\Thief_Bullet03</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Thief_Bullet04.cpp">
-      <Filter>ソース ファイル\Bullet\Thief_Bullet04</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Thief_Bullet02.cpp">
-      <Filter>ソース ファイル\Bullet\Thief_Bullet02</Filter>
-    </ClCompile>
     <ClCompile Include="source\Wipe.cpp">
       <Filter>ソース ファイル\Wipe</Filter>
     </ClCompile>
@@ -365,15 +359,6 @@
     </ClCompile>
     <ClCompile Include="source\Pirate_CPU.cpp">
       <Filter>ソース ファイル\Character\CPU\Pirate</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Pirate_Bullet02.cpp">
-      <Filter>ソース ファイル\Bullet\Pirate_Bullet02</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Pirate_Bullet01.cpp">
-      <Filter>ソース ファイル\Bullet\Pirate_Bullet01</Filter>
-    </ClCompile>
-    <ClCompile Include="source\Pirate_Bullet03.cpp">
-      <Filter>ソース ファイル\Bullet\Pirate_Bullet03</Filter>
     </ClCompile>
     <ClCompile Include="source\Stage.cpp">
       <Filter>ソース ファイル\Stage</Filter>
@@ -395,6 +380,33 @@
     </ClCompile>
     <ClCompile Include="source\Curtain.cpp">
       <Filter>ソース ファイル\Curtain</Filter>
+    </ClCompile>
+    <ClCompile Include="source\PirateBullet01.cpp">
+      <Filter>ソース ファイル\Bullet\PirateBullet\PirateBullet01</Filter>
+    </ClCompile>
+    <ClCompile Include="source\PirateBullet02.cpp">
+      <Filter>ソース ファイル\Bullet\PirateBullet\PirateBullet02</Filter>
+    </ClCompile>
+    <ClCompile Include="source\PirateBullet03.cpp">
+      <Filter>ソース ファイル\Bullet\PirateBullet\PirateBullet03</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SquirrelBullet01.cpp">
+      <Filter>ソース ファイル\Bullet\SquirrelBullet01</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ThiefBullet01.cpp">
+      <Filter>ソース ファイル\Bullet\ThiefBullet\ThiefBullet01</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ThiefBullet02.cpp">
+      <Filter>ソース ファイル\Bullet\ThiefBullet\ThiefBullet02</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ThiefBullet03.cpp">
+      <Filter>ソース ファイル\Bullet\ThiefBullet\ThiefBullet03</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ThiefBullet04.cpp">
+      <Filter>ソース ファイル\Bullet\ThiefBullet\Thief_Bullet04</Filter>
+    </ClCompile>
+    <ClCompile Include="source\BasePirateBullet.cpp">
+      <Filter>ソース ファイル\Bullet\PirateBullet\BasePirateBullet</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -506,21 +518,6 @@
     <ClInclude Include="source\BaseBullet.h">
       <Filter>ソース ファイル\Bullet\BaseBullet</Filter>
     </ClInclude>
-    <ClInclude Include="source\Thief_Bullet01.h">
-      <Filter>ソース ファイル\Bullet\Thief_Bullet01</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Squirrel_Bullet01.h">
-      <Filter>ソース ファイル\Bullet\Squirrel_Bullet01</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Thief_Bullet03.h">
-      <Filter>ソース ファイル\Bullet\Thief_Bullet03</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Thief_Bullet04.h">
-      <Filter>ソース ファイル\Bullet\Thief_Bullet04</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Thief_Bullet02.h">
-      <Filter>ソース ファイル\Bullet\Thief_Bullet02</Filter>
-    </ClInclude>
     <ClInclude Include="source\Wipe.h">
       <Filter>ソース ファイル\Wipe</Filter>
     </ClInclude>
@@ -530,17 +527,8 @@
     <ClInclude Include="source\Pirate.h">
       <Filter>ソース ファイル\Character\Pirate</Filter>
     </ClInclude>
-    <ClInclude Include="source\Pirate_Bullet01.h">
-      <Filter>ソース ファイル\Bullet\Pirate_Bullet01</Filter>
-    </ClInclude>
     <ClInclude Include="source\Pirate_CPU.h">
       <Filter>ソース ファイル\Character\CPU\Pirate</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Pirate_Bullet02.h">
-      <Filter>ソース ファイル\Bullet\Pirate_Bullet02</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Pirate_Bullet03.h">
-      <Filter>ソース ファイル\Bullet\Pirate_Bullet03</Filter>
     </ClInclude>
     <ClInclude Include="source\Stage.h">
       <Filter>ソース ファイル\Stage</Filter>
@@ -565,6 +553,33 @@
     </ClInclude>
     <ClInclude Include="source\Curtain.h">
       <Filter>ソース ファイル\Curtain</Filter>
+    </ClInclude>
+    <ClInclude Include="source\PirateBullet01.h">
+      <Filter>ソース ファイル\Bullet\PirateBullet\PirateBullet01</Filter>
+    </ClInclude>
+    <ClInclude Include="source\PirateBullet02.h">
+      <Filter>ソース ファイル\Bullet\PirateBullet\PirateBullet02</Filter>
+    </ClInclude>
+    <ClInclude Include="source\PirateBullet03.h">
+      <Filter>ソース ファイル\Bullet\PirateBullet\PirateBullet03</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SquirrelBullet01.h">
+      <Filter>ソース ファイル\Bullet\SquirrelBullet01</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ThiefBullet01.h">
+      <Filter>ソース ファイル\Bullet\ThiefBullet\ThiefBullet01</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ThiefBullet02.h">
+      <Filter>ソース ファイル\Bullet\ThiefBullet\ThiefBullet02</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ThiefBullet03.h">
+      <Filter>ソース ファイル\Bullet\ThiefBullet\ThiefBullet03</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ThiefBullet04.h">
+      <Filter>ソース ファイル\Bullet\ThiefBullet\Thief_Bullet04</Filter>
+    </ClInclude>
+    <ClInclude Include="source\BasePirateBullet.h">
+      <Filter>ソース ファイル\Bullet\PirateBullet\BasePirateBullet</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

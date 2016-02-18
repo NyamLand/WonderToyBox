@@ -1,20 +1,20 @@
 
-#ifndef __BULLET01_H__
-#define	__BULLET01_H__
+#ifndef __SQUIRRELBULLET01_H__
+#define	__SQUIRRELBULLET01_H__
 
 #include	"BaseBullet.h"
 //*****************************************************************************
 //
-//	Squirrel_Bullet01クラス
+//	SquirrelBullet01クラス
 //
 //*****************************************************************************
-class Squirrel_Bullet01 : public BaseBullet
+class SquirrelBullet01 : public BaseBullet
 {
 
 public:
 	//	初期化・解放
-	Squirrel_Bullet01(void);
-	~Squirrel_Bullet01(void){};
+	SquirrelBullet01(void);
+	~SquirrelBullet01(void){};
 	bool Initialize();
 
 	void Move();

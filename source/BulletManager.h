@@ -4,14 +4,14 @@
 
 #include	"GameManager.h"
 #include	"BaseBullet.h"
-#include	"Squirrel_Bullet01.h"
-#include	"Thief_Bullet01.h"
-#include	"Thief_Bullet02.h"
-#include	"Thief_Bullet03.h"
-#include	"Thief_Bullet04.h"
-#include	"Pirate_Bullet01.h"
-#include	"Pirate_Bullet02.h"
-#include	"Pirate_Bullet03.h"
+#include	"SquirrelBullet01.h"
+#include	"ThiefBullet01.h"
+#include	"ThiefBullet02.h"
+#include	"ThiefBullet03.h"
+#include	"ThiefBullet04.h"
+#include	"PirateBullet01.h"
+#include	"PirateBullet02.h"
+#include	"PirateBullet03.h"
 //******************************************************************************
 //
 //	BulletManagerƒNƒ‰ƒX

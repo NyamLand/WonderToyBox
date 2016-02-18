@@ -1,11 +1,11 @@
 
-#ifndef __THIEF_BULLET01_H__
-#define	__THIEF_BULLET01_H__
+#ifndef __THIEFBULLET01_H__
+#define	__THIEFBULLET01_H__
 
 #include	"BaseBullet.h"
 //*****************************************************************************
 //
-//	Thief_Bullet01クラス
+//	ThiefBullet01クラス
 //
 //*****************************************************************************
 
@@ -21,7 +21,7 @@ namespace STEP
 	};
 }
 
-class Thief_Bullet01 : public BaseBullet
+class ThiefBullet01 : public BaseBullet
 {
 private:
 	float ToPlayerLength;
@@ -33,8 +33,8 @@ private:
 
 public:
 	//	初期化・解放
-	Thief_Bullet01(void);
-	~Thief_Bullet01(void){};
+	ThiefBullet01(void);
+	~ThiefBullet01(void){};
 
 	bool Initialize();
 	void Update();

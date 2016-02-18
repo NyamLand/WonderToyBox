@@ -9,9 +9,9 @@
 #include	"CoinManager.h"
 #include	"BaseBullet.h"
 #include	"BulletManager.h"
-#include	"Squirrel_Bullet01.h"
+#include	"SquirrelBullet01.h"
 
-Squirrel_Bullet01::Squirrel_Bullet01()
+SquirrelBullet01::SquirrelBullet01()
 {
 	scale		=	Vector3(0.05f,0.05f,0.05f);
 	leanpower	=	0;
@@ -20,12 +20,12 @@ Squirrel_Bullet01::Squirrel_Bullet01()
 	limitTimer	=	BULLET_LIMITTIMER	[	BULLET_TYPE::SQUIRREL_01	];
 }
 
-bool Squirrel_Bullet01::Initialize()
+bool SquirrelBullet01::Initialize()
 {
 	return true;
 }
 
-void	Squirrel_Bullet01::Update(void)
+void	SquirrelBullet01::Update(void)
 {
 	//	動作
 	Move();
@@ -47,7 +47,7 @@ void	Squirrel_Bullet01::Update(void)
 }
 
 
-void	Squirrel_Bullet01::Move(void)
+void	SquirrelBullet01::Move(void)
 {
 	// 反射( ステージ )	
 	static float rate = 0.4f;

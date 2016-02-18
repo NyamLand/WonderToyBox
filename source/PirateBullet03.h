@@ -1,24 +1,24 @@
-#ifndef __PIRATE_BULLET03_H__
-#define	__PIRATE_BULLET03_H__
+#ifndef __PIRATEBULLET03_H__
+#define	__PIRATEBULLET03_H__
 
-#include	"Pirate_Bullet01.h"
+#include	"BasePirateBullet.h"
 //*****************************************************************************
 //
-//	Pirate_Bullet03クラス
+//	PirateBullet03クラス
 //
 //*****************************************************************************
-class Pirate_Bullet03 : public Pirate_Bullet01
+class PirateBullet03 : public BasePirateBullet
 {
 private:
 public:
 	//	初期化・解放
-	Pirate_Bullet03(void);
-	~Pirate_Bullet03(void){};
+	PirateBullet03(void);
+	~PirateBullet03(void){};
 
 	void Move();
 	void Update();
 
-	void Pirate_Bullet03::Explode(void);
+	void PirateBullet03::Explode(void);
 
 	bool PlayerCollisionCheck(void);
 };
