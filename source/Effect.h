@@ -94,6 +94,13 @@ private:
 		float		_adjustV;
 	};
 
+	//	アイテム画像切り取り場所情報
+	struct StateImageInfo
+	{
+		int		sx;
+		int		sy;
+	};
+
 private:
 	//	オーラ
 	Aura		aura;
@@ -113,6 +120,9 @@ private:
 
 	//	盾
 	ShieldInfo		shieldInfo;
+
+	//	定数
+	StateImageInfo	STATE_INFO[10];
 	
 public:
 	//	初期化・解放
