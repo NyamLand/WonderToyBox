@@ -113,7 +113,7 @@ private:
 	ImageObj				faceImage[CHARACTER_TYPE::MAX];
 	ImageObj				cursorImage[4];
 	ImageObj				decidecursorImage[4];
-
+	ImageObj				circleImage[4];
 
 	//	äeÉÇÅ[ÉhèÓïÒ
 	PlayerNumSelectInfo		playerNumSelectInfo;

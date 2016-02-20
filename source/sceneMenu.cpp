@@ -138,6 +138,10 @@
 		cpuCursor = new iex2DObj( "DATA/UI/cpuIcon.png" );
 		selectCheckCursor = new iex2DObj("DATA/UI/menu/cursor.png");
 		triangleCursor = new iex2DObj("DATA/UI/tryangle.png");
+		circleImage[0].obj = new iex2DObj( "DATA/Effect/circle/PL1.png" );
+		circleImage[1].obj = new iex2DObj( "DATA/Effect/circle/PL2.png" );
+		circleImage[2].obj = new iex2DObj( "DATA/Effect/circle/PL3.png" );
+		circleImage[3].obj = new iex2DObj( "DATA/Effect/circle/PL4.png" );
 		
 		//	オプション関係画像読み込み
 		optionImage =		new iex2DObj( "DATA/UI/OptionText.png" );
@@ -231,6 +235,8 @@
 		SafeDelete(triangleCursor);
 		Random::Release();
 		sound->AllStop();
+
+		FOR( 0, PLAYER_MAX )	SafeDelete( circleImage[value].obj );
 
 		//設計中
 		SafeDelete(optionImage);
@@ -532,16 +538,28 @@
 		org[CHARACTER_TYPE::THIEF]->SetMotion(0);		//	怪盗
 		org[CHARACTER_TYPE::PIRATE]->SetMotion(0);			//	海賊
 	
+		int left, x, y, w, h;
+
 		//	顔画像初期化
 		FOR( 0, CHARACTER_TYPE::MAX )
 		{
-			int left = static_cast<int>( iexSystem::ScreenWidth / 5 );
-			int x = left + left * value;
-			int y = static_cast<int>( iexSystem::ScreenHeight * 0.37f );
-			int w = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
-			int h = static_cast<int>( iexSystem::ScreenHeight * 0.155f );
+			left = static_cast<int>( iexSystem::ScreenWidth / 5 );
+			x = left + left * value;
+			y = static_cast<int>( iexSystem::ScreenHeight * 0.37f );
+			w = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
+			h = static_cast<int>( iexSystem::ScreenHeight * 0.155f );
 			ImageInitialize( faceImage[value], x, y, w, h, 0, 256 * value, 256, 256 );
 			faceImage[value].obj = face;
+		}
+
+		//	プレイヤー番号サークル初期化
+		FOR( 0, PLAYER_MAX )
+		{
+			x = faceImage[value].x - faceImage[value].w / 2;
+			y = static_cast<int>( iexSystem::ScreenHeight * 0.6f );
+			w = static_cast<int>( iexSystem::ScreenWidth * 0.03f );
+			h = w;
+			ImageInitialize( circleImage[value], x, y, w, h, 0, 0, 512, 512 );
 		}
 
 		//	モデル、選択情報初期化
@@ -808,6 +826,9 @@
 			{
 				RenderImage( cursorImage[value], 128 * (value % 2), 128 * (value / 2), 128, 128, IMAGE_MODE::NORMAL );
 			}
+
+			//	プレイヤー番号サークル描画
+			RenderImage( circleImage[value], circleImage[value].sx, circleImage[value].sy, circleImage[value].sw, circleImage[value].sh, IMAGE_MODE::NORMAL );
 		}
 		
 	}
