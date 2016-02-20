@@ -332,6 +332,9 @@ namespace
 			//	‰e•`‰æ
 			iexPolygon::Render3D( shadow.v, 2, shadow.obj, shader3D, "alpha" );
 			
+			//	ƒgƒD[ƒ“—ÖŠsüFÝ’è
+			shader3D->SetValue( "OutlineColor", this->damageColor.passColor );
+
 			if ( renderflag )
 			obj->Render( shader, technique );
 		}

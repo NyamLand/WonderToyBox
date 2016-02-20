@@ -355,7 +355,10 @@
 //-----------------------------------------------------------------------------------
 
 	//	—ÖŠsü‚Ì‘¾‚³
-	float	OutlineSize = 1.0f;	
+	float	OutlineSize = 1.5f;	
+
+	//	—ÖŠsüF
+	float3	OutlineColor = float3( 0.0f, 0.0f, 0.0f );
 
 	//	‰e—p
 	float	ToonLevel = 0.3f;		//	‰e‚ÌƒŒƒxƒ‹
@@ -580,7 +583,7 @@
 
 			Out.Pos = mul( In.Pos, Projection );
 			Out.Tex = In.Tex;
-			Out.Color.rgb = 0;
+			Out.Color.rgb = OutlineColor;
 			Out.Color.a = 1;
 
 			return	Out;
