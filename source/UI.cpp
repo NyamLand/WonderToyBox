@@ -117,7 +117,6 @@
 		alertImage.obj		= new iex2DObj( "DATA/UI/alert.png" );
 		alert_coinImage.obj = new iex2DObj( "DATA/UI/coin_alert.png" );
 		playerNumber		= new iex2DObj( "DATA/UI/number.png" );
-		life				= new iex2DObj( "DATA/UI/NLife.png" );
 		crown				= new iex2DObj( "DATA/UI/1stCrown.png" );
 		pCoinNumImage		= new iex2DObj( "DATA/UI/number.png" );
 		roundImage.obj		= new iex2DObj( "DATA/UI/roundText.png" );
@@ -141,6 +140,8 @@
 		}
 
 		//	各UI情報初期化
+		lifeUI = new LifeUI();
+		lifeUI->Initialize();
 		CoinNumberInitialize();
 		FaceImageInitialize();
 		TimerInitialize();
@@ -149,7 +150,6 @@
 		AlertInitialize();
 		LastProductionInitialize();
 		PlayerNumberInitialize();
-		LifeInitialize();
 		CrownInitialize();
 		RoundInitialize();
 		EventInitialize();
@@ -162,6 +162,7 @@
 	//	メイン用解放
 	void	UI::MainRelease( void )
 	{
+		SafeDelete( lifeUI );
 		SafeDelete( timer.obj );
 		SafeDelete( face );
 		SafeDelete( countImage.obj );
@@ -169,7 +170,6 @@
 		SafeDelete( alertImage.obj );
 		SafeDelete( alert_coinImage.obj );
 		SafeDelete( playerNumber );
-		SafeDelete( life );
 		SafeDelete( pCoinNumImage );
 		SafeDelete( roundImage.obj );
 		SafeDelete( eventInfo.airPlane );
@@ -184,7 +184,7 @@
 	void	UI::MainUpdate( int mode )
 	{
 		PlayerNumberUpdate();
-		LifeUpdate();
+		lifeUI->Update();
 		CrownUpdate();
 		ParticleUpdate();
 
@@ -223,8 +223,7 @@
 	//	メイン描画
 	void	UI::MainRender( int mode )
 	{
-
-		LifeRender();
+		lifeUI->Render();
 		CrownRender();
 		RoundRender();
 
@@ -433,17 +432,6 @@
 		lasttimerInfo.state = false;
 		lasttimerInfo.t		= 0.0f;
 		lasttimerInfo.alpha = 1.0f;
-	}
-
-	//	体力画像初期化
-	void	UI::LifeInitialize( void )
-	{
-		FOR( 0, PLAYER_MAX )
-		{
-			lifeInfo[value].life			= gameManager->GetStartLife( value );
-			lifeInfo[value].lifeImage.obj	= life;
-			ImageInitialize( lifeInfo[value].lifeImage, 0, 10, 75, 75, 0, 0, 64, 64 );
-		}
 	}
 
 	//	1位王冠画像初期化
@@ -759,40 +747,9 @@
 		}
 	}
 
-	//	ライフ更新
-	void	UI::LifeUpdate( void )
-	{
-		Vector3	p_Pos;
-		Vector3	p_Up;
-		Vector3	lifePos;
-		Vector3	out;
-		int			culLife;
-
-		FOR( 0, PLAYER_MAX )
-		{
-			//	表示座標算出
-			p_Pos		= characterManager->GetPos( value );
-			p_Up		= characterManager->GetUp( value );
-			lifePos		= p_Pos + p_Up * 5.0f;
-			WorldToClient( lifePos, out, matView * matProjection );
-
-			//	現在の体力取得
-			culLife		= characterManager->GetLife( value );
-
-			//	描画位置設定
-			lifeInfo[value].lifeImage.x		= ( int )out.x;
-			lifeInfo[value].lifeImage.y		= ( int )out.y;
-
-			//	読み込み位置設定
-			lifeInfo[value].lifeImage.sx	= lifeInfo[value].lifeImage.sw * ( ( 5 - culLife ) % 4 );
-			lifeInfo[value].lifeImage.sy	= lifeInfo[value].lifeImage.sh * ( ( 5 - culLife ) / 4 );
-		}
-	}
-
 	//	王冠更新
 	void	UI::CrownUpdate( void )
 	{
-
 		Vector3	p_Pos;
 		Vector3	p_Up;
 		Vector3	CrownPos;
@@ -815,7 +772,7 @@
 			p_Pos		= characterManager->GetPos( value );
 			p_Up		= characterManager->GetUp( value );
 			CrownPos	= p_Pos + p_Up * 5.0f;
-			lifeSize	= lifeInfo[value].lifeImage.sh;
+			lifeSize	= 64;
 			WorldToClient( CrownPos, out, matView * matProjection );
 
 			//	描画位置設定
@@ -1008,18 +965,6 @@
 		//	タイマー文字色を白へ
 		timer.sy = 0;
 
-	}
-
-	//	プレイヤー番号描画
-
-
-	//	ライフ描画
-	void	UI::LifeRender( void )
-	{
-		FOR( 0, PLAYER_MAX )
-		{
-			RenderImage( lifeInfo[value].lifeImage, lifeInfo[value].lifeImage.sx, lifeInfo[value].lifeImage.sy, lifeInfo[value].lifeImage.sw, lifeInfo[value].lifeImage.sh, IMAGE_MODE::NORMAL );
-		}
 	}
 
 	//	王冠描画

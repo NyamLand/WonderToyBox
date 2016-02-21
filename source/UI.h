@@ -11,6 +11,7 @@
 #include	"iextreme.h"
 #include	"GameManager.h"
 #include	"AirPlane.h"
+#include	"LifeUI.h"
 #include	"Camera.h"
 #include	<memory>
 
@@ -100,13 +101,6 @@ private:
 		int		one;			//コイン一桁目
 		bool	H_flg;			//百の位レンダー用フラグ
 	};
-	
-	//	ライフ情報
-	struct LifeInfo
-	{
-		int	life;
-		ImageObj	lifeImage;
-	};
 
 	//	王冠情報
 	struct CrownInfo
@@ -167,7 +161,6 @@ private:
 	iex2DObj*	playerNumber;
 	iex2DObj*	startNumber;
 	iex2DObj*	pCoinNumImage;
-	iex2DObj*	life;
 	iex2DObj*	crown;
 
 private:
@@ -203,7 +196,7 @@ private:
 	HurryInfo			hurryInfo;
 
 	//	ライフ情報
-	LifeInfo			lifeInfo[4];
+	LifeUI*			lifeUI;
 
 	//	王冠情報
 	CrownInfo			crownInfo[4];
@@ -261,7 +254,6 @@ public:
 	void	HurryUpInitialize( void );
 	void	LastProductionInitialize( void );
 	void	PlayerNumberInitialize( void );
-	void	LifeInitialize( void );
 	void	CrownInitialize( void );
 	void	CoinNumberInitialize( void );
 	void	FaceImageInitialize( void );
@@ -278,7 +270,6 @@ public:
 	void	HurryUpdate( void );
 	void	LastProduction( void );
 	void	PlayerNumberUpdate( void );
-	void	LifeUpdate( void );
 	void	CrownUpdate( void );
 	void	CoinNumberUpdate( void );
 	void	FaceImageUpdate( int num, int mode );
@@ -293,7 +284,6 @@ public:
 	void	FinishRender( void );
 	void	AlertRender( void );
 	void	LastProductionRender( void );
-	void	LifeRender( void );
 	void	CrownRender( void );
 	void	CoinNumberRender( void );
 	void	EventRender( void );

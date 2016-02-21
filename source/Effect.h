@@ -112,7 +112,6 @@ private:
 	CircleInfo	circleInfo;
 
 	//	¬—
-
 	ConfusionInfo	confusionInfo;
 
 	//	ó‘ÔˆÙí—p

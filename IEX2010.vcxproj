@@ -117,6 +117,7 @@
     <ClCompile Include="source\Event_Coin.cpp" />
     <ClCompile Include="source\Event_Jamming.cpp" />
     <ClCompile Include="source\Event_Mission.cpp" />
+    <ClCompile Include="source\LifeUI.cpp" />
     <ClCompile Include="source\Pirate.cpp" />
     <ClCompile Include="source\PirateBullet01.cpp" />
     <ClCompile Include="source\PirateBullet02.cpp" />
@@ -191,6 +192,7 @@
     <ClInclude Include="source\Event_Coin.h" />
     <ClInclude Include="source\Event_Jamming.h" />
     <ClInclude Include="source\Event_Mission.h" />
+    <ClInclude Include="source\LifeUI.h" />
     <ClInclude Include="source\Pirate.h" />
     <ClInclude Include="source\PirateBullet01.h" />
     <ClInclude Include="source\PirateBullet02.h" />
