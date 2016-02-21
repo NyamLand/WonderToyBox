@@ -12,21 +12,12 @@
 #include	"GameManager.h"
 #include	"AirPlane.h"
 #include	"LifeUI.h"
+#include	"Crown.h"
 #include	"Camera.h"
 #include	<memory>
 
 namespace
-{
-	namespace UI_MODE
-	{
-		enum
-		{
-			TITLE,
-			MAIN,
-			RESULT,
-		};
-	}
-	
+{	
 	namespace ALERT_TYPE_INFO
 	{
 		enum
@@ -161,7 +152,7 @@ private:
 	iex2DObj*	playerNumber;
 	iex2DObj*	startNumber;
 	iex2DObj*	pCoinNumImage;
-	iex2DObj*	crown;
+	//iex2DObj*	crown;
 
 private:
 	//	定数
@@ -189,17 +180,14 @@ private:
 	//	警告パラメータ
 	AlertInfo			alertInfo;
 
-	//	タイトルパラメータ
-	TitleInfo			titleInfo;
-
 	//	HurryUpパラメータ
 	HurryInfo			hurryInfo;
 
-	//	ライフ情報
+	//	ライフ
 	LifeUI*			lifeUI;
 
-	//	王冠情報
-	CrownInfo			crownInfo[4];
+	//	王冠
+	Crown*		crown;
 
 	//	コイン枚数情報
 	NumberImageInfo	coinNumInfo[PLAYER_MAX];
@@ -222,28 +210,15 @@ private:
 	int		scene;
 	
 public:
-	//------------------------------共通処理------------------------------------//
 	//	初期化・解放
 	UI( void );
 	~UI( void );
 	bool	Initialize( void );
 	void	Release( void );
 
-	//	各シーン初期化
-	void	MainInitialize( void );
-	
-	//	各シーン解放
-	void	MainRelease( void );
-
 	//	更新・描画
 	void	Update( const int& mode );
 	void	Render( const int& mode );
-
-	//	各シーン更新
-	void	MainUpdate( int mode );
-
-	//	各シーン描画
-	void	MainRender( int mode );
 
 	//-------------------------------メイン処理-------------------------------------//
 	//	メイン動作初期化
@@ -254,7 +229,6 @@ public:
 	void	HurryUpInitialize( void );
 	void	LastProductionInitialize( void );
 	void	PlayerNumberInitialize( void );
-	void	CrownInitialize( void );
 	void	CoinNumberInitialize( void );
 	void	FaceImageInitialize( void );
 	void	RoundInitialize( void );
@@ -270,7 +244,6 @@ public:
 	void	HurryUpdate( void );
 	void	LastProduction( void );
 	void	PlayerNumberUpdate( void );
-	void	CrownUpdate( void );
 	void	CoinNumberUpdate( void );
 	void	FaceImageUpdate( int num, int mode );
 	void	CoinImageInfoUpdate( NumberImageInfo& numImageinfo, NumberInfo& numinfo, const int& num );
@@ -284,7 +257,6 @@ public:
 	void	FinishRender( void );
 	void	AlertRender( void );
 	void	LastProductionRender( void );
-	void	CrownRender( void );
 	void	CoinNumberRender( void );
 	void	EventRender( void );
 	void	ParticleRender( int value );

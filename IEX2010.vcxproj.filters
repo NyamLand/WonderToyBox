@@ -196,6 +196,9 @@
     <Filter Include="ソース ファイル\UI\LifeUI">
       <UniqueIdentifier>{d255de10-83d6-40c9-88af-c71fcff8824a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\UI\Crown">
+      <UniqueIdentifier>{7f6514e5-9755-4239-8978-1c7b24df1635}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -414,6 +417,9 @@
     <ClCompile Include="source\LifeUI.cpp">
       <Filter>ソース ファイル\UI\LifeUI</Filter>
     </ClCompile>
+    <ClCompile Include="source\Crown.cpp">
+      <Filter>ソース ファイル\UI\Crown</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -589,6 +595,9 @@
     </ClInclude>
     <ClInclude Include="source\LifeUI.h">
       <Filter>ソース ファイル\UI\LifeUI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Crown.h">
+      <Filter>ソース ファイル\UI\Crown</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

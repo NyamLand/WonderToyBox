@@ -77,71 +77,43 @@
 	//	初期化(現在のシーン)
 	bool	UI::Initialize( void )
 	{
-		MainInitialize();
-		return	true;
-	}
-
-	//	解放
-	void	UI::Release( void )
-	{
-		MainRelease();
-	}
-
-//------------------------------------------------------------------------------
-//	更新・描画
-//------------------------------------------------------------------------------
-
-	//	更新(現在のシーン)
-	void	UI::Update( const int& mode )
-	{
-		MainUpdate( mode );
-	}
-
-	//	描画(現在のシーン)
-	void	UI::Render( const int& mode )
-	{
-		MainRender( mode );
-	}
-	
-//------------------------------------------------------------------------------
-//	各シーン初期化
-//------------------------------------------------------------------------------
-
-	//	メイン用初期化
-	void	UI::MainInitialize( void )
-	{
-		timer.obj			= new iex2DObj( "DATA/UI/timer.png" );
-		face				= new iex2DObj( "DATA/UI/chara_emotion.png" );
-		finishImage.obj		= new iex2DObj( "DATA/UI/bfUI.png" );
-		countImage.obj		= new iex2DObj( "DATA/UI/bfUI_02.png" );
-		alertImage.obj		= new iex2DObj( "DATA/UI/alert.png" );
-		alert_coinImage.obj = new iex2DObj( "DATA/UI/coin_alert.png" );
-		playerNumber		= new iex2DObj( "DATA/UI/number.png" );
-		crown				= new iex2DObj( "DATA/UI/1stCrown.png" );
-		pCoinNumImage		= new iex2DObj( "DATA/UI/number.png" );
-		roundImage.obj		= new iex2DObj( "DATA/UI/roundText.png" );
-		startNumber			= new iex2DObj( "DATA/UI/DonketuUI.png" );
+		timer.obj = new iex2DObj("DATA/UI/timer.png");
+		face = new iex2DObj("DATA/UI/chara_emotion.png");
+		finishImage.obj = new iex2DObj("DATA/UI/bfUI.png");
+		countImage.obj = new iex2DObj("DATA/UI/bfUI_02.png");
+		alertImage.obj = new iex2DObj("DATA/UI/alert.png");
+		alert_coinImage.obj = new iex2DObj("DATA/UI/coin_alert.png");
+		playerNumber = new iex2DObj("DATA/UI/number.png");
+		pCoinNumImage = new iex2DObj("DATA/UI/number.png");
+		roundImage.obj = new iex2DObj("DATA/UI/roundText.png");
+		startNumber = new iex2DObj("DATA/UI/DonketuUI.png");
 
 		//	パーティクル用バッファ
-		PAR_POS			= Vector3( 100.0f, 100.0f, 100.0f );
-		target_par		= std::make_unique<iex2DObj>( iexSystem::ScreenWidth, iexSystem::ScreenHeight, IEX2D_RENDERTARGET );
+		PAR_POS = Vector3(100.0f, 100.0f, 100.0f);
+		target_par = std::make_unique<iex2DObj>(iexSystem::ScreenWidth, iexSystem::ScreenHeight, IEX2D_RENDERTARGET);
 		particle_camera = std::make_unique<Camera>();
-		particle_camera->SetPos( Vector3( 0.0f, 10.0f, -10.0f ) + PAR_POS);
-		
+		particle_camera->SetPos(Vector3(0.0f, 10.0f, -10.0f) + PAR_POS);
+
 		//	共通変数初期化 
 		changeflag = false;
-		FOR( 0, PLAYER_MAX )
+		FOR(0, PLAYER_MAX)
 		{
-			faceImage[value].obj	= face;
-			charatype[value]		= gameManager->GetCharacterType( value );
-			startNum[value].obj		= startNumber;
-			coin_flg[value]			= false;
-			coin_timer[value]		= 0;
+			faceImage[value].obj = face;
+			charatype[value] = gameManager->GetCharacterType(value);
+			startNum[value].obj = startNumber;
+			coin_flg[value] = false;
+			coin_timer[value] = 0;
 		}
 
-		//	各UI情報初期化
+		//	ライフUI初期化
 		lifeUI = new LifeUI();
 		lifeUI->Initialize();
+
+		//	王冠初期化
+		crown = new Crown();
+		crown->Initialize();
+
+		//	各UI情報初期化
 		CoinNumberInitialize();
 		FaceImageInitialize();
 		TimerInitialize();
@@ -150,18 +122,15 @@
 		AlertInitialize();
 		LastProductionInitialize();
 		PlayerNumberInitialize();
-		CrownInitialize();
 		RoundInitialize();
 		EventInitialize();
+		return	true;
 	}
 
-//------------------------------------------------------------------------------
-//	各シーン解放
-//------------------------------------------------------------------------------
-
-	//	メイン用解放
-	void	UI::MainRelease( void )
+	//	解放
+	void	UI::Release( void )
 	{
+		SafeDelete( crown );
 		SafeDelete( lifeUI );
 		SafeDelete( timer.obj );
 		SafeDelete( face );
@@ -177,15 +146,15 @@
 	}
 
 //------------------------------------------------------------------------------
-//	各シーン更新
+//	更新・描画
 //------------------------------------------------------------------------------
 
-	//	メイン更新
-	void	UI::MainUpdate( int mode )
+	//	更新(現在のシーン)
+	void	UI::Update( const int& mode )
 	{
 		PlayerNumberUpdate();
 		lifeUI->Update();
-		CrownUpdate();
+		crown->Update();
 		ParticleUpdate();
 
 		switch ( mode )
@@ -201,7 +170,7 @@
 			AlertUpdate();
 			EventUpdate();
 			break;
-			
+
 		case GAME_MODE::CLIMAX:
 			TimerUpdate();
 			CoinNumberUpdate();
@@ -216,18 +185,14 @@
 		}
 	}
 
-//------------------------------------------------------------------------------
-//	各シーン描画
-//------------------------------------------------------------------------------
-
-	//	メイン描画
-	void	UI::MainRender( int mode )
+	//	描画(現在のシーン)
+	void	UI::Render( const int& mode )
 	{
 		lifeUI->Render();
-		CrownRender();
+		crown->Render();
 		RoundRender();
 
-		switch ( mode )
+		switch (mode)
 		{
 		case GAME_MODE::GAMESTART:
 			StartPlayerNumRender();
@@ -257,15 +222,8 @@
 			break;
 		}
 
-		if ( alertInfo.flag )	AlertRender();
-	
-
+		if ( alertInfo.flag )		AlertRender();
 	}
-
-//------------------------------------------------------------------------------
-//	タイトル動作初期化
-//------------------------------------------------------------------------------
-
 	
 //------------------------------------------------------------------------------
 //	メイン動作初期化
@@ -339,8 +297,6 @@
 			timerInfo.second[value] = 0;
 		}
 	}
-
-	//	ニュースバー初期化
 
 	//	カウントダウン・スタート・終了演出
 	void	UI::StartAndTimeUpInitialize( void )
@@ -434,17 +390,17 @@
 		lasttimerInfo.alpha = 1.0f;
 	}
 
-	//	1位王冠画像初期化
-	void	UI::CrownInitialize( void )
-	{
-		FOR( 0, PLAYER_MAX )
-		{
-			crownInfo[value].state				= false;
-			crownInfo[value].crownImage.obj		= crown;
-			ImageInitialize( crownInfo[value].crownImage, 0, 10, 80, 80, 0, 0, 512, 512 );
-			crownInfo[value].crownImage.color	= Vector3( 1.0f, 0.5f, 0.5f );
-		}
-	}
+	////	1位王冠画像初期化
+	//void	UI::CrownInitialize( void )
+	//{
+	//	FOR( 0, PLAYER_MAX )
+	//	{
+	//		crownInfo[value].state				= false;
+	//		crownInfo[value].crownImage.obj		= crown;
+	//		ImageInitialize( crownInfo[value].crownImage, 0, 10, 80, 80, 0, 0, 512, 512 );
+	//		crownInfo[value].crownImage.color	= Vector3( 1.0f, 0.5f, 0.5f );
+	//	}
+	//}
 
 	//	ラウンド初期化
 	void	UI::RoundInitialize( void )
@@ -502,6 +458,7 @@
 		}
 	}
 
+	//	顔画像構造体更新
 	void	UI::FaceImageUpdate( int num, int mode )
 	{
 		faceImage[num].alpha	= 0.5f;
@@ -638,9 +595,6 @@
 		if ( countInfo.waitTimer <= 0 )	changeflag = true;
 	}
 
-	//	どんけつ決定演出
-
-
 	//	警告演出
 	void	UI::AlertUpdate( void )
 	{
@@ -744,41 +698,6 @@
 				rank = characterManager->GetRank( i ) - 1;
 				pNumImage[i].sx = rank * 128;
 			}
-		}
-	}
-
-	//	王冠更新
-	void	UI::CrownUpdate( void )
-	{
-		Vector3	p_Pos;
-		Vector3	p_Up;
-		Vector3	CrownPos;
-		Vector3	out;
-		int		lifeSize;
-
-		FOR( 0, PLAYER_MAX )
-		{
-			//	1位以外は飛ばす
-			if ( characterManager->GetRank(value) > 1 )
-			{
-				crownInfo[value].state = false;
-				continue;
-			}
-
-			//	表示状態へ
-			crownInfo[value].state = true;
-
-			//	表示座標算出
-			p_Pos		= characterManager->GetPos( value );
-			p_Up		= characterManager->GetUp( value );
-			CrownPos	= p_Pos + p_Up * 5.0f;
-			lifeSize	= 64;
-			WorldToClient( CrownPos, out, matView * matProjection );
-
-			//	描画位置設定
-			crownInfo[value].crownImage.x = ( int )out.x;
-			crownInfo[value].crownImage.y = ( int )out.y - lifeSize;
-
 		}
 	}
 
@@ -965,18 +884,6 @@
 		//	タイマー文字色を白へ
 		timer.sy = 0;
 
-	}
-
-	//	王冠描画
-	void	UI::CrownRender( void )
-	{
-		FOR( 0, PLAYER_MAX )
-		{
-			if ( crownInfo[value].state )
-			{
-				RenderImage( crownInfo[value].crownImage, crownInfo[value].crownImage.sx, crownInfo[value].crownImage.sy, crownInfo[value].crownImage.sw, crownInfo[value].crownImage.sh, IMAGE_MODE::ADOPTPARAM );
-			}
-		}
 	}
 
 	//	ラウンド描画
