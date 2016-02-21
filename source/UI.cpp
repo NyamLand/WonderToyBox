@@ -233,10 +233,10 @@
 	void	UI::CoinNumberInitialize( void )
 	{
 		//	コイン枚数位置（横）
-		coinNumInfo[0].pos.x = static_cast<int>( iexSystem::ScreenWidth * 0.1 );
-		coinNumInfo[1].pos.x = static_cast<int>( iexSystem::ScreenWidth * 0.3 );
-		coinNumInfo[2].pos.x = static_cast<int>( iexSystem::ScreenWidth * 0.7 );
-		coinNumInfo[3].pos.x = static_cast<int>( iexSystem::ScreenWidth * 0.9 );
+		coinNumInfo[0].pos.x = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
+		coinNumInfo[1].pos.x = static_cast<int>( iexSystem::ScreenWidth * 0.3f );
+		coinNumInfo[2].pos.x = static_cast<int>( iexSystem::ScreenWidth * 0.7f );
+		coinNumInfo[3].pos.x = static_cast<int>( iexSystem::ScreenWidth * 0.9f );
 
 		//	表示色
 		coinColor[0] = characterManager->GetDamageColor(0);
@@ -264,9 +264,7 @@
 			//	色設定	
 			coinNumInfo[value].one.color		= coinColor[value];
 			coinNumInfo[value].ten.color		= coinColor[value];
-			coinNumInfo[value].hundred.color	= coinColor[value];
-
-		
+			coinNumInfo[value].hundred.color	= coinColor[value];	
 		}
 	}
 
@@ -358,15 +356,6 @@
 		alert_coinImage.renderflag	= true;
 	}
 
-	//	HurryUp演出初期化
-	void	UI::HurryUpInitialize( void )
-	{
-		hurryInfo.alpha = 0.0f;
-		hurryInfo.flag	= false;
-		hurryInfo.param = 0.0f;
-		hurryInfo.timer = 0;
-	}
-
 	//	プレイヤー番号画像初期化
 	void	UI::PlayerNumberInitialize( void )
 	{
@@ -389,18 +378,6 @@
 		lasttimerInfo.t		= 0.0f;
 		lasttimerInfo.alpha = 1.0f;
 	}
-
-	////	1位王冠画像初期化
-	//void	UI::CrownInitialize( void )
-	//{
-	//	FOR( 0, PLAYER_MAX )
-	//	{
-	//		crownInfo[value].state				= false;
-	//		crownInfo[value].crownImage.obj		= crown;
-	//		ImageInitialize( crownInfo[value].crownImage, 0, 10, 80, 80, 0, 0, 512, 512 );
-	//		crownInfo[value].crownImage.color	= Vector3( 1.0f, 0.5f, 0.5f );
-	//	}
-	//}
 
 	//	ラウンド初期化
 	void	UI::RoundInitialize( void )
@@ -634,16 +611,6 @@
 		eventInfo.texture.sy	= eventInfo.mode * 128;
 	}
 
-	//	HurryUp演出
-	void	UI::HurryUpdate( void )
-	{
-		hurryInfo.param += D3DX_PI / 30.0f;
-		hurryInfo.alpha = 0.1f + 0.1f * sinf( hurryInfo.param );
-
-		hurryInfo.timer++;
-		if ( hurryInfo.timer % 15 == 0 )	alertImage.renderflag = !alertImage.renderflag;
-	}
-
 	//	時間警告演出
 	void	UI::LastProduction( void )
 	{
@@ -804,8 +771,7 @@
 
 		target_par->Render( ( int )( coinNumInfo[value].pos.x - coinNumInfo[value].scale * 1.5f ), ( int )( coinNumInfo[value].pos.y - coinNumInfo[value].scale ),
 			coinNumInfo[value].scale * 3, coinNumInfo[value].scale * 2,
-			0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, shader2D, "add" );
-	
+			0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, shader2D, "add" );	
 	}
 
 	//	タイマー描画
@@ -912,6 +878,7 @@
 		particle->Render();
 
 	}
+
 //------------------------------------------------------------------------------
 //	動作関数
 //------------------------------------------------------------------------------
@@ -1011,12 +978,6 @@
 	{
 		alertInfo.flag = flag;
 		alertInfo.type = type;
-	}
-
-	//	HurryUpフラグ設定
-	void	UI::SetHurryFlag( bool flag )
-	{
-		hurryInfo.flag = flag;
 	}
 
 	//	モード変更フラグ取得

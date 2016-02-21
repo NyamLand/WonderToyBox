@@ -199,6 +199,18 @@
     <Filter Include="ソース ファイル\UI\Crown">
       <UniqueIdentifier>{7f6514e5-9755-4239-8978-1c7b24df1635}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\UI\CoinNumUI">
+      <UniqueIdentifier>{e2a1cb7a-680e-4d8c-a2e2-57f6b5dcce40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\NumberUI">
+      <UniqueIdentifier>{60869e4d-a5a5-4e86-a467-7314b6904903}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\FaceUI">
+      <UniqueIdentifier>{e7c6aeb2-88be-4d10-bef9-83286fefe4b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\CoinUIEffect">
+      <UniqueIdentifier>{55e85229-d2c9-4110-948d-247595e448ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -420,6 +432,18 @@
     <ClCompile Include="source\Crown.cpp">
       <Filter>ソース ファイル\UI\Crown</Filter>
     </ClCompile>
+    <ClCompile Include="source\CoinNumUI.cpp">
+      <Filter>ソース ファイル\UI\CoinNumUI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\NumberUI.cpp">
+      <Filter>ソース ファイル\UI\NumberUI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\FaceUI.cpp">
+      <Filter>ソース ファイル\UI\FaceUI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\CoinUIEffect.cpp">
+      <Filter>ソース ファイル\UI\CoinUIEffect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -598,6 +622,18 @@
     </ClInclude>
     <ClInclude Include="source\Crown.h">
       <Filter>ソース ファイル\UI\Crown</Filter>
+    </ClInclude>
+    <ClInclude Include="source\CoinNumUI.h">
+      <Filter>ソース ファイル\UI\CoinNumUI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\NumberUI.h">
+      <Filter>ソース ファイル\UI\NumberUI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\FaceUI.h">
+      <Filter>ソース ファイル\UI\FaceUI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\CoinUIEffect.h">
+      <Filter>ソース ファイル\UI\CoinUIEffect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

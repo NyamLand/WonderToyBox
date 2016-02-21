@@ -1,5 +1,5 @@
 
-#ifndef __UI_H__
+#ifndef		__UI_H__
 #define	__UI_H__
 
 //*********************************************************************************
@@ -14,6 +14,8 @@
 #include	"LifeUI.h"
 #include	"Crown.h"
 #include	"Camera.h"
+#include	"CoinUIEffect.h"
+#include	"CoinNumUI.h"
 #include	<memory>
 
 namespace
@@ -41,13 +43,13 @@ namespace
 			J_GETAWAY
 		};
 	}
-
 }
 
 //	UIクラス
 class UI
 {
 private:
+	//	警告
 	struct AlertInfo
 	{
 		bool	flag;
@@ -55,22 +57,6 @@ private:
 		float	alpha;
 		float	param;
 		int		type;
-	};
-
-	struct TitleInfo
-	{
-		ImageObj	textImage;
-		int		step;
-		AirPlane*	airPlane;
-	};
-
-
-	struct HurryInfo
-	{
-		bool	flag;
-		int		timer;
-		float	alpha;
-		float	param;
 	};
 
 	//	コイン枚数構造体
@@ -87,17 +73,10 @@ private:
 	//	数字情報
 	struct NumberInfo
 	{
-		int		hundred;		//コイン三桁目
+		int		hundred;	//コイン三桁目
 		int		ten;			//コイン二桁目
 		int		one;			//コイン一桁目
-		bool	H_flg;			//百の位レンダー用フラグ
-	};
-
-	//	王冠情報
-	struct CrownInfo
-	{
-		bool	state;
-		ImageObj	crownImage;
+		bool		H_flg;		//百の位レンダー用フラグ
 	};
 
 	//　イベント情報
@@ -152,7 +131,6 @@ private:
 	iex2DObj*	playerNumber;
 	iex2DObj*	startNumber;
 	iex2DObj*	pCoinNumImage;
-	//iex2DObj*	crown;
 
 private:
 	//	定数
@@ -179,9 +157,6 @@ private:
 	
 	//	警告パラメータ
 	AlertInfo			alertInfo;
-
-	//	HurryUpパラメータ
-	HurryInfo			hurryInfo;
 
 	//	ライフ
 	LifeUI*			lifeUI;
@@ -226,7 +201,6 @@ public:
 	void	StartAndTimeUpInitialize( void );
 	void	StartPlayerNumInitialize( void );
 	void	AlertInitialize( void );
-	void	HurryUpInitialize( void );
 	void	LastProductionInitialize( void );
 	void	PlayerNumberInitialize( void );
 	void	CoinNumberInitialize( void );
@@ -241,7 +215,6 @@ public:
 	void	StartPlayerNumUpdate( void );
 	void	FinishUpdate( void );
 	void	AlertUpdate( void );
-	void	HurryUpdate( void );
 	void	LastProduction( void );
 	void	PlayerNumberUpdate( void );
 	void	CoinNumberUpdate( void );
@@ -271,7 +244,6 @@ public:
 	//	情報設定
 	void	SetChangeFlag( const bool& flag );
 	void	SetAlertInfo( bool flag, int type );
-	void	SetHurryFlag( bool flag );
 	void	SetCoinImageInfo( NumberImageInfo& numImageinfo, NumberInfo& numinfo, const int& num );
 	void	SetNumberInfo( NumberInfo& nomber, int coin );
 	void	SetEventInfoMode( int mode );
