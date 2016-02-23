@@ -117,6 +117,10 @@
 		crown = new Crown();
 		crown->Initialize();
 
+		//	プレイヤー番号UI初期化
+		playerNumUI = new PlayerNumUI();
+		playerNumUI->Initialize();
+
 		//	各UI情報初期化
 		CoinNumberInitialize();
 		FaceImageInitialize();
@@ -134,6 +138,7 @@
 	//	解放
 	void	UI::Release( void )
 	{
+		SafeDelete( playerNumUI );
 		SafeDelete( fallLife );
 		SafeDelete( crown );
 		SafeDelete( lifeUI );
@@ -158,6 +163,7 @@
 	void	UI::Update( const int& mode )
 	{
 		PlayerNumberUpdate();
+		playerNumUI->Update();
 		lifeUI->Update();
 		fallLife->Update();
 		crown->Update();
@@ -197,6 +203,7 @@
 		lifeUI->Render();
 		fallLife->Render();
 		crown->Render();
+		playerNumUI->Render();
 		RoundRender();
 
 		switch (mode)

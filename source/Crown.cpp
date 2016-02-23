@@ -15,7 +15,7 @@
 //	グローバル
 //------------------------------------------------------------------------------------
 
-#define	CROWN_DIST	64
+#define	CROWN_DIST	70
 
 //------------------------------------------------------------------------------------
 //	初期化・解放
@@ -46,7 +46,7 @@
 		//	構造体初期化
 		FOR( 0, PLAYER_MAX )
 		{
-			ImageInitialize( crownImage[value], 0, 0, 80, 80, 0, 0, 512, 512 );
+			ImageInitialize( crownImage[value], 0, 0, 100, 100, 0, 0, 512, 512 );
 			crownImage[value].obj = orgCrown;
 			if ( crownImage[value].obj == nullptr )	return	false;
 		}

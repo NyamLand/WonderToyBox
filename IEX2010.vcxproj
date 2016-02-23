@@ -129,6 +129,7 @@
     <ClCompile Include="source\PirateBullet02.cpp" />
     <ClCompile Include="source\PirateBullet03.cpp" />
     <ClCompile Include="source\Pirate_CPU.cpp" />
+    <ClCompile Include="source\PlayerNumUI.cpp" />
     <ClCompile Include="source\SquirrelBullet01.cpp" />
     <ClCompile Include="source\Stage.cpp" />
     <ClCompile Include="source\StageManager.cpp" />
@@ -210,6 +211,7 @@
     <ClInclude Include="source\PirateBullet02.h" />
     <ClInclude Include="source\PirateBullet03.h" />
     <ClInclude Include="source\Pirate_CPU.h" />
+    <ClInclude Include="source\PlayerNumUI.h" />
     <ClInclude Include="source\SquirrelBullet01.h" />
     <ClInclude Include="source\Stage.h" />
     <ClInclude Include="source\StageManager.h" />

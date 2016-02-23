@@ -17,6 +17,7 @@
 #include	"CoinUIEffect.h"
 #include	"CoinNumUI.h"
 #include	"FallLife.h"
+#include	"PlayerNumUI.h"
 #include	<memory>
 
 namespace
@@ -167,6 +168,9 @@ private:
 
 	//	王冠
 	Crown*		crown;
+
+	//	プレイヤー番号
+	PlayerNumUI*	playerNumUI;
 
 	//	コイン枚数情報
 	NumberImageInfo	coinNumInfo[PLAYER_MAX];

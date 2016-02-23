@@ -214,6 +214,9 @@
     <Filter Include="ソース ファイル\UI\FallLife">
       <UniqueIdentifier>{89717bb6-2b1d-4c81-8a4d-08a6511bfc17}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\UI\PlayerNumUI">
+      <UniqueIdentifier>{fe64d20d-b900-49c2-b92a-7f75e6c9418a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -450,6 +453,9 @@
     <ClCompile Include="source\FallLife.cpp">
       <Filter>ソース ファイル\UI\FallLife</Filter>
     </ClCompile>
+    <ClCompile Include="source\PlayerNumUI.cpp">
+      <Filter>ソース ファイル\UI\PlayerNumUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -643,6 +649,9 @@
     </ClInclude>
     <ClInclude Include="source\FallLife.h">
       <Filter>ソース ファイル\UI\FallLife</Filter>
+    </ClInclude>
+    <ClInclude Include="source\PlayerNumUI.h">
+      <Filter>ソース ファイル\UI\PlayerNumUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
