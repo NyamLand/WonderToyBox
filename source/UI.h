@@ -16,6 +16,7 @@
 #include	"Camera.h"
 #include	"CoinUIEffect.h"
 #include	"CoinNumUI.h"
+#include	"FallLife.h"
 #include	<memory>
 
 namespace
@@ -161,6 +162,9 @@ private:
 	//	ライフ
 	LifeUI*			lifeUI;
 
+	//	落下ライフ
+	FallLife*		fallLife;
+
 	//	王冠
 	Crown*		crown;
 
@@ -222,6 +226,7 @@ public:
 	void	CoinImageInfoUpdate( NumberImageInfo& numImageinfo, NumberInfo& numinfo, const int& num );
 	void	EventUpdate( void );
 	void	ParticleUpdate( void );
+	void	FallLifeUpdate( void );
 
 	//	メイン描画
 	void	TimerRender( void );
@@ -247,6 +252,7 @@ public:
 	void	SetCoinImageInfo( NumberImageInfo& numImageinfo, NumberInfo& numinfo, const int& num );
 	void	SetNumberInfo( NumberInfo& nomber, int coin );
 	void	SetEventInfoMode( int mode );
+	void	SetDamageFlag( int playerNum, bool flag, int culLife );
 
 	//	情報取得
 	bool	GetChangeFlag( void );

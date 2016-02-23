@@ -121,6 +121,7 @@
     <ClCompile Include="source\Event_Jamming.cpp" />
     <ClCompile Include="source\Event_Mission.cpp" />
     <ClCompile Include="source\FaceUI.cpp" />
+    <ClCompile Include="source\FallLife.cpp" />
     <ClCompile Include="source\LifeUI.cpp" />
     <ClCompile Include="source\NumberUI.cpp" />
     <ClCompile Include="source\Pirate.cpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="source\Event_Jamming.h" />
     <ClInclude Include="source\Event_Mission.h" />
     <ClInclude Include="source\FaceUI.h" />
+    <ClInclude Include="source\FallLife.h" />
     <ClInclude Include="source\LifeUI.h" />
     <ClInclude Include="source\NumberUI.h" />
     <ClInclude Include="source\Pirate.h" />

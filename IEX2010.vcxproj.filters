@@ -211,6 +211,9 @@
     <Filter Include="ソース ファイル\UI\CoinUIEffect">
       <UniqueIdentifier>{55e85229-d2c9-4110-948d-247595e448ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\UI\FallLife">
+      <UniqueIdentifier>{89717bb6-2b1d-4c81-8a4d-08a6511bfc17}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -444,6 +447,9 @@
     <ClCompile Include="source\CoinUIEffect.cpp">
       <Filter>ソース ファイル\UI\CoinUIEffect</Filter>
     </ClCompile>
+    <ClCompile Include="source\FallLife.cpp">
+      <Filter>ソース ファイル\UI\FallLife</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -634,6 +640,9 @@
     </ClInclude>
     <ClInclude Include="source\CoinUIEffect.h">
       <Filter>ソース ファイル\UI\CoinUIEffect</Filter>
+    </ClInclude>
+    <ClInclude Include="source\FallLife.h">
+      <Filter>ソース ファイル\UI\FallLife</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -28,4 +28,8 @@ public:
 	//	XVE•`‰æ
 	void	Update( void );
 	void	Render( void );
+
+	//	î•ñæ“¾
+	int	GetPosX( int playerNum )const;
+	int	GetPosY( int playerNum )const;
 };

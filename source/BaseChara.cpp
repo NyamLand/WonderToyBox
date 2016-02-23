@@ -13,7 +13,7 @@
 #include	"CoinManager.h"
 #include	"ItemManager.h"
 #include	"Sound.h"
-
+#include	"UI.h"
 #include	"BaseChara.h"
 #include	"CharacterManager.h"
 
@@ -965,12 +965,18 @@ namespace
 	//	ライフ減算
 	void	BaseChara::SubLife( void )
 	{
+		//	演出
+		ui->SetDamageFlag( playerNum, true, life );
+
+		//	ライフ減算
 		life--;
 		
+		//	ライフが０以下になると死亡モードに移行
 		if ( life <= 0 )
 		{
 			life = 0;
-			(isPlayer) ?
+			
+			( isPlayer ) ?
 				SetMode(MODE_STATE::DEATH) :
 				aiInfo.mode = AI_MODE_STATE::DEATH;
 		}

@@ -109,6 +109,10 @@
 		lifeUI = new LifeUI();
 		lifeUI->Initialize();
 
+		//	ライフ落下演出
+		fallLife = new FallLife();
+		fallLife->Initialize();
+
 		//	王冠初期化
 		crown = new Crown();
 		crown->Initialize();
@@ -130,6 +134,7 @@
 	//	解放
 	void	UI::Release( void )
 	{
+		SafeDelete( fallLife );
 		SafeDelete( crown );
 		SafeDelete( lifeUI );
 		SafeDelete( timer.obj );
@@ -154,6 +159,7 @@
 	{
 		PlayerNumberUpdate();
 		lifeUI->Update();
+		fallLife->Update();
 		crown->Update();
 		ParticleUpdate();
 
@@ -189,6 +195,7 @@
 	void	UI::Render( const int& mode )
 	{
 		lifeUI->Render();
+		fallLife->Render();
 		crown->Render();
 		RoundRender();
 
@@ -430,8 +437,7 @@
 		FOR( 0, PLAYER_MAX ){
 			CoinCounter( gameManager->GetCoinNum(value),value );
 			CoinImageInfoUpdate( coinNumInfo[value], numInfo[value], coinNum[value] );
-			FaceImageUpdate( value, gameManager->GetCharacterType( value ) );
-			
+			FaceImageUpdate( value, gameManager->GetCharacterType( value ) );		
 		}
 	}
 
@@ -669,7 +675,7 @@
 	}
 
 	//　イベントのUI（飛行機挙動）
-	void	UI::EventUpdate()
+	void	UI::EventUpdate( void )
 	{
 		bool isEnd = !eventManager->GetEventFlag();
 		if ( isEnd )	return;
@@ -1058,4 +1064,12 @@
 	void	UI::SetEventInfoMode( int mode )
 	{
 		this->eventInfo.mode = mode;
+	}
+
+	//	ダメージフラグ設定　FallLifeクラス用
+	void	UI::SetDamageFlag( int playerNum, bool flag, int culLife )
+	{
+		lifeUI->Update();
+		fallLife->SetPos( playerNum, lifeUI->GetPosX( playerNum ), lifeUI->GetPosY( playerNum ) );
+		fallLife->SetDamageFlag( playerNum, flag, culLife );
 	}

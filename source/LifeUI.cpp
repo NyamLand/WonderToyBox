@@ -110,3 +110,19 @@
 				IMAGE_MODE::NORMAL );
 		}
 	}
+
+//----------------------------------------------------------------------------
+//	î•ñİ’è
+//----------------------------------------------------------------------------
+
+	//	XÀ•Wæ“¾
+	int	LifeUI::GetPosX( int playerNum )const
+	{
+		return	lifeImage[playerNum].x;
+	}
+
+	//	YÀ•Wæ“¾
+	int	LifeUI::GetPosY( int playerNum )const
+	{
+		return	lifeImage[playerNum].y;
+	}
