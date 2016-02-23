@@ -34,21 +34,6 @@ namespace
 			TIMEUP,
 		};
 	}
-	
-	namespace GameInfo
-	{
-		//	ラストボーナス予想テキスト
-		namespace
-		{
-			const	 LPSTR	NewsText[] =
-			{
-				"ラストボーナス１になりそうです",
-				"ラストボーナス２になりそうです",
-				"ラストボーナス３になりそうです",
-				"ラストボーナス４になりそうです",
-			};
-		}
-	}
 
 	namespace Round
 	{
@@ -82,29 +67,30 @@ private:
 	bool	itemflg;
 
 	//	ゲーム設定用
-	int		startLife[4];
+	int		startLife[PLAYER_MAX];
 	int		playerNum;
-	int		charatype[4];
+	int		charatype[PLAYER_MAX];
 	int		stageType;
 
 	//	ゲーム中情報
 	int		timer;
 	int		timelimit;		//	制限時間
 	int		mode;
-	int		coinNum[4];
+	int		coinNum[PLAYER_MAX];
 	bool	donketsuBoostState;
 	int		worst;
 	int		lastBonus;
 	bool	newsflag;    
 	int    timeStop;			//画面一時停止用
 	int	round;				//	ラウンド
-	int	totalCoin[3][4];	//	ラウンドごとのコイン合計値
+	int	totalCoin[Round::END][PLAYER_MAX];	//	ラウンドごとのコイン合計値
 	bool	coinCollision;	//	trueでON,falseでOFF
 	int		eventmode;
 	bool	absCoinEventFlag;	//　絶対にコインイベントを発生させるか
+	Vector3	playerColor[PLAYER_MAX];
 	
 public:	
-		Vector3	InitPos[4];
+		Vector3	InitPos[PLAYER_MAX];
 public:
 	
 private:
@@ -131,6 +117,7 @@ public:
 	void	LoadTextData( void );
 
 	//	情報取得
+	Vector3	GetPlayerColor( int playerNum )const;
 	int		GetCharacterType( int num )const;
 	int		GetPlayerNum( void )const;
 	int		GetStageType( void )const;

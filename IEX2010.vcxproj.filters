@@ -102,9 +102,6 @@
     <Filter Include="ソース ファイル\Scene\sceneMenu">
       <UniqueIdentifier>{6ceac51d-2266-4cc7-af1b-738f2d2e6708}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\Script">
-      <UniqueIdentifier>{6dfcd678-2542-4f1b-be0c-8df2244cbbb4}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Character\Scavenger">
       <UniqueIdentifier>{f6a394bf-ca63-4e47-b44b-eae8ce1167d9}</UniqueIdentifier>
     </Filter>
@@ -354,9 +351,6 @@
     <ClCompile Include="source\sceneMenu.cpp">
       <Filter>ソース ファイル\Scene\sceneMenu</Filter>
     </ClCompile>
-    <ClCompile Include="source\Script.cpp">
-      <Filter>ソース ファイル\Script</Filter>
-    </ClCompile>
     <ClCompile Include="source\Scavenger.cpp">
       <Filter>ソース ファイル\Character\Scavenger</Filter>
     </ClCompile>
@@ -547,9 +541,6 @@
     </ClInclude>
     <ClInclude Include="source\sceneMenu.h">
       <Filter>ソース ファイル\Scene\sceneMenu</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Script.h">
-      <Filter>ソース ファイル\Script</Filter>
     </ClInclude>
     <ClInclude Include="source\Scavenger.h">
       <Filter>ソース ファイル\Character\Scavenger</Filter>

@@ -39,6 +39,10 @@
 		InitPos[1] = Vector3( 10.0f, 10.0f, 15.0f );
 		InitPos[2] = Vector3( -10.0f, 10.0f, -15.0f );
 		InitPos[3] = Vector3( 10.0f, 10.0f, -15.0f );
+		playerColor[0] = Vector3( 1.0f, 0.0f, 0.0f );
+		playerColor[1] = Vector3( 0.0f, 0.0f, 1.0f );
+		playerColor[2] = Vector3( 1.0f, 1.0f, 0.0f );
+		playerColor[3] = Vector3( 0.0f, 1.0f, 0.0f );
 	}
 
 	//	デストラクタ
@@ -374,6 +378,12 @@
 //-------------------------------------------------------------------------
 //	情報取得
 //-------------------------------------------------------------------------
+
+	//	プレイヤー色取得
+	Vector3	GameManager::GetPlayerColor( int playerNum )const
+	{
+		return	playerColor[playerNum];
+	}
 
 	//	プレイヤー人数取得
 	int		GameManager::GetPlayerNum( void )const

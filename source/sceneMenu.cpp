@@ -354,6 +354,7 @@
 		case MENU_MODE::MOVE_MAIN:
 			MoveMainRender();
 			break;
+
 		case MENU_MODE::OPTION:
 			OptionRender();
 			break;
@@ -421,6 +422,8 @@
 		{
 			if ( characterSelectInfo.character[value] == CHARACTER_TYPE::PIRATE )
 			{
+				//	ƒgƒD[ƒ“—ÖŠsüFÝ’è
+				shader3D->SetValue("OutlineColor", gameManager->GetPlayerColor(value));
 				cannon[value]->Render( shader3D, "toon" );
 			}
 		}
@@ -768,6 +771,9 @@
 		//	ƒ‚ƒfƒ‹
 		FOR( 0, PLAYER_MAX )
 		{
+			//	ƒgƒD[ƒ“—ÖŠsüFÝ’è
+			shader3D->SetValue( "OutlineColor", gameManager->GetPlayerColor( value ) );
+
 			//	ƒ‚ƒfƒ‹•`‰æ
 			obj[value]->Render( shader3D, "toon" );
 		}
@@ -1114,6 +1120,9 @@
 		//	ƒvƒŒƒCƒ„[•`‰æ
 		FOR( 0, PLAYER_MAX )
 		{
+			//	ƒgƒD[ƒ“—ÖŠsüFÝ’è
+			shader3D->SetValue( "OutlineColor", gameManager->GetPlayerColor( value ) );
+
 			//	ƒ‚ƒfƒ‹•`‰æ
 			obj[value]->Render( shader3D, "toon" );
 

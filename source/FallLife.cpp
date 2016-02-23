@@ -161,10 +161,10 @@
 	void	FallLife::AlphaUpdate( int playerNum )
 	{
 		//	•âŠÔ
-		CubicFunctionInterpolation( 
+		Lerp( 
 			lifeImage[playerNum].alpha,
 			1.0f, 0.0f, 
-			param[playerNum] );
+			GetBezier( ePrm_t::eSlow_Lv5, ePrm_t::eSlow_Lv5,param[playerNum] ) );
 	}
 
 	//	Œü‚«XV
