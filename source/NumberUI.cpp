@@ -93,7 +93,7 @@
 		//	êîílâBï¡
 		if ( secretflag )
 		{
-			numImageInfo.hundredRenderFlag = false;
+			SetNumberImageInfo( numImageInfo, numInfo, 10 );
 			numImageInfo.hundred.sx = SECRET_SRCPOS_X;
 			numImageInfo.ten.sx = SECRET_SRCPOS_X;
 			numImageInfo.one.sx = SECRET_SRCPOS_X;

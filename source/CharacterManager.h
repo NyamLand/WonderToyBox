@@ -30,14 +30,15 @@ class CharacterManager
 {
 private:
 	//	定数
-	static const int OBJ_MAX = 4;
 	static const int CHARACTER_MAX = 4;
 
 private:
+	//	パラメータ
 	BaseChara*	character[CHARACTER_MAX];
-	bool	canHyper;		//	ハイパーアーツ同時発動制限用
+	bool				canHyper;		//	ハイパーアーツ同時発動制限用
 
 private:
+	//	初期化・解放
 	CharacterManager( void );
 	~CharacterManager( void );
 
@@ -45,6 +46,7 @@ public:
 	//	初期化・解放
 	bool	Initialize( int playerNum, int type, Vector3 pos, bool isPlayer = true );
 	void	Release( void );
+	void	Load( void );
 
 	//	更新・描画
 	void	Update( void );

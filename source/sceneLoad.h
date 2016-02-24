@@ -13,14 +13,14 @@ private:
 	Scene*		newScene;		//	次のシーン
 	static bool	threadState;	//	スレッドの状態
 	
-	//	演出系
-	ImageObj	bgImage[4];
-	ImageObj	pressAnyKeyImage;
-	ImageObj	moveImage;
-	ImageObj	backImage;
+	//	画像関連
+	ImageObj		bgImage[4];
+	ImageObj		pressAnyKeyImage;
+	ImageObj		moveImage;
+	ImageObj		backImage;
 	iex2DObj*	nowLoading;
-	int	timer;
 
+	//	パラメータ
 	float	t;
 	bool	loadflg;
 	bool	isEnd;
@@ -30,12 +30,15 @@ private:
 	int	renderCount;
 	int	order;
 	int	num;
+	int	timer;
 
 public:
 	//	初期化・解放
 	sceneLoad( Scene* nextScene );
 	~sceneLoad( void );
 	bool	Initialize( void );
+	void	Release( void );
+	void	Load( void );
 
 	//	更新・描画
 	void	Update( void );

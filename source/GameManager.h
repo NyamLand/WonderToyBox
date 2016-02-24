@@ -18,7 +18,7 @@ namespace
 	const		float		GRAVITY = -0.01f;
 	const		int		CHARATYPE_MAX = 4;
 	const		int		SHAKE_TIME = 30;
-	const		float	SHAKE_POWER = 1.5f;
+	const		float		SHAKE_POWER = 1.5f;
 	const		int		SCREEN_STOPTIME = 40;
 	const		int		EVENT_INTERVAL = 20 * SECOND;
 	const		int		EVENT_TIMING = 15 * SECOND;
@@ -64,7 +64,7 @@ class GameManager
 private:
 	//オプション情報
 	int		maxlife;
-	bool	itemflg;
+	bool		itemflg;
 
 	//	ゲーム設定用
 	int		startLife[PLAYER_MAX];
@@ -77,21 +77,20 @@ private:
 	int		timelimit;		//	制限時間
 	int		mode;
 	int		coinNum[PLAYER_MAX];
-	bool	donketsuBoostState;
+	bool		donketsuBoostState;
 	int		worst;
 	int		lastBonus;
-	bool	newsflag;    
-	int    timeStop;			//画面一時停止用
-	int	round;				//	ラウンド
-	int	totalCoin[Round::END][PLAYER_MAX];	//	ラウンドごとのコイン合計値
-	bool	coinCollision;	//	trueでON,falseでOFF
+	bool		newsflag;    
+	int		timeStop;			//画面一時停止用
+	int		round;				//	ラウンド
+	int		totalCoin[Round::END][PLAYER_MAX];	//	ラウンドごとのコイン合計値
+	bool		coinCollision;	//	trueでON,falseでOFF
 	int		eventmode;
-	bool	absCoinEventFlag;	//　絶対にコインイベントを発生させるか
+	bool		absCoinEventFlag;	//　絶対にコインイベントを発生させるか
 	Vector3	playerColor[PLAYER_MAX];
 	
 public:	
 		Vector3	InitPos[PLAYER_MAX];
-public:
 	
 private:
 	//	初期化・解放
@@ -147,10 +146,10 @@ public:
 	void	SetMode( const int& modeNum );
 	void	SetNewsFlag( const bool& flag );
 	void	SetShakeCamera(float wide, int timer);
-	void	SetTimeStop(int time);
-	void	SetTime(int minute, int second);
-	void	SetMaxLife(int life);
-	void	SetItemFlg(bool itemflg);
+	void	SetTimeStop( int time );
+	void	SetTime( int minute, int second );
+	void	SetMaxLife( int life );
+	void	SetItemFlg( bool itemflg );
 	void	SetRound( int round );
 	void	SetStartLife( int player, int life );
 	void	SetTotalCoin( int round, int player, int total );

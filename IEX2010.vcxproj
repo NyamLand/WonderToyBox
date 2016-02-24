@@ -132,7 +132,6 @@
     <ClCompile Include="source\PlayerNumUI.cpp" />
     <ClCompile Include="source\SquirrelBullet01.cpp" />
     <ClCompile Include="source\Stage.cpp" />
-    <ClCompile Include="source\StageManager.cpp" />
     <ClCompile Include="source\ThiefBullet01.cpp" />
     <ClCompile Include="source\BulletManager.cpp" />
     <ClCompile Include="source\Camera.cpp" />
@@ -197,7 +196,6 @@
     <ClInclude Include="source\CoinUIEffect.h" />
     <ClInclude Include="source\Crown.h" />
     <ClInclude Include="source\Curtain.h" />
-    <ClInclude Include="source\Define.h" />
     <ClInclude Include="source\Event_Coin.h" />
     <ClInclude Include="source\Event_Jamming.h" />
     <ClInclude Include="source\Event_Mission.h" />
@@ -213,7 +211,6 @@
     <ClInclude Include="source\PlayerNumUI.h" />
     <ClInclude Include="source\SquirrelBullet01.h" />
     <ClInclude Include="source\Stage.h" />
-    <ClInclude Include="source\StageManager.h" />
     <ClInclude Include="source\ThiefBullet04.h" />
     <ClInclude Include="source\ThiefBullet01.h" />
     <ClInclude Include="source\BulletManager.h" />

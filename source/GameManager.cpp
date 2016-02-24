@@ -33,12 +33,30 @@
 //-------------------------------------------------------------------------
 
 	//	コンストラクタ
-	GameManager::GameManager( void )
+	GameManager::GameManager( void ) : 
+		itemflg(false), newsflag(false), coinCollision(false), absCoinEventFlag(false), 
+		maxlife(0), playerNum(0), stageType(0), timer(0), timelimit(0), mode(0), worst(0), timeStop(0), round(0), eventmode(0)
 	{
+		FOR( 0, PLAYER_MAX )
+		{
+			startLife[value] = 0;
+			charatype[value] = 0;
+			coinNum[value] = 0;
+
+			//	ラウンドごとのコイン枚数初期化
+			for ( int i = 0; i < Round::END; i++ )
+			{
+				totalCoin[i][value] = 0;
+			}
+		}
+
+		//	プレイヤー初期位置設定
 		InitPos[0] = Vector3( -10.0f, 10.0f, 15.0f );
 		InitPos[1] = Vector3( 10.0f, 10.0f, 15.0f );
 		InitPos[2] = Vector3( -10.0f, 10.0f, -15.0f );
 		InitPos[3] = Vector3( 10.0f, 10.0f, -15.0f );
+
+		//	プレイヤー色設定
 		playerColor[0] = Vector3( 1.0f, 0.0f, 0.0f );
 		playerColor[1] = Vector3( 0.0f, 0.0f, 1.0f );
 		playerColor[2] = Vector3( 1.0f, 1.0f, 0.0f );

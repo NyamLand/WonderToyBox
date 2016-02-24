@@ -1,9 +1,9 @@
 
 #include	"iextreme.h"
+#include	"GlobalFunction.h"
 #include	"system/system.h"
 #include	"system/Framework.h"
 #include	"Random.h"
-#include	"GlobalFunction.h"
 #include	< process.h >
 #include	"Camera.h"
 #include	"sceneLoad.h"
@@ -24,18 +24,26 @@ using namespace std;
 #define	IMAGE_MAX		4		//	画像最大数
 
 //	static宣言
-	bool	sceneLoad::threadState;
+bool	sceneLoad::threadState;
 
 //----------------------------------------------------------------------------------
 //	初期化・解放	
 //----------------------------------------------------------------------------------
 	
 	//	コンストラクタ
-	sceneLoad::sceneLoad( Scene*	nextScene ) : newScene( nextScene ), timer( 0 )
+	sceneLoad::sceneLoad( Scene* nextScene ) : newScene( nextScene ), nowLoading( nullptr ),
+		t( 0.0f ),
+		loadflg(false), isEnd(false), changeSceneFlag(false),
+		timer(0), reverseFlag(0), loadingTimer(0), renderCount(0), order(0), num(0)
 	{
-		//	フラグ初期化
+		//	画像関連
+		FOR( 0, IMAGE_MAX )	bgImage[value].obj = nullptr;
+		pressAnyKeyImage.obj = nullptr;
+		moveImage.obj = nullptr;
+		backImage.obj = nullptr;
+
+		//	static変数初期化
 		threadState = false;
-		loadflg = false;
 	}
 
 	//	デストラクタ
@@ -45,9 +53,8 @@ using namespace std;
 		{
 			SafeDelete( bgImage[value].obj );
 		}
-		SafeDelete( nowLoading );	
 
-		//Random::Release();
+		SafeDelete( nowLoading );	
 	}
 
 	//	初期化
@@ -63,11 +70,10 @@ using namespace std;
 		//	カメラ設定
 		mainView = new Camera();
 
+		//	画像読み込み
+		Load();
+
 		//	背景初期化
-		bgImage[0].obj = new iex2DObj( "DATA/UI/Load/Lord-back01.png" );
-		bgImage[1].obj = new iex2DObj( "DATA/UI/Load/Lord-back02.png" );
-		bgImage[2].obj = new iex2DObj( "DATA/UI/Load/Lord-back03.png" );
-		bgImage[3].obj = new iex2DObj( "DATA/UI/Load/Lord-back04.png" );
 		int x = static_cast<int>( iexSystem::ScreenWidth * 0.5f );
 		int y = static_cast<int>( iexSystem::ScreenHeight * 0.5f );
 		int w = static_cast<int>( iexSystem::ScreenWidth );
@@ -86,10 +92,7 @@ using namespace std;
 		moveImage = bgImage[randOrder];
 		backImage = bgImage[order];
 
-		//	NowLoading初期化
-		nowLoading = new iex2DObj( "DATA/UI/Loading.png" );
-
-		//	pressAnyKey初期化
+		//	NowLoading, pressAnyKey初期化
 		pressAnyKeyImage.obj = nowLoading;
 		ImageInitialize( pressAnyKeyImage,  1380, 865, 350, 150, 0, 128, 512, 128 );
 		
@@ -105,6 +108,16 @@ using namespace std;
 		loadingTimer = 0;
 		renderCount = 0;
 		return	true;
+	}
+
+	//	読み込み
+	void	sceneLoad::Load( void )
+	{
+		bgImage[0].obj = new iex2DObj( "DATA/UI/Load/Lord-back01.png" );
+		bgImage[1].obj = new iex2DObj( "DATA/UI/Load/Lord-back02.png" );
+		bgImage[2].obj = new iex2DObj( "DATA/UI/Load/Lord-back03.png" );
+		bgImage[3].obj = new iex2DObj( "DATA/UI/Load/Lord-back04.png" );
+		nowLoading = new iex2DObj( "DATA/UI/Loading.png" );
 	}
 
 //----------------------------------------------------------------------------------
@@ -148,8 +161,12 @@ using namespace std;
 		RenderImage( backImage, backImage.sx, backImage.sy, backImage.sw, backImage.sh, IMAGE_MODE::NORMAL );
 		RenderImage( moveImage, moveImage.sx, moveImage.sy, moveImage.sw, moveImage.sh, IMAGE_MODE::NORMAL );
 
+		//	NoｗLoading、PressAnyKey描画
 		if ( !threadState )	RenderNowLoading();
-		else						RenderImage( pressAnyKeyImage, pressAnyKeyImage.sx, pressAnyKeyImage.sy, pressAnyKeyImage.sw, pressAnyKeyImage.sh, IMAGE_MODE::FLASH );
+		else	RenderImage( pressAnyKeyImage, 
+			pressAnyKeyImage.sx, pressAnyKeyImage.sy, 
+			pressAnyKeyImage.sw, pressAnyKeyImage.sh, 
+			IMAGE_MODE::FLASH );
 	}
 
 	//	NowLoading描画

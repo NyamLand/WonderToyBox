@@ -16,6 +16,13 @@
 //	class
 class Stage
 {
+public:
+	enum
+	{
+		DESK,
+		TOY,
+	};
+
 private:
 	static	const	int	OBJ_MAX = 20;
 	Object*					object[OBJ_MAX];	//	リスト
@@ -31,8 +38,10 @@ public:
 	//	初期化・解放
 	Stage( void );
 	~Stage( void );
+	bool	Initialize( void );
 	bool	LightInitialize( Vector3	dir );
 	void	Release( void );
+	void	Load( void );
 
 	//	更新・描画
 	void	Update( void );

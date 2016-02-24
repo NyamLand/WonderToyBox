@@ -117,9 +117,6 @@
     <Filter Include="ソース ファイル\Bullet\BaseBullet">
       <UniqueIdentifier>{9a57d1f2-4a39-47a5-9e36-e21adc8ecc1c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\StageManager">
-      <UniqueIdentifier>{8ed026fe-458c-4da9-812b-91367850d576}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Wipe">
       <UniqueIdentifier>{39ede1e2-747a-4fd5-b0d8-676305a443ce}</UniqueIdentifier>
     </Filter>
@@ -150,9 +147,6 @@
     </Filter>
     <Filter Include="ソース ファイル\Stage">
       <UniqueIdentifier>{9109e5d6-b65d-40d0-874f-45154ce7e914}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\Define">
-      <UniqueIdentifier>{1f13bf56-ae65-43cf-9ce7-1a305a376c89}</UniqueIdentifier>
     </Filter>
     <Filter Include="ソース ファイル\Curtain">
       <UniqueIdentifier>{12ae62d3-46b1-4603-be02-0aa0b5edeb4d}</UniqueIdentifier>
@@ -369,9 +363,6 @@
     <ClCompile Include="source\Wipe.cpp">
       <Filter>ソース ファイル\Wipe</Filter>
     </ClCompile>
-    <ClCompile Include="source\StageManager.cpp">
-      <Filter>ソース ファイル\StageManager</Filter>
-    </ClCompile>
     <ClCompile Include="source\Pirate.cpp">
       <Filter>ソース ファイル\Character\Pirate</Filter>
     </ClCompile>
@@ -560,9 +551,6 @@
     <ClInclude Include="source\Wipe.h">
       <Filter>ソース ファイル\Wipe</Filter>
     </ClInclude>
-    <ClInclude Include="source\StageManager.h">
-      <Filter>ソース ファイル\StageManager</Filter>
-    </ClInclude>
     <ClInclude Include="source\Pirate.h">
       <Filter>ソース ファイル\Character\Pirate</Filter>
     </ClInclude>
@@ -586,9 +574,6 @@
     </ClInclude>
     <ClInclude Include="source\AirPlane.h">
       <Filter>ソース ファイル\UI\AirPlane</Filter>
-    </ClInclude>
-    <ClInclude Include="source\Define.h">
-      <Filter>ソース ファイル\Define</Filter>
     </ClInclude>
     <ClInclude Include="source\Curtain.h">
       <Filter>ソース ファイル\Curtain</Filter>
