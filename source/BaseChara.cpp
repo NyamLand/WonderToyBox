@@ -56,11 +56,11 @@ namespace
 //----------------------------------------------------------------------------
 
 	//	コンストラクタ
-	BaseChara::BaseChara(void) : obj(nullptr), input(nullptr),		//	pointer
-	pos(0.0f, 0.0f, 0.0f), move(0.0f, 0.0f, 0.0f), angle(0.0f, 0.0f, 0.0f), objectMove(0.0f, 0.0f, 0.0f),	//	Vector3
-	scale(0.0f), speed(0.0f), totalSpeed(0.0f), drag(0.0f), force(0.0f), moveVec(0.0f), jumpPower(0.0f), dt(0.0f), param(0.0f),	//	float
-	isGround(false), isPlayer(false), jumpState(true), checkWall(false), renderflag(true), coinUnrivaled(false), initflag(false),//	bool
-	mode(0), playerNum(0), totalPower(0),jumpStep(0), damageStep(0), rank(0), life(0), checkWallCount(0)		//	int
+	BaseChara::BaseChara( void ) : obj(nullptr), input(nullptr),		//	pointer
+		pos(0.0f, 0.0f, 0.0f), move(0.0f, 0.0f, 0.0f), angle(0.0f, 0.0f, 0.0f), objectMove(0.0f, 0.0f, 0.0f),	//	Vector3
+		scale(0.0f), speed(0.0f), totalSpeed(0.0f), drag(0.0f), force(0.0f), moveVec(0.0f), jumpPower(0.0f), dt(0.0f), param(0.0f),	//	float
+		isGround(false), isPlayer(false), jumpState(true), checkWall(false), renderflag(true), coinUnrivaled(false), initflag(false),//	bool
+		mode(0), playerNum(0), totalPower(0),jumpStep(0), damageStep(0), rank(0), life(0), checkWallCount(0)		//	int
 	{
 	
 	}

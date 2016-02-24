@@ -178,7 +178,6 @@
     <ClCompile Include="IEX\IEX_System.cpp" />
     <ClCompile Include="IEX\IEX_Texture.cpp" />
     <ClCompile Include="IEX\IEX_View.cpp" />
-    <ClCompile Include="source\textLoader.cpp" />
     <ClCompile Include="source\Thief.cpp" />
     <ClCompile Include="source\ThiefBullet02.cpp" />
     <ClCompile Include="source\ThiefBullet03.cpp" />
@@ -243,7 +242,6 @@
     <ClInclude Include="source\sceneMain.h" />
     <ClInclude Include="source\system\System.h" />
     <ClInclude Include="IEX\iextreme.h" />
-    <ClInclude Include="source\textLoader.h" />
     <ClInclude Include="source\Thief.h" />
     <ClInclude Include="source\ThiefBullet02.h" />
     <ClInclude Include="source\ThiefBullet03.h" />

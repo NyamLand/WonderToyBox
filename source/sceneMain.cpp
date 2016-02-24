@@ -114,12 +114,11 @@
 		SafeDelete( ui );
 		SafeDelete( stage );
 		backBuffer->Release();
-		Random::Release();
 		particle->Release();
 		itemManager->Release();
-		characterManager->Release();
 		sound->AllStop();
 		coinManager->Release();
+		characterManager->Release();
 	}
 
 	//	ƒvƒŒƒCƒ„[‰Šú‰»

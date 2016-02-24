@@ -96,9 +96,6 @@
     <Filter Include="ソース ファイル\Screen">
       <UniqueIdentifier>{f549f8e3-6aa3-4b3c-b46d-dd5693a58522}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\TextLoader">
-      <UniqueIdentifier>{de03cd3a-a7c0-4add-b2fd-7771cd946f2f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Scene\sceneMenu">
       <UniqueIdentifier>{6ceac51d-2266-4cc7-af1b-738f2d2e6708}</UniqueIdentifier>
     </Filter>
@@ -339,9 +336,6 @@
     <ClCompile Include="source\EventManager.cpp">
       <Filter>ソース ファイル\Events\EventManager</Filter>
     </ClCompile>
-    <ClCompile Include="source\textLoader.cpp">
-      <Filter>ソース ファイル\TextLoader</Filter>
-    </ClCompile>
     <ClCompile Include="source\sceneMenu.cpp">
       <Filter>ソース ファイル\Scene\sceneMenu</Filter>
     </ClCompile>
@@ -526,9 +520,6 @@
     </ClInclude>
     <ClInclude Include="source\EventManager.h">
       <Filter>ソース ファイル\Events\EventManager</Filter>
-    </ClInclude>
-    <ClInclude Include="source\textLoader.h">
-      <Filter>ソース ファイル\TextLoader</Filter>
     </ClInclude>
     <ClInclude Include="source\sceneMenu.h">
       <Filter>ソース ファイル\Scene\sceneMenu</Filter>

@@ -46,16 +46,10 @@ public:
 	//	初期化・解放
 	bool	Initialize( int playerNum, int type, Vector3 pos, bool isPlayer = true );
 	void	Release( void );
-	void	Load( void );
 
 	//	更新・描画
 	void	Update( void );
 	void	Render( iexShader* shader = nullptr, LPSTR technique = nullptr );
-	void	DrawDebug();
-
-	//	動作関数
-	void	DonketsuBoost();
-	void	RaiseStatus( int worst, int type );
 
 	//	当たり判定
 	void	HitCheck( void );
@@ -71,7 +65,7 @@ public:
 	void	SubLife( int player )const;
 
 	//	情報取得
-	Matrix	GetMatrix( int player )const;
+	Matrix		GetMatrix( int player )const;
 	Vector3	GetPos( int player )const;
 	Vector3	GetDamageColor( int player )const;
 	Vector3	GetFront( int player )const;
@@ -85,7 +79,6 @@ public:
 	bool		GetJumpState( int player )const;
 	bool		GetCoinUnrivaled( int player )const;
 	bool		GetIsPlayer( int player )const;
-
 	int		GetAttackParam( int player )const;
 	int		GetPlayerNum( int playerNum )const;
 	int		GetPower( int playerNum )const;
@@ -103,12 +96,11 @@ public:
 	void		SetKnockBackVec( int player, Vector3 vec );
 	void		SetMode( int player, int mode );
 	void		SetAIMode( int player, int mode );
-	//void		SetBoosting( int player, bool boosting );
 	void		SetPassColor( int player, Vector3 color );
 	void		SetParameterInfo( int player, int parameterInfo );
-	void		SetRank(int player, int rank);
-	void		SetForce(int player, float force);
-	void		SetKnockBackParam(BaseChara* bc1, BaseChara* bc2);
+	void		SetRank( int player, int rank );
+	void		SetForce( int player, float force );
+	void		SetKnockBackParam( BaseChara* bc1, BaseChara* bc2 );
 	void		SetLife( int player, int life );
 };
 

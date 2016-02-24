@@ -12,6 +12,7 @@
 //	parameter
 namespace
 {
+	//	状態異常
 	namespace PARAMETER_STATE
 	{
 		enum
@@ -31,6 +32,7 @@ namespace
 		};
 	}
 
+	//	動作モード
 	namespace MODE_STATE
 	{
 		enum
@@ -49,6 +51,7 @@ namespace
 		};
 	}
 
+	//	AI用
 	namespace AI_MODE_STATE
 	{
 		enum
@@ -70,6 +73,7 @@ namespace
 		};
 	}
 
+	//	ノックバック強さ
 	namespace KNOCKBACK_TYPE
 	{
 		enum
@@ -81,6 +85,7 @@ namespace
 		};
 	}
 
+	//	キャラ種類
 	namespace CHARACTER_TYPE
 	{
 		enum
@@ -198,7 +203,6 @@ protected:
 		float	drag;
 	};
 
-
 	//	plusStatus情報
 	struct PLUS_STATUS_INFO
 	{
@@ -208,6 +212,7 @@ protected:
 		float	boostSpeed;		//　→子クラスで各々の値を初期化して
 	};
 
+	//影情報
 	struct SHADOW_INFO
 	{
 		iex2DObj*	obj;

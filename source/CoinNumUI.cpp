@@ -115,7 +115,9 @@
 		FOR( 0, PLAYER_MAX )
 		{
 			if ( gameManager->GetTimer() / SECOND < 15 )
+			{
 				numberUI[value]->SetSecretFlag( true );
+			}
 			CoinCount( gameManager->GetCoinNum( value ), value );
 			numberUI[value]->SetNumber( coinNum[value] );
 			numberUI[value]->Update();

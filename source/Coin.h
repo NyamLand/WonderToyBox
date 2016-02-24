@@ -25,6 +25,7 @@ namespace
 	}
 }
 
+//	class
 class Coin
 {
 protected:
@@ -49,13 +50,6 @@ protected:
 	bool			moveCheck;
 	int			judgeTimer;	//	判定有効時間
 	int			type;
-
-	//	physics_parameter
-	float	mass;
-	Vector3	position;
-	Vector3	velocity;
-	Vector3	acceleration;
-	Vector3	resultant;
 
 	//	影構造体
 	SHADOW_INFO	shadow;
@@ -87,12 +81,6 @@ public:
 	virtual	void	Hitduringtheoperation( const Vector3& pos, const int& Num );	//ヒット時動作
 	void	GetAway( void );
 	void	Magnet( void );
-
-	//	物理用動作関数
-	void	Integrate( float dt );
-	void	AddForce( const Vector3& force );
-	bool	RayPick( LVERTEX v[3], Vector3& out_hitPos, Vector3& out_normal, Vector3 pos, Vector3 vec, float dist );
-	void	Collide( void );
 
 	//	情報取得・設定
 	void	SetPos(const Vector3& pos);

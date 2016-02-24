@@ -22,15 +22,18 @@
 //-------------------------------------------------------------------------------------
 
 	//	コンストラクタ
-	CharacterManager::CharacterManager( void )
+	CharacterManager::CharacterManager( void ) : canHyper( false )
 	{
-
+		FOR( 0, PLAYER_MAX )
+		{
+			character[value] = nullptr;
+		}
 	}
 
 	//	デストラクタ
 	CharacterManager::~CharacterManager( void )
 	{
-
+		//Release();
 	}
 
 	//	初期化
@@ -81,7 +84,6 @@
 	//	更新
 	void	CharacterManager::Update( void )
 	{
-		//PlayerDistCheck();
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			//	各キャラクター更新
@@ -92,11 +94,6 @@
 
 		//	当たり判定
 		HitCheck();
-
-		//	プレイヤー位置調整
-
-		//	どんけつブースト
-		DonketsuBoost();
 	}
 
 	//	描画
@@ -105,77 +102,7 @@
 		for ( int i = 0; i < PLAYER_MAX; i++ )
 		{
 			character[i]->Render( shader, technique );	
-		}
-		int	p_mode[PLAYER_MAX];
-		
-		FOR( 0, PLAYER_MAX )
-		{
-			p_mode[value] = character[value]->GetRank();
-		}
-		printf( "1p_mode = %d 2p_mode = %d 3p_mode = %d, 4p_mode = %d\n",  p_mode[0], p_mode[1], p_mode[2], p_mode[3] );
-		
-	}
-
-	//　デバッグ
-	void	CharacterManager::DrawDebug( void )
-	{
-		if (debug)
-		{
-			char str[256];
-
-			//--------------------------------------------
-			//　表題
-			//--------------------------------------------
-			//　AI一覧表
-			DrawString("rank", 1020, 30);
-			DrawString("AImode", 1060, 30);
-			DrawString("Aimode一覧", 1130, 30);
-			DrawString("０：ATTACK", 1120, 50);
-			DrawString("１：RUN（コイン）", 1120, 70);
-			DrawString("２：GETAWAY（逃げる）", 1120, 90);
-			DrawString("３：GUARD", 1120, 110);
-			DrawString("４：JUMP", 1120, 130);
-			DrawString("５：WAIT", 1120, 150);
-			//	power・speed
-			DrawString("tPower    tSpeed", 50, 50);
-
-			//--------------------------------------------
-			//　４人分のパラメータ
-			//--------------------------------------------
-			for (int i = 0; i < PLAYER_MAX; i++)
-			{
-				//　AImode・rank
-				sprintf_s(str, "%dＰ：%d    %d", i + 1, GetRank(i), GetAIMode(i));
-				DrawString(str, 1000, 50 + i * 20);
-				//　totalPower・totalSpeed
-				sprintf_s(str, "%dＰ：%d    %f", i + 1, GetTotalPower(i), GetTotalSpeed(i));
-				DrawString(str, 600, 70 + i * 20);
-			}
-		}
-	}
-
-//-------------------------------------------------------------------------------------
-//	動作関数
-//-------------------------------------------------------------------------------------
-
-	//	どんけつブースト
-	void	CharacterManager::DonketsuBoost( void )
-	{
-		if ( gameManager->GetDonketsuBoostState() )
-		{
-			//	(決定された)ビリが誰かを取得・どんけつモードセット
-			int worst = gameManager->GetWorst();
-			SetParameterInfo( worst, PARAMETER_STATE::BOOST );
-
-			//	ビリがなんのキャラかを識別してそれぞれに合ったステータス上昇
-			RaiseStatus( worst, gameManager->GetCharacterType( worst ) );
-		}
-	}
-
-	//	ステータス上昇
-	void	CharacterManager::RaiseStatus( int worst, int type )
-	{
-
+		}		
 	}
 
 //-------------------------------------------------------------------------------------
@@ -809,18 +736,21 @@
 		}
 	}
 	
-
 //-------------------------------------------------------------------------------------
 //	ライフ処理
 //-------------------------------------------------------------------------------------
-void	CharacterManager::AddLife(int player)const
-{
-	character[player]->AddLife();
-}
-void	CharacterManager::SubLife(int player)const
-{
-	character[player]->SubLife();
-}
+
+	//	ライフ加算
+	void	CharacterManager::AddLife( int player )const
+	{
+		character[player]->AddLife();
+	}
+
+	//	ライフ減算
+	void	CharacterManager::SubLife( int player )const
+	{
+		character[player]->SubLife();
+	}
 
 //-------------------------------------------------------------------------------------
 //	情報取得
@@ -1004,12 +934,6 @@ void	CharacterManager::SubLife(int player)const
 	{
 		character[player]->SetAIMode(mode);
 	}
-
-	//	ブースト状態取得
-	/*void		CharacterManager::SetBoosting( int player, bool boosting )
-	{
-		character[player]->SetBoosting( boosting );
-	}*/
 
 	//	渡す色設定
 	void		CharacterManager::SetPassColor( int player, Vector3 color )
