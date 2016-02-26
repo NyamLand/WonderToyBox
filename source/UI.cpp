@@ -264,7 +264,7 @@
 			coinNum[value]						= gameManager->GetCoinNum( value );
 
 			//	コイン枚数位置（縦）
-			coinNumInfo[value].pos.y			= static_cast<int>( iexSystem::ScreenHeight * 0.1f );
+			coinNumInfo[value].pos.y			= static_cast<int>( iexSystem::ScreenHeight * 0.15f );
 			coinNumInfo[value].scale			= 100;
 			
 			//	画像設定

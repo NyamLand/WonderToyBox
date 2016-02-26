@@ -14,6 +14,8 @@ class LifeUI
 {
 private:
 	iex2DObj*	orgLife;
+	iex2DObj*	lifeText;
+	ImageObj	lifeTextImage[PLAYER_MAX];
 	ImageObj	lifeImage[PLAYER_MAX];
 	int	life[PLAYER_MAX];
 
