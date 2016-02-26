@@ -70,10 +70,10 @@
 		storm._adjustV	= 0.0f;
 		storm.state		= false;
 
-		circleInfo.pic[0] = new iex2DObj("DATA/Effect/circle/PL1.png");
-		circleInfo.pic[1] = new iex2DObj("DATA/Effect/circle/PL2.png");
-		circleInfo.pic[2] = new iex2DObj("DATA/Effect/circle/PL3.png");
-		circleInfo.pic[3] = new iex2DObj("DATA/Effect/circle/PL4.png");
+		circleInfo.pic[0] = new iex2DObj("DATA/Effect/circle/PL1-2.png");
+		circleInfo.pic[1] = new iex2DObj("DATA/Effect/circle/PL2-2.png");
+		circleInfo.pic[2] = new iex2DObj("DATA/Effect/circle/PL3-2.png");
+		circleInfo.pic[3] = new iex2DObj("DATA/Effect/circle/PL4-2.png");
 		confusionInfo.pic	= new iex2DObj( "DATA/Effect/confusion.png" );
 
 		shieldInfo.obj		= new iex2DObj( "DATA/Effect/state/Guard-ef.png" );

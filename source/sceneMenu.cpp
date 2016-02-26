@@ -851,8 +851,7 @@
 		deskStage->SetAngle( D3DXToRadian( 30.0f ), D3DX_PI, 0.0f );
 		deskStage->SetScale( 0.1f );
 		deskStage->Update();
-
-		
+	
 		//　おもちゃモデル初期化
 		toyStage->SetPos(0.0f,0.0f,0.0f);
 		toyStage->SetAngle(D3DXToRadian(30.0f), 0.0f/*D3DXToRadian(-80.0f)*/, 0.0f);
@@ -862,6 +861,7 @@
 		//	パラメータ初期化
 		stageSelectInfo.angle = D3DX_PI;
 		stageSelectInfo.stage = 0;
+		stageSelectInfo.t = 1.0f;
 	}
 
 	//	ステージ選択
@@ -895,19 +895,26 @@
 			break;
 		}
 
+		//	カーソル移動パラメータ加算
+		stageSelectInfo.t += 0.08f;
+		if ( stageSelectInfo.t >= 1.0f )	stageSelectInfo.t = 1.0f;
+
 		//	左右で選択
+		if ( stageSelectInfo.t >= 1.0f )
 		{
-			if ( KEY( KEY_RIGHT ) == 3 )
+			if ( KEY( KEY_RIGHT ) == 1 || KEY( KEY_AXISX ) > 0 )
 			{
-				sound->PlaySE(SE::CHOICE_SE);
+				sound->PlaySE( SE::CHOICE_SE );
 				stageSelectInfo.angle = D3DX_PI;
+				stageSelectInfo.t = 0.0f;
 				stageSelectInfo.stage++;
 			}
 
-			if ( KEY( KEY_LEFT ) == 3 )
+			if ( KEY( KEY_LEFT ) == 1 || KEY( KEY_AXISX ) < 0 )
 			{
-				sound->PlaySE(SE::CHOICE_SE);
+				sound->PlaySE( SE::CHOICE_SE );
 				stageSelectInfo.angle = D3DX_PI;
+				stageSelectInfo.t = 0.0f;
 				stageSelectInfo.stage--;
 			}
 
@@ -987,6 +994,7 @@
 			checkSelectInfo.check = false;
 			checkSelectInfo.select = false;
 			checkSelectInfo.step = 0;
+			checkSelectInfo.t = 1.0f;
 		}
 
 		//	ステージ座標、向き設定
@@ -1016,6 +1024,9 @@
 					cursorImage[value].obj = cpuCursor;
 			}
 		}
+
+		//	パラメータ初期化
+		
 	}
 
 	//	最終確認
@@ -1057,14 +1068,21 @@
 			}
 		}
 
+		//	カーソル移動パラメータ加算
+		checkSelectInfo.t += 0.08f;
+		if ( checkSelectInfo.t >= 1.0f )	checkSelectInfo.t = 1.0f;
 
 		//	選択中動作(カーソル移動, キャンセル)
 		if ( checkSelectInfo.check )
 		{
-			if ( input[0]->Get( KEY_RIGHT ) == 3 || input[0]->Get( KEY_LEFT ) == 3 )
+			if ( checkSelectInfo.t >= 1.0f )
 			{
-				sound->PlaySE(SE::CHOICE_SE);
-				checkSelectInfo.select = !checkSelectInfo.select;
+				if ( input[0]->Get( KEY_RIGHT ) == 1 || input[0]->Get( KEY_LEFT ) == 1 || input[0]->Get( KEY_AXISX ) > 0 || input[0]->Get( KEY_AXISX ) < 0 )
+				{
+					sound->PlaySE(SE::CHOICE_SE);
+					checkSelectInfo.t = 0.0f;
+					checkSelectInfo.select = !checkSelectInfo.select;
+				}
 			}
 
 			if ( input[0]->Get( KEY_B ) == 3 )

@@ -42,6 +42,7 @@ private:
 	{
 		float	angle;
 		int		stage;
+		float		t;
 	};
 
 	struct CheckSelectInfo
@@ -49,6 +50,7 @@ private:
 		bool	select;
 		bool	check;
 		int		step;
+		float		t;
 	};
 
 	struct OptionInfo

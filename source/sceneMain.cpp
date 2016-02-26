@@ -100,7 +100,7 @@
 		ui->Initialize();
 
 		//	BGMÄ¶
-		if ( gameManager->GetRound() !=Round::ROUND2 )		sound->PlayBGM( BGM::MAIN_BGM );
+		if ( gameManager->GetRound() !=Round::ROUND_FINAL )		sound->PlayBGM( BGM::MAIN_BGM );
 		else sound->PlayBGM( BGM::FAINLROUND_BGM );
 
 		return true;

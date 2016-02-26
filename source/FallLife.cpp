@@ -96,7 +96,7 @@
 			Fall( value );
 
 			//	透明度更新
-			AlphaUpdate( value );
+			//AlphaUpdate( value );
 
 			//	向き更新
 			AngleUpdate( value );

@@ -140,8 +140,8 @@ bool	ThiefBullet01::PlayerCollisionCheck(void)
 			float	power = 0.2f;
 			int		p2_Num = characterManager->GetPlayerNum(i);
 
-			int		dropCoin = characterManager->GetTotalPower(i);
-			for (int i = 0; i < dropCoin; i++)
+			//int		dropCoin = characterManager->GetTotalPower(i);
+			for (int i = 0; i < 2; i++)
 			{
 				int		p2_coinNum = gameManager->GetCoinNum(p2_Num);
 				//	ƒRƒCƒ“‚ª‚ ‚ê‚Î‚Î‚çŽT‚­
