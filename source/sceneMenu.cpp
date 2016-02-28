@@ -28,6 +28,7 @@
 //-------------------------------------------------------------------------------
 //	グローバル
 //-------------------------------------------------------------------------------
+#define	AXIS_MIN		0.3f
 
 	namespace
 	{
@@ -454,7 +455,7 @@
 		if ( playerNumSelectInfo.t >= 1.0f )
 		{
 			//	選択
-			if ( input[0]->Get( KEY_DOWN ) == 1 || input[0]->Get( KEY_AXISY ) < 0 )
+			if ( input[0]->Get( KEY_DOWN ) == 1 || input[0]->Get( KEY_AXISY ) * 0.001f < -AXIS_MIN )
 			{
 				sound->PlaySE(SE::CHOICE_SE);
 				//	元の座標を保存
@@ -471,7 +472,7 @@
 				}
 			}
 
-			if ( input[0]->Get( KEY_UP ) == 1 || input[0]->Get( KEY_AXISY ) > 0 )
+			if ( input[0]->Get( KEY_UP ) == 1 || input[0]->Get( KEY_AXISY ) * 0.001f > AXIS_MIN )
 			{
 				sound->PlaySE(SE::CHOICE_SE);
 				//	元の座標を保存
@@ -640,7 +641,7 @@
 			if ( characterSelectInfo.select[value] )	continue;
 
 			//	カーソル移動
-			if ( input[value]->Get( KEY_RIGHT ) == 1 || input[value]->Get( KEY_AXISX ) > 0 )	
+			if ( input[value]->Get( KEY_RIGHT ) == 1 || input[value]->Get( KEY_AXISX ) * 0.001f > AXIS_MIN )	
 			{
 				//	効果音
 				sound->PlaySE( SE::CHOICE_SE );
@@ -664,7 +665,7 @@
 				characterSelectInfo.t[value] = 0.0f;
 			}
 
-			if ( input[value]->Get( KEY_LEFT ) == 1 || input[value]->Get( KEY_AXISX ) < 0 )
+			if ( input[value]->Get( KEY_LEFT ) == 1 || input[value]->Get( KEY_AXISX ) * 0.001f < -AXIS_MIN )
 			{
 				//	効果音
 				sound->PlaySE( SE::CHOICE_SE );
@@ -874,8 +875,7 @@
 		if (stageSelectInfo.angle>3.8f || stageSelectInfo.angle < 2.4f)
 		{
 			atai *= -1.0f;
-		}//stageSelectInfo.angle = 3.5f;
-		//stageSelectInfo.angle = 1.8f;
+		}
 
 		//	ステージの向きを設定(選択中回転)
 		switch ( stageSelectInfo.stage )
@@ -902,7 +902,7 @@
 		//	左右で選択
 		if ( stageSelectInfo.t >= 1.0f )
 		{
-			if ( KEY( KEY_RIGHT ) == 1 || KEY( KEY_AXISX ) > 0 )
+			if ( KEY( KEY_RIGHT ) == 1 || KEY( KEY_AXISX ) * 0.001f > AXIS_MIN )
 			{
 				sound->PlaySE( SE::CHOICE_SE );
 				stageSelectInfo.angle = D3DX_PI;
@@ -910,7 +910,7 @@
 				stageSelectInfo.stage++;
 			}
 
-			if ( KEY( KEY_LEFT ) == 1 || KEY( KEY_AXISX ) < 0 )
+			if ( KEY( KEY_LEFT ) == 1 || KEY( KEY_AXISX ) * 0.001f < -AXIS_MIN )
 			{
 				sound->PlaySE( SE::CHOICE_SE );
 				stageSelectInfo.angle = D3DX_PI;
@@ -1077,7 +1077,7 @@
 		{
 			if ( checkSelectInfo.t >= 1.0f )
 			{
-				if ( input[0]->Get( KEY_RIGHT ) == 1 || input[0]->Get( KEY_LEFT ) == 1 || input[0]->Get( KEY_AXISX ) > 0 || input[0]->Get( KEY_AXISX ) < 0 )
+				if ( input[0]->Get( KEY_RIGHT ) == 1 || input[0]->Get( KEY_LEFT ) == 1 || input[0]->Get( KEY_AXISX ) * 0.001f > AXIS_MIN || input[0]->Get( KEY_AXISX ) * 0.001f < -AXIS_MIN )
 				{
 					sound->PlaySE(SE::CHOICE_SE);
 					checkSelectInfo.t = 0.0f;

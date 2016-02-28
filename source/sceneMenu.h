@@ -18,7 +18,7 @@ class sceneMenu	:	public	Scene
 private:
 	struct PlayerNumSelectInfo
 	{
-		float	t;
+		float		t;
 		int		num;
 		int		saveY;
 		int		sy;
@@ -55,7 +55,7 @@ private:
 
 	struct OptionInfo
 	{
-		bool	itemflg;
+		bool		itemflg;
 		int		life;
 		int		minute;
 		int		second;
@@ -67,11 +67,11 @@ private:
 		Vector3 start;
 		Vector3 end;
 		Vector3	cpos;
-		Vector3 cspos;//カメラ移動用スタートポジション
-		Vector3 cepos;//カメラ移動用エンドポジション
-		float t;	//補間パラメータ
-		float mt;	//移動用補間パラメータ
-		bool moveflg;//移動用フラグ
+		Vector3 cspos;	//カメラ移動用スタートポジション
+		Vector3 cepos;	//カメラ移動用エンドポジション
+		float t;				//補間パラメータ
+		float mt;			//移動用補間パラメータ
+		bool moveflg;	//移動用フラグ
 	};
 private:	
 	//option設計中

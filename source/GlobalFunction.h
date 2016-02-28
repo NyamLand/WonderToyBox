@@ -173,6 +173,7 @@
 	//	ägëÂ
 	void	SetScaling( ImageObj& image, float speed, bool state = true );					//	state:	true = ägëÂÅ@false = èkè¨
 	void	ScalingUpdate(ImageObj& image, int max_scale = 140);
+	void	ScalingUpdate2(ImageObj& image, int max_scale = 140);
 	bool	ScalingAlphaUpdate(ImageObj& image, int max_scale = 140);
 	void	ScalingLandingUpdate(ImageObj& image, int max_scale = 140);
 	void	StopScaling( ImageObj& image );
