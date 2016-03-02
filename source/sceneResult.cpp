@@ -892,7 +892,7 @@
 			if ( screen->GetScreenState() )
 			{
 				pressButtonImage.flashingRenderflag = true;
-				if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) )
+				if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_B ) )
 				{
 					step = 0;
 					mode = MOVE_MODE::SELECT;
@@ -1767,7 +1767,7 @@
 		isEnd = Roulette();
 
 		//	決定ボタンでスキップ
-		if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+		if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_B ) == 3 )
 		{
 			ProductionSkip();
 		}
@@ -1794,7 +1794,7 @@
 		if ( isFinViewRankInOrder && isEnd )
 		{
 			pressButtonImage.flashingRenderflag = true;
-			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_B ) == 3 )
 			{
 				if ( round != Round::ROUND_FINAL )		step = RESULT_MODE::LIFE;
 				else															step = RESULT_MODE::LAST_RESULT;
@@ -1804,7 +1804,7 @@
 		else
 		{
 			//	決定ボタンでスキップ
-			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_B ) == 3 )
 			{
 				ProductionSkip();
 			}
@@ -1853,7 +1853,7 @@
 			if ( isEnd )
 			{
 				pressButtonImage.flashingRenderflag = true;
-				if ( input[0]->Get( KEY_A ) == 3 || input[0]->Get( KEY_SPACE ) == 3 )
+				if ( input[0]->Get( KEY_B ) == 3 || input[0]->Get( KEY_SPACE ) == 3 )
 				{
 					screen->SetScreenMode( SCREEN_MODE::FADE_OUT, 2.0f );
 					pressButtonImage.flashingRenderflag = false;
@@ -1885,7 +1885,7 @@
 		if ( isEnd )
 		{
 			pressButtonImage.flashingRenderflag = true;
-			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_B ) == 3 )
 			{
 				pressButtonImage.flashingRenderflag = false;
 				if ( round != Round::ROUND_FINAL )		step = RESULT_MODE::LIFE;
@@ -1935,7 +1935,7 @@
 	
 			//	キー入力取得
 			int key_space = input[value]->Get( KEY_SPACE );
-			int key_a = input[value]->Get( KEY_A );
+			int key_a = input[value]->Get( KEY_B );
 
 			//	入力受付
 			if ( key_space == 3 || key_a == 3 )
@@ -2009,7 +2009,7 @@
 
 		// 決定ボタンでシーン移行フラグを立てる
 		int keySpace = input[0]->Get( KEY_SPACE );
-		int keyA = input[0]->Get(KEY_A);
+		int keyA = input[0]->Get(KEY_B);
 		
 		//	決定キーで決定＆シーン移行
 		if ( !changeScene )

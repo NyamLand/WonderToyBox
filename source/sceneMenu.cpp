@@ -490,7 +490,7 @@
 			}
 
 			//	決定
-			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+			if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_B ) == 3 )
 			{
 				sound->PlaySE( SE::DECIDE_SE );
 				gameManager->SetPlayerNum( playerNumSelectInfo.num + 1 );
@@ -501,7 +501,7 @@
 			}
 		}
 
-		if ( input[0]->Get( KEY_B ) == 3 )
+		if ( input[0]->Get( KEY_A ) == 3 )
 		{
 			SetMode( MENU_MODE::MOVE_TITLE );
 		}
@@ -635,7 +635,7 @@
 			if ( characterSelectInfo.t[value] < 1.0f )	continue;
 
 			//	キャンセル
-			if ( input[value]->Get( KEY_B ) == 3 )		characterSelectInfo.select[value] = false;
+			if ( input[value]->Get( KEY_A ) == 3 )		characterSelectInfo.select[value] = false;
 
 			//	選択済みだったらキャンセルのみ受付け
 			if ( characterSelectInfo.select[value] )	continue;
@@ -690,7 +690,7 @@
 			}
 
 			//	決定
-			if ( input[value]->Get( KEY_SPACE ) == 3 || input[value]->Get( KEY_A ) == 3 )
+			if ( input[value]->Get( KEY_SPACE ) == 3 || input[value]->Get( KEY_B ) == 3 )
 			{
 				sound->PlaySE( SE::DECIDE_SE );
 				gameManager->SetCharacterType( value, characterSelectInfo.character[value] );
@@ -710,7 +710,7 @@
 		//	全員未選択時にキャンセルボタンを押すとプレイ人数選択へ移行
 		if ( selectCheck == 0 )
 		{
-			if ( KEY( KEY_B ) == 3 )
+			if ( KEY( KEY_A ) == 3 )
 			{
 				bgInfo.t = 0.0f;
 				bgInfo.start = CAMERA_TARGET::right;
@@ -924,7 +924,7 @@
 		}
 
 		//	決定
-		if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+		if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_B ) == 3 )
 		{
 			sound->PlaySE( SE::DECIDE_SE );
 			//	マネージャーに情報をセット
@@ -942,7 +942,7 @@
 		}
 
 		//	キャンセル
-		if ( KEY( KEY_B ) == 3 )
+		if ( KEY( KEY_A ) == 3 )
 		{
 			bgInfo.t = 0.0f;
 			bgInfo.start = bgInfo.end;
@@ -1038,7 +1038,7 @@
 		{
 		case CHECK_MODE::SELECT:
 		//	決定（はい：メインへ、いいえ：キャラ選択へ）
-		if ( input[0]->Get( KEY_A ) == 3 || input[0]->Get( KEY_SPACE ) == 3 )
+		if ( input[0]->Get( KEY_B ) == 3 || input[0]->Get( KEY_SPACE ) == 3 )
 		{
 			sound->PlaySE( SE::DECIDE_SE );
 			//	確認表示
@@ -1085,7 +1085,7 @@
 				}
 			}
 
-			if ( input[0]->Get( KEY_B ) == 3 )
+			if ( input[0]->Get( KEY_A ) == 3 )
 			{
 				checkSelectInfo.check = false;
 				checkSelectInfo.select = false;
@@ -1094,7 +1094,7 @@
 		else
 		{
 			//	キャンセルでステージ選択へ
-			if ( input[0]->Get( KEY_B ) == 3 )
+			if ( input[0]->Get( KEY_A ) == 3 )
 			{
 				bgInfo.t = 0.0f;
 				bgInfo.start = CAMERA_TARGET::left;

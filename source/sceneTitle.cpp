@@ -301,7 +301,7 @@ namespace
 				}
 				
 				//	SPACEキーで選択
-				if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+				if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_B ) == 3 )
 				{
 					//	タイトル画像を隠す
 					titleInfo.titleImage.renderflag = false;
@@ -407,7 +407,7 @@ namespace
 			if ( mainView->GetMoveState() )	//	移動が終了してたら
 			{
 				//	決定
-				if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_A ) == 3 )
+				if ( input[0]->Get( KEY_SPACE ) == 3 || input[0]->Get( KEY_B ) == 3 )
 				{
 					//	決定音
 					sound->PlaySE( SE::DECIDE_SE );

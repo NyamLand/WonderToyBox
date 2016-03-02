@@ -135,7 +135,7 @@ bool	sceneLoad::threadState;
 
 		//	“Ç‚İ‚İŠ®—¹ŒãƒL[“ü—Íó•t
 		if ( threadState ){
-			if ( KEY_Get( KEY_SPACE ) == 3 || KEY( KEY_A ) == 3 )
+			if ( KEY_Get( KEY_SPACE ) == 3 || KEY( KEY_B ) == 3 )
 			{
 				changeSceneFlag = true;
 			}

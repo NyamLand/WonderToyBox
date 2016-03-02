@@ -745,7 +745,7 @@ namespace
 		{
 			if ( isPlayer )
 			{
-				if ( input->Get( KEY_B ) == 3 )
+				if ( input->Get( KEY_A ) == 3 )
 				{
 					jumpPower = JUMP_POWER;
 					jumpState = false;
@@ -1242,7 +1242,7 @@ namespace
 		if ( input->Get( KEY_C ) == 3 )		mode = MODE_STATE::POWERARTS;
 		if ( canHyper )
 		{
-			if (input->Get(KEY_A) == 3)
+			if (input->Get(KEY_B) == 3)
 			{
 				if ( GetLife() > 1 && !GetParameterState( PARAMETER_STATE::RESPAWN ) )
 				{
