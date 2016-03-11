@@ -33,19 +33,19 @@
 //-----------------------------------------------------------------------------------
 
 	//	コンストラクタ
-	Screen::Screen( void )
+	Screen::Screen( void ) : color( Color::BLACK ),
+		alpha( 1.0f ), speed( 1.0f ), wipeSize( 1.0f ), param( 0.0f ),
+		screenState( false ),
+		mode( SCREEN_MODE::FADE_IN ), size( Size::MIN )
 	{
-		mode = SCREEN_MODE::FADE_IN;
-		color = Color::BLACK;
-		screenState = false;
-		alpha = 1.0f;
-		speed = 1.0f;
-		size = Size::MIN;
-		wipeSize = 1.0f;
-		param = 0.0f;
+		//	スクリーンサイズを設定
+		width = static_cast<float>( iexSystem::ScreenWidth );
+		height = static_cast<float>( iexSystem::ScreenHeight );
+		widthHalf = width * 0.5f;
+		heightHalf = height * 0.5f;
 
-		shader3D->SetValue( "screen_width", static_cast<float>( iexSystem::ScreenWidth ) );
-		shader3D->SetValue( "screen_height", static_cast<float>( iexSystem::ScreenHeight ) );
+		shader3D->SetValue( "screen_width", width );
+		shader3D->SetValue( "screen_height", height );
 	}
 
 	//	デストラクタ
@@ -217,6 +217,54 @@
 //-----------------------------------------------------------------------------------
 //	情報取得
 //-----------------------------------------------------------------------------------
+
+	//	スクリーン幅をfloatで取得
+	float	Screen::GetWidthFloat( void )const
+	{
+		return	width;
+	}
+
+	//	スクリーン幅の半分をfloatで取得
+	float	Screen::GetWidthHalfFloat( void )const
+	{
+		return	widthHalf;
+	}
+
+	//	スクリーン高さをfloatで取得
+	float	Screen::GetHeightFloat( void )const
+	{
+		return	height;
+	}
+
+	//	スクリーン高さの半分をfloatで取得
+	float	Screen::GetHeightHalfFloat( void )const
+	{
+		return	heightHalf;
+	}
+
+	//	スクリーン幅をintで取得
+	int	Screen::GetWidthInt( void )const
+	{
+		return	static_cast<int>( width );
+	}
+
+	//	スクリーン幅の半分をintで取得
+	int	Screen::GetWidthHalfInt( void )const
+	{
+		return	static_cast<int>( widthHalf );
+	}
+
+	//	スクリーン高さをintで取得
+	int	Screen::GetHeightInt( void )const
+	{
+		return	static_cast<int>( height );
+	}
+
+	//	スクリーン高さの半分をintで取得
+	int	Screen::GetHeightHalfInt( void )const
+	{
+		return	static_cast<int>( heightHalf );
+	}
 
 	//	スクリーン状態取得
 	bool	Screen::GetScreenState( void )const

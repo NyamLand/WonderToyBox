@@ -25,8 +25,8 @@ public:
 
 	//	“®ìŠÖ”
 	static	int		GetInt( int min, int max );
-	static	float	GetFloat( float min, float max );
-	static	bool	PercentageRandom( float probability );
+	static	float		GetFloat( float min, float max );
+	static	bool		PercentageRandom( float probability );
 };
 
 //*******************************************************************************

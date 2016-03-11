@@ -31,14 +31,19 @@ namespace
 class Screen
 {
 private:
-	int		mode;
-	float		alpha;
-	float		speed;
-	bool		screenState;
-	int			size;
-	float		wipeSize;
+	//	パラメータ
 	Vector3	color;
-	float		param;
+	float			wipeSize;
+	float			param;
+	float			alpha;
+	float			speed;
+	float			widthHalf;
+	float			heightHalf;
+	float			width;
+	float			height;		
+	bool			screenState;
+	int			size;
+	int			mode;
 
 private:
 	//	初期化・解放
@@ -60,7 +65,15 @@ public:
 	void	SetScreenMode( int mode, float speed );
 
 	//	情報取得
+	float GetWidthFloat( void )const;
+	float	GetWidthHalfFloat( void )const;
+	float	GetHeightFloat( void )const;
+	float	GetHeightHalfFloat( void )const;
 	bool	GetScreenState( void )const;
+	int	GetWidthInt( void )const;
+	int	GetWidthHalfInt( void )const;
+	int	GetHeightInt( void )const;
+	int	GetHeightHalfInt( void )const;
 	static	Screen*	GetInstance( void );
 };
 

@@ -3,22 +3,20 @@
 
 //***********************************************************************
 //
-//	FaceUIクラス
+//	Resultクラス
 //
 //***********************************************************************
 
 //	include
 
 //	class
-class FaceUI
+class Result
 {
 private:
-
-
 public:
 	//	初期化・解放
-	FaceUI( void );
-	~FaceUI( void );
+	Result( void );
+	~Result( void );
 	bool	Initialize( void );
 	void	Release( void );
 	void	Load( void );

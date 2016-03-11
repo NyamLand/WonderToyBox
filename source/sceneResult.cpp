@@ -29,6 +29,7 @@
 
 #define	NO_BONUS	-1
 #define	CURTAIN_SPEED	0.02f
+#define	SCREEN_SPEED	1.5f
 
 	namespace
 	{
@@ -120,7 +121,7 @@
 	bool	sceneResult::Initialize( void )
 	{
 		//	スクリーン設定
-		screen->SetScreenMode( SCREEN_MODE::FADE_IN , 1.5f );
+		//screen->SetScreenMode( SCREEN_MODE::FADE_IN , SCREEN_SPEED );
 
 		//	現在のラウンドを取得
 		culRound = gameManager->GetRound();
