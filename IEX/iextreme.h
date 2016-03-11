@@ -95,6 +95,8 @@ public:
 	//
 	static HWND	Window;				//	ウィンドウハンドル
 	static void GetScreenRect( DWORD mode, RECT& rc );
+	static DWORD	GetScreenWidth( void ){};
+	static DWORD	GetScreenHeight( void ){};
 
 	//------------------------------------------------------
 	//	初期化・解放

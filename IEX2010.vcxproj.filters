@@ -139,9 +139,6 @@
     <Filter Include="ソース ファイル\Item\BaseItem">
       <UniqueIdentifier>{94535d68-fd97-4911-8bf7-a8f704ae8d39}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\UI\AirPlane">
-      <UniqueIdentifier>{cc44b8b4-b304-4160-bcee-091738e112b7}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\Stage">
       <UniqueIdentifier>{9109e5d6-b65d-40d0-874f-45154ce7e914}</UniqueIdentifier>
     </Filter>
@@ -181,29 +178,44 @@
     <Filter Include="ソース ファイル\Bullet\PirateBullet\BasePirateBullet">
       <UniqueIdentifier>{0e21d244-f091-45ae-980d-20bc2ff1f783}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\UI\LifeUI">
-      <UniqueIdentifier>{d255de10-83d6-40c9-88af-c71fcff8824a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\UI\Crown">
-      <UniqueIdentifier>{7f6514e5-9755-4239-8978-1c7b24df1635}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="ソース ファイル\UI\CoinNumUI">
-      <UniqueIdentifier>{e2a1cb7a-680e-4d8c-a2e2-57f6b5dcce40}</UniqueIdentifier>
-    </Filter>
     <Filter Include="ソース ファイル\UI\NumberUI">
       <UniqueIdentifier>{60869e4d-a5a5-4e86-a467-7314b6904903}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\UI\FaceUI">
-      <UniqueIdentifier>{e7c6aeb2-88be-4d10-bef9-83286fefe4b1}</UniqueIdentifier>
+    <Filter Include="ソース ファイル\Scene\sceneResult\Result">
+      <UniqueIdentifier>{2814dcc9-ba37-4c9e-b208-c68b9c356bfa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\UI\CoinUIEffect">
+    <Filter Include="ソース ファイル\UI\MainUI">
+      <UniqueIdentifier>{9812433f-c7b8-4018-bc3d-6c339d704900}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\MainUI\AirPlane">
+      <UniqueIdentifier>{cc44b8b4-b304-4160-bcee-091738e112b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\MainUI\CoinNumUI">
+      <UniqueIdentifier>{e2a1cb7a-680e-4d8c-a2e2-57f6b5dcce40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\MainUI\CoinUIEffect">
       <UniqueIdentifier>{55e85229-d2c9-4110-948d-247595e448ab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\UI\FallLife">
+    <Filter Include="ソース ファイル\UI\MainUI\Crown">
+      <UniqueIdentifier>{7f6514e5-9755-4239-8978-1c7b24df1635}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\MainUI\FaceUI">
+      <UniqueIdentifier>{e7c6aeb2-88be-4d10-bef9-83286fefe4b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\MainUI\FallLife">
       <UniqueIdentifier>{89717bb6-2b1d-4c81-8a4d-08a6511bfc17}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\UI\PlayerNumUI">
+    <Filter Include="ソース ファイル\UI\MainUI\LifeUI">
+      <UniqueIdentifier>{d255de10-83d6-40c9-88af-c71fcff8824a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\MainUI\PlayerNumUI">
       <UniqueIdentifier>{fe64d20d-b900-49c2-b92a-7f75e6c9418a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\UI\ResultUI">
+      <UniqueIdentifier>{e71fa63f-b7cc-4eda-9568-4c1259c589c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Scene\sceneResult\LastResult">
+      <UniqueIdentifier>{50bb8840-c24b-43a1-8a1e-ba72a6c842ab}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -379,7 +391,7 @@
       <Filter>ソース ファイル\Item\BaseItem</Filter>
     </ClCompile>
     <ClCompile Include="source\AirPlane.cpp">
-      <Filter>ソース ファイル\UI\AirPlane</Filter>
+      <Filter>ソース ファイル\UI\MainUI\AirPlane</Filter>
     </ClCompile>
     <ClCompile Include="source\Curtain.cpp">
       <Filter>ソース ファイル\Curtain</Filter>
@@ -412,28 +424,34 @@
       <Filter>ソース ファイル\Bullet\PirateBullet\BasePirateBullet</Filter>
     </ClCompile>
     <ClCompile Include="source\LifeUI.cpp">
-      <Filter>ソース ファイル\UI\LifeUI</Filter>
+      <Filter>ソース ファイル\UI\MainUI\LifeUI</Filter>
     </ClCompile>
     <ClCompile Include="source\Crown.cpp">
-      <Filter>ソース ファイル\UI\Crown</Filter>
+      <Filter>ソース ファイル\UI\MainUI\Crown</Filter>
     </ClCompile>
     <ClCompile Include="source\CoinNumUI.cpp">
-      <Filter>ソース ファイル\UI\CoinNumUI</Filter>
+      <Filter>ソース ファイル\UI\MainUI\CoinNumUI</Filter>
     </ClCompile>
     <ClCompile Include="source\NumberUI.cpp">
       <Filter>ソース ファイル\UI\NumberUI</Filter>
     </ClCompile>
     <ClCompile Include="source\FaceUI.cpp">
-      <Filter>ソース ファイル\UI\FaceUI</Filter>
+      <Filter>ソース ファイル\UI\MainUI\FaceUI</Filter>
     </ClCompile>
     <ClCompile Include="source\CoinUIEffect.cpp">
-      <Filter>ソース ファイル\UI\CoinUIEffect</Filter>
+      <Filter>ソース ファイル\UI\MainUI\CoinUIEffect</Filter>
     </ClCompile>
     <ClCompile Include="source\FallLife.cpp">
-      <Filter>ソース ファイル\UI\FallLife</Filter>
+      <Filter>ソース ファイル\UI\MainUI\FallLife</Filter>
     </ClCompile>
     <ClCompile Include="source\PlayerNumUI.cpp">
-      <Filter>ソース ファイル\UI\PlayerNumUI</Filter>
+      <Filter>ソース ファイル\UI\MainUI\PlayerNumUI</Filter>
+    </ClCompile>
+    <ClCompile Include="source\Result.cpp">
+      <Filter>ソース ファイル\Scene\sceneResult\Result</Filter>
+    </ClCompile>
+    <ClCompile Include="source\LastResult.cpp">
+      <Filter>ソース ファイル\Scene\sceneResult\LastResult</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -564,7 +582,7 @@
       <Filter>ソース ファイル\Item\BaseItem</Filter>
     </ClInclude>
     <ClInclude Include="source\AirPlane.h">
-      <Filter>ソース ファイル\UI\AirPlane</Filter>
+      <Filter>ソース ファイル\UI\MainUI\AirPlane</Filter>
     </ClInclude>
     <ClInclude Include="source\Curtain.h">
       <Filter>ソース ファイル\Curtain</Filter>
@@ -597,28 +615,34 @@
       <Filter>ソース ファイル\Bullet\PirateBullet\BasePirateBullet</Filter>
     </ClInclude>
     <ClInclude Include="source\LifeUI.h">
-      <Filter>ソース ファイル\UI\LifeUI</Filter>
+      <Filter>ソース ファイル\UI\MainUI\LifeUI</Filter>
     </ClInclude>
     <ClInclude Include="source\Crown.h">
-      <Filter>ソース ファイル\UI\Crown</Filter>
+      <Filter>ソース ファイル\UI\MainUI\Crown</Filter>
     </ClInclude>
     <ClInclude Include="source\CoinNumUI.h">
-      <Filter>ソース ファイル\UI\CoinNumUI</Filter>
+      <Filter>ソース ファイル\UI\MainUI\CoinNumUI</Filter>
     </ClInclude>
     <ClInclude Include="source\NumberUI.h">
       <Filter>ソース ファイル\UI\NumberUI</Filter>
     </ClInclude>
     <ClInclude Include="source\FaceUI.h">
-      <Filter>ソース ファイル\UI\FaceUI</Filter>
+      <Filter>ソース ファイル\UI\MainUI\FaceUI</Filter>
     </ClInclude>
     <ClInclude Include="source\CoinUIEffect.h">
-      <Filter>ソース ファイル\UI\CoinUIEffect</Filter>
+      <Filter>ソース ファイル\UI\MainUI\CoinUIEffect</Filter>
     </ClInclude>
     <ClInclude Include="source\FallLife.h">
-      <Filter>ソース ファイル\UI\FallLife</Filter>
+      <Filter>ソース ファイル\UI\MainUI\FallLife</Filter>
     </ClInclude>
     <ClInclude Include="source\PlayerNumUI.h">
-      <Filter>ソース ファイル\UI\PlayerNumUI</Filter>
+      <Filter>ソース ファイル\UI\MainUI\PlayerNumUI</Filter>
+    </ClInclude>
+    <ClInclude Include="source\Result.h">
+      <Filter>ソース ファイル\Scene\sceneResult\Result</Filter>
+    </ClInclude>
+    <ClInclude Include="source\LastResult.h">
+      <Filter>ソース ファイル\Scene\sceneResult\LastResult</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
