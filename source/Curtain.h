@@ -41,6 +41,7 @@ public:		//	ŠÖ”
 	~Curtain( void );
 	void	StartPosInitialize( void );
 	void	EndPosInitialize( void );
+	void	Load( void );
 
 	//	XVE•`‰æ
 	void	Update( void );

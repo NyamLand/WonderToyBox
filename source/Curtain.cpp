@@ -19,8 +19,7 @@
 	Curtain::Curtain( void ) : mode( CURTAIN_MODE::CLOSE ), speed( 0.001f )
 	{
 		//	画像読み込み
-		curtainL.obj = new iex2DObj( "DATA/UI/title/curtain1.png" );
-		curtainR.obj = new iex2DObj( "DATA/UI/title/curtain2.png" );
+		Load();
 
 		//	パラメータ初期化
 		curtainL.t = 1.0f;
@@ -33,8 +32,21 @@
 		//	頂点設定
 		FOR( 0, VERTEX_MAX )
 		{
-			SetVertex( curtainL.tlv[value], startPosL[CLOSE][value], ( float )( iexSystem::ScreenHeight * ( value / 2 ) ), 0.0f, float( value % 2 ), float( value / 2 ), 0xFFFFFFFF );
-			SetVertex( curtainR.tlv[value], startPosR[CLOSE][value], ( float )( iexSystem::ScreenHeight * ( value / 2 ) ), 0.0f, float( value % 2 ), float( value / 2 ), 0xFFFFFFFF );
+			SetVertex( curtainL.tlv[value], 
+				startPosL[CLOSE][value],
+				( float )( iexSystem::ScreenHeight * ( value / 2 ) ), 
+				0.0f, 
+				float( value % 2 ), 
+				float( value / 2 ), 
+				0xFFFFFFFF );
+
+			SetVertex( curtainR.tlv[value], 
+				startPosR[CLOSE][value], 
+				( float )( iexSystem::ScreenHeight * ( value / 2 ) ), 
+				0.0f, 
+				float( value % 2 ), 
+				float( value / 2 ), 
+				0xFFFFFFFF );
 		}
 
 		//	更新
@@ -46,6 +58,14 @@
 	{
 		SafeDelete( curtainR.obj );
 		SafeDelete( curtainL.obj );
+	}
+
+	//	画像読み込み
+	void	Curtain::Load( void )
+	{
+		//	画像読み込み
+		curtainL.obj = new iex2DObj( "DATA/UI/title/curtain1.png" );
+		curtainR.obj = new iex2DObj( "DATA/UI/title/curtain2.png" );
 	}
 
 	//	始点設定

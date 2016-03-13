@@ -1,0 +1,39 @@
+
+#include	"iextreme.h"
+#include	"GlobalFunction.h"
+#include	"GameManager.h"
+#include	"CharacterManager.h"
+#include	"SpeedUpItem.h"
+
+//***********************************************************************
+//
+//	SpeedUpItemクラス
+//
+//***********************************************************************
+
+//------------------------------------------------------------------------------------
+//	初期化・解放
+//------------------------------------------------------------------------------------
+
+	//	コンストラクタ
+	SpeedUpItem::SpeedUpItem( void )
+	{
+
+	}
+
+	//	デストラクタ
+	SpeedUpItem::~SpeedUpItem( void )
+	{
+
+	}
+
+//------------------------------------------------------------------------------------
+//	動作関数
+//------------------------------------------------------------------------------------
+
+	//	ヒット時動作
+	void	SpeedUpItem::Hitduringtheoperation( const Vector3& pos, const int& playerNum )
+	{
+		Item::Hitduringtheoperation( pos, playerNum );
+		characterManager->SetParameterInfo( playerNum, PARAMETER_STATE::SPEEDUP );
+	}

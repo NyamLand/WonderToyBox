@@ -2,6 +2,11 @@
 #include	"iextreme.h"
 #include	"Random.h"
 #include	"GlobalFunction.h"
+#include	"MagnetItem.h"
+#include	"LifeItem.h"
+#include	"ShieldItem.h"
+#include	"SpeedUpItem.h"
+#include	"PowerUpItem.h"
 #include	"ItemManager.h"
 
 //**********************************************************************************
@@ -90,7 +95,30 @@
 	//	ƒŠƒXƒg’Ç‰Á
 	void	ItemManager::Append( const Vector3& pos, const int& type )
 	{
-		Item*	obj = new Item();
+		Item*	obj = nullptr;
+		
+		switch ( type )
+		{
+		case ITEM_TYPE::ATTACK_UP:
+			obj = new PowerUpItem();
+			break;
+
+		case ITEM_TYPE::LIFE:
+			obj = new LifeItem();
+			break;
+
+		case ITEM_TYPE::SPEED_UP:
+			obj = new SpeedUpItem();
+			break;
+
+		case ITEM_TYPE::MAGNET:
+			obj = new MagnetItem();
+			break;
+
+		case ITEM_TYPE::UNRIVALED:
+			obj = new ShieldItem();
+			break;
+		}
 		obj->Initialize();
 		obj->SetMesh( org[type]->Clone() );
 		obj->SetType( type );
