@@ -14,6 +14,9 @@
 //	グローバル
 //-----------------------------------------------------------------------------------
 
+#define	WIPE_MAX_SIZE	1000.0f
+#define	ADVISORY_SPEED	0.01f		//	推奨速度
+
 	namespace
 	{
 		namespace Color
@@ -44,6 +47,12 @@
 		widthHalf = width * 0.5f;
 		heightHalf = height * 0.5f;
 
+		//	各補間初期値、最終値設定
+		startParam[SCREEN_MODE::FADE_IN]		=		startParam[SCREEN_MODE::WHITE_IN]		=		startParam[SCREEN_MODE::WIPE_OUT] = 1.0f;
+		startParam[SCREEN_MODE::FADE_OUT]	=		startParam[SCREEN_MODE::WHITE_OUT]	=		startParam[SCREEN_MODE::WIPE_IN] = 0.0f;
+		endParam[SCREEN_MODE::FADE_OUT]		=		endParam[SCREEN_MODE::WHITE_OUT]	=		endParam[SCREEN_MODE::WIPE_IN] = 1.0f;
+		endParam[SCREEN_MODE::FADE_IN]			=		endParam[SCREEN_MODE::WHITE_IN]		=		endParam[SCREEN_MODE::WIPE_OUT] = 0.0f;
+
 		shader3D->SetValue( "screen_width", width );
 		shader3D->SetValue( "screen_height", height );
 	}
@@ -61,27 +70,23 @@
 	//	更新
 	bool	Screen::Update( void )
 	{
+		//	補間割合加算
+		PercentageUpdate( param, ADVISORY_SPEED * speed );
+
+		//	スクリーン状態初期化
 		screenState = false;
 
 		switch ( mode )
 		{
 		case SCREEN_MODE::FADE_IN:
 		case SCREEN_MODE::WHITE_IN:
-			screenState = FadeIn();
-			break;
-
 		case SCREEN_MODE::FADE_OUT:
 		case SCREEN_MODE::WHITE_OUT:
-			screenState = FadeOut();
+			screenState = Fade();
 			break;
-
 		case SCREEN_MODE::WIPE_IN:
-			screenState = WipeIn();
-			break;
-
 		case SCREEN_MODE::WIPE_OUT:
-			screenState = WipeOut();
-			break;
+			screenState = Wipe();
 		}
 
 		return	screenState;
@@ -107,82 +112,24 @@
 //	動作関数
 //-----------------------------------------------------------------------------------
 
-	//	フェードイン
-	bool	Screen::FadeIn( void )
+	//	フェード処理
+	bool	Screen::Fade( void )
 	{
-		//	パラメータ更新
-		param += 0.01f * speed;
-		if ( param >= 1.0f )		param = 1.0f;
-
 		//	補間
-		bool isEnd = CubicFunctionInterpolation( alpha, 1.0f, 0.0f, param );
-	
-		//	終了処理
-		if ( isEnd )
-		{
-			screenState = true;
-			return true;
-		}
-		return	false;
+		bool	isEnd = CubicFunctionInterpolation( alpha, startParam[mode], endParam[mode], param );
+
+		return	isEnd;
 	}
 
-	//	フェードアウト
-	bool	Screen::FadeOut( void )
+	//	ワイプ処理
+	bool	Screen::Wipe( void )
 	{
-		//	パラメータ更新
-		param += 0.01f * speed;
-		if ( param >= 1.0f )	param = 1.0f;
-
 		//	補間
-		bool isEnd = CubicFunctionInterpolation( alpha, 0.0f, 1.0f, param );
+		bool isEnd = CubicFunctionInterpolation( wipeSize, startParam[mode], endParam[mode], param );
 
-		//	終了処理
-		if ( isEnd )
-		{
-			screenState = true;
-			return true;
-		}
-		return	false;
-	}
-
-	//	ワイプアウト
-	bool	Screen::WipeOut( void )
-	{
-		//	パラメータ更新
-		param += 0.01f * speed;
-		if ( param >= 1.0f )	param = 1.0f;
-
-		//	補間
-		bool isEnd = CubicFunctionInterpolation( wipeSize, 1.0f, 0.0f, param );
-		shader3D->SetValue( "effect_size", 1000.0f * wipeSize );
-
-		//	終了処理
-		if ( isEnd )
-		{
-			screenState = true;
-			return true;
-		}
-		return	false;
-	}
-
-	//	ワイプイン
-	bool	Screen::WipeIn( void )
-	{
-		//	パラメータ更新
-		param += 0.01f * speed;
-		if ( param >= 1.0f )	param = 1.0f;
-
-		//	補間
-		bool isEnd = CubicFunctionInterpolation( wipeSize, 0.0f, 1.0f, param );
-		shader3D->SetValue( "effect_size", 1000.0f * wipeSize );
-
-		//	終了処理
-		if ( isEnd )
-		{
-			screenState = true;
-			return true;
-		}
-		return	false;
+		//	シェーダーに値セット
+		shader3D->SetValue( "effect_size", WIPE_MAX_SIZE * wipeSize );
+		return	isEnd;
 	}
 
 //-----------------------------------------------------------------------------------
@@ -208,8 +155,7 @@
 			color = Color::WHITE;
 			break;
 
-		case SCREEN_MODE::WIPE_OUT:
-		case SCREEN_MODE::WIPE_IN:
+		default:
 			break;
 		}
 	}

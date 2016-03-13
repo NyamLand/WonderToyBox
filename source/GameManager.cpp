@@ -27,6 +27,11 @@
 //-------------------------------------------------------------------------
 //	グローバル
 //-------------------------------------------------------------------------
+
+#define	START_LIFE	5
+#define	ITEM_GENERATION_INTERVAL	5
+#define	COIN_GENERATION_INTERVAL	1
+#define	LIMIT_COIN_NUM						300
 	
 //-------------------------------------------------------------------------
 //	初期化・解放
@@ -73,17 +78,17 @@
 	bool	GameManager::Initialize( void )
 	{
 		Random::Initialize();
-		for ( int i = 0; i < PLAYER_MAX; i++ )
+
+		FOR( 0, PLAYER_MAX )
 		{
-			charatype[i] = 0;		
-			coinNum[i] = 0;
-			startLife[i] = 5;
+			charatype[value] = 0;		
+			coinNum[value] = 0;
+			startLife[value] = START_LIFE;
 		}
+
 		playerNum = 0;
 		stageType = 1;
 		mode = 0;
-		donketsuBoostState = false;
-		lastBonus = Random::GetInt( 0, 3 );
 		timeStop = 0;
 		round = 0;
 		timer = 0;
@@ -103,45 +108,6 @@
 		return	true;
 	}
 
-	//　（メインから始めるための）デバッグ用
-	bool	GameManager::InitializeDebug( void )
-	{
-		//　プレイヤー
-		//charatype[0] = 0;	//　掃除屋
-		//charatype[0] = 1;	//　プリンセス
-		charatype[0] = 2;	//　怪盗
-		//charatype[0] = 3;	//　海賊
-		characterManager->Initialize(0, charatype[0], gameManager->InitPos[0], true);
-
-		//　ステージ
-		//stageType = 0;	//　机
-		stageType = 1;	//　森
-
-		//　時間
-		//timelimit = 32 * SECOND;
-
-		//　コイン最大
-		maxlife = LIFE_MAX_NUM::LIFE_5;
-
-		//　CPU初期化
-		for (int i = 1; i < PLAYER_MAX; i++)
-		{
-			characterManager->Initialize(i, charatype[i], gameManager->InitPos[i], false);
-			charatype[i] = i;
-		}
-		
-		//　他いろいろ
-		for (int i = 0; i < PLAYER_MAX; i++)	coinNum[i] = 0;
-		playerNum = 1;	//　操作する人数
-		mode = 0;
-		donketsuBoostState = false;
-		lastBonus = rand() % PLAYER_MAX;
-		timeStop = 0;
-		timer = timelimit;
-		
-		return	true;
-	}
-
 	//	解放
 	void	GameManager::Release( void )
 	{
@@ -151,24 +117,14 @@
 	//	リトライ用初期化
 	void	GameManager::RetryInitialize( void )
 	{
-		for ( int i = 0; i < PLAYER_MAX; i++ )
-		{
-			coinNum[i] = 0;
-		}
-
+		FOR( 0, PLAYER_MAX )	coinNum[value] = 0;
 		mode = 0;
 		donketsuBoostState = false;
 		lastBonus = Random::GetInt( 0, 3 );
 		timeStop = 0;
 		eventmode = 0;
-		absCoinEventFlag = false;
-
-		//	ゲームデータテキストを読み込む
-		//LoadTextData();
 		timer = timelimit;
 	}
-
-	//	キャラ選択用初期化
 
 //-------------------------------------------------------------------------
 //	更新・描画
@@ -178,148 +134,25 @@
 	void	GameManager::Update( void )
 	{
 		//	タイマー更新
-		if (timeStop > 0)
-		{
-			timeStop--;
-			return;
-		}
-		else timer--;
+		TimerUpdate();
 
-		//-------------------------------------------------------
-		//	時間切れ
-		//-------------------------------------------------------
-		if ( timer <= 0 )
+		//	時間経過で各要素発生
+		switch ( timer )
 		{
-			timer = 0;
-			if ( mode != GAME_MODE::TIMEUP )
-			{
-				mode = GAME_MODE::TIMEUP;
-				sound->PlaySE( SE::GAMESET_SE );
-			}
-			for (int i = 0; i < PLAYER_MAX; i++)
-			{
-				//2.4応急処置
-				characterManager->SetParameterInfo(i, PARAMETER_STATE::UNRIVALED);
+		case TIMER_EVENT::TIME_UP:	
+			TimeUp();
+			break;
 
-				if ( characterManager->GetIsPlayer( i ) )
-				{
-					if ( characterManager->GetMode(i) == MODE_STATE::MOVE )
-					{
-						characterManager->SetMode( i, MODE_STATE::WAIT );
-					}
-				}
-				else
-				{
-					characterManager->SetAIMode( i, AI_MODE_STATE::STOP );
-				}	
-			}
+		case TIMER_EVENT::MOVE_CLIMAX:
+			SetMode( GAME_MODE::CLIMAX );
+			break;
 		}
 
-		//-------------------------------------------------------
-		//	クライマックスへ
-		//-------------------------------------------------------
-		if ( timer == 30 * SECOND ) SetMode( GAME_MODE::CLIMAX );
-
-		//-------------------------------------------------------
-		//	ニュース設定
-		//-------------------------------------------------------
-		if ( timer == 1 * MINUTE )		newsflag = true;
-
-		//-------------------------------------------------------
-		//　イベント
-		//-------------------------------------------------------
-		int alert_type = 0;
-		int alert_sound = 0;
-
-		/*
-			ランダムでイベント決定、
-			イベントの各種パラメータ設定後、
-			eventManagerでイベントを発生させる
-		*/
-
-		//　演出開始
-		if (timer % EVENT_INTERVAL == EVENT_TIMING)
-		{
-			if (timer % (3 * EVENT_INTERVAL) == EVENT_TIMING)	absCoinEventFlag = true;
-
-			eventmode = (absCoinEventFlag) ?
-				Random::GetInt(EVENT_MODE::COIN_FALL, EVENT_MODE::COIN_DUBBLE) :
-				Random::GetInt(0, EVENT_MODE::MAX - 1);
-
-			if (eventmode <= EVENT_MODE::JAM_SLIP)
-			{
-				alert_type = ALERT_TYPE_INFO::JAM;
-				alert_sound = SE::EVENT_SE;
-			}
-			else if (EVENT_MODE::COIN_FALL <= eventmode  && eventmode <= EVENT_MODE::COIN_DUBBLE)
-			{
-				alert_type = ALERT_TYPE_INFO::COIN;
-				alert_sound = SE::EVENT_SE;		//　仮　コインイベント用に変更
-			}
-			else
-			{
-				alert_type = ALERT_TYPE_INFO::MISSION;
-				alert_sound = SE::EVENT_SE;		//　仮　ミッションイベント用に変更
-			}
-
-			//　画像用に設定
-			switch (eventmode)
-			{
-			case EVENT_MODE::COIN_FALL:			ui->SetEventInfoMode(EVENT_TEX_INFO::C_FALL);	break;
-			case EVENT_MODE::COIN_WAVE:			ui->SetEventInfoMode(EVENT_TEX_INFO::C_WAVE);	break;
-			case EVENT_MODE::COIN_DUBBLE:		ui->SetEventInfoMode(EVENT_TEX_INFO::C_DUBBLE);	break;
-			case EVENT_MODE::JAM_SLOPE_CAMERA:	ui->SetEventInfoMode(EVENT_TEX_INFO::J_CAMERA);	break;
-			case EVENT_MODE::JAM_SLIP:			ui->SetEventInfoMode(EVENT_TEX_INFO::J_SLIP);	break;
-			case EVENT_MODE::JAM_COIN_GETAWAY:	ui->SetEventInfoMode(EVENT_TEX_INFO::J_GETAWAY); break;
-			default:	break;
-			}
-
-			ui->SetAlertInfo(true, alert_type);
-			sound->PlaySE(alert_sound);
-		}
+		//	イベント管理
+		EventManagement();
 		
-		//　イベント発生
-		if (timer % EVENT_INTERVAL == EVENT_TIMING - 2*SECOND)
-		{
-			//ui->SetAlertInfo(false, alert_type);
-			eventManager->SetEvent(eventmode);
-
-			absCoinEventFlag = false;
-		}
-		
-
-		//-------------------------------------------------------
-		//		アイテム・コインばらまき
-		//-------------------------------------------------------
-		if ( timer != 0 )
-		{
-			//	5秒ごとにアイテムを３割の確率ででランダムに配置
-			if ( timer % ( 5* SECOND ) == 0 )
-			{
-				if (itemflg)
-				{
-					if ( Random::PercentageRandom( 0.7f ) )
-					{
-						itemManager->Append(Vector3(Random::GetFloat(-20.0f, 20.0f), 50.0f, Random::GetFloat(-20.0f, 15.0f)), Random::GetInt( 0, ITEM_TYPE::MAX - 1 ) );
-					}
-				}
-			}
-
-			//	２秒ごとにコインを４割の確率でランダムに配置
-			if ( timer % ( 1 * SECOND ) == 0 )
-			{
-				if ( Random::PercentageRandom( 0.6f ) )
-				{
-					if (coinNum[0] + coinNum[1] + coinNum[2] + coinNum[3] + coinManager->GetFreeCoinNum() < 300)
-					{
-						if ( Random::PercentageRandom( 0.5f ) )
-						{
-							coinManager->Append( Vector3( Random::GetFloat( -20.0f, 20.0f ), 50.0f, Random::GetFloat( -20.0f, 12.0f ) ), Vector3( 0.0f, -1.0f, 0.0f ), 1.0f, Coin::COIN_BAG_5 );
-						}
-					}
-				}
-			}
-		}
+		//	アイテム、コイン生成管理
+		ItemAndCoinManagement();
 	}
 
 	//	描画
@@ -365,33 +198,163 @@
 		worst = Min;
 	}
 
-	//	テキスト読み込み
-	void	GameManager::LoadTextData( void )
+	//	タイマー更新
+	void	GameManager::TimerUpdate( void )
 	{
-		//	文字列を保存するバッファ,変数を用意
-		char	buffer[256];
-		int		minute = 0;		//	分
-		int		second = 0;		//	秒
+		//	タイマー更新
+		if ( timeStop > 0 )
+		{
+			timeStop--;
+			return;
+		}
+		else timer--;
 
-		//	ファイルを開く
-		std::ifstream	ifs( "GameData.txt" );
-
-		//	最初はコメントなので読み飛ばす, 値は適当
-		ifs.getline( buffer, 50 );
-
-		//	読み込んだ値を変数へ代入
-		ifs >> minute;
-
-		//	コメントを読み飛ばす
-		ifs >> buffer;
-		ifs.getline( buffer, 50 );
-
-		//	読み込んだ値を変数へ代入
-		ifs >> second;
-
-		//	合計値をタイムリミット変数へ代入
-		timelimit = minute * MINUTE + second * SECOND;
+		//	タイマー下限設定
+		if ( timer <= 0 )	timer = 0;
 	}
+
+	//	時間切れ
+	void	GameManager::TimeUp( void )
+	{
+		//	モードをタイムアップに変更
+		if ( mode != GAME_MODE::TIMEUP )
+		{
+			mode = GAME_MODE::TIMEUP;
+			sound->PlaySE( SE::GAMESET_SE );
+		}
+
+		FOR( 0, PLAYER_MAX )
+		{
+			//	全員無敵にする
+			characterManager->SetParameterInfo( value, PARAMETER_STATE::UNRIVALED );
+
+			//	全員待機状態にする
+			if ( characterManager->GetIsPlayer( value ) )
+			{
+				if ( characterManager->GetMode( value ) == MODE_STATE::MOVE )
+				{
+					characterManager->SetMode( value, MODE_STATE::WAIT );
+				}
+			}
+			else
+			{
+				characterManager->SetAIMode( value, AI_MODE_STATE::STOP );
+			}
+
+		}
+	}
+
+	//	イベント発生管理
+	void	GameManager::EventManagement( void )
+	{
+		if ( timer <= 0 )	return;
+
+		int alert_type = 0;
+		int alert_sound = 0;
+
+		/*
+		ランダムでイベント決定、
+		イベントの各種パラメータ設定後、
+		eventManagerでイベントを発生させる
+		*/
+
+		//　演出開始
+		if ( timer % EVENT_INTERVAL == EVENT_TIMING )
+		{
+			if ( timer % ( 3 * EVENT_INTERVAL ) == EVENT_TIMING )	absCoinEventFlag = true;
+
+			eventmode = ( absCoinEventFlag ) ?
+				Random::GetInt( EVENT_MODE::COIN_FALL, EVENT_MODE::COIN_DUBBLE ) :
+				Random::GetInt( 0, EVENT_MODE::MAX - 1 );
+
+			if ( eventmode <= EVENT_MODE::JAM_SLIP )
+			{
+				alert_type = ALERT_TYPE_INFO::JAM;
+				alert_sound = SE::EVENT_SE;
+			}
+			else if ( EVENT_MODE::COIN_FALL <= eventmode  && eventmode <= EVENT_MODE::COIN_DUBBLE )
+			{
+				alert_type = ALERT_TYPE_INFO::COIN;
+				alert_sound = SE::EVENT_SE;		//　仮　コインイベント用に変更
+			}
+			else
+			{
+				alert_type = ALERT_TYPE_INFO::MISSION;
+				alert_sound = SE::EVENT_SE;		//　仮　ミッションイベント用に変更
+			}
+
+			//　画像用に設定
+			switch ( eventmode )
+			{
+			case EVENT_MODE::COIN_FALL:						ui->SetEventInfoMode( EVENT_TEX_INFO::C_FALL );		break;
+			case EVENT_MODE::COIN_WAVE:					ui->SetEventInfoMode( EVENT_TEX_INFO::C_WAVE );		break;
+			case EVENT_MODE::COIN_DUBBLE:				ui->SetEventInfoMode( EVENT_TEX_INFO::C_DUBBLE );	break;
+			case EVENT_MODE::JAM_SLOPE_CAMERA:		ui->SetEventInfoMode( EVENT_TEX_INFO::J_CAMERA );	break;
+			case EVENT_MODE::JAM_SLIP:						ui->SetEventInfoMode( EVENT_TEX_INFO::J_SLIP );			break;
+			case EVENT_MODE::JAM_COIN_GETAWAY:	ui->SetEventInfoMode( EVENT_TEX_INFO::J_GETAWAY ); break;
+			default:	break;
+			}
+
+			ui->SetAlertInfo( true, alert_type );
+			sound->PlaySE( alert_sound );
+		}
+
+		//　イベント発生
+		if ( timer % EVENT_INTERVAL == EVENT_TIMING - 2 * SECOND )
+		{
+			eventManager->SetEvent( eventmode );
+			absCoinEventFlag = false;
+		}
+	}
+
+	//	アイテムとコインの生成管理
+	void	GameManager::ItemAndCoinManagement( void )
+	{
+		if ( timer == 0 )	return;
+
+		//---------------------------------------------------------------------------
+		//	アイテムばらまき
+		//---------------------------------------------------------------------------
+			//	5秒ごとにアイテムを３割の確率ででランダムに配置
+			if ( timer % ( ITEM_GENERATION_INTERVAL * SECOND ) == 0 )
+			{
+				if ( itemflg )
+				{
+					if ( Random::PercentageRandom( 0.7f ) )
+					{
+						itemManager->Append( 
+							Vector3( Random::GetFloat( -20.0f, 20.0f ), 
+							50.0f, 
+							Random::GetFloat( -20.0f, 15.0f ) ),
+							Random::GetInt( 0, ITEM_TYPE::MAX - 1 ) );
+					}
+				}
+			}
+		//---------------------------------------------------------------------------
+		//	コインばらまき
+		//---------------------------------------------------------------------------
+			//	コインを４割の確率でランダムに配置
+			if ( timer % ( COIN_GENERATION_INTERVAL * SECOND ) == 0 )
+			{
+				if ( Random::PercentageRandom( 0.6f ) )
+				{
+					int	totalCoinNum = coinNum[0] + coinNum[1] + coinNum[2] + coinNum[3] + coinManager->GetFreeCoinNum();
+					if ( totalCoinNum < LIMIT_COIN_NUM )
+					{
+						if ( Random::PercentageRandom( 0.5f ) )
+						{
+							coinManager->Append( 
+								Vector3( Random::GetFloat( -20.0f, 20.0f ), 
+								50.0f, 
+								Random::GetFloat( -20.0f, 12.0f ) ),
+								Vector3( 0.0f, -1.0f, 0.0f ),
+								1.0f, 
+								Coin::COIN_BAG_5 );
+						}
+					}
+				}
+			}
+		}
 
 //-------------------------------------------------------------------------
 //	情報取得

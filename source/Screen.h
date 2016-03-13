@@ -19,7 +19,7 @@ namespace
 			WHITE_OUT,
 			WIPE_IN,
 			WIPE_OUT,
-			END,
+			MAX,
 		};
 	}
 }
@@ -40,7 +40,9 @@ private:
 	float			widthHalf;
 	float			heightHalf;
 	float			width;
-	float			height;		
+	float			height;
+	float			startParam[SCREEN_MODE::MAX];
+	float			endParam[SCREEN_MODE::MAX];
 	bool			screenState;
 	int			size;
 	int			mode;
@@ -56,10 +58,8 @@ public:
 	void	Render( void );
 
 	//	ìÆçÏä÷êî
-	bool	FadeIn( void );
-	bool	FadeOut( void );
-	bool	WipeIn( void );
-	bool	WipeOut( void );
+	bool	Fade( void );
+	bool	Wipe( void );
 
 	//	èÓïÒê›íË
 	void	SetScreenMode( int mode, float speed );

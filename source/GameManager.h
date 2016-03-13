@@ -91,6 +91,14 @@ private:
 	
 public:	
 		Vector3	InitPos[PLAYER_MAX];
+
+private:
+	//	’è”
+	enum TIMER_EVENT
+	{
+		TIME_UP,
+		MOVE_CLIMAX = 30 * SECOND,
+	};
 	
 private:
 	//	‰Šú‰»E‰ğ•ú
@@ -99,7 +107,6 @@ private:
 
 public:
 	bool	Initialize( void );
-	bool	InitializeDebug( void );
 	void	Release( void );
 	void	RetryInitialize( void );
 
@@ -110,10 +117,13 @@ public:
 	void	Render( void );
 
 	//	“®ìŠÖ”
+	void	TimerUpdate( void );
+	void	TimeUp( void );
 	void	AddCoin( int playerNum );
 	void	SubCoin( int playerNum );
 	void	DecideWorst( void );
-	void	LoadTextData( void );
+	void	EventManagement( void );
+	void	ItemAndCoinManagement( void );
 
 	//	î•ñæ“¾
 	Vector3	GetPlayerColor( int playerNum )const;
