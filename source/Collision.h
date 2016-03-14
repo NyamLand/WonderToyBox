@@ -65,6 +65,9 @@ public:
 	static	bool	CapsuleVSSphere( const Vector3& p1, const Vector3& p2, float r1, const Vector3& c, float r2 );
 	static	bool	CapsuleVSCyrinder( const Vector3& bottom1, const Vector3& top1, float r1, const Vector3& bottom2, const Vector3& top2, float r2 );
 	static	bool	SphereVSSphere( Vector3 c1, float r1, Vector3 c2, float r2 );
+
+	//	ìÆçÏä÷êî
+	static	void	Vec3Transform( void );
 };
 
 

@@ -32,6 +32,7 @@ private:	//	パラメータ
 	float	startPosR[2][4];		//	４頂点２パターン右カーテン
 	float	endPosL[2][4];		//	４頂点２パターン左カーテン
 	float	endPosR[2][4];		//	４頂点２パターン右カーテン
+	float	param;	
 	float speed;
 	bool	isEnd;
 

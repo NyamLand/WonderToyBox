@@ -16,14 +16,14 @@
 //-----------------------------------------------------------------------------
 
 	//	コンストラクタ
-	Curtain::Curtain( void ) : mode( CURTAIN_MODE::CLOSE ), speed( 0.001f )
+	Curtain::Curtain( void ) : mode( CURTAIN_MODE::CLOSE ), speed( 0.001f ), param( 1.0f )
 	{
 		//	画像読み込み
 		Load();
 
 		//	パラメータ初期化
-		curtainL.t = 1.0f;
-		curtainR.t = 1.0f;
+		curtainL.t = param;
+		curtainR.t = param;
 
 		//	頂点座標設定
 		StartPosInitialize();
@@ -108,20 +108,11 @@
 	void	Curtain::Update( void )
 	{
 		//	パラメータ加算
-		curtainL.t += speed;
-		curtainR.t += speed;
-
-		//	パラメータ上限設定
-		if ( curtainL.t >= 1.0f || curtainR.t >= 1.0f )
-		{
-			curtainL.t = 1.0f;
-			curtainR.t = 1.0f;
-			isEnd = true;
-		}
-		else
-		{
-			isEnd = false;
-		}
+		isEnd = PercentageUpdate( param, speed );
+		
+		//	パラメータ適用
+		curtainL.t = param;
+		curtainR.t = param;
 
 		switch ( mode )
 		{
@@ -140,7 +131,6 @@
 	{
 		iexPolygon::Render2D( curtainL.tlv, 2, curtainL.obj, RS_COPY );
 		iexPolygon::Render2D( curtainR.tlv, 2, curtainR.obj, RS_COPY );
-		//curtainL.obj->Render( 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 1024, 1024 );
 	}
 
 //-----------------------------------------------------------------------------
@@ -179,8 +169,7 @@
 	{
 		this->mode = mode;
 		this->speed = speed;
-		curtainL.t = 0.0f;
-		curtainR.t = 0.0f;
+		this->param = 0.0f;
 		isEnd = false;
 	}
 
