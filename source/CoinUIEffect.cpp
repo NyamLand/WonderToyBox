@@ -16,7 +16,7 @@
 //---------------------------------------------------------------------------------------
 //	グローバル
 //---------------------------------------------------------------------------------------
-
+#define	PARPOS 100.0f
 //---------------------------------------------------------------------------------------
 //	初期化・解放
 //---------------------------------------------------------------------------------------
@@ -43,10 +43,10 @@
 	bool	CoinUIEffect::Initialize( void )
 	{
 		//	パーティクル用バッファ
-		parPos = Vector3( 100.0f, 100.0f, 100.0f );
+		parPos = Vector3( PARPOS, PARPOS, PARPOS );
 		targetPar = new iex2DObj( iexSystem::ScreenWidth, iexSystem::ScreenHeight, IEX2D_RENDERTARGET );
 		camera = new Camera();
-		camera->SetPos( Vector3( 0.0f, 10.0f, -10.0f ) + parPos );
+		camera->SetPos( Vector3( 0.0f, 10.0f, -10.0f ) + parPos );		//	カメラをパーティクルより手前へ
 		return	true;
 	}
 
@@ -88,9 +88,9 @@
 		if ( !coinFlag[player] )	return;
 
 		targetPar->Render( 
-			static_cast<int>( posX[player] - scale * 1.5f  ), 
-			static_cast<int>( posY - scale * 1.5f ),
-			scale * 3, scale * 2,
+			static_cast<int>( posX[player] - scale * 1.5f  ),		//	プレイヤーコイン枚数の中心X
+			static_cast<int>( posY - scale * 1.5f ),				//	プレイヤーコイン枚数の中心Y
+			scale * 3, scale * 3,									//	プレイヤーコイン枚数3桁分の幅
 			0, 0, 
 			iexSystem::ScreenWidth, iexSystem::ScreenHeight,
 			shader2D, "add" );

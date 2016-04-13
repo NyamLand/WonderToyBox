@@ -54,7 +54,7 @@
 			//	”’lƒNƒ‰ƒX‰Šú‰»
 			numberUI[value] = new NumberUI();
 			numberUI[value]->Initialize( posXTable[value],
-				static_cast<int>( iexSystem::ScreenHeight * 0.1f ),
+				static_cast<int>( iexSystem::ScreenHeight * 0.15f ),
 				NUMBER_SCALE,
 				coinNum[value] );
 
@@ -62,6 +62,7 @@
 			coinUIEffect->SetPos( value, 
 				numberUI[value]->GetPosX(), 
 				numberUI[value]->GetPosY() );
+			coinUIEffect->SetScale( NUMBER_SCALE );
 
 			if ( numberUI[value] == nullptr )		return	false;
 		}

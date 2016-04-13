@@ -216,9 +216,9 @@
 	//	数値色設定
 	void	NumberUI::SetColor( const Vector3& color )
 	{
-		numImageInfo.one.color = color;
-		numImageInfo.ten.color = color;
-		numImageInfo.hundred.color = color;
+		numImageInfo.one.color		= color;
+		numImageInfo.ten.color		= color;
+		numImageInfo.hundred.color	= color;
 	}
 
 	//	隠ぺいフラグ設定( trueで隠ぺい )
@@ -230,9 +230,9 @@
 	//	画像設定
 	void	NumberUI::SetImage( void )
 	{
-		numImageInfo.hundred.obj = orgNumber;
-		numImageInfo.ten.obj = orgNumber;
-		numImageInfo.one.obj = orgNumber;
+		numImageInfo.hundred.obj	= orgNumber;
+		numImageInfo.ten.obj		= orgNumber;
+		numImageInfo.one.obj		= orgNumber;
 	}
 
 	//	数値設定
@@ -248,7 +248,7 @@
 	//	X座標取得
 	int	NumberUI::GetPosX( void )const
 	{
-		return			numImageInfo.pos.x;
+		return	numImageInfo.pos.x;
 	}
 
 	//	Y座標取得

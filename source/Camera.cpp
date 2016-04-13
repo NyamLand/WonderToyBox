@@ -184,10 +184,7 @@
 	
 		//	’e—Í«
 		SpringMove(pos);
-
-		////	‰ñ“]•âŠÔ
-		//Slerp( this->target, 0.1f );
-
+		
 		//U“®î•ñİ’è
 		Shake();
 		//	î•ñİ’è
@@ -349,9 +346,6 @@
 		float	out = 0.0f;
 		//	ƒJƒƒ‰‚©‚çƒ^[ƒQƒbƒg‚Ü‚Å‚Ì’·‚³’²®
 		out = len[0];
-		//if ( out < ( float )MIN ) out = ( float )MIN;
-		//if ( out >( float )MAX ) out = ( float )MAX;
-
 		return	out;
 	}
 

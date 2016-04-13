@@ -77,32 +77,23 @@
 	//	初期化(現在のシーン)
 	bool	UI::Initialize( void )
 	{
+		//	画像セット
 		timer.obj = new iex2DObj("DATA/UI/timer.png");
-		face = new iex2DObj("DATA/UI/chara_emotion.png");
 		finishImage.obj = new iex2DObj("DATA/UI/bfUI.png");
 		countImage.obj = new iex2DObj("DATA/UI/bfUI_02.png");
 		alertImage.obj = new iex2DObj("DATA/UI/alert.png");
 		alert_coinImage.obj = new iex2DObj("DATA/UI/coin_alert.png");
 		playerNumber = new iex2DObj("DATA/UI/number.png");
-		pCoinNumImage = new iex2DObj("DATA/UI/number.png");
 		roundImage.obj = new iex2DObj("DATA/UI/roundText.png");
 		startNumber = new iex2DObj("DATA/UI/DonketuUI.png");
-
-		//	パーティクル用バッファ
-		PAR_POS = Vector3(100.0f, 100.0f, 100.0f);
-		target_par = std::make_unique<iex2DObj>(iexSystem::ScreenWidth, iexSystem::ScreenHeight, IEX2D_RENDERTARGET);
-		particle_camera = std::make_unique<Camera>();
-		particle_camera->SetPos(Vector3(0.0f, 10.0f, -10.0f) + PAR_POS);
-
+		redAlert.obj = new iex2DObj("DATA/UI/last.png");
+		
 		//	共通変数初期化 
 		changeflag = false;
 		FOR(0, PLAYER_MAX)
 		{
-			faceImage[value].obj = face;
 			charatype[value] = gameManager->GetCharacterType(value);
 			startNum[value].obj = startNumber;
-			coin_flg[value] = false;
-			coin_timer[value] = 0;
 		}
 
 		//	ライフUI初期化
@@ -121,9 +112,15 @@
 		playerNumUI = new PlayerNumUI();
 		playerNumUI->Initialize();
 
+		//	コイン枚数UI初期化
+		coinNumUI = new CoinNumUI();
+		coinNumUI->Initialize();
+
+		//	顔（背景）初期化
+		faceUI = new FaceUI();
+		faceUI->Initialize();
+
 		//	各UI情報初期化
-		CoinNumberInitialize();
-		FaceImageInitialize();
 		TimerInitialize();
 		StartAndTimeUpInitialize();
 		StartPlayerNumInitialize();
@@ -143,13 +140,12 @@
 		SafeDelete( crown );
 		SafeDelete( lifeUI );
 		SafeDelete( timer.obj );
-		SafeDelete( face );
 		SafeDelete( countImage.obj );
 		SafeDelete( finishImage.obj );
 		SafeDelete( alertImage.obj );
 		SafeDelete( alert_coinImage.obj );
+		SafeDelete( redAlert.obj );
 		SafeDelete( playerNumber );
-		SafeDelete( pCoinNumImage );
 		SafeDelete( roundImage.obj );
 		SafeDelete( eventInfo.airPlane );
 		SafeDelete( startNumber );
@@ -167,8 +163,7 @@
 		lifeUI->Update();
 		fallLife->Update();
 		crown->Update();
-		ParticleUpdate();
-
+		coinNumUI->CoinEffectUpdate();
 		switch ( mode )
 		{
 		case GAME_MODE::GAMESTART:
@@ -178,14 +173,16 @@
 
 		case GAME_MODE::MAINGAME:
 			TimerUpdate();
-			CoinNumberUpdate();
+			coinNumUI->Update();
+			faceUI->Update();
 			AlertUpdate();
 			EventUpdate();
 			break;
 
 		case GAME_MODE::CLIMAX:
 			TimerUpdate();
-			CoinNumberUpdate();
+			coinNumUI->Update();
+			faceUI->Update();
 			LastProduction();
 			AlertUpdate();
 			EventUpdate();
@@ -215,18 +212,15 @@
 
 		case GAME_MODE::MAINGAME:
 			TimerRender();
-			CoinNumberRender();
+			faceUI->Render();
+			coinNumUI->Render();
 			EventRender();
-			break;
-
-		case GAME_MODE::DONKETSU_DIRECTION:
-			TimerRender();
-			CoinNumberRender();
 			break;
 
 		case GAME_MODE::CLIMAX:
 			LastProductionRender();
-			CoinNumberRender();
+			faceUI->Render();
+			coinNumUI->Render();
 			EventRender();
 
 			break;
@@ -242,56 +236,6 @@
 //------------------------------------------------------------------------------
 //	メイン動作初期化
 //------------------------------------------------------------------------------
-
-	//	コイン枚数初期化
-	void	UI::CoinNumberInitialize( void )
-	{
-		//	コイン枚数位置（横）
-		coinNumInfo[0].pos.x = static_cast<int>( iexSystem::ScreenWidth * 0.1f );
-		coinNumInfo[1].pos.x = static_cast<int>( iexSystem::ScreenWidth * 0.3f );
-		coinNumInfo[2].pos.x = static_cast<int>( iexSystem::ScreenWidth * 0.7f );
-		coinNumInfo[3].pos.x = static_cast<int>( iexSystem::ScreenWidth * 0.9f );
-
-		//	表示色
-		coinColor[0] = characterManager->GetDamageColor(0);
-		coinColor[1] = characterManager->GetDamageColor(1) + Vector3( 0.7f, 0.7f, 0.0f );		//	見やすくするため
-		coinColor[2] = characterManager->GetDamageColor(2);
-		coinColor[3] = characterManager->GetDamageColor(3);
-
-
-		FOR( 0, PLAYER_MAX ){
-			//	コイン枚数用
-			coinNum[value]						= gameManager->GetCoinNum( value );
-
-			//	コイン枚数位置（縦）
-			coinNumInfo[value].pos.y			= static_cast<int>( iexSystem::ScreenHeight * 0.15f );
-			coinNumInfo[value].scale			= 100;
-			
-			//	画像設定
-			coinNumInfo[value].one.obj			= pCoinNumImage;
-			coinNumInfo[value].ten.obj			= pCoinNumImage;
-			coinNumInfo[value].hundred.obj		= pCoinNumImage;
-			
-			//	情報設定
-			SetCoinImageInfo( coinNumInfo[value], numInfo[value], gameManager->GetCoinNum( value ) );
-			
-			//	色設定	
-			coinNumInfo[value].one.color		= coinColor[value];
-			coinNumInfo[value].ten.color		= coinColor[value];
-			coinNumInfo[value].hundred.color	= coinColor[value];	
-		}
-	}
-
-	//	顔画像初期化
-	void	UI::FaceImageInitialize( void )
-	{
-		FOR( 0, PLAYER_MAX ){
-			ImageInitialize( faceImage[value], coinNumInfo[value].pos.x, coinNumInfo[value].pos.y,
-							 coinNumInfo[value].one.w + coinNumInfo[value].ten.w,
-							 coinNumInfo[value].one.h + coinNumInfo[value].ten.h,
-							 0, 0, 256, 256 );
-		}
-	}
 
 	//	タイマー初期化
 	void	UI::TimerInitialize( void )
@@ -391,6 +335,8 @@
 		lasttimerInfo.state = false;
 		lasttimerInfo.t		= 0.0f;
 		lasttimerInfo.alpha = 1.0f;
+		//	画面赤用初期化					画面中心のX座標				画面中心のY座標			
+		ImageInitialize( redAlert, iexSystem::ScreenWidth / 2, iexSystem::ScreenHeight / 2, iexSystem::ScreenWidth, iexSystem::ScreenHeight, 0, 0, 512, 512 );
 	}
 
 	//	ラウンド初期化
@@ -436,23 +382,6 @@
 		timerInfo.second[0]		= ( this->timerInfo.time / SECOND ) % 60 / 10 % 10;
 		//秒一桁目
 		timerInfo.second[1]		= this->timerInfo.time / SECOND % 10;
-	}
-
-	//	コイン枚数動作
-	void	UI::CoinNumberUpdate( void )
-	{
-		FOR( 0, PLAYER_MAX ){
-			CoinCounter( gameManager->GetCoinNum(value),value );
-			CoinImageInfoUpdate( coinNumInfo[value], numInfo[value], coinNum[value] );
-			FaceImageUpdate( value, gameManager->GetCharacterType( value ) );		
-		}
-	}
-
-	//	顔画像構造体更新
-	void	UI::FaceImageUpdate( int num, int mode )
-	{
-		faceImage[num].alpha	= 0.5f;
-		faceImage[num].sy		= 256 * mode;
 	}
 
 	//	カウントダウン・スタート演出
@@ -629,7 +558,8 @@
 	{
 		//	30秒～4秒
 		if ( !lasttimerInfo.state ){
-			ScalingUpdate(timer, 100);
+			ScalingUpdate( timer, 100 );
+			FlashingUpdate( redAlert, 0.1f );
 			if ( gameManager->GetTimer() / SECOND <= 3 )
 			{
 				SetScaling( timer, 1.0f );
@@ -713,80 +643,6 @@
 //	メイン描画
 //------------------------------------------------------------------------------
 
-	//	コイン枚数描画
-	void	UI::CoinNumberRender( void )
-	{
-		FOR( 0, PLAYER_MAX ){
-			RenderImage( faceImage[value], faceImage[value].sx, faceImage[value].sy, faceImage[value].sw, faceImage[value].sh, IMAGE_MODE::ADOPTPARAM );
-		}
-		//	15秒まで数字表示
-		if ( gameManager->GetTimer() / SECOND >= 15 )
-		{
-			FOR(0, PLAYER_MAX)
-			{
-				//	１００の位描画
-				int		sx = coinNumInfo[value].hundred.sx;
-				int		sy = coinNumInfo[value].hundred.sy;
-				int		sw = coinNumInfo[value].hundred.sw;
-				int		sh = coinNumInfo[value].hundred.sh;
-
-				if ( coinNumInfo[value].hundredRenderFlag )
-					RenderImage( coinNumInfo[value].hundred, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM );
-
-				//	１０の位描画
-				sx = coinNumInfo[value].ten.sx;
-				sy = coinNumInfo[value].ten.sy;
-				sw = coinNumInfo[value].ten.sw;
-				sh = coinNumInfo[value].ten.sh;
-				RenderImage( coinNumInfo[value].ten, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM );
-
-				//	１の位描画
-				sx = coinNumInfo[value].one.sx;
-				sy = coinNumInfo[value].one.sy;
-				sw = coinNumInfo[value].one.sw;
-				sh = coinNumInfo[value].one.sh;
-				RenderImage( coinNumInfo[value].one, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM );
-
-				ParticleRender( value );
-			}
-		}
-		//	ラスト15秒は自分の持ち枚数が分からなくなる
-		else
-		{
-			FOR( 0, PLAYER_MAX )
-			{
-
-				//	１０の位描画
-				int		sx = 12 * 64;		//	？
-				int		sy = coinNumInfo[value].ten.sy;
-				int		sw = coinNumInfo[value].ten.sw;
-				int		sh = coinNumInfo[value].ten.sh;
-
-				RenderImage( coinNumInfo[value].ten, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM );
-
-				//	１の位描画
-				sy = coinNumInfo[value].one.sy;
-				sw = coinNumInfo[value].one.sw;
-				sh = coinNumInfo[value].one.sh;
-				RenderImage( coinNumInfo[value].one, sx, sy, sw, sh, IMAGE_MODE::ADOPTPARAM );
-			
-				ParticleRender( value );
-			}
-		}
-
-
-	}
-
-	//	パーティクル描画(コイン枚数)
-	void	UI::ParticleRender( int value )
-	{
-		if ( !coin_flg[value] ) return;
-
-		target_par->Render( ( int )( coinNumInfo[value].pos.x - coinNumInfo[value].scale * 1.5f ), ( int )( coinNumInfo[value].pos.y - coinNumInfo[value].scale ),
-			coinNumInfo[value].scale * 3, coinNumInfo[value].scale * 2,
-			0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, shader2D, "add" );	
-	}
-
 	//	タイマー描画
 	void	UI::TimerRender( void )
 	{
@@ -860,6 +716,9 @@
 			timer.x = iexSystem::ScreenWidth / 2;	timer.y = iexSystem::ScreenHeight / 2;
 			RenderImage( timer, timer.sx * timerInfo.second[1], timer.sy, timer.sw, timer.sh, IMAGE_MODE::SCALING );
 		}
+		//
+		RenderImage(redAlert, redAlert.sx, redAlert.sy, redAlert.sw, redAlert.sh, IMAGE_MODE::FLASH);
+
 		//	タイマー文字色を白へ
 		timer.sy = 0;
 
@@ -883,98 +742,18 @@
 	//	レンダーターゲットでパーティクル
 	void	UI::RenderTargetParticle( void )
 	{
-		//	バックバッファにパーティクル
-		target_par->RenderTarget( 0 );
+		////	バックバッファにパーティクル
+		//target_par->RenderTarget( 0 );
 
-		particle_camera->Activate();
-		particle_camera->Clear();
-		particle->Render();
+		//particle_camera->Activate();
+		//particle_camera->Clear();
+		//particle->Render();
+
+		coinNumUI->RenderToBackBuffer();
 
 	}
 
-//------------------------------------------------------------------------------
-//	動作関数
-//------------------------------------------------------------------------------
 
-	//	コイン枚数を1枚ずつカウントアップダウン(コイン枚数、プレイヤー番号)
-	void	UI::CoinCounter( int coin, int num )
-	{
-		if (coinNum[num] == coin)	return;
-
-		//	コイン減少
-		if( coinNum[num] > coin )
-		{
-			coinNum[num]--;
-		}
-
-		//	コイン増加
-		if ( coinNum[num] < coin )
-		{
-			coinNum[num]++;
-			coin_flg[num] = true;
-			particle->CoinGet( PAR_POS , 0.5f );
-		}
-	
-	}
-
-	//	設定した数値にあわせて構造体情報を設定、１００以上かで配置も変更(数字画像情報、コイン画像情報、コイン枚数)
-	void	UI::CoinImageInfoUpdate( NumberImageInfo& numImageInfo, NumberInfo& numInfo, const int& num )
-	{
-		//	桁数確認
-		if ( num >= 100 )				numImageInfo.hundredRenderFlag = true;
-		else							numImageInfo.hundredRenderFlag = false;
-
-		//	数字構造体設定
-		SetNumberInfo( numInfo, num );
-
-		//------------------------------------------------------------------------------------------------
-		//	総数用構造体設定
-		//------------------------------------------------------------------------------------------------
-		if ( numImageInfo.hundredRenderFlag )
-		{
-			//	１０の位設定
-			numImageInfo.ten.x		= numImageInfo.pos.x;
-			numImageInfo.ten.sx		= numInfo.ten * 64;
-
-			//	１００の位設定
-			numImageInfo.hundred.sx = numInfo.hundred * 64;
-
-			//	１の位設定
-			numImageInfo.one.x		= numImageInfo.pos.x + static_cast<int>( numImageInfo.ten.w / 1.5f );
-			numImageInfo.one.sx		= numInfo.one * 64;
-		}
-		else
-		{
-			//	１０の位設定
-			numImageInfo.ten.x		= numImageInfo.pos.x - numImageInfo.scale / 3;
-			numImageInfo.ten.sx		= numInfo.ten * 64;
-
-			//	１の位設定
-			numImageInfo.one.x		= numImageInfo.pos.x + numImageInfo.scale / 3;
-			numImageInfo.one.sx		= numInfo.one * 64;
-		}
-	}
-
-	//	パーティクル更新
-	void	UI::ParticleUpdate( void )
-	{
-		particle_camera->Update( VIEW_MODE::FIX, PAR_POS );
-		particle->Update();
-
-		FOR( 0, PLAYER_MAX )
-		{
-			//	パーティクルを30フレーム間だけ描画許可する
-			if ( coin_flg[value] )
-			{
-				coin_timer[value]++;
-				if ( coin_timer[value] > 30 )
-				{
-					coin_flg[value]		= false;
-					coin_timer[value]	= 0;
-				}
-			}
-		}
-	}
 
 //------------------------------------------------------------------------------
 //	情報設定・取得
@@ -998,73 +777,6 @@
 	{
 		bool	out = this->changeflag;
 		return	out;
-	}
-
-	//	設定した数値にあわせて構造体情報を設定、１００以上かで配置も変更(数字画像情報、コイン画像情報、コイン枚数)
-	void	UI::SetCoinImageInfo( NumberImageInfo& numImageInfo, NumberInfo& numInfo, const int& num )
-	{
-		//	桁数確認
-		if ( num >= 100 )				numImageInfo.hundredRenderFlag = true;
-		else							numImageInfo.hundredRenderFlag = false;
-
-		//	数字構造体設定
-		SetNumberInfo( numInfo, num );
-
-		//	各位画像構造体初期化
-		int		x, y, w, h, sx, sy, sw, sh;
-		//------------------------------------------------------------------------------------------------
-		//	総数用構造体設定
-		//------------------------------------------------------------------------------------------------
-		if (numImageInfo.hundredRenderFlag)
-		{
-			//	１０の位設定
-			x	= numImageInfo.pos.x;
-			y	= numImageInfo.pos.y;
-			w	= h = numImageInfo.scale;
-			sx	= numInfo.ten * 64;
-			sy	= 0;
-			sw	= sh = 64;
-			ImageInitialize( numImageInfo.ten, x, y, w, h, sx, sy, sw, sh );
-
-			//	１００の位設定
-			x	= numImageInfo.pos.x - static_cast<int>( numImageInfo.ten.w / 1.5f );
-			sx	= numInfo.hundred * 64;
-			ImageInitialize( numImageInfo.hundred, x, y, w, h, sx, sy, sw, sh );
-
-			//	１の位設定
-			x	= numImageInfo.pos.x + static_cast<int>( numImageInfo.ten.w / 1.5f );
-			sx	= numInfo.one * 64;
-			ImageInitialize( numImageInfo.one, x, y, w, h, sx, sy, sw, sh );
-		}
-		else
-		{
-			//	１０の位設定
-			w	= h = numImageInfo.scale;
-			x	= numImageInfo.pos.x - w / 3;
-			y	= numImageInfo.pos.y;
-			sx	= numInfo.ten * 64;
-			sy	= 0;
-			sw	= sh = 64;
-			ImageInitialize( numImageInfo.ten, x, y, w, h, sx, sy, sw, sh );
-
-			//	１の位設定
-			x	= numImageInfo.pos.x + w / 3;
-			sx	= numInfo.one * 64;
-			ImageInitialize( numImageInfo.one, x, y, w, h, sx, sy, sw, sh );
-
-			//	１００の位設定(初期化の時のみセットするため）
-			x	= numImageInfo.pos.x - static_cast<int>( numImageInfo.ten.w / 1.5f );
-			sx	= numInfo.hundred * 64;
-			ImageInitialize( numImageInfo.hundred, x, y, w, h, sx, sy, sw, sh );
-		}
-	}
-
-	//	数値構造体に値をセットする
-	void	UI::SetNumberInfo( NumberInfo& number, int coin )
-	{
-		number.hundred	= coin / 100 % 10;
-		number.ten		= coin / 10 % 10;
-		number.one		= coin % 10;
 	}
 
 	//	イベント情報、モード設定

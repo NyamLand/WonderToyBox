@@ -62,21 +62,27 @@
 	//	初期化
 	void	Effect::Initialize( void )
 	{
+		//	オーラ
 		aura.mesh		= new iexMesh( "DATA/Effect/state/aura.IMO" );
 		aura.state		= false;
+		//	竜巻
 		storm.mesh		= new iexMesh( "DATA/Effect/cyclone/cyclone.IMO" );
 		storm.pos		= Vector3(0.0f, 0.0f, 0.0f);
 		storm.time		= 0;
 		storm._adjustV	= 0.0f;
 		storm.state		= false;
 
+		//	サークル（足元）
 		circleInfo.pic[0] = new iex2DObj("DATA/Effect/circle/PL1-2.png");
 		circleInfo.pic[1] = new iex2DObj("DATA/Effect/circle/PL2-2.png");
 		circleInfo.pic[2] = new iex2DObj("DATA/Effect/circle/PL3-2.png");
 		circleInfo.pic[3] = new iex2DObj("DATA/Effect/circle/PL4-2.png");
 		confusionInfo.pic	= new iex2DObj( "DATA/Effect/confusion.png" );
 
+		//	盾
 		shieldInfo.obj		= new iex2DObj( "DATA/Effect/state/Guard-ef.png" );
+		
+		//	状態異常
 		stateInfo.pic		= new iex2DObj("DATA/UI/item-state.png");
 
 		FOR( 0, PLAYER_MAX ){
@@ -87,14 +93,18 @@
 				SetVertex( confusionInfo.confusion[value].poligon[j]		, 0, 0, 0, 0, 0, 0xFFFFFF );
 				SetVertex( confusionInfo.confusion_out[value].poligon[j]	, 0, 0, 0, 0, 0, 0xFFFFFF );
 			}
+			//	サークル
 			circleInfo.circle[value].c_pos				= Vector3( 0.0f, 10.0f, 0.0f );	
 			circleInfo.circle_out[value].c_pos			= Vector3( 0.0f, 10.0f, 0.0f );
 			circleInfo.speed							= 0.0f;
+
+			//	混乱
 			confusionInfo.confusion[value].c_pos		= Vector3( 0.0f, 10.0f, 0.0f );
 			confusionInfo.confusion_out[value].c_pos	= Vector3( 0.0f, 10.0f, 0.0f );
 			confusionInfo.state[value]					= false;
 			confusionInfo.speed							= 0.0f;
 
+			//	状態異常
 			ImageInitialize( stateInfo.stateEffect[value].image, 0, 0, 90, 90, 0, 0, 256, 256 );
 			stateInfo.stateEffect[value].image.obj		= stateInfo.pic;
 			stateInfo.stateEffect[value].pos			= Vector3( 0, 0, 0 );
@@ -103,7 +113,6 @@
 		//	シールド初期化
 		ShieldInitialize();
 
-		//	定数初期化
 		//	攻撃UP					スピードUP			マグネット						無敵				回復						混乱	
 		STATE_INFO[0].sx = 0;	STATE_INFO[1].sx = 0;	STATE_INFO[2].sx = 256;	STATE_INFO[3].sx = 256;	STATE_INFO[4].sx = 256 * 2;	STATE_INFO[9].sx = 256 * 3;
 		STATE_INFO[0].sy = 0;	STATE_INFO[1].sy = 256;	STATE_INFO[2].sy = 256;	STATE_INFO[3].sy = 0;	STATE_INFO[4].sy = 0;		STATE_INFO[9].sy = 0;
@@ -228,6 +237,7 @@
 
 	}
 
+	//	竜巻の表示時間管理
 	void	Effect::StormTimer( void )
 	{
 		if ( storm.time > 0 )
@@ -344,12 +354,13 @@
 
 	}
 
+	//	表示座標を変える
 	void	Effect::CirclePosSet( Circle* c, int i, Vector3 add )
 	{
 			c->c_pos = characterManager->GetPos( i ) + add;
 	}
 
-
+	//	Vector3に情報を変える
 	void	LVChange( LVERTEX &l,Vector3 &p )
 	{
 		p.x = l.x;

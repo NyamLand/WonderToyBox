@@ -18,6 +18,8 @@
 #include	"CoinNumUI.h"
 #include	"FallLife.h"
 #include	"PlayerNumUI.h"
+#include	"CoinNumUI.h"
+#include	"FaceUI.h"
 #include	<memory>
 
 namespace
@@ -61,26 +63,6 @@ private:
 		int		type;
 	};
 
-	//	コイン枚数構造体
-	struct NumberImageInfo
-	{
-		int				scale;
-		POINT			pos;
-		ImageObj		hundred;			//	コイン三桁目
-		ImageObj		ten;				//	コイン二桁目
-		ImageObj		one;				//	コイン一桁目
-		bool			hundredRenderFlag;	//	百の位レンダー用フラグ
-	};
-
-	//	数字情報
-	struct NumberInfo
-	{
-		int		hundred;	//コイン三桁目
-		int		ten;			//コイン二桁目
-		int		one;			//コイン一桁目
-		bool		H_flg;		//百の位レンダー用フラグ
-	};
-
 	//　イベント情報
 	struct EventInfo
 	{
@@ -121,18 +103,16 @@ private:
 private:
 	//	各画像
 	ImageObj	timer;
-	ImageObj	faceImage[PLAYER_MAX];
 	ImageObj	countImage;
 	ImageObj	alertImage;
 	ImageObj	alert_coinImage;
 	ImageObj	startNum[PLAYER_MAX];
 	ImageObj	pNumImage[PLAYER_MAX];
 	ImageObj	roundImage;
+	ImageObj	redAlert;
 	ImageObj	finishImage;
-	iex2DObj*	face;
 	iex2DObj*	playerNumber;
 	iex2DObj*	startNumber;
-	iex2DObj*	pCoinNumImage;
 
 private:
 	//	定数
@@ -143,11 +123,7 @@ private:
 
 	//	カウントダウン・スタート・タイムアップ演出
 	CountInfo			countInfo;
-
-	//	コイン枚数
-	int		coinNum[PLAYER_MAX];
-	Vector3	coinColor[PLAYER_MAX];
-
+	
 	//　キャラ情報
 	int		charatype[PLAYER_MAX];
 
@@ -172,22 +148,14 @@ private:
 	//	プレイヤー番号
 	PlayerNumUI*	playerNumUI;
 
-	//	コイン枚数情報
-	NumberImageInfo	coinNumInfo[PLAYER_MAX];
-	NumberInfo			numInfo[PLAYER_MAX];
+	//	コイン枚数UI情報
+	CoinNumUI*		coinNumUI;
+
+	//	背景（顔）
+	FaceUI*			faceUI;
 
 	//　イベント情報
 	EventInfo			eventInfo;
-
-	//	パーティクル用
-	bool		coin_flg[PLAYER_MAX];
-	int			coin_timer[PLAYER_MAX];
-	
-	//	パーティクル用バックバッファ
-	std::unique_ptr<iex2DObj>	target_par;
-
-	//	パーティクル用カメラ
-	std::unique_ptr<Camera>		particle_camera;
 		
 	//	パラメータ
 	int		scene;
@@ -211,8 +179,6 @@ public:
 	void	AlertInitialize( void );
 	void	LastProductionInitialize( void );
 	void	PlayerNumberInitialize( void );
-	void	CoinNumberInitialize( void );
-	void	FaceImageInitialize( void );
 	void	RoundInitialize( void );
 	void	EventInitialize( void );
 
@@ -225,11 +191,7 @@ public:
 	void	AlertUpdate( void );
 	void	LastProduction( void );
 	void	PlayerNumberUpdate( void );
-	void	CoinNumberUpdate( void );
-	void	FaceImageUpdate( int num, int mode );
-	void	CoinImageInfoUpdate( NumberImageInfo& numImageinfo, NumberInfo& numinfo, const int& num );
 	void	EventUpdate( void );
-	void	ParticleUpdate( void );
 	void	FallLifeUpdate( void );
 
 	//	メイン描画
@@ -239,9 +201,7 @@ public:
 	void	FinishRender( void );
 	void	AlertRender( void );
 	void	LastProductionRender( void );
-	void	CoinNumberRender( void );
 	void	EventRender( void );
-	void	ParticleRender( int value );
 	void	RenderTargetParticle( void );
 
 	//	メイン動作関数
@@ -253,8 +213,6 @@ public:
 	//	情報設定
 	void	SetChangeFlag( const bool& flag );
 	void	SetAlertInfo( bool flag, int type );
-	void	SetCoinImageInfo( NumberImageInfo& numImageinfo, NumberInfo& numinfo, const int& num );
-	void	SetNumberInfo( NumberInfo& nomber, int coin );
 	void	SetEventInfoMode( int mode );
 	void	SetDamageFlag( int playerNum, bool flag, int culLife );
 

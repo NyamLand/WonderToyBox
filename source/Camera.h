@@ -71,6 +71,7 @@ private:
 	static	const		int		PLAYER_NUM = 4;	//	プレイヤーの数
 
 private:
+	//	プレイヤー情報
 	Vector3	playerPos[PLAYER_NUM];
 	Vector3 target;
 	Vector3	nextPoint;

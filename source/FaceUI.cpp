@@ -24,6 +24,7 @@
 	//	コンストラクタ
 	FaceUI::FaceUI( void )
 	{
+		face = new iex2DObj("DATA/UI/chara_emotion.png");
 	}
 
 	//	デストラクタ
@@ -32,14 +33,19 @@
 		SafeDelete( face );
 	}
 
+	//	初期化
 	void	FaceUI::Initialize( void )
 	{
+		TableInitialize();
+
 		FOR( 0, PLAYER_MAX ){
 			ImageInitialize( faceImage[value], posXTable[value],
-				static_cast<int>( iexSystem::ScreenHeight * 0.1f ),
+				static_cast<int>( iexSystem::ScreenHeight * 0.15f ),
 				NUMBER_SCALE + NUMBER_SCALE,		//	数字2文字分の横幅
 				NUMBER_SCALE + NUMBER_SCALE,		//	数字2文字分の縦幅
 				0, 0, FACEIMAGE_SCALE, FACEIMAGE_SCALE );
+			//	画像情報セット
+			faceImage[value].obj = face;
 		}
 	}
 

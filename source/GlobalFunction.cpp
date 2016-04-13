@@ -318,7 +318,7 @@
 		image.scalingrenderflag = true;
 	}
 
-	//	Šg‘åk¬İ’è
+	//	Šg‘åk¬İ’è(state = •`‰æ“§–¾“x@1.0for0.0f)
 	void	SetScaling(ImageObj& image, float speed, bool state)
 	{
 		image.plusScaleX = 0;
