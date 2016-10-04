@@ -115,6 +115,7 @@
     <ClCompile Include="source\BasePirateBullet.cpp" />
     <ClCompile Include="source\CoinNumUI.cpp" />
     <ClCompile Include="source\CoinUIEffect.cpp" />
+    <ClCompile Include="source\StartFinUI.cpp" />
     <ClCompile Include="source\Crown.cpp" />
     <ClCompile Include="source\Curtain.cpp" />
     <ClCompile Include="source\Event_Coin.cpp" />
@@ -195,6 +196,7 @@
     <ClInclude Include="source\BasePirateBullet.h" />
     <ClInclude Include="source\CoinNumUI.h" />
     <ClInclude Include="source\CoinUIEffect.h" />
+    <ClInclude Include="source\StartFinUI.h" />
     <ClInclude Include="source\Crown.h" />
     <ClInclude Include="source\Curtain.h" />
     <ClInclude Include="source\Event_Coin.h" />

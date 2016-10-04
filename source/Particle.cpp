@@ -10,31 +10,6 @@
 //
 //*******************************************************************************
 
-//------------------------------------------------------------------------
-//	グローバル
-//------------------------------------------------------------------------
-
-namespace
-{
-	namespace
-	{
-		enum EFF_TYPE
-		{
-			SPARK,
-			STAR,
-			SMOKE,
-			POWER_UP,
-			SPEED_UP,
-			DUST,
-			SUCK,
-			FLOWER = 8,
-			COIN,
-		};
-	}
-
-
-}
-
 
 //------------------------------------------------------------------------
 //	初期化・解放
@@ -177,7 +152,7 @@ namespace
 
 
 	//		パワーアップ
-	void	Particle::PowerUp( const Vector3& pos, const float& scale , const int move, const int& time )
+	void	Particle::PowerUp( const Vector3& pos, const float& scale , const int& move, const int& time )
 	{
 		Vector3	Pos, Move, Power;
 		timer++;
@@ -203,7 +178,7 @@ namespace
 	}
 
 	//	スピードアップ
-	void	Particle::SpeedUp( const Vector3& pos, const float& scale, const int move, const int& time )
+	void	Particle::SpeedUp( const Vector3& pos, const float& scale, const int& move, const int& time )
 	{
 		Vector3	Pos, Move, Power;
 		timer++;
@@ -355,7 +330,7 @@ namespace
 	}
 
 	//	花
-	void	Particle::Flower( const Vector3& pos, float scale, const Vector3& color)
+	void	Particle::Flower( const Vector3& pos, const float& scale, const Vector3& color)
 	{
 		Vector3	Pos, Move, Power;
 
@@ -378,7 +353,7 @@ namespace
 	}
 
 	//	花ばらまき
-	void	Particle::FlowerDisseminate( const Vector3& pos, float scale, float speed, const Vector3& color )
+	void	Particle::FlowerDisseminate( const Vector3& pos, const float& scale, const float& speed, const Vector3& color )
 	{
 		Vector3	Pos, Move, Power;
 
@@ -402,7 +377,7 @@ namespace
 	}
 
 	//	大砲用エフェクト
-	void	Particle::Bomb( const Vector3& pos, float scale, const Vector3& color )
+	void	Particle::Bomb( const Vector3& pos, const float& scale, const Vector3& color )
 	{
 		Vector3	Pos, Move, Power;
 		for ( int j = 0; j<Par3; j++ )
@@ -497,7 +472,7 @@ namespace
 	}
 
 	//	死亡エフェクト
-	void	Particle::Death( const Vector3& pos, float scale, const Vector3& color )
+	void	Particle::Death( const Vector3& pos, const float& scale, const Vector3& color )
 	{
 		Vector3	Pos, Move, Power;
 		for ( int j = 0; j<Par2; j++ ){
@@ -521,7 +496,7 @@ namespace
 	}
 
 	//	火球
-	void	Particle::FireBall( const Vector3& pos, float scale, const Vector3& color )
+	void	Particle::FireBall( const Vector3& pos, const float& scale, const Vector3& color )
 	{
 		Vector3	Pos, Move, Power;
 		for ( int j = 0; j<Par3; j++ )
@@ -543,7 +518,7 @@ namespace
 	}
 
 	//	火球爆発
-	void	Particle::BombFireBall( const Vector3& pos, float scale, const Vector3& color )
+	void	Particle::BombFireBall( const Vector3& pos, const float& scale, const Vector3& color )
 	{
 		Vector3	Pos, Move, Power;
 		for ( int j = 0; j<Par4; j++ ){

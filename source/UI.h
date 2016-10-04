@@ -16,6 +16,7 @@
 #include	"Camera.h"
 #include	"CoinUIEffect.h"
 #include	"CoinNumUI.h"
+#include	"StartFinUI.h"
 #include	"FallLife.h"
 #include	"PlayerNumUI.h"
 #include	"CoinNumUI.h"
@@ -103,23 +104,18 @@ private:
 private:
 	//	各画像
 	ImageObj	timer;
-	ImageObj	countImage;
 	ImageObj	alertImage;
 	ImageObj	alert_coinImage;
 	ImageObj	startNum[PLAYER_MAX];
 	ImageObj	pNumImage[PLAYER_MAX];
 	ImageObj	roundImage;
 	ImageObj	redAlert;
-	ImageObj	finishImage;
 	iex2DObj*	playerNumber;
 	iex2DObj*	startNumber;
 
 private:
 	//	定数
 	Vector3 PAR_POS;
-
-	//	システム
-	bool	changeflag;
 
 	//	カウントダウン・スタート・タイムアップ演出
 	CountInfo			countInfo;
@@ -154,6 +150,9 @@ private:
 	//	背景（顔）
 	FaceUI*			faceUI;
 
+	//	開始・終了UI
+	StartFinUI*		startfinUI;
+
 	//　イベント情報
 	EventInfo			eventInfo;
 		
@@ -174,7 +173,6 @@ public:
 	//-------------------------------メイン処理-------------------------------------//
 	//	メイン動作初期化
 	void	TimerInitialize( void );
-	void	StartAndTimeUpInitialize( void );
 	void	StartPlayerNumInitialize( void );
 	void	AlertInitialize( void );
 	void	LastProductionInitialize( void );
@@ -184,10 +182,7 @@ public:
 
 	//	メイン動作更新
 	void	TimerUpdate( void );
-	void	StartUpdate( void );
-	bool	StartMove( void );
 	void	StartPlayerNumUpdate( void );
-	void	FinishUpdate( void );
 	void	AlertUpdate( void );
 	void	LastProduction( void );
 	void	PlayerNumberUpdate( void );
@@ -196,9 +191,7 @@ public:
 
 	//	メイン描画
 	void	TimerRender( void );
-	void	StartRender( void );
 	void	StartPlayerNumRender( void );
-	void	FinishRender( void );
 	void	AlertRender( void );
 	void	LastProductionRender( void );
 	void	EventRender( void );

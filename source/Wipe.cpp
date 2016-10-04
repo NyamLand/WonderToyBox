@@ -160,44 +160,46 @@
 	void	PlayerWipe::Move( int num, Vector3 target )
 	{
 		Vector3	stringPos;
-		WorldToClient(LengthChecker(num,target), stringPos, matView* matProjection);
+		WorldToClient( LengthChecker( num,target ), stringPos, matView* matProjection );
 
 		//Vector3 targetPos;
 		//WorldToClient(target, targetPos, matView* matProjection);
 
 		//	高さを計算
 		Vector3 v1, v2;
-		Vector3 start = Vector3(pos[num].x, WIPE_UP, 0);
+		Vector3 start = Vector3( pos[num].x, WIPE_UP, 0 );
 		Vector3 end = start;
 		end.y = WIPE_DOWN;
 		v1 = stringPos - start;
 		v2 = end  - start;
 		v2.Normalize();
 
-		float dot = Vector3Dot(v1, v2);
-		if (dot < 0) dot = -dot;
+		float dot = Vector3Dot( v1, v2 );
+		if ( dot < 0 ) dot = -dot;
 
-		pos[num] = start + (v2 * dot);
+		pos[num] = start + ( v2 * dot );
 
-		if (pos[num].y > WIPE_DOWN)	pos[num].y = WIPE_DOWN;
-		if (pos[num].y < WIPE_UP)	pos[num].y = WIPE_UP;
+		if ( pos[num].y > WIPE_DOWN )	pos[num].y = WIPE_DOWN;
+		if ( pos[num].y < WIPE_UP )		pos[num].y = WIPE_UP;
 
 		//	ワイプ横自由化
-		if (pos[num].y == WIPE_DOWN)
+		if ( pos[num].y == WIPE_DOWN )
 		{
 			pos[num].x = stringPos.x;
 
-			if (pos[num].x > WIPE_RIGHT)	pos[num].x = WIPE_RIGHT;
-			if (pos[num].x < WIPE_LEFT)		pos[num].x = WIPE_LEFT;
+			if ( pos[num].x > WIPE_RIGHT )	pos[num].x = WIPE_RIGHT;
+			if ( pos[num].x < WIPE_LEFT )		pos[num].x = WIPE_LEFT;
 
 		}
 		//	下以外
 		else{
+
 			//	中心から左
-			if (stringPos.x < iexSystem::ScreenWidth / 2)
+			if ( stringPos.x < iexSystem::ScreenWidth / 2 )
 			{
 				pos[num].x = WIPE_LEFT;
 			}
+
 			//	中心から右
 			else
 			{
@@ -205,43 +207,44 @@
 			}
 		}
 
-		SufferChecker(num);
+		//	被りをなくす
+		SufferChecker( num );
 
 	}
 
 	//	ワイプ同士の被りをなくす
 	void	PlayerWipe::SufferChecker( int num )
 	{
-		FOR(0, PLAYER_MAX)
+		FOR( 0, PLAYER_MAX )
 		{
 			//	描画してないもの、自分同士はスキップ
-			if (!check[value] || value == num)	continue;
+			if ( !check[value] || value == num )	continue;
 
 			//	同じ位置の場合は番号で上下させる
-			if (pos[num] == pos[value])
+			if ( pos[num] == pos[value] )
 			{
 				//	上
-				if (pos[num].y == WIPE_UP)
+				if ( pos[num].y == WIPE_UP )
 				{
 					if (num < value)
 					{
-						pos[value].y += (WIPE_SIZE + FRAME_SIZE) * 2;
+						pos[value].y += ( WIPE_SIZE + FRAME_SIZE ) * 2;
 					}
 					else{
-						pos[num].y += (WIPE_SIZE + FRAME_SIZE) * 2;
+						pos[num].y += ( WIPE_SIZE + FRAME_SIZE ) * 2;
 					}
 
 				}
 
 				//	下
-				else if (pos[num].y == WIPE_DOWN)
+				else if ( pos[num].y == WIPE_DOWN )
 				{
-					if (num < value)
+					if ( num < value )
 					{
-						pos[num].y -= (WIPE_SIZE + FRAME_SIZE) * 2;
+						pos[num].y -= ( WIPE_SIZE + FRAME_SIZE ) * 2;
 					}
 					else{
-						pos[value].y -= (WIPE_SIZE + FRAME_SIZE) * 2;
+						pos[value].y -= ( WIPE_SIZE + FRAME_SIZE ) * 2;
 					}
 
 				}
@@ -254,9 +257,9 @@
 			v1 = pos[num] - pos[value];
 			len = v1.Length();
 			
-			if (WIPE_SIZE + FRAME_SIZE > len)
+			if ( WIPE_SIZE + FRAME_SIZE > len )
 			{
-				pos[num] = pos[value] + v1 * (WIPE_SIZE + FRAME_SIZE);
+				pos[num] = pos[value] + v1 * ( WIPE_SIZE + FRAME_SIZE );
 			}
 
 
@@ -270,11 +273,11 @@
 	{
 		//	カメラとターゲットの射影長を取る
 		Vector3 v1;
-		v1 = Vector3(mainView->GetSpringPos().x, 0, mainView->GetSpringPos().z) - target;
+		v1 = Vector3( mainView->GetSpringPos().x, 0, mainView->GetSpringPos().z ) - target;
 		LEN_MAX = v1.Length();
 
 		//	プレイヤーとターゲットの距離を取る
-		v1 = characterManager->GetPos(num) - target;
+		v1 = characterManager->GetPos( num ) - target;
 		
 		Vector3 test;
 		//	距離が離れすぎていないか判定
@@ -284,13 +287,13 @@
 			return target + v1 * LEN_MAX;
 		}
 
-		return characterManager->GetPos(num);
+		return characterManager->GetPos( num );
 	}
 
 	//描画のチェックをオフ
 	void	PlayerWipe::CheckOff( void )
 	{
-		FOR(0, PLAYER_MAX)
+		FOR( 0, PLAYER_MAX )
 		{
 			check[value] = false;
 		}
@@ -305,7 +308,7 @@
 	//	描画
 	void	PlayerWipe::Render( void )
 	{
-		FOR(0, PLAYER_MAX)
+		FOR( 0, PLAYER_MAX )
 		{
 			//	座標・スケール設定
 			int w = WIPE_WIDTH;
@@ -314,20 +317,20 @@
 			float	frame_size = 10.0f;
 
 			//	シェーダーへセット
-			shader2D->SetValue("center_posX", pos[value].x);
-			shader2D->SetValue("center_posY", pos[value].y);
-			shader2D->SetValue("picture_width", w);
-			shader2D->SetValue("picture_height", h);
-			shader2D->SetValue("wipe_size", wipe_size);
-			shader2D->SetValue("frame_size", frame_size);
-			shader2D->SetValue("frame_color", color[value]);
+			shader2D->SetValue( "center_posX", pos[value].x );
+			shader2D->SetValue( "center_posY", pos[value].y );
+			shader2D->SetValue( "picture_width", w );
+			shader2D->SetValue( "picture_height", h );
+			shader2D->SetValue( "wipe_size", wipe_size );
+			shader2D->SetValue( "frame_size", frame_size );
+			shader2D->SetValue( "frame_color", color[value] );
 
 			//	ワイプ描画
 			if (check[value]){
-				wipe[value]->Render(( int )pos[value].x, ( int )pos[value].y, w, h, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, shader2D, "WipeEffect");
+				wipe[value]->Render( ( int )pos[value].x, ( int )pos[value].y, w, h, 0, 0, iexSystem::ScreenWidth, iexSystem::ScreenHeight, shader2D, "WipeEffect" );
 
-				arrow.angle = arrow_angle[value] + PI /2;		arrow.p = ::GetPoint(( int )arrow_pos[value].x, ( int )arrow_pos[value].y);			arrow.color = color[value];
-				RenderImage(arrow, arrow.sx, arrow.sy, arrow.sw, arrow.sh, IMAGE_MODE::ADOPTPARAM, ( int )arrow_pos[value].x, ( int )arrow_pos[value].y);
+				arrow.angle = arrow_angle[value] + PI /2;		arrow.p = ::GetPoint( ( int )arrow_pos[value].x, ( int )arrow_pos[value].y );			arrow.color = color[value];
+				RenderImage( arrow, arrow.sx, arrow.sy, arrow.sw, arrow.sh, IMAGE_MODE::ADOPTPARAM, ( int )arrow_pos[value].x, ( int )arrow_pos[value].y );
 			}
 		}
 	}
@@ -336,7 +339,7 @@
 	void	PlayerWipe::RenderTarget( int num )
 	{
 		//	レンダーターゲットを切り替え
-		wipe[num]->RenderTarget(0);
+		wipe[num]->RenderTarget( 0 );
 
 		//	画面クリア
 		playerView[num]->Activate();

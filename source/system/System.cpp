@@ -27,7 +27,7 @@ void	SYSTEM_Initialize( void )
 	PADSET	padset = { AXIS_X, AXIS_Y, AXIS_Z, AXIS_RZ, 2, 3, 1, 4,   7, 5,11,   8, 6,12,   9, 10 };
 	//KEY_PadAsign( padset );
 	//KEY_PadAsign( iexInput::ps101 );		// ELECOM JC-PS101USV
-	//KEY_PadAsign( iexInput::sixaxis );	// PS3 SIXAXIS DUALSHOCK3
+	//KEY_PadAsign( iexInput::sixaxis );	// PS3 SIXA4XIS DUALSHOCK3
 	KEY_PadAsign( iexInput::xbox360 );	// XBOX360 Controller
 
 	//	シェーダー読み込み

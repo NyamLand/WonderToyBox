@@ -217,6 +217,9 @@
     <Filter Include="ソース ファイル\Scene\sceneResult\LastResult">
       <UniqueIdentifier>{50bb8840-c24b-43a1-8a1e-ba72a6c842ab}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ソース ファイル\UI\MainUI\StartFinUI">
+      <UniqueIdentifier>{a7dba401-5830-4371-ab73-1c3ec975504a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\system\Framework.cpp">
@@ -453,6 +456,9 @@
     <ClCompile Include="source\LastResult.cpp">
       <Filter>ソース ファイル\Scene\sceneResult\LastResult</Filter>
     </ClCompile>
+    <ClCompile Include="source\StartFinUI.cpp">
+      <Filter>ソース ファイル\UI\MainUI\StartFinUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="source\system\Framework.h">
@@ -643,6 +649,9 @@
     </ClInclude>
     <ClInclude Include="source\LastResult.h">
       <Filter>ソース ファイル\Scene\sceneResult\LastResult</Filter>
+    </ClInclude>
+    <ClInclude Include="source\StartFinUI.h">
+      <Filter>ソース ファイル\UI\MainUI\StartFinUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -79,8 +79,6 @@
 	{
 		//	画像セット
 		timer.obj = new iex2DObj("DATA/UI/timer.png");
-		finishImage.obj = new iex2DObj("DATA/UI/bfUI.png");
-		countImage.obj = new iex2DObj("DATA/UI/bfUI_02.png");
 		alertImage.obj = new iex2DObj("DATA/UI/alert.png");
 		alert_coinImage.obj = new iex2DObj("DATA/UI/coin_alert.png");
 		playerNumber = new iex2DObj("DATA/UI/number.png");
@@ -89,7 +87,6 @@
 		redAlert.obj = new iex2DObj("DATA/UI/last.png");
 		
 		//	共通変数初期化 
-		changeflag = false;
 		FOR(0, PLAYER_MAX)
 		{
 			charatype[value] = gameManager->GetCharacterType(value);
@@ -119,10 +116,13 @@
 		//	顔（背景）初期化
 		faceUI = new FaceUI();
 		faceUI->Initialize();
+		
+		//	開始終了UI初期化
+		startfinUI = new StartFinUI();
+
 
 		//	各UI情報初期化
 		TimerInitialize();
-		StartAndTimeUpInitialize();
 		StartPlayerNumInitialize();
 		AlertInitialize();
 		LastProductionInitialize();
@@ -139,9 +139,9 @@
 		SafeDelete( fallLife );
 		SafeDelete( crown );
 		SafeDelete( lifeUI );
+		SafeDelete( coinNumUI );
+		SafeDelete( startfinUI );
 		SafeDelete( timer.obj );
-		SafeDelete( countImage.obj );
-		SafeDelete( finishImage.obj );
 		SafeDelete( alertImage.obj );
 		SafeDelete( alert_coinImage.obj );
 		SafeDelete( redAlert.obj );
@@ -167,7 +167,7 @@
 		switch ( mode )
 		{
 		case GAME_MODE::GAMESTART:
-			StartUpdate();
+			startfinUI->StartUpdate();
 			StartPlayerNumUpdate();
 			break;
 
@@ -189,7 +189,7 @@
 			break;
 
 		case GAME_MODE::TIMEUP:
-			FinishUpdate();
+			startfinUI->FinishUpdate();
 			break;
 		}
 	}
@@ -207,7 +207,7 @@
 		{
 		case GAME_MODE::GAMESTART:
 			StartPlayerNumRender();
-			StartRender();
+			startfinUI->StartRender();
 			break;
 
 		case GAME_MODE::MAINGAME:
@@ -226,7 +226,7 @@
 			break;
 
 		case GAME_MODE::TIMEUP:
-			FinishRender();
+			startfinUI->FinishRender();
 			break;
 		}
 
@@ -252,25 +252,6 @@
 		{
 			timerInfo.second[value] = 0;
 		}
-	}
-
-	//	カウントダウン・スタート・終了演出
-	void	UI::StartAndTimeUpInitialize( void )
-	{
-		int x		= static_cast<int>( iexSystem::ScreenWidth * 0.5f );
-		int y		= static_cast<int>( iexSystem::ScreenHeight * 0.5f );
-		int w		= static_cast<int>( iexSystem::ScreenWidth * 0.27f );
-		int h		= static_cast<int>( iexSystem::ScreenHeight * 0.49f );
-		ImageInitialize( countImage, x, y, w, h, 0, 0, 512, 512 );
-		w			= static_cast<int>( iexSystem::ScreenWidth * 0.49f );
-		h			= static_cast<int>( iexSystem::ScreenHeight * 0.27f );
-		ImageInitialize( finishImage, x, y, w, h, 0, 512, 1024, 512 );
-		countInfo.count			= 0;
-		countInfo.waitTimer		= 0;
-		countInfo.start_pos		= Vector3( ( float )countImage.x, -( (float )countImage.h / 2.0f ), 0.0f );
-		countInfo.finish_pos	= Vector3( ( float )countImage.x, ( float )countImage.y, 0.0f );
-		countInfo.start_t		= 0.0f;
-		countInfo.start_step	= 0;
 	}
 
 	//	カウントダウン中プレイヤーの番号表示
@@ -384,106 +365,6 @@
 		timerInfo.second[1]		= this->timerInfo.time / SECOND % 10;
 	}
 
-	//	カウントダウン・スタート演出
-	void	UI::StartUpdate( void )
-	{
-		int round = gameManager->GetRound();
-		static int	waittime;
-		switch ( countInfo.start_step )
-		{
-		//	画面上部から移動
-		case 0:
-			if ( StartMove() )
-			{
-				SetScaling( countImage, 4.0f );
-				countInfo.start_step++;
-				break;
-			}
-			break;
-		//	着地しながらフェードアウト
-		case 1:
-			if ( !countImage.scalingFlag )
-			{
-				countImage.alpha -= 1.0f / 60.0f;
-				if ( countImage.alpha <= 0.0f )
-				{
-					countImage.sx = 512;
-					countImage.sy = 512;
-					SetScaling( countImage, 3.0f, false );
-					countInfo.start_step++;
-					break;
-				}
-			}
-			ScalingLandingUpdate( countImage, 100 );
-			break;
-		//	GOがフェードイン
-		case 2:
-			sound->PlaySE( SE::GAMESTART_SE );
-			if ( !countImage.scalingFlag )
-			{
-				waittime = 90;		//	文字停止フレーム数
-				countInfo.start_step++;
-				break;
-			}
-			ScalingAlphaUpdate( countImage, 300 );
-			break;
-		//	文字停止フレーム数後、Goがフェードアウト
-		case 3:
-			//	タイマーの間はbreak;
-			waittime--;
-			if ( waittime >= 0 )	break;
-
-			changeflag			= true;
-			countInfo.waitTimer = 2 * SECOND;
-			break;
-		}
-
-		//	FIGHT描画のためスキップ
-		if ( countInfo.start_step > 1 ) return;
-		//	読み込み位置・サイズ設定
-		switch ( round )
-		{
-		case Round::ROUND1:
-			countImage.sx = 0;
-			countImage.sy = 0;
-			
-			break;
-
-		case Round::ROUND2:
-			countImage.sx = 512;
-			countImage.sy = 0;
-			break;
-
-		case Round::ROUND_FINAL:
-			countImage.sx = 0;
-			countImage.sy = 512;
-			break;
-		}
-
-	}
-
-	//	ラウンド文字移動
-	bool	UI::StartMove( void )
-	{
-		Vector3 pos;
-
-		//	パラメータ加算
-		countInfo.start_t += 1.0f / 30.0f;
-
-		if ( countInfo.start_t >= 1.0f )
-		{
-			return true;
-		}
-
-		Lerp( pos, countInfo.start_pos, countInfo.finish_pos, countInfo.start_t );
-		countImage.x = ( int )pos.x;
-		countImage.y = ( int )pos.y;
-
-		if ( countInfo.start_t >= 1.0f ) countInfo.start_t = 1.0f;
-
-		return false;
-	}
-
 	//	カウントダウン中プレイヤーの番号表示
 	void	UI::StartPlayerNumUpdate( void )
 	{
@@ -504,14 +385,6 @@
 			startNum[value].x	= static_cast<int>( out.x );
 			startNum[value].y	= static_cast<int>( out.y );
 		}
-	}
-
-	//	タイムアップ演出
-	void	UI::FinishUpdate( void )
-	{
-		countInfo.waitTimer--;
-
-		if ( countInfo.waitTimer <= 0 )	changeflag = true;
 	}
 
 	//	警告演出
@@ -653,12 +526,6 @@
 
 	}
 
-	//	カウントダウン・スタート演出
-	void	UI::StartRender( void )
-	{
-		RenderImage( countImage, countImage.sx, countImage.sy, countImage.sw, countImage.sh, IMAGE_MODE::SCALING );
-	}
-
 	//	カウントダウン中プレイヤーの番号表示
 	void	UI::StartPlayerNumRender( void )
 	{
@@ -668,11 +535,6 @@
 		}
 	}
 
-	//	タイムアップ演出
-	void	UI::FinishRender( void )
-	{
-		RenderImage( finishImage, finishImage.sx, finishImage.sy, finishImage.sw, finishImage.sh, IMAGE_MODE::NORMAL );
-	}
 
 	//	警告描画
 	void	UI::AlertRender( void )
@@ -762,7 +624,7 @@
 	//	モード変更フラグ設定
 	void	UI::SetChangeFlag( const bool& flag )
 	{
-		this->changeflag = flag;
+		startfinUI->SetChangeFlag( flag );
 	}
 
 	//	警告フラグ設定
@@ -775,7 +637,7 @@
 	//	モード変更フラグ取得
 	bool	UI::GetChangeFlag( void )
 	{
-		bool	out = this->changeflag;
+		bool	out = startfinUI->GetChangeFlag();
 		return	out;
 	}
 

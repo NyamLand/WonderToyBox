@@ -378,7 +378,7 @@
 		if (image.t >= 1.0f)		image.t = 0.0f;
 	}
 
-	//	拡大縮小更新
+	//	拡大縮小・透明度更新
 	bool	ScalingAlphaUpdate(ImageObj& image, int max_scale)
 	{
 		if (!image.scalingFlag) return false;

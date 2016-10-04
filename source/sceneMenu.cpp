@@ -230,7 +230,7 @@
 		SafeDelete( textImage.obj );
 		SafeDelete( face );
 		SafeDelete( cursor );
-		SafeDelete(decidecursor);
+		SafeDelete( decidecursor );
 		SafeDelete( selectCheckCursor );
 		SafeDelete( cpuCursor );
 		SafeDelete(triangleCursor);
