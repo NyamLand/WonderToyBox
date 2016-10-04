@@ -68,6 +68,7 @@ public:
 	Coin( void );
 	~Coin( void );
 	virtual	bool	Initialize( void );
+	void	Load( void );
 
 	//	çXêVÅEï`âÊ
 	void	ShadowUpdate( void );
@@ -86,7 +87,7 @@ public:
 	void	SetPos(const Vector3& pos);
 	void	SetMove(const Vector3& move);
 	void	SetAngle( const float& angle );
-	void	SetScale( const float& angle );
+	void	SetScale( const float& scale );
 	void	SetGetAwayFlag(bool flag);
 	void	SetAbsorbedFlag(bool flag);
 	void	SetState(bool state);

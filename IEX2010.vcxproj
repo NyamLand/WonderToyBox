@@ -124,7 +124,9 @@
     <ClCompile Include="source\FaceUI.cpp" />
     <ClCompile Include="source\FallLife.cpp" />
     <ClCompile Include="source\LastResult.cpp" />
+    <ClCompile Include="source\LifeItem.cpp" />
     <ClCompile Include="source\LifeUI.cpp" />
+    <ClCompile Include="source\MagnetItem.cpp" />
     <ClCompile Include="source\NumberUI.cpp" />
     <ClCompile Include="source\Pirate.cpp" />
     <ClCompile Include="source\PirateBullet01.cpp" />
@@ -132,7 +134,10 @@
     <ClCompile Include="source\PirateBullet03.cpp" />
     <ClCompile Include="source\Pirate_CPU.cpp" />
     <ClCompile Include="source\PlayerNumUI.cpp" />
+    <ClCompile Include="source\PowerUpItem.cpp" />
     <ClCompile Include="source\Result.cpp" />
+    <ClCompile Include="source\ShieldItem.cpp" />
+    <ClCompile Include="source\SpeedUpItem.cpp" />
     <ClCompile Include="source\SquirrelBullet01.cpp" />
     <ClCompile Include="source\Stage.cpp" />
     <ClCompile Include="source\ThiefBullet01.cpp" />
@@ -205,7 +210,9 @@
     <ClInclude Include="source\FaceUI.h" />
     <ClInclude Include="source\FallLife.h" />
     <ClInclude Include="source\LastResult.h" />
+    <ClInclude Include="source\LifeItem.h" />
     <ClInclude Include="source\LifeUI.h" />
+    <ClInclude Include="source\MagnetItem.h" />
     <ClInclude Include="source\NumberUI.h" />
     <ClInclude Include="source\Pirate.h" />
     <ClInclude Include="source\PirateBullet01.h" />
@@ -213,7 +220,10 @@
     <ClInclude Include="source\PirateBullet03.h" />
     <ClInclude Include="source\Pirate_CPU.h" />
     <ClInclude Include="source\PlayerNumUI.h" />
+    <ClInclude Include="source\PowerUpItem.h" />
     <ClInclude Include="source\Result.h" />
+    <ClInclude Include="source\ShieldItem.h" />
+    <ClInclude Include="source\SpeedUpItem.h" />
     <ClInclude Include="source\SquirrelBullet01.h" />
     <ClInclude Include="source\Stage.h" />
     <ClInclude Include="source\ThiefBullet04.h" />

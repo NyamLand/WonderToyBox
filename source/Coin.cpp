@@ -24,18 +24,21 @@
 //	グローバル
 //-------------------------------------------------------------------------------
 
-#define	GETAWAY_LENGTH		5.0f	//	逃げる判定距離
+#define	GETAWAY_LENGTH			5.0f	//	逃げる判定距離
 #define	MAX_HEIGHT					50.0f	//	想定している高さ最大値
-#define	MASS							10.0f;	//	質量
+#define	MASS								10.0f;	//	質量
 
 //-------------------------------------------------------------------------------
 //	初期化・解放
 //-------------------------------------------------------------------------------
 
 	//	コンストラクタ
-	Coin::Coin( void ) : obj( nullptr ), moveCheck( true )
+	Coin::Coin( void ) : obj( nullptr ), 
+		pos(0.0f, 0.0f, 0.0f), move( 0.0f, 0.0f, 0.0f ), 
+		scale( 0.0f ), angle( 0.0f ),
+		moveCheck(true), activate(false), state(false), getAwayflag(false), absorbedflg(false)
 	{
-		shadow.obj = new iex2DObj( "DATA/Effect/shadow.png" );	
+			
 	}
 
 	//	デストラクタ
@@ -48,17 +51,8 @@
 	//	初期化
 	bool	Coin::Initialize( void )
 	{
-		obj = nullptr;
-		angle = 0.0f;
-		pos = Vector3( 0.0f, 0.0f, 0.0f );
-		move = Vector3( 0.0f, 0.0f, 0.0f );
-		scale = 3.0f;
-		judgeTimer = 0;
-		type = 0;
-		activate = false;
-		state = false;
-		getAwayflag = false;
-		absorbedflg = false;
+		//	読み込み
+		Load();
 
 		//	影構造体初期化
 		{
@@ -69,8 +63,13 @@
 			SetVertex( shadow.v[2], shadow.pos.x - shadow.scale / 2, shadow.pos.y, shadow.pos.z - shadow.scale / 2, 0.0f, 1.0f, 0xFFFFFFFF );
 			SetVertex( shadow.v[3], shadow.pos.x + shadow.scale / 2, shadow.pos.y, shadow.pos.z - shadow.scale / 2, 1.0f, 1.0f, 0xFFFFFFFF );
 		}
-
 		return	true;
+	}
+
+	//	読み込み
+	void	Coin::Load( void )
+	{
+		shadow.obj = new iex2DObj( "DATA/Effect/shadow.png" );
 	}
 
 //-------------------------------------------------------------------------------
@@ -245,7 +244,7 @@
 	{
 		state = false;
 		float	effectScale = 0.8f;
-		particle->CoinUp(pos, effectScale);
+		particle->CoinUp( pos, effectScale );
 		switch ( type )
 		{
 		case COIN:
@@ -256,8 +255,8 @@
 		case COIN_BAG_5:
 			FOR( 0, 5 )
 			{
-				gameManager->AddCoin(Num);
-				if (event_coin->GetDubbleInst().eventflag) gameManager->AddCoin(Num);
+				gameManager->AddCoin( Num );
+				if ( event_coin->GetDubbleInst().eventflag ) gameManager->AddCoin( Num );
 			}
 			break;
 

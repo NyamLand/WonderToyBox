@@ -217,8 +217,20 @@
     <Filter Include="ソース ファイル\Scene\sceneResult\LastResult">
       <UniqueIdentifier>{50bb8840-c24b-43a1-8a1e-ba72a6c842ab}</UniqueIdentifier>
     </Filter>
-    <Filter Include="ソース ファイル\UI\MainUI\StartFinUI">
-      <UniqueIdentifier>{a7dba401-5830-4371-ab73-1c3ec975504a}</UniqueIdentifier>
+    <Filter Include="ソース ファイル\Item\MagnetItem">
+      <UniqueIdentifier>{183f43d8-fbc1-49a4-bcc3-393e26b98fa7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Item\LifeItem">
+      <UniqueIdentifier>{3c531cde-1fd7-4619-9b85-252088742551}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Item\ShieldItem">
+      <UniqueIdentifier>{37ed6a39-4e44-403c-a274-cebf030b12d5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Item\PowerUpItem">
+      <UniqueIdentifier>{9cf21faa-4fe7-4eb4-bd12-165138cc95a5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソース ファイル\Item\SpeedUpItem">
+      <UniqueIdentifier>{a2fe8384-dddd-461e-a87a-b1cbb188f4a9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -456,8 +468,20 @@
     <ClCompile Include="source\LastResult.cpp">
       <Filter>ソース ファイル\Scene\sceneResult\LastResult</Filter>
     </ClCompile>
-    <ClCompile Include="source\StartFinUI.cpp">
-      <Filter>ソース ファイル\UI\MainUI\StartFinUI</Filter>
+    <ClCompile Include="source\MagnetItem.cpp">
+      <Filter>ソース ファイル\Item\MagnetItem</Filter>
+    </ClCompile>
+    <ClCompile Include="source\LifeItem.cpp">
+      <Filter>ソース ファイル\Item\LifeItem</Filter>
+    </ClCompile>
+    <ClCompile Include="source\ShieldItem.cpp">
+      <Filter>ソース ファイル\Item\ShieldItem</Filter>
+    </ClCompile>
+    <ClCompile Include="source\PowerUpItem.cpp">
+      <Filter>ソース ファイル\Item\PowerUpItem</Filter>
+    </ClCompile>
+    <ClCompile Include="source\SpeedUpItem.cpp">
+      <Filter>ソース ファイル\Item\SpeedUpItem</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -650,8 +674,20 @@
     <ClInclude Include="source\LastResult.h">
       <Filter>ソース ファイル\Scene\sceneResult\LastResult</Filter>
     </ClInclude>
-    <ClInclude Include="source\StartFinUI.h">
-      <Filter>ソース ファイル\UI\MainUI\StartFinUI</Filter>
+    <ClInclude Include="source\MagnetItem.h">
+      <Filter>ソース ファイル\Item\MagnetItem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\LifeItem.h">
+      <Filter>ソース ファイル\Item\LifeItem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\ShieldItem.h">
+      <Filter>ソース ファイル\Item\ShieldItem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\PowerUpItem.h">
+      <Filter>ソース ファイル\Item\PowerUpItem</Filter>
+    </ClInclude>
+    <ClInclude Include="source\SpeedUpItem.h">
+      <Filter>ソース ファイル\Item\SpeedUpItem</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
